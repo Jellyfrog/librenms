@@ -206,10 +206,14 @@ foreach (dbFetchRows($sql, $param) as $device) {
     } else {
         $location = substr($device['location'], 0, 32);
     }
+    
+    if ($device['features']) {
+        $device['features'] = '('.$device['features'].')';
+    }    
 
     if ($subformat == 'detail') {
-        $platform = $device['hardware'] . '<br>' . $device['features'];
-        $os = $device['os_text'] . '<br>' . $device['version'];
+        $platform = $device['hardware'];
+        $os = $device['os_text'] . '<br>' . $device['version'] . $device['features'];
         $device['ip'] = inet6_ntop($device['ip']);
         $uptime = formatUptime($device['uptime'], 'short');
         $hostname .= '<br />' . get_device_name($device);
