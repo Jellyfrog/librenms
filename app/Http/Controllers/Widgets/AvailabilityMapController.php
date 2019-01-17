@@ -45,7 +45,7 @@ class AvailabilityMapController extends WidgetController
             'show_disabled_and_ignored' => 0,
             'mode_select' => 0,
             'order_by' => Config::get('webui.availability_map_sort_status') ? 'status' : 'hostname',
-            'device_group' => 0,
+            'device_group' => null,
         ];
     }
 
@@ -95,8 +95,8 @@ class AvailabilityMapController extends WidgetController
         $settings = $this->getSettings();
 
         // filter for by device group or show all
-        if ($group_id = $settings['device_group']) {
-            $device_query = DeviceGroup::find($group_id)->devices()->hasAccess($request->user());
+        if ($settings['device_group']) {
+            $device_query = DeviceGroup::find($settings['device_group'])->devices()->hasAccess($request->user());
         } else {
             $device_query = Device::hasAccess($request->user());
         }
@@ -143,8 +143,8 @@ class AvailabilityMapController extends WidgetController
         $settings = $this->getSettings();
 
         // filter for by device group or show all
-        if ($group_id = $settings['device_group']) {
-            $services_query = DeviceGroup::find($group_id)->services()->hasAccess($request->user());
+        if ($settings['device_group']) {
+            $services_query = DeviceGroup::find($settings['device_group'])->services()->hasAccess($request->user());
         } else {
             $services_query = Service::hasAccess($request->user());
         }

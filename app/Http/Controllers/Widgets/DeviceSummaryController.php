@@ -26,6 +26,7 @@
 namespace App\Http\Controllers\Widgets;
 
 use App\Models\Device;
+use App\Models\DeviceGroup;
 use App\Models\Port;
 use App\Models\Service;
 use Illuminate\Http\Request;
@@ -40,13 +41,15 @@ abstract class DeviceSummaryController extends WidgetController
         // init defaults we need to check config, so do it in construct
         $this->defaults = [
             'show_services' => (int)Config::get('show_services', 1),
-            'summary_errors' => (int)Config::get('summary_errors', 0)
+            'summary_errors' => (int)Config::get('summary_errors', 0),
+            'device_group' => null,
         ];
     }
 
     public function getSettingsView(Request $request)
     {
         $settings = $this->getSettings();
+        $settings['device_group'] = DeviceGroup::find($settings['device_group']);
 
         return view('widgets.settings.device-summary', $settings);
     }
@@ -56,30 +59,51 @@ abstract class DeviceSummaryController extends WidgetController
         $data = $this->getSettings();
         $user = $request->user();
 
+        $query = Device::hasAccess($user);
+        if ($data['device_group']) {
+            $query->whereHas('groups', function ($query) use ($data) {
+                $query->where('id', $data['device_group']);
+            });
+        }
+
         $data['devices'] = [
-            'count' => Device::hasAccess($user)->count(),
-            'up' => Device::hasAccess($user)->isUp()->count(),
-            'down' => Device::hasAccess($user)->isDown()->count(),
-            'ignored' => Device::hasAccess($user)->isIgnored()->count(),
-            'disabled' => Device::hasAccess($user)->isDisabled()->count(),
+            'count' => (clone $query)->count(),
+            'up' => (clone $query)->isUp()->count(),
+            'down' => (clone $query)->isDown()->count(),
+            'ignored' => (clone $query)->isIgnored()->count(),
+            'disabled' => (clone $query)->isDisabled()->count(),
         ];
 
+        $query = Port::hasAccess($user);
+        if ($data['device_group']) {
+            $query_devicegroup = $query->whereHas('device.groups', function ($query) {
+                $query->where('id', 1);
+            });
+        }
+
         $data['ports'] = [
-            'count' => Port::hasAccess($user)->isNotDeleted()->count(),
-            'up' => Port::hasAccess($user)->isNotDeleted()->isUp()->count(),
-            'down' => Port::hasAccess($user)->isNotDeleted()->isDown()->count(),
-            'ignored' => Port::hasAccess($user)->isNotDeleted()->isIgnored()->count(),
-            'shutdown' => Port::hasAccess($user)->isNotDeleted()->isShutdown()->count(),
-            'errored' => $data['summary_errors'] ? Port::hasAccess($user)->isNotDeleted()->hasErrors()->count() : -1,
+            'count' => (clone $query)->isNotDeleted()->count(),
+            'up' => (clone $query)->isNotDeleted()->isUp()->count(),
+            'down' => (clone $query)->isNotDeleted()->isDown()->count(),
+            'ignored' => (clone $query)->isNotDeleted()->isIgnored()->count(),
+            'shutdown' => (clone $query)->isNotDeleted()->isShutdown()->count(),
+            'errored' => $data['summary_errors'] ? (clone $query)->isNotDeleted()->hasErrors()->count() : -1,
         ];
+
+        $query = Service::hasAccess($user);
+        if ($data['device_group']) {
+            $query_devicegroup = $query->whereHas('device.groups', function ($query) use ($data) {
+                $query->where('id', $data['device_group']);
+            });
+        }
 
         if ($data['show_services']) {
             $data['services'] = [
-                'count' => Service::hasAccess($user)->count(),
-                'up' => Service::hasAccess($user)->isUp()->count(),
-                'down' => Service::hasAccess($user)->isDown()->count(),
-                'ignored' => Service::hasAccess($user)->isIgnored()->count(),
-                'disabled' => Service::hasAccess($user)->isDisabled()->count(),
+                'count' => (clone $query)->count(),
+                'up' => (clone $query)->isUp()->count(),
+                'down' => (clone $query)->isDown()->count(),
+                'ignored' => (clone $query)->isIgnored()->count(),
+                'disabled' => (clone $query)->isDisabled()->count(),
             ];
         }
 

@@ -26,6 +26,7 @@
 namespace App\Http\Controllers\Widgets;
 
 use App\Models\Device;
+use App\Models\DeviceGroup;
 use Illuminate\Http\Request;
 
 class SyslogController extends WidgetController
@@ -34,6 +35,7 @@ class SyslogController extends WidgetController
     protected $defaults = [
         'title' => null,
         'device' => null,
+        'device_group' => null,
     ];
 
     public function getSettingsView(Request $request)
@@ -41,6 +43,7 @@ class SyslogController extends WidgetController
         $data = $this->getSettings();
 
         $data['device'] = Device::hasAccess($request->user())->find($data['device']);
+        $data['device_group'] = DeviceGroup::find($data['device_group']);
 
         return view('widgets.settings.syslog', $data);
     }

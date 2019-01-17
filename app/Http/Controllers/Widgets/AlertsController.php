@@ -37,7 +37,7 @@ class AlertsController extends WidgetController
         'fired' => null,
         'min_severity' => null,
         'state' => null,
-        'group' => null,
+        'device_group' => null,
         'proc' => 0,
         'sort' => 1,
     ];
@@ -67,7 +67,7 @@ class AlertsController extends WidgetController
             'worse' => '3',
             'better' => '4',
         ];
-        $data['device_group'] = DeviceGroup::find($data['group']);
+        $data['device_group'] = DeviceGroup::find($data['device_group']);
 
         return view('widgets.settings.alerts', $data);
     }

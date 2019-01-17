@@ -26,6 +26,7 @@
 namespace App\Http\Controllers\Widgets;
 
 use App\Models\Port;
+use App\Models\DeviceGroup;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -37,6 +38,7 @@ class TopInterfacesController extends WidgetController
         'interface_count' => 5,
         'time_interval' => 15,
         'interface_filter' => null,
+        'device_group' => null,
     ];
 
     /**
@@ -53,12 +55,19 @@ class TopInterfacesController extends WidgetController
             ->select('port_id', 'device_id', 'ifName', 'ifDescr', 'ifAlias')
             ->groupBy('port_id', 'device_id', 'ifName', 'ifDescr', 'ifAlias')
             ->where('poll_time', '>', Carbon::now()->subMinutes($data['time_interval'])->timestamp)
-            ->has('device')
             ->orderByRaw('SUM(ifInOctets_rate + ifOutOctets_rate) DESC')
             ->limit($data['interface_count']);
 
         if ($data['interface_filter']) {
             $query->where('ifType', '=', $data['interface_filter']);
+        }
+
+        if ($data['device_group']) {
+            $query->whereHas('device.groups', function ($query) use ($data) {
+                $query->where('id', $data['device_group']);
+            });
+        } else {
+            $query->has('device');
         }
 
         $data['ports'] = $query->get();
@@ -69,6 +78,9 @@ class TopInterfacesController extends WidgetController
 
     public function getSettingsView(Request $request)
     {
-        return view('widgets.settings.top-interfaces', $this->getSettings());
+        $data = $this->getSettings();
+        $data['device_group'] = DeviceGroup::find($data['device_group']);
+
+        return view('widgets.settings.top-interfaces', $data);
     }
 }

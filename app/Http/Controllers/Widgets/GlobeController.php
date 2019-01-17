@@ -26,6 +26,7 @@
 namespace App\Http\Controllers\Widgets;
 
 use App\Models\Location;
+use App\Models\DeviceGroup;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use LibreNMS\Config;
@@ -42,12 +43,16 @@ class GlobeController extends WidgetController
             'markers' => Config::get('frontpage_globe.markers', 'devices'),
             'region' => Config::get('frontpage_globe.region', 'world'),
             'resolution' => Config::get('frontpage_globe.resolution', 'countries'),
+            'device_group' => null,
         ];
     }
 
     public function getSettingsView(Request $request)
     {
-        return view('widgets.settings.globe', $this->getSettings());
+        $data = $this->getSettings();
+        $data['device_group'] = DeviceGroup::find($data['device_group']);
+
+        return view('widgets.settings.globe', $data);
     }
 
     /**
@@ -60,9 +65,16 @@ class GlobeController extends WidgetController
         $locations = collect();
 
         $eager_load = $data['markers'] == 'ports' ? ['devices.ports'] : ['devices'];
+        $query = Location::hasAccess($request->user())->with($eager_load);
+
+        if ($data['device_group']) {
+            $query->whereHas('devices.groups', function ($query) use ($data) {
+                $query->where('id', $data['device_group']);
+            });
+        }
 
         /** @var Location $location */
-        foreach (Location::hasAccess($request->user())->with($eager_load)->get() as $location) {
+        foreach ($query->get() as $location) {
             $count = 0;
             $up = 0;
             $down_items = collect();

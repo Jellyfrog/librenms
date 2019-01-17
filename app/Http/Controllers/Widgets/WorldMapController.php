@@ -26,6 +26,7 @@
 namespace App\Http\Controllers\Widgets;
 
 use App\Models\Device;
+use App\Models\DeviceGroup;
 use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -45,6 +46,7 @@ class WorldMapController extends WidgetController
             'init_zoom' => Config::get('leaflet.default_zoom', 2),
             'group_radius' => Config::get('leaflet.group_radius', 80),
             'status' => '0,1',
+            'device_group' => null,
         ];
     }
 
@@ -59,8 +61,15 @@ class WorldMapController extends WidgetController
         $devices = Device::hasAccess($request->user())
             ->with('location')
             ->isActive()
-            ->whereIn('status', $status)
-            ->get()
+            ->whereIn('status', $status);
+
+        if ($settings['device_group']) {
+            $devices->whereHas('groups', function ($query) use ($settings) {
+                $query->where('id', $settings['device_group']);
+            });
+        }
+
+        $devices->get()
             ->filter(function ($device) use ($status) {
                 /** @var Device $device */
                 if (!($device->location_id && $device->location->coordinatesValid())) {
@@ -94,6 +103,9 @@ class WorldMapController extends WidgetController
 
     public function getSettingsView(Request $request)
     {
-        return view('widgets.settings.worldmap', $this->getSettings());
+        $data = $this->getSettings();
+        $data['device_group'] = DeviceGroup::find($data['device_group']);
+
+        return view('widgets.settings.worldmap', $data);
     }
 }

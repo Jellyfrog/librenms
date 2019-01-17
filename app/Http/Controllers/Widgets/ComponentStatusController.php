@@ -26,6 +26,7 @@
 namespace App\Http\Controllers\Widgets;
 
 use App\Models\Component;
+use App\Models\DeviceGroup;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -33,6 +34,9 @@ use Illuminate\View\View;
 class ComponentStatusController extends WidgetController
 {
     protected $title = 'Component Status';
+    protected $defaults = [
+        'device_group' => null,
+    ];
 
     /**
      * @param Request $request
@@ -40,6 +44,7 @@ class ComponentStatusController extends WidgetController
      */
     public function getView(Request $request)
     {
+        $data = $this->getSettings();
         $status = [
             [
                 'color' => 'text-success',
@@ -57,13 +62,28 @@ class ComponentStatusController extends WidgetController
 
         $component_status = Component::query()
             ->select('status', DB::raw("count('status') as total"))
-            ->groupBy('status')
-            ->get()->pluck('total', 'status')->toArray();
+            ->groupBy('status');
+
+        if ($data['device_group']) {
+            $component_status->whereHas('device.groups', function ($query) use ($data) {
+                $query->where('id', $data['device_group']);
+            });
+        }
+
+        $component_status = $component_status->get()->pluck('total', 'status')->toArray();
 
         foreach ($status as $key => $value) {
             $status[$key]['total'] = isset($component_status[$key]) ? $component_status[$key] : 0;
         }
 
         return view('widgets.component-status', compact('status'));
+    }
+
+    public function getSettingsView(Request $request)
+    {
+        $settings = $this->getSettings();
+        $settings['device_group'] = DeviceGroup::find($settings['device_group']);
+
+        return view('widgets.settings.component-status', $settings);
     }
 }

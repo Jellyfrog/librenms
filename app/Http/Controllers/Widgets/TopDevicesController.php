@@ -26,6 +26,7 @@
 namespace App\Http\Controllers\Widgets;
 
 use App\Models\Device;
+use App\Models\DeviceGroup;
 use App\Models\Mempool;
 use App\Models\Port;
 use App\Models\Processor;
@@ -50,6 +51,7 @@ class TopDevicesController extends WidgetController
         'sort_order' => 'asc',
         'device_count' => 5,
         'time_interval' => 15,
+        'device_group' => null,
     ];
 
     public function title()
@@ -98,7 +100,10 @@ class TopDevicesController extends WidgetController
 
     public function getSettingsView(Request $request)
     {
-        return view('widgets.settings.top-devices', $this->getSettings());
+        $data = $this->getSettings();
+        $data['device_group'] = DeviceGroup::find($data['device_group']);
+
+        return view('widgets.settings.top-devices', $data);
     }
 
     /**
@@ -124,13 +129,21 @@ class TopDevicesController extends WidgetController
         $settings = $this->getSettings();
 
         /** @var Builder $query */
-        return $query->with(['device' => function ($query) {
+        $query->with(['device' => function ($query) {
             $query->select('device_id', 'hostname', 'sysName', 'status');
         }])
             ->select("$left_table.device_id")
             ->leftJoin('devices', "$left_table.device_id", 'devices.device_id')
             ->groupBy("$left_table.device_id")
             ->where('devices.last_polled', '>', Carbon::now()->subMinutes($settings['time_interval']));
+
+        if ($settings['device_group']) {
+            $query->whereHas('device.groups', function ($query) use ($settings) {
+                $query->where('id', $settings['device_group']);
+            });
+        }
+
+        return $query;
     }
 
     /**
@@ -141,9 +154,17 @@ class TopDevicesController extends WidgetController
     {
         $settings = $this->getSettings();
 
-        return Device::hasAccess(Auth::user())->select('device_id', 'hostname', 'sysName', 'status')
+        $query = Device::hasAccess(Auth::user())->select('device_id', 'hostname', 'sysName', 'status')
             ->where('devices.last_polled', '>', Carbon::now()->subMinutes($settings['time_interval']))
             ->limit($settings['device_count']);
+
+        if ($settings['device_group']) {
+            $query->whereHas('groups', function ($query) use ($settings) {
+                $query->where('id', $settings['device_group']);
+            });
+        }
+
+        return $query;
     }
 
     /**
@@ -179,9 +200,16 @@ class TopDevicesController extends WidgetController
             ->select('device_id')
             ->groupBy('device_id')
             ->where('poll_time', '>', Carbon::now()->subMinutes($settings['time_interval'])->timestamp)
-            ->has('device')
             ->orderByRaw('SUM(ifInOctets_rate + ifOutOctets_rate) ' . $sort)
             ->limit($settings['device_count']);
+
+        if ($settings['device_group']) {
+            $query->whereHas('device.groups', function ($query) use ($settings) {
+                $query->where('id', $settings['device_group']);
+            });
+        } else {
+            $query->has('device');
+        }
 
         $results = $query->get()->map(function ($port) {
             return $this->standardRow($port->device, 'device_bits');
@@ -278,6 +306,11 @@ class TopDevicesController extends WidgetController
             ->orderBy('storage_perc', $sort)
             ->limit($settings['device_count']);
 
+        if ($settings['device_group']) {
+            $query->whereHas('device.groups', function ($query) use ($settings) {
+                $query->where('id', $settings['device_group']);
+            });
+        }
 
         $results = $query->get()->map(function ($storage) {
             $device = $storage->device;

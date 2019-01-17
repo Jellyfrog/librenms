@@ -25,6 +25,15 @@
     </div>
 
     <div class="form-group">
+        <label for="device_group-{{ $id }}" class="control-label">@lang('Device group')</label>
+        <select class="form-control" name="device_group" id="device_group-{{ $id }}"  data-placeholder="@lang('All Devices')">
+            @if($device_group)
+                <option value="{{ $device_group->id }}" selected> {{ $device_group->name }} </option>
+            @endif
+        </select>
+    </div>
+
+    <div class="form-group">
         <label for="limit-{{ $id }}" class="control-label">@lang('Page Size')</label>
         <input type="number" min="1" class="form-control" name="limit" id="limit-{{ $id }}" placeholder="@lang('Page Size')" value="{{ $limit }}">
     </div>
@@ -52,6 +61,7 @@
 @section('javascript')
     <script type="application/javascript">
         init_select2('#device-{{ $id }}', 'device', {limit: 100}, '{{ $device ? $device->device_id : '' }}');
+        init_select2('#device_group-{{ $id }}', 'device-group', {}, '{{ $device_group ? $device_group->id : '' }}');
         init_select2('#stream-{{ $id }}', 'graylog-streams', {}, '{{ $stream }}');
     </script>
 @endsection

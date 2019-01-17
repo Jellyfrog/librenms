@@ -26,6 +26,7 @@
 namespace App\Http\Controllers\Widgets;
 
 use App\Models\Device;
+use App\Models\DeviceGroup;
 use Illuminate\Http\Request;
 
 class EventlogController extends WidgetController
@@ -34,6 +35,7 @@ class EventlogController extends WidgetController
     protected $defaults = [
         'title' => null,
         'device' => null,
+        'device_group' => null,
         'eventtype' => null,
     ];
 
@@ -42,6 +44,7 @@ class EventlogController extends WidgetController
         $data = $this->getSettings();
 
         $data['device'] = Device::hasAccess($request->user())->find($data['device']);
+        $data['device_group'] = DeviceGroup::find($data['device_group']);
 
         return view('widgets.settings.eventlog', $data);
     }

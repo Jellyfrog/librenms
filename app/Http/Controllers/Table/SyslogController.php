@@ -34,6 +34,7 @@ class SyslogController extends TableController
     {
         return [
             'device' => 'nullable|int',
+            'device_group' => 'nullable|int',
             'program' => 'nullable|string',
             'priority' => 'nullable|string',
             'to' => 'nullable|date',
@@ -72,6 +73,12 @@ class SyslogController extends TableController
 
         if ($to = $request->get('to')) {
             $query->where('timestamp', '<=', $to);
+        }
+
+        if ($request->device_group) {
+            $query->whereHas('device.groups', function ($query) use ($request) {
+                $query->where('id', $request->device_group);
+            });
         }
 
         return $query;
