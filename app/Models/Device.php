@@ -448,6 +448,13 @@ class Device extends BaseModel
         return $this->hasDeviceAccess($query, $user);
     }
 
+    public function scopeInDeviceGroup($query, $id)
+    {
+        return $query->whereHas('groups', function ($query) use ($id) {
+            $query->where('device_groups.id', $id);
+        });
+    }
+
     // ---- Define Relationships ----
 
     public function alerts()

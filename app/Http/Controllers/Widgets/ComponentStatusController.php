@@ -65,8 +65,8 @@ class ComponentStatusController extends WidgetController
             ->groupBy('status');
 
         if ($data['device_group']) {
-            $component_status->whereHas('device.groups', function ($query) use ($data) {
-                $query->where('id', $data['device_group']);
+            $component_status->whereHas('device', function ($query) use ($data) {
+                $query->inDeviceGroup($data['device_group']);
             });
         }
 

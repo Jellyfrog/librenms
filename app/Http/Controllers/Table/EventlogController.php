@@ -62,13 +62,11 @@ class EventlogController extends TableController
      */
     public function baseQuery($request)
     {
-        $query = Eventlog::hasAccess($request->user())->with('device');
-
-        if ($request->device_group) {
-            $query->whereHas('device.groups', function ($query) use ($request) {
-                $query->where('id', $request->device_group);
-            });
-        }
+        $query = Eventlog::hasAccess($request->user())->with(['device' => function ($query) use ($request) {
+            if ($request->device_group) {
+                $query->inDeviceGroup($request->device_group);
+            }
+        }]);
 
         return $query;
     }
