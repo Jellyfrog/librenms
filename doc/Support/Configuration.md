@@ -743,7 +743,7 @@ $config['disabled_sensors_regex'][] = '/PEM Iout/';
 $config['os']['vrp']['disabled_sensors']['current'] = true;
 ```
 
-- Filter all sensors matching regexp ``` '/PEM Iout/' ``` for 
+- Filter all sensors matching regexp ``` '/PEM Iout/' ``` for
 Operating System iosxe.
 
 ```php

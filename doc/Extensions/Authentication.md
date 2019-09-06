@@ -33,7 +33,7 @@ $config['auth_mechanism'] = "mysql";
 
 - 1: **Normal User**: You will need to assign device / port permissions for users at this level.
 
-- 5: **Global Read**: Read only Administrator. 
+- 5: **Global Read**: Read only Administrator.
 
 - 10: **Administrator**: This is a global read/write admin account.
 
@@ -251,7 +251,7 @@ LibreNMS will expect the user to have authenticated via your webservice already 
 The userlevel will be calculated by using AD group membership information as the ___active_directory___ module does.
 
 The configuration is the same as for the ___active_directory___ module with two extra, optional options: auth_ad_binduser and auth_ad_bindpassword.
-These should be set to a AD user with read capabilities in your AD Domain in order to be able to perform searches. 
+These should be set to a AD user with read capabilities in your AD Domain in order to be able to perform searches.
 If these options are omitted, the module will attempt an anonymous bind (which then of course must be allowed by your Active Directory server(s)).
 
 There is also one extra option for controlling user information caching: auth_ldap_cache_ttl.

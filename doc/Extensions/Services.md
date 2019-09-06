@@ -19,7 +19,7 @@ The plugins are bundled with the pre build VM images via the package `monitoring
 
 ## Setup
 
-> Service checks is now distributed aware. If you run a distributed setup then you can now run 
+> Service checks is now distributed aware. If you run a distributed setup then you can now run
 `services-wrapper.py` in cron instead of `check-services.php` across all polling nodes.
 
 If you need to debug the output of services-wrapper.py then you can add `-d` to the end of the command - it is NOT recommended to do this in cron.
@@ -38,7 +38,7 @@ $config['nagios_plugins']   = "/usr/lib/nagios/plugins";
 ```
 
 This will point LibreNMS at the location of the nagios plugins - please ensure that any plugins you use are set to executable.
-For example: 
+For example:
 ```
 chmod +x /usr/lib/nagios/plugins/*
 ```
@@ -92,20 +92,20 @@ Services uses the Nagios Alerting scheme where:
 To create an alerting rule to alert on service=critical, your alerting rule would look like:
 
     %services.service_status = "2"
-    
+
 ## Debug
 
-Change user to librenms for example 
+Change user to librenms for example
 ```
 su - librenms
 ```
-then you can run the following command to help troubleshoot services. 
+then you can run the following command to help troubleshoot services.
 ```
 ./check-services.php -d
 ```
 ## Service checks polling logic
 
-Service check is skipped when the associated device is not pingable, and an appropriate entry is populated in the event log. 
+Service check is skipped when the associated device is not pingable, and an appropriate entry is populated in the event log.
 Service check is polled if it's `IP address` parameter is not equal to associated device's IP address, even when the associated device is not pingable.
 
 To override the default logic and always poll service checks, you can disable ICMP testing for any device by switching `Disable ICMP Test` setting (Edit -> Misc) to ON.

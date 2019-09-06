@@ -4,7 +4,7 @@ path: blob/master/doc/
 
 We have simple integration for [GateOne](https://github.com/liftoff/GateOne), you will be redirected to your Gateone command line frontend to access your equipment. (Currently this only works with SSH)
 
-GateOne itself isn't included within LibreNMS, you will need to install this separately either on the same infrastructure as LibreNMS or as a totally 
+GateOne itself isn't included within LibreNMS, you will need to install this separately either on the same infrastructure as LibreNMS or as a totally
 standalone appliance. The installation is beyond the scope of this document.
 
 Config is simple, include the following in your `config.php`:

@@ -86,7 +86,7 @@ $config['oxidized']['reload_nodes'] = true;
 To return an override to Oxidized you can do this by providing the override key, followed by matching a lookup for a host (or hosts), and finally by defining the overriding value itself. LibreNMS does not check for the validity of these attributes but will deliver them to Oxidized as defined.
 
 Matching of hosts can be done using `hostname`, `sysname`, `os`, `location`, `sysDescr` or `hardware` and including either a 'match' key and value, or a 'regex' key and value. The order of matching is:
-* `hostname` 
+* `hostname`
 * `sysname`
 * `sysDescr`
 * `hardware`
@@ -132,7 +132,7 @@ $config['oxidized']['maps']['myAttribute']['os'][] = array('match' => 'routeros'
 Verify the return of groups by querying the API:
 
 ```
-curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://librenms.org/api/v0/oxidized				
+curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://librenms.org/api/v0/oxidized
 ```
 
 If you need to, you can specify credentials for groups by using the following in your Oxidized config:
@@ -165,7 +165,7 @@ next_adds_job: true
 
 ### Validate Oxidized config
 
-You can perform basic validation of the Oxidized configuration by going to the Overview -> Tools -> Oxidized link and in the Oxidized config validation page, paste your 
+You can perform basic validation of the Oxidized configuration by going to the Overview -> Tools -> Oxidized link and in the Oxidized config validation page, paste your
  yaml file into the input box and click 'Validate YAML'.
 
 We check for yaml syntax errors and also actual config values to ensure they are used in the correct location.
@@ -192,4 +192,3 @@ When you're disabling or removing a device from LibreNMS, Oxidized will no longe
       git cat-file -p <object id>
       ```
 
-      

@@ -69,7 +69,7 @@ Copy the output. Replace all ":" with ";" example:
 alphcr1:cisco:up will change to:
 alphcr1;cisco;up
 ```
-copy and past results into the below file: 
+copy and past results into the below file:
 `sudo vi /var/lib/rancid/librenms/router.db`
 
 > NOTE - This ONLY applies to newer RANCID versions and Linux distros. Older versions will need to retain the : and not the ;
@@ -97,8 +97,8 @@ sudo chmod 600 /var/lib/rancid/.cloginrc
 Test config:
 `sudo /usr/lib/rancid/bin/clogin -f /var/lib/rancid/.cloginrc <device hostname>`
 
-> NOTE: IF you run into a 'diffie-hellmen' kind of error, then it is because your Linux distro is using newer encyryprtion methods etc. 
-This is basically just letting you know that the device you tested on is running an outdated encryption type. I recommend updating downstream device if able. 
+> NOTE: IF you run into a 'diffie-hellmen' kind of error, then it is because your Linux distro is using newer encyryprtion methods etc.
+This is basically just letting you know that the device you tested on is running an outdated encryption type. I recommend updating downstream device if able.
 If not, the following should fix:
 
 `sudo vi /etc/ssh/ssh_config`

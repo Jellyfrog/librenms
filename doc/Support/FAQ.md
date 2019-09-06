@@ -485,12 +485,12 @@ whilst you are still in it, do the following:
 git pull f0o issue-1337
 ```
 
-## <a name="faq29"> Why can't Normal and Global View users see Oxidized?</a> 
+## <a name="faq29"> Why can't Normal and Global View users see Oxidized?</a>
 
 Configs can often contain sensitive data. Because of that only global
 admins can see configs.
 
-## <a name="faq30"> What is the Demo User for?</a> 
+## <a name="faq30"> What is the Demo User for?</a>
 
 Demo users allow full access except adding/editing users and deleting
 devices and can't change passwords.
@@ -504,7 +504,7 @@ this from the LibreNMS directory:
 php artisan db:seed --class=DefaultAlertTemplateSeeder
 ```
 
-## <a name="faq32"> Why would alert un-mute itself?</a> 
+## <a name="faq32"> Why would alert un-mute itself?</a>
 
 If alert un-mutes itself then it most likely means that the alert
 cleared and is then triggered again. Please review eventlog as it will

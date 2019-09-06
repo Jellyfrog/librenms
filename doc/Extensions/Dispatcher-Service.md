@@ -28,7 +28,7 @@ pip3 install -r requirements.txt
 ```
 
 #### Redis (distributed polling)
-If you want to use distributed polling, you'll need a Redis instance to coordinate the nodes. 
+If you want to use distributed polling, you'll need a Redis instance to coordinate the nodes.
 It's recommended that you do not share the Redis database with any other system - by default, Redis supports up to 16 databases (numbered 0-15).
 You can also use Redis on a single host if you want
 
@@ -78,14 +78,14 @@ $config['service_discovery_workers']           = 16;     # Processes spawned for
 
 
 //Optional Settings
-$config['service_poller_frequency']            = 300;    # Seconds between polling attempts       
+$config['service_poller_frequency']            = 300;    # Seconds between polling attempts
 $config['service_services_frequency']          = 300;    # Seconds between service polling attempts
-$config['service_discovery_frequency']         = 21600;  # Seconds between discovery runs 
+$config['service_discovery_frequency']         = 21600;  # Seconds between discovery runs
 $config['service_billing_frequency']           = 300;    # Seconds between billing calculations
-$config['service_billing_calculate_frequency'] = 60;     # Billing interval 
+$config['service_billing_calculate_frequency'] = 60;     # Billing interval
 $config['service_poller_down_retry']           = 60;     # Seconds between failed polling attempts
 $config['service_loglevel']                    = 'INFO'; # Must be one of 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'
-$config['service_update_frequency']            = 86400;  # Seconds between LibreNMS update checks 
+$config['service_update_frequency']            = 86400;  # Seconds between LibreNMS update checks
 ```
 
 There are also some SQL options, but these should be inherited from your LibreNMS web UI configuration.

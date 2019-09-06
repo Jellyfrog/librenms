@@ -3,7 +3,7 @@ path: blob/master/doc/
 # Distributed Poller
 LibreNMS has the ability to distribute polling of devices to other machines.
 
-These machines can be in a different physical location and therefore minimize network latency for devices that are a considerable 
+These machines can be in a different physical location and therefore minimize network latency for devices that are a considerable
 distance away or are behind NAT firewalls.
 
 Devices can be grouped together into a `poller_group` to pin these devices to a single or a group of designated pollers.

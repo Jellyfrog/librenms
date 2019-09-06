@@ -50,7 +50,7 @@ PluginName.inc.php - This file is the main included file when browsing to the pl
 
 ### System Hooks ###
 
-System hooks are called as functions within your plugin class. 
+System hooks are called as functions within your plugin class.
 The following system hooks are currently available:
 
 * menu()
@@ -62,7 +62,7 @@ The following system hooks are currently available:
 ```
 
 * device_overview_container($device)
-  * This is called in the Device Overview page. You receive the $device as a parameter, can do your work here and display your results in a frame. 
+  * This is called in the Device Overview page. You receive the $device as a parameter, can do your work here and display your results in a frame.
 
 ```
     public function device_overview_container($device) {
@@ -73,7 +73,7 @@ The following system hooks are currently available:
 ```
 
 * port_container($device, $port)
-  * This is called in the Port page, in the "Plugins" menu_option that will appear when your plugin gets enabled. In this function, you can do your work and display your results in a frame. 
+  * This is called in the Port page, in the "Plugins" menu_option that will appear when your plugin gets enabled. In this function, you can do your work and display your results in a frame.
 
 ```
     public function port_container($device, $port) {

@@ -32,10 +32,10 @@ $config['graylog']['timezone'] = 'Europe/Bucharest';
 ```
 > Timezone must be PHP supported timezones, available at: <a href="http://php.net/manual/en/timezones.php">http://php.net/manual/en/timezones.php</a>
 
-If you are running a version earlier than Graylog then please set `$config['graylog']['version']` to the version 
-number of your Graylog install. Earlier versions than 2.1 use the default port `12900` 
+If you are running a version earlier than Graylog then please set `$config['graylog']['version']` to the version
+number of your Graylog install. Earlier versions than 2.1 use the default port `12900`
 
-If you have altered the default uri for your Graylog setup then you can override the default of `/api/` using 
+If you have altered the default uri for your Graylog setup then you can override the default of `/api/` using
 `$config['graylog']['base_uri'] = '/somepath/';`
 
 If you choose to use another user besides the admin user, please note that currently you must give the user "admin" permissions from within Graylog, "read" permissions alone are not sufficient.
@@ -43,7 +43,7 @@ If you choose to use another user besides the admin user, please note that curre
 If you have enabled TLS for the Graylog API and you are using a self-signed certificate, please make sure that the certificate is trusted by your LibreNMS host, otherwise the connection will fail.
 Additionally, the certificate's Common Name (CN) has to match the FQDN or IP address specified in `$config['graylog']['server']`.
 
-If you want to match the source address of the log entries against any IP address of a device instead of only against 
+If you want to match the source address of the log entries against any IP address of a device instead of only against
 the primary address and the host name to assign the log entries to a device, you can activate this function using
 $config['graylog']['match-any-address'] = 'true';
 

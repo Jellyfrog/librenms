@@ -4,7 +4,7 @@ path: blob/master/doc/
 
 This document will explain how to setup RRDCached for LibreNMS.
 
-> Since version 1.5, rrdtool / rrdcached now supports creating rrd files over rrdcached. 
+> Since version 1.5, rrdtool / rrdcached now supports creating rrd files over rrdcached.
 If you have rrdcached 1.5.5 or above, you can also tune over rrdcached.
 To enable this set the following config:
 
@@ -164,15 +164,15 @@ For local RRDCached server
 ```php
 $config['rrdcached'] = "unix:/var/run/rrdcached.sock";
 ```
-For remote RRDCached server 
+For remote RRDCached server
 Make sure you have network option in /var/default/rrdcached
 ```bash
-NETWORK_OPTIONS="-L" 
+NETWORK_OPTIONS="-L"
 ```
 ```php
 $config['rrdcached'] = "IPADDRESS:42217";
 ```
-NOTE: change IPADDRESS to the ip the rrdcached server is listening on. 
+NOTE: change IPADDRESS to the ip the rrdcached server is listening on.
 
 ### RRDCached installation CentOS 6
 This example is based on a fresh LibreNMS install, on a minimal CentOS 6 installation.

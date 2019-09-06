@@ -2,7 +2,7 @@ source: Extensions/Interface-Description-Parsing.md
 path: blob/master/doc/
 ## About
 Librenms can interpret, display and group certain additional information on ports.
-This is done based on the format that the port description is written although it's possible 
+This is done based on the format that the port description is written although it's possible
 to customise the parser to be specific for your setup.
 
 ## Keywords

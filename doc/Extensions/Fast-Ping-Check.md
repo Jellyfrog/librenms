@@ -12,7 +12,7 @@ to run ping checks as quickly as possible without increasing snmp load on your d
 
 > **WARNING**: If you do not have an alert rule that alerts on device status, enabling this will be a waste of resources.
 > You can find one in the [Alert Rules Collection](../Alerting/Rules.md#alert-rules-collection).
-                         
+
 
 
 ### Setting the ping check to 1 minute
@@ -44,7 +44,7 @@ We add two entries, but add a delay before one.
     ```
    $config['ping_rrd_step'] = 30;
    ```
-   
+
 2. Update the rrd files
     ```
     ./scripts/rrdstep.php -h all

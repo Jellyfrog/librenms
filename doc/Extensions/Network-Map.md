@@ -21,22 +21,22 @@ A global map will be drawn from the information in the database, it is worth not
 Network maps for individual devices are available showing the relationship with other devices.
 Also you can Build Device Groups and those Device Groups can be drawn with Network Map.
 
-### Network Map Configurator. 
-This link will show you all the options and explain what they do. [Link](https://visjs.github.io/vis-network/docs/network/)  
+### Network Map Configurator.
+This link will show you all the options and explain what they do. [Link](https://visjs.github.io/vis-network/docs/network/)
 You may also access the dyanamic configuration interface [example here](https://visjs.github.io/vis-network/examples/network/other/configuration.html) from within LibreNMS by adding the following to config.php
 ```php
 $config['network_map_vis_options'] = '{
   "configure": { "enabled": true},
 }';
 ```
-### Note 
+### Note
 You may want to disable the automatic page refresh while you're tweaking your configuration, as the refresh will reset the dynamic configuration UI to the values currently saved in config.php
 This can be done by going clicking on the Settings Icon then Refresh Pause.
 
 ### Configurator Output
 Once you've achieved your desired map appearance, click the generate options button at the bottom to be given the necessary parameters to add to your config.php file.
-You will need to paste the genrated config into config.php the format will need to look something like this. 
-Note that the configuartor will output the config with `var options` you will need strip that out and at the end of the config you need to add in `}';` see the example below. 
+You will need to paste the genrated config into config.php the format will need to look something like this.
+Note that the configuartor will output the config with `var options` you will need strip that out and at the end of the config you need to add in `}';` see the example below.
 ```php
 $config['network_map_vis_options'] = '{
   "nodes": {

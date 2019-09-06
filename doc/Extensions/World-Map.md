@@ -65,7 +65,7 @@ $config['leaflet']['tile_url'] = 'localhost.com';
 $config['map']['engine']                                = "leaflet";
 $config['leaflet']['default_lat']                       = "51.981074";
 $config['leaflet']['default_lng']                       = "5.350342";
-$config['leaflet']['default_zoom']                      = 8;    
+$config['leaflet']['default_zoom']                      = 8;
 $config['leaflet']['group_radius']                      = 1;    // Device grouping radius in KM default 80KM
 ```
 

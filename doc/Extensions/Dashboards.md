@@ -9,17 +9,17 @@ Example Dashboard
 ![Example Dashboard](/img/example-dashboard.png)
 
 ### Widgets
-LibreNMS has a whole list of Widgets to select from. 
+LibreNMS has a whole list of Widgets to select from.
 
 + Alerts Widget: Displays all alert notifications.
 + Availability Map: Displays all devices with colored tiles, green up, yellow for warning (device has been restarted in last 24 hours),red   for down. You can also list all services and ignored/disabled devcies in this widget.
 + Componet Status: List all componets Ok state, Warning state, Critical state.
-+ Device Summary horizontal: List device totals, up, down, ignored, disabled. Same for ports and services. 
++ Device Summary horizontal: List device totals, up, down, ignored, disabled. Same for ports and services.
 + Device Summary vertical: List device totals, up, down, ignored, disabled. Same for ports and services.
-+ Eventlog: Displays all events with your devices and LibreNMS. 
++ Eventlog: Displays all events with your devices and LibreNMS.
 + External Image: can be used to show external images on your dashboard. Or images from inside LibreNMS.
 + Globe Map: Will display map of the globe.
-+ Graph: Can be used to display graphs from devices. 
++ Graph: Can be used to display graphs from devices.
 + Graylog: Displays all Graylog's syslog entries.
 + Notes: use for html tags, embed links and external web pages. Or just notes in general.
 + Server Stats: Will display gauges for CPU, Memory, Storage usage. Note the device type has to be listed as "Server".
@@ -28,7 +28,7 @@ LibreNMS has a whole list of Widgets to select from.
 + Top Interfaces: Lists top interfaces by traffic utilization.
 + Worldmap: displays all your devices locations. From syslocation or from override sysLocation.
 
-List of Widgets: 
+List of Widgets:
 ![List of Widgets][image of widgets]
 
 [image of widgets]: /img/list-widgets.png "List of the widgets"
@@ -41,7 +41,7 @@ List of Widgets:
 
 ### Setting a global default dashboard
 
-Step 1: Set the dashboard to either shared read or shared, depending on what you want the users access to change. 
+Step 1: Set the dashboard to either shared read or shared, depending on what you want the users access to change.
 
 Step 2: Then go to Settings -> WebUI settings -> Dashboard Settings and set the global default dashboard.
 
@@ -65,7 +65,7 @@ In the dashboard, you want to create an interface graph select the widget called
 * Graph:  then select "Port" "Bits"
 ![port-bits-graph](/img/port-bits-graph.png)
 
-* Note: you can map the port by description or the alias or by port id. You will need to know this in order to map the port to the graph. 
+* Note: you can map the port by description or the alias or by port id. You will need to know this in order to map the port to the graph.
 
 ![port-bits-graph](/img/port-bits-port.png)
 
@@ -75,6 +75,6 @@ When using the Generic-image widget you can provide the width and height of the 
 This will ensure that the image will fit nicely with the dimensions if the Generic-image widget.
 You can add @AUTO_HEIGHT@ and @AUTO_WIDTH@ to the Image URL as parameters.
 
-#### Examples: 
+#### Examples:
 + http://librenms.example.com/graph.php?id=333%2C444&type=multiport_bits_separate&legend=no&absolute=1&from=-14200&width=@AUTO_WIDTH@&height=@AUTO_HEIGHT@
 + http://example.com/myimage.php?size=@AUTO_WIDTH@x@AUTO_HEIGHT@

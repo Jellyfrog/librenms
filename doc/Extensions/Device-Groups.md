@@ -11,7 +11,7 @@ The rule is based on the MySQL structure your data is in. Such as __tablename.co
 If you already know the entity you want, you can browse around inside MySQL using `show tables` and `desc <tablename>`.
 
 As a working example and a common question, let's assume you want to group devices by hostname. If your hostname format is dcX.[devicetype].example.com. You would use the field
-`devices.hostname`. 
+`devices.hostname`.
 
 If you want to group them by device type, you would add a rule for routers of `devices.hostname` endswith `rtr.example.com`.
 
