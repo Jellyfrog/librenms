@@ -23,9 +23,36 @@
  */
 
 use App\Models\User;
-use LibreNMS\ObjectCache;
 
-$notifications = new ObjectCache('notifications');
+$notifications['count'] = dbFetchRows(
+    'select count(notifications.notifications_id) from notifications where not exists( select 1 from notifications_attribs where notifications.notifications_id = notifications_attribs.notifications_id and notifications_attribs.user_id = ?)',
+    [Auth::id()]
+);
+
+$notifications['unread'] = dbFetchRows(
+    'select notifications.* from notifications where not exists( select 1 from notifications_attribs where notifications.notifications_id = notifications_attribs.notifications_id and notifications_attribs.user_id = ?) order by notifications.notifications_id desc',
+    [Auth::id()]
+);
+
+$notifications['sticky'] = dbFetchRows(
+    'select notifications.*,notifications_attribs.user_id from notifications inner join notifications_attribs on notifications.notifications_id = notifications_attribs.notifications_id where notifications_attribs.key = "sticky" && notifications_attribs.value = 1 order by notifications_attribs.attrib_id desc'
+);
+
+$notifications['sticky_count'] = dbFetchRows(
+    'select count(notifications.notifications_id) from notifications inner join notifications_attribs on notifications.notifications_id = notifications_attribs.notifications_id where notifications_attribs.key = "sticky" && notifications_attribs.value = 1'
+);
+
+$notifications['read'] = dbFetchRows(
+    'select notifications.* from notifications inner join notifications_attribs on notifications.notifications_id = notifications_attribs.notifications_id where notifications_attribs.user_id = ? && ( notifications_attribs.key = "read" && notifications_attribs.value = 1) && not exists( select 1 from notifications_attribs where notifications.notifications_id = notifications_attribs.notifications_id and notifications_attribs.key = "sticky" && notifications_attribs.value = "1") order by notifications_attribs.attrib_id desc',
+    [Auth::id()]
+);
+
+foreach ($notifications as &$notification) {
+    if (sizeof($notification) == 1 && sizeof($notification[0]) == 1) {
+        $notification = current($notification[0]);
+    }
+}
+
 ?>
 <div class="container">
   <div class="row">
@@ -48,7 +75,7 @@ if ($notifications['count'] > 0 && !isset($vars['archive'])) {
     </div>
   </div>
 </div>
-<div class="container new-notif-collapse">
+<div class="container new-notif-collapse" style="display: none;">
   <div class="row">
     <div class="col-md-12">
       <form class="form-horizontal new-notif-form">
