@@ -46,6 +46,9 @@ script:
   - export FILES=$(git diff --diff-filter=d --name-only master | tr '\n' ' '|sed 's/,*$//g')
   - git status
   - git diff --name-status
+  - ./lnms translation:generate
+  - git status
+  - git diff --name-status  
   - if ! git diff --exit-code --name-status; then echo -e "\nYou have uncommited changes"; fi
   - php scripts/pre-commit.php -q -l
   - php scripts/pre-commit.php -q -s
