@@ -22,6 +22,7 @@ $map = [
     'php'    => 0,
     'os-php' => 0,
     'os'     => [],
+    'mix'    => 0,
 ];
 
 foreach ($changed_files as $file) {
@@ -34,6 +35,14 @@ foreach ($changed_files as $file) {
     if (ends_with($file, '.sh')) {
         $map['bash']++;
     }
+
+    if (ends_with($file, '.js')) {
+        $map['mix']++;
+    }
+
+    if (ends_with($file, '.css')) {
+        $map['mix']++;
+    }    
 
     if ($file == 'composer.lock') {
         $map['php']++; // cause full tests to run
