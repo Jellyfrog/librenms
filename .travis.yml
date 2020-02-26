@@ -24,6 +24,11 @@ cache:
     - $HOME/.composer/cache
 
 before_install:
+  - sudo mysql -e "SHOW VARIABLES LIKE '%innodb_flush%';"
+  - sudo find /etc/
+  - sudo cp tests/mysql-test.cnf /etc/mysql/conf.d/
+  - sudo service mysql restart
+  - sudo mysql -e "SHOW VARIABLES LIKE '%innodb_flush%';"
   - sudo apt-get -qq update
   - sudo apt-get install -y snmp fping python3-pip python3-setuptools
   - mysql -e 'CREATE DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
