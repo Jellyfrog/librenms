@@ -24,6 +24,7 @@ cache:
     - $HOME/.composer/cache
 
 before_install:
+  - sudo df -k
   - bash -x tests/tmpfs.sh
   - sudo mysql -e "SHOW VARIABLES;"
   - sudo apt-get -qq update
