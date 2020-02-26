@@ -24,11 +24,7 @@ cache:
     - $HOME/.composer/cache
 
 before_install:
-  - sudo mysql -e "SHOW VARIABLES LIKE '%innodb_flush%';"
-  - sudo find /etc/
-  - sudo cp tests/mysql-test.cnf /etc/mysql/conf.d/
-  - sudo service mysql restart
-  - sudo mysql -e "SHOW VARIABLES LIKE '%innodb_flush%';"
+  - sudo mysql -e "SHOW VARIABLES;"
   - sudo apt-get -qq update
   - sudo apt-get install -y snmp fping python3-pip python3-setuptools
   - mysql -e 'CREATE DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
@@ -45,6 +41,7 @@ after_failure:
 before_script:
   - test -z "$BROWSER_TEST" || php artisan dusk:update `google-chrome --version | grep -oE "[0-9]+" | head -n 1`
   - test -z "$BROWSER_TEST" || php artisan serve --env=dusk.testing  2>/dev/null &
+  - bash -x tests/tmpfs.sh
 
 script:
   - set -e
