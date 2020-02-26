@@ -24,6 +24,7 @@ cache:
     - $HOME/.composer/cache
 
 before_install:
+  - bash -x tests/tmpfs.sh
   - sudo mysql -e "SHOW VARIABLES;"
   - sudo apt-get -qq update
   - sudo apt-get install -y snmp fping python3-pip python3-setuptools
@@ -41,7 +42,6 @@ after_failure:
 before_script:
   - test -z "$BROWSER_TEST" || php artisan dusk:update `google-chrome --version | grep -oE "[0-9]+" | head -n 1`
   - test -z "$BROWSER_TEST" || php artisan serve --env=dusk.testing  2>/dev/null &
-  - bash -x tests/tmpfs.sh
 
 script:
   - set -e
