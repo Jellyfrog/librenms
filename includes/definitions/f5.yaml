@@ -1,7 +1,7 @@
 os: f5
 text: 'F5 Big IP'
 type: loadbalancer
-icon: f51
+icon: f512
 over:
     - { graph: device_bits, text: 'Device Traffic' }
     - { graph: device_processor, text: 'CPU Usage' }
