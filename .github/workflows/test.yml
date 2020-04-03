@@ -10,7 +10,8 @@ jobs:
   laravel-tests:
     runs-on: ubuntu-latest
     env:
-      PATH1: /home/runner/.local/bin/:/usr/share/rust/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/home/runner/.dotnet/tools:/home/runner/.config/composer/vendor/bin
+      APP_ENV: testing
+      PATH: /home/runner/.local/bin/:/usr/share/rust/.cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/home/runner/.dotnet/tools:/home/runner/.config/composer/vendor/bin
     services:
       mariadb:
         image: mariadb:latest
@@ -53,37 +54,27 @@ jobs:
 
     - name: Execute tests
       env:
-        APP_ENV: testing
-        SKIP_STYLE_CHECK: 1
         DB_TEST_PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
         php scripts/pre-commit.php -l     
     - name: Execute tests
       env:
-        APP_ENV: testing
-        SKIP_STYLE_CHECK: 1
         DB_TEST_PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
         export FILES=composer.lock
         php scripts/pre-commit.php -s
     - name: Execute tests
       env:
-        APP_ENV: testing
-        SKIP_STYLE_CHECK: 1
         DB_TEST_PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
         php scripts/pre-commit.php -u --db --snmpsim --fail-fast
     - name: Execute tests
       env:
-        APP_ENV: testing
-        SKIP_STYLE_CHECK: 1
         DB_TEST_PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
         test -z "$BROWSER_TEST" || php artisan dusk           
     - name: Execute tests
       env:
-        APP_ENV: testing
-        SKIP_STYLE_CHECK: 1
         DB_TEST_PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
         bash -n daily.sh
@@ -91,16 +82,14 @@ jobs:
     - name: Execute tests
       env:
         APP_ENV: testing
-        SKIP_STYLE_CHECK: 1
         DB_TEST_PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
-        ~/.local/bin/pylint -E poller-wrapper.py discovery-wrapper.py
+        pylint -E poller-wrapper.py discovery-wrapper.py
         
 
     - name: Execute tests
       env:
         APP_ENV: testing
-        SKIP_STYLE_CHECK: 1
         DB_TEST_PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
         bash scripts/deploy-docs.sh        
