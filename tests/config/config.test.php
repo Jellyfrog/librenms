@@ -5,7 +5,7 @@
 ### Database config
 $config['db_host'] = '127.0.0.1';
 $config['db_user'] = 'root';
-$config['db_pass'] = '';
+$config['db_pass'] = 'root';
 $config['db_name'] = 'librenms_phpunit_78hunjuybybh';
 
 // This is the user LibreNMS will run as
