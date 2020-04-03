@@ -8,8 +8,9 @@ on:
 
 jobs:
   laravel-tests:
-
     runs-on: ubuntu-latest
+    env:
+      PATH: ~/.local/bin/:$PATH
     services:
       mariadb:
         image: mariadb:latest
@@ -56,7 +57,6 @@ jobs:
         SKIP_STYLE_CHECK: 1
         DB_TEST_PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
-        export FILES=composer.lock
         php scripts/pre-commit.php -l     
     - name: Execute tests
       env:
@@ -72,7 +72,6 @@ jobs:
         SKIP_STYLE_CHECK: 1
         DB_TEST_PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
-        export FILES=composer.lock
         php scripts/pre-commit.php -u --db --snmpsim --fail-fast
     - name: Execute tests
       env:
@@ -80,7 +79,6 @@ jobs:
         SKIP_STYLE_CHECK: 1
         DB_TEST_PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
-        export FILES=composer.lock
         test -z "$BROWSER_TEST" || php artisan dusk           
     - name: Execute tests
       env:
@@ -88,7 +86,6 @@ jobs:
         SKIP_STYLE_CHECK: 1
         DB_TEST_PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
-        export FILES=composer.lock
         bash -n daily.sh
 
     - name: Execute tests
@@ -97,7 +94,6 @@ jobs:
         SKIP_STYLE_CHECK: 1
         DB_TEST_PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
-        export FILES=composer.lock
         ~/.local/bin/pylint -E poller-wrapper.py discovery-wrapper.py
         
 
@@ -107,5 +103,4 @@ jobs:
         SKIP_STYLE_CHECK: 1
         DB_TEST_PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
-        export FILES=composer.lock
         bash scripts/deploy-docs.sh        
