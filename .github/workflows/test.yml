@@ -33,9 +33,9 @@ jobs:
         done     
     - name: setup mysql db
       env:
-        MYSQL_PORT: ${{ job.services.mariadb.ports[3306] }}
+        PORT: ${{ job.services.mariadb.ports[3306] }}
       run: | 
-        mysql -h"127.0.0.1" --user=root --password=root -e 'CREATE DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
+        mysql -h"127.0.0.1" -P"$PORT" --user=root --password=root -e 'CREATE DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
     - name: deps
       run: |
         sudo apt-get install -y snmp fping python3-pip python3-setuptools
@@ -54,7 +54,6 @@ jobs:
       env:
         APP_ENV: testing
         SKIP_STYLE_CHECK: 1
-        MYSQL_PORT: ${{ job.services.mariadb.ports[3306] }}
         DB_TEST_PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
         set -e
