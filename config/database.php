@@ -76,7 +76,7 @@ return [
 
         'testing' => [
             'driver' => env('DB_TEST_DRIVER', 'mysql'),
-            'host' => env('DB_TEST_HOST', 'localhost'),
+            'host' => env('DB_TEST_HOST', '127.0.0.1'),
             'port' => env('DB_TEST_PORT', ''),
             'database' => env('DB_TEST_DATABASE', 'librenms_phpunit_78hunjuybybh'),
             'username' => env('DB_TEST_USERNAME', 'root'),
