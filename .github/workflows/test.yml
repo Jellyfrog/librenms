@@ -10,7 +10,7 @@ jobs:
   laravel-tests:
     runs-on: ubuntu-latest
     env:
-      PATH: ~/.local/bin/:$PATH
+      PATH1: ~/.local/bin/:$PATH
     services:
       mariadb:
         image: mariadb:latest
@@ -28,6 +28,8 @@ jobs:
       env:
         PORT: ${{ job.services.mariadb.ports[3306] }}
       run: |
+        echo $PATH
+        echo $PATH1
         while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
           echo "mysql not up yet"
           sleep 1
