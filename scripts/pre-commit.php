@@ -10,7 +10,7 @@ require $install_dir . '/vendor/autoload.php';
 if (getenv('FILES')) {
     $changed_files = rtrim(getenv('FILES'));
 } else {
-    $changed_files = exec("git diff --diff-filter=d --name-only master | tr '\n' ' '|sed 's/,*$//g'");
+    $changed_files = exec("git diff --diff-filter=d --name-only origin/master | tr '\n' ' '|sed 's/,*$//g'");
 }
 
 $changed_files = $changed_files ? explode(' ', $changed_files) : [];
