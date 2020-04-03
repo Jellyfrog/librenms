@@ -80,7 +80,7 @@ return [
             'port' => env('DB_TEST_PORT', ''),
             'database' => env('DB_TEST_DATABASE', 'librenms_phpunit_78hunjuybybh'),
             'username' => env('DB_TEST_USERNAME', 'root'),
-            'password' => env('DB_TEST_PASSWORD', ''),
+            'password' => env('DB_TEST_PASSWORD', 'root'),
             'unix_socket' => env('DB_TEST_SOCKET', ''),
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
