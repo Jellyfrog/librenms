@@ -20,8 +20,10 @@ jobs:
     
     steps:    
     - name: setup mysql db
+      env:
+        PORT: ${{ job.services.mysql.ports[3306] }}
       run: | 
-        mysql --host=127.0.0.1 --port=${{ job.services.mysql.ports['3306'] }} --user=root -e 'CREATE DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
+        mysql -h"127.0.0.1" -P"$PORT" --user=root -e 'CREATE DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
     - name: deps
       run: |
         sudo apt-get install -y snmp fping python3-pip python3-setuptools
