@@ -11,19 +11,30 @@ jobs:
 
     runs-on: ubuntu-latest
     services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: ''
+      mariadb:
+        image: mariadb:latest
         ports:
-        - 3306    
+          - 3306
+        env:
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+          MYSQL_DATABASE: test
+          MYSQL_ROOT_PASSWORD: password
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
     
-    steps:    
+    steps:
+    - name: Verify MariaDB connection
+      env:
+        PORT: ${{ job.services.mariadb.ports[3306] }}
+      run: |
+        while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
+          sleep 1
+        done     
     - name: setup mysql db
       env:
-        PORT: ${{ job.services.mysql.ports[3306] }}
+        PORT: ${{ job.services.mariadb.ports[3306] }}
       run: | 
-        mysql -h"127.0.0.1" -P"$PORT" --user=root -e 'CREATE DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
+        mysql -h"127.0.0.1" -P"$PORT" --user=root --pasword=password -e 'CREATE DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
     - name: deps
       run: |
         sudo apt-get install -y snmp fping python3-pip python3-setuptools
