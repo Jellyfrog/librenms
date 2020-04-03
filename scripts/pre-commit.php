@@ -231,6 +231,8 @@ function os_from_php($php_file)
 function run_check($type, $passthru, $command_only, $options = array())
 {
     global $completed_tests;
+    var_dump($completed_tests);
+    var_dump(getenv('SKIP_' . strtoupper($type) . '_CHECK'));    
     if (getenv('SKIP_' . strtoupper($type) . '_CHECK') || $completed_tests[$type]) {
         echo ucfirst($type) . " check skipped.\n";
         return 0;
