@@ -17,6 +17,7 @@ jobs:
     env:
       APP_ENV: testing
       DB_TEST_HOST: 127.0.0.1
+      DB_TEST_PASSWORD: root
       MYSQL_HOST: 127.0.0.1
       MYSQL_PWD: root
     services:
@@ -69,7 +70,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sudo apt-get install -y snmp fping python3-pip python3-setuptools
+        sudo apt-get install -y snmp fping
         pip3 install --user snmpsim
         pip install --user wheel
         pip install --user mysql-python pylint
