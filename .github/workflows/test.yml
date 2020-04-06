@@ -16,6 +16,7 @@ jobs:
         php-versions: ['7.1', '7.2', '7.3', '7.4']
     env:
       APP_ENV: testing
+      DB_TEST_HOST: 127.0.0.1
       MYSQL_HOST: 127.0.0.1
       MYSQL_PWD: root
     services:
