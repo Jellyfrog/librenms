@@ -1,0 +1,91 @@
+name: test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  librenms-tests:
+    name: librenms (PHP ${{ matrix.php-versions }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        php-versions: ['7.1', '7.2', '7.3', '7.4']
+    env:
+      APP_ENV: testing
+    services:
+      mariadb:
+        image: mariadb:latest
+        ports:
+          - 3306
+        env:
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+          MYSQL_DATABASE: test
+          MYSQL_ROOT_PASSWORD: root
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+
+    steps:
+    - run: echo "::set-env name=DB_TEST_PORT::${{ job.services.mariadb.ports[3306] }}"
+    - run: echo "::add-path::~/.local/bin"
+
+    - uses: actions/checkout@v2
+
+    - name: Setup PHP, with composer and extensions
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get install -y snmp fping python3-pip python3-setuptools
+        pip3 install --user snmpsim
+        pip install --user wheel
+        pip install --user mysql-python pylint
+
+    - name: Setup MySQL DB
+      run: |
+        mysql -h"127.0.0.1" -P"$DB_TEST_PORT" --user=root --password=root -e 'CREATE DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
+
+    - name: Copy .env
+      run: cp tests/config/config.test.php config.php
+
+    - name: Install Dependencies
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+
+    - name: Directory Permissions
+      run: echo chmod -R 777 storage bootstrap/cache/*
+
+    - name: fetch master branch
+      run: git -c protocol.version=2 fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin master
+
+    - name: Tests | Lint
+      run: |
+        php scripts/pre-commit.php -l
+
+    - name: Tests | Style
+      run: |
+        php scripts/pre-commit.php -s
+
+    - name: Tests | Unit
+      run: |
+        php scripts/pre-commit.php -u --db --snmpsim --fail-fast
+
+    - name: Tests | Dusk
+      run: |
+        test -z "$BROWSER_TEST" || php artisan dusk
+
+    - name: Tests | Daily
+      run: |
+        bash -n daily.sh
+
+    - name: Tests | Pylint
+      run: |
+        pylint -E poller-wrapper.py discovery-wrapper.py
+
+    - name: Deploy docs
+      run: |
+        bash scripts/deploy-docs.sh
