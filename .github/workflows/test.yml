@@ -74,6 +74,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get install -y snmp fping
+        pip3 install --user setuptools
         pip3 install --user snmpsim pylint
         pip install --user wheel
         pip install --user mysql-python
