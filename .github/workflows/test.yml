@@ -35,6 +35,11 @@ jobs:
     steps:
 
     - uses: actions/checkout@v2
+
+    - name: Setup PHP, with composer and extensions
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
     
     - uses: actions/cache@v1
       with:
@@ -54,64 +59,58 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-composer-
             
-    - name: fetch master branch
+    - name: Fetch master branch
       run: git -c protocol.version=2 fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin master
-
-    - run: |
+      
+    - name: Setup ENV
+      run: |
         echo "::add-path::$HOME/.local/bin"
         echo "::set-env name=DB_TEST_PORT::${{ job.services.mariadb.ports[3306] }}"
         echo "::set-env name=MYSQL_TCP_PORT::${{ job.services.mariadb.ports[3306] }}"
         echo "::set-env name=FILES::$(git diff --diff-filter=d --name-only master | tr '\n' ' '|sed 's/,*$//g')"
 
-    - name: Setup PHP, with composer and extensions
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php-versions }}
+
 
     - name: Install dependencies
       run: |
         sudo apt-get install -y snmp fping
-        pip3 install --user snmpsim
+        pip3 install --user snmpsim pylint
         pip install --user wheel
-        pip install --user mysql-python pylint
+        pip install --user mysql-python
 
     - name: Setup MySQL DB
       run: |
-        mysql -h"127.0.0.1" -P"$DB_TEST_PORT" --user=root -e 'CREATE DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
+        mysql --user=root -e 'CREATE DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
 
     - name: Copy .env
       run: cp tests/config/config.test.php config.php
 
     - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+      run: composer install --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
 
     - name: Directory Permissions
       run: echo chmod -R 777 storage bootstrap/cache/*
 
+    - name: Show $FILES
+      run: echo $FILES
+      
     - name: Tests | Lint
-      run: |
-        php scripts/pre-commit.php -l
+      run: php scripts/pre-commit.php -l
 
     - name: Tests | Style
-      run: |
-        php scripts/pre-commit.php -s
+      run: php scripts/pre-commit.php -s
 
     - name: Tests | Unit
-      run: |
-        php scripts/pre-commit.php -u --db --snmpsim --fail-fast
+      run: php scripts/pre-commit.php -u --db --snmpsim --fail-fast
 
     - name: Tests | Dusk
-      run: |
-        test -z "$BROWSER_TEST" || php artisan dusk
+      run: test -z "$BROWSER_TEST" || php artisan dusk
 
     - name: Tests | Daily
-      run: |
-        bash -n daily.sh
+      run: bash -n daily.sh
 
     - name: Tests | Pylint
-      run: |
-        pylint -E poller-wrapper.py discovery-wrapper.py
+      run: pylint -E poller-wrapper.py discovery-wrapper.py
 
     - name: Deploy docs
-      run: |
-        bash scripts/deploy-docs.sh
+      run: bash scripts/deploy-docs.sh
