@@ -31,6 +31,9 @@ jobs:
     steps:
     - run: echo "::set-env name=DB_TEST_PORT::${{ job.services.mariadb.ports[3306] }}"
     - run: echo "::add-path::~/.local/bin"
+    - run: echo ::add-path::~/.local/bin123
+  
+    - run: printenv
 
     - uses: actions/checkout@v2
 
