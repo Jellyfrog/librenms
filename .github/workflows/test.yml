@@ -16,6 +16,9 @@ jobs:
         php-versions: ['7.1', '7.2', '7.3', '7.4']
     env:
       APP_ENV: testing
+      MYSQL_HOST: 127.0.0.1
+      MYSQL_PWD: root
+      MYSQL_ROOT_PASSWORD: root
     services:
       mariadb:
         image: mariadb:latest
@@ -25,17 +28,20 @@ jobs:
           MYSQL_USER: user
           MYSQL_PASSWORD: password
           MYSQL_DATABASE: test
-          MYSQL_ROOT_PASSWORD: root
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
 
     steps:
-    - run: echo "::set-env name=DB_TEST_PORT::${{ job.services.mariadb.ports[3306] }}"
-    - run: echo "::add-path::~/.local/bin"
-    - run: echo ::add-path::~/.local/bin123
-  
-    - run: printenv
 
     - uses: actions/checkout@v2
+      
+    - name: fetch master branch
+      run: git -c protocol.version=2 fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin master
+
+    - run: |
+        echo "::add-path::$HOME/.local/bin"
+        echo "::set-env name=DB_TEST_PORT::${{ job.services.mariadb.ports[3306] }}"
+        echo "::set-env name=MYSQL_TCP_PORT::${{ job.services.mariadb.ports[3306] }}"
+        echo "::set-env name=FILES::$(git diff --diff-filter=d --name-only master | tr '\n' ' '|sed 's/,*$//g')"
 
     - name: Setup PHP, with composer and extensions
       uses: shivammathur/setup-php@v2
@@ -51,7 +57,7 @@ jobs:
 
     - name: Setup MySQL DB
       run: |
-        mysql -h"127.0.0.1" -P"$DB_TEST_PORT" --user=root --password=root -e 'CREATE DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
+        mysql -h"127.0.0.1" -P"$DB_TEST_PORT" --user=root -e 'CREATE DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
 
     - name: Copy .env
       run: cp tests/config/config.test.php config.php
@@ -61,9 +67,6 @@ jobs:
 
     - name: Directory Permissions
       run: echo chmod -R 777 storage bootstrap/cache/*
-
-    - name: fetch master branch
-      run: git -c protocol.version=2 fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin master
 
     - name: Tests | Lint
       run: |
