@@ -337,10 +337,10 @@ function check_unit($passthru = false, $command_only = false, $options = array()
 
     $phpunit_bin = check_exec('phpunit');
 
-    $phpunit_cmd = "$phpunit_bin --colors=always --testdox -v";
+    $phpunit_cmd = "$phpunit_bin --colors=always --exclude-group=os,browser,mibs";
 
     if ($options['fail_fast']) {
-        $phpunit_cmd .= ' --stop-on-error --stop-on-failure';
+        $phpunit_cmd .= ' --stop-on-error --stop-on-failure ';
     }
 
     if ($options['os']) {
@@ -357,6 +357,8 @@ function check_unit($passthru = false, $command_only = false, $options = array()
         echo $phpunit_cmd . PHP_EOL;
         return 250;
     }
+
+    echo $phpunit_cmd . PHP_EOL;
 
     if ($passthru) {
         echo PHP_EOL;

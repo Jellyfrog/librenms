@@ -100,6 +100,18 @@ jobs:
     - name: Tests | Style
       run: php scripts/pre-commit.php -s
 
+    - name: Tests | Unit (OS)
+      run: vendor/bin/paratest --group=os
+      env:
+        SNMPSIM: 1
+        DBTEST: 1
+
+    - name: Tests | Unit (OS)
+      run: vendor/bin/paratest --group=os -p1
+      env:
+        SNMPSIM: 1
+        DBTEST: 1
+
     - name: Tests | Unit
       run: php scripts/pre-commit.php -u --db --snmpsim --fail-fast
 
