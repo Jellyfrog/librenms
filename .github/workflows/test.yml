@@ -94,8 +94,16 @@ jobs:
     - name: Show $FILES
       run: echo $FILES
 
+    - run: |
+        patch -p0 vendor/brianium/paratest/src/Runners/PHPUnit/SuiteLoader.php <<'EOF'
+        271c271
+        <             return true;
+        ---
+        >             //return true;
+        EOF
+
     - name: Tests | Unit (OS)
-      run: vendor/bin/paratest --group=os -f --max-batch-size=1
+      run: vendor/bin/paratest --group=os -f --max-batch-size=10 -p4
       env:
         SNMPSIM: 1
         DBTEST: 1
