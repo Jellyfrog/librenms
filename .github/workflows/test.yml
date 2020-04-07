@@ -103,7 +103,7 @@ jobs:
         EOF
 
     - name: Tests | Unit (OS)
-      run: vendor/bin/paratest --group=os -f --max-batch-size=10 -p4
+      run: vendor/bin/paratest --group=os -f --max-batch-size=10 -p4 --stop-on-failure
       env:
         SNMPSIM: 1
         DBTEST: 1
