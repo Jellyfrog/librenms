@@ -11,9 +11,9 @@ jobs:
     name: librenms (PHP ${{ matrix.php-versions }})
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        php-versions: ['7.1', '7.2', '7.3', '7.4']
+        php-versions: ['7.1', '7.2', '7.3']
     env:
       APP_ENV: testing
       DB_TEST_HOST: 127.0.0.1
@@ -40,7 +40,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php-versions }}
-    
+
     - uses: actions/cache@v1
       with:
         path: ~/.cache/pip
@@ -58,10 +58,10 @@ jobs:
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
           ${{ runner.os }}-composer-
-            
+
     - name: Fetch master branch
       run: git -c protocol.version=2 fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin master
-      
+
     - name: Setup ENV
       run: |
         echo "::add-path::$HOME/.local/bin"
@@ -74,9 +74,8 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get install -y snmp fping
-        pip3 install --user setuptools
+        pip3 install --user setuptools wheel
         pip3 install --user snmpsim pylint
-        pip install --user wheel
         pip install --user mysql-python
 
     - name: Setup MySQL DB
@@ -94,7 +93,7 @@ jobs:
 
     - name: Show $FILES
       run: echo $FILES
-      
+
     - name: Tests | Lint
       run: php scripts/pre-commit.php -l
 
