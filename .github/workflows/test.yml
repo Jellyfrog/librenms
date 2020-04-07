@@ -67,7 +67,7 @@ jobs:
         echo "::add-path::$HOME/.local/bin"
         echo "::set-env name=DB_TEST_PORT::${{ job.services.mariadb.ports[3306] }}"
         echo "::set-env name=MYSQL_TCP_PORT::${{ job.services.mariadb.ports[3306] }}"
-        echo "::set-env name=FILES::$(git diff --diff-filter=d --name-only master | tr '\n' ' '|sed 's/,*$//g')"
+        echo "::set-env name=FILES::$(git diff --diff-filter=d --name-only origin/master | tr '\n' ' '|sed 's/,*$//g')"
 
 
 
@@ -102,11 +102,16 @@ jobs:
         >             //return true;
         EOF
 
+    - run: mysql --user=root -e 'SHOW DATABASES;'
+
     - name: Tests | Unit (OS)
-      run: vendor/bin/paratest --group=os -f --max-batch-size=100 -p2 --stop-on-failure
+      run: vendor/bin/paratest --group=os -f --max-batch-size=50 -p4 --stop-on-failure
       env:
         SNMPSIM: 1
         DBTEST: 1
+
+    - run: mysql --user=root -e 'SHOW DATABASES;'
+
 
     - name: Tests | Lint
       run: php scripts/pre-commit.php -l
