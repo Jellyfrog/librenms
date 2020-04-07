@@ -80,7 +80,7 @@ jobs:
 
     - name: Setup MySQL DB
       run: |
-        mysql --user=root -e 'CREATE DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
+        mysql --user=root -e 'CREATE DATABASE librenms_phpunit_1 CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
 
     - name: Copy .env
       run: cp tests/config/config.test.php config.php
@@ -103,7 +103,7 @@ jobs:
         EOF
 
     - name: Tests | Unit (OS)
-      run: vendor/bin/paratest --group=os -f --max-batch-size=10 -p4 --stop-on-failure --runner=WrapperRunner
+      run: vendor/bin/paratest --group=os -f --max-batch-size=10 -p4 --stop-on-failure
       env:
         SNMPSIM: 1
         DBTEST: 1

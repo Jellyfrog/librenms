@@ -78,7 +78,7 @@ return [
             'driver' => env('DB_TEST_DRIVER', 'mysql'),
             'host' => env('DB_TEST_HOST', 'localhost'),
             'port' => env('DB_TEST_PORT', ''),
-            'database' => env('DB_TEST_DATABASE', 'librenms_phpunit_78hunjuybybh'),
+            'database' => env('DB_TEST_DATABASE', 'librenms_phpunit_' . env('TEST_TOKEN', 1)),
             'username' => env('DB_TEST_USERNAME', 'root'),
             'password' => env('DB_TEST_PASSWORD', ''),
             'unix_socket' => env('DB_TEST_SOCKET', ''),
