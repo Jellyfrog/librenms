@@ -94,23 +94,23 @@ jobs:
     - name: Show $FILES
       run: echo $FILES
 
+    - name: Tests | Unit (OS)
+      run: vendor/bin/paratest --group=os -f --max-batch-size=1
+      env:
+        SNMPSIM: 1
+        DBTEST: 1
+
+    - name: Tests | Unit (OS)
+      run: vendor/bin/paratest --group=os -f --runner=WrapperRunner
+      env:
+        SNMPSIM: 1
+        DBTEST: 1
+
     - name: Tests | Lint
       run: php scripts/pre-commit.php -l
 
     - name: Tests | Style
       run: php scripts/pre-commit.php -s
-
-    - name: Tests | Unit (OS)
-      run: vendor/bin/paratest --group=os -f
-      env:
-        SNMPSIM: 1
-        DBTEST: 1
-
-    - name: Tests | Unit (OS)
-      run: vendor/bin/paratest --group=os -p1 -f
-      env:
-        SNMPSIM: 1
-        DBTEST: 1
 
     - name: Tests | Unit
       run: php scripts/pre-commit.php -u --db --snmpsim --fail-fast
