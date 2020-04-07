@@ -65,7 +65,7 @@ if (getenv('DBTEST')) {
 
     // try to avoid erasing people's primary databases
     if ($db_config['database'] !== \config('database.connections.mysql.database', 'librenms')) {
-        echo "Refreshing database...";
+        echo "Refreshing database '{$db_config['database']}'...";
         $migrate_result = Artisan::call('migrate:fresh', ['--seed' => true, '--env' => 'testing', '--database' => 'testing']);
         $migrate_output = Artisan::output();
         echo "done\n";
