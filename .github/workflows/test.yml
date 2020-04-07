@@ -74,9 +74,9 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get install -y snmp fping
-        pip3 install --user setuptools wheel
-        pip3 install --user snmpsim pylint
-        pip install --user mysql-python
+        pip3 install --user setuptools
+        pip3 install --user snmpsim
+        pip install --user mysql-python pylint
 
     - name: Setup MySQL DB
       run: |
@@ -101,13 +101,13 @@ jobs:
       run: php scripts/pre-commit.php -s
 
     - name: Tests | Unit (OS)
-      run: vendor/bin/paratest --group=os
+      run: vendor/bin/paratest --group=os -f
       env:
         SNMPSIM: 1
         DBTEST: 1
 
     - name: Tests | Unit (OS)
-      run: vendor/bin/paratest --group=os -p1
+      run: vendor/bin/paratest --group=os -p1 -f
       env:
         SNMPSIM: 1
         DBTEST: 1
