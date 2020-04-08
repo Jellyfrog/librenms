@@ -105,7 +105,7 @@ jobs:
     - run: mysql --user=root -e 'SHOW DATABASES;'
 
     - name: Tests | Unit (OS)
-      run: vendor/bin/paratest --group=os -f --max-batch-size=50 -p4 --stop-on-failure
+      run: vendor/bin/paratest --group=os -f --max-batch-size=50 -p8 --stop-on-failure
       env:
         SNMPSIM: 1
         DBTEST: 1

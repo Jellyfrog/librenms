@@ -40,7 +40,8 @@ class Snmpsim
     public function __construct($ip = '127.1.6.1', $port = 1161, $log = '/tmp/snmpsimd.log')
     {
         $this->ip = $ip;
-        $this->port = rand(1161, 64000);
+        //$this->ip = "127.0.0.1";
+        $this->port = $port.getenv('TEST_TOKEN');
         $this->log = $log;
         $this->snmprec_dir = Config::get('install_dir') . "/tests/snmpsim/";
     }
