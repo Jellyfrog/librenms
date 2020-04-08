@@ -157,7 +157,7 @@ class Snmpsim
     {
         $cmd = $this->findSnmpsimd();
 
-        $cmd .= " --data-dir={$this->snmprec_dir} --agent-udpv4-endpoint={$this->ip}:{$this->port}";
+        $cmd .= " --v2c-arch --data-dir={$this->snmprec_dir} --agent-udpv4-endpoint={$this->ip}:{$this->port}";
 
         if (is_null($this->log)) {
             $cmd .= " --logging-method=null";
