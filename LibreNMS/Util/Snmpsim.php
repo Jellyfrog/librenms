@@ -61,7 +61,7 @@ class Snmpsim
         $cmd = $this->getCmd();
 
         if (isCli()) {
-            echo "Starting snmpsim listening on {$this->ip}:{$this->port}... \n";
+            echo "Starting snmpsim ({$cmd}) listening on {$this->ip}:{$this->port}... \n";
             d_echo($cmd);
         }
 
@@ -157,7 +157,7 @@ class Snmpsim
     {
         $cmd = $this->findSnmpsimd();
 
-        $cmd .= " --v2c-arch --data-dir={$this->snmprec_dir} --agent-udpv4-endpoint={$this->ip}:{$this->port}";
+        $cmd .= " --data-dir={$this->snmprec_dir} --agent-udpv4-endpoint={$this->ip}:{$this->port}";
 
         if (is_null($this->log)) {
             $cmd .= " --logging-method=null";
