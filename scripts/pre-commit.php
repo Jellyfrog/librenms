@@ -357,6 +357,8 @@ function check_unit($passthru = false, $command_only = false, $options = array()
         echo $phpunit_cmd . PHP_EOL;
         return 250;
     }
+    
+    echo $phpunit_cmd . PHP_EOL;
 
     if ($passthru) {
         echo PHP_EOL;
