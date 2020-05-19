@@ -35,7 +35,7 @@ class AuthHTTPTest extends DBTestCase
     private $original_auth_mech;
     private $server;
 
-    protected function setUp(): void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -44,7 +44,7 @@ class AuthHTTPTest extends DBTestCase
         $this->server = $_SERVER;
     }
 
-    protected function tearDown(): void
+    public function tearDown(): void
     {
         Config::set('auth_mechanism', $this->original_auth_mech);
         $_SERVER = $this->server;

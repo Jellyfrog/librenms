@@ -34,7 +34,7 @@ class AuthSSOTest extends DBTestCase
     private $original_auth_mech = null;
     private $server;
 
-    protected function setUp(): void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -468,7 +468,7 @@ class AuthSSOTest extends DBTestCase
         $this->assertTrue($a->authSSOParseGroups() === 10);
     }
 
-    protected function tearDown(): void
+    public function tearDown(): void
     {
         Config::set('auth_mechanism', $this->original_auth_mech);
         Config::forget('sso');

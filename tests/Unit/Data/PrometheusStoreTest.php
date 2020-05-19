@@ -41,7 +41,7 @@ use LibreNMS\Tests\TestCase;
  */
 class PrometheusStoreTest extends TestCase
 {
-    protected function setUp() : void
+    public function setUp() : void
     {
         parent::setUp();
 
