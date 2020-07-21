@@ -1,6 +1,6 @@
-@extends('device.index')
+@extends('device.submenu')
 
-@section('tab')
+@section('tabcontent')
     @if($data['smokeping']->hasGraphs())
         <div class="panel with-nav-tabs panel-default">
             <div class="panel-heading">
