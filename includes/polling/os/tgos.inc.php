@@ -1,6 +1,6 @@
 <?php
 /**
- * tgos.inc.php
+ * tgos.inc.php.
  *
  * LibreNMS os poller module for Technicolor TG MediaAccess devices
  *

@@ -14,4 +14,4 @@ $data = snmp_get_multi($device, ['productIDDisplayName.0', 'productIDBuildNumber
 
 $hardware = $data[0]['productIDDisplayName'];
 $serial = $data[0]['physicalIdentSerialNumber'];
-$version = $data[0]['productIDVersion'] . '.' . $data[0]['productIDBuildNumber'];
+$version = $data[0]['productIDVersion'].'.'.$data[0]['productIDBuildNumber'];

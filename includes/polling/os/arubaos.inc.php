@@ -1,15 +1,15 @@
 <?php
 
 // ArubaOS (MODEL: Aruba3600), Version 6.1.2.2 (29541)
-$badchars                    = array( '(', ')', ',',);
-list(,,$hardware,,$version,) = str_replace($badchars, '', explode(' ', $device['sysDescr']));
+$badchars = ['(', ')', ','];
+[,,$hardware,,$version,] = str_replace($badchars, '', explode(' ', $device['sysDescr']));
 
 // Build SNMP Cache Array
 // stuff about the controller
-$switch_info_oids = array(
+$switch_info_oids = [
     'wlsxSwitchRole',
     'wlsxSwitchMasterIp',
-);
+];
 echo 'Caching Oids: ';
 foreach ($switch_info_oids as $oid) {
     echo "$oid ";

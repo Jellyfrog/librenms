@@ -1,6 +1,6 @@
 <?php
 /**
- * fortiswitch.inc.php
+ * fortiswitch.inc.php.
  *
  * LibreNMS os polling module for FortiSwitch
  *
@@ -22,7 +22,6 @@
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 $temp_data = explode(' ', snmp_get($device, 'fsSysVersion.0', '-Onvq', 'FORTINET-FORTISWITCH-MIB'));
 $hardware = $temp_data[0];
 $version = $temp_data[1];

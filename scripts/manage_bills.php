@@ -123,7 +123,7 @@ function print_help()
  * f - flush - boolean
  * n - new - create new bill
  * t - type - bill type
- * q - quota - bill quota
+ * q - quota - bill quota.
  **/
 $options = getopt('b:s:h:i:f:np:t:q:');
 

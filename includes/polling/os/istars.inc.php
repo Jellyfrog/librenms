@@ -1,6 +1,6 @@
 <?php
 /**
- * istars.inc.php
+ * istars.inc.php.
  *
  * LibreNMS os poller module for East iStars UPS
  *
@@ -22,10 +22,9 @@
  * @copyright  2019 Spencer Butler
  * @author     Spencer Butler <github@crooked.app>
  */
-
 $temp_data = snmp_getnext_multi($device, 'upsIdentManufacturer upsIdentModel upsIdentUPSSoftwareVersion upsIdentAgentSoftwareVersion upsIdentAttachedDevices', '-OQUs', 'UPS-MIB');
 
-$hardware = $temp_data['upsIdentManufacturer'] . $temp_data['upsIdentModel'];
-$version  = $temp_data['upsIdentAgentSoftwareVersion'] . $temp_data['upsIdentUPSSoftwareVersion'];
+$hardware = $temp_data['upsIdentManufacturer'].$temp_data['upsIdentModel'];
+$version = $temp_data['upsIdentAgentSoftwareVersion'].$temp_data['upsIdentUPSSoftwareVersion'];
 $features = $temp_data['upsIdentAttachedDevices'];
 unset($temp_data);

@@ -10,15 +10,14 @@ if (strstr($device['sysDescr'], 'RouterOS')) {
 $features = 'Level '.trim(snmp_get($device, '1.3.6.1.4.1.14988.1.1.4.3.0', '-OQv', '', ''), '"');
 $serial = trim(snmp_get($device, '1.3.6.1.4.1.14988.1.1.7.3.0', '-OQv', '', ''), '"');
 
-
 $leases = snmp_get($device, 'mtxrDHCPLeaseCount.0', '-OQv', 'MIKROTIK-MIB');
 
 if (is_numeric($leases)) {
     $rrd_def = RrdDefinition::make()->addDataset('leases', 'GAUGE', 0);
 
-    $fields = array(
+    $fields = [
         'leases' => $leases,
-    );
+    ];
 
     $tags = compact('rrd_def');
     data_update($device, 'routeros_leases', $tags, $fields);
@@ -32,9 +31,9 @@ $pppoe_sessions = snmp_get($device, '1.3.6.1.4.1.9.9.150.1.1.1.0', '-OQv', '', '
 if (is_numeric($pppoe_sessions)) {
     $rrd_def = RrdDefinition::make()->addDataset('pppoe_sessions', 'GAUGE', 0);
 
-    $fields = array(
+    $fields = [
         'pppoe_sessions' => $pppoe_sessions,
-    );
+    ];
 
     $tags = compact('rrd_def');
     data_update($device, 'routeros_pppoe_sessions', $tags, $fields);

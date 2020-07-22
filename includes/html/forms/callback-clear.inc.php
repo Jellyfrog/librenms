@@ -14,7 +14,7 @@
 
 header('Content-type: text/plain');
 
-if (!Auth::user()->hasGlobalAdmin()) {
+if (! Auth::user()->hasGlobalAdmin()) {
     die('ERROR: You need to be admin');
 }
 

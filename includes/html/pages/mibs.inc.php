@@ -13,7 +13,7 @@
  * the source code distribution for details.
  */
 
-if (\LibreNMS\Config::get("poller_modules.mib")) {
+if (\LibreNMS\Config::get('poller_modules.mib')) {
     ?>
 
 <h4><i class="fa fa-file-text-o"></i> All MIB definitions</h4>
@@ -56,5 +56,5 @@ if (\LibreNMS\Config::get("poller_modules.mib")) {
 </script>
     <?php
 } else {
-    print_mib_poller_disabled();
-}
+        print_mib_poller_disabled();
+    }

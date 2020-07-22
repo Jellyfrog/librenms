@@ -1,6 +1,6 @@
 <?php
 /**
- * allworx.inc.php
+ * allworx.inc.php.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 $data = snmp_get_multi_oid($device, ['.1.3.6.1.2.1.1.1.0', '.1.3.6.1.2.1.27.1.1.4.1', '.1.3.6.1.2.1.1.5.0']);
 
 $hardware = $data['.1.3.6.1.2.1.1.1.0'];

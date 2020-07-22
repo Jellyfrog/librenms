@@ -15,29 +15,29 @@
 // FIXME: Dummy implementation which only supports ruckuswireless processor & mempool
 
 $i = 0;
-$rrd_list = array();
+$rrd_list = [];
 if ($subtype == 'processor') {
-    $rrd_list[0] = array(
+    $rrd_list[0] = [
         'area'     => 1,
         'ds'       => 'mibval',
         'descr'    => 'CPU Utilization',
-        'filename' => rrd_name($device['hostname'], array('ruckusZDSystemStats-CPUUtil-0')),
-    );
+        'filename' => rrd_name($device['hostname'], ['ruckusZDSystemStats-CPUUtil-0']),
+    ];
 }
 
 if ($subtype == 'mempool') {
-    $rrd_list[0] = array(
+    $rrd_list[0] = [
         'area'     => 1,
         'ds'       => 'mibval',
         'descr'    => 'Memory Utilization',
-        'filename' => rrd_name($device['hostname'], array('ruckusZDSystemStats-MemoryUtil-0')),
-    );
+        'filename' => rrd_name($device['hostname'], ['ruckusZDSystemStats-MemoryUtil-0']),
+    ];
 }
 
-$units     = '%%';
-$colours   = 'mixed';
+$units = '%%';
+$colours = 'mixed';
 $scale_min = '0';
 $scale_max = '100';
-$nototal   = 1;
+$nototal = 1;
 
 require_once 'includes/html/graphs/generic_multi_line.inc.php';

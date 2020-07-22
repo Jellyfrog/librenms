@@ -11,5 +11,5 @@
  */
 
 preg_match("/^(.*)\[([^\]]+)\], Bootcode\[([^\]]+)\], Hardware\[([^\]]+)\]/i", $device['sysDescr'], $matches);
-$version = $matches[1] . ' ' . $matches[2] . ', Bootcode ' . $matches[3];
+$version = $matches[1].' '.$matches[2].', Bootcode '.$matches[3];
 $hardware = $matches[4];

@@ -1,6 +1,6 @@
 <?php
 /**
- * device_maintenance.inc.php
+ * device_maintenance.inc.php.
  *
  * LibreNMS device maintenance modal
  *
@@ -25,7 +25,7 @@
 
 use LibreNMS\Alerting\QueryBuilderParser;
 
-if (!Auth::user()->hasGlobalAdmin()) {
+if (! Auth::user()->hasGlobalAdmin()) {
     die('ERROR: You need to be admin');
 }
 
@@ -80,7 +80,7 @@ foreach ($hour_steps as $hour) {
                     <div class="form-group">
                         <label for="maintenance-submit" class="col-sm-4 control-label"></label>
                         <div class="col-sm-8">
-                            <button type="submit" id="maintenance-submit" data-device_id="<?php echo($device['device_id']); ?>" <?php echo(\LibreNMS\Alert\AlertUtil::isMaintenance($device['device_id']) ? 'disabled class="btn btn-warning"' : 'class="btn btn-success"')?> name="maintenance-submit">Start Maintenance</button>
+                            <button type="submit" id="maintenance-submit" data-device_id="<?php echo $device['device_id']; ?>" <?php echo \LibreNMS\Alert\AlertUtil::isMaintenance($device['device_id']) ? 'disabled class="btn btn-warning"' : 'class="btn btn-success"'?> name="maintenance-submit">Start Maintenance</button>
                         </div>
                     </div>
                 </form>
@@ -91,10 +91,10 @@ foreach ($hour_steps as $hour) {
 <script>
     $("#maintenance-submit").click(function() {
         var device_id = $(this).data("device_id");
-        var title = '<?=display($device['hostname']);?>';
+        var title = '<?=display($device['hostname']); ?>';
         var notes = $('#notes').val();
         var recurring = 0;
-        var start = '<?=date("Y-m-d H:i:00");?>';
+        var start = '<?=date('Y-m-d H:i:00'); ?>';
         var duration = $('#duration').val();
         $.ajax({
             type: 'POST',

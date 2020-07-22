@@ -17,17 +17,17 @@ $where = '1';
 
 if (is_numeric($vars['device'])) {
     $where .= ' AND E.device_id = ?';
-    $param[] = (int)$vars['device'];
+    $param[] = (int) $vars['device'];
 }
 
-if (!empty($vars['eventtype'])) {
+if (! empty($vars['eventtype'])) {
     $where .= ' AND `E`.`type` = ?';
     $param[] = $vars['eventtype'];
 }
 
 if ($vars['string']) {
     $where .= ' AND E.message LIKE ?';
-    $param[] = '%' . $vars['string'] . '%';
+    $param[] = '%'.$vars['string'].'%';
 }
 
 if (Auth::user()->hasGlobalRead()) {
@@ -37,8 +37,8 @@ if (Auth::user()->hasGlobalRead()) {
     $param[] = Auth::id();
 }
 
-if (isset($searchPhrase) && !empty($searchPhrase)) {
-    $sql .= " AND (`D`.`hostname` LIKE ? OR `D`.`sysName` LIKE ? OR `E`.`datetime` LIKE ? OR `E`.`message` LIKE ? OR `E`.`type` LIKE ? OR `E`.`username` LIKE ?)";
+if (isset($searchPhrase) && ! empty($searchPhrase)) {
+    $sql .= ' AND (`D`.`hostname` LIKE ? OR `D`.`sysName` LIKE ? OR `E`.`datetime` LIKE ? OR `E`.`message` LIKE ? OR `E`.`type` LIKE ? OR `E`.`username` LIKE ?)';
     $param[] = "%$searchPhrase%";
     $param[] = "%$searchPhrase%";
     $param[] = "%$searchPhrase%";
@@ -53,7 +53,7 @@ if (empty($total)) {
     $total = 0;
 }
 
-if (!isset($sort) || empty($sort)) {
+if (! isset($sort) || empty($sort)) {
     $sort = 'datetime DESC';
 }
 
@@ -68,13 +68,13 @@ if ($rowCount != -1) {
     $sql .= " LIMIT $limit_low,$limit_high";
 }
 
-$sql = "SELECT `E`.*,DATE_FORMAT(datetime, '" . \LibreNMS\Config::get('dateformat.mysql.compact') . "') as humandate,severity $sql";
+$sql = "SELECT `E`.*,DATE_FORMAT(datetime, '".\LibreNMS\Config::get('dateformat.mysql.compact')."') as humandate,severity $sql";
 
 foreach (dbFetchRows($sql, $param) as $eventlog) {
     $dev = device_by_id_cache($eventlog['device_id']);
     if ($eventlog['type'] == 'interface') {
         $this_if = cleanPort(getifbyid($eventlog['reference']));
-        $type = '<b>' . generate_port_link($this_if, makeshortif(strtolower($this_if['label']))) . '</b>';
+        $type = '<b>'.generate_port_link($this_if, makeshortif(strtolower($this_if['label']))).'</b>';
     } else {
         $type = $eventlog['type'];
     }
@@ -84,19 +84,19 @@ foreach (dbFetchRows($sql, $param) as $eventlog) {
         $eventlog['username'] = 'System';
     }
 
-    $response[] = array(
-        'datetime' => "<span class='alert-status " . eventlog_severity($severity_colour) . " eventlog-status'></span><span style='display:inline;'>" . $eventlog['humandate'] . "</span>",
+    $response[] = [
+        'datetime' => "<span class='alert-status ".eventlog_severity($severity_colour)." eventlog-status'></span><span style='display:inline;'>".$eventlog['humandate'].'</span>',
         'hostname' => generate_device_link($dev, shorthost($dev['hostname'])),
         'type' => $type,
         'message' => htmlspecialchars($eventlog['message']),
         'username' => $eventlog['username'],
-    );
+    ];
 }
 
-$output = array(
+$output = [
     'current' => $current,
     'rowCount' => $rowCount,
     'rows' => $response,
     'total' => $total,
-);
+];
 echo _json_encode($output);

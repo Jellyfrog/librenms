@@ -34,16 +34,16 @@ echo "<h3>$title</h3>";
     <th></th>
   </tr>
 <?php
-$rollback = array();
-foreach (dbFetchRows("SELECT * FROM `$table` WHERE `device_id` = ? AND `sensor_deleted`='0' order by sensor_class, sensor_type, sensor_descr", array($device['device_id'])) as $sensor) {
-    $rollback[] = array(
+$rollback = [];
+foreach (dbFetchRows("SELECT * FROM `$table` WHERE `device_id` = ? AND `sensor_deleted`='0' order by sensor_class, sensor_type, sensor_descr", [$device['device_id']]) as $sensor) {
+    $rollback[] = [
         'sensor_id'        => $sensor['sensor_id'],
         'sensor_limit'     => $sensor['sensor_limit'],
         'sensor_limit_warn'     => $sensor['sensor_limit_warn'],
         'sensor_limit_low_warn' => $sensor['sensor_limit_low_warn'],
         'sensor_limit_low' => $sensor['sensor_limit_low'],
         'sensor_alert'     => $sensor['sensor_alert'],
-    );
+    ];
     if ($sensor['sensor_alert'] == 1) {
         $alert_status = 'checked';
     } else {

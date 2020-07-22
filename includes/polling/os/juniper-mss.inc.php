@@ -1,6 +1,6 @@
 <?php
 /**
- * juniper-mss.inc.php
+ * juniper-mss.inc.php.
  *
  * LibreNMS os poller module for Juniper MSS
  *
@@ -22,9 +22,8 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 $tmp_sysdescr = str_replace('Juniper Networks, Inc ', '', $device['sysDescr']);
 
-list($hardware, $version,) = explode(' ', $tmp_sysdescr);
+[$hardware, $version,] = explode(' ', $tmp_sysdescr);
 
 unset($tmp_sysdescr);

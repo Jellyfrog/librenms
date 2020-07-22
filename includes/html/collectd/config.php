@@ -1,6 +1,6 @@
 <?php
 /**
- * Configuration file for Collectd graph browser
+ * Configuration file for Collectd graph browser.
  */
 
 use LibreNMS\Config;

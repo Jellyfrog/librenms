@@ -22,7 +22,7 @@ $version = $multi_get_array[1]['MWRM-UNIT-MIB::genEquipMngSwIDUVersionsRunningVe
 $latitude = $multi_get_array[0]['MWRM-UNIT-MIB::genEquipUnitLatitude'];
 $longitude = $multi_get_array[0]['MWRM-UNIT-MIB::genEquipUnitLongitude'];
 
-$ifIndex_array = array();
+$ifIndex_array = [];
 $ifIndex_array = explode("\n", snmp_walk($device, 'ifIndex', '-Oqv', 'IF-MIB'));
 d_echo($ifIndex_array);
 $snmp_get_oids = [];
@@ -32,15 +32,15 @@ foreach ($ifIndex_array as $ifIndex) {
 }
 
 $num_radios = 0;
-$ifDescr_array = array();
+$ifDescr_array = [];
 $ifDescr_array = snmp_get_multi($device, $snmp_get_oids, '-OQU', 'IF-MIB');
 d_echo($ifDescr_array);
 foreach ($ifIndex_array as $ifIndex) {
-    d_echo("\$ifDescr_array[$ifIndex]['IF-MIB::ifDescr'] = " . $ifDescr_array[$ifIndex]['IF-MIB::ifDescr'] . "\n");
-    if (stristr($ifDescr_array[$ifIndex]['IF-MIB::ifDescr'], "Radio")) {
-        $num_radios = $num_radios+1;
+    d_echo("\$ifDescr_array[$ifIndex]['IF-MIB::ifDescr'] = ".$ifDescr_array[$ifIndex]['IF-MIB::ifDescr']."\n");
+    if (stristr($ifDescr_array[$ifIndex]['IF-MIB::ifDescr'], 'Radio')) {
+        $num_radios = $num_radios + 1;
     }
 }
-$features = $num_radios . " radios in unit";
+$features = $num_radios.' radios in unit';
 
 unset($ceragon_type, $multi_get_array, $ifIndex_array, $ifIndex, $ifDescr_array, $ifDescr, $num_radios);

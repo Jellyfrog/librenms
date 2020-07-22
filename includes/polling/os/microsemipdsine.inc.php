@@ -1,6 +1,6 @@
 <?php
 /**
- * microsemipdsine.inc.php
+ * microsemipdsine.inc.php.
  *
  * LibreNMS OS poller module for Microsemi PowerDsine PoE Midspans
  *

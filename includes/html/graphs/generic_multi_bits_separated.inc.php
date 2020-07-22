@@ -30,84 +30,84 @@ if ($width > '1500') {
 
 $unit_text = 'Bits/sec';
 
-if (!$noagg || !$nodetails) {
+if (! $noagg || ! $nodetails) {
     if ($width > '500') {
-        $rrd_options .= sprintf(" COMMENT:'%s'", substr(str_pad($unit_text, ($descr_len +5)), 0, ($descr_len+5)));
-        $rrd_options .= sprintf(" COMMENT:'%12s'", "Current");
-        $rrd_options .= sprintf(" COMMENT:'%10s'", "Average");
-        $rrd_options .= sprintf(" COMMENT:'%10s'", "Maximum");
-        if (!$nototal) {
-            $rrd_options .= sprintf(" COMMENT:'%8s'", "Total");
+        $rrd_options .= sprintf(" COMMENT:'%s'", substr(str_pad($unit_text, ($descr_len + 5)), 0, ($descr_len + 5)));
+        $rrd_options .= sprintf(" COMMENT:'%12s'", 'Current');
+        $rrd_options .= sprintf(" COMMENT:'%10s'", 'Average');
+        $rrd_options .= sprintf(" COMMENT:'%10s'", 'Maximum');
+        if (! $nototal) {
+            $rrd_options .= sprintf(" COMMENT:'%8s'", 'Total');
         }
         $rrd_options .= " COMMENT:'\l'";
     } else {
         $nototal = true;
         $rrd_options .= sprintf(" COMMENT:'%s'", substr(str_pad($unit_text, ($descr_len + 5)), 0, ($descr_len + 5)));
-        $rrd_options .= sprintf(" COMMENT:'%12s'", "Now");
-        $rrd_options .= sprintf(" COMMENT:'%10s'", "Avg");
-        $rrd_options .= sprintf(" COMMENT:'%10s\l'", "Max");
+        $rrd_options .= sprintf(" COMMENT:'%12s'", 'Now');
+        $rrd_options .= sprintf(" COMMENT:'%10s'", 'Avg');
+        $rrd_options .= sprintf(" COMMENT:'%10s\l'", 'Max');
     }
 }
 
-if (!isset($multiplier)) {
+if (! isset($multiplier)) {
     $multiplier = '8';
 }
 
 foreach ($rrd_list as $rrd) {
-    if (!\LibreNMS\Config::get("graph_colours.$colours_in.$iter") || !\LibreNMS\Config::get("graph_colours.$colours_out.$iter")) {
+    if (! \LibreNMS\Config::get("graph_colours.$colours_in.$iter") || ! \LibreNMS\Config::get("graph_colours.$colours_out.$iter")) {
         $iter = 0;
     }
 
     $colour_in = \LibreNMS\Config::get("graph_colours.$colours_in.$iter");
     $colour_out = \LibreNMS\Config::get("graph_colours.$colours_out.$iter");
 
-    if (!$nodetails) {
+    if (! $nodetails) {
         if (isset($rrd['descr_in'])) {
-            $descr = rrdtool_escape($rrd['descr_in'], $descr_len) . '  In';
+            $descr = rrdtool_escape($rrd['descr_in'], $descr_len).'  In';
         } else {
-            $descr = rrdtool_escape($rrd['descr'], $descr_len) . '  In';
+            $descr = rrdtool_escape($rrd['descr'], $descr_len).'  In';
         }
-        $descr_out = rrdtool_escape($rrd['descr_out'], $descr_len) . ' Out';
+        $descr_out = rrdtool_escape($rrd['descr_out'], $descr_len).' Out';
     }
 
-    $rrd_options .= ' DEF:' . $in . $i . '=' . $rrd['filename'] . ':' . $ds_in . ':AVERAGE ';
-    $rrd_options .= ' DEF:' . $out . $i . '=' . $rrd['filename'] . ':' . $ds_out . ':AVERAGE ';
-    $rrd_options .= ' CDEF:inB' . $i . '=in' . $i . ",$multiplier,* ";
-    $rrd_options .= ' CDEF:outB' . $i . '=out' . $i . ",$multiplier,*";
-    $rrd_options .= ' CDEF:outB' . $i . '_neg=outB' . $i . ',' . $stacked['stacked'] . ',*';
-    $rrd_options .= ' CDEF:octets' . $i . '=inB' . $i . ',outB' . $i . ',+';
+    $rrd_options .= ' DEF:'.$in.$i.'='.$rrd['filename'].':'.$ds_in.':AVERAGE ';
+    $rrd_options .= ' DEF:'.$out.$i.'='.$rrd['filename'].':'.$ds_out.':AVERAGE ';
+    $rrd_options .= ' CDEF:inB'.$i.'=in'.$i.",$multiplier,* ";
+    $rrd_options .= ' CDEF:outB'.$i.'=out'.$i.",$multiplier,*";
+    $rrd_options .= ' CDEF:outB'.$i.'_neg=outB'.$i.','.$stacked['stacked'].',*';
+    $rrd_options .= ' CDEF:octets'.$i.'=inB'.$i.',outB'.$i.',+';
 
-    if (!$nototal) {
-        $rrd_options .= ' VDEF:totin' . $i . '=inB' . $i . ',TOTAL';
-        $rrd_options .= ' VDEF:totout' . $i . '=outB' . $i . ',TOTAL';
-        $rrd_options .= ' VDEF:tot' . $i . '=octets' . $i . ',TOTAL';
+    if (! $nototal) {
+        $rrd_options .= ' VDEF:totin'.$i.'=inB'.$i.',TOTAL';
+        $rrd_options .= ' VDEF:totout'.$i.'=outB'.$i.',TOTAL';
+        $rrd_options .= ' VDEF:tot'.$i.'=octets'.$i.',TOTAL';
     }
 
     if ($i) {
         $stack = ':STACK';
     }
 
-    $rrd_options .= ' AREA:inB' . $i . '#' . $colour_in . $stacked['transparency'] . ":'" . $descr . "'$stack";
-    if (!$nodetails) {
-        $rrd_options .= ' GPRINT:inB' . $i . ":LAST:%6.".$float_precision."lf%s$units";
-        $rrd_options .= ' GPRINT:inB' . $i . ":AVERAGE:%6.".$float_precision."lf%s$units";
-        $rrd_options .= ' GPRINT:inB' . $i . ":MAX:%6.".$float_precision."lf%s$units";
-        if (!$nototal) {
-            $rrd_options .= ' GPRINT:totin' . $i . ":%6.".$float_precision."lf%s$total_units";
+    $rrd_options .= ' AREA:inB'.$i.'#'.$colour_in.$stacked['transparency'].":'".$descr."'$stack";
+    if (! $nodetails) {
+        $rrd_options .= ' GPRINT:inB'.$i.':LAST:%6.'.$float_precision."lf%s$units";
+        $rrd_options .= ' GPRINT:inB'.$i.':AVERAGE:%6.'.$float_precision."lf%s$units";
+        $rrd_options .= ' GPRINT:inB'.$i.':MAX:%6.'.$float_precision."lf%s$units";
+        if (! $nototal) {
+            $rrd_options .= ' GPRINT:totin'.$i.':%6.'.$float_precision."lf%s$total_units";
         }
 
         $rrd_options .= '\l';
     }
 
-    $rrd_options .= " 'HRULE:0#" . $colour_out . ':' . $descr_out . "'";
-    $rrd_optionsb .= " 'AREA:outB" . $i . '_neg#' . $colour_out . $stacked['transparency'] . ":$stack'";
+    $rrd_options .= " 'HRULE:0#".$colour_out.':'.$descr_out."'";
+    $rrd_optionsb .= " 'AREA:outB".$i.'_neg#'.$colour_out.$stacked['transparency'].":$stack'";
 
-    if (!$nodetails) {
-        $rrd_options .= ' GPRINT:outB' . $i . ":LAST:%6.".$float_precision."lf%s$units";
-        $rrd_options .= ' GPRINT:outB' . $i . ":AVERAGE:%6.".$float_precision."lf%s$units";
-        $rrd_options .= ' GPRINT:outB' . $i . ":MAX:%6.".$float_precision."lf%s$units";
-        if (!$nototal) {
-            $rrd_options .= ' GPRINT:totout' . $i . ":%6.".$float_precision."lf%s$total_units";
+    if (! $nodetails) {
+        $rrd_options .= ' GPRINT:outB'.$i.':LAST:%6.'.$float_precision."lf%s$units";
+        $rrd_options .= ' GPRINT:outB'.$i.':AVERAGE:%6.'.$float_precision."lf%s$units";
+        $rrd_options .= ' GPRINT:outB'.$i.':MAX:%6.'.$float_precision."lf%s$units";
+        if (! $nototal) {
+            $rrd_options .= ' GPRINT:totout'.$i.':%6.'.$float_precision."lf%s$total_units";
         }
 
         $rrd_options .= '\l';
@@ -125,39 +125,39 @@ foreach ($rrd_list as $rrd) {
         $aggr_out .= 'ADDNAN,';
     }
 
-    $aggr_in .= $in . $i;
-    $aggr_out .= $out . $i;
+    $aggr_in .= $in.$i;
+    $aggr_out .= $out.$i;
 
     $i++;
     $iter++;
 }
 
-if (!$noagg) {
-    $rrd_options .= ' CDEF:aggr' . $in . 'bytes=' . $aggr_in . ',ADDNAN';
-    $rrd_options .= ' CDEF:aggr' . $out . 'bytes=' . $aggr_out . ',ADDNAN';
-    $rrd_options .= ' CDEF:aggrinbits=aggrinbytes,' . $multiplier . ',*';
-    $rrd_options .= ' CDEF:aggroutbits=aggroutbytes,' . $multiplier . ',*';
+if (! $noagg) {
+    $rrd_options .= ' CDEF:aggr'.$in.'bytes='.$aggr_in.',ADDNAN';
+    $rrd_options .= ' CDEF:aggr'.$out.'bytes='.$aggr_out.',ADDNAN';
+    $rrd_options .= ' CDEF:aggrinbits=aggrinbytes,'.$multiplier.',*';
+    $rrd_options .= ' CDEF:aggroutbits=aggroutbytes,'.$multiplier.',*';
     $rrd_options .= ' VDEF:totalin=aggrinbytes,TOTAL';
     $rrd_options .= ' VDEF:totalout=aggroutbytes,TOTAL';
     $rrd_options .= " COMMENT:' \\n'";
-    $rrd_options .= " COMMENT:'" . substr(str_pad('Aggregate', ($descr_len + 5)), 0, ($descr_len + 5)) . 'In' . "'";
-    $rrd_options .= " GPRINT:aggrinbits:LAST:%6.".$float_precision."lf%s$units";
-    $rrd_options .= " GPRINT:aggrinbits:AVERAGE:%6.".$float_precision."lf%s$units";
-    $rrd_options .= " GPRINT:aggrinbits:MAX:%6.".$float_precision."lf%s$units";
-    if (!$nototal) {
-        $rrd_options .= " GPRINT:totalin:%6.".$float_precision."lf%s$total_units";
+    $rrd_options .= " COMMENT:'".substr(str_pad('Aggregate', ($descr_len + 5)), 0, ($descr_len + 5)).'In'."'";
+    $rrd_options .= ' GPRINT:aggrinbits:LAST:%6.'.$float_precision."lf%s$units";
+    $rrd_options .= ' GPRINT:aggrinbits:AVERAGE:%6.'.$float_precision."lf%s$units";
+    $rrd_options .= ' GPRINT:aggrinbits:MAX:%6.'.$float_precision."lf%s$units";
+    if (! $nototal) {
+        $rrd_options .= ' GPRINT:totalin:%6.'.$float_precision."lf%s$total_units";
     }
 
-    $rrd_options .= "\\n";
-    $rrd_options .= " COMMENT:'" . substr(str_pad('Aggregate', ($descr_len + 4)), 0, ($descr_len + 4)) . 'Out' . "'";
-    $rrd_options .= " GPRINT:aggroutbits:LAST:%6.".$float_precision."lf%s$units";
-    $rrd_options .= " GPRINT:aggroutbits:AVERAGE:%6.".$float_precision."lf%s$units";
-    $rrd_options .= " GPRINT:aggroutbits:MAX:%6.".$float_precision."lf%s$units";
-    if (!$nototal) {
-        $rrd_options .= " GPRINT:totalout:%6.".$float_precision."lf%s$total_units";
+    $rrd_options .= '\\n';
+    $rrd_options .= " COMMENT:'".substr(str_pad('Aggregate', ($descr_len + 4)), 0, ($descr_len + 4)).'Out'."'";
+    $rrd_options .= ' GPRINT:aggroutbits:LAST:%6.'.$float_precision."lf%s$units";
+    $rrd_options .= ' GPRINT:aggroutbits:AVERAGE:%6.'.$float_precision."lf%s$units";
+    $rrd_options .= ' GPRINT:aggroutbits:MAX:%6.'.$float_precision."lf%s$units";
+    if (! $nototal) {
+        $rrd_options .= ' GPRINT:totalout:%6.'.$float_precision."lf%s$total_units";
     }
 
-    $rrd_options .= "\\n";
+    $rrd_options .= '\\n';
 }
 
 if ($custom_graph) {

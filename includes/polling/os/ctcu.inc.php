@@ -1,6 +1,6 @@
 <?php
 /**
- * ctcu.inc.php
+ * ctcu.inc.php.
  *
  * LibreNMS os polling module for CTC Union
  *
@@ -22,5 +22,4 @@
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 $hardware = str_replace(' GigaBit Ethernet Switch', '', $device['sysDescr']);

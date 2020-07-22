@@ -12,13 +12,13 @@
  */
 
 // rcSysVersion
-$version  = snmp_get($device, 'rcSysVersion.0', '-Osqv', 'RAPID-CITY');
+$version = snmp_get($device, 'rcSysVersion.0', '-Osqv', 'RAPID-CITY');
 $version = explode(' ', $version);
 $version = $version[0];
 $version = str_replace('"', '', $version);
 
 // rcChasSerialNumber
-$serial   = snmp_get($device, 'rcChasSerialNumber.0', '-Osqv', 'RAPID-CITY');
+$serial = snmp_get($device, 'rcChasSerialNumber.0', '-Osqv', 'RAPID-CITY');
 $serial = str_replace('"', '', $serial);
 
 // rcChasHardwareRevision

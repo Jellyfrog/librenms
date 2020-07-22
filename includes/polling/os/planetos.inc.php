@@ -12,11 +12,11 @@
 
 use Illuminate\Support\Str;
 
-$data = explode(" ", $device['sysDescr']);
+$data = explode(' ', $device['sysDescr']);
 $hardware = $data[0];
 $version = $data[9];
 
 if (Str::contains($device['sysDescr'], 'PLANET IGS-')) {
     $hardware = $data[1];
-    $version = snmp_get($device, "1.3.6.1.2.1.47.1.1.1.1.10.1", "-Ovq");
+    $version = snmp_get($device, '1.3.6.1.2.1.47.1.1.1.1.10.1', '-Ovq');
 }

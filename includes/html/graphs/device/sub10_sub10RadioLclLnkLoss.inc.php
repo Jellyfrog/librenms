@@ -4,7 +4,6 @@ require 'includes/html/graphs/common.inc.php';
 
 $rrdfilename = rrd_name($device['hostname'], 'sub10systems');
 
-
 if (rrdtool_check_rrd_exists($rrdfilename)) {
     $rrd_options .= " COMMENT:'dB                         Now    Min     Max\\n'";
     $rrd_options .= ' DEF:sub10RadioLclLnkLos='.$rrdfilename.':sub10RadioLclLnkLos:AVERAGE ';

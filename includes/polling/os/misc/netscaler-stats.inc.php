@@ -6,7 +6,7 @@ if ($device['os'] == 'netscaler') {
     echo ' IP';
 
     // These are at the start of large trees that we don't want to walk the entirety of, so we snmp_get_multi them
-    $oids_gauge = array(
+    $oids_gauge = [
         'tcpCurServerConn',
         'tcpCurClientConn',
         'tcpActiveServerConn',
@@ -20,9 +20,9 @@ if ($device['os'] == 'netscaler') {
         'tcpCurServerConnOpening',
         'tcpCurPhysicalServers',
         'tcpReuseHit',
-    );
+    ];
 
-    $oids_counter = array(
+    $oids_counter = [
         'tcpTotServerConnOpened',
         'tcpTotServerConnClosed',
         'tcpTotClientConnOpened',
@@ -93,37 +93,36 @@ if ($device['os'] == 'netscaler') {
         'tcpErrSynDroppedCongestion',
         'tcpWaitData',
         'tcpErrStrayPkt',
-    );
+    ];
 
     $oids = array_merge($oids_gauge, $oids_counter);
 
-    $data = snmpwalk_cache_oid($device, 'nsTcpStatsGroup', array(), 'NS-ROOT-MIB');
+    $data = snmpwalk_cache_oid($device, 'nsTcpStatsGroup', [], 'NS-ROOT-MIB');
 
-
-    $shorten = array(
+    $shorten = [
         'tcp',
         'Active',
         'Passive',
         'Zombie',
-    );
-    $short_replacement = array(
+    ];
+    $short_replacement = [
         '',
         'Ac',
         'Ps',
         'Zom',
-    );
+    ];
 
     $rrd_def = new RrdDefinition();
     foreach ($oids_gauge as $oid) {
-        $oid_ds    = str_replace($shorten, $short_replacement, $oid);
+        $oid_ds = str_replace($shorten, $short_replacement, $oid);
         $rrd_def->addDataset($oid_ds, 'GAUGE', null, 100000000000);
     }
     foreach ($oids_counter as $oid) {
-        $oid_ds    = str_replace($shorten, $short_replacement, $oid);
+        $oid_ds = str_replace($shorten, $short_replacement, $oid);
         $rrd_def->addDataset($oid_ds, 'COUNTER', null, 100000000000);
     }
 
-    $fields = array();
+    $fields = [];
     foreach ($oids as $oid) {
         if (is_numeric($data[0][$oid])) {
             $rrdupdate = ':'.$data[0][$oid];

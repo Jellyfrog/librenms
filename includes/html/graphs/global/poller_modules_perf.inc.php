@@ -1,6 +1,6 @@
 <?php
 /**
- * poller_modules_perf.inc.php
+ * poller_modules_perf.inc.php.
  *
  * -Description-
  *
@@ -40,7 +40,7 @@ foreach ($modules as $module_index => $module) {
     $suffix = '';
     $cdefX = [];
     $suffixX = '';
-    
+
     foreach ($hostnames as $index => $hostname) {
         $rrd_filename = rrd_name($hostname, ['poller-perf', $module]);
         if (rrdtool_check_rrd_exists($rrd_filename)) {
@@ -48,14 +48,14 @@ foreach ($modules as $module_index => $module) {
             // change undefined to 0
             $rrd_options .= " CDEF:$module$index={$module}Raw$index,UN,0,{$module}Raw$index,IF";
 
-            $cdef[] = $module . $index . $suffix;
+            $cdef[] = $module.$index.$suffix;
             $suffix = ',+';
             if ($_GET['previous'] == 'yes') {
                 $rrd_options .= " DEF:{$module}RawX$index=$rrd_filename:poller:AVERAGE:start=$prev_from:end=$from";
                 // change undefined to 0
                 $rrd_options .= " CDEF:{$module}X$index={$module}RawX$index,UN,0,{$module}RawX$index,IF";
                 $rrd_options .= " SHIFT:{$module}X$index:$period";
-                $cdefX[] = $module . 'X' . $index . $suffixX;
+                $cdefX[] = $module.'X'.$index.$suffixX;
                 $suffixX = ',+';
             }
         }
@@ -66,9 +66,9 @@ foreach ($modules as $module_index => $module) {
         unset($modules[$module_index]);
     } else {
         // have data for this module, display it
-        $rrd_options .= " CDEF:$module=" . implode(',', $cdef);
+        $rrd_options .= " CDEF:$module=".implode(',', $cdef);
         if ($_GET['previous']) {
-            $rrd_options .= " CDEF:{$module}X=" . implode(',', $cdefX);
+            $rrd_options .= " CDEF:{$module}X=".implode(',', $cdefX);
         }
     }
 }
@@ -83,12 +83,12 @@ $rrd_options .= " COMMENT:'\\n'";
 
 foreach ($modules as $index => $module) {
     $color = $colors[$index % count($colors)];
-    $rrd_options .= " AREA:$module#$color:'" . rrdtool_escape($module, 16) ."':STACK";
+    $rrd_options .= " AREA:$module#$color:'".rrdtool_escape($module, 16)."':STACK";
     $rrd_options .= " GPRINT:$module:LAST:%6.2lf  GPRINT:$module:MIN:%6.2lf";
     $rrd_options .= " GPRINT:$module:MAX:%6.2lf  'GPRINT:$module:AVERAGE:%6.2lf'";
     if ($_GET['previous']) {
-        $rrd_options .= ' AREA:' .$module. 'X#99999999' . $stacked['transparency'] . ':';
-        $rrd_options .= ' LINE1.25:' .$module. 'X#666666:';
+        $rrd_options .= ' AREA:'.$module.'X#99999999'.$stacked['transparency'].':';
+        $rrd_options .= ' LINE1.25:'.$module.'X#666666:';
         $rrd_options .= " COMMENT:'\t'";
         $rrd_options .= " GPRINT:{$module}X:MIN:%6.2lf";
         $rrd_options .= " GPRINT:{$module}X:MAX:%6.2lf";

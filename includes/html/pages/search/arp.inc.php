@@ -33,11 +33,11 @@ var grid = $("#arp-search").bootgrid({
 
             // Select the devices only with ARP tables
 $sql = 'SELECT D.device_id AS device_id, `hostname`, `D`.`sysName` AS `sysName` FROM `ipv4_mac` AS M, `ports` AS P, `devices` AS D';
-$param = array();
+$param = [];
 
-if (!Auth::user()->hasGlobalRead()) {
+if (! Auth::user()->hasGlobalRead()) {
     $device_ids = Permissions::devicesForUser()->toArray() ?: [0];
-    $where .= " AND `D`.`device_id` IN " .dbGenPlaceholders(count($device_ids));
+    $where .= ' AND `D`.`device_id` IN '.dbGenPlaceholders(count($device_ids));
     $param = array_merge($param, $device_ids);
 }
 

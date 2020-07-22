@@ -12,7 +12,7 @@
  * the source code distribution for details.
  */
 
-if (!Auth::user()->hasGlobalAdmin()) {
+if (! Auth::user()->hasGlobalAdmin()) {
     header('Content-type: text/plain');
     die('ERROR: You need to be admin');
 }
@@ -20,11 +20,11 @@ if (!Auth::user()->hasGlobalAdmin()) {
 $group_id = ($_POST['group_id']);
 
 if (is_numeric($group_id) && $group_id > 0) {
-    $group  = dbFetchRow('SELECT * FROM `poller_groups` WHERE `id` = ? LIMIT 1', array($group_id));
-    $output = array(
+    $group = dbFetchRow('SELECT * FROM `poller_groups` WHERE `id` = ? LIMIT 1', [$group_id]);
+    $output = [
         'group_name' => $group['group_name'],
         'descr'      => $group['descr'],
-    );
+    ];
     header('Content-type: application/json');
     echo _json_encode($output);
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * tegile.inc.php
+ * tegile.inc.php.
  *
  * LibreNMS storage polling module for Tegile Storage
  *
@@ -22,17 +22,17 @@
  * @copyright  2018 Ryan Finney
  * @author     https://github.com/theherodied/
  */
-if (!is_array($storage_cache['intelliflash-pr'])) {
+if (! is_array($storage_cache['intelliflash-pr'])) {
     $storage_cache['intelliflash-pr'] = snmpwalk_cache_oid($device, 'projectEntry', null, 'TEGILE-MIB');
     d_echo($storage_cache);
 }
 //Tegile uses a high 32bit counter and a low 32bit counter to make a 64bit counter. Storage units are in bytes.
 $entry = $storage_cache['intelliflash-pr'][$storage['storage_index']];
 $storage['units'] = 1;
-$pdsh = ($entry['projectDataSizeHigh'] << 32 );
+$pdsh = ($entry['projectDataSizeHigh'] << 32);
 $pdsl = ($entry['projectDataSizeLow']);
 $pdst = (($pdsh + $pdsl) * $storage['units']);
-$pfsh = ($entry['projectFreeSizeHigh'] << 32 );
+$pfsh = ($entry['projectFreeSizeHigh'] << 32);
 $pfsl = ($entry['projectFreeSizeLow']);
 $pfst = (($pfsh + $pfsl) * $storage['units']);
 $storage['used'] = ($pdst);

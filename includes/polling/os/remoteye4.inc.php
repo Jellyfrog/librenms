@@ -1,6 +1,6 @@
 <?php
 /**
- * remoteye4.inc.php
+ * remoteye4.inc.php.
  *
  * LibreNMS os poller module for Toshiba RemotEye4
  *
@@ -22,8 +22,7 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 $remoteye4_tmp = snmp_get_multi($device, ['upsIdentName.0', 'upsIdentAgentSoftwareVersion.0'], '-OQUs', 'UPS-MIB');
 
 $hardware = $remoteye4_tmp[0]['upsIdentName'];
-$version  = str_replace('RemotEye4 ', '', $remoteye4_tmp[0]['upsIdentAgentSoftwareVersion']);
+$version = str_replace('RemotEye4 ', '', $remoteye4_tmp[0]['upsIdentAgentSoftwareVersion']);

@@ -1,6 +1,6 @@
 <?php
 /**
- * saf-integra-w.inc.php
+ * saf-integra-w.inc.php.
  *
  * Saf Integra W Polling module
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 preg_match('/Prod: ([A-Za-z-_]+);Vers: ([0-9.]+-(mux|esw));.*;S\/N: ([0-9]+)/', $device['sysDescr'], $matches);
 
 $hardware = $matches[1];

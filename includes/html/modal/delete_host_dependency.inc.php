@@ -11,7 +11,7 @@
  * the source code distribution for details.
  */
 
-if (!Auth::user()->hasGlobalAdmin()) {
+if (! Auth::user()->hasGlobalAdmin()) {
     die('ERROR: You need to be admin');
 }
 

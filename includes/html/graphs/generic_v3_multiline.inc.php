@@ -1,4 +1,5 @@
 <?php
+
 require 'includes/html/graphs/common.inc.php';
 
 if ($width > '500') {
@@ -9,7 +10,7 @@ if ($width > '500') {
 
 if ($printtotal === 1) {
     $descr_len += '2';
-    $unitlen  += '2';
+    $unitlen += '2';
 }
 
 $unit_text = str_pad(truncate($unit_text, $unitlen), $unitlen);
@@ -28,15 +29,15 @@ foreach ($rrd_list as $rrd) {
     if ($rrd['colour']) {
         $colour = $rrd['colour'];
     } else {
-        if (!\LibreNMS\Config::get("graph_colours.$colours.$colour_iter")) {
+        if (! \LibreNMS\Config::get("graph_colours.$colours.$colour_iter")) {
             $colour_iter = 0;
         }
 
         $colour = \LibreNMS\Config::get("graph_colours.$colours.$colour_iter");
         $colour_iter++;
     }
-  
-    $ds       = $rrd['ds'];
+
+    $ds = $rrd['ds'];
     $filename = $rrd['filename'];
 
     $descr = rrdtool_escape($rrd['descr'], $descr_len);
@@ -55,24 +56,24 @@ foreach ($rrd_list as $rrd) {
     if ($_GET['previous']) {
         $rrd_options .= ' DEF:'.$i.'X='.$rrd['filename'].':'.$rrd['ds'].':AVERAGE:start='.$prev_from.':end='.$from;
         $rrd_options .= ' SHIFT:'.$i."X:$period";
-        $thingX      .= $seperatorX.$i.'X,UN,0,'.$i.'X,IF';
-        $plusesX     .= $plusX;
-        $seperatorX   = ',';
-        $plusX        = ',+';
+        $thingX .= $seperatorX.$i.'X,UN,0,'.$i.'X,IF';
+        $plusesX .= $plusX;
+        $seperatorX = ',';
+        $plusX = ',+';
     }
-    
+
     if ($printtotal === 1) {
         $rrd_options .= ' VDEF:tot'.$rrd['ds'].$i.'='.$rrd['ds'].$i.',TOTAL';
     }
 
     $g_defname = $rrd['ds'];
     if (is_numeric($multiplier)) {
-        $g_defname    = $rrd['ds'].'_cdef';
+        $g_defname = $rrd['ds'].'_cdef';
         $rrd_options .= ' CDEF:'.$g_defname.$i.'='.$rrd['ds'].$i.','.$multiplier.',*';
         $rrd_options .= ' CDEF:'.$g_defname.$i.'min='.$rrd['ds'].$i.'min,'.$multiplier.',*';
         $rrd_options .= ' CDEF:'.$g_defname.$i.'max='.$rrd['ds'].$i.'max,'.$multiplier.',*';
     } elseif (is_numeric($divider)) {
-        $g_defname    = $rrd['ds'].'_cdef';
+        $g_defname = $rrd['ds'].'_cdef';
         $rrd_options .= ' CDEF:'.$g_defname.$i.'='.$rrd['ds'].$i.','.$divider.',/';
         $rrd_options .= ' CDEF:'.$g_defname.$i.'min='.$rrd['ds'].$i.'min,'.$divider.',/';
         $rrd_options .= ' CDEF:'.$g_defname.$i.'max='.$rrd['ds'].$i.'max,'.$divider.',/';

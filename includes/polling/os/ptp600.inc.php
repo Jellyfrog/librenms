@@ -25,5 +25,5 @@
 use LibreNMS\RRD\RrdDefinition;
 
 $version = $device['sysDescr'];
-$masterSlaveMode = ucfirst(snmp_get($device, 'masterSlaveMode.0', '-Oqv', "CANOPY-SYS-MIB"));
+$masterSlaveMode = ucfirst(snmp_get($device, 'masterSlaveMode.0', '-Oqv', 'CANOPY-SYS-MIB'));
 $hardware = 'PTP 600 '.$masterSlaveMode;

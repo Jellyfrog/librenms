@@ -12,10 +12,10 @@
 
 $oids = ['cucsComputeBoardModel.1', 'cucsComputeBoardSerial.1'];
 $data = snmp_get_multi($device, $oids, '-OQUs', 'CISCO-UNIFIED-COMPUTING-COMPUTE-MIB');
-if (!empty($data[1]['cucsComputeBoardModel'])) {
+if (! empty($data[1]['cucsComputeBoardModel'])) {
     $hardware = $data[1]['cucsComputeBoardModel'];
 }
-if (!empty($data[1]['cucsComputeBoardSerial'])) {
+if (! empty($data[1]['cucsComputeBoardSerial'])) {
     $serial = $data[1]['cucsComputeBoardSerial'];
 }
 preg_match('/(?<=Firmware Version).([^\s]+)/', $device['sysDescr'], $tv_matches);

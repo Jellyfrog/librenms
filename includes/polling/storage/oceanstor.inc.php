@@ -1,6 +1,6 @@
 <?php
 /**
- * oceanstor.inc.php
+ * oceanstor.inc.php.
  *
  * LibreNMS storage polling module for Huawei OceanStor
  *
@@ -22,11 +22,10 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 $oceanstor_tmp = snmp_get_multi_oid($device, ['usedCapacity.0', 'totalCapacity.0'], '-OUQs', 'ISM-STORAGE-SVC-MIB');
 
-$storage['size']  = $oceanstor_tmp['totalCapacity.0'];
-$storage['used']  = $oceanstor_tmp['usedCapacity.0'];
-$storage['free']  = ($storage['size'] - $storage['used']);
+$storage['size'] = $oceanstor_tmp['totalCapacity.0'];
+$storage['used'] = $oceanstor_tmp['usedCapacity.0'];
+$storage['free'] = ($storage['size'] - $storage['used']);
 $storage['units'] = 1024;
 unset($oceanstor_tmp);

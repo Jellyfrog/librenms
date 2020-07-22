@@ -1,11 +1,12 @@
 <?php
+
 echo '<tr class="list">';
 echo '<td class="list">';
 echo $mef['mefIdent'];
 
 echo '</td>';
-echo '<td class="list">'. $mef['mefType'] . '</td>';
-echo '<td class="list">'. $mef['mefMTU'] . '</td>';
+echo '<td class="list">'.$mef['mefType'].'</td>';
+echo '<td class="list">'.$mef['mefMTU'].'</td>';
 
 echo '<td class="list">';
 if ($mef['mefAdmState'] == 'unlocked') {

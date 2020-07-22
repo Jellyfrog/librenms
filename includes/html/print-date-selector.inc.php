@@ -2,7 +2,7 @@
 
 use LibreNMS\Config;
 
-$request_uri = rtrim(Config::get('base_url', ''), '/') . $_SERVER['REQUEST_URI'];
+$request_uri = rtrim(Config::get('base_url', ''), '/').$_SERVER['REQUEST_URI'];
 
 echo "<div style='text-align: center;'>
         <form class='form-inline' id='customrange'>
@@ -13,11 +13,11 @@ echo csrf_field();
 echo '
         <div class="form-group">
         <label for="dtpickerfrom">From</label>
-        <input type="text" class="form-control" id="dtpickerfrom" maxlength="16" value="' . $graph_array['from'] . '" data-date-format="YYYY-MM-DD HH:mm">
+        <input type="text" class="form-control" id="dtpickerfrom" maxlength="16" value="'.$graph_array['from'].'" data-date-format="YYYY-MM-DD HH:mm">
         </div>
         <div class="form-group">
         <label for="dtpickerto">To</label>
-        <input type="text" class="form-control" id="dtpickerto" maxlength=16 value="' . $graph_array['to'] . '" data-date-format="YYYY-MM-DD HH:mm">
+        <input type="text" class="form-control" id="dtpickerto" maxlength=16 value="'.$graph_array['to'].'" data-date-format="YYYY-MM-DD HH:mm">
         </div>
         <input type="submit" class="btn btn-default" id="submit" value="Update" onclick="javascript:submitCustomRange(this.form);">
         </form>

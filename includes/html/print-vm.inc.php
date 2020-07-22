@@ -1,4 +1,5 @@
 <?php
+
 echo '<tr class="list">';
 echo '<td class="list">';
 
@@ -23,11 +24,11 @@ if ($vm['vmwVmGuestOS'] == 'E: tools not installed') {
 } elseif ($vm['vmwVmGuestOS'] == '') {
     echo '<td class="box-desc"><i>(Unknown)</i></td>';
 } else {
-    echo '<td class="list">' . \LibreNMS\Util\Rewrite::vmwareGuest($vm['vmwVmGuestOS']) . '</td>';
+    echo '<td class="list">'.\LibreNMS\Util\Rewrite::vmwareGuest($vm['vmwVmGuestOS']).'</td>';
 }
 
 if ($vm['vmwVmMemSize'] >= 1024) {
-    echo ('<td class=list>'.sprintf('%.2f', ($vm['vmwVmMemSize'] / 1024)).' GB</td>');
+    echo '<td class=list>'.sprintf('%.2f', ($vm['vmwVmMemSize'] / 1024)).' GB</td>';
 } else {
     echo '<td class=list>'.sprintf('%.2f', $vm['vmwVmMemSize']).' MB</td>';
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * alert-rules.inc.php
+ * alert-rules.inc.php.
  *
  * LibreNMS alert-rules.inc.php for processor
  *
@@ -28,7 +28,7 @@ use LibreNMS\Config;
 
 header('Content-type: application/json');
 
-if (!Auth::user()->hasGlobalAdmin()) {
+if (! Auth::user()->hasGlobalAdmin()) {
     die(json_encode([
         'status' => 'error',
         'message' => 'ERROR: You need to be admin',
@@ -52,14 +52,14 @@ if (is_numeric($template_id)) {
         'status' => 'ok',
         'name' => $rule['name'],
         'builder' => $rule['builder'] ?: QueryBuilderParser::fromOld($rule['rule'])->toArray(),
-        'extra' => array_replace($default_extra, (array)$rule['extra']),
+        'extra' => array_replace($default_extra, (array) $rule['extra']),
         'severity' => $rule['severity'] ?: Config::get('alert_rule.severity'),
-        'invert_map' => Config::get('alert_rule.invert_map')
+        'invert_map' => Config::get('alert_rule.invert_map'),
     ];
 } else {
     $output = [
         'status' => 'error',
-        'message' => 'Invalid template'
+        'message' => 'Invalid template',
     ];
 }
 

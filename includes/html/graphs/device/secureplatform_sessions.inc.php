@@ -4,7 +4,6 @@
  * NTTCOM MS module for printing CheckPoint SecurePlatform sessions
  */
 
-
 require 'includes/html/graphs/common.inc.php';
 
 $rrd_filename = rrd_name($device['hostname'], 'secureplatform_sessions');

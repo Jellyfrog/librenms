@@ -1,6 +1,6 @@
 <?php
 /**
- * dd-wrt.inc.php
+ * dd-wrt.inc.php.
  *
  * LibreNMS os polling module for Tomato
  *
@@ -25,7 +25,7 @@
 
 // dd-wrt, cannot use exec with OID specified. Options are extend (w/OID), or exec (w/o OID)
 // -> extend seems to be the recommended approach, so use that (changes OID, which "spells out" name)
-list($ignore, $version) = explode(' ', snmp_get($device, 'NET-SNMP-EXTEND-MIB::nsExtendOutput1Line."distro"', '-Osqnv'));
+[$ignore, $version] = explode(' ', snmp_get($device, 'NET-SNMP-EXTEND-MIB::nsExtendOutput1Line."distro"', '-Osqnv'));
 $hardware = snmp_get($device, 'NET-SNMP-EXTEND-MIB::nsExtendOutput1Line."hardware"', '-Osqnv');
 
 unset($ignore);

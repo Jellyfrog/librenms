@@ -11,7 +11,7 @@
  * the source code distribution for details.
  */
 
-$sla = dbFetchRow('SELECT `sla_nr`,`rtt_type` FROM `slas` WHERE `sla_id` = ?', array($vars['id']));
+$sla = dbFetchRow('SELECT `sla_nr`,`rtt_type` FROM `slas` WHERE `sla_id` = ?', [$vars['id']]);
 
 ?>
 <div class="well well-sm">

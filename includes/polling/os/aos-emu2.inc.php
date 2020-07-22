@@ -1,6 +1,6 @@
 <?php
 /**
- * aos-emu2.inc.php
+ * aos-emu2.inc.php.
  *
  * LibreNMS os discovery module for APC EMU2
  *
@@ -22,11 +22,10 @@
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 $aos_emu2_data = snmp_get_multi_oid($device, ['emsIdentSerialNumber.0', 'emsIdentProductNumber.0', 'emsIdentHardwareRev.0', 'emsIdentFirmwareRev.0'], '-OQUs', 'PowerNet-MIB');
 
-$serial   = trim($aos_emu2_data['emsIdentSerialNumber.0'], '"');
-$hardware = trim($aos_emu2_data['emsIdentProductNumber.0'], '"') . ' ' . trim($aos_emu2_data['emsIdentHardwareRev.0'], '"');
-$version  = trim($aos_emu2_data['emsIdentFirmwareRev.0'], '"');
+$serial = trim($aos_emu2_data['emsIdentSerialNumber.0'], '"');
+$hardware = trim($aos_emu2_data['emsIdentProductNumber.0'], '"').' '.trim($aos_emu2_data['emsIdentHardwareRev.0'], '"');
+$version = trim($aos_emu2_data['emsIdentFirmwareRev.0'], '"');
 
 unset($aos_emu2_data);

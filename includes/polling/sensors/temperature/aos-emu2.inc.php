@@ -1,6 +1,6 @@
 <?php
 /**
- * aos-emu2.inc.php
+ * aos-emu2.inc.php.
  *
  * LibreNMS sensors temp poller module for APC EMU2
  *
@@ -22,5 +22,4 @@
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 $sensor_value = fahrenheit_to_celsius($sensor_value, $sensor_cache['scale']);

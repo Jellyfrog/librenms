@@ -1,6 +1,6 @@
 <?php
 /**
- * opnsense.inc.php
+ * opnsense.inc.php.
  *
  * LibreNMS os polling module for OPNsense firewall
  *
@@ -22,15 +22,14 @@
  * @copyright  2018 Ben Gibbons
  * @author     Ben Gibbons <axemann@gmail.com>
  */
-
-$output = preg_split("/ /", $device['sysDescr']);
+$output = preg_split('/ /', $device['sysDescr']);
 $version = $output[2];
 $hardware = $output[6];
 
 // 20.1 onwards you can enable Display Version OID, which gives use the exact release number
-$OIDVersionString = snmp_get($device, ".1.3.6.1.4.1.8072.1.3.2.3.1.2.7.118.101.114.115.105.111.110", '-Oqv');
+$OIDVersionString = snmp_get($device, '.1.3.6.1.4.1.8072.1.3.2.3.1.2.7.118.101.114.115.105.111.110', '-Oqv');
 if (is_string($OIDVersionString)) {
-    $OIDVersionArray = preg_split("/ /", $OIDVersionString);
+    $OIDVersionArray = preg_split('/ /', $OIDVersionString);
     $version = $OIDVersionArray[1];
     $hardware = preg_replace('/\(|\)/', '', $OIDVersionArray[2]);
 }

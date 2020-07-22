@@ -1,6 +1,6 @@
 <?php
 /**
- * infinera-groove.inc.php
+ * infinera-groove.inc.php.
  *
  * LibreNMS os poller module for Infinera Groove
  *
@@ -22,7 +22,6 @@
  * @copyright  2019 Nick Hilliard
  * @author     Nick Hilliard <nick@foobar.org>
  */
-
 echo 'infinera-groove: ';
 
 $oid_list = [
@@ -42,5 +41,5 @@ foreach (array_keys($data) as $dkey) {
         break;
     }
 }
-$hardware   = $data[0]['neType'];
-$serial     = $data['shelf.1.0.0.0']['inventoryManufacturerNumber'];
+$hardware = $data[0]['neType'];
+$serial = $data['shelf.1.0.0.0']['inventoryManufacturerNumber'];

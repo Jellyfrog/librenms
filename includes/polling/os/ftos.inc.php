@@ -37,6 +37,6 @@ if (strstr($device['sysObjectID'], '.1.3.6.1.4.1.6027.1.3.')) {
     $version = snmp_get($device, 'chSysSwRuntimeImgVersion.1.1', '-Oqvn', 'F10-CHASSIS-MIB');
 }
 
-$version  = str_replace('"', '', $version);
+$version = str_replace('"', '', $version);
 $features = str_replace('"', '', $features);
 $hardware = str_replace('"', '', $hardware);

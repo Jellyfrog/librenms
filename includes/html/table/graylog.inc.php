@@ -22,7 +22,7 @@ use LibreNMS\Config;
 $filter_hostname = mres($vars['hostname']);
 $filter_range = mres($vars['range']);
 
-if (isset($searchPhrase) && !empty($searchPhrase)) {
+if (isset($searchPhrase) && ! empty($searchPhrase)) {
     $query = 'message:"'.$searchPhrase.'"';
 } else {
     $query = '*';
@@ -37,8 +37,8 @@ if ($rowCount != -1) {
     $extra_query = "&limit=$limit&offset=$offset";
 }
 
-if (!empty($filter_hostname)) {
-    if (!empty($query)) {
+if (! empty($filter_hostname)) {
+    if (! empty($query)) {
         $query .= ' && ';
     }
     $ip = gethostbyname($filter_hostname);
@@ -57,14 +57,14 @@ if (Config::has('graylog.base_uri')) {
     $graylog_base = '/search/universal/relative';
 }
 
-$graylog_url = Config::get('graylog.server') . ':' . Config::get('graylog.port') . $graylog_base . '?query=' . urlencode($query) . '&range=' . $filter_range . $extra_query;
+$graylog_url = Config::get('graylog.server').':'.Config::get('graylog.port').$graylog_base.'?query='.urlencode($query).'&range='.$filter_range.$extra_query;
 
-$context = stream_context_create(array(
-    'http' => array(
-        'header' => "Authorization: Basic " . base64_encode(Config::get('graylog.username') . ':' . Config::get('graylog.password')) . "\r\n" .
-                     "Accept: application/json",
-    )
-));
+$context = stream_context_create([
+    'http' => [
+        'header' => 'Authorization: Basic '.base64_encode(Config::get('graylog.username').':'.Config::get('graylog.password'))."\r\n".
+                     'Accept: application/json',
+    ],
+]);
 
 $messages = json_decode(file_get_contents($graylog_url, false, $context), true);
 
@@ -74,21 +74,20 @@ foreach ($messages['messages'] as $message) {
         $graylogTime = new DateTime($message['message']['timestamp']);
         $offset = $userTimezone->getOffset($graylogTime);
 
-        $timeInterval = DateInterval::createFromDateString((string)$offset . 'seconds');
+        $timeInterval = DateInterval::createFromDateString((string) $offset.'seconds');
         $graylogTime->add($timeInterval);
         $displayTime = $graylogTime->format('Y-m-d H:i:s');
     } else {
         $displayTime = $message['message']['timestamp'];
     }
 
-
-    $response[] = array(
-                      'timestamp' => graylog_severity_label($message['message']['level']) . $displayTime,
-                      'source'    => '<a href="'.generate_url(array('page'=>'device', 'device'=>$message['message']['source'])).'">'.$message['message']['source'].'</a>',
-                      'message'    => $message['message']['message'],
-                      'facility'  => $message['message']['facility'],
-                      'level'     => $message['message']['level'],
-    );
+    $response[] = [
+        'timestamp' => graylog_severity_label($message['message']['level']).$displayTime,
+        'source'    => '<a href="'.generate_url(['page'=>'device', 'device'=>$message['message']['source']]).'">'.$message['message']['source'].'</a>',
+        'message'    => $message['message']['message'],
+        'facility'  => $message['message']['facility'],
+        'level'     => $message['message']['level'],
+    ];
 }
 
 if (empty($messages['total_results'])) {
@@ -97,5 +96,5 @@ if (empty($messages['total_results'])) {
     $total = $messages['total_results'];
 }
 
-$output = array('current'=>$current,'rowCount'=>$rowCount,'rows'=>$response,'total'=>$total);
+$output = ['current'=>$current, 'rowCount'=>$rowCount, 'rows'=>$response, 'total'=>$total];
 echo _json_encode($output);

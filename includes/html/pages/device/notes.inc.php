@@ -10,12 +10,12 @@
  * the source code distribution for details.
  */
 
-$data = dbFetchRow("SELECT `notes` FROM `devices` WHERE device_id = ?", array(
-    $device['device_id']
-));
+$data = dbFetchRow('SELECT `notes` FROM `devices` WHERE device_id = ?', [
+    $device['device_id'],
+]);
 
 $disabled = '';
-if (!Auth::user()->hasGlobalAdmin()) {
+if (! Auth::user()->hasGlobalAdmin()) {
     $disabled = 'disabled';
 }
 
@@ -34,7 +34,7 @@ if (!Auth::user()->hasGlobalAdmin()) {
         <div class="col-md-1 col-md-offset-5">
             <?php
             echo '
-                <button type="submit" name="btn-update-notes" id="btn-update-notes" class="btn btn-default ' . $disabled . '" data-device_id="' . $device['device_id'] . '"><i class="fa fa-check"></i> Save</button>
+                <button type="submit" name="btn-update-notes" id="btn-update-notes" class="btn btn-default '.$disabled.'" data-device_id="'.$device['device_id'].'"><i class="fa fa-check"></i> Save</button>
             ';
             ?>
         </div>

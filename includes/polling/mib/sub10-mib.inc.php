@@ -2,53 +2,53 @@
 
 echo ' Sub10 Systems';
 
-$mib_oids = array(
-    'sub10RadioLclTxPower' => array(
+$mib_oids = [
+    'sub10RadioLclTxPower' => [
         '0',
         'sub10RadioLclTxPower',
         'Transmit Power',
         'GAUGE',
-    ),
-    'sub10RadioLclRxPower' => array(
+    ],
+    'sub10RadioLclRxPower' => [
         '0',
         'sub10RadioLclRxPower',
         'Receive Power',
         'GAUGE',
-    ),
-    'sub10RadioLclVectErr' => array(
+    ],
+    'sub10RadioLclVectErr' => [
         '0',
         'sub10RadioLclVectErr',
         'Vector Error',
         'GAUGE',
-    ),
-    'sub10RadioLclLnkLoss' => array(
+    ],
+    'sub10RadioLclLnkLoss' => [
         '0',
         'sub10RadioLclLnkLoss',
         'Link Loss',
         'GAUGE',
-    ),
-    'sub10RadioLclAFER' => array(
+    ],
+    'sub10RadioLclAFER' => [
         '0',
         'sub10RadioLclAFER',
         'Air Frame Error Rate',
         'GAUGE',
-    ),
-    'sub10RadioLclDataRate' => array(
+    ],
+    'sub10RadioLclDataRate' => [
         '0',
         'sub10RadioLclDataRate',
         'Data Rate on Airside interface',
         'GAUGE',
-    ),
-);
+    ],
+];
 
-$mib_graphs = array(
+$mib_graphs = [
     'sub10_sub10RadioLclTxPower',
     'sub10_sub10RadioLclRxPower',
     'sub10_sub10RadioLclVectErr',
     'sub10_sub10RadioLclLnkLoss',
     'sub10_sub10RadioLclAFER',
-    'sub10RadioLclDataRate'
-);
+    'sub10RadioLclDataRate',
+];
 
 unset($graph, $oids, $oid);
 

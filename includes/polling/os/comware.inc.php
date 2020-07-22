@@ -9,7 +9,7 @@ echo 'Comware OS...';
 preg_match('/Version ([0-9.]+).*(Release|ESS) ([R0-9P]+).*\n(.*)/', $device['sysDescr'], $version_match);
 $version = $version_match[1];
 $features = $version_match[3];
-$hardware = str_replace(array("HPE FF ", "HP ", "HPE "), '', $version_match[4]);
+$hardware = str_replace(['HPE FF ', 'HP ', 'HPE '], '', $version_match[4]);
 
 $serial_nums = explode("\n", trim(snmp_walk($device, 'hh3cEntityExtManuSerialNum', '-Osqv', 'HH3C-ENTITY-EXT-MIB')));
 $serial = $serial_nums[0]; // use the first s/n

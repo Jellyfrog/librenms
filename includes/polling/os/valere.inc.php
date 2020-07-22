@@ -1,6 +1,6 @@
 <?php
 /**
- * valere.inc.php
+ * valere.inc.php.
  *
  * -Description-
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
 $hardware = snmp_get($device, 'vpwrIdentModel.0', '-Ovqa', 'VALERE-DC-POWER-MIB');
 $version = snmp_get($device, 'vpwrIdentControllerVersion.0', '-Ovqa', 'VALERE-DC-POWER-MIB');
 $features = implode(', ', explode(PHP_EOL, snmp_walk($device, 'vpwrModuleOID', '-Oqvs', 'VALERE-DC-POWER-MIB')));

@@ -2,13 +2,13 @@
 
 use LibreNMS\RRD\RrdDefinition;
 
-$serial   = trim(snmp_get($device, "ibSerialNumber.0", "-OQv", "IB-PLATFORMONE-MIB"));
-$version  = trim(snmp_get($device, "ibNiosVersion.0", "-OQv", "IB-PLATFORMONE-MIB"));
-$hardware = trim(snmp_get($device, "ibHardwareType.0", "-OQv", "IB-PLATFORMONE-MIB"));
+$serial = trim(snmp_get($device, 'ibSerialNumber.0', '-OQv', 'IB-PLATFORMONE-MIB'));
+$version = trim(snmp_get($device, 'ibNiosVersion.0', '-OQv', 'IB-PLATFORMONE-MIB'));
+$hardware = trim(snmp_get($device, 'ibHardwareType.0', '-OQv', 'IB-PLATFORMONE-MIB'));
 
-##############
-# Create ddns update rrd
-##############
+//#############
+// Create ddns update rrd
+//#############
 $mibs = 'IB-DNSONE-MIB';
 $oids = [
     'ibDDNSUpdateSuccess.0',
@@ -25,22 +25,20 @@ $rrd_def = RrdDefinition::make()
     ->addDataset('reject', 'DERIVE', 0)
     ->addDataset('prereq_reject', 'DERIVE', 0);
 
-$fields = array(
+$fields = [
     'success'       => $data[0]['ibDDNSUpdateSuccess'],
     'failure'       => $data[0]['ibDDNSUpdateFailure'],
     'reject'        => $data[0]['ibDDNSUpdateReject'],
     'prereq_reject' => $data[0]['ibDDNSUpdatePrerequisiteReject'],
-);
-
+];
 
 $tags = compact('rrd_def');
 data_update($device, 'ib_dns_dyn_updates', $tags, $fields);
 $graphs['ib_dns_dyn_updates'] = true;
 
-
-##################
-# Create dns performance graph (latency)
-##################
+//#################
+// Create dns performance graph (latency)
+//#################
 $mibs = 'IB-PLATFORMONE-MIB';
 $oids = [
     'ibNetworkMonitorDNSNonAAT1AvgLatency.0',
@@ -53,18 +51,18 @@ $rrd_def = RrdDefinition::make()
         ->addDataset('PerfAA', 'GAUGE', 0)
         ->addDataset('PerfnonAA', 'GAUGE', 0);
 
-$fields = array(
+$fields = [
     'PerfAA'    => $data[0]['ibNetworkMonitorDNSAAT1AvgLatency'],
     'PerfnonAA' => $data[0]['ibNetworkMonitorDNSNonAAT1AvgLatency'],
-);
+];
 
 $tags = compact('rrd_def');
 data_update($device, 'ib_dns_performance', $tags, $fields);
 $graphs['ib_dns_performance'] = true;
 
-##################
-# Create dns request return code graph
-##################
+//#################
+// Create dns request return code graph
+//#################
 $mibs = 'IB-DNSONE-MIB';
 $oids = [
     'ibBindZoneFailure."summary"',
@@ -81,21 +79,20 @@ $rrd_def = RrdDefinition::make()
     ->addDataset('nxdomain', 'DERIVE', 0)
     ->addDataset('nxrrset', 'DERIVE', 0);
 
-$fields = array(
+$fields = [
     'success'       => $data['"summary"']['ibBindZoneSuccess'],
     'failure'       => $data['"summary"']['ibBindZoneFailure'],
     'nxdomain'      => $data['"summary"']['ibBindZoneNxDomain'],
     'nxrrset'       => $data['"summary"']['ibBindZoneNxRRset'],
-);
+];
 
 $tags = compact('rrd_def');
 data_update($device, 'ib_dns_request_return_codes', $tags, $fields);
 $graphs['ib_dns_request_return_codes'] = true;
 
-
-##################
-# Create dhcp messages graph
-##################
+//#################
+// Create dhcp messages graph
+//#################
 $mibs = 'IB-DHCPONE-MIB';
 $oids = [
     'ibDhcpTotalNoOfAcks.0',
@@ -122,7 +119,7 @@ $rrd_def = RrdDefinition::make()
     ->addDataset('release', 'DERIVE', 0)
     ->addDataset('request', 'DERIVE', 0);
 
-$fields = array(
+$fields = [
     'ack'      => $data[0]['ibDhcpTotalNoOfAcks'],
     'decline'  => $data[0]['ibDhcpTotalNoOfDeclines'],
     'discover' => $data[0]['ibDhcpTotalNoOfDiscovers'],
@@ -132,7 +129,7 @@ $fields = array(
     'other'    => $data[0]['ibDhcpTotalNoOfOthers'],
     'release'  => $data[0]['ibDhcpTotalNoOfReleases'],
     'request'  => $data[0]['ibDhcpTotalNoOfRequests'],
-);
+];
 
 $tags = compact('rrd_def');
 data_update($device, 'ib_dhcp_messages', $tags, $fields);

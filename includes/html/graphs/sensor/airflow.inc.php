@@ -1,6 +1,6 @@
 <?php
 /**
- * airflow.inc.php
+ * airflow.inc.php.
  *
  * LibreNMS airflow graph for WebUI
  *
@@ -22,7 +22,6 @@
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 $scale_min = '0';
 $scale_max = '10';
 

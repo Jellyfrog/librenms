@@ -18,34 +18,34 @@ if ($_POST['editing']) {
             $transport = $_POST['transport'] ? $_POST['transport'] : $transport = 'udp';
             $timeout = $_POST['timeout'];
 
-            $update = array(
+            $update = [
                 'poller_group' => $poller_group,
                 'port' => $port,
                 'port_association_mode' => $port_assoc_mode,
                 'snmp_disable' => 0,
                 'snmpver' => $snmpver,
                 'transport' => $transport,
-            );
+            ];
 
             if ($retries) {
                 $update['retries'] = $retries;
             } else {
-                $update['retries'] = array('NULL');
+                $update['retries'] = ['NULL'];
             }
 
-            if ($snmpver != "v3") {
+            if ($snmpver != 'v3') {
                 $community = $_POST['community'];
-                $update['community' ] = $community;
+                $update['community'] = $community;
             }
 
             if ($timeout) {
                 $update['timeout'] = $timeout;
             } else {
-                $update['timeout'] = array('NULL');
+                $update['timeout'] = ['NULL'];
             }
 
-            $v3 = array();
-            if ($snmpver == "v3") {
+            $v3 = [];
+            if ($snmpver == 'v3') {
                 $community = ''; // if v3 works, we don't need a community
 
                 $v3['authalgo'] = $_POST['authalgo'];
@@ -62,7 +62,7 @@ if ($_POST['editing']) {
             $update['features'] = null;
             $update['hardware'] = $_POST['hardware'];
             $update['icon'] = null;
-            $update['os'] = $_POST['os'] ? $_POST['os_id'] : "ping";
+            $update['os'] = $_POST['os'] ? $_POST['os_id'] : 'ping';
             $update['poller_group'] = $poller_group;
             $update['snmp_disable'] = 1;
             $update['sysName'] = $_POST['sysName'] ? $_POST['sysName'] : null;
@@ -70,16 +70,16 @@ if ($_POST['editing']) {
         }
 
         $device_is_snmpable = false;
-        $rows_updated=0;
+        $rows_updated = 0;
 
         if ($force_save !== true && $snmp_enabled) {
             $device_snmp_details = deviceArray($device['hostname'], $community, $snmpver, $port, $transport, $v3, $port_assoc_mode);
-            $device_issnmpable= isSNMPable($device_snmp_details);
+            $device_issnmpable = isSNMPable($device_snmp_details);
         }
 
-        if ($force_save === true || !$snmp_enabled || $device_issnmpable) {
+        if ($force_save === true || ! $snmp_enabled || $device_issnmpable) {
             // update devices table
-            $rows_updated = dbUpdate($update, 'devices', '`device_id` = ?', array($device['device_id']));
+            $rows_updated = dbUpdate($update, 'devices', '`device_id` = ?', [$device['device_id']]);
         }
 
         if ($snmp_enabled && ($force_save === true || $device_issnmpable)) {
@@ -91,43 +91,43 @@ if ($_POST['editing']) {
             // forgetAttrib() returns true if it was deleted and false if it was not (e.g. it didn't exist)
             // Symfony throws FatalThrowableError on error
 
-            $devices_attribs=array('snmp_max_repeaters', 'snmp_max_oid');
+            $devices_attribs = ['snmp_max_repeaters', 'snmp_max_oid'];
 
             foreach ($devices_attribs as $devices_attrib) {
                 // defaults
-                $feedback_prefix=$devices_attrib;
-                $form_value=null;
-                $form_value_is_numeric=false; // does not need to be a number greater than zero
+                $feedback_prefix = $devices_attrib;
+                $form_value = null;
+                $form_value_is_numeric = false; // does not need to be a number greater than zero
 
                 if ($devices_attrib == 'snmp_max_repeaters') {
-                    $feedback_prefix="SNMP Max Repeaters";
-                    $form_value=$max_repeaters;
-                    $form_value_is_numeric=true;
+                    $feedback_prefix = 'SNMP Max Repeaters';
+                    $form_value = $max_repeaters;
+                    $form_value_is_numeric = true;
                 }
 
                 if ($devices_attrib == 'snmp_max_oid') {
-                    $feedback_prefix="SNMP Max OID";
-                    $form_value=$max_oid;
-                    $form_value_is_numeric=true;
+                    $feedback_prefix = 'SNMP Max OID';
+                    $form_value = $max_oid;
+                    $form_value_is_numeric = true;
                 }
 
                 $get_devices_attrib = get_dev_attrib($device, $devices_attrib);
                 $set_devices_attrib = false; // testing $set_devices_attrib === false is not a true indicator of a failure
 
                 if ($form_value != $get_devices_attrib && $form_value_is_numeric && is_numeric($form_value) && $form_value != 0) {
-                    $set_devices_attrib=set_dev_attrib($device, $devices_attrib, $form_value);
+                    $set_devices_attrib = set_dev_attrib($device, $devices_attrib, $form_value);
                 }
 
-                if ($form_value != $get_devices_attrib && !$form_value_is_numeric) {
-                    $set_devices_attrib=set_dev_attrib($device, $devices_attrib, $form_value);
+                if ($form_value != $get_devices_attrib && ! $form_value_is_numeric) {
+                    $set_devices_attrib = set_dev_attrib($device, $devices_attrib, $form_value);
                 }
 
-                if ($form_value != $get_devices_attrib && $form_value_is_numeric && !is_numeric($form_value)) {
-                    $set_devices_attrib=del_dev_attrib($device, $devices_attrib);
+                if ($form_value != $get_devices_attrib && $form_value_is_numeric && ! is_numeric($form_value)) {
+                    $set_devices_attrib = del_dev_attrib($device, $devices_attrib);
                 }
 
-                if ($form_value != $get_devices_attrib && !$form_value_is_numeric && $form_value == '') {
-                    $set_devices_attrib=del_dev_attrib($device, $devices_attrib);
+                if ($form_value != $get_devices_attrib && ! $form_value_is_numeric && $form_value == '') {
+                    $set_devices_attrib = del_dev_attrib($device, $devices_attrib);
                 }
 
                 if ($form_value != $get_devices_attrib && $set_devices_attrib) {
@@ -138,7 +138,7 @@ if ($_POST['editing']) {
                     $update_message[] = "$feedback_prefix deleted";
                 }
 
-                if ($form_value != $get_devices_attrib && $form_value == $set_devices_attrib && (!is_null($set_devices_attrib) && $set_devices_attrib != '')) {
+                if ($form_value != $get_devices_attrib && $form_value == $set_devices_attrib && (! is_null($set_devices_attrib) && $set_devices_attrib != '')) {
                     $update_message[] = "$feedback_prefix updated to $set_devices_attrib";
                 }
 
@@ -155,12 +155,12 @@ if ($_POST['editing']) {
             $update_message[] = 'Device record updated';
         }
 
-        if ($snmp_enabled && ($force_save !== true && !$device_issnmpable)) {
-            $update_failed_message[] = "Could not connect to " . htmlspecialchars($device['hostname']) . " with those SNMP settings.  To save anyway, turn on Force Save.";
+        if ($snmp_enabled && ($force_save !== true && ! $device_issnmpable)) {
+            $update_failed_message[] = 'Could not connect to '.htmlspecialchars($device['hostname']).' with those SNMP settings.  To save anyway, turn on Force Save.';
             $update_message[] = 'SNMP settings reverted';
         }
 
-        if ($rows_updated == 0 && !isset($update_message) && !isset($update_failed_message)) {
+        if ($rows_updated == 0 && ! isset($update_message) && ! isset($update_failed_message)) {
             $update_message[] = 'SNMP settings did not change';
         }
     }//end if (Auth::user()->hasGlobalAdmin())
@@ -174,15 +174,15 @@ unset($force_save, $poller_group, $snmp_enabled);
 unset($community, $max_repeaters, $max_oid, $port, $port_assoc_mode, $retries, $snmpver, $transport, $timeout);
 
 // get up-to-date database values for use on the form
-$device = dbFetchRow('SELECT * FROM `devices` WHERE `device_id` = ?', array($device['device_id']));
+$device = dbFetchRow('SELECT * FROM `devices` WHERE `device_id` = ?', [$device['device_id']]);
 $max_oid = get_dev_attrib($device, 'snmp_max_oid');
 $max_repeaters = get_dev_attrib($device, 'snmp_max_repeaters');
 
-echo "<h3> SNMP Settings </h3>";
+echo '<h3> SNMP Settings </h3>';
 
 // use Toastr to print normal (success) messages, similar to Device Settings
 if (isset($update_message)) {
-    $toastr_options=array();
+    $toastr_options = [];
 
     if (is_array($update_message)) {
         foreach ($update_message as $message) {
@@ -199,10 +199,10 @@ if (isset($update_message)) {
 
 // use Toastr:error to call attention to the problem; don't let it time out
 if (isset($update_failed_message)) {
-    $toastr_options=array();
-    $toastr_options["closeButton"]=true;
-    $toastr_options["extendedTimeOut"]=0;
-    $toastr_options["timeOut"]=0;
+    $toastr_options = [];
+    $toastr_options['closeButton'] = true;
+    $toastr_options['extendedTimeOut'] = 0;
+    $toastr_options['timeOut'] = 0;
 
     if (is_array($update_failed_message)) {
         foreach ($update_failed_message as $error) {
@@ -219,14 +219,14 @@ if (isset($update_failed_message)) {
 
 echo "
     <form id='edit' name='edit' method='post' action='' role='form' class='form-horizontal'>
-    " . csrf_field() . "
+    ".csrf_field()."
     <div class='form-group'>
     <label for='hardware' class='col-sm-2 control-label'>SNMP</label>
     <div class='col-sm-4'>
-    <input type='checkbox' id='snmp' name='snmp' data-size='small' onChange='disableSnmp(this);'".($device['snmp_disable'] ? "" : " checked").">
+    <input type='checkbox' id='snmp' name='snmp' data-size='small' onChange='disableSnmp(this);'".($device['snmp_disable'] ? '' : ' checked').">
     </div>
     </div>
-    <div id='snmp_override' style='display: ".($device['snmp_disable'] ? "block" : "none").";'>
+    <div id='snmp_override' style='display: ".($device['snmp_disable'] ? 'block' : 'none').";'>
     <div class='form-group'>
     <label for='sysName' class='col-sm-2 control-label'>sysName (optional)</label>
     <div class='col-sm-4'>
@@ -242,12 +242,12 @@ echo "
     <div class='form-group'>
     <label for='os' class='col-sm-2 control-label'>OS (optional)</label>
     <div class='col-sm-4'>
-    <input id='os' class='form-control' name='os' value='" . htmlspecialchars(Config::get("os.{$device['os']}.text")) . "'/>
+    <input id='os' class='form-control' name='os' value='".htmlspecialchars(Config::get("os.{$device['os']}.text"))."'/>
     <input type='hidden' id='os_id' class='form-control' name='os_id' value='".$device['os']."'/>
     </div>
     </div>
     </div>
-    <div id='snmp_conf' style='display: ".($device['snmp_disable'] ? "none" : "block").";'>
+    <div id='snmp_conf' style='display: ".($device['snmp_disable'] ? 'none' : 'block').";'>
     <input type=hidden name='editing' value='yes'>
     <div class='form-group'>
     <label for='snmpver' class='col-sm-2 control-label'>SNMP Details</label>
@@ -259,7 +259,7 @@ echo "
     </select>
     </div>
     <div class='col-sm-2'>
-    <input type='number' name='port' placeholder='port' class='form-control input-sm' value='" . htmlspecialchars($device['port'] == Config::get('snmp.port') ? "" : $device['port']) . "'>
+    <input type='number' name='port' placeholder='port' class='form-control input-sm' value='".htmlspecialchars($device['port'] == Config::get('snmp.port') ? '' : $device['port'])."'>
     </div>
     <div class='col-sm-1'>
     <select name='transport' id='transport' class='form-control input-sm'>";
@@ -373,11 +373,11 @@ echo "        </select>
     <div class='col-sm-4'>
     <select id='cryptoalgo' name='cryptoalgo' class='form-control'>
     <option value='AES'>AES</option>
-    <option value='DES' ".($device['cryptoalgo'] === 'DES' ? 'selected' : '').">DES</option>
+    <option value='DES' ".($device['cryptoalgo'] === 'DES' ? 'selected' : '').'>DES</option>
     </select>
     </div>
     </div>
-    </div>";
+    </div>';
 
 ?>
 

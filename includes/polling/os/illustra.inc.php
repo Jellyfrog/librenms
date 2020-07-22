@@ -20,5 +20,5 @@ if (isset($data1[1])) {
 
 if (isset($data1[5])) {
     $data2 = explode('.', $data1[5]);
-    $version = $data2[1].".".$data2[2].".".$data2[3].".".$data2[4];
+    $version = $data2[1].'.'.$data2[2].'.'.$data2[3].'.'.$data2[4];
 }

@@ -2,10 +2,10 @@
 
 if (preg_match('/^Cisco IOS Software.*?, .+? Software(\, )?([\s\w\d]+)? \([^\-]+-([\w\d]+)-\w\), Version ([^,]+)/', $device['sysDescr'], $regexp_result)) {
     $features = $regexp_result[3];
-    $version  = $regexp_result[4];
+    $version = $regexp_result[4];
     $hardware = $regexp_result[2];
-    $tmp      = preg_split("/\\r\\n|\\r|\\n/", $version);
-    if (!empty($tmp[0])) {
+    $tmp = preg_split('/\\r\\n|\\r|\\n/', $version);
+    if (! empty($tmp[0])) {
         $version = $tmp[0];
     }
 }
@@ -17,15 +17,15 @@ $oids = ['entPhysicalModelName.1', 'entPhysicalContainedIn.1', 'entPhysicalName.
 $data = snmp_get_multi($device, $oids, '-OQUs', 'ENTITY-MIB:OLD-CISCO-CHASSIS-MIB');
 
 if ($data[1]['entPhysicalContainedIn'] == '0') {
-    if (!empty($data[1]['entPhysicalSoftwareRev'])) {
+    if (! empty($data[1]['entPhysicalSoftwareRev'])) {
         $version = $data[1]['entPhysicalSoftwareRev'];
     }
 
-    if (!empty($data[1]['entPhysicalName']) && $data[1]['entPhysicalName'] != 'Switch System') {
+    if (! empty($data[1]['entPhysicalName']) && $data[1]['entPhysicalName'] != 'Switch System') {
         $hardware = $data[1]['entPhysicalName'];
     }
 
-    if (!empty($data[1]['entPhysicalModelName'])) {
+    if (! empty($data[1]['entPhysicalModelName'])) {
         $hardware = $data[1]['entPhysicalModelName'];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * eltek-webpower.inc.php
+ * eltek-webpower.inc.php.
  *
  * -Description-
  *

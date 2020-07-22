@@ -1,6 +1,6 @@
 <?php
 /**
- * websensor.inc.php
+ * websensor.inc.php.
  *
  * LibreNMS OS poller module for Comet System Web Sensor
  *
@@ -22,5 +22,4 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 $serial = snmp_get($device, 'serialNumber.0', '-OevTQUs', 'T3610-MIB');

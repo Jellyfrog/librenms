@@ -1,6 +1,6 @@
 <?php
 /**
- * helios.inc.php
+ * helios.inc.php.
  *
  * LibreNMS os polling module for Ignore HeliOS
  *
@@ -22,10 +22,9 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 $helio_oids = snmp_get_multi_oid($device, ['model.0', 'fwVersion.0'], '-OUQn', 'IGNITENET-MIB');
 
 $hardware = $helio_oids['.1.3.6.1.4.1.47307.1.1.1.0'];
-$version  = $helio_oids['.1.3.6.1.4.1.47307.1.1.3.0'];
+$version = $helio_oids['.1.3.6.1.4.1.47307.1.1.3.0'];
 
 unset($helio_oids);

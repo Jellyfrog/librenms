@@ -1,6 +1,6 @@
 <?php
 /**
- * comware.inc.php
+ * comware.inc.php.
  *
  * LibreNMS mempools poller module for Comware
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 $usage = snmp_get($device, "hh3cEntityExtMemUsage.{$mempool['mempool_index']}", '-Ovq', 'HH3C-ENTITY-EXT-MIB');
 $mempool['total'] = 100;
 $mempool['used'] = $usage;

@@ -1,6 +1,6 @@
 <?php
 /**
- * rrdtool.inc.php
+ * rrdtool.inc.php.
  *
  * Helper for processing rrdtool requests efficiently
  *
@@ -32,17 +32,16 @@ use LibreNMS\Config;
  *
  * @param string $graph_file
  * @param string $options
- * @return integer
+ * @return int
  */
 function rrdtool_graph($graph_file, $options)
 {
     return Rrd::graph($graph_file, $options);
 }
 
-
 /**
  * Checks if the rrd file exists on the server
- * This will perform a remote check if using rrdcached and rrdtool >= 1.5
+ * This will perform a remote check if using rrdcached and rrdtool >= 1.5.
  *
  * @param string $filename full path to the rrd file
  * @return bool whether or not the passed rrd file exists
@@ -52,28 +51,27 @@ function rrdtool_check_rrd_exists($filename)
     return Rrd::checkRrdExists($filename);
 }
 
-
 /**
- * Escapes strings for RRDtool
+ * Escapes strings for RRDtool.
  *
  * @param string $string the string to escape
- * @param integer $length if passed, string will be padded and trimmed to exactly this length (after rrdtool unescapes it)
+ * @param int $length if passed, string will be padded and trimmed to exactly this length (after rrdtool unescapes it)
  * @return string
  */
 function rrdtool_escape($string, $length = null)
 {
     $result = shorten_interface_type($string);
-    $result = str_replace("'", '', $result);            # remove quotes
+    $result = str_replace("'", '', $result);            // remove quotes
 
     if (is_numeric($length)) {
-        # preserve original $length for str_pad()
+        // preserve original $length for str_pad()
 
-        # determine correct strlen() for substr_count()
-        $string_length=strlen($string);
-        $substr_count_length=$length;
+        // determine correct strlen() for substr_count()
+        $string_length = strlen($string);
+        $substr_count_length = $length;
 
         if ($length > $string_length) {
-            $substr_count_length=$string_length; # If $length is greater than the haystack length, then substr_count() will produce a warning; fix warnings.
+            $substr_count_length = $string_length; // If $length is greater than the haystack length, then substr_count() will produce a warning; fix warnings.
         }
 
         $extra = substr_count($string, ':', 0, $substr_count_length);
@@ -83,27 +81,26 @@ function rrdtool_escape($string, $length = null)
         }
     }
 
-    $result = str_replace(':', '\:', $result);          # escape colons
+    $result = str_replace(':', '\:', $result);          // escape colons
 
     return $result.' ';
 } // rrdtool_escape
 
-
 /**
- * Generates a filename based on the hostname (or IP) and some extra items
+ * Generates a filename based on the hostname (or IP) and some extra items.
  *
  * @param string $host Host name
  * @param array|string $extra Components of RRD filename - will be separated with "-", or a pre-formed rrdname
  * @param string $extension File extension (default is .rrd)
  * @return string the name of the rrd file for $host's $extra component
  */
-function rrd_name($host, $extra, $extension = ".rrd")
+function rrd_name($host, $extra, $extension = '.rrd')
 {
     return Rrd::name($host, $extra, $extension);
 } // rrd_name
 
 /**
- * Generates a path based on the hostname (or IP)
+ * Generates a path based on the hostname (or IP).
  *
  * @param string $host Host name
  * @return string the name of the rrd directory for $host
@@ -111,11 +108,12 @@ function rrd_name($host, $extra, $extension = ".rrd")
 function get_rrd_dir($host)
 {
     $host = str_replace(':', '_', trim($host, '[]'));
-    return implode("/", [Config::get('rrd_dir'), $host]);
+
+    return implode('/', [Config::get('rrd_dir'), $host]);
 } // rrd_dir
 
 /**
- * rename an rrdfile, can only be done on the LibreNMS server hosting the rrd files
+ * rename an rrdfile, can only be done on the LibreNMS server hosting the rrd files.
  *
  * @param array $device Device object
  * @param string|array $oldname RRD name array as used with rrd_name()

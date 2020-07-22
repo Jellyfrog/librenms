@@ -7,4 +7,4 @@ $data = snmp_get_multi($device, $oids, '-OQUs', 'CXR-TS-MIB');
 //d_echo($data);
 
 $hardware = $data[0]['productName'];
-$version  = $data[0]['version'];
+$version = $data[0]['version'];

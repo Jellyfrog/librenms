@@ -16,9 +16,9 @@ if ($temp_data['fmDeviceEntMode.1'] == 'fmg-faz') {
     $log_rate = snmp_get($device, '.1.3.6.1.4.1.12356.103.2.1.9.0', '-Ovq');
     $log_rate = str_replace(' logs per second', '', $log_rate);
     $rrd_def = RrdDefinition::make()->addDataset('lograte', 'GAUGE', 0, 100000000);
-    $fields = array(
+    $fields = [
         'lograte' => $log_rate,
-    );
+    ];
     $tags = compact('rrd_def');
     data_update($device, 'fortios_lograte', $tags, $fields);
     $graphs['fortios_lograte'] = true;

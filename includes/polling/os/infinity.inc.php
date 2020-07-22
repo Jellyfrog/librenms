@@ -11,6 +11,6 @@
  */
 
 $data = explode(' ', $device['sysDescr']);
-$hardware = $data[0] . ' ' . $data[1];
+$hardware = $data[0].' '.$data[1];
 $version = $data[2];
 unset($data);

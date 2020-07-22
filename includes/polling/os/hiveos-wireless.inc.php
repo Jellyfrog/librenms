@@ -1,6 +1,6 @@
 <?php
 /**
- * hiveos-wireless.inc.php
+ * hiveos-wireless.inc.php.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
  * @copyright  2018 Ryan Finney
  * @author     https://github.com/theherodied/
  */
-
 $data = snmp_get_multi_oid($device, ['ahSystemSerial.0', 'ahDeviceMode.0', 'ahFirmwareVersion.0'], '-OQUs', 'AH-SYSTEM-MIB');
 $hardware = $data['ahDeviceMode.0'];
 $version2 = $data['ahFirmwareVersion.0'];

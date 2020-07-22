@@ -1,6 +1,6 @@
 <?php
 /**
- * alert_rule_list.inc.php
+ * alert_rule_list.inc.php.
  *
  * LibreNMS alert_rule_list modal
  *
@@ -25,7 +25,7 @@
 
 use LibreNMS\Alerting\QueryBuilderParser;
 
-if (!Auth::user()->hasGlobalAdmin()) {
+if (! Auth::user()->hasGlobalAdmin()) {
     die('ERROR: You need to be admin');
 }
 

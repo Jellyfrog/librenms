@@ -1,6 +1,6 @@
 <?php
 /**
- * coriant.inc.php
+ * coriant.inc.php.
  *
  * LibreNMS os poller module for Coriant
  *
@@ -22,5 +22,4 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 require 'includes/polling/os/misc/tnms-nbi.inc.php';

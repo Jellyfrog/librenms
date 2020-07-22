@@ -1,6 +1,6 @@
 <?php
 /**
- * nimbleos.inc.php
+ * nimbleos.inc.php.
  *
  * LibreNMS storage polling module for Nimble Storage
  *
@@ -22,13 +22,13 @@
  * @copyright  2018 Ryan Finney
  * @author     https://github.com/theherodied/
  */
-if (!is_array($storage_cache['nimbleos'])) {
+if (! is_array($storage_cache['nimbleos'])) {
     $storage_cache['nimbleos'] = snmpwalk_cache_oid($device, 'volEntry', null, 'NIMBLE-MIB');
     d_echo($storage_cache);
 }
 $entry = $storage_cache['nimbleos'][$storage['storage_index']];
-$storage['units'] = 1024*1024;
+$storage['units'] = 1024 * 1024;
 //nimble uses a high 32bit counter and a low 32bit counter to make a 64bit counter
-$storage['size'] = (($entry['volSizeHigh'] << 32 ) + $entry['volSizeLow']) * $storage['units'];
-$storage['used'] = (($entry['volUsageHigh'] << 32 ) + $entry['volUsageLow']) * $storage['units'];
+$storage['size'] = (($entry['volSizeHigh'] << 32) + $entry['volSizeLow']) * $storage['units'];
+$storage['used'] = (($entry['volUsageHigh'] << 32) + $entry['volUsageLow']) * $storage['units'];
 $storage['free'] = ($storage['size'] - $storage['used']);

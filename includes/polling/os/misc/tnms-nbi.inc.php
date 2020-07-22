@@ -8,22 +8,21 @@ echo 'TNMS-NBI-MIB: ';
  */
 function SqlSNMP($table, $cmib, $device)
 {
-
     echo " $cmib ";
-    $c_oids = snmpwalk_cache_multi_oid($device, $cmib, array(), 'TNMS-NBI-MIB');
-    $c_list = array();
+    $c_oids = snmpwalk_cache_multi_oid($device, $cmib, [], 'TNMS-NBI-MIB');
+    $c_list = [];
 
     foreach ($c_oids as $index => $entry) {
-        $neType     = $entry['enmsNeType'];
-        $neName     = $entry['enmsNeName'];
+        $neType = $entry['enmsNeType'];
+        $neName = $entry['enmsNeName'];
         $neLocation = $entry['enmsNeLocation'];
-        $neAlarm    = $entry['enmsNeAlarmSeverity'];
-        $neOpMode   = $entry['enmsNeOperatingMode'];
-        $neOpState  = $entry['enmsNeOpState'];
-        
-        if (dbFetchCell("SELECT COUNT(id) FROM $table WHERE `device_id` = ? AND `neID` = ?", array($device['device_id'], $index)) == 0) {
-            dbInsert(array('device_id' => $device['device_id'], 'neID' => $index, 'neType' => mres($neType), 'neName' => mres($neName), 'neLocation' => mres($neLocation), 'neAlarm' => mres($neAlarm), 'neOpMode' => mres($neOpMode), 'neOpState' => mres($neOpState)), $table);
-            log_event("Coriant $cmib Hardware ". mres($neType) . " : " . mres($neName) . " ($index) at " . mres($neLocation) . " Discovered", $device, 'system', 2);
+        $neAlarm = $entry['enmsNeAlarmSeverity'];
+        $neOpMode = $entry['enmsNeOperatingMode'];
+        $neOpState = $entry['enmsNeOpState'];
+
+        if (dbFetchCell("SELECT COUNT(id) FROM $table WHERE `device_id` = ? AND `neID` = ?", [$device['device_id'], $index]) == 0) {
+            dbInsert(['device_id' => $device['device_id'], 'neID' => $index, 'neType' => mres($neType), 'neName' => mres($neName), 'neLocation' => mres($neLocation), 'neAlarm' => mres($neAlarm), 'neOpMode' => mres($neOpMode), 'neOpState' => mres($neOpState)], $table);
+            log_event("Coriant $cmib Hardware ".mres($neType).' : '.mres($neName)." ($index) at ".mres($neLocation).' Discovered', $device, 'system', 2);
             echo '+';
         } else {
             echo '.';
@@ -32,12 +31,12 @@ function SqlSNMP($table, $cmib, $device)
     }
 
     $sql = "SELECT id, neID, neName FROM $table WHERE device_id = ?";
-    $params = array($device['device_id']);
+    $params = [$device['device_id']];
     foreach (dbFetchRows($sql, $params) as $db_ne) {
         d_echo($db_ne);
-        if (!in_array($db_ne['neID'], $c_list)) {
-            dbDelete($table, '`id` = ?', array($db_ne['id']));
-            log_event("Coriant $cmib Hardware ".mres($db_ne['neName']).' at ' . mres($db_ne['neLocation']) . ' Removed', $device, 'system', $db_ne['neID']);
+        if (! in_array($db_ne['neID'], $c_list)) {
+            dbDelete($table, '`id` = ?', [$db_ne['id']]);
+            log_event("Coriant $cmib Hardware ".mres($db_ne['neName']).' at '.mres($db_ne['neLocation']).' Removed', $device, 'system', $db_ne['neID']);
             echo '-';
         }
     }

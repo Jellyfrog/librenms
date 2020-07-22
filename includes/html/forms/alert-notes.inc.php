@@ -1,6 +1,6 @@
 <?php
 /**
- * alert-notes.inc.php
+ * alert-notes.inc.php.
  *
  * LibreNMS alert-notes.inc.php
  *
@@ -22,22 +22,21 @@
  * @copyright  2018 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 header('Content-type: application/json');
 
 $alert_id = $vars['alert_id'];
 $sub_type = $vars['sub_type'];
-$note     = $vars['note'] ?: '';
-$status   = 'error';
+$note = $vars['note'] ?: '';
+$status = 'error';
 
 if (is_numeric($alert_id)) {
     if ($sub_type === 'get_note') {
-        $note    = dbFetchCell("SELECT `note` FROM `alerts` WHERE `id` = ?", [$alert_id]);
+        $note = dbFetchCell('SELECT `note` FROM `alerts` WHERE `id` = ?', [$alert_id]);
         $message = 'Alert note retrieved';
-        $status  = 'ok';
+        $status = 'ok';
     } else {
         if (dbUpdate(['note' => $note], 'alerts', '`id` = ?', [$alert_id])) {
-            $status  = 'ok';
+            $status = 'ok';
             $message = 'Note updated';
         } else {
             $message = 'Could not update note';

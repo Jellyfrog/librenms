@@ -1,6 +1,6 @@
 <?php
 /**
- * etherwan.inc.php
+ * etherwan.inc.php.
  *
  * LibreNMS os poller module for Etherwan 6TX + 2G Managed Switch
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Lorenzo Zafra
  * @author     Lorenzo Zafra<zafra@ualberta.ca>
  */
-
 preg_match('~(?\'hardware\'.*?),\sFirmware\srev:\s(?\'version\'.*) \d\d\/\d\d\/\d\d~', $device['sysDescr'], $matches);
 
 if ($matches['hardware']) {

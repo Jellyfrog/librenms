@@ -17,5 +17,5 @@
 $firmware_oid = $device['sysObjectID'].'.5.1.1.0';
 $hardware_oid = $device['sysObjectID'].'.5.1.5.0';
 
-$version  = snmp_get($device, $firmware_oid, '-Oqv');
+$version = snmp_get($device, $firmware_oid, '-Oqv');
 $hardware = $device['sysDescr'].' '.str_replace('"', '', snmp_get($device, $hardware_oid, '-Oqv'));

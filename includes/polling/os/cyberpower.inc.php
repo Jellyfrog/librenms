@@ -16,4 +16,4 @@ if (begins_with('.1.3.6.1.4.1.3808.1.1.1', $device['sysObjectID'])) {
 $returned_oids = snmp_get_multi_oid($device, $cyberpower_oids, '-OUQn', 'CPS-MIB');
 
 $hardware = $returned_oids[$cyberpower_oids['hardware']];
-$version  = $returned_oids[$cyberpower_oids['version']];
+$version = $returned_oids[$cyberpower_oids['version']];

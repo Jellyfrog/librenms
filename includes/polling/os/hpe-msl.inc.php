@@ -1,6 +1,6 @@
 <?php
 /**
- * hpe-msl.inc.php
+ * hpe-msl.inc.php.
  *
  * LibreNMS os poller module for HPE MSL
  *
@@ -22,7 +22,6 @@
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 $oids = ['hpHttpMgDeviceProductName.1', 'hpHttpMgDeviceSerialNumber.1', 'hpHttpMgDeviceVersion.1'];
 
 $data = snmp_get_multi($device, $oids, '-OQUs', 'SEMI-MIB');

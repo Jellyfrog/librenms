@@ -2,7 +2,7 @@
 
 $graph_type = 'storage_usage';
 
-$drives = dbFetchRows('SELECT * FROM `storage` WHERE device_id = ? ORDER BY `storage_descr` ASC', array($device['device_id']));
+$drives = dbFetchRows('SELECT * FROM `storage` WHERE device_id = ? ORDER BY `storage_descr` ASC', [$device['device_id']]);
 
 if (count($drives)) {
     echo '
@@ -40,22 +40,22 @@ if (count($drives)) {
             continue;
         }
 
-        $percent    = round($drive['storage_perc'], 0);
-        $total      = formatStorage($drive['storage_size']);
-        $free       = formatStorage($drive['storage_free']);
-        $used       = formatStorage($drive['storage_used']);
+        $percent = round($drive['storage_perc'], 0);
+        $total = formatStorage($drive['storage_size']);
+        $free = formatStorage($drive['storage_free']);
+        $used = formatStorage($drive['storage_used']);
         $background = get_percentage_colours($percent, $drive['storage_perc_warn']);
 
-        $graph_array           = array();
+        $graph_array = [];
         $graph_array['height'] = '100';
-        $graph_array['width']  = '210';
+        $graph_array['width'] = '210';
         $graph_array['to'] = \LibreNMS\Config::get('time.now');
-        $graph_array['id']     = $drive['storage_id'];
-        $graph_array['type']   = $graph_type;
+        $graph_array['id'] = $drive['storage_id'];
+        $graph_array['type'] = $graph_type;
         $graph_array['from'] = \LibreNMS\Config::get('time.day');
         $graph_array['legend'] = 'no';
 
-        $link_array         = $graph_array;
+        $link_array = $graph_array;
         $link_array['page'] = 'graphs';
         unset($link_array['height'], $link_array['width'], $link_array['legend']);
         $link = generate_url($link_array);
@@ -64,11 +64,11 @@ if (count($drives)) {
 
         $overlib_content = generate_overlib_content($graph_array, $device['hostname'].' - '.$drive['storage_descr']);
 
-        $graph_array['width']  = 80;
+        $graph_array['width'] = 80;
         $graph_array['height'] = 20;
-        $graph_array['bg']     = 'ffffff00';
+        $graph_array['bg'] = 'ffffff00';
         // the 00 at the end makes the area transparent.
-        $minigraph =  generate_lazy_graph_tag($graph_array);
+        $minigraph = generate_lazy_graph_tag($graph_array);
 
         echo '<tr>
            <td class="col-md-4">'.overlib_link($link, $drive['storage_descr'], $overlib_content).'</td>

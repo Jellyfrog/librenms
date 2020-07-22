@@ -1,6 +1,6 @@
 <?php
 /**
- * axisaudio.inc.php
+ * axisaudio.inc.php.
  *
  * LibreNMS OS poller module for Axis Audio Appliances
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Lorenzo Zafra
  * @author     Lorenzo Zafra<zafra@ualberta.ca>
  */
-
 $data = explode('; ', $device['sysDescr']);
 
 if (isset($data[1])) {

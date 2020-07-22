@@ -8,7 +8,7 @@ use LibreNMS\RRD\RrdDefinition;
 $apTable = snmpwalk_group($device, 'hwWlanApName', 'HUAWEI-WLAN-AP-MIB', 2);
 
 //Check for exitence of at least 1 AP to continue the polling)
-if (!empty($apTable)) {
+if (! empty($apTable)) {
     $apTableOids = [
         'hwWlanApSn',
         'hwWlanApTypeInfo',
@@ -40,7 +40,7 @@ if (!empty($apTable)) {
         foreach ($ap as $r_id => $radio) {
             foreach ($radio as $s_index => $ssid) {
                 $clientPerRadio[$ap_id][$r_id] += $ssid['hwWlanVapStaOnlineCnt'];
-                $numClients +=  $ssid['hwWlanVapStaOnlineCnt'];
+                $numClients += $ssid['hwWlanVapStaOnlineCnt'];
             }
         }
     }
@@ -63,29 +63,29 @@ if (!empty($apTable)) {
 
     foreach ($radioTable as $ap_id => $ap) {
         foreach ($ap as $r_id => $radio) {
-            $channel       = $radio['hwWlanRadioWorkingChannel'];
-            $mac           = $radio['hwWlanRadioMac'];
-            $name          = $apTable[$ap_id]['hwWlanApName'] . " Radio " . $r_id;
-            $radionum      = $r_id ;
-            $txpow         = $radio['hwWlanRadioActualEIRP'];
-            $interference  = $radio['hwWlanRadioChInterferenceRate'];
-            $radioutil     = $radio['hwWlanRadioChUtilizationRate'];
-            $numasoclients  = $clientPerRadio[$ap_id][$r_id];
+            $channel = $radio['hwWlanRadioWorkingChannel'];
+            $mac = $radio['hwWlanRadioMac'];
+            $name = $apTable[$ap_id]['hwWlanApName'].' Radio '.$r_id;
+            $radionum = $r_id;
+            $txpow = $radio['hwWlanRadioActualEIRP'];
+            $interference = $radio['hwWlanRadioChInterferenceRate'];
+            $radioutil = $radio['hwWlanRadioChUtilizationRate'];
+            $numasoclients = $clientPerRadio[$ap_id][$r_id];
 
             switch ($radio['hwWlanRadioFreqType']) {
                 case 1:
-                    $type = "2.4Ghz";
+                    $type = '2.4Ghz';
                     break;
                 case 2:
-                    $type = "5Ghz";
+                    $type = '5Ghz';
                     break;
                 default:
-                    $type = "unknown (huawei " . $radio['hwWlanRadioFreqType'] . ")";
+                    $type = 'unknown (huawei '.$radio['hwWlanRadioFreqType'].')';
             }
 
             // TODO
-            $numactbssid   = 0;
-            $nummonbssid   = 0;
+            $numactbssid = 0;
+            $nummonbssid = 0;
             $nummonclients = 0;
 
             d_echo("  name: $name\n");
@@ -122,9 +122,9 @@ if (!empty($apTable)) {
 
             $foundid = 0;
 
-            for ($z = 0; $z < sizeof($ap_db); $z++) {
+            for ($z = 0; $z < count($ap_db); $z++) {
                 if ($ap_db[$z]['name'] == $name && $ap_db[$z]['radio_number'] == $radionum) {
-                    $foundid           = $ap_db[$z]['accesspoint_id'];
+                    $foundid = $ap_db[$z]['accesspoint_id'];
                     $ap_db[$z]['seen'] = 1;
                     continue;
                 }
@@ -145,7 +145,7 @@ if (!empty($apTable)) {
                         'nummonclients' => $nummonclients,
                         'numactbssid' => $numactbssid,
                         'nummonbssid' => $nummonbssid,
-                        'interference' => $interference
+                        'interference' => $interference,
                     ],
                     'access_points'
                 );
@@ -162,7 +162,7 @@ if (!empty($apTable)) {
                         'nummonclients' => $nummonclients,
                         'numactbssid' => $numactbssid,
                         'nummonbssid' => $nummonbssid,
-                        'interference' => $interference
+                        'interference' => $interference,
                     ],
                     'access_points',
                     '`accesspoint_id` = ?',
@@ -172,8 +172,8 @@ if (!empty($apTable)) {
         }//end foreach 1
     }//end foreach 2
 
-    for ($z = 0; $z < sizeof($ap_db); $z++) {
-        if (!isset($ap_db[$z]['seen']) && $ap_db[$z]['deleted'] == 0) {
+    for ($z = 0; $z < count($ap_db); $z++) {
+        if (! isset($ap_db[$z]['seen']) && $ap_db[$z]['deleted'] == 0) {
             dbUpdate(['deleted' => 1], 'access_points', '`accesspoint_id` = ?', [$ap_db[$z]['accesspoint_id']]);
         }
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * LibreNMS
+ * LibreNMS.
  *
  *   This file is part of LibreNMS.
  *

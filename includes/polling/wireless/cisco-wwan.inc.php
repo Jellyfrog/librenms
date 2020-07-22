@@ -11,23 +11,23 @@
 
 use LibreNMS\RRD\RrdDefinition;
 
-$rssi = snmp_get($device, "CISCO-WAN-3G-MIB::c3gCurrentGsmRssi.13", "-Ovqn", "CISCO-WAN-3G-MIB");
+$rssi = snmp_get($device, 'CISCO-WAN-3G-MIB::c3gCurrentGsmRssi.13', '-Ovqn', 'CISCO-WAN-3G-MIB');
 if (is_numeric($rssi)) {
     $rrd_def = RrdDefinition::make()->addDataset('rssi', 'GAUGE', -150, 5000);
-    $fields = array(
+    $fields = [
         'rssi' => $rssi,
-    );
+    ];
     $tags = compact('rrd_def');
     data_update($device, 'cisco-wwan-rssi', $tags, $fields);
     $graphs['cisco_wwan_rssi'] = true;
 }
 
-$mnc = snmp_get($device, "CISCO-WAN-3G-MIB::c3gGsmMnc.13", "-Ovqn", "CISCO-WAN-3G-MIB");
+$mnc = snmp_get($device, 'CISCO-WAN-3G-MIB::c3gGsmMnc.13', '-Ovqn', 'CISCO-WAN-3G-MIB');
 if (is_numeric($mnc)) {
     $rrd_def = RrdDefinition::make()->addDataset('mnc', 'GAUGE', 0);
-    $fields = array(
+    $fields = [
         'mnc' => $mnc,
-    );
+    ];
     $tags = compact('rrd_def');
     data_update($device, 'cisco-wwan-rssi', $tags, $fields);
     $graphs['cisco-wwan-mnc'] = true;

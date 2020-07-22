@@ -1,4 +1,5 @@
 <?php
+
 echo 'FortiAuthenticator MemPool';
 $mempool['perc'] = snmp_get($device, 'FORTINET-FORTIAUTHENTICATOR-MIB::facSysMemUsage.0', '-OvQ');
 // $mempool['total'] = (snmp_get($device,'FORTINET-FORTIAUTHENTICATOR-MIB::facSysMemCapacity.0', '-OvQ')) * $mempool['mempool_precision'];

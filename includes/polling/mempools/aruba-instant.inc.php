@@ -1,6 +1,6 @@
 <?php
 /**
- * aruba-instant.inc.php
+ * aruba-instant.inc.php.
  *
  * LibreNMS mempools polling module for Aruba Instant
  *
@@ -34,13 +34,13 @@ d_echo($mempool_data);
 foreach ($mempool_data as $index => $entry) {
     d_echo($entry['aiAPSerialNum'].' '.$entry['aiAPTotalMemory'].' / '.$entry['aiAPMemoryFree'].PHP_EOL);
 
-    $total     = $entry['aiAPTotalMemory'];
-    $free      = $entry['aiAPMemoryFree'];
-    $used      = $total - $free;
-    $perc      = ($used / $total * 100);
+    $total = $entry['aiAPTotalMemory'];
+    $free = $entry['aiAPMemoryFree'];
+    $used = $total - $free;
+    $perc = ($used / $total * 100);
 
     $mempool['total'] = $total;
-    $mempool['used']  = $used;
-    $mempool['free']  = $free;
-    $mempool['perc']  = $perc;
+    $mempool['used'] = $used;
+    $mempool['free'] = $free;
+    $mempool['perc'] = $perc;
 } //end foreach

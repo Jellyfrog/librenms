@@ -23,14 +23,14 @@ $services = service_get($device['device_id']);
 require_once 'includes/html/modal/new_service.inc.php';
 require_once 'includes/html/modal/delete_service.inc.php';
 
-if (!$vars['view']) {
+if (! $vars['view']) {
     $vars['view'] = 'basic';
 }
 
-$menu_options = array(
+$menu_options = [
     'basic' => 'Basic',
     'details' => 'Details',
-);
+];
 
 echo '<br>';
 echo '<div class="panel panel-default">';
@@ -48,7 +48,7 @@ foreach ($menu_options as $option => $text) {
         echo '<span class="pagemenu-selected">';
     }
 
-    echo generate_link($text, $vars, array('view' => $option));
+    echo generate_link($text, $vars, ['view' => $option]);
     if ($vars['view'] == $option) {
         echo '</span>';
     }
@@ -71,21 +71,21 @@ if (count($services) > '0') {
     foreach ($services as $service) {
         $service['service_ds'] = htmlspecialchars_decode($service['service_ds']);
         if ($service['service_status'] == '2') {
-            $status = '<span class="alert-status label-danger"><span class="device-services-page">' . $service['service_type'] . '</span></span>';
+            $status = '<span class="alert-status label-danger"><span class="device-services-page">'.$service['service_type'].'</span></span>';
         } elseif ($service['service_status'] == '1') {
-            $status = '<span class="alert-status label-warning"><span class="device-services-page">' . $service['service_type'] . '</span></span>';
+            $status = '<span class="alert-status label-warning"><span class="device-services-page">'.$service['service_type'].'</span></span>';
         } elseif ($service['service_status'] == '0') {
-            $status = '<span class="alert-status label-success"><span class="device-services-page">' . $service['service_type'] . '</span></span>';
+            $status = '<span class="alert-status label-success"><span class="device-services-page">'.$service['service_type'].'</span></span>';
         } else {
-            $status = '<span class="alert-status label-info"><span class="device-services-page">' . $service['service_type'] . '</span></span>';
+            $status = '<span class="alert-status label-info"><span class="device-services-page">'.$service['service_type'].'</span></span>';
         }
 
-        echo '<tr id="row_' . $service['service_id'] . '">';
+        echo '<tr id="row_'.$service['service_id'].'">';
         echo '<td class="col-sm-12">';
-        echo '<div class="col-sm-1">' . $status . '</div>';
-        echo '<div class="col-sm-2 text-muted">' . formatUptime(time() - $service['service_changed']) . '</div>';
-        echo '<div class="col-sm-2 text-muted">' . $service['service_desc'] . '</div>';
-        echo '<div class="col-sm-5">' . nl2br(trim($service['service_message'])) . '</div>';
+        echo '<div class="col-sm-1">'.$status.'</div>';
+        echo '<div class="col-sm-2 text-muted">'.formatUptime(time() - $service['service_changed']).'</div>';
+        echo '<div class="col-sm-2 text-muted">'.$service['service_desc'].'</div>';
+        echo '<div class="col-sm-5">'.nl2br(trim($service['service_message'])).'</div>';
         echo '<div class="col-sm-2">';
         echo '<div class="pull-right">';
         if (Auth::user()->hasGlobalAdmin()) {
@@ -98,7 +98,7 @@ if (count($services) > '0') {
         if ($vars['view'] == 'details') {
             // if we have a script for this check, use it.
             $check_ds = null;
-            $check_script = \LibreNMS\Config::get('install_dir') . '/includes/services/check_' . strtolower($service['service_type']) . '.inc.php';
+            $check_script = \LibreNMS\Config::get('install_dir').'/includes/services/check_'.strtolower($service['service_type']).'.inc.php';
             if (is_file($check_script)) {
                 include $check_script;
 

@@ -10,6 +10,6 @@
  * the source code distribution for details.
  */
 
-$data = explode(" ", $device['sysDescr']);
+$data = explode(' ', $device['sysDescr']);
 $hardware = $data['6'];
-$version = str_replace("", ",", $data['8']);
+$version = str_replace('', ',', $data['8']);

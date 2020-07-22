@@ -11,7 +11,7 @@ $types_array = explode(',', $vars['type']);
 $ports = get_ports_from_type($types_array);
 
 foreach ($ports as $port) {
-    $if_list  .= $seperator.$port['port_id'];
+    $if_list .= $seperator.$port['port_id'];
     $seperator = ',';
 }
 
@@ -31,7 +31,7 @@ echo "<tr class='iftype'>
     <td colspan='5'><span class=list-large>Total Graph for ports of type : ".$types.'</span><br />';
 
 if ($if_list) {
-    $graph_type      = 'multiport_bits_separate';
+    $graph_type = 'multiport_bits_separate';
     $port['port_id'] = $if_list;
 
     include 'includes/html/print-interface-graphs.inc.php';
@@ -44,7 +44,7 @@ if ($if_list) {
         unset($class);
         $port['ifAlias'] = str_ireplace($type.': ', '', $port['ifAlias']);
         $port['ifAlias'] = str_ireplace('[PNI]', 'Private', $port['ifAlias']);
-        $ifclass         = ifclass($port['ifOperStatus'], $port['ifAdminStatus']);
+        $ifclass = ifclass($port['ifOperStatus'], $port['ifAdminStatus']);
         if ($bg == '#ffffff') {
             $bg = '#e5e5e5';
         } else {
@@ -62,8 +62,8 @@ if ($if_list) {
             <tr class='iftype'>
             <td colspan='5'";
 
-        if (dbFetchCell('SELECT count(*) FROM mac_accounting WHERE port_id = ?', array($port['port_id']))) {
-            echo "<span style='float: right;'><a href='" . generate_url(array('page'=>'device', 'device'=>$port['device_id'], 'tab'=>'port', 'port'=>$port['port_id'], 'view'=>'macaccounting')) . "'><i class='fa fa-pie-chart fa-lg icon-theme' aria-hidden='true'></i> MAC Accounting</a></span>";
+        if (dbFetchCell('SELECT count(*) FROM mac_accounting WHERE port_id = ?', [$port['port_id']])) {
+            echo "<span style='float: right;'><a href='".generate_url(['page'=>'device', 'device'=>$port['device_id'], 'tab'=>'port', 'port'=>$port['port_id'], 'view'=>'macaccounting'])."'><i class='fa fa-pie-chart fa-lg icon-theme' aria-hidden='true'></i> MAC Accounting</a></span>";
         }
 
         echo '<br />';

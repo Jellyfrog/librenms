@@ -5,9 +5,9 @@ print_optionbar_start();
 echo "<span style='font-weight: bold;'>Serverfarm Rservers</span> &#187; ";
 
 // $auth = TRUE;
-$menu_options = array('basic' => 'Basic');
+$menu_options = ['basic' => 'Basic'];
 
-if (!$_GET['opta']) {
+if (! $_GET['opta']) {
     $_GET['opta'] = 'basic';
 }
 
@@ -17,7 +17,7 @@ foreach ($menu_options as $option => $text) {
         echo "<span class='pagemenu-selected'>";
     }
 
-    echo '<a href="device/device='.$device['device_id'].'/tab=routing/type=loadbalancer_rservers/'.$option.'/">'.$text    .'</a>';
+    echo '<a href="device/device='.$device['device_id'].'/tab=routing/type=loadbalancer_rservers/'.$option.'/">'.$text.'</a>';
     if ($_GET['optd'] == $option) {
         echo '</span>';
     }
@@ -32,11 +32,11 @@ echo ' Graphs: ';
 // $graph_types = array("bits"   => "Bits",
 // "pkts"   => "Packets",
 // "errors" => "Errors");
-$graph_types = array(
+$graph_types = [
     'curr'   => 'CurrentConns',
     'failed' => 'FailedConns',
     'total'  => 'TotalConns',
-);
+];
 
 foreach ($graph_types as $type => $descr) {
     echo "$type_sep";
@@ -56,8 +56,8 @@ print_optionbar_end();
 
 echo "<div style='margin: 5px;'><table border=0 cellspacing=0 cellpadding=0 width=100%>";
 $i = '0';
-foreach (dbFetchRows('SELECT * FROM `loadbalancer_rservers` WHERE `device_id` = ? ORDER BY `farm_id`', array($device['device_id'])) as $rserver) {
-    if (is_integer($i / 2)) {
+foreach (dbFetchRows('SELECT * FROM `loadbalancer_rservers` WHERE `device_id` = ? ORDER BY `farm_id`', [$device['device_id']]) as $rserver) {
+    if (is_int($i / 2)) {
         $bg_colour = \LibreNMS\Config::get('list_colour.even');
     } else {
         $bg_colour = \LibreNMS\Config::get('list_colour.odd');
@@ -81,10 +81,10 @@ foreach (dbFetchRows('SELECT * FROM `loadbalancer_rservers` WHERE `device_id` = 
         $graph_type = 'rserver_'.$_GET['opte'];
 
         $graph_array['height'] = '100';
-        $graph_array['width']  = '215';
+        $graph_array['width'] = '215';
         $graph_array['to'] = \LibreNMS\Config::get('time.now');
-        $graph_array['id']     = $rserver['rserver_id'];
-        $graph_array['type']   = $graph_type;
+        $graph_array['id'] = $rserver['rserver_id'];
+        $graph_array['type'] = $graph_type;
 
         require 'includes/html/print-graphrow.inc.php';
 

@@ -1,17 +1,17 @@
 <?php
 
-if (!empty($matches[2])) {
-    $version .= " (" . trim($matches[2]) . ")";
+if (! empty($matches[2])) {
+    $version .= ' ('.trim($matches[2]).')';
 }
 
 // List of OIDs for HW recognition, add any potential HW OID here.
 $hwOidList = [
     '.1.3.6.1.4.1.27975.37.1.5.1.4.1.1',
     'FS-MIB::swProdName.0',
- ];
+];
 foreach ($hwOidList as $oid) {
     $hardware_tmp = snmp_get($device, $oid, '-OQv');
-    if (!empty($hardware_tmp)) {
+    if (! empty($hardware_tmp)) {
         $hardware = $hardware_tmp;
     }
 }
@@ -24,7 +24,7 @@ $verOidList = [
 ];
 foreach ($verOidList as $oid) {
     $version_tmp = snmp_get($device, $oid, '-OQv');
-    if (!empty($version_tmp)) {
+    if (! empty($version_tmp)) {
         $version = $version_tmp;
         break;
     }
@@ -38,7 +38,7 @@ $snOidList = [
 foreach ($snOidList as $oid) {
     $serial_tmp = snmp_get($device, $oid, '-OQv');
 
-    if (!empty($serial_tmp)) {
+    if (! empty($serial_tmp)) {
         $serial = $serial_tmp;
         break;
     }

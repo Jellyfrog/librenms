@@ -1,6 +1,6 @@
 <?php
 /**
- * fusion.inc.php
+ * fusion.inc.php.
  *
  * LibreNMS OS poller module for IgniteNet FusionSwitch
  *
@@ -22,10 +22,9 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 $fusion_tmp = snmp_get_multi_oid($device, ['swSerialNumber.1', 'swOpCodeVer.1', 'swModelNumber.1'], '-OUQs', 'ES4552BH2-MIB');
-$serial     = $fusion_tmp['swSerialNumber.1'];
-$hardware   = $fusion_tmp['swModelNumber.1'];
-$version    = $fusion_tmp['swOpCodeVer.1'];
+$serial = $fusion_tmp['swSerialNumber.1'];
+$hardware = $fusion_tmp['swModelNumber.1'];
+$version = $fusion_tmp['swOpCodeVer.1'];
 
 unset($fusion_tmp);

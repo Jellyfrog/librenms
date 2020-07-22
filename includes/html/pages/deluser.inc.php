@@ -4,7 +4,7 @@ use LibreNMS\Authentication\LegacyAuth;
 
 echo '<div style="margin: 10px;">';
 
-if (!Auth::user()->isAdmin()) {
+if (! Auth::user()->isAdmin()) {
     include 'includes/html/error-no-perm.inc.php';
 } else {
     echo '<h3>Delete User</h3>';
@@ -13,7 +13,7 @@ if (!Auth::user()->isAdmin()) {
 
     if (LegacyAuth::get()->canManageUsers()) {
         if ($vars['action'] == 'del') {
-            $id = (int)$vars['id'];
+            $id = (int) $vars['id'];
             $user = LegacyAuth::get()->getUser($id);
 
             if ($vars['confirm'] == 'yes') {
@@ -32,7 +32,7 @@ if (!Auth::user()->isAdmin()) {
 
         echo '
             <form role="form" class="form-horizontal" method="GET" action="">
-            ' . csrf_field() . '
+            '.csrf_field().'
             <input type="hidden" name="action" value="del">
             <div class="form-group">
             <label for="user_id" class="col-sm-2 control-label">Select User: </label>

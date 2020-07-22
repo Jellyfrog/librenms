@@ -20,11 +20,11 @@ if (isset($settings['mode_select']) && $settings['mode_select'] !== '') {
     $mode = $settings['mode_select'];
 }
 
-$select_modes = array(
+$select_modes = [
     '0' => 'only devices',
     '1' => 'only services',
     '2' => 'devices and services',
-);
+];
 
 if (Config::get('webui.availability_map_compact') == 1) {
     $compact_tile = $settings['tile_size'];
@@ -35,7 +35,7 @@ $show_disabled_ignored = $settings['show_disabled_and_ignored'];
 if (defined('SHOW_SETTINGS')) {
     $common_output[] = '
     <form class="form" onsubmit="widget_settings(this); return false;">
-        ' . csrf_field() . '
+        '.csrf_field().'
         <div class="form-group">
             <div class="col-sm-4">
                 <label for="title" class="control-label availability-map-widget-header">Widget title</label>
@@ -53,8 +53,8 @@ if (defined('SHOW_SETTINGS')) {
         </div>
         <div class="col-sm-6">
             <select class="form-control" name="color_only_select">
-                <option value="1"' . ($settings['color_only_select'] == 1 ? ' selected' : '')  . ' >yes</option>
-                <option value="0"' . ($settings['color_only_select'] == 1 ? '' : ' selected')  . ' >no</option>
+                <option value="1"'.($settings['color_only_select'] == 1 ? ' selected' : '').' >yes</option>
+                <option value="0"'.($settings['color_only_select'] == 1 ? '' : ' selected').' >no</option>
             </select>
         </div>
     </div>
@@ -106,12 +106,12 @@ if (defined('SHOW_SETTINGS')) {
         $common_output[] = '<option value="0" selected>only devices</option>';
     } else {
         foreach ($select_modes as $mode_select => $option) {
-            if ($mode_select == $settings["mode_select"]) {
+            if ($mode_select == $settings['mode_select']) {
                 $selected = 'selected';
             } else {
                 $selected = '';
             }
-            $common_output[] = '<option value="' . $mode_select . '" ' . $selected . '>' . $option . '</option>';
+            $common_output[] = '<option value="'.$mode_select.'" '.$selected.'>'.$option.'</option>';
         }
     }
     $common_output[] = '
@@ -131,7 +131,6 @@ if (defined('SHOW_SETTINGS')) {
         </div>
         ';
     }
-
 
     $common_output[] = '
         <br style="clear:both;">
@@ -173,7 +172,7 @@ if (defined('SHOW_SETTINGS')) {
 
         $sql = 'SELECT `D`.`hostname`, `D`.`sysName`, `D`.`device_id`, `D`.`status`, `D`.`uptime`, `D`.`last_polled`, `D`.`os`, `D`.`icon`, `D`.`disable_notify`, `D`.`disabled` FROM `devices` AS `D`';
 
-        if (!Auth::user()->hasGlobalRead()) {
+        if (! Auth::user()->hasGlobalRead()) {
             $sql .= ' , `devices_perms` AS P WHERE D.`device_id` = P.`device_id` AND P.`user_id` = ? AND ';
             $param = [Auth::id()];
         } else {
@@ -187,24 +186,24 @@ if (defined('SHOW_SETTINGS')) {
             $sql .= '(`D`.`status` IN (0,1,2) OR `D`.`disable_notify` = 1 OR `D`.`disabled` = 1)';
         }
 
-        if (Config::get('webui.availability_map_use_device_groups') != 0 && !empty($in_devices)) {
-            $sql .= " AND `D`.`device_id` IN " . dbGenPlaceholders(count($in_devices));
+        if (Config::get('webui.availability_map_use_device_groups') != 0 && ! empty($in_devices)) {
+            $sql .= ' AND `D`.`device_id` IN '.dbGenPlaceholders(count($in_devices));
             $param = array_merge($param, $in_devices);
         }
 
-        $sql .= " ORDER BY `".$deviceOrderBy."`";
+        $sql .= ' ORDER BY `'.$deviceOrderBy.'`';
 
-        $temp_output = array();
+        $temp_output = [];
 
         foreach (dbFetchRows($sql, $param) as $device) {
-            $updowntime = "";
+            $updowntime = '';
             if ($device['disabled'] == '1') {
-                $deviceState = "disabled";
-                $deviceLabel = "blackbg";
+                $deviceState = 'disabled';
+                $deviceLabel = 'blackbg';
                 $host_disabled_count++;
             } elseif ($device['disable_notify'] == '1') {
-                $deviceState = "alert-disabled";
-                $deviceLabel = "label-default";
+                $deviceState = 'alert-disabled';
+                $deviceLabel = 'label-default';
                 $host_disable_notify_count++;
             } elseif ($device['status'] == '1') {
                 if (($device['uptime'] < Config::get('uptime_warning')) && ($device['uptime'] != 0)) {
@@ -218,13 +217,13 @@ if (defined('SHOW_SETTINGS')) {
                     $deviceLabelOld = 'availability-map-oldview-box-up';
                     $host_up_count++;
                 }
-                $updowntime = ($device['uptime'] ? " - " : "") . formatUptime($device['uptime']);
+                $updowntime = ($device['uptime'] ? ' - ' : '').formatUptime($device['uptime']);
             } else {
                 $deviceState = 'down';
                 $deviceLabel = 'label-danger';
                 $deviceLabelOld = 'availability-map-oldview-box-down';
                 $host_down_count++;
-                $updowntime = ($device['last_polled'] ? " - " . formatUptime(time() - strtotime($device['last_polled'])) : "") ;
+                $updowntime = ($device['last_polled'] ? ' - '.formatUptime(time() - strtotime($device['last_polled'])) : '');
             }
 
             if (AlertUtil::isMaintenance($device['device_id'])) {
@@ -235,14 +234,14 @@ if (defined('SHOW_SETTINGS')) {
             $device_system_name = format_hostname($device);
 
             if (Config::get('webui.availability_map_compact') == 0) {
-                if ($directpage == "yes") {
+                if ($directpage == 'yes') {
                     $deviceIcon = getIconTag($device);
                     $temp_output[] = '
-                    <a href="' .generate_device_url($device). '" title="' . $device_system_name . $updowntime . '">
-                    <div class="device-availability ' . $deviceState . '" style="width:' . Config::get('webui.availability_map_box_size') . 'px;">
-                        <span class="availability-label label ' . $deviceLabel . ' label-font-border">' . $deviceState . '</span>
-                        <span class="device-icon">' . $deviceIcon . '</span><br>
-                        <span class="small">' . shorthost($device_system_name) . '</span>
+                    <a href="'.generate_device_url($device).'" title="'.$device_system_name.$updowntime.'">
+                    <div class="device-availability '.$deviceState.'" style="width:'.Config::get('webui.availability_map_box_size').'px;">
+                        <span class="availability-label label '.$deviceLabel.' label-font-border">'.$deviceState.'</span>
+                        <span class="device-icon">'.$deviceIcon.'</span><br>
+                        <span class="small">'.shorthost($device_system_name).'</span>
                     </div>
                     </a>';
                 } else {
@@ -251,12 +250,12 @@ if (defined('SHOW_SETTINGS')) {
                         $deviceLabel .= ' widget-availability-fixed';
                     }
                     $temp_output[] = '
-                    <a href="' .generate_device_url($device). '" title="' . $device_system_name . $updowntime . '">
-                        <span class="label ' . $deviceLabel . ' widget-availability label-font-border">' . $deviceState . '</span>
+                    <a href="'.generate_device_url($device).'" title="'.$device_system_name.$updowntime.'">
+                        <span class="label '.$deviceLabel.' widget-availability label-font-border">'.$deviceState.'</span>
                     </a>';
                 }
             } else {
-                $temp_output[] = "<a href='" . generate_device_url($device) . "' title='" . $device_system_name . $updowntime . "'><div class='" . $deviceLabelOld . "' style='width:${compact_tile}px;height:${compact_tile}px;'></div></a>";
+                $temp_output[] = "<a href='".generate_device_url($device)."' title='".$device_system_name.$updowntime."'><div class='".$deviceLabelOld."' style='width:${compact_tile}px;height:${compact_tile}px;'></div></a>";
             }
         }
     }
@@ -264,57 +263,57 @@ if (defined('SHOW_SETTINGS')) {
     if (($mode == 1 || $mode == 2) && (Config::get('show_services') != 0)) {
         if (Auth::user()->hasGlobalRead()) {
             $service_query = 'select `S`.`service_type`, `S`.`service_id`, `S`.`service_desc`, `S`.`service_status`, `D`.`hostname`, `D`.`sysName`, `D`.`device_id`, `D`.`os`, `D`.`icon` from services S, devices D where `S`.`device_id` = `D`.`device_id` ORDER BY '.$serviceOrderBy.';';
-            $service_par = array();
+            $service_par = [];
         } else {
             $service_query = 'select `S`.`service_type`, `S`.`service_id`, `S`.`service_desc`, `S`.`service_status`, `D`.`hostname`, `D`.`sysName`, `D`.`device_id`, `D`.`os`, `D`.`icon` from services S, devices D, devices_perms P where `S`.`device_id` = `D`.`device_id` AND D.device_id = P.device_id AND P.user_id = ? ORDER BY '.$serviceOrderBy.';';
-            $service_par = array(Auth::id());
+            $service_par = [Auth::id()];
         }
         $services = dbFetchRows($service_query, $service_par);
         if (count($services) > 0) {
             foreach ($services as $service) {
                 if ($service['service_status'] == '0') {
-                    $serviceLabel = "label-success";
+                    $serviceLabel = 'label-success';
                     $serviceLabelOld = 'availability-map-oldview-box-up';
-                    $serviceState = "up";
+                    $serviceState = 'up';
                     $service_up_count++;
                 } elseif ($service['service_status'] == '1') {
-                    $serviceLabel = "label-warning";
+                    $serviceLabel = 'label-warning';
                     $serviceLabelOld = 'availability-map-oldview-box-warn';
-                    $serviceState = "warn";
+                    $serviceState = 'warn';
                     $service_warn_count++;
                 } else {
-                    $serviceLabel = "label-danger";
+                    $serviceLabel = 'label-danger';
                     $serviceLabelOld = 'availability-map-oldview-box-down';
-                    $serviceState = "down";
+                    $serviceState = 'down';
                     $service_down_count++;
                 }
                 $service_system_name = format_hostname($service);
 
                 if (Config::get('webui.availability_map_compact') == 0) {
-                    if ($directpage == "yes") {
+                    if ($directpage == 'yes') {
                         $deviceIcon = getIconTag($service);
                         $temp_output[] = '
-                        <a href="' . generate_url(array('page' => 'device', 'tab' => 'services', 'device' => $service['device_id'])) . '" title="' . $service_system_name . " - " . $service['service_type'] . " - " . $service['service_desc'] . '">
-                            <div class="service-availability ' . $serviceState . '" style="width:' . Config::get('webui.availability_map_box_size') . 'px;">
-                                <span class="service-name-label label ' . $serviceLabel . ' label-font-border">' . $service["service_type"] . '</span>
-                                <span class="availability-label label ' . $serviceLabel . ' label-font-border">' . $serviceState . '</span>
-                                <span class="device-icon">' . $deviceIcon . '</span><br>
-                                <span class="small">' . shorthost($service_system_name) . '</span>
+                        <a href="'.generate_url(['page' => 'device', 'tab' => 'services', 'device' => $service['device_id']]).'" title="'.$service_system_name.' - '.$service['service_type'].' - '.$service['service_desc'].'">
+                            <div class="service-availability '.$serviceState.'" style="width:'.Config::get('webui.availability_map_box_size').'px;">
+                                <span class="service-name-label label '.$serviceLabel.' label-font-border">'.$service['service_type'].'</span>
+                                <span class="availability-label label '.$serviceLabel.' label-font-border">'.$serviceState.'</span>
+                                <span class="device-icon">'.$deviceIcon.'</span><br>
+                                <span class="small">'.shorthost($service_system_name).'</span>
                             </div>
                         </a>';
                     } else {
-                        $serviceText = $service['service_type'] . ' - ' . $serviceState;
+                        $serviceText = $service['service_type'].' - '.$serviceState;
                         if ($settings['color_only_select'] == 1) {
                             $serviceText = ' ';
                             $serviceLabel .= ' widget-availability-fixed';
                         }
                         $temp_output[] = '
-                        <a href="' . generate_url(array('page' => 'device', 'tab' => 'services', 'device' => $service['device_id'])) . '" title="' . shorthost($service_system_name) . " - " . $service['service_type'] . " - " . $service['service_desc'] . '">
-                            <span class="label ' . $serviceLabel . ' widget-availability label-font-border">' . $serviceText . '</span>
+                        <a href="'.generate_url(['page' => 'device', 'tab' => 'services', 'device' => $service['device_id']]).'" title="'.shorthost($service_system_name).' - '.$service['service_type'].' - '.$service['service_desc'].'">
+                            <span class="label '.$serviceLabel.' widget-availability label-font-border">'.$serviceText.'</span>
                         </a>';
                     }
                 } else {
-                    $temp_output[] = "<a href='" . generate_url(array('page' => 'device', 'tab' => 'services', 'device' => $service['device_id'])) . "' title='${service_system_name} - ${service['service_type']} - ${service['service_desc']}'><div class='" . $serviceLabelOld . "' style='width:${compact_tile}px;height:${compact_tile}px;'></div></a>";
+                    $temp_output[] = "<a href='".generate_url(['page' => 'device', 'tab' => 'services', 'device' => $service['device_id']])."' title='${service_system_name} - ${service['service_type']} - ${service['service_desc']}'><div class='".$serviceLabelOld."' style='width:${compact_tile}px;height:${compact_tile}px;'></div></a>";
                 }
             }
         } else {
@@ -322,7 +321,7 @@ if (defined('SHOW_SETTINGS')) {
         }
     }
 
-    if ($directpage == "yes") {
+    if ($directpage == 'yes') {
         $temp_header[] = '
         <div class="page-availability-title-left">
             <span class="page-availability-title">Availability map for</span>
@@ -337,7 +336,7 @@ if (defined('SHOW_SETTINGS')) {
                 } else {
                     $selected = '';
                 }
-                $temp_header[] = '<option value="' . $mode_select . '" ' . $selected . '>' . $option . '</option>';
+                $temp_header[] = '<option value="'.$mode_select.'" '.$selected.'>'.$option.'</option>';
             }
         }
 
@@ -359,7 +358,7 @@ if (defined('SHOW_SETTINGS')) {
             $temp_header[] = '
             <span class="page-availability-title">Device group</span>
             <select id="group" class="page-availability-report-select" name="group">
-                <option value="0" ' . $selected . '>show all devices</option>';
+                <option value="0" '.$selected.'>show all devices</option>';
 
             foreach ($dev_groups as $dev_group) {
                 if (Session::get('group_view') == $dev_group['id']) {
@@ -367,13 +366,13 @@ if (defined('SHOW_SETTINGS')) {
                 } else {
                     $selected = '';
                 }
-                $temp_header[] = '<option value="' . $dev_group['id'] . '" ' . $selected . '>' . $dev_group['name'] . '</option>';
+                $temp_header[] = '<option value="'.$dev_group['id'].'" '.$selected.'>'.$dev_group['name'].'</option>';
             }
             $temp_header[] = '</select>';
         }
     }
 
-    if ($directpage == "yes") {
+    if ($directpage == 'yes') {
         $deviceClass = 'page-availability-report-host';
         $serviceClass = 'page-availability-report-host';
     } else {
@@ -389,7 +388,7 @@ if (defined('SHOW_SETTINGS')) {
 
     if ($mode == 0 || $mode == 2) {
         $temp_header[] = '
-            <div class="' . $deviceClass . '">
+            <div class="'.$deviceClass.'">
                 <span>Total hosts</span>
                 <span class="label label-success label-font-border label-border">up: '.$host_up_count.'</span>
                 <span class="label label-warning label-font-border label-border">warn: '.$host_warn_count.'</span>
@@ -403,7 +402,7 @@ if (defined('SHOW_SETTINGS')) {
 
     if (($mode == 1 || $mode == 2) && (Config::get('show_services') != 0)) {
         $temp_header[] = '
-            <div class="' . $serviceClass . '">
+            <div class="'.$serviceClass.'">
                 <span>Total services</span>
                 <span class="label label-success label-font-border label-border">up: '.$service_up_count.'</span>
                 <span class="label label-warning label-font-border label-border">warn: '.$service_warn_count.'</span>

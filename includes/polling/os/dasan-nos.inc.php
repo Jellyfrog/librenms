@@ -1,6 +1,6 @@
 <?php
 /**
- * dasan-nos.inc.php
+ * dasan-nos.inc.php.
  *
  * LibreNMS os polling module for Dasan NOS
  *
@@ -22,8 +22,7 @@
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
-list($hardware, $version) = explode(' ', $device['sysDescr'], 2);
+[$hardware, $version] = explode(' ', $device['sysDescr'], 2);
 
 $tmp = snmp_get_multi_oid($device, ['dsSerialNumber.0', 'dsFirmwareVersion.0'], '-OQUs', 'DASAN-SWITCH-MIB:DASAN-PRODUCTS-MIB');
 

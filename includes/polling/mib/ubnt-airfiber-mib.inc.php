@@ -10,186 +10,185 @@
 echo ' UBNT-AirFIBER-MIB ';
 
 // $mib_oids                                (oidindex,dsname,dsdescription,dstype)
-$mib_oids = array(
-    'txFrequency'             => array(
+$mib_oids = [
+    'txFrequency'             => [
         '1',
         'txFrequency',
         'Tx Frequency',
         'GAUGE',
-    ),
-    'rxFrequency'             => array(
+    ],
+    'rxFrequency'             => [
         '1',
         'rxFrequency',
         'Rx Frequency',
         'GAUGE',
-    ),
-    'txPower'                 => array(
+    ],
+    'txPower'                 => [
         '1',
         'txPower',
         'Tx Power',
         'GAUGE',
-    ),
-    'radioLinkDistM'          => array(
+    ],
+    'radioLinkDistM'          => [
         '1',
         'radioLinkDistM',
         'Link Distance',
         'GAUGE',
-    ),
-    'rxCapacity'              => array(
+    ],
+    'rxCapacity'              => [
         '1',
         'rxCapacity',
         'Rx Capacity',
         'GAUGE',
-    ),
-    'txCapacity'              => array(
+    ],
+    'txCapacity'              => [
         '1',
         'txCapacity',
         'Tx Capacity',
         'GAUGE',
-    ),
-    'radio0TempC'             => array(
+    ],
+    'radio0TempC'             => [
         '1',
         'radio0TempC',
         'Radio 0 Temp',
         'GAUGE',
-    ),
-    'radio1TempC'             => array(
+    ],
+    'radio1TempC'             => [
         '1',
         'radio1TempC',
         'Radio 1 Temp',
         'GAUGE',
-    ),
+    ],
     // above here is duplicated in wireless
-    'txOctetsOK'              => array(
+    'txOctetsOK'              => [
         '1',
         'txOctetsOK',
         'Tx Octets OK',
         'COUNTER',
-    ),
-    'rxOctetsOK'              => array(
+    ],
+    'rxOctetsOK'              => [
         '1',
         'rxOctetsOK',
         'Rx Octets OK',
         'COUNTER',
-    ),
-    'rxValidUnicastFrames'    => array(
+    ],
+    'rxValidUnicastFrames'    => [
         '1',
         'rxValUnicastFrms',
         'TODOa',
         'COUNTER',
-    ),
-    'rxValidMulticastFrames'  => array(
+    ],
+    'rxValidMulticastFrames'  => [
         '1',
         'rxValMulticastFrms',
         'TODOa',
         'COUNTER',
-    ),
-    'rxValidBroadcastFrames'  => array(
+    ],
+    'rxValidBroadcastFrames'  => [
         '1',
         'rxValBroadcastFrms',
         'TODO',
         'COUNTER',
-    ),
-    'txValidUnicastFrames'    => array(
+    ],
+    'txValidUnicastFrames'    => [
         '1',
         'txValUnicastFrms',
         'TODO',
         'COUNTER',
-    ),
-    'txValidMulticastFrames'  => array(
+    ],
+    'txValidMulticastFrames'  => [
         '1',
         'txValMulticastFrms',
         'TODO',
         'COUNTER',
-    ),
-    'txValidBroadcastFrames'  => array(
+    ],
+    'txValidBroadcastFrames'  => [
         '1',
         'txValBroadcastFrms',
         'TODO',
         'COUNTER',
-    ),
-    'rxTotalOctets'           => array(
+    ],
+    'rxTotalOctets'           => [
         '1',
         'rxTotalOctets',
         'TODO',
         'COUNTER',
-    ),
-    'rxTotalFrames'           => array(
+    ],
+    'rxTotalFrames'           => [
         '1',
         'rxTotalFrms',
         'TODO',
         'COUNTER',
-    ),
-    'rx64BytePackets'         => array(
+    ],
+    'rx64BytePackets'         => [
         '1',
         'rx64BytePkts',
         'TODO',
         'COUNTER',
-    ),
-    'rx65-127BytePackets'     => array(
+    ],
+    'rx65-127BytePackets'     => [
         '1',
         'rx65-127BytePkts',
         'TODO',
         'COUNTER',
-    ),
-    'rx128-255BytePackets'    => array(
+    ],
+    'rx128-255BytePackets'    => [
         '1',
         'rx128-255BytePkts',
         'TODO',
         'COUNTER',
-    ),
-    'rx256-511BytePackets'    => array(
+    ],
+    'rx256-511BytePackets'    => [
         '1',
         'rx256-511BytePkts',
         'TODO',
         'COUNTER',
-    ),
-    'rx512-1023BytePackets'   => array(
+    ],
+    'rx512-1023BytePackets'   => [
         '1',
         'rx512-1023BytePkts',
         'TODO',
         'COUNTER',
-    ),
-    'rx1024-1518BytesPackets' => array(
+    ],
+    'rx1024-1518BytesPackets' => [
         '1',
         'rx1024-1518BytePkts',
         'TODO',
         'COUNTER',
-    ),
-    'rx1519PlusBytePackets'   => array(
+    ],
+    'rx1519PlusBytePackets'   => [
         '1',
         'rx1519PlusBytePkts',
         'TODO',
         'COUNTER',
-    ),
-    'txoctetsAll'             => array(
+    ],
+    'txoctetsAll'             => [
         '1',
         'txoctetsAll',
         'TODO',
         'COUNTER',
-    ),
-    'txpktsAll'               => array(
+    ],
+    'txpktsAll'               => [
         '1',
         'txpktsAll',
         'TODO',
         'COUNTER',
-    ),
-    'rxoctetsAll'             => array(
+    ],
+    'rxoctetsAll'             => [
         '1',
         'rxoctetsAll',
         'TODO',
         'COUNTER',
-    ),
-    'rxpktsAll'               => array(
+    ],
+    'rxpktsAll'               => [
         '1',
         'rxpktsAll',
         'TODO',
         'COUNTER',
-    ),
-);
+    ],
+];
 
-
-$mib_graphs = array(
+$mib_graphs = [
     'ubnt_airfiber_RadioFreqs',
     'ubnt_airfiber_TxPower',
     'ubnt_airfiber_LinkDist',
@@ -204,7 +203,7 @@ $mib_graphs = array(
     'ubnt_airfiber_RFTotPktsTx',
     'ubnt_airfiber_RFTotOctetsRx',
     'ubnt_airfiber_RFTotPktsRx',
-);
+];
 
 unset($graph, $oids, $oid);
 

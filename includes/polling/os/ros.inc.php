@@ -1,6 +1,6 @@
 <?php
 /**
- * ros.inc.php
+ * ros.inc.php.
  *
  * LibreNMS os poller module for Siemens Ruggedcom Switches
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Lorenzo Zafra
  * @author     Lorenzo Zafra<zafra@ualberta.ca>
  */
-
 preg_match('~(?\'hardware\'.*?)-(?:.*)~', $device['sysDescr'], $matches);
 
 if ($matches['hardware']) {

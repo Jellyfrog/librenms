@@ -19,12 +19,11 @@ if (Auth::user()->hasGlobalAdmin()) {
         $dir .= DIRECTORY_SEPARATOR;
         foreach ($files as $file) {
             if (is_executable($dir.$file) && is_file($dir.$file) && strstr($file, 'check_')) {
-                list(,$check_name) = explode('_', $file, 2);
+                [,$check_name] = explode('_', $file, 2);
                 $stype .= "<option value='$check_name'>$check_name</option>";
             }
         }
-    }
-    ?>
+    } ?>
 
 <div class="modal fade bs-example-modal-sm" id="create-service" tabindex="-1" role="dialog" aria-labelledby="Create" aria-hidden="true">
     <div class="modal-dialog">

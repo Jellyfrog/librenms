@@ -1,6 +1,6 @@
 <?php
 /**
- * acos.inc.php
+ * acos.inc.php.
  *
  * LibreNMS mempools poller module for A10 ACOS
  *
@@ -22,7 +22,6 @@
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 if ($device['os'] === 'acos') {
     echo 'ACOS: ';
     $mempool['used'] = snmp_get($device, 'axSysMemoryUsage.0', '-Ovq', 'A10-AX-MIB');
