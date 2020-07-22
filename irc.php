@@ -19,8 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * */
 
-$init_modules = array();
-require __DIR__ . '/includes/init.php';
+$init_modules = [];
+require __DIR__.'/includes/init.php';
 error_reporting(E_ERROR);
 
 $irc = new LibreNMS\IRCBot();

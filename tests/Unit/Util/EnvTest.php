@@ -1,6 +1,6 @@
 <?php
 /**
- * EnvTest.php
+ * EnvTest.php.
  *
  * -Description-
  *

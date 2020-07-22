@@ -1,6 +1,6 @@
 <?php
 /**
- * 2018_07_03_091314_create_alert_transports_table.php
+ * 2018_07_03_091314_create_alert_transports_table.php.
  *
  * -Description-
  *
@@ -28,7 +28,6 @@ use Illuminate\Database\Schema\Blueprint;
 
 class CreateAlertTransportsTable extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -44,7 +43,6 @@ class CreateAlertTransportsTable extends Migration
             $table->text('transport_config')->nullable();
         });
     }
-
 
     /**
      * Reverse the migrations.

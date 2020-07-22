@@ -1,6 +1,6 @@
 <?php
 /**
- * RuckusSzClusterStateTest.php
+ * RuckusSzClusterStateTest.php.
  *
  * -Description-
  *

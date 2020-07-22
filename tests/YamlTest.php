@@ -1,6 +1,6 @@
 <?php
 /**
- * YamlTest.php
+ * YamlTest.php.
  *
  * -Description-
  *
@@ -58,7 +58,7 @@ class YamlTest extends TestCase
 
     private function validateYamlFilesAgainstSchema($dir, $schema_file)
     {
-        foreach ($this->listFiles($dir . '/*.yaml') as $file) {
+        foreach ($this->listFiles($dir.'/*.yaml') as $file) {
             $this->validateFileAgainstSchema($file, $schema_file);
         }
     }
@@ -75,12 +75,13 @@ class YamlTest extends TestCase
 
     private function listFiles($pattern)
     {
-        $pattern = Config::get('install_dir') . $pattern;
+        $pattern = Config::get('install_dir').$pattern;
 
         return collect(glob($pattern))
             ->reduce(function ($array, $file) {
                 $name = basename($file);
                 $array[$name] = $file;
+
                 return $array;
             }, []);
     }
@@ -91,7 +92,7 @@ class YamlTest extends TestCase
      */
     private function validateFileAgainstSchema($filePath, $schema_file)
     {
-        $schema = (object)['$ref' => 'file://' . Config::get('install_dir') . $schema_file];
+        $schema = (object) ['$ref' => 'file://'.Config::get('install_dir').$schema_file];
         $filename = basename($filePath);
         $filePath = Str::start($filePath, Config::get('install_dir'));
 

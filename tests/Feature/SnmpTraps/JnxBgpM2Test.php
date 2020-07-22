@@ -1,7 +1,7 @@
 <?php
 /**
  * JnxBgpM2Test.php
- * -Description-
+ * -Description-.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,6 @@ class JnxBgpM2Test extends SnmpTrapTestCase
 {
     public function testBgpPeerUnknown()
     {
-
         $device = factory(Device::class)->create();
 
         $trapText = "$device->hostname
@@ -54,10 +53,10 @@ SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX2
 
         $trap = new Trap($trapText);
 
-        $error = "Unknown bgp peer handling bgpEstablished trap: 2001:d88:1::2";
+        $error = 'Unknown bgp peer handling bgpEstablished trap: 2001:d88:1::2';
         \Log::shouldReceive('error')->once()->with($error);
 
-        $message = "BGP Peer 2001:d88:1::2 is now in the idle state";
+        $message = 'BGP Peer 2001:d88:1::2 is now in the idle state';
         \Log::shouldReceive('event')->never()->with($message, $device->device_id, 'trap', 3);
 
         $this->assertTrue(Dispatcher::handle($trap), 'Could not handle JnxBgpM2BackwardsTransition trap');
@@ -65,7 +64,6 @@ SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX2
 
     public function testBgpBackwardTrasition()
     {
-
         $device = factory(Device::class)->create();
         $bgppeer = factory(BgpPeer::class)->make(['bgpPeerIdentifier' => '2001:d88:1::2', 'bgpPeerState' => 'established']);
         $device->bgppeers()->save($bgppeer);
@@ -84,10 +82,10 @@ SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX2
 
         $trap = new Trap($trapText);
 
-        $error = "Unknown bgp peer handling bgpEstablished trap: 2001:d88:1::2";
+        $error = 'Unknown bgp peer handling bgpEstablished trap: 2001:d88:1::2';
         \Log::shouldReceive('error')->never()->with($error);
 
-        $message = "BGP Peer 2001:d88:1::2 is now in the idle state";
+        $message = 'BGP Peer 2001:d88:1::2 is now in the idle state';
         \Log::shouldReceive('event')->once()->with($message, $device->device_id, 'trap', 5);
 
         $this->assertTrue(Dispatcher::handle($trap), 'Could not handle JnxBgpM2BackwardsTransition trap');
@@ -113,10 +111,10 @@ SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX2
 
         $trap = new Trap($trapText);
 
-        $error = "Unknown bgp peer handling bgpEstablished trap: 2001:d88:1::2";
+        $error = 'Unknown bgp peer handling bgpEstablished trap: 2001:d88:1::2';
         \Log::shouldReceive('error')->never()->with($error);
 
-        $message = "BGP Peer 2001:d88:1::2 is now in the established state";
+        $message = 'BGP Peer 2001:d88:1::2 is now in the established state';
         \Log::shouldReceive('event')->once()->with($message, $device->device_id, 'trap', 1);
 
         $this->assertTrue(Dispatcher::handle($trap), 'Could not handle JnxBgpM2Established trap');

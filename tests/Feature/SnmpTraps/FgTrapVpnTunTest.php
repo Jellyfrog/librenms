@@ -1,6 +1,6 @@
 <?php
 /**
- * FgTrapVpnTunTest.php
+ * FgTrapVpnTunTest.php.
  *
  * -Description-
  *

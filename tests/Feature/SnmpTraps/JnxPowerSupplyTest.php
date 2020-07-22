@@ -1,7 +1,7 @@
 <?php
 /**
  * JnxPowerSupplyTest.php
- * -Description-
+ * -Description-.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ JUNIPER-MIB::jnxOperatingState.2.4.0.0 down
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameMX960";
 
         $trap = new Trap($trapText);
-        $message = "Power Supply PEM 3 is down";
+        $message = 'Power Supply PEM 3 is down';
         \Log::shouldReceive('event')->once()->with($message, $device->device_id, 'trap', 5);
 
         $this->assertTrue(Dispatcher::handle($trap), 'Could not handle JnxPowerSupplyFailure');
@@ -74,7 +74,7 @@ JUNIPER-MIB::jnxOperatingState.2.4.0.0 ok
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameMX960";
 
         $trap = new Trap($trapText);
-        $message = "Power Supply PEM 4 is OK";
+        $message = 'Power Supply PEM 4 is OK';
         \Log::shouldReceive('event')->once()->with($message, $device->device_id, 'trap', 1);
 
         $this->assertTrue(Dispatcher::handle($trap), 'Could not handle JnxPowerSupplyOk');

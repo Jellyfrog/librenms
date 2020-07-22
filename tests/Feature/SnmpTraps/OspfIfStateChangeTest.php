@@ -1,6 +1,6 @@
 <?php
 /**
- * OspfIfStateChangeTest.php
+ * OspfIfStateChangeTest.php.
  *
  * -Description-
  *

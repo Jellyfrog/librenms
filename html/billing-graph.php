@@ -11,15 +11,15 @@
 
 ini_set('allow_url_fopen', 0);
 
-$init_modules = array('web', 'auth');
-require realpath(__DIR__ . '/..') . '/includes/init.php';
+$init_modules = ['web', 'auth'];
+require realpath(__DIR__.'/..').'/includes/init.php';
 
-$urlargs = array(
+$urlargs = [
     'type'          => 'bill_historicbits',
     'id'            => $_GET['bill_id'],
     'width'         => $_GET['x'],
-    'height'        => $_GET['y']
-);
+    'height'        => $_GET['y'],
+];
 if (isset($_GET['bill_hist_id'])) {
     $urlargs['bill_hist_id'] = $_GET['bill_hist_id'];
 } else {
@@ -36,7 +36,7 @@ if (isset($_GET['ave'])) {
     $urlargs['ave'] = $_GET['ave'];
 }
 
-$url = Config::get('base_url') . 'graph.php?';
+$url = Config::get('base_url').'graph.php?';
 $i = 0;
 foreach ($urlargs as $name => $value) {
     if ($i++ > 0) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * RrdDefinitonTest.php
+ * RrdDefinitonTest.php.
  *
  * -Description-
  *
@@ -32,8 +32,7 @@ class RrdDefinitionTest extends TestCase
 {
     public function testEmpty()
     {
-
-        $this->assertEmpty((string)new RrdDefinition());
+        $this->assertEmpty((string) new RrdDefinition());
     }
 
     public function testWrongType()
@@ -52,14 +51,14 @@ class RrdDefinitionTest extends TestCase
         $expected = 'DS:bad_name-is_too_lon:GAUGE:600:0:100 ';
         $def = RrdDefinition::make()->addDataset('b a%d$_n:a^me-is_too_lon%g.', 'GAUGE', 0, 100, 600);
 
-        $this->assertEquals($expected, (string)$def);
+        $this->assertEquals($expected, (string) $def);
     }
 
     public function testCreation()
     {
         Config::set('rrd.step', 300);
         Config::set('rrd.heartbeat', 600);
-        $expected = 'DS:pos:COUNTER:600:0:125000000000 ' .
+        $expected = 'DS:pos:COUNTER:600:0:125000000000 '.
             'DS:unbound:DERIVE:600:U:U ';
 
         $def = new RrdDefinition();

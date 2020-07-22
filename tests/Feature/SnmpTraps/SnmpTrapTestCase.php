@@ -1,6 +1,6 @@
 <?php
 /**
- * SnmpTrapTestCase.php
+ * SnmpTrapTestCase.php.
  *
  * -Description-
  *

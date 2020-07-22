@@ -1,6 +1,6 @@
 <?php
 /**
- * LockTest.php
+ * LockTest.php.
  *
  * Test Locking functionality.
  *

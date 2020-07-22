@@ -1,6 +1,6 @@
 <?php
 /**
- * TwoFactorPage.php
+ * TwoFactorPage.php.
  *
  * -Description-
  *

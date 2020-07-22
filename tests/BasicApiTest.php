@@ -1,6 +1,6 @@
 <?php
 /**
- * BasicApiTest.php
+ * BasicApiTest.php.
  *
  * -Description-
  *
@@ -43,9 +43,9 @@ class BasicApiTest extends DBTestCase
         $this->json('GET', '/api/v0/devices', [], ['X-Auth-Token' => $token->token_hash])
             ->assertStatus(200)
             ->assertJson([
-                "status" => "ok",
-                "devices" => [$device->toArray()],
-                "count"=> 1
+                'status' => 'ok',
+                'devices' => [$device->toArray()],
+                'count'=> 1,
             ]);
     }
 }

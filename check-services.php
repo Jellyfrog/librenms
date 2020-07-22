@@ -15,8 +15,8 @@
 
 use LibreNMS\Data\Store\Datastore;
 
-$init_modules = array();
-require __DIR__ . '/includes/init.php';
+$init_modules = [];
+require __DIR__.'/includes/init.php';
 
 $options = getopt('drfpgh:');
 if (set_debug(isset($options['d']))) {
@@ -33,7 +33,7 @@ $polled_services = 0;
 $where = '';
 if ($options['h']) {
     if (is_numeric($options['h'])) {
-        $where = "AND `S`.`device_id` = ".$options['h'];
+        $where = 'AND `S`.`device_id` = '.$options['h'];
     } else {
         if (preg_match('/\*/', $options['h'])) {
             $where = "AND `hostname` LIKE '".str_replace('*', '%', mres($options['h']))."'";
@@ -51,13 +51,13 @@ $sql = 'SELECT D.*,S.*,attrib_value  FROM `devices` AS D'
 foreach (dbFetchRows($sql) as $service) {
     // Run the polling function if service is enabled and the associated device is up, "Disable ICMP Test" option is not enabled,
     // or service hostname/ip is different from associated device
-    if (!$service['service_disabled'] && ($service['status'] == 1 || ($service['status'] == 0 && $service['status_reason'] === 'snmp') ||
+    if (! $service['service_disabled'] && ($service['status'] == 1 || ($service['status'] == 0 && $service['status_reason'] === 'snmp') ||
         $service['attrib_value'] === 'true' || ($service['service_ip'] !== $service['hostname'] &&
-        $service['service_ip'] !== inet6_ntop($service['ip']) ))) {
+        $service['service_ip'] !== inet6_ntop($service['ip'])))) {
         poll_service($service);
         $polled_services++;
     } else {
-        if (!$service['service_disabled']) {
+        if (! $service['service_disabled']) {
             d_echo("\nService check - ".$service['service_id']."\nSkipping service check because device "
                 .$service['hostname']." is down due to icmp.\n");
             Log::event(
@@ -75,12 +75,11 @@ foreach (dbFetchRows($sql) as $service) {
     }
 }
 
-$poller_end  = microtime(true);
-$poller_run  = ($poller_end - $poller_start);
+$poller_end = microtime(true);
+$poller_run = ($poller_end - $poller_start);
 $poller_time = substr($poller_run, 0, 5);
 
-
-$string = $argv[0] . " " . date(\LibreNMS\Config::get('dateformat.compact'))
+$string = $argv[0].' '.date(\LibreNMS\Config::get('dateformat.compact'))
     ." - $polled_services services polled in $poller_time secs";
 d_echo("$string\n");
 

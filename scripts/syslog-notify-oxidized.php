@@ -2,7 +2,7 @@
 <?php
 
 $init_modules = [];
-require __DIR__ . '/../includes/init.php';
+require __DIR__.'/../includes/init.php';
 
 use LibreNMS\Config;
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * 2018_07_03_091314_create_transport_group_transport_table.php
+ * 2018_07_03_091314_create_transport_group_transport_table.php.
  *
  * -Description-
  *
@@ -28,7 +28,6 @@ use Illuminate\Database\Schema\Blueprint;
 
 class CreateTransportGroupTransportTable extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -41,7 +40,6 @@ class CreateTransportGroupTransportTable extends Migration
             $table->unsignedInteger('transport_id');
         });
     }
-
 
     /**
      * Reverse the migrations.

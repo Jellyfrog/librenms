@@ -1,6 +1,6 @@
 <?php
 /**
- * 2018_07_03_091314_create_alert_transport_groups_table.php
+ * 2018_07_03_091314_create_alert_transport_groups_table.php.
  *
  * -Description-
  *
@@ -28,7 +28,6 @@ use Illuminate\Database\Schema\Blueprint;
 
 class CreateAlertTransportGroupsTable extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -41,7 +40,6 @@ class CreateAlertTransportGroupsTable extends Migration
             $table->string('transport_group_name', 30);
         });
     }
-
 
     /**
      * Reverse the migrations.
