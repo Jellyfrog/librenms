@@ -1,6 +1,6 @@
 <?php
 /**
- * ModelMakeCommand.php
+ * ModelMakeCommand.php.
  *
  * -Description-
  *

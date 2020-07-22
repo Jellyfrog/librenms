@@ -1,6 +1,6 @@
 <?php
 /**
- * PortNacController.php
+ * PortNacController.php.
  *
  * -Description-
  *
@@ -59,12 +59,12 @@ class PortNacController extends TableController
             'time_left',
             'authc_status',
             'authz_status',
-            'method'
+            'method',
         ];
     }
 
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder

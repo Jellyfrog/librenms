@@ -1,6 +1,6 @@
 <?php
 /**
- * PseudowiresController.php
+ * PseudowiresController.php.
  *
  * -Description-
  *

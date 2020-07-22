@@ -1,6 +1,6 @@
 <?php
 /**
- * CaptureController.php
+ * CaptureController.php.
  *
  * -Description-
  *

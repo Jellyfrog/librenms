@@ -1,6 +1,6 @@
 <?php
 /**
- * ProcessesController.php
+ * ProcessesController.php.
  *
  * -Description-
  *

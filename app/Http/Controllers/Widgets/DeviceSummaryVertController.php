@@ -1,6 +1,6 @@
 <?php
 /**
- * DeviceSummaryVertController.php
+ * DeviceSummaryVertController.php.
  *
  * -Description-
  *

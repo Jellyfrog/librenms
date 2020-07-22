@@ -1,6 +1,6 @@
 <?php
 /**
- * Application.php
+ * Application.php.
  *
  * Extension of base application class
  *

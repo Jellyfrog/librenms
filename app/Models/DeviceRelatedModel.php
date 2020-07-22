@@ -1,6 +1,6 @@
 <?php
 /**
- * DeviceRelatedModel.php
+ * DeviceRelatedModel.php.
  *
  * -Description-
  *

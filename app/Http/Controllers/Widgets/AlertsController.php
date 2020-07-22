@@ -1,6 +1,6 @@
 <?php
 /**
- * AlertsController.php
+ * AlertsController.php.
  *
  * -Description-
  *

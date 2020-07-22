@@ -1,6 +1,6 @@
 <?php
 /**
- * GraphsController.php
+ * GraphsController.php.
  *
  * -Description-
  *

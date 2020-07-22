@@ -1,6 +1,6 @@
 <?php
 /**
- * OspfArea.php
+ * OspfArea.php.
  *
  * -Description-
  *

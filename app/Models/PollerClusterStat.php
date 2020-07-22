@@ -1,6 +1,6 @@
 <?php
 /**
- * PollerClusterStat.php
+ * PollerClusterStat.php.
  *
  * -Description-
  *
@@ -31,5 +31,5 @@ class PollerClusterStat extends Model
 {
     public $timestamps = false;
     protected $primaryKey = 'id';
-#    protected $fillable = ['poller_name'];
+//    protected $fillable = ['poller_name'];
 }

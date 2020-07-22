@@ -1,6 +1,6 @@
 <?php
 /**
- * EventlogController.php
+ * EventlogController.php.
  *
  * -Description-
  *
@@ -28,8 +28,8 @@ namespace App\Http\Controllers\Table;
 use App\Models\Eventlog;
 use Carbon\Carbon;
 use LibreNMS\Config;
-use LibreNMS\Util\Url;
 use LibreNMS\Enum\Alert;
+use LibreNMS\Util\Url;
 
 class EventlogController extends TableController
 {
@@ -61,7 +61,7 @@ class EventlogController extends TableController
     }
 
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
@@ -92,14 +92,14 @@ class EventlogController extends TableController
             if (is_numeric($eventlog->reference)) {
                 $port = $eventlog->related;
                 if (isset($port)) {
-                    return '<b>' . Url::portLink($port, $port->getShortLabel()) . '</b>';
+                    return '<b>'.Url::portLink($port, $port->getShortLabel()).'</b>';
                 }
             }
         } elseif (in_array($eventlog->type, \App\Models\Sensor::getTypes())) {
             if (is_numeric($eventlog->reference)) {
                 $sensor = $eventlog->related;
                 if (isset($sensor)) {
-                    return '<b>' . Url::sensorLink($sensor, $sensor->sensor_descr) . '</b>';
+                    return '<b>'.Url::sensorLink($sensor, $sensor->sensor_descr).'</b>';
                 }
             }
         }
@@ -113,7 +113,7 @@ class EventlogController extends TableController
         $output .= $this->severityLabel($eventlog->severity);
         $output .= " eventlog-status'></span><span style='display:inline;'>";
         $output .= (new Carbon($eventlog->datetime))->format(Config::get('dateformat.compact'));
-        $output .= "</span>";
+        $output .= '</span>';
 
         return $output;
     }
@@ -126,17 +126,19 @@ class EventlogController extends TableController
     {
         switch ($eventlog_severity) {
             case Alert::OK:
-                return "label-success"; //OK
+                return 'label-success'; //OK
             case Alert::INFO:
-                return "label-info"; //Informational
+                return 'label-info'; //Informational
             case Alert::NOTICE:
-                return "label-primary"; //Notice
+                return 'label-primary'; //Notice
             case Alert::WARNING:
-                return "label-warning"; //Warning
+                return 'label-warning'; //Warning
             case Alert::ERROR:
-                return "label-danger"; //Critical
+                return 'label-danger'; //Critical
             default:
-                return "label-default"; //Unknown
+                return 'label-default'; //Unknown
         }
-    } // end eventlog_severity
+    }
+
+    // end eventlog_severity
 }

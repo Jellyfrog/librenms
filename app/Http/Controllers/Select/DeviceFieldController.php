@@ -1,6 +1,6 @@
 <?php
 /**
- * DeviceFieldController.php
+ * DeviceFieldController.php.
  *
  * -Description-
  *
@@ -31,7 +31,7 @@ use LibreNMS\Config;
 class DeviceFieldController extends SelectController
 {
     /**
-     * Defines validation rules (will override base validation rules for select2 responses too)
+     * Defines validation rules (will override base validation rules for select2 responses too).
      *
      * @return array
      */
@@ -43,7 +43,7 @@ class DeviceFieldController extends SelectController
     }
 
     /**
-     * Defines search fields will be searched in order
+     * Defines search fields will be searched in order.
      *
      * @param \Illuminate\Http\Request $request
      * @return array
@@ -54,7 +54,7 @@ class DeviceFieldController extends SelectController
     }
 
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder

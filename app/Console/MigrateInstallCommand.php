@@ -1,6 +1,6 @@
 <?php
 /**
- * MigrateInstallCommand.php
+ * MigrateInstallCommand.php.
  *
  * -Description-
  *

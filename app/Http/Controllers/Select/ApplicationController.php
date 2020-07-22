@@ -1,6 +1,6 @@
 <?php
 /**
- * ApplicationController.php
+ * ApplicationController.php.
  *
  * -Description-
  *
@@ -37,7 +37,7 @@ class ApplicationController extends SelectController
     }
 
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
@@ -59,7 +59,7 @@ class ApplicationController extends SelectController
     {
         return [
             'id' => $app->app_id,
-            'text' => $app->displayName() . ' - ' . $app->device->displayName(),
+            'text' => $app->displayName().' - '.$app->device->displayName(),
         ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Syslog.php
+ * Syslog.php.
  *
  * -Description-
  *

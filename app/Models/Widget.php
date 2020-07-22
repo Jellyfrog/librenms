@@ -1,6 +1,6 @@
 <?php
 /**
- * Widget.php
+ * Widget.php.
  *
  * -Description-
  *

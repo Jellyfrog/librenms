@@ -1,6 +1,6 @@
 <?php
 /**
- * DevCheckCommand.php
+ * DevCheckCommand.php.
  *
  * -Description-
  *
@@ -77,7 +77,7 @@ class DevCheckCommand extends LnmsCommand
     private function parseInput()
     {
         $check = $this->argument('check');
-        if (!in_array($check, ['all', 'lint', 'style', 'unit', 'web', 'ci'])) {
+        if (! in_array($check, ['all', 'lint', 'style', 'unit', 'web', 'ci'])) {
             $this->error("Invalid check: $check");
             exit(1);
         }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Applications.php
+ * Applications.php.
  *
  * -Description-
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * PlaceholderController.php
+ * PlaceholderController.php.
  *
  * -Description-
  *

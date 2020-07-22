@@ -1,6 +1,6 @@
 <?php
 /**
- * TnmsneController.php
+ * TnmsneController.php.
  *
  * -Description-
  *

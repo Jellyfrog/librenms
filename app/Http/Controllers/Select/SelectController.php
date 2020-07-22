@@ -1,6 +1,6 @@
 <?php
 /**
- * SelectController.php
+ * SelectController.php.
  *
  * Controller class for select2 ajax controllers.
  *
@@ -42,7 +42,7 @@ abstract class SelectController extends PaginatedAjaxController
     }
 
     /**
-     * The default method called by the route handler
+     * The default method called by the route handler.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -66,7 +66,7 @@ abstract class SelectController extends PaginatedAjaxController
     {
         return response()->json([
             'results' => collect($paginator->items())->map([$this, 'formatItem']),
-            'pagination' => ['more' => $paginator->hasMorePages()]
+            'pagination' => ['more' => $paginator->hasMorePages()],
         ]);
     }
 
@@ -82,6 +82,7 @@ abstract class SelectController extends PaginatedAjaxController
     public function formatItem($model)
     {
         $attributes = collect($model->getAttributes());
+
         return [
             'id' => $attributes->count() == 1 ? $attributes->first() : $model->getKey(),
             'text' => $attributes->forget($model->getKeyName())->first(),

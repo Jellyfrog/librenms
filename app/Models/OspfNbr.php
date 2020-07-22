@@ -1,6 +1,6 @@
 <?php
 /**
- * OspfNbr.php
+ * OspfNbr.php.
  *
  * -Description-
  *

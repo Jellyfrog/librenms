@@ -1,6 +1,6 @@
 <?php
 /**
- * SimpleTableController.php
+ * SimpleTableController.php.
  *
  * -Description-
  *

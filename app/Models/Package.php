@@ -1,6 +1,6 @@
 <?php
 /**
- * Package.php
+ * Package.php.
  *
  * -Description-
  *

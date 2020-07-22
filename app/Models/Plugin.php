@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin.php
+ * Plugin.php.
  *
  * -Description-
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * InventoryController.php
+ * InventoryController.php.
  *
  * -Description-
  *

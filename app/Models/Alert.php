@@ -1,6 +1,6 @@
 <?php
 /**
- * app/Models/Alert.php
+ * app/Models/Alert.php.
  *
  * Model for access to alerts table data
  *
@@ -36,7 +36,7 @@ class Alert extends Model
     // ---- Query scopes ----
 
     /**
-     * Only select active alerts
+     * Only select active alerts.
      * @param Builder $query
      * @return Builder
      */
@@ -46,7 +46,7 @@ class Alert extends Model
     }
 
     /**
-     * Only select active alerts
+     * Only select active alerts.
      * @param Builder $query
      * @return Builder
      */

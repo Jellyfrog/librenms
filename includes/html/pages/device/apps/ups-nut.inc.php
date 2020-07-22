@@ -20,21 +20,21 @@
 *
 */
 
-$graphs = array(
+$graphs = [
     'ups-nut_remaining' => 'Remaining time: ',
     'ups-nut_load' => 'Load: ',
     'ups-nut_voltage_battery' => 'Battery voltage: ',
     'ups-nut_charge' => 'Charge: ',
     'ups-nut_voltage_input' => 'Input voltage: ',
-);
+];
 
 foreach ($graphs as $key => $text) {
-    $graph_type            = $key;
+    $graph_type = $key;
     $graph_array['height'] = '100';
-    $graph_array['width']  = '215';
+    $graph_array['width'] = '215';
     $graph_array['to'] = \LibreNMS\Config::get('time.now');
-    $graph_array['id']     = $app['app_id'];
-    $graph_array['type']   = 'application_'.$key;
+    $graph_array['id'] = $app['app_id'];
+    $graph_array['type'] = 'application_'.$key;
 
     echo '<div class="panel panel-default">
     <div class="panel-heading">

@@ -1,6 +1,6 @@
 <?php
 /**
- * LatencyController.php
+ * LatencyController.php.
  *
  * -Description-
  *
@@ -67,7 +67,6 @@ class LatencyController implements DeviceTab
             ? abs(strtotime($perf->first()->date) - strtotime($perf->last()->date)) * 1000
             : 0;
 
-
         $smokeping = new Smokeping($device);
         $smokeping_tabs = [];
         if ($smokeping->hasInGraph()) {
@@ -97,7 +96,7 @@ class LatencyController implements DeviceTab
     }
 
     /**
-     * Data ready for json export
+     * Data ready for json export.
      * @param \Illuminate\Support\Collection $data
      * @return array
      */

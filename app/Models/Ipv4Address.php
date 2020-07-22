@@ -1,6 +1,6 @@
 <?php
 /**
- * Ipv4Address.php
+ * Ipv4Address.php.
  *
  * -Description-
  *

@@ -1,20 +1,20 @@
 <?php
 
-$graphs = array(
+$graphs = [
     'puppet-agent_last_run' => 'Last run',
     'puppet-agent_changes' => 'Changes',
     'puppet-agent_events' => 'Events',
     'puppet-agent_resources' => 'Resources',
     'puppet-agent_time' => 'Runtime',
-);
+];
 
 foreach ($graphs as $key => $text) {
-    $graph_type            = $key;
+    $graph_type = $key;
     $graph_array['height'] = '100';
-    $graph_array['width']  = '215';
-    $graph_array['to']     = time();
-    $graph_array['id']     = $app['app_id'];
-    $graph_array['type']   = 'application_'.$key;
+    $graph_array['width'] = '215';
+    $graph_array['to'] = time();
+    $graph_array['id'] = $app['app_id'];
+    $graph_array['type'] = 'application_'.$key;
 
     echo '<div class="panel panel-default">
     <div class="panel-heading">

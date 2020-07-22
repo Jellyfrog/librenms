@@ -1,6 +1,6 @@
 <?php
 /**
- * EditController.php
+ * EditController.php.
  *
  * -Description-
  *

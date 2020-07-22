@@ -1,6 +1,6 @@
 <?php
 /**
- * VrfLite.php
+ * VrfLite.php.
  *
  * -Description-
  *

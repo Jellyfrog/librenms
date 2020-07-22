@@ -1,6 +1,6 @@
 <?php
 /**
- * VlansController.php
+ * VlansController.php.
  *
  * -Description-
  *

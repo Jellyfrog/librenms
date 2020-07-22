@@ -1,6 +1,6 @@
 <?php
 /**
- * NeighboursController.php
+ * NeighboursController.php.
  *
  * -Description-
  *

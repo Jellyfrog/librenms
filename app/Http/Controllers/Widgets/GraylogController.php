@@ -1,6 +1,6 @@
 <?php
 /**
- * GraylogController.php
+ * GraylogController.php.
  *
  * -Description-
  *

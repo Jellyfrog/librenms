@@ -1,6 +1,6 @@
 <?php
 /**
- * DashboardController.php
+ * DashboardController.php.
  *
  * -Description-
  *
@@ -35,7 +35,7 @@ class DashboardController extends SelectController
     }
 
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
@@ -61,6 +61,6 @@ class DashboardController extends SelectController
     private function describe($dashboard)
     {
         return "{$dashboard->user->username}: {$dashboard->dashboard_name} ("
-            . ($dashboard->access == 1 ? __('read-only') : __('read-write')) . ')';
+            .($dashboard->access == 1 ? __('read-only') : __('read-write')).')';
     }
 }

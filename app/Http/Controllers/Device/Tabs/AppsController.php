@@ -1,6 +1,6 @@
 <?php
 /**
- * AppsController.php
+ * AppsController.php.
  *
  * -Description-
  *

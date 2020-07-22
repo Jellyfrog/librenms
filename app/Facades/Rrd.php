@@ -1,6 +1,6 @@
 <?php
 /**
- * Rrd.php
+ * Rrd.php.
  *
  * -Description-
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessSensor.php
+ * WirelessSensor.php.
  *
  * -Description-
  *

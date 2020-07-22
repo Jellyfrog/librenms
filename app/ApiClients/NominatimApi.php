@@ -1,6 +1,6 @@
 <?php
 /**
- * NominatimApi.php
+ * NominatimApi.php.
  *
  * -Description-
  *
@@ -35,7 +35,7 @@ class NominatimApi extends BaseApi implements Geocoder
     protected $geocoding_uri = '/search';
 
     /**
-     * Get latitude and longitude from geocode response
+     * Get latitude and longitude from geocode response.
      *
      * @param array $data
      * @return array
@@ -49,7 +49,7 @@ class NominatimApi extends BaseApi implements Geocoder
     }
 
     /**
-     * Build Guzzle request option array
+     * Build Guzzle request option array.
      *
      * @param string $address
      * @return array
@@ -66,7 +66,7 @@ class NominatimApi extends BaseApi implements Geocoder
             'headers' => [
                 'User-Agent' => 'LibreNMS',
                 'Accept'     => 'application/json',
-            ]
+            ],
         ];
     }
 }

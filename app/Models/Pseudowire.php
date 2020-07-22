@@ -1,6 +1,6 @@
 <?php
 /**
- * Pseudowire.php
+ * Pseudowire.php.
  *
  * -Description-
  *

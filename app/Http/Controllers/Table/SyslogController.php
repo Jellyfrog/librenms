@@ -1,6 +1,6 @@
 <?php
 /**
- * SyslogController.php
+ * SyslogController.php.
  *
  * -Description-
  *
@@ -62,7 +62,7 @@ class SyslogController extends TableController
     }
 
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
@@ -103,7 +103,7 @@ class SyslogController extends TableController
         $output = "<span class='alert-status ";
         $output .= $this->priorityLabel($syslog->priority);
         $output .= "'>";
-        $output .= "</span>";
+        $output .= '</span>';
 
         return $output;
     }
@@ -115,22 +115,24 @@ class SyslogController extends TableController
     private function priorityLabel($syslog_priority)
     {
         switch ($syslog_priority) {
-            case "debug":
-                return "label-default"; //Debug
-            case "info":
-                return "label-info"; //Informational
-            case "notice":
-                return "label-primary"; //Notice
-            case "warning":
-                return "label-warning"; //Warning
-            case "err":
-                return "label-danger"; //Error
-            case "crit":
-                return "label-danger"; //Critical
-            case "alert":
-                return "label-danger"; //Alert
-            case "emerg":
-                return "label-danger"; //Emergency
+            case 'debug':
+                return 'label-default'; //Debug
+            case 'info':
+                return 'label-info'; //Informational
+            case 'notice':
+                return 'label-primary'; //Notice
+            case 'warning':
+                return 'label-warning'; //Warning
+            case 'err':
+                return 'label-danger'; //Error
+            case 'crit':
+                return 'label-danger'; //Critical
+            case 'alert':
+                return 'label-danger'; //Alert
+            case 'emerg':
+                return 'label-danger'; //Emergency
         }
-    } // end syslog_priority
+    }
+
+    // end syslog_priority
 }

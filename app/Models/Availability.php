@@ -1,6 +1,6 @@
 <?php
 /**
- * Availability.php
+ * Availability.php.
  *
  * -Description-
  *

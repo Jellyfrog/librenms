@@ -1,6 +1,6 @@
 <?php
 /**
- * ApiTokenGuard.php
+ * ApiTokenGuard.php.
  *
  * Override TokenGuard so we can use our non-standard header
  *

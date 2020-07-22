@@ -1,6 +1,6 @@
 <?php
 /**
- * Ipv6Address.php
+ * Ipv6Address.php.
  *
  * -Description-
  *

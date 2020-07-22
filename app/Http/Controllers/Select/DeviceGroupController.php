@@ -1,6 +1,6 @@
 <?php
 /**
- * DeviceGroupController.php
+ * DeviceGroupController.php.
  *
  * -Description-
  *

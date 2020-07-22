@@ -1,6 +1,6 @@
 <?php
 /**
- * ResolutionController.php
+ * ResolutionController.php.
  *
  * -Description-
  *
@@ -34,15 +34,15 @@ class ResolutionController extends Controller
     {
         $this->validate($request, [
             'width' => 'required|numeric',
-            'height' => 'required|numeric'
+            'height' => 'required|numeric',
         ]);
 
         // laravel session
         session([
             'screen_width' => $request->width,
-            'screen_height' => $request->height
+            'screen_height' => $request->height,
         ]);
 
-        return $request->width . 'x' . $request->height;
+        return $request->width.'x'.$request->height;
     }
 }
