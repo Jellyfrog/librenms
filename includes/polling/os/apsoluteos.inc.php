@@ -1,6 +1,6 @@
 <?php
 /**
- * apsoluteos.inc.php
+ * apsoluteos.inc.php.
  *
  * LibreNMS os poller module for DefensePro ( APSoluteOS )
  *

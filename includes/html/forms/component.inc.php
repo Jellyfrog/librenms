@@ -2,20 +2,20 @@
 
 header('Content-type: application/json');
 
-if (!Auth::user()->hasGlobalAdmin()) {
-    $response = array(
+if (! Auth::user()->hasGlobalAdmin()) {
+    $response = [
         'status'  => 'error',
         'message' => 'Need to be admin',
-    );
+    ];
     echo _json_encode($response);
     exit;
 }
 
-$status     = 'error';
-$message    = 'Error with config';
+$status = 'error';
+$message = 'Error with config';
 
 // enable/disable components on devices.
-$device_id    = intval($_POST['device']);
+$device_id = intval($_POST['device']);
 
 $OBJCOMP = new LibreNMS\Component();
 
@@ -26,7 +26,7 @@ $COMPONENTS = $OBJCOMP->getComponents($device_id);
 $COMPONENTS = $COMPONENTS[$device_id];
 
 // Track how many updates we are making.
-$UPDATE = array();
+$UPDATE = [];
 
 foreach ($COMPONENTS as $ID => $AVP) {
     // Is the component disabled?
@@ -68,15 +68,15 @@ if (count($UPDATE) > 0) {
     // Update our edited components.
     $STATUS = $OBJCOMP->setComponentPrefs($device_id, $COMPONENTS);
 
-    $message    = count($UPDATE).' Device records updated.';
-    $status     = 'ok';
+    $message = count($UPDATE).' Device records updated.';
+    $status = 'ok';
 } else {
-    $message    = 'Record unchanged. No update necessary.';
-    $status     = 'ok';
+    $message = 'Record unchanged. No update necessary.';
+    $status = 'ok';
 }
 
-$response = array(
+$response = [
     'status'    => $status,
     'message'   => $message,
-);
+];
 echo _json_encode($response);

@@ -12,7 +12,6 @@
  * the source code distribution for details.
  */
 
-
 $hardware = snmp_get($device, 'adAOSDeviceProductName.0', '-Ovqs', 'ADTRAN-AOSUNIT');
 $version = snmp_get($device, 'adAOSDeviceVersion.0', '-Ovqs', 'ADTRAN-AOSUNIT');
 $serial = snmp_get($device, 'adAOSDeviceSerialNumber.0', '-Ovqs', 'ADTRAN-AOSUNIT');

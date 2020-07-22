@@ -9,7 +9,7 @@ require 'includes/html/graphs/common.inc.php';
 if ($width > '500') {
     $descr_len = 24;
 } else {
-    $descr_len  = 14;
+    $descr_len = 14;
     $descr_len += round(($width - 230) / 8.2);
 }
 
@@ -21,23 +21,23 @@ if ($width > '500') {
 }
 
 $c_i = 0;
-$dbq = dbFetchRows('SELECT * FROM `munin_plugins_ds` WHERE `mplug_id` = ?', array($mplug['mplug_id']));
+$dbq = dbFetchRows('SELECT * FROM `munin_plugins_ds` WHERE `mplug_id` = ?', [$mplug['mplug_id']]);
 foreach ($dbq as $ds) {
     $ds_filename = rrd_name($device['hostname'], 'munin/'.$mplug['mplug_type'].'_'.$ds['ds_name']);
-    $ds_name     = $ds['ds_name'];
+    $ds_name = $ds['ds_name'];
 
     $cmd_def .= ' DEF:'.$ds['ds_name'].'='.$ds_filename.':val:AVERAGE';
 
-    if (!empty($ds['ds_cdef'])) {
+    if (! empty($ds['ds_cdef'])) {
         $cmd_cdef .= '';
-        $ds_name   = $ds['ds_name'].'_cdef';
+        $ds_name = $ds['ds_name'].'_cdef';
     }
 
     if ($ds['ds_graph'] == 'yes') {
         if (empty($ds['colour'])) {
             $colour = \LibreNMS\Config::get("graph_colours.mixed.$c_i");
 
-            if (!$colour) {
+            if (! $colour) {
                 $c_i = 0;
                 $colour = \LibreNMS\Config::get("graph_colours.mixed.$c_i");
             }

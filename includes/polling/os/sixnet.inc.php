@@ -1,6 +1,6 @@
 <?php
 /**
- * sixnet.inc.php
+ * sixnet.inc.php.
  *
  * RedLion Sixnet OS polling
  *
@@ -22,9 +22,8 @@
  * @copyright  2018 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 $sixnet_data = snmp_get_multi_oid($device, ['serialNumber.0', 'firmwareRevision.0'], '-OUQs', 'SIXNET-MIB');
-$serial      = $sixnet_data['serialNumber.0'];
-$version     = $sixnet_data['firmwareRevision.0'];
+$serial = $sixnet_data['serialNumber.0'];
+$version = $sixnet_data['firmwareRevision.0'];
 
 unset($sixnet_data);

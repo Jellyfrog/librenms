@@ -13,9 +13,9 @@
 $oids = ['upsIdentModel.0', 'upsIdentUPSSoftwareVersion.0'];
 $data = snmp_get_multi($device, $oids, '-OQUs', 'UPS-MIB');
 
-if (!empty($data[0]['upsIdentModel'])) {
+if (! empty($data[0]['upsIdentModel'])) {
     $hardware = $data[0]['upsIdentModel'];
 }
-if (!empty($data[0]['upsIdentUPSSoftwareVersion'])) {
+if (! empty($data[0]['upsIdentUPSSoftwareVersion'])) {
     $version = $data[0]['upsIdentUPSSoftwareVersion'];
 }

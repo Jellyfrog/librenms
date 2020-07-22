@@ -6,15 +6,15 @@ $src = device_by_id_cache($_GET['src']);
 
 // This is my translation of Smokeping's graphing.
 // Thanks to Bill Fenner for Perl->Human translation:>
-$scale_min   = 0;
+$scale_min = 0;
 $scale_rigid = true;
 
 require 'includes/html/graphs/common.inc.php';
 require 'includes/html/graphs/device/smokeping_common.inc.php';
 
-$i         = 0;
+$i = 0;
 $pings = Config::get('smokeping.pings');
-$iter      = 0;
+$iter = 0;
 $colourset = 'mixed';
 
 if ($width > '500') {
@@ -31,20 +31,20 @@ if ($width > '500') {
 
 $filename_dir = generate_smokeping_file($device);
 if ($src['hostname'] == Config::get('own_hostname')) {
-    $filename = $filename_dir . $device['hostname'].'.rrd';
-    if (!rrdtool_check_rrd_exists($filename)) {
+    $filename = $filename_dir.$device['hostname'].'.rrd';
+    if (! rrdtool_check_rrd_exists($filename)) {
         // Try with dots in hostname replaced by underscores
-        $filename = $filename_dir . str_replace('.', '_', $device['hostname']).'.rrd';
+        $filename = $filename_dir.str_replace('.', '_', $device['hostname']).'.rrd';
     }
 } else {
-    $filename = $filename_dir . $device['hostname'] .'~'.$src['hostname'].'.rrd';
-    if (!rrdtool_check_rrd_exists($filename)) {
+    $filename = $filename_dir.$device['hostname'].'~'.$src['hostname'].'.rrd';
+    if (! rrdtool_check_rrd_exists($filename)) {
         // Try with dots in hostname replaced by underscores
-        $filename = $filename_dir . str_replace('.', '-', $device['hostname']) .'~'.$src['hostname'].'.rrd';
+        $filename = $filename_dir.str_replace('.', '-', $device['hostname']).'~'.$src['hostname'].'.rrd';
     }
 }
 
-if (!Config::has("graph_colours.$colourset.$iter")) {
+if (! Config::has("graph_colours.$colourset.$iter")) {
     $iter = 0;
 }
 
@@ -68,8 +68,8 @@ foreach (range(1, $pings) as $p) {
 
 foreach (range(2, $pings) as $p) {
     $pings_options .= ',p'.$i.'p'.$p.',UN,+';
-    $m_options     .= ',p'.$i.'p'.$p.',+';
-    $sdev_options  .= ',p'.$i.'p'.$p.',m'.$i.',-,DUP,*,+';
+    $m_options .= ',p'.$i.'p'.$p.',+';
+    $sdev_options .= ',p'.$i.'p'.$p.',m'.$i.',-,DUP,*,+';
 }
 
   $rrd_options .= ' CDEF:pings'.$i.'='.$pings.',p'.$i.'p1,UN'.$pings_options.',-';

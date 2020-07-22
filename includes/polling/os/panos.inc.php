@@ -5,8 +5,8 @@ use LibreNMS\RRD\RrdDefinition;
 $oids = snmp_get_multi($device, ['panChassisType.0', 'panSysSwVersion.0', 'panSysSerialNumber.0', 'panSessionActive.0', 'panSessionActiveTcp.0', 'panSessionActiveUdp.0', 'panSessionActiveICMP.0', 'panSessionActiveSslProxy.0', 'panSessionSslProxyUtilization.0', 'panGPGWUtilizationActiveTunnels.0'], '-OQUs', 'PAN-COMMON-MIB');
 
 $hardware = $oids[0]['panChassisType'];
-$version  = $oids[0]['panSysSwVersion'];
-$serial   = $oids[0]['panSysSerialNumber'];
+$version = $oids[0]['panSysSwVersion'];
+$serial = $oids[0]['panSysSerialNumber'];
 $sessions = $oids[0]['panSessionActive'];
 $sessions_tcp = $oids[0]['panSessionActiveTcp'];
 $sessions_udp = $oids[0]['panSessionActiveUdp'];
@@ -18,9 +18,9 @@ $activetunnels = $oids[0]['panGPGWUtilizationActiveTunnels'];
 if (is_numeric($sessions)) {
     $rrd_def = RrdDefinition::make()->addDataset('sessions', 'GAUGE', 0, 3000000);
 
-    $fields = array(
+    $fields = [
         'sessions' => $sessions,
-    );
+    ];
 
     $tags = compact('rrd_def');
     data_update($device, 'panos-sessions', $tags, $fields);
@@ -31,9 +31,9 @@ if (is_numeric($sessions)) {
 if (is_numeric($sessions_tcp)) {
     $rrd_def = RrdDefinition::make()->addDataset('sessions_tcp', 'GAUGE', 0, 3000000);
 
-    $fields = array(
+    $fields = [
         'sessions_tcp' => $sessions_tcp,
-    );
+    ];
 
     $tags = compact('rrd_def');
     data_update($device, 'panos-sessions-tcp', $tags, $fields);
@@ -44,9 +44,9 @@ if (is_numeric($sessions_tcp)) {
 if (is_numeric($sessions_udp)) {
     $rrd_def = RrdDefinition::make()->addDataset('sessions_udp', 'GAUGE', 0, 3000000);
 
-    $fields = array(
+    $fields = [
         'sessions_udp' => $sessions_udp,
-    );
+    ];
 
     $tags = compact('rrd_def');
     data_update($device, 'panos-sessions-udp', $tags, $fields);
@@ -57,9 +57,9 @@ if (is_numeric($sessions_udp)) {
 if (is_numeric($sessions_icmp)) {
     $rrd_def = RrdDefinition::make()->addDataset('sessions_icmp', 'GAUGE', 0, 3000000);
 
-    $fields = array(
+    $fields = [
         'sessions_icmp' => $sessions_icmp,
-    );
+    ];
 
     $tags = compact('rrd_def');
     data_update($device, 'panos-sessions-icmp', $tags, $fields);
@@ -70,9 +70,9 @@ if (is_numeric($sessions_icmp)) {
 if (is_numeric($sessions_ssl)) {
     $rrd_def = RrdDefinition::make()->addDataset('sessions_ssl', 'GAUGE', 0, 3000000);
 
-    $fields = array(
+    $fields = [
         'sessions_ssl' => $sessions_ssl,
-    );
+    ];
 
     $tags = compact('rrd_def');
     data_update($device, 'panos-sessions-ssl', $tags, $fields);
@@ -83,9 +83,9 @@ if (is_numeric($sessions_ssl)) {
 if (is_numeric($sessions_sslutil)) {
     $rrd_def = RrdDefinition::make()->addDataset('sessions_sslutil', 'GAUGE', 0, 3000000);
 
-    $fields = array(
+    $fields = [
         'sessions_sslutil' => $sessions_sslutil,
-    );
+    ];
 
     $tags = compact('rrd_def');
     data_update($device, 'panos-sessions-sslutil', $tags, $fields);
@@ -96,9 +96,9 @@ if (is_numeric($sessions_sslutil)) {
 if (is_numeric($activetunnels)) {
     $rrd_def = RrdDefinition::make()->addDataset('activetunnels', 'GAUGE', 0, 3000000);
 
-    $fields = array(
+    $fields = [
         'activetunnels' => $activetunnels,
-    );
+    ];
 
     $tags = compact('rrd_def');
     data_update($device, 'panos-activetunnels', $tags, $fields);

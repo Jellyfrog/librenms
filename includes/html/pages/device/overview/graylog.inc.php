@@ -16,7 +16,7 @@ if (Config::get('graylog.server')) {
                     </div>
                     <table class="table table-hover table-condensed table-striped">';
 
-    $filter_device = $device["device_id"];
+    $filter_device = $device['device_id'];
     $tmp_output = '
         <div class="table-responsive">
         <table id="graylog" class="table table-hover table-condensed table-striped">
@@ -39,11 +39,11 @@ if (Config::get('graylog.server')) {
         $.ajax({
             type: "post",
             data: {
-                device: "' . (isset($filter_device) ? $filter_device : '') . '",
-                '. ($rowCount? 'rowCount: '.$rowCount .',' : '') .'
-                '. ($loglevel? 'loglevel: '.$loglevel .',' : '') .'
+                device: "'.(isset($filter_device) ? $filter_device : '').'",
+                '.($rowCount ? 'rowCount: '.$rowCount.',' : '').'
+                '.($loglevel ? 'loglevel: '.$loglevel.',' : '').'
             },
-            url: "' . url('/ajax/table/graylog') . '",
+            url: "'.url('/ajax/table/graylog').'",
             success: function(data){
                 if (data.rowCount == 0) {
                     $("#graylog-card").remove();

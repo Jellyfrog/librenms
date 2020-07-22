@@ -2,13 +2,13 @@
 
 require 'includes/html/graphs/common.inc.php';
 
-if (!isset($descr_len)) {
-    $descr_len  = 12;
+if (! isset($descr_len)) {
+    $descr_len = 12;
 }
 
 if ($nototal) {
     $descr_len += '2';
-    $unitlen  += '2';
+    $unitlen += '2';
 }
 
 $rrd_options .= " COMMENT:'".rrdtool_escape($unit_text, $descr_len)."        Now       Min       Max     Avg\l'";
@@ -16,7 +16,7 @@ $rrd_options .= " COMMENT:'".rrdtool_escape($unit_text, $descr_len)."        Now
 $unitlen = '10';
 if ($nototal) {
     $descr_len += '2';
-    $unitlen  += '2';
+    $unitlen += '2';
 }
 
 $unit_text = str_pad(truncate($unit_text, $unitlen), $unitlen);
@@ -26,7 +26,7 @@ foreach ($rrd_list as $i => $rrd) {
     if ($rrd['colour']) {
         $colour = $rrd['colour'];
     } else {
-        if (!\LibreNMS\Config::get("graph_colours.$colours.$colour_iter")) {
+        if (! \LibreNMS\Config::get("graph_colours.$colours.$colour_iter")) {
             $colour_iter = 0;
         }
 
@@ -49,14 +49,14 @@ foreach ($rrd_list as $i => $rrd) {
     if ($_GET['previous']) {
         $rrd_options .= ' DEF:'.$i.'X='.$rrd['filename'].':'.$rrd['ds'].':AVERAGE:start='.$prev_from.':end='.$from;
         $rrd_options .= ' SHIFT:'.$i."X:$period";
-        $thingX      .= $seperatorX.$i.'X,UN,0,'.$i.'X,IF';
-        $plusesX     .= $plusX;
-        $seperatorX   = ',';
-        $plusX        = ',+';
+        $thingX .= $seperatorX.$i.'X,UN,0,'.$i.'X,IF';
+        $plusesX .= $plusX;
+        $seperatorX = ',';
+        $plusX = ',+';
     }
 
     // Suppress totalling?
-    if (!$nototal) {
+    if (! $nototal) {
         $rrd_options .= ' VDEF:tot'.$rrd['ds'].$i.'='.$rrd['ds'].$i.',TOTAL';
     }
 
@@ -68,14 +68,14 @@ foreach ($rrd_list as $i => $rrd) {
     // if we've been passed a multiplier we must make a CDEF based on it!
     $g_defname = $rrd['ds'];
     if (is_numeric($multiplier)) {
-        $g_defname    = $rrd['ds'].'_cdef';
+        $g_defname = $rrd['ds'].'_cdef';
         $rrd_options .= ' CDEF:'.$g_defname.$i.'='.$rrd['ds'].$i.','.$multiplier.',*';
         $rrd_options .= ' CDEF:'.$g_defname.$i.'min='.$rrd['ds'].$i.'min,'.$multiplier.',*';
         $rrd_options .= ' CDEF:'.$g_defname.$i.'max='.$rrd['ds'].$i.'max,'.$multiplier.',*';
 
-        // If we've been passed a divider (divisor!) we make a CDEF for it.
+    // If we've been passed a divider (divisor!) we make a CDEF for it.
     } elseif (is_numeric($divider)) {
-        $g_defname    = $rrd['ds'].'_cdef';
+        $g_defname = $rrd['ds'].'_cdef';
         $rrd_options .= ' CDEF:'.$g_defname.$i.'='.$rrd['ds'].$i.','.$divider.',/';
         $rrd_options .= ' CDEF:'.$g_defname.$i.'min='.$rrd['ds'].$i.'min,'.$divider.',/';
         $rrd_options .= ' CDEF:'.$g_defname.$i.'max='.$rrd['ds'].$i.'max,'.$divider.',/';
@@ -93,8 +93,8 @@ foreach ($rrd_list as $i => $rrd) {
     $rrd_options .= ' GPRINT:'.$t_defname.$i.':LAST:%5.'.$float_precision.'lf%s GPRINT:'.$t_defname.$i.'min:MIN:%5.'.$float_precision.'lf%s';
     $rrd_options .= ' GPRINT:'.$t_defname.$i.'max:MAX:%5.'.$float_precision.'lf%s GPRINT:'.$t_defname.$i.":AVERAGE:'%5.".$float_precision."lf%s\\n'";
 
-    if (!$nototal) {
-        $rrd_options .= ' GPRINT:tot'.$rrd['ds'].$i.":%6.".$float_precision."lf%s'".rrdtool_escape($total_units)."'";
+    if (! $nototal) {
+        $rrd_options .= ' GPRINT:tot'.$rrd['ds'].$i.':%6.'.$float_precision."lf%s'".rrdtool_escape($total_units)."'";
     }
 
     $rrd_options .= " COMMENT:'\\n'";

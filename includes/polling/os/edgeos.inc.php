@@ -1,6 +1,7 @@
 <?php
+
 // Version is second word in sysDescr
-list(, $version) = explode(' ', $device['sysDescr']);
+[, $version] = explode(' ', $device['sysDescr']);
 preg_match('/v[0-9]+.[0-9]+.[0-9]+/', $version, $matches);
 $version = $matches[0];
 

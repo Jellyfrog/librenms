@@ -1,6 +1,6 @@
 <?php
 /**
- * update.php
+ * update.php.
  *
  * Database update script
  *
@@ -30,16 +30,16 @@ use LibreNMS\Exceptions\LockException;
 use LibreNMS\Util\FileLock;
 use LibreNMS\Util\MemcacheLock;
 
-if (!isset($init_modules) && php_sapi_name() == 'cli') {
+if (! isset($init_modules) && php_sapi_name() == 'cli') {
     // Not called from within discovery, let's load up the necessary stuff.
     $init_modules = [];
-    require realpath(__DIR__ . '/../..') . '/includes/init.php';
+    require realpath(__DIR__.'/../..').'/includes/init.php';
 }
 
 $return = 0;
 
 try {
-    if (isset($skip_schema_lock) && !$skip_schema_lock) {
+    if (isset($skip_schema_lock) && ! $skip_schema_lock) {
         if (Config::get('distributed_poller')) {
             $schemaLock = MemcacheLock::lock('schema', 30, 86000);
         } else {
@@ -74,7 +74,7 @@ try {
                             d_echo("$line \n");
 
                             if ($line[0] != '#') {
-                                if (!dbQuery($line)) {
+                                if (! dbQuery($line)) {
                                     $return = 2;
                                     $err++;
                                 }
@@ -112,6 +112,6 @@ try {
         $schemaLock->release();
     }
 } catch (LockException $e) {
-    echo $e->getMessage() . PHP_EOL;
+    echo $e->getMessage().PHP_EOL;
     $return = 1;
 }

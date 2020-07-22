@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Location;
 use App\Models\Device;
+use App\Models\Location;
 use LibreNMS\Config;
 use LibreNMS\Exceptions\InvalidIpException;
 use LibreNMS\Util\IP;
@@ -38,10 +38,10 @@ echo '<div class="row">
         <div class="col-sm-8">'.$device['sysName'].' </div>
       </div>';
 
-if (!empty($device['overwrite_ip'])) {
-     echo "<div class='row'><div class='col-sm-4'>Assigned IP</div><div class='col-sm-8'>{$device['overwrite_ip']}</div></div>";
-} elseif (!empty($device['ip'])) {
-     echo "<div class='row'><div class='col-sm-4'>Resolved IP</div><div class='col-sm-8'>{$device['ip']}</div></div>";
+if (! empty($device['overwrite_ip'])) {
+    echo "<div class='row'><div class='col-sm-4'>Assigned IP</div><div class='col-sm-8'>{$device['overwrite_ip']}</div></div>";
+} elseif (! empty($device['ip'])) {
+    echo "<div class='row'><div class='col-sm-4'>Resolved IP</div><div class='col-sm-8'>{$device['ip']}</div></div>";
 } elseif (Config::get('force_ip_to_sysname') === true) {
     try {
         $ip = IP::parse($device['hostname']);
@@ -100,16 +100,16 @@ if ($device['sysContact']) {
       </div>';
 }
 
-if (!empty($device['inserted']) && preg_match("/^0/", $device['inserted']) == 0) {
-    $inserted_text = "Device Added";
-    $inserted = (Time::formatInterval(time() - strtotime($device['inserted'])) . " ago");
-    echo "<div class='row'><div class='col-sm-4'>$inserted_text</div><div class='col-sm-8' title='$inserted_text on " . $device['inserted'] . "'>$inserted</div></div>";
+if (! empty($device['inserted']) && preg_match('/^0/', $device['inserted']) == 0) {
+    $inserted_text = 'Device Added';
+    $inserted = (Time::formatInterval(time() - strtotime($device['inserted'])).' ago');
+    echo "<div class='row'><div class='col-sm-4'>$inserted_text</div><div class='col-sm-8' title='$inserted_text on ".$device['inserted']."'>$inserted</div></div>";
 }
 
-if (!empty($device['last_discovered'])) {
-    $last_discovered_text = "Last Discovered";
-    $last_discovered = (empty($device['last_discovered']) ? "Never" : Time::formatInterval(time() - strtotime($device['last_discovered'])) . " ago");
-    echo "<div class='row'><div class='col-sm-4'>$last_discovered_text</div><div class='col-sm-8' title='$last_discovered_text at " . $device['last_discovered'] . "'>$last_discovered</div></div>";
+if (! empty($device['last_discovered'])) {
+    $last_discovered_text = 'Last Discovered';
+    $last_discovered = (empty($device['last_discovered']) ? 'Never' : Time::formatInterval(time() - strtotime($device['last_discovered'])).' ago');
+    echo "<div class='row'><div class='col-sm-4'>$last_discovered_text</div><div class='col-sm-8' title='$last_discovered_text at ".$device['last_discovered']."'>$last_discovered</div></div>";
 }
 
 $uptime = (Time::formatInterval($device['status'] ? $device['uptime'] : time() - strtotime($device['last_polled'])));
@@ -125,20 +125,20 @@ if ($device['location_id']) {
 
     $location = Location::find($device['location_id']);
     $location_valid = ($location && $location->coordinatesValid());
-    $location_coords = $location_valid ? $location->lat . ', ' . $location->lng : 'N/A';
+    $location_coords = $location_valid ? $location->lat.', '.$location->lng : 'N/A';
 
     echo '
     <div class="row">
         <div class="col-sm-4">Location</div>
-        <div class="col-sm-8">' . $location->location . '</div>
+        <div class="col-sm-8">'.$location->location.'</div>
     </div>
     <div class="row" id="coordinates-row" data-toggle="collapse" data-target="#toggle-map">
         <div class="col-sm-4">Lat / Lng</div>
-        <div class="col-sm-8"><span id="coordinates-text">' . $location_coords . '</span><div class="pull-right">';
+        <div class="col-sm-8"><span id="coordinates-text">'.$location_coords.'</span><div class="pull-right">';
 
     echo '<button type="button" id="toggle-map-button" class="btn btn-primary btn-xs" data-toggle="collapse" data-target="#toggle-map"><i class="fa fa-map" style="color:white" aria-hidden="true"></i> <span>View</span></button>';
     if ($location_valid) {
-        echo ' <a id="map-it-button" href="https://maps.google.com/?q=' . $location->lat . ',' . $location->lng . '" target="_blank" class="btn btn-success btn-xs" role="button"><i class="fa fa-map-marker" style="color:white" aria-hidden="true"></i> Map</a>';
+        echo ' <a id="map-it-button" href="https://maps.google.com/?q='.$location->lat.','.$location->lng.'" target="_blank" class="btn btn-success btn-xs" role="button"><i class="fa fa-map-marker" style="color:white" aria-hidden="true"></i> Map</a>';
     }
     echo '</div>
         </div>
@@ -148,9 +148,9 @@ if ($device['location_id']) {
         var device_marker, device_location, device_map;
         $("#toggle-map").on("shown.bs.collapse", function () {
             if (device_marker == null) {
-                device_location = new L.LatLng(' . (float)$location->lat . ', ' . (float)$location->lng . ');
+                device_location = new L.LatLng('.(float) $location->lat.', '.(float) $location->lng.');
                 config = {"tile_url": "'.Config::get('leaflet.tile_url', '{s}.tile.openstreetmap.org').'"};
-                device_map = init_map("location-map", "' . $maps_engine . '", "' . $maps_api . '", config);
+                device_map = init_map("location-map", "'.$maps_engine.'", "'.$maps_api.'", config);
                 device_marker = init_map_marker(device_map, device_location);
                 device_map.setZoom(18);
                 ';
@@ -159,7 +159,7 @@ if ($device['location_id']) {
         echo '  device_map.on("dragend", function () {
                     var new_location = device_marker.getLatLng();
                     if (confirm("Update location to " + new_location + "? This will update this location for all devices!")) {
-                        update_location(' . $location->id . ', new_location, function(success) {
+                        update_location('.$location->id.', new_location, function(success) {
                             if (success) {
                                 $("#coordinates-text").text(new_location.lat.toFixed(5) + ", " + new_location.lng.toFixed(5));
                                 $("#map-it-button").attr("href", "https://maps.google.com/?q=" + new_location.lat + "," + new_location.lng );

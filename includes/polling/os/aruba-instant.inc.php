@@ -1,6 +1,6 @@
 <?php
 /**
- * aruba-instant.inc.php
+ * aruba-instant.inc.php.
  *
  * LibreNMS os polling module for Aruba Instant
  *
@@ -26,13 +26,13 @@ use LibreNMS\RRD\RrdDefinition;
 
 // ArubaOS (MODEL: 225), Version 8.4.0.0-8.4.0.0
 // ArubaOS (MODEL: 105), Version 6.4.4.8-4.2.4.12
-$badchars                    = array( '(', ')', ',',);
-list(,,$hardware,,$version,) = str_replace($badchars, '', explode(' ', $device['sysDescr']));
+$badchars = ['(', ')', ','];
+[,,$hardware,,$version,] = str_replace($badchars, '', explode(' ', $device['sysDescr']));
 
 $ai_mib = 'AI-AP-MIB';
 $oids = snmpwalk_group($device, 'aiAPSerialNum', $ai_mib);
 
-if (!empty($oids)) {
+if (! empty($oids)) {
     foreach ($oids as $key => $value) {
         $serial = $value['aiAPSerialNum'];
         continue;

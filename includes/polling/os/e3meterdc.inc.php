@@ -1,6 +1,6 @@
 <?php
 /**
- * e3meterdc.inc.php
+ * e3meterdc.inc.php.
  *
  * LibreNMS os poller module for Zyxel devices
  *
@@ -22,7 +22,6 @@
  * @copyright  2020 PipoCanaja
  * @author     PipoCanaja
  */
-
 $oids = ['NETTRACK-E3METER-CTR-SNMP-MIB::e3ConcentratorFWVersion'];
 $e3meter = snmp_get_multi_oid($device, $oids, '-OUQnt');
 

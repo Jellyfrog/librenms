@@ -1,6 +1,6 @@
 <?php
 /**
- * dahua-nvr.inc.php
+ * dahua-nvr.inc.php.
  *
  * Dahua NVR OS polling
  *
@@ -22,11 +22,10 @@
  * @copyright  2018 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 $dahua_data = snmp_get_multi_oid($device, ['softwareRevision.0', 'serialNumber.0', 'deviceType.0'], '-OUQs', 'DAHUA-SNMP-MIB');
 
-$version  = $dahua_data['softwareRevision.0'];
-$serial   = $dahua_data['serialNumber.0'];
+$version = $dahua_data['softwareRevision.0'];
+$serial = $dahua_data['serialNumber.0'];
 $hardware = $dahua_data['deviceType.0'];
 
 unset($dahua_data);

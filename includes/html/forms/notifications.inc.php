@@ -14,33 +14,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * Notification Page
+ * Notification Page.
  * @author Daniel Preussker
  * @copyright 2015 Daniel Preussker, QuxLabs UG
  * @license GPL
  * @package LibreNMS
  * @subpackage Notifications
  */
-
 header('Content-type: application/json');
 
-if (!isset($_REQUEST['action'])) {
+if (! isset($_REQUEST['action'])) {
     die(json_encode([
         'status' => 'error',
         'message' => 'ERROR: Missing Params',
     ]));
 }
 
-if (in_array($_REQUEST['action'], ['stick', 'unstick', 'create']) && !Auth::user()->hasGlobalAdmin()) {
+if (in_array($_REQUEST['action'], ['stick', 'unstick', 'create']) && ! Auth::user()->hasGlobalAdmin()) {
     die(json_encode([
         'status' => 'error',
         'message' => 'ERROR: Need to be GlobalAdmin or DemoUser',
     ]));
 }
 
-
 if ($_REQUEST['action'] == 'read' && isset($_REQUEST['notification_id'])) {
-    if (dbInsert(['notifications_id'=>$_REQUEST['notification_id'],'user_id'=>Auth::id(),'key'=>'read','value'=>1], 'notifications_attribs')) {
+    if (dbInsert(['notifications_id'=>$_REQUEST['notification_id'], 'user_id'=>Auth::id(), 'key'=>'read', 'value'=>1], 'notifications_attribs')) {
         die(json_encode([
             'status' => 'ok',
             'message' => 'Set as Read',
@@ -54,7 +52,7 @@ if ($_REQUEST['action'] == 'read' && isset($_REQUEST['notification_id'])) {
                 'notifications_id' => $notification_id,
                 'user_id' => Auth::id(),
                 'key' => 'read',
-                'value' => 1
+                'value' => 1,
             ],
             'notifications_attribs'
         );
@@ -64,21 +62,21 @@ if ($_REQUEST['action'] == 'read' && isset($_REQUEST['notification_id'])) {
         'message' => 'All notifications set as read',
     ]));
 } elseif ($_REQUEST['action'] == 'stick' && isset($_REQUEST['notification_id'])) {
-    if (dbInsert(['notifications_id'=>$_REQUEST['notification_id'],'user_id'=>Auth::id(),'key'=>'sticky','value'=>1], 'notifications_attribs')) {
+    if (dbInsert(['notifications_id'=>$_REQUEST['notification_id'], 'user_id'=>Auth::id(), 'key'=>'sticky', 'value'=>1], 'notifications_attribs')) {
         die(json_encode([
             'status' => 'ok',
             'message' => 'Set as Sticky',
         ]));
     }
 } elseif ($_REQUEST['action'] == 'unstick' && isset($_REQUEST['notification_id'])) {
-    if (dbDelete('notifications_attribs', "notifications_id = ? && user_id = ? AND `key`='sticky'", [$_REQUEST['notification_id'],Auth::id()])) {
+    if (dbDelete('notifications_attribs', "notifications_id = ? && user_id = ? AND `key`='sticky'", [$_REQUEST['notification_id'], Auth::id()])) {
         die(json_encode([
             'status' => 'ok',
             'message' => 'Removed Sticky',
         ]));
     }
-} elseif ($_REQUEST['action'] == 'create' && (!empty($_REQUEST['title']) && !empty($_REQUEST['body']))) {
-    if (dbInsert(['title'=>$_REQUEST['title'],'body'=>$_REQUEST['body'],'checksum'=>hash('sha512', Auth::id().'.LOCAL.'.$_REQUEST['title']),'source'=>Auth::id()], 'notifications')) {
+} elseif ($_REQUEST['action'] == 'create' && (! empty($_REQUEST['title']) && ! empty($_REQUEST['body']))) {
+    if (dbInsert(['title'=>$_REQUEST['title'], 'body'=>$_REQUEST['body'], 'checksum'=>hash('sha512', Auth::id().'.LOCAL.'.$_REQUEST['title']), 'source'=>Auth::id()], 'notifications')) {
         die(json_encode([
             'status' => 'ok',
             'message' => 'Created',
@@ -91,7 +89,7 @@ if ($_REQUEST['action'] == 'read' && isset($_REQUEST['notification_id'])) {
     ]));
 }
 
-die(json_encode(array(
+die(json_encode([
     'status'       => 'error',
     'message'      => 'unknown error',
-)));
+]));

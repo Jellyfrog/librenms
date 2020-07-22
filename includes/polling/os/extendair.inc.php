@@ -1,6 +1,6 @@
 <?php
 /**
- * extendair.inc.php
+ * extendair.inc.php.
  *
  * LibreNMS os poller module for Exalt ExtendAir
  *
@@ -22,10 +22,9 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 $extendair_data = snmp_get_multi_oid($device, ['serialNumber.0', 'firmwareVersion.0'], '-OQs', 'ExaltComProducts');
 
-$serial  = $extendair_data['serialNumber.0'];
+$serial = $extendair_data['serialNumber.0'];
 $version = $extendair_data['firmwareVersion.0'];
 
 unset($extendair_data);

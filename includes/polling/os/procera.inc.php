@@ -12,6 +12,6 @@
  */
 
 if (stristr($device['sysObjectID'], 'packetlogic') || strstr($device['sysObjectID'], '.1.3.6.1.4.1.15397.2')) {
-    $version  = 'PacketLogic';
+    $version = 'PacketLogic';
     $hardware = 'PacketLogic';
 }

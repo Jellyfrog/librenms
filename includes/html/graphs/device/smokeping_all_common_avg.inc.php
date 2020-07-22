@@ -4,15 +4,15 @@
 // Thanks to Bill Fenner for Perl->Human translation:>
 use LibreNMS\Config;
 
-$scale_min   = 0;
+$scale_min = 0;
 $scale_rigid = true;
 
 require 'includes/html/graphs/common.inc.php';
 require 'includes/html/graphs/device/smokeping_common.inc.php';
 
-$i         = 0;
+$i = 0;
 $pings = Config::get('smokeping.pings');
-$iter      = 0;
+$iter = 0;
 $colourset = 'mixed';
 
 if ($width > '500') {
@@ -29,7 +29,7 @@ if ($width > '500') {
 }
 
 foreach ($smokeping_files[$direction][$device['hostname']] as $source => $filename) {
-    if (!Config::has("graph_colours.$colourset.$iter")) {
+    if (! Config::has("graph_colours.$colourset.$iter")) {
         $iter = 0;
     }
 
@@ -48,15 +48,15 @@ foreach ($smokeping_files[$direction][$device['hostname']] as $source => $filena
     // $rrd_options .= " CDEF:dm$i=median$i,0,".$max->{$start}.",LIMIT";
     // start emulate Smokeping::calc_stddev
     foreach (range(1, $pings) as $p) {
-        $rrd_options     .= ' DEF:pin'.$i.'p'.$p.'='.$filename.':ping'.$p.':AVERAGE';
+        $rrd_options .= ' DEF:pin'.$i.'p'.$p.'='.$filename.':ping'.$p.':AVERAGE';
         $rrd_options .= ' CDEF:p'.$i.'p'.$p.'=pin'.$i.'p'.$p.',UN,0,pin'.$i.'p'.$p.',IF';
     }
 
     unset($pings_options, $m_options, $sdev_options);
 
     foreach (range(2, $pings) as $p) {
-        $pings_options    .= ',p'.$i.'p'.$p.',UN,+';
-        $m_options    .= ',p'.$i.'p'.$p.',+';
+        $pings_options .= ',p'.$i.'p'.$p.',UN,+';
+        $m_options .= ',p'.$i.'p'.$p.',+';
         $sdev_options .= ',p'.$i.'p'.$p.',m'.$i.',-,DUP,*,+';
     }
 
@@ -67,8 +67,8 @@ foreach ($smokeping_files[$direction][$device['hostname']] as $source => $filena
     $rrd_options .= " CDEF:dmlow$i=dm$i,sdev$i,2,/,-";
     $rrd_options .= " CDEF:s2d$i=sdev$i";
 
-    $dm_list    .= ",dm$i,+";
-    $sd_list    .= ",s2d$i,+";
+    $dm_list .= ",dm$i,+";
+    $sd_list .= ",s2d$i,+";
     $ploss_list .= ",ploss$i,+";
 
     $i++;

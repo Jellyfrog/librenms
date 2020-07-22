@@ -12,11 +12,10 @@
  * the source code distribution for details.
  */
 
-
  $version = snmp_get($device, '.1.3.6.1.4.1.738.10.111.1.1.1.1.0', '-Ovqs', '');
  $serial = snmp_get($device, '.1.3.6.1.4.1.738.10.5.100.1.3.1.0', '-Ovqs', '');
- $hardware   = snmp_get($device, '.1.3.6.1.4.1.738.10.5.100.1.3.4.0', '-OQv', '');
- $features       = '';
+ $hardware = snmp_get($device, '.1.3.6.1.4.1.738.10.5.100.1.3.4.0', '-OQv', '');
+ $features = '';
 
  $version = str_replace('"', '', $version);
  $serial = str_replace('"', '', $serial);

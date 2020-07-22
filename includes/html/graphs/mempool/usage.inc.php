@@ -6,13 +6,13 @@ $rrd_options .= ' -u 100 -l 0 -E -b 1024 ';
 
 $iter = '1';
 
-$colour      = 'CC0000';
+$colour = 'CC0000';
 $colour_area = 'ffaaaa';
 
 if ($width > '500') {
     $descr_len = 13;
 } else {
-    $descr_len  = 8;
+    $descr_len = 8;
     $descr_len += round(($width - 250) / 8);
 }
 
@@ -25,7 +25,7 @@ if ($width > '500') {
 
 $descr = rrdtool_escape(short_hrDeviceDescr($mempool['mempool_descr']), $descr_len);
 
-$perc       = round($mempool['mempool_perc'], 0);
+$perc = round($mempool['mempool_perc'], 0);
 $background = get_percentage_colours($perc, $mempool['mempool_perc_warn']);
 
 $rrd_options .= " DEF:{$mempool['mempool_id']}used=$rrd_filename:used:AVERAGE";

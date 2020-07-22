@@ -6,4 +6,4 @@ AT-TQ3200, AT-TQ3400, AT-TQ4400, AT-TQ4600, AT-TQ4400e
 
 Use sysDescr to get Hardware, SW version*/
 
-list($hardware,$b,$version) = explode(' ', $device['sysDescr']);
+[$hardware,$b,$version] = explode(' ', $device['sysDescr']);

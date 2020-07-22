@@ -11,7 +11,7 @@
  * the source code distribution for details.
  */
 
-$data = explode("_", $device['sysDescr'], 2);
+$data = explode('_', $device['sysDescr'], 2);
 $hardware = $data[0];
 $version = $data[1];
 $serial = snmp_get($device, 'XAVI-XG6846-MIB::serialnum.0', '-Oqv');

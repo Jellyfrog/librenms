@@ -12,24 +12,24 @@
  * the source code distribution for details.
  */
 
-$rrd_list = array();
-$prefix    = rrd_name($device['hostname'], array($subtype, ''), '');
-$filenames = glob($prefix."*.rrd");
-$count     = count($filenames);
+$rrd_list = [];
+$prefix = rrd_name($device['hostname'], [$subtype, ''], '');
+$filenames = glob($prefix.'*.rrd');
+$count = count($filenames);
 foreach ($filenames as $filename) {
     // find out what * expanded to
     $globpart = str_replace($prefix, '', $filename);    // take off the prefix
     $instance = substr($globpart, 0, -4);               // take off ".rrd"
-    $ds             = array();
-    $mibparts       = explode('-', $subtype);
-    $mibvar         = end($mibparts);
-    $ds['ds']       = 'mibval';
-    $ds['descr']    = "$mibvar-$instance";
+    $ds = [];
+    $mibparts = explode('-', $subtype);
+    $mibvar = end($mibparts);
+    $ds['ds'] = 'mibval';
+    $ds['descr'] = "$mibvar-$instance";
     $ds['filename'] = $filename;
-    $rrd_list[]     = $ds;
+    $rrd_list[] = $ds;
 }
 
-$scale_min  = '0';
+$scale_min = '0';
 $simple_rrd = true;
 
 // If there are multiple matching files, use a stacked graph instead of a line graph
@@ -38,9 +38,9 @@ if ($count > 1) {
     $divider = $count;
     $text_orig = 1;
     $colours = 'manycolours';
-    include "includes/html/graphs/generic_multi_simplex_seperated.inc.php";
+    include 'includes/html/graphs/generic_multi_simplex_seperated.inc.php';
 } else {
     $colours = 'mixed';
     $nototal = 0;
-    include "includes/html/graphs/generic_multi_line.inc.php";
+    include 'includes/html/graphs/generic_multi_line.inc.php';
 }

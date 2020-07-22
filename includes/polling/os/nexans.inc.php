@@ -1,6 +1,6 @@
 <?php
 /**
- * nexans.inc.php
+ * nexans.inc.php.
  *
  * LibreNMS os poller module for HPE iPDU
  *
@@ -22,7 +22,6 @@
  * @copyright  2019 PipoCanaja
  * @author     PipoCanaja
  */
-
 $oids = ['infoMgmtFirmwareVersion.0', 'infoDescr.0'];
 
 $data = snmp_get_multi_oid($device, $oids, '-OQUs', '+NEXANS-BM-MIB');

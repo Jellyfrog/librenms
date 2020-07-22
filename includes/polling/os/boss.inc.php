@@ -30,13 +30,13 @@ $hardware = $hardware[0];
 // Is this a 5500 series or 5600 series stack?
 $features = '';
 
-$stack      = snmp_walk($device, 'SNMPv2-SMI::enterprises.45.1.6.3.3.1.1.6.8', '-OsqnU');
-$stack      = explode("\n", $stack);
+$stack = snmp_walk($device, 'SNMPv2-SMI::enterprises.45.1.6.3.3.1.1.6.8', '-OsqnU');
+$stack = explode("\n", $stack);
 $stack_size = count($stack);
 if ($stack_size > 1) {
     $features = "Stack of $stack_size units";
 }
 
-$version  = str_replace('"', '', $version);
+$version = str_replace('"', '', $version);
 $features = str_replace('"', '', $features);
 $hardware = str_replace('"', '', $hardware);

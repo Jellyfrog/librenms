@@ -1,6 +1,6 @@
 <?php
 /**
- * nac.inc.php
+ * nac.inc.php.
  *
  * Cisco network access controls poller module
  *
@@ -26,7 +26,7 @@
 
 use LibreNMS\OS;
 
-if (!$os instanceof OS) {
+if (! $os instanceof OS) {
     $os = OS::make($device);
 }
 (new \LibreNMS\Modules\Nac())->poll($os);

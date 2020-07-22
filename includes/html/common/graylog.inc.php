@@ -43,20 +43,20 @@ $tmp_output = '
 
 searchbar = "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\">"+
             "<div class=\"col-sm-8\"><form method=\"post\" action=\"\" class=\"form-inline\">"+
-            "' . addslashes(csrf_field()) . '" +
+            "'.addslashes(csrf_field()).'" +
             "Filter: "+
 ';
 
 $tmp_output .= '"<div class=\"form-group\"><select name=\"stream\" id=\"stream\" class=\"form-control\" data-placeholder=\"All Messages\">"+';
 if ($vars['stream']) {
-    $tmp_output .= '"<option value=\"' . display($vars['stream']) . '\">' . display($vars['stream']) . '</option>" +';
+    $tmp_output .= '"<option value=\"'.display($vars['stream']).'\">'.display($vars['stream']).'</option>" +';
     $filter_device = $device->device_id;
 }
 $tmp_output .= '"</select>&nbsp;</div>"+';
 
-if (!empty($filter_device)) {
+if (! empty($filter_device)) {
     $tmp_output .= '
-            "<input type=\"hidden\" name=\"device\" id=\"device\" value=\"'. $filter_device .'\">"+
+            "<input type=\"hidden\" name=\"device\" id=\"device\" value=\"'.$filter_device.'\">"+
 ';
 } else {
     $tmp_output .= '
@@ -64,7 +64,7 @@ if (!empty($filter_device)) {
             
 ';
     if ($vars['device'] && $device = Device::find($vars['device'])) {
-        $tmp_output .= '"<option value=\"' . $device->device_id . '\">' . $device->displayName() . '</option>" +';
+        $tmp_output .= '"<option value=\"'.$device->device_id.'\">'.$device->displayName().'</option>" +';
         $filter_device = $device->device_id;
     }
 
@@ -83,14 +83,14 @@ $tmp_output .= '
                 "<div class=\"form-group\">"+
                 "<select name=\"loglevel\" id=\"loglevel\" class=\"form-control\">"+
                 "<option value=\"\" disabled selected>Log Level</option>"+
-                "<option value=\"0\">'.("(0) " . __("syslog.severity.0")).'</option>"+
-                "<option value=\"1\">'.("(1) " . __("syslog.severity.1")).'</option>"+
-                "<option value=\"2\">'.("(2) " . __("syslog.severity.2")).'</option>"+
-                "<option value=\"3\">'.("(3) " . __("syslog.severity.3")).'</option>"+
-                "<option value=\"4\">'.("(4) " . __("syslog.severity.4")).'</option>"+
-                "<option value=\"5\">'.("(5) " . __("syslog.severity.5")).'</option>"+
-                "<option value=\"6\">'.("(6) " . __("syslog.severity.6")).'</option>"+
-                "<option value=\"7\">'.("(7) " . __("syslog.severity.7")).'</option>"+
+                "<option value=\"0\">'.('(0) '.__('syslog.severity.0')).'</option>"+
+                "<option value=\"1\">'.('(1) '.__('syslog.severity.1')).'</option>"+
+                "<option value=\"2\">'.('(2) '.__('syslog.severity.2')).'</option>"+
+                "<option value=\"3\">'.('(3) '.__('syslog.severity.3')).'</option>"+
+                "<option value=\"4\">'.('(4) '.__('syslog.severity.4')).'</option>"+
+                "<option value=\"5\">'.('(5) '.__('syslog.severity.5')).'</option>"+
+                "<option value=\"6\">'.('(6) '.__('syslog.severity.6')).'</option>"+
+                "<option value=\"7\">'.('(7) '.__('syslog.severity.7')).'</option>"+
                 "</select>&nbsp;</div>"+
                 "<div class=\"form-group\"><select name=\"range\" class=\"form-control\">"+
                 "<option value=\"0\">Search all time</option>"+
@@ -113,7 +113,7 @@ $tmp_output .= '
 
     var graylog_grid = $("#graylog").bootgrid({
         ajax: true,
-        rowCount: ['. $results_limit .', 25,50,100,250,-1],
+        rowCount: ['.$results_limit.', 25,50,100,250,-1],
         formatters: {
             "browserTime": function(column, row) {
                 return '.$timezone.'
@@ -121,7 +121,7 @@ $tmp_output .= '
         },
 ';
 
-if (!isset($no_form) && $no_form !== true) {
+if (! isset($no_form) && $no_form !== true) {
     $tmp_output .= '
         templates: {
             header: searchbar
@@ -133,17 +133,17 @@ $tmp_output .= '
         post: function ()
         {
             return {
-                stream: "' . (isset($_POST['stream']) ? mres($_POST['stream']) : '') . '",
-                device: "' . (isset($filter_device) ? $filter_device : '') . '",
-                range: "' . (isset($_POST['range']) ? mres($_POST['range']) : '')  . '",
-                loglevel: "' . (isset($_POST['loglevel']) ? mres($_POST['loglevel']) : '')  . '",
+                stream: "'.(isset($_POST['stream']) ? mres($_POST['stream']) : '').'",
+                device: "'.(isset($filter_device) ? $filter_device : '').'",
+                range: "'.(isset($_POST['range']) ? mres($_POST['range']) : '').'",
+                loglevel: "'.(isset($_POST['loglevel']) ? mres($_POST['loglevel']) : '').'",
             };
         },
-        url: "' . url('/ajax/table/graylog') . '",
+        url: "'.url('/ajax/table/graylog').'",
     });
     
-    init_select2("#stream", "graylog-streams", {}, "' . (isset($_POST['stream']) ? mres($_POST['stream']) : '') . '");
-    init_select2("#device", "device", {limit: 100}, "' . (isset($filter_device) ? $filter_device : '') . '");
+    init_select2("#stream", "graylog-streams", {}, "'.(isset($_POST['stream']) ? mres($_POST['stream']) : '').'");
+    init_select2("#device", "device", {limit: 100}, "'.(isset($filter_device) ? $filter_device : '').'");
 </script>
 
 ';

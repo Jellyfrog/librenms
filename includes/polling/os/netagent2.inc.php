@@ -1,6 +1,6 @@
 <?php
 /**
- * netagent2.inc.php
+ * netagent2.inc.php.
  *
  * LibreNMS os polling module for Megatec NetAgent II and NetAgent Mini
  *
@@ -22,7 +22,6 @@
  * @copyright  2018 Mikael Sipilainen
  * @author     Mikael Sipilainen <mikael.sipilainen@gmail.com>
  */
-
 $oid = snmp_get_multi($device, ['.1.3.6.1.2.1.33.1.1.4.0', '.1.3.6.1.2.1.33.1.1.1.0'], '-OQU');
-$version  = $oid[0]['.1.3.6.1.2.1.33.1.1.4.0'];
+$version = $oid[0]['.1.3.6.1.2.1.33.1.1.4.0'];
 $hardware = $oid[0]['.1.3.6.1.2.1.33.1.1.1.0'];

@@ -1,6 +1,6 @@
 <?php
 /**
- * cumulus.inc.php
+ * cumulus.inc.php.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
  * @copyright  2018 Ryan Finney
  * @author     https://github.com/theherodied/
  */
-
 $data = snmp_getnext_multi($device, 'entPhysicalDescr entPhysicalSoftwareRev entPhysicalSerialNum', '-OQUs', 'ENTITY-MIB');
 $hardware = $data['entPhysicalDescr'];
 $serial = $data['entPhysicalSerialNum'];

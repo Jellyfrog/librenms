@@ -1,6 +1,6 @@
 <?php
 /**
- * rsrp.inc.php
+ * rsrp.inc.php.
  *
  * -Description-
  *
@@ -22,7 +22,6 @@
  * @copyright  2019 Jozef Rebjak
  * @author     Jozef Rebjak <jozefrebjak@icloud.com>
  */
-
 $scale_min = '0';
 
 $unit_long = 'RSRP (dBm)';

@@ -2,7 +2,7 @@
 
 print_optionbar_start();
 
-echo '<form action = "'.generate_url($link_array, array('nfsen' => 'stats')).'" iOCd = "FlowStats" method = "SUBMIT">';
+echo '<form action = "'.generate_url($link_array, ['nfsen' => 'stats']).'" iOCd = "FlowStats" method = "SUBMIT">';
 
 echo 'Top N:
 <select name = "topN" id = "topN" size = 1>
@@ -43,7 +43,7 @@ echo '
 
 $option_default = $vars['stattype'] ?? \LibreNMS\Config::get('nfsen_stats_default');
 
-$stat_types = array(
+$stat_types = [
     'record'=>'Flow Records',
     'ip'=>'Any IP Address',
     'srcip'=>'SRC IP Address',
@@ -57,7 +57,7 @@ $stat_types = array(
     'as'=>'AS',
     'srcas'=>'SRC AS',
     'dstas'=>'DST AS',
-);
+];
 
 // puts together the drop down options
 foreach ($stat_types as $option => $descr) {
@@ -79,17 +79,16 @@ if (isset($vars['statorder'])) {
     $option_default = $vars['statorder'];
 }
 
-
 // WARNING: order is relevant as it has to match the
 // check later in the process part of this page.
-$order_types = array(
+$order_types = [
     'flows'=>1,
     'packets'=>1,
     'bytes'=>1,
     'pps'=>1,
     'bps'=>1,
     'bpp'=>1,
-);
+];
 
 // puts together the drop down options
 foreach ($order_types as $option => $descr) {

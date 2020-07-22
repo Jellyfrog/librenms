@@ -8,12 +8,10 @@ function rewrite_location($location)
     return \LibreNMS\Util\Rewrite::location($location);
 }
 
-
 function formatMac($mac)
 {
     return \LibreNMS\Util\Rewrite::readableMac($mac);
 }
-
 
 function rewrite_entity_descr($descr)
 {
@@ -40,10 +38,9 @@ function rewrite_entity_descr($descr)
     return $descr;
 }
 
-
 /**
  * Clean port values for html display
- * Add label to the port array (usually one of ifAlias, ifName, ifDescr)
+ * Add label to the port array (usually one of ifAlias, ifName, ifDescr).
  *
  * @param array $interface
  * @param null|array $device
@@ -52,10 +49,10 @@ function rewrite_entity_descr($descr)
 function cleanPort($interface, $device = null)
 {
     $interface['ifAlias'] = display($interface['ifAlias']);
-    $interface['ifName']  = display($interface['ifName']);
+    $interface['ifName'] = display($interface['ifName']);
     $interface['ifDescr'] = display($interface['ifDescr']);
 
-    if (!$device) {
+    if (! $device) {
         $device = device_by_id_cache($interface['device_id']);
     }
 
@@ -77,7 +74,7 @@ function cleanPort($interface, $device = null)
     }
 
     if ($device['os'] == 'speedtouch') {
-        list($interface['label']) = explode('thomson', $interface['label']);
+        [$interface['label']] = explode('thomson', $interface['label']);
     }
 
     if (is_array(Config::get('rewrite_if'))) {
@@ -101,7 +98,7 @@ function cleanPort($interface, $device = null)
 
 function translate_ifOperStatus($ifOperStatus)
 {
-    $translate_ifOperStatus = array(
+    $translate_ifOperStatus = [
         '1' => 'up',
         '2' => 'down',
         '3' => 'testing',
@@ -109,7 +106,7 @@ function translate_ifOperStatus($ifOperStatus)
         '5' => 'dormant',
         '6' => 'notPresent',
         '7' => 'lowerLayerDown',
-    );
+    ];
 
     if (isset($translate_ifOperStatus[$ifOperStatus])) {
         $ifOperStatus = $translate_ifOperStatus[$ifOperStatus];
@@ -118,14 +115,13 @@ function translate_ifOperStatus($ifOperStatus)
     return $ifOperStatus;
 }
 
-
 function translate_ifAdminStatus($ifAdminStatus)
 {
-    $translate_ifAdminStatus = array(
+    $translate_ifAdminStatus = [
         '1' => 'up',
         '2' => 'down',
         '3' => 'testing',
-    );
+    ];
 
     if (isset($translate_ifAdminStatus[$ifAdminStatus])) {
         $ifAdminStatus = $translate_ifAdminStatus[$ifAdminStatus];
@@ -134,12 +130,11 @@ function translate_ifAdminStatus($ifAdminStatus)
     return $ifAdminStatus;
 }
 
-
 // Specific rewrite functions
 
 function makeshortif($if)
 {
-    $rewrite_shortif = array(
+    $rewrite_shortif = [
         'tengigabitethernet'  => 'Te',
         'ten-gigabitethernet' => 'Te',
         'tengige'             => 'Te',
@@ -158,18 +153,18 @@ function makeshortif($if)
         'serviceinstance'     => 'SI',
         'dwdm'                => 'DWDM',
         'bundle-ether'        => 'BE',
-    );
+    ];
 
     $if = fixifName($if);
     $if = strtolower($if);
     $if = array_str_replace($rewrite_shortif, $if);
+
     return $if;
 }
 
-
 function rewrite_ios_features($features)
 {
-    $rewrite_ios_features = array(
+    $rewrite_ios_features = [
         'PK9S'                => 'IP w/SSH LAN Only',
         'LANBASEK9'           => 'Lan Base Crypto',
         'LANBASE'             => 'Lan Base',
@@ -199,17 +194,16 @@ function rewrite_ios_features($features)
         'I6K2L2Q4'            => 'Layer 2 Crypto',
         'C3H2S'               => 'Layer 2 SI/EI',
         '_WAN'                => ' + WAN',
-    );
+    ];
 
     $type = array_preg_replace($rewrite_ios_features, $features);
 
-    return ($features);
+    return $features;
 }
-
 
 function rewrite_fortinet_hardware($hardware)
 {
-    $rewrite_fortinet_hardware = array(
+    $rewrite_fortinet_hardware = [
         '.1.3.6.1.4.1.12356.102.1.1000'  => 'FortiAnalyzer 100',
         '.1.3.6.1.4.1.12356.102.1.10002' => 'FortiAnalyzer 1000B',
         '.1.3.6.1.4.1.12356.102.1.1001'  => 'FortiAnalyzer 100A',
@@ -302,18 +296,16 @@ function rewrite_fortinet_hardware($hardware)
         '.1.3.6.1.4.1.12356.101.1.611'   => 'FortiWiFi 60A',
         '.1.3.6.1.4.1.12356.101.1.612'   => 'FortiWiFi 60AM',
         '.1.3.6.1.4.1.12356.101.1.613'   => 'FortiWiFi 60B',
-    );
-
+    ];
 
     $hardware = $rewrite_fortinet_hardware[$hardware];
 
-    return ($hardware);
+    return $hardware;
 }
-
 
 function rewrite_extreme_hardware($hardware)
 {
-    $rewrite_extreme_hardware = array(
+    $rewrite_extreme_hardware = [
         '.1.3.6.1.4.1.1916.2.1'   => 'Summit 1',
         '.1.3.6.1.4.1.1916.2.2'   => 'Summit 2',
         '.1.3.6.1.4.1.1916.2.3'   => 'Summit 3',
@@ -392,18 +384,17 @@ function rewrite_extreme_hardware($hardware)
         '.1.3.6.1.4.1.1916.2.141' => 'Summit x480-48x',
         '.1.3.6.1.4.1.1916.2.167' => 'Summit x670-48x',
         '.1.3.6.1.4.1.1916.2.168' => 'Summit x670v-48x',
-    );
+    ];
 
     // $hardware = array_str_replace($rewrite_extreme_hardware, $hardware);
     $hardware = $rewrite_extreme_hardware[$hardware];
 
-    return ($hardware);
+    return $hardware;
 }
-
 
 function rewrite_ftos_hardware($hardware)
 {
-    $rewrite_ftos_hardware = array(
+    $rewrite_ftos_hardware = [
         '.1.3.6.1.4.1.6027.1.1.1'  => 'E1200',
         '.1.3.6.1.4.1.6027.1.1.2'  => 'E600',
         '.1.3.6.1.4.1.6027.1.1.3'  => 'E300',
@@ -422,17 +413,16 @@ function rewrite_ftos_hardware($hardware)
         '.1.3.6.1.4.1.6027.1.3.9'  => 'S25P-DC',
         '.1.3.6.1.4.1.6027.1.3.10' => 'S25V',
         '.1.3.6.1.4.1.6027.1.3.11' => 'S25N',
-    );
+    ];
 
     $hardware = $rewrite_ftos_hardware[$hardware];
 
-    return ($hardware);
+    return $hardware;
 }
-
 
 function rewrite_ironware_hardware($hardware)
 {
-    $rewrite_ironware_hardware = array(
+    $rewrite_ironware_hardware = [
         'snFIWGSwitch'                           => 'Stackable FastIron workgroup',
         'snFIBBSwitch'                           => 'Stackable FastIron backbone',
         'snNIRouter'                             => 'Stackable NetIron',
@@ -853,17 +843,16 @@ function rewrite_ironware_hardware($hardware)
         'snFastIronStackICX7250Switch'           => 'Brocade ICX 7250 Switch stack',
         'snFastIronStackICX7450Switch'           => 'Brocade ICX 7450 Switch stack',
         'snFastIronStackICX7750Switch'           => 'Brocade ICX 7750 Switch stack',
-    );
+    ];
 
     $hardware = array_str_replace($rewrite_ironware_hardware, $hardware);
 
-    return ($hardware);
+    return $hardware;
 }
-
 
 function rewrite_junose_hardware($hardware)
 {
-    $rewrite_junose_hardware = array(
+    $rewrite_junose_hardware = [
         'juniErx1400' => 'ERX-1400',
         'juniErx700'  => 'ERX-700',
         'juniErx1440' => 'ERX-1440',
@@ -874,18 +863,16 @@ function rewrite_junose_hardware($hardware)
         'juniSsx1400' => 'SSX-1400',
         'juniSsx700'  => 'SSX-700',
         'juniSsx1440' => 'SSX-1440',
-    );
-
+    ];
 
     $hardware = array_str_replace($rewrite_junose_hardware, $hardware);
 
-    return ($hardware);
+    return $hardware;
 }
-
 
 function rewrite_junos_hardware($hardware)
 {
-    $rewrite_junos_hardware = array(
+    $rewrite_junos_hardware = [
         'jnxProductACX1000'                 => 'ACX1000',
         'jnxProductACX1100'                 => 'ACX1100',
         'jnxProductACX2000'                 => 'ACX2000',
@@ -1195,21 +1182,21 @@ function rewrite_junos_hardware($hardware)
         'jnxProductQFX521064C'              => 'QFX5210-64C',
         'jnxProductQFX5500'                 => 'QFX5500',
         'jnxProductQFXC083008'              => 'QFXC083008',
-    );
-
+    ];
 
     $hardware = array_str_replace($rewrite_junos_hardware, $hardware);
 
-    return ($hardware);
+    return $hardware;
 }
 
 function rewrite_generic_hardware($hardware)
 {
-    $rewrite_GenericHW = array(
+    $rewrite_GenericHW = [
         ' Computer Corporation' => '',
         ' Corporation'          => '',
         ' Inc.'                 => '',
-    );
+    ];
+
     return array_str_replace($rewrite_GenericHW, $hardware);
 }
 
@@ -1218,23 +1205,21 @@ function fixiftype($type)
     return Rewrite::normalizeIfType($type);
 }
 
-
 function fixifName($inf)
 {
     return Rewrite::normalizeIfName($inf);
 }
 
-
 function short_hrDeviceDescr($dev)
 {
-    $rewrite_hrDevice = array(
+    $rewrite_hrDevice = [
         'GenuineIntel:' => '',
         'AuthenticAMD:' => '',
         'Intel(R)'      => '',
         'CPU'           => '',
         '(R)'           => '',
         '  '            => ' ',
-    );
+    ];
 
     $dev = array_str_replace($rewrite_hrDevice, $dev);
     $dev = preg_replace('/\ +/', ' ', $dev);
@@ -1243,19 +1228,17 @@ function short_hrDeviceDescr($dev)
     return $dev;
 }
 
-
 function short_port_descr($desc)
 {
-    list($desc) = explode('(', $desc);
-    list($desc) = explode('[', $desc);
-    list($desc) = explode('{', $desc);
-    list($desc) = explode('|', $desc);
-    list($desc) = explode('<', $desc);
-    $desc       = trim($desc);
+    [$desc] = explode('(', $desc);
+    [$desc] = explode('[', $desc);
+    [$desc] = explode('{', $desc);
+    [$desc] = explode('|', $desc);
+    [$desc] = explode('<', $desc);
+    $desc = trim($desc);
 
     return $desc;
 }
-
 
 // Underlying rewrite functions
 function array_str_replace($array, $string)
@@ -1267,7 +1250,6 @@ function array_str_replace($array, $string)
     return $string;
 }
 
-
 function array_preg_replace($array, $string)
 {
     foreach ($array as $search => $replace) {
@@ -1277,16 +1259,15 @@ function array_preg_replace($array, $string)
     return $string;
 }
 
-
 function rewrite_adslLineType($adslLineType)
 {
-    $adslLineTypes = array(
+    $adslLineTypes = [
         'noChannel'          => 'No Channel',
         'fastOnly'           => 'Fastpath',
         'interleavedOnly'    => 'Interleaved',
         'fastOrInterleaved'  => 'Fast/Interleaved',
         'fastAndInterleaved' => 'Fast+Interleaved',
-    );
+    ];
 
     foreach ($adslLineTypes as $type => $text) {
         if ($adslLineType == $type) {
@@ -1294,261 +1275,263 @@ function rewrite_adslLineType($adslLineType)
         }
     }
 
-    return ($adslLineType);
+    return $adslLineType;
 }
 
 function rewrite_brocade_fc_switches($descr)
 {
     switch ($descr) {
-        case "1":
-            $hardware = "Brocade 1000 Switch";
+        case '1':
+            $hardware = 'Brocade 1000 Switch';
             break;
-        case "2":
-            $hardware = "Brocade 2800 Switch";
+        case '2':
+            $hardware = 'Brocade 2800 Switch';
             break;
-        case "3":
-            $hardware = "Brocade 2100/2400 Switch";
+        case '3':
+            $hardware = 'Brocade 2100/2400 Switch';
             break;
-        case "4":
-            $hardware = "Brocade 20x0 Switch";
+        case '4':
+            $hardware = 'Brocade 20x0 Switch';
             break;
-        case "5":
-            $hardware = "Brocade 22x0 Switch";
+        case '5':
+            $hardware = 'Brocade 22x0 Switch';
             break;
-        case "6":
-            $hardware = "Brocade 2800 Switch";
+        case '6':
+            $hardware = 'Brocade 2800 Switch';
             break;
-        case "7":
-            $hardware = "Brocade 2000 Switch";
+        case '7':
+            $hardware = 'Brocade 2000 Switch';
             break;
-        case "9":
-            $hardware = "Brocade 3800 Switch";
+        case '9':
+            $hardware = 'Brocade 3800 Switch';
             break;
-        case "10":
-            $hardware = "Brocade 12000 Director";
+        case '10':
+            $hardware = 'Brocade 12000 Director';
             break;
-        case "12":
-            $hardware = "Brocade 3900 Switch";
+        case '12':
+            $hardware = 'Brocade 3900 Switch';
             break;
-        case "16":
-            $hardware = "Brocade 3200 Switch";
+        case '16':
+            $hardware = 'Brocade 3200 Switch';
             break;
-        case "18":
-            $hardware = "Brocade 3000 Switch";
+        case '18':
+            $hardware = 'Brocade 3000 Switch';
             break;
-        case "21":
-            $hardware = "Brocade 24000 Director";
+        case '21':
+            $hardware = 'Brocade 24000 Director';
             break;
-        case "22":
-            $hardware = "Brocade 3016 Switch";
+        case '22':
+            $hardware = 'Brocade 3016 Switch';
             break;
-        case "26":
-            $hardware = "Brocade 3850 Switch";
+        case '26':
+            $hardware = 'Brocade 3850 Switch';
             break;
-        case "27":
-            $hardware = "Brocade 3250 Switch";
+        case '27':
+            $hardware = 'Brocade 3250 Switch';
             break;
-        case "29":
-            $hardware = "Brocade 4012 Embedded Switch";
+        case '29':
+            $hardware = 'Brocade 4012 Embedded Switch';
             break;
-        case "32":
-            $hardware = "Brocade 4100 Switch";
+        case '32':
+            $hardware = 'Brocade 4100 Switch';
             break;
-        case "33":
-            $hardware = "Brocade 3014 Switch";
+        case '33':
+            $hardware = 'Brocade 3014 Switch';
             break;
-        case "34":
-            $hardware = "Brocade 200E Switch";
+        case '34':
+            $hardware = 'Brocade 200E Switch';
             break;
-        case "37":
-            $hardware = "Brocade 4020 Embedded Switch";
+        case '37':
+            $hardware = 'Brocade 4020 Embedded Switch';
             break;
-        case "38":
-            $hardware = "Brocade 7420 SAN Router";
+        case '38':
+            $hardware = 'Brocade 7420 SAN Router';
             break;
-        case "40":
-            $hardware = "Fibre Channel Routing (FCR) Front Domain";
+        case '40':
+            $hardware = 'Fibre Channel Routing (FCR) Front Domain';
             break;
-        case "41":
-            $hardware = "Fibre Channel Routing (FCR) Xlate Domain";
+        case '41':
+            $hardware = 'Fibre Channel Routing (FCR) Xlate Domain';
             break;
-        case "42":
-            $hardware = "Brocade 48000 Director";
+        case '42':
+            $hardware = 'Brocade 48000 Director';
             break;
-        case "43":
-            $hardware = "Brocade 4024 Embedded Switch";
+        case '43':
+            $hardware = 'Brocade 4024 Embedded Switch';
             break;
-        case "44":
-            $hardware = "Brocade 4900 Switch";
+        case '44':
+            $hardware = 'Brocade 4900 Switch';
             break;
-        case "45":
-            $hardware = "Brocade 4016 Embedded Switch";
+        case '45':
+            $hardware = 'Brocade 4016 Embedded Switch';
             break;
-        case "46":
-            $hardware = "Brocade 7500 Switch";
+        case '46':
+            $hardware = 'Brocade 7500 Switch';
             break;
-        case "51":
-            $hardware = "Brocade 4018 Embedded Switch";
+        case '51':
+            $hardware = 'Brocade 4018 Embedded Switch';
             break;
-        case "55.2":
-            $hardware = "Brocade 7600 Switch";
+        case '55.2':
+            $hardware = 'Brocade 7600 Switch';
             break;
-        case "58":
-            $hardware = "Brocade 5000 Switch";
+        case '58':
+            $hardware = 'Brocade 5000 Switch';
             break;
-        case "61":
-            $hardware = "Brocade 4424 Embedded Switch";
+        case '61':
+            $hardware = 'Brocade 4424 Embedded Switch';
             break;
-        case "62":
-            $hardware = "Brocade DCX Backbone";
+        case '62':
+            $hardware = 'Brocade DCX Backbone';
             break;
-        case "64":
-            $hardware = "Brocade 5300 Switch";
+        case '64':
+            $hardware = 'Brocade 5300 Switch';
             break;
-        case "66":
-            $hardware = "Brocade 5100 Switch";
+        case '66':
+            $hardware = 'Brocade 5100 Switch';
             break;
-        case "67":
-            $hardware = "Brocade Encryption Switch";
+        case '67':
+            $hardware = 'Brocade Encryption Switch';
             break;
-        case "69":
-            $hardware = "Brocade 5410 Blade";
+        case '69':
+            $hardware = 'Brocade 5410 Blade';
             break;
-        case "70":
-            $hardware = "Brocade 5410 Embedded Switch";
+        case '70':
+            $hardware = 'Brocade 5410 Embedded Switch';
             break;
-        case "71":
-            $hardware = "Brocade 300 Switch";
+        case '71':
+            $hardware = 'Brocade 300 Switch';
             break;
-        case "72":
-            $hardware = "Brocade 5480 Embedded Switch";
+        case '72':
+            $hardware = 'Brocade 5480 Embedded Switch';
             break;
-        case "73":
-            $hardware = "Brocade 5470 Embedded Switch";
+        case '73':
+            $hardware = 'Brocade 5470 Embedded Switch';
             break;
-        case "75":
-            $hardware = "Brocade M5424 Embedded Switch";
+        case '75':
+            $hardware = 'Brocade M5424 Embedded Switch';
             break;
-        case "76":
-            $hardware = "Brocade 8000 Switch";
+        case '76':
+            $hardware = 'Brocade 8000 Switch';
             break;
-        case "77":
-            $hardware = "Brocade DCX-4S Backbone";
+        case '77':
+            $hardware = 'Brocade DCX-4S Backbone';
             break;
-        case "83":
-            $hardware = "Brocade 7800 Extension Switch";
+        case '83':
+            $hardware = 'Brocade 7800 Extension Switch';
             break;
-        case "86":
-            $hardware = "Brocade 5450 Embedded Switch";
+        case '86':
+            $hardware = 'Brocade 5450 Embedded Switch';
             break;
-        case "87":
-            $hardware = "Brocade 5460 Embedded Switch";
+        case '87':
+            $hardware = 'Brocade 5460 Embedded Switch';
             break;
-        case "90":
-            $hardware = "Brocade 8470 Embedded Switch";
+        case '90':
+            $hardware = 'Brocade 8470 Embedded Switch';
             break;
-        case "92":
-            $hardware = "Brocade VA-40FC Switch";
+        case '92':
+            $hardware = 'Brocade VA-40FC Switch';
             break;
-        case "95":
-            $hardware = "Brocade VDX 6720-24 Data Center Switch";
+        case '95':
+            $hardware = 'Brocade VDX 6720-24 Data Center Switch';
             break;
-        case "96":
-            $hardware = "Brocade VDX 6730-32 Data Center Switch";
+        case '96':
+            $hardware = 'Brocade VDX 6730-32 Data Center Switch';
             break;
-        case "97":
-            $hardware = "Brocade VDX 6720-60 Data Center Switch";
+        case '97':
+            $hardware = 'Brocade VDX 6720-60 Data Center Switch';
             break;
-        case "98":
-            $hardware = "Brocade VDX 6720-76 Data Center Switch";
+        case '98':
+            $hardware = 'Brocade VDX 6720-76 Data Center Switch';
             break;
-        case "108":
-            $hardware = "Dell M84280k FCoE Embedded Switch";
+        case '108':
+            $hardware = 'Dell M84280k FCoE Embedded Switch';
             break;
-        case "109":
-            $hardware = "Brocade 6510 Switch";
+        case '109':
+            $hardware = 'Brocade 6510 Switch';
             break;
-        case "116":
-            $hardware = "Brocade VDX 6710 Data Center Switch";
+        case '116':
+            $hardware = 'Brocade VDX 6710 Data Center Switch';
             break;
-        case "117":
-            $hardware = "Brocade 6547 Embedded Switch";
+        case '117':
+            $hardware = 'Brocade 6547 Embedded Switch';
             break;
-        case "118":
-            $hardware = "Brocade 6505 Switch";
+        case '118':
+            $hardware = 'Brocade 6505 Switch';
             break;
-        case "120":
-            $hardware = "Brocade DCX 8510-8 Backbone";
+        case '120':
+            $hardware = 'Brocade DCX 8510-8 Backbone';
             break;
-        case "121":
-            $hardware = "Brocade DCX 8510-4 Backbone";
+        case '121':
+            $hardware = 'Brocade DCX 8510-4 Backbone';
             break;
-        case "124":
-            $hardware = "Brocade 5430 Switch";
+        case '124':
+            $hardware = 'Brocade 5430 Switch';
             break;
-        case "125":
-            $hardware = "Brocade 5431 Switch";
+        case '125':
+            $hardware = 'Brocade 5431 Switch';
             break;
-        case "129":
-            $hardware = "Brocade 6548 Switch";
+        case '129':
+            $hardware = 'Brocade 6548 Switch';
             break;
-        case "130":
-            $hardware = "Brocade M6505 Switch";
+        case '130':
+            $hardware = 'Brocade M6505 Switch';
             break;
-        case "133":
-            $hardware = "Brocade 6520 Switch";
+        case '133':
+            $hardware = 'Brocade 6520 Switch';
             break;
-        case "134":
-            $hardware = "Brocade 5432 Switch";
+        case '134':
+            $hardware = 'Brocade 5432 Switch';
             break;
-        case "148":
-            $hardware = "Brocade 7840 Switch";
+        case '148':
+            $hardware = 'Brocade 7840 Switch';
             break;
-        case "162":
-            $hardware = "Brocade G620 Switch";
+        case '162':
+            $hardware = 'Brocade G620 Switch';
             break;
-        case "170":
-            $hardware = "Brocade G610 Switch";
+        case '170':
+            $hardware = 'Brocade G610 Switch';
             break;
         default:
-            $hardware = "Unknown Brocade FC Switch";
+            $hardware = 'Unknown Brocade FC Switch';
     }
+
     return $hardware;
 }
 
 function ipmiSensorName($hardwareId, $sensorIpmi)
 {
-    $ipmiSensorsNames = array(
-        "HP ProLiant BL460c G6" => array(
-            "Temp 1" => "Ambient zone",
-            "Temp 2" => "CPU 1",
-            "Temp 3" => "CPU 2",
-            "Temp 4" => "Memory zone",
-            "Temp 5" => "Memory zone",
-            "Temp 6" => "Memory zone",
-            "Temp 7" => "System zone",
-            "Temp 8" => "System zone",
-            "Temp 9" => "System zone",
-            "Temp 10" => "Storage zone",
-            "Power Meter" => "Power usage",
-        ),
-        "HP ProLiant BL460c G1" => array(
-            "Temp 1" => "System zone",
-            "Temp 2" => "CPU 1 zone",
-            "Temp 3" => "CPU 1",
-            "Temp 4" => "CPU 1",
-            "Temp 5" => "CPU 2 zone",
-            "Temp 6" => "CPU 2",
-            "Temp 7" => "CPU 2",
-            "Temp 8" => "Memory zone",
-            "Temp 9" => "Ambient zone",
-            "Power Meter" => "Power usage",
-        ),
-    );
+    $ipmiSensorsNames = [
+        'HP ProLiant BL460c G6' => [
+            'Temp 1' => 'Ambient zone',
+            'Temp 2' => 'CPU 1',
+            'Temp 3' => 'CPU 2',
+            'Temp 4' => 'Memory zone',
+            'Temp 5' => 'Memory zone',
+            'Temp 6' => 'Memory zone',
+            'Temp 7' => 'System zone',
+            'Temp 8' => 'System zone',
+            'Temp 9' => 'System zone',
+            'Temp 10' => 'Storage zone',
+            'Power Meter' => 'Power usage',
+        ],
+        'HP ProLiant BL460c G1' => [
+            'Temp 1' => 'System zone',
+            'Temp 2' => 'CPU 1 zone',
+            'Temp 3' => 'CPU 1',
+            'Temp 4' => 'CPU 1',
+            'Temp 5' => 'CPU 2 zone',
+            'Temp 6' => 'CPU 2',
+            'Temp 7' => 'CPU 2',
+            'Temp 8' => 'Memory zone',
+            'Temp 9' => 'Ambient zone',
+            'Power Meter' => 'Power usage',
+        ],
+    ];
 
     if (isset($ipmiSensorsNames[$hardwareId], $ipmiSensorsNames[$hardwareId][$sensorIpmi])) {
         return $ipmiSensorsNames[$hardwareId][$sensorIpmi];
     }
+
     return $sensorIpmi;
 }
 
@@ -1588,6 +1571,7 @@ function rewrite_ceraos_hardware($ceragon_type, $device)
     } else {
         $hardware = snmp_get($device, 'genEquipInventoryCardName', '-Oqv', 'MWRM-UNIT-NAME');
     }
+
     return $hardware;
 }
 
@@ -1643,62 +1627,64 @@ function apc_relay_state($state)
 function return_number($value)
 {
     preg_match('/[\d\.\-]+/', $value, $temp_response);
-    if (!empty($temp_response[0])) {
+    if (! empty($temp_response[0])) {
         $value = $temp_response[0];
     }
+
     return $value;
 }
 
 function parse_entity_state($state, $value)
 {
-    $data = array(
-        'entStateOper' => array(
-            1 => array('text' => 'unavailable', 'color' => 'default'),
-            2 => array('text' => 'disabled', 'color' => 'danger'),
-            3 => array('text' => 'enabled', 'color' => 'success'),
-            4 => array('text' => 'testing', 'color' => 'warning'),
-        ),
-        'entStateUsage' => array(
-            1 => array('text' => 'unavailable', 'color' => 'default'),
-            2 => array('text' => 'idle', 'color' => 'info'),
-            3 => array('text' => 'active', 'color' => 'success'),
-            4 => array('text' => 'busy', 'color' => 'success'),
-        ),
-        'entStateStandby' => array(
-            1 => array('text' => 'unavailable', 'color' => 'default'),
-            2 => array('text' => 'hotStandby', 'color' => 'info'),
-            3 => array('text' => 'coldStandby', 'color' => 'info'),
-            4 => array('text' => 'providingService', 'color' => 'success'),
-        ),
-        'entStateAdmin' => array(
-            1 => array('text' => 'unknown', 'color' => 'default'),
-            2 => array('text' => 'locked', 'color' => 'info'),
-            3 => array('text' => 'shuttingDown', 'color' => 'warning'),
-            4 => array('text' => 'unlocked', 'color' => 'success'),
-        ),
-    );
+    $data = [
+        'entStateOper' => [
+            1 => ['text' => 'unavailable', 'color' => 'default'],
+            2 => ['text' => 'disabled', 'color' => 'danger'],
+            3 => ['text' => 'enabled', 'color' => 'success'],
+            4 => ['text' => 'testing', 'color' => 'warning'],
+        ],
+        'entStateUsage' => [
+            1 => ['text' => 'unavailable', 'color' => 'default'],
+            2 => ['text' => 'idle', 'color' => 'info'],
+            3 => ['text' => 'active', 'color' => 'success'],
+            4 => ['text' => 'busy', 'color' => 'success'],
+        ],
+        'entStateStandby' => [
+            1 => ['text' => 'unavailable', 'color' => 'default'],
+            2 => ['text' => 'hotStandby', 'color' => 'info'],
+            3 => ['text' => 'coldStandby', 'color' => 'info'],
+            4 => ['text' => 'providingService', 'color' => 'success'],
+        ],
+        'entStateAdmin' => [
+            1 => ['text' => 'unknown', 'color' => 'default'],
+            2 => ['text' => 'locked', 'color' => 'info'],
+            3 => ['text' => 'shuttingDown', 'color' => 'warning'],
+            4 => ['text' => 'unlocked', 'color' => 'success'],
+        ],
+    ];
 
     if (isset($data[$state][$value])) {
         return $data[$state][$value];
     }
 
-    return array('text'=>'na', 'color'=>'default');
+    return ['text'=>'na', 'color'=>'default'];
 }
 
 function parse_entity_state_alarm($bits)
 {
     // not sure if this is correct
-    $data = array(
-        0 => array('text' => 'unavailable', 'color' => 'default'),
-        1 => array('text' => 'underRepair', 'color' => 'warning'),
-        2 => array('text' => 'critical', 'color' => 'danger'),
-        3 => array('text' => 'major', 'color' => 'danger'),
-        4 => array('text' => 'minor', 'color' => 'info'),
-        5 => array('text' => 'warning', 'color' => 'warning'),
-        6 => array('text' => 'indeterminate', 'color' => 'default'),
-    );
+    $data = [
+        0 => ['text' => 'unavailable', 'color' => 'default'],
+        1 => ['text' => 'underRepair', 'color' => 'warning'],
+        2 => ['text' => 'critical', 'color' => 'danger'],
+        3 => ['text' => 'major', 'color' => 'danger'],
+        4 => ['text' => 'minor', 'color' => 'info'],
+        5 => ['text' => 'warning', 'color' => 'warning'],
+        6 => ['text' => 'indeterminate', 'color' => 'default'],
+    ];
 
     $alarms = str_split(base_convert($bits, 16, 2));
     $active_alarms = array_filter($alarms);
+
     return array_intersect_key($data, $active_alarms);
 }

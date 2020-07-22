@@ -1,6 +1,6 @@
 <?php
 /**
- * chatsworth-pdu.inc.php
+ * chatsworth-pdu.inc.php.
  *
  * LibreNMS OS poller module for Legacy Chatsworth PDU
  *
@@ -22,6 +22,5 @@
  * @copyright  2017 Lorenzo Zafra
  * @author     Lorenzo Zafra<zafra@ualberta.ca>
  */
-
 $serial = trim(snmp_get($device, '.1.3.6.1.4.1.30932.1.1.1.2.0', '-OQv'), '"');
 $version = trim(snmp_get($device, '.1.3.6.1.4.1.30932.1.1.1.1.0', '-OQv'), '"');

@@ -1,6 +1,6 @@
 <?php
 /**
- * Openwrt.inc.php
+ * Openwrt.inc.php.
  *
  * LibreNMS os polling module for Tomato
  *
@@ -22,8 +22,7 @@
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
-list($ignore, $version) = explode(' ', snmp_get($device, '.1.3.6.1.4.1.2021.7890.1.101.1', '-Osqnv'));
+[$ignore, $version] = explode(' ', snmp_get($device, '.1.3.6.1.4.1.2021.7890.1.101.1', '-Osqnv'));
 $hardware = snmp_get($device, '.1.3.6.1.4.1.2021.7890.2.101.1', '-Osqnv');
 
 unset($ignore);

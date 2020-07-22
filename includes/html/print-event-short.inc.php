@@ -17,17 +17,17 @@
 
 unset($icon);
 $severity_colour = eventlog_severity($entry['severity']);
-$icon = '<span class="alert-status ' . $severity_colour . '"></span>';
+$icon = '<span class="alert-status '.$severity_colour.'"></span>';
 
 echo '<tr>';
-echo '<td>' . $icon . '</td>';
-echo '<td>' . $entry['humandate'] . '</td>';
+echo '<td>'.$icon.'</td>';
+echo '<td>'.$entry['humandate'].'</td>';
 
 if ($entry['type'] == 'interface') {
-    $entry['link'] = '<b>' . generate_port_link(cleanPort(getifbyid($entry['reference']))) . '</b>';
+    $entry['link'] = '<b>'.generate_port_link(cleanPort(getifbyid($entry['reference']))).'</b>';
 }
 
 echo '<td style="white-space: nowrap;">'.$entry['link'].'</td>';
-echo '<td>' . htmlspecialchars($entry['message']) . '</td>';
+echo '<td>'.htmlspecialchars($entry['message']).'</td>';
 
 echo '</tr>';

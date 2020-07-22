@@ -1,6 +1,6 @@
 <?php
 /**
- * geist-watchdog.inc.php
+ * geist-watchdog.inc.php.
  *
  * LibreNMS pre-cache poller module for Geist Watchdog
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 if ($type == 'temperature') {
     $sensor_cache['geist_temp_unit'] = snmp_get($device, 'temperatureUnits.0', '-Oqv', 'GEIST-V4-MIB');
 }

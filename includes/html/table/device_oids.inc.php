@@ -15,7 +15,7 @@
  * the source code distribution for details.
  */
 
-$columns = array(
+$columns = [
     'module',
     'mib',
     'object_type',
@@ -23,12 +23,11 @@ $columns = array(
     'value',
     'numvalue',
     'last_modified',
-);
+];
 
-
-$params = array(
+$params = [
     $vars['device_id'],
-);
+];
 
 // start of sql definition
 $sql = 'SELECT * FROM `device_oids`';
@@ -36,28 +35,28 @@ $sql = 'SELECT * FROM `device_oids`';
 $wheresql = ' WHERE `device_id` = ?';
 
 // all columns are searchable - search across them
-if (isset($searchPhrase) && !empty($searchPhrase)) {
-    $searchsql = implode(' OR ', array_map("search_phrase_column", array_map("mres", $columns)));
+if (isset($searchPhrase) && ! empty($searchPhrase)) {
+    $searchsql = implode(' OR ', array_map('search_phrase_column', array_map('mres', $columns)));
     $wheresql .= " AND ( $searchsql )";
 }
 $sql .= $wheresql;
 
 // get total
-$count_sql = "SELECT COUNT(*) FROM `device_oids`".$wheresql;
-$total     = dbFetchCell($count_sql, $params);
+$count_sql = 'SELECT COUNT(*) FROM `device_oids`'.$wheresql;
+$total = dbFetchCell($count_sql, $params);
 if (empty($total)) {
     $total = 0;
 }
 
 // sort by first three columns by default
-if (!isset($sort) || empty($sort)) {
-    $sort = implode(', ', array_map("mres", array_slice($columns, 0, 3)));
+if (! isset($sort) || empty($sort)) {
+    $sort = implode(', ', array_map('mres', array_slice($columns, 0, 3)));
 }
 $sql .= " ORDER BY $sort";
 
 // select only the required rows
 if (isset($current)) {
-    $limit_low  = (($current * $rowCount) - ($rowCount));
+    $limit_low = (($current * $rowCount) - ($rowCount));
     $limit_high = $rowCount;
 }
 if ($rowCount != -1) {
@@ -65,19 +64,19 @@ if ($rowCount != -1) {
 }
 
 // load data from database into response array
-$response = array();
+$response = [];
 foreach (dbFetchRows($sql, $params) as $mib) {
-    $mibrow = array();
+    $mibrow = [];
     foreach ($columns as $col) {
         $mibrow[$col] = $mib[$col];
     }
     $response[] = $mibrow;
 }
 
-$output = array(
+$output = [
     'current'  => $current,
     'rowCount' => $rowCount,
     'rows'     => $response,
     'total'    => $total,
-);
+];
 echo _json_encode($output);

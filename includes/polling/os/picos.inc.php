@@ -12,7 +12,7 @@
 
 preg_match("/ for ([^\s]*)/m", $device['sysDescr'], $matches);
 
-if (!empty($matches[1])) {
+if (! empty($matches[1])) {
     $hardware .= trim($matches[1]);
 }
 
@@ -22,7 +22,7 @@ $oidList = [
 
 foreach ($oidList as $oid) {
     $serial_tmp = snmp_get($device, $oid, '-OQv');
-    if (!empty($serial_tmp)) {
+    if (! empty($serial_tmp)) {
         $serial = $serial_tmp;
         break;
     }

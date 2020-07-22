@@ -1,6 +1,6 @@
 <?php
 /**
- * alert-transports.inc.php
+ * alert-transports.inc.php.
  *
  * LibreNMS alert-transports.inc.php for processor
  *
@@ -31,20 +31,20 @@ use Illuminate\Validation\Factory;
 
 header('Content-type: application/json');
 
-if (!Auth::user()->hasGlobalAdmin()) {
+if (! Auth::user()->hasGlobalAdmin()) {
     die(json_encode([
         'status' => 'error',
-        'message' => 'You need to be admin'
+        'message' => 'You need to be admin',
     ]));
 }
 
 $status = 'ok';
 $message = '';
 
-$transport_id        = $vars['transport_id'];
-$name                = $vars['name'];
-$is_default          = (int)(isset($vars['is_default']) && $vars['is_default'] == 'on');
-$transport_type      = $vars['transport-type'];
+$transport_id = $vars['transport_id'];
+$name = $vars['name'];
+$is_default = (int) (isset($vars['is_default']) && $vars['is_default'] == 'on');
+$transport_type = $vars['transport-type'];
 
 if (empty($name)) {
     $status = 'error';
@@ -53,10 +53,10 @@ if (empty($name)) {
     $status = 'error';
     $message = 'Missing transport information';
 } else {
-    $details = array(
+    $details = [
         'transport_name' => $name,
-        'is_default' => $is_default
-    );
+        'is_default' => $is_default,
+    ];
 
     if (is_numeric($transport_id) && $transport_id > 0) {
         // Update the fields -- json config field will be updated later
@@ -70,13 +70,13 @@ if (empty($name)) {
     if ($transport_id) {
         $class = 'LibreNMS\\Alert\\Transport\\'.ucfirst($transport_type);
 
-        if (!method_exists($class, 'configTemplate')) {
+        if (! method_exists($class, 'configTemplate')) {
             die(json_encode([
                 'status' => 'error',
-                'message' => 'This transport type is not yet supported'
+                'message' => 'This transport type is not yet supported',
             ]));
         }
-        
+
         // Build config values
         $result = call_user_func_array($class.'::configTemplate', []);
         $loader = new FileLoader(new Filesystem, "$install_dir/resources/lang");
@@ -90,7 +90,7 @@ if (empty($name)) {
             }
             $status = 'error';
         } else {
-            $transport_config = (array)json_decode(dbFetchCell('SELECT transport_config FROM alert_transports WHERE transport_id=?', [$transport_id]), true);
+            $transport_config = (array) json_decode(dbFetchCell('SELECT transport_config FROM alert_transports WHERE transport_id=?', [$transport_id]), true);
             foreach ($result['config'] as $tmp_config) {
                 if (isset($tmp_config['name']) && $tmp_config['type'] !== 'hidden') {
                     $transport_config[$tmp_config['name']] = $vars[$tmp_config['name']];
@@ -99,7 +99,7 @@ if (empty($name)) {
             //Update the json config field
             $detail = [
                 'transport_type' => $transport_type,
-                'transport_config' => json_encode($transport_config)
+                'transport_config' => json_encode($transport_config),
             ];
             $where = 'transport_id=?';
 
@@ -121,5 +121,5 @@ if (empty($name)) {
 
 die(json_encode([
     'status'       => $status,
-    'message'      => $message
+    'message'      => $message,
 ]));

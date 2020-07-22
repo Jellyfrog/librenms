@@ -1,23 +1,23 @@
 <?php
 
-$query = array(
-  array("sda410C", "5"),
-  array("sta410C", "6"),
-  array("saa410C", "7"),
-  array("sdi410C", "8"),
-  array("sti410C", "9"),
-  array("sai410C", "10"),
-  array("ttd440",  "14"),
-  array("ttx410C", "15"),
-  array("tdx410C", "16"),
-  array("sdi480",  "17"),
-  array("sti440",  "18")
-);
+$query = [
+    ['sda410C', '5'],
+    ['sta410C', '6'],
+    ['saa410C', '7'],
+    ['sdi410C', '8'],
+    ['sti410C', '9'],
+    ['sai410C', '10'],
+    ['ttd440',  '14'],
+    ['ttx410C', '15'],
+    ['tdx410C', '16'],
+    ['sdi480',  '17'],
+    ['sti440',  '18'],
+];
 
 foreach ($query as $row) {
-    if (strpos($device["sysDescr"], $row[0]) !== false) {
-        $oid_terra = ".1.3.6.1.4.1.30631.1.";
-        $oid = array($oid_terra.$row[1].".4.1.0", $oid_terra.$row[1].".4.2.0");
+    if (strpos($device['sysDescr'], $row[0]) !== false) {
+        $oid_terra = '.1.3.6.1.4.1.30631.1.';
+        $oid = [$oid_terra.$row[1].'.4.1.0', $oid_terra.$row[1].'.4.2.0'];
 
         $data = snmp_get_multi_oid($device, $oid);
         $hardware = $row[0];

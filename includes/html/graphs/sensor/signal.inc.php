@@ -1,4 +1,5 @@
 <?php
+
 $scale_min = '-100';
 $scale_max = '0';
 require 'includes/html/graphs/common.inc.php';

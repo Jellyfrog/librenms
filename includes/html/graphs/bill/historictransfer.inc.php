@@ -57,7 +57,7 @@ $graph->xgrid->SetColor('#e0e0e0', '#efefef');
 
 function YCallback($value)
 {
-    return format_number($value, \LibreNMS\Config::get('billing.base'), 2, 1) . 'B';
+    return format_number($value, \LibreNMS\Config::get('billing.base'), 2, 1).'B';
 }
 
 $graph->yaxis->SetFont(FF_FONT1);
@@ -67,7 +67,6 @@ $graph->yaxis->title->Set('Bytes Transferred');
 $graph->yaxis->SetLabelFormatCallback('YCallback');
 
 $graph->ygrid->SetFill(true, '#EFEFEF@0.5', '#FFFFFF@0.5');
-
 
 // Create the bar plots
 $barplot_tot = new BarPlot($graph_data['tot_data']);
@@ -95,7 +94,7 @@ $lineplot_allow->SetLegend('Average');
 $lineplot_allow->SetColor('black');
 $lineplot_allow->SetWeight(1);
 
-$gbplot = new GroupBarPlot(array($barplot_in, $barplot_tot, $barplot_out));
+$gbplot = new GroupBarPlot([$barplot_in, $barplot_tot, $barplot_out]);
 
 $graph->Add($gbplot);
 $graph->Add($lineplot_allow);

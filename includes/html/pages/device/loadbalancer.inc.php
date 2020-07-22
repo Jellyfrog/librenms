@@ -1,10 +1,10 @@
 <?php
 
-$link_array = array(
+$link_array = [
     'page'   => 'device',
     'device' => $device['device_id'],
     'tab'    => 'loadbalancer',
-);
+];
 
 $type_text['loadbalancer_rservers'] = 'Rservers';       // Cisco ACE
 $type_text['loadbalancer_vservers'] = 'Serverfarms';    // Cisco ACE
@@ -23,7 +23,7 @@ echo "<span style='font-weight: bold;'>Load Balancer</span> &#187; ";
 
 unset($sep);
 foreach ($loadbalancer_tabs as $type) {
-    if (!$vars['type']) {
+    if (! $vars['type']) {
         $vars['type'] = $type;
     }
 
@@ -33,7 +33,7 @@ foreach ($loadbalancer_tabs as $type) {
         echo '<span class="pagemenu-selected">';
     }
 
-    echo generate_link($type_text[$type].' ('.$device_loadbalancer_count[$type].')', $link_array, array('type' => $type));
+    echo generate_link($type_text[$type].' ('.$device_loadbalancer_count[$type].')', $link_array, ['type' => $type]);
     if ($vars['type'] == $type) {
         echo '</span>';
     }
@@ -51,7 +51,7 @@ if (is_file("includes/html/pages/device/loadbalancer/$type.inc.php")) {
         if ($type != 'overview') {
             if (is_file('includes/html/pages/device/loadbalancer/overview/'.mres($type).'.inc.php')) {
                 $g_i++;
-                if (!is_integer($g_i / 2)) {
+                if (! is_int($g_i / 2)) {
                     $row_colour = \LibreNMS\Config::get('list_colour.even');
                 } else {
                     $row_colour = \LibreNMS\Config::get('list_colour.odd');
@@ -66,7 +66,7 @@ if (is_file("includes/html/pages/device/loadbalancer/$type.inc.php")) {
                 echo '</div>';
             } else {
                 $graph_title = $type_text[$type];
-                $graph_type  = 'device_'.$type;
+                $graph_type = 'device_'.$type;
 
                 include 'includes/html/print-device-graph.php';
             }//end if

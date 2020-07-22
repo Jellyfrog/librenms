@@ -36,11 +36,11 @@ var grid = $("#fdb-search").bootgrid({
 
 // Select the devices only with FDB tables
 $sql = 'SELECT D.device_id AS device_id, `hostname` FROM `ports_fdb` AS F, `ports` AS P, `devices` AS D';
-$param = array();
+$param = [];
 
-if (!Auth::user()->hasGlobalRead()) {
+if (! Auth::user()->hasGlobalRead()) {
     $device_ids = Permissions::devicesForUser()->toArray() ?: [0];
-    $where .= " AND `D`.`device_id` IN " .dbGenPlaceholders(count($device_ids));
+    $where .= ' AND `D`.`device_id` IN '.dbGenPlaceholders(count($device_ids));
     $param = array_merge($param, $device_ids);
 }
 

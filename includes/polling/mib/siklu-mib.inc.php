@@ -3,85 +3,85 @@
 echo ' Siklu Wireless ';
 
 // Poll interface statistics
-$mib_oids = array(
-    'rfInPkts'          => array(
+$mib_oids = [
+    'rfInPkts'          => [
         '1',
         'rfInPkts',
         'In Packets',
         'DERIVE',
-        array('min' => 0, 'max' => 12500000000),
-    ),
-    'rfOutPkts'         => array(
+        ['min' => 0, 'max' => 12500000000],
+    ],
+    'rfOutPkts'         => [
         '1',
         'rfOutPkts',
         'Out Packets',
         'DERIVE',
-        array('min' => 0, 'max' => 12500000000),
-    ),
-    'rfInGoodPkts'      => array(
+        ['min' => 0, 'max' => 12500000000],
+    ],
+    'rfInGoodPkts'      => [
         '1',
         'rfInGoodPkts',
         'Good Packets',
         'DERIVE',
-    ),
-    'rfInErroredPkts'   => array(
+    ],
+    'rfInErroredPkts'   => [
         '1',
         'rfInErroredPkts',
         'Errored Packets',
         'DERIVE',
-    ),
-    'rfInLostPkts'      => array(
+    ],
+    'rfInLostPkts'      => [
         '1',
         'rfInLostPkts',
         'Lost Packets',
         'DERIVE',
-    ),
-    'rfInOctets'        => array(
+    ],
+    'rfInOctets'        => [
         '1',
         'rfInOctets',
         'In Packets',
         'DERIVE',
-        array('min' => 0, 'max' => 12500000000),
-    ),
-    'rfOutOctets'       => array(
+        ['min' => 0, 'max' => 12500000000],
+    ],
+    'rfOutOctets'       => [
         '1',
         'rfOutOctets',
         'Out Packets',
         'DERIVE',
-        array('min' => 0, 'max' => 12500000000),
-    ),
-    'rfInGoodOctets'    => array(
+        ['min' => 0, 'max' => 12500000000],
+    ],
+    'rfInGoodOctets'    => [
         '1',
         'rfInGoodOctets',
         'Good Packets',
         'DERIVE',
-    ),
-    'rfInErroredOctets' => array(
+    ],
+    'rfInErroredOctets' => [
         '1',
         'rfInErroredOctets',
         'Errored Packets',
         'DERIVE',
-    ),
-    'rfInIdleOctets'    => array(
+    ],
+    'rfInIdleOctets'    => [
         '1',
         'rfInIdleOctets',
         'Lost Packets',
         'DERIVE',
-    ),
-    'rfOutIdleOctets'   => array(
+    ],
+    'rfOutIdleOctets'   => [
         '1',
         'rfOutIdleOctets',
         'Lost Packets',
         'DERIVE',
-    ),
-);
+    ],
+];
 
-$mib_graphs = array(
+$mib_graphs = [
     'siklu_rfinterfacePkts',
     'siklu_rfinterfaceOtherPkts',
     'siklu_rfinterfaceOctets',
     'siklu_rfinterfaceOtherOctets',
-);
+];
 
 unset($graph, $oids, $oid);
 

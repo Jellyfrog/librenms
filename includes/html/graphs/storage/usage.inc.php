@@ -13,7 +13,7 @@ $rrd_options .= " COMMENT:'                        Size      Free   % Used\\n'";
 
 $hostname = gethostbyid($storage['device_id']);
 
-$colour      = 'CC0000';
+$colour = 'CC0000';
 $colour_area = 'ffaaaa';
 
 $descr = rrdtool_escape($storage['storage_descr'], 16);
@@ -30,12 +30,12 @@ $rrd_options .= ' AREA:perc#'.$background['right'].':';
 $rrd_options .= ' LINE1.25:perc#'.$background['left'].":'$descr'";
 $rrd_options .= ' GPRINT:size:LAST:%6.2lf%sB';
 $rrd_options .= ' GPRINT:free:LAST:%6.2lf%sB';
-$rrd_options .= " GPRINT:perc:LAST:%5.2lf%%\\n";
+$rrd_options .= ' GPRINT:perc:LAST:%5.2lf%%\\n';
 
 if ($_GET['previous']) {
     $descr = rrdtool_escape('Prev '.$storage['storage_descr'], 16);
 
-    $colour      = '99999999';
+    $colour = '99999999';
     $colour_area = '66666666';
 
     $rrd_options .= " DEF:usedX=$rrd_filename:used:AVERAGE:start=".$prev_from.':end='.$from;
@@ -48,5 +48,5 @@ if ($_GET['previous']) {
     $rrd_options .= ' LINE1.25:percX#'.$colour.":'$descr'";
     $rrd_options .= ' GPRINT:sizeX:LAST:%6.2lf%sB';
     $rrd_options .= ' GPRINT:freeX:LAST:%6.2lf%sB';
-    $rrd_options .= " GPRINT:percX:LAST:%5.2lf%%\\n";
+    $rrd_options .= ' GPRINT:percX:LAST:%5.2lf%%\\n';
 }

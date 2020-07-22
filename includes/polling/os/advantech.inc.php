@@ -1,6 +1,6 @@
 <?php
 /**
- * advantech.inc.php
+ * advantech.inc.php.
  *
  * LibreNMS os poller module for Advantech
  *
@@ -22,6 +22,5 @@
  * @copyright  2020 Mikkel Mondrup Kristensen
  * @author     Mikkel Mondrup Kristensen <mikkel@tdx.dk>
  */
-
 $version = snmp_get($device, 'sysImageVersion.0', '-OQva', 'ADVANTECH-COMMON-MIB', 'advantech');
 $hardware = snmp_get($device, 'sysModuleID.0', '-OQva', 'ADVANTECH-COMMON-MIB', 'advantech');

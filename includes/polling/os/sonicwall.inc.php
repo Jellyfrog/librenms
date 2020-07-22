@@ -23,10 +23,10 @@ if (is_numeric($data)) {
     $rrd_def = RrdDefinition::make()
         ->addDataset('activesessions', 'GAUGE', 0)
         ->addDataset('maxsessions', 'GAUGE', 0);
-    $fields = array(
+    $fields = [
         'activesessions' => $data[0]['sonicCurrentConnCacheEntries'],
         'maxsessions' => $data[0]['sonicMaxConnCacheEntries'],
-    );
+    ];
     $tags = compact('rrd_def');
     data_update($device, 'sonicwall_sessions', $tags, $fields);
     $graphs['sonicwall_sessions'] = true;

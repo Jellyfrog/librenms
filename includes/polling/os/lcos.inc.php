@@ -1,6 +1,6 @@
 <?php
 /**
- * locos.inc.php
+ * locos.inc.php.
  *
  * LibreNMS os polling module for Lancom LCOS
  *
@@ -22,10 +22,9 @@
  * @copyright  2017 Marcus Pink
  * @author     Marcus Pink <mpink@avantgarde-labs.de>
  */
-
 $lcos_data = snmp_get_multi_oid($device, ['lcsFirmwareVersionTableEntrySerialNumber.1', 'lcsFirmwareVersionTableEntryVersion.1', 'lcsFirmwareVersionTableEntryModule.1'], '-OQs', 'LCOS-MIB');
 
-$serial  = $lcos_data['lcsFirmwareVersionTableEntrySerialNumber.eIfc'];
+$serial = $lcos_data['lcsFirmwareVersionTableEntrySerialNumber.eIfc'];
 $version = $lcos_data['lcsFirmwareVersionTableEntryVersion.eIfc'];
 $hardware = $lcos_data['lcsFirmwareVersionTableEntryModule.eIfc'];
 

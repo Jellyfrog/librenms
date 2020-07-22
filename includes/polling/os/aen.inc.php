@@ -12,8 +12,7 @@
  * the source code distribution for details.
  */
 
-
 $version = snmp_get($device, 'acdDescFirmwareVersion.0', '-Oqv', 'ACD-DESC-MIB');
 $hardware = snmp_get($device, 'acdDescCommercialName.0', '-Ovqs', 'ACD-DESC-MIB');
-$serial   = snmp_get($device, 'acdDescSerialNumber.0', '-OQv', 'ACD-DESC-MIB');
-$features       = '';
+$serial = snmp_get($device, 'acdDescSerialNumber.0', '-OQv', 'ACD-DESC-MIB');
+$features = '';

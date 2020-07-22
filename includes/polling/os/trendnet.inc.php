@@ -1,6 +1,6 @@
 <?php
 /**
- * TRENDnet.inc.php
+ * TRENDnet.inc.php.
  *
  * LibreNMS os polling module for TRENDnet
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * apic.inc.php
+ * apic.inc.php.
  *
  * LibreNMS os poller module for Cisco APIC
  *
@@ -22,8 +22,7 @@
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
-list($version, $hardware, $serial) = explode(';', $device['sysDescr']);
+[$version, $hardware, $serial] = explode(';', $device['sysDescr']);
 
 $version = preg_replace('/APIC VERSION /', '', $version);
 $serial = preg_replace('/Serial /', '', $serial);

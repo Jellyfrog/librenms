@@ -12,8 +12,8 @@
 
 use LibreNMS\RRD\RrdDefinition;
 
-$version = preg_replace('/[\r\n\"]+/', ' ', snmp_get($device, "productVersion.0", "-OQv", "PULSESECURE-PSG-MIB"));
-$hardware = "Juniper " . preg_replace('/[\r\n\"]+/', ' ', snmp_get($device, "productName.0", "-OQv", "PULSESECURE-PSG-MIB"));
+$version = preg_replace('/[\r\n\"]+/', ' ', snmp_get($device, 'productVersion.0', '-OQv', 'PULSESECURE-PSG-MIB'));
+$hardware = 'Juniper '.preg_replace('/[\r\n\"]+/', ' ', snmp_get($device, 'productName.0', '-OQv', 'PULSESECURE-PSG-MIB'));
 $hostname = trim($device['sysName'], '"');
 
 $users = snmp_get($device, 'iveConcurrentUsers.0', '-OQv', 'PULSESECURE-PSG-MIB');
@@ -21,9 +21,9 @@ $users = snmp_get($device, 'iveConcurrentUsers.0', '-OQv', 'PULSESECURE-PSG-MIB'
 if (is_numeric($users)) {
     $rrd_def = RrdDefinition::make()->addDataset('users', 'GAUGE', 0);
 
-    $fields = array(
+    $fields = [
         'users' => $users,
-    );
+    ];
 
     $tags = compact('rrd_def');
     data_update($device, 'pulse_users', $tags, $fields);
@@ -35,9 +35,9 @@ $sessions = snmp_get($device, 'iveConcurrentUsers.0', '-OQv', 'PULSESECURE-PSG-M
 if (is_numeric($sessions)) {
     $rrd_def = RrdDefinition::make()->addDataset('sessions', 'GAUGE', 0);
 
-    $fields = array(
+    $fields = [
         'sessions' => $sessions,
-    );
+    ];
 
     $tags = compact('rrd_def');
     data_update($device, 'pulse_sessions', $tags, $fields);

@@ -2,7 +2,7 @@
 
 use LibreNMS\RRD\RrdDefinition;
 
-list($hardware, $version, ) = explode(',', str_replace(', ', ',', $device['sysDescr']));
+[$hardware, $version, ] = explode(',', str_replace(', ', ',', $device['sysDescr']));
 
 // Clean up hardware
 $hardware = str_replace('PROCURVE', 'ProCurve', $hardware);
@@ -26,7 +26,7 @@ if ($altversion) {
 
 if (preg_match('/^PROCURVE (.*) - (.*)/', $device['sysDescr'], $regexp_result)) {
     $hardware = 'ProCurve '.$regexp_result[1];
-    $version  = $regexp_result[2];
+    $version = $regexp_result[2];
 }
 
 $serial = snmp_get($device, '.1.3.6.1.4.1.11.2.36.1.1.2.9.0', '-Oqv', 'SEMI-MIB');
@@ -38,9 +38,9 @@ $FdbAddressCount = snmp_get($device, 'hpSwitchFdbAddressCount.0', '-Ovqn', 'STAT
 if (is_numeric($FdbAddressCount)) {
     $rrd_def = RrdDefinition::make()->addDataset('value', 'GAUGE', -1, 100000);
 
-    $fields = array(
+    $fields = [
         'value' => $FdbAddressCount,
-    );
+    ];
 
     $tags = compact('rrd_def');
     data_update($device, 'fdb_count', $tags, $fields);

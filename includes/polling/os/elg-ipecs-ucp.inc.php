@@ -1,6 +1,6 @@
 <?php
 /**
- * elg-ipecs-ucp.inc.php
+ * elg-ipecs-ucp.inc.php.
  *
  * LibreNMS OS poller module for Ericsson iPECS UCP
  *
@@ -22,5 +22,4 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
-list(,$hardware,) = explode(',', $device['sysDescr'], 3);
+[,$hardware,] = explode(',', $device['sysDescr'], 3);

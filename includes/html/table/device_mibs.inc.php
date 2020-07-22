@@ -15,37 +15,37 @@
  * the source code distribution for details.
  */
 
-$columns = array(
+$columns = [
     'module',
     'mib',
     'included_by',
     'last_modified',
-);
+];
 
 if (isset($vars['device_id'])) {
     // device_id supplied - get details for a single device
     // used by device MIB page
-    $params = array(
+    $params = [
         $vars['device_id'],
-    );
+    ];
     $sql = 'SELECT * FROM `device_mibs`';
     $wheresql = ' WHERE `device_id` = ?';
     $sortcolumns = 3;
-    $count_sql = "SELECT COUNT(*) FROM `device_mibs`".$wheresql;
+    $count_sql = 'SELECT COUNT(*) FROM `device_mibs`'.$wheresql;
 } else {
     // device_id not supplied - get details for a all devices
     // used by all device MIBs page
-    $params = array();
+    $params = [];
     $sql = 'SELECT `d`.`hostname` as `hostname`, `dm`.* FROM `devices` `d`, `device_mibs` `dm`';
     $wheresql = ' WHERE `d`.`device_id` = `dm`.`device_id`';
     array_unshift($columns, 'hostname');
     $sortcolumns = 4;
-    $count_sql = "SELECT COUNT(*) FROM `devices` `d`, `device_mibs` `dm`".$wheresql;
+    $count_sql = 'SELECT COUNT(*) FROM `devices` `d`, `device_mibs` `dm`'.$wheresql;
 }
 
 // all columns are searchable - search across them
-if (isset($searchPhrase) && !empty($searchPhrase)) {
-    $searchsql = implode(' OR ', array_map("search_phrase_column", array_map("mres", $columns)));
+if (isset($searchPhrase) && ! empty($searchPhrase)) {
+    $searchsql = implode(' OR ', array_map('search_phrase_column', array_map('mres', $columns)));
     $wheresql .= " AND ( $searchsql )";
 }
 $sql .= $wheresql;
@@ -57,14 +57,14 @@ if (empty($total)) {
 }
 
 // set up default sort
-if (!isset($sort) || empty($sort)) {
-    $sort = implode(', ', array_map("mres", array_slice($columns, 0, $sortcolumns)));
+if (! isset($sort) || empty($sort)) {
+    $sort = implode(', ', array_map('mres', array_slice($columns, 0, $sortcolumns)));
 }
 $sql .= " ORDER BY $sort";
 
 // select only the required rows
 if (isset($current)) {
-    $limit_low  = (($current * $rowCount) - ($rowCount));
+    $limit_low = (($current * $rowCount) - ($rowCount));
     $limit_high = $rowCount;
 }
 if ($rowCount != -1) {
@@ -72,27 +72,27 @@ if ($rowCount != -1) {
 }
 
 // load data from database into response array
-$response = array();
+$response = [];
 foreach (dbFetchRows($sql, $params) as $mib) {
-    $mibrow = array();
+    $mibrow = [];
     foreach ($columns as $col) {
         $mibrow[$col] = $mib[$col];
     }
-    if (!isset($vars['device_id'])) {
+    if (! isset($vars['device_id'])) {
         $device = device_by_id_cache($mib['device_id']);
         $mibrow['hostname'] = generate_device_link(
             $device,
             $mib['hostname'],
-            array('tab' => 'mib')
+            ['tab' => 'mib']
         );
     }
     $response[] = $mibrow;
 }
 
-$output = array(
+$output = [
     'current'  => $current,
     'rowCount' => $rowCount,
     'rows'     => $response,
     'total'    => $total,
-);
+];
 echo _json_encode($output);

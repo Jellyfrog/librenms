@@ -13,7 +13,7 @@
 
 $data = snmp_get_multi($device, ['genGroupHWVersion.0', 'rlPhdUnitGenParamModelName.1', 'rlPhdUnitGenParamHardwareVersion.1', 'rlPhdUnitGenParamSerialNum.1', 'rlPhdUnitGenParamSoftwareVersion.1', 'rlPhdUnitGenParamFirmwareVersion.1'], '-OQUs', 'CISCOSB-DEVICEPARAMS-MIB:CISCOSB-Physicaldescription-MIB');
 
-$hardware = $data['1']['rlPhdUnitGenParamHardwareVersion'] . " " . $data['1']['rlPhdUnitGenParamSoftwareVersion'];
+$hardware = $data['1']['rlPhdUnitGenParamHardwareVersion'].' '.$data['1']['rlPhdUnitGenParamSoftwareVersion'];
 
 $serial = $data['1']['rlPhdUnitGenParamSerialNum'];
 
@@ -23,16 +23,16 @@ if (! $hwversion) {
 }
 
 if (preg_match('/\.1\.3\.6\.1\.4\.1\.9\.6\.1\.72\.(....).+/', $device['sysObjectID'], $model)) {
-    $hardware = 'SGE' . $model[1] . '-' . substr($device['sysDescr'], 0, 2);
+    $hardware = 'SGE'.$model[1].'-'.substr($device['sysDescr'], 0, 2);
 } elseif ($device['sysObjectID'] == '.1.3.6.1.4.1.9.6.1.89.26.1') {
     $hardware = 'SG220-26';
 } else {
     $hardware = str_replace(' ', '', $data['1']['rlPhdUnitGenParamModelName']);
 }
 if ($hwversion) {
-    $hardware .= " " . $hwversion;
+    $hardware .= ' '.$hwversion;
 }
-$version  = 'Software ' . $data['1']['rlPhdUnitGenParamSoftwareVersion'];
+$version = 'Software '.$data['1']['rlPhdUnitGenParamSoftwareVersion'];
 $boot = $data['0']['rndBaseBootVersion'];
 $firmware = $data['1']['rlPhdUnitGenParamFirmwareVersion'];
 if ($boot) {

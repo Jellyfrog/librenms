@@ -13,8 +13,8 @@
  * the source code distribution for details.
  */
 
-if (!isset($vars['section'])) {
-    $vars['section'] = "mib";
+if (! isset($vars['section'])) {
+    $vars['section'] = 'mib';
 }
 if (is_mib_poller_enabled($device)) {
     ?>
@@ -89,5 +89,5 @@ if (is_mib_poller_enabled($device)) {
 </script>
     <?php
 } else {
-    print_mib_poller_disabled();
-}
+        print_mib_poller_disabled();
+    }

@@ -7,15 +7,15 @@ $graph_type = 'toner_usage';
 $supplies = \App\Models\Toner::query()->where('device_id', $device['device_id'])->get()->groupBy('toner_type');
 
 foreach ($supplies as $type => $supply) {
-    if (!empty($supply)) {
+    if (! empty($supply)) {
         echo '
           <div class="row">
           <div class="col-md-12">
             <div class="panel panel-default panel-condensed">
               <div class="panel-heading">';
-        echo '<a href="device/device=' . $device['device_id'] . '/tab=toner/">';
+        echo '<a href="device/device='.$device['device_id'].'/tab=toner/">';
         $title = StringHelpers::camelToTitle($type == 'opc' ? 'organicPhotoConductor' : $type);
-        echo '<i class="fa fa-print fa-lg icon-theme" aria-hidden="true"></i> <strong>' . $title . '</strong></a>';
+        echo '<i class="fa fa-print fa-lg icon-theme" aria-hidden="true"></i> <strong>'.$title.'</strong></a>';
         echo '</div>
         <table class="table table-hover table-condensed table-striped">';
 
@@ -42,7 +42,7 @@ foreach ($supplies as $type => $supply) {
             unset($link_array['height'], $link_array['width'], $link_array['legend']);
             $link = generate_url($link_array);
 
-            $overlib_content = generate_overlib_content($graph_array, $device['hostname'] . ' - ' . $toner['toner_descr']);
+            $overlib_content = generate_overlib_content($graph_array, $device['hostname'].' - '.$toner['toner_descr']);
 
             $graph_array['width'] = 80;
             $graph_array['height'] = 20;
@@ -51,9 +51,9 @@ foreach ($supplies as $type => $supply) {
             $minigraph = generate_lazy_graph_tag($graph_array);
 
             echo '<tr>
-            <td class="col-md-4">' . overlib_link($link, $toner['toner_descr'], $overlib_content) . '</td>
-            <td class="col-md-4">' . overlib_link($link, $minigraph, $overlib_content) . '</td>
-            <td class="col-md-4">' . overlib_link($link, print_percentage_bar(200, 20, $percent, null, 'ffffff', $background['left'], $percent . '%', 'ffffff', $background['right']), $overlib_content) . '
+            <td class="col-md-4">'.overlib_link($link, $toner['toner_descr'], $overlib_content).'</td>
+            <td class="col-md-4">'.overlib_link($link, $minigraph, $overlib_content).'</td>
+            <td class="col-md-4">'.overlib_link($link, print_percentage_bar(200, 20, $percent, null, 'ffffff', $background['left'], $percent.'%', 'ffffff', $background['right']), $overlib_content).'
            </a></td>
          </tr>';
         }//end foreach

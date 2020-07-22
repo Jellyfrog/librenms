@@ -9,10 +9,10 @@
  * option) any later version.  Please see LICENSE.txt at the top level of
  * the source code distribution for details.
  */
- 
+
 $dell_rpdu_data = snmp_get_multi_oid($device, ['rPDUIdentSerialNumberD.1', 'rPDUIdentModelNumberD.1', 'rPDUIdentHardwareRevD.1', 'rPDUIdentFirmwareRevD.1'], '-OUQs', 'DellrPDU-MIB');
 
-$hardware = $dell_rpdu_data['rPDUIdentModelNumberD.1'] . ' ' . $dell_rpdu_data['rPDUIdentHardwareRevD.1'] ;
+$hardware = $dell_rpdu_data['rPDUIdentModelNumberD.1'].' '.$dell_rpdu_data['rPDUIdentHardwareRevD.1'];
 $serial = $dell_rpdu_data['rPDUIdentSerialNumberD.1'];
 $version = $dell_rpdu_data['rPDUIdentFirmwareRevD.1'];
 

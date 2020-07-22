@@ -75,7 +75,7 @@ foreach (dbFetchRows('SELECT * FROM `devices` ORDER BY `hostname`') as $data) {
                     <?php
                     if ($_POST['device_string']) {
                         echo $_POST['device_string'];
-                    };
+                    }
                     ?>
                  "\" placeholder=\"Description\" class=\"form-control input-sm\"/>"+
                  "</div>"+

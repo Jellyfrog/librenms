@@ -1,6 +1,6 @@
 <?php
 /**
- * validate.inc.php
+ * validate.inc.php.
  *
  * -Description-
  *
@@ -44,7 +44,6 @@ $no_refresh = true;
 
 <?php
 
-
 $validator = new Validator();
 $validator->validate();
 
@@ -62,7 +61,7 @@ foreach ($validator->getAllResults() as $group => $results) {
     } elseif ($group_status == ValidationResult::FAILURE) {
         echo ' <span class="text-danger pull-right">Failure</span>';
     }
-    echo "</a></h4>";
+    echo '</a></h4>';
     echo " </div><div id='${group}Body' class='panel-collapse collapse";
     if ($group_status !== ValidationResult::SUCCESS) {
         echo ' in';
@@ -72,7 +71,6 @@ foreach ($validator->getAllResults() as $group => $results) {
 
     foreach ($results as $rnum => $result) {
         /** @var ValidationResult $result */
-
         echo '<div class="panel';
         if ($result->getStatus() == ValidationResult::SUCCESS) {
             echo ' panel-success"><div class="panel-heading bg-success"> Ok: ';
@@ -89,8 +87,8 @@ foreach ($validator->getAllResults() as $group => $results) {
             echo '<div class="panel-body">';
             if ($result->hasFix()) {
                 echo 'Fix: <code>';
-                foreach ((array)$result->getFix() as $fix) {
-                    echo '<br />' . linkify($fix) . PHP_EOL;
+                foreach ((array) $result->getFix() as $fix) {
+                    echo '<br />'.linkify($fix).PHP_EOL;
                 }
                 echo '</code>';
                 if ($result->hasList()) {
@@ -102,9 +100,8 @@ foreach ($validator->getAllResults() as $group => $results) {
                 $list = $result->getList();
                 $short_size = 10;
 
-
                 echo "<ul id='shortList$group$rnum' class='list-group' style='margin-bottom: -1px'>";
-                echo "<li class='list-group-item active'>" . $result->getListDescription() . "</li>";
+                echo "<li class='list-group-item active'>".$result->getListDescription().'</li>';
 
                 foreach (array_slice($list, 0, $short_size) as $li) {
                     echo "<li class='list-group-item'>$li</li>";
@@ -129,8 +126,6 @@ foreach ($validator->getAllResults() as $group => $results) {
     }
     echo '</div></div></div></div>';
 }
-
-
 
 ?>
         </div>

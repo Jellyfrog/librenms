@@ -1,3 +1,3 @@
 <?php
 
-$hardware = "Calix " . $device['sysDescr'];
+$hardware = 'Calix '.$device['sysDescr'];

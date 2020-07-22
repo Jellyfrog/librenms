@@ -4,8 +4,8 @@ if ($_GET['legend']) {
     $legend = $_GET['legend'];
 }
 
-$rrd_options  = "--alt-autoscale-max -E --start $from --end ".($to - 150)." --width $width --height $height ";
-$rrd_options .= \LibreNMS\Config::get('rrdgraph_def_text') . ' -c FONT#' . ltrim(\LibreNMS\Config::get('rrdgraph_def_text_color'), '#');
+$rrd_options = "--alt-autoscale-max -E --start $from --end ".($to - 150)." --width $width --height $height ";
+$rrd_options .= \LibreNMS\Config::get('rrdgraph_def_text').' -c FONT#'.ltrim(\LibreNMS\Config::get('rrdgraph_def_text_color'), '#');
 if ($height < '99') {
     $rrd_options .= ' --only-graph';
 }
@@ -13,16 +13,16 @@ if ($height < '99') {
 $i = 1;
 
 foreach (explode(',', $_GET['id']) as $ifid) {
-    $int = dbFetchRow('SELECT `hostname` FROM `ports` AS I, devices as D WHERE I.port_id = ? AND I.device_id = D.device_id', array($ifid));
+    $int = dbFetchRow('SELECT `hostname` FROM `ports` AS I, devices as D WHERE I.port_id = ? AND I.device_id = D.device_id', [$ifid]);
     $rrd_file = get_port_rrdfile_path($int['hostname'], $ifid);
     if (rrdtool_check_rrd_exists($rrd_file)) {
         $rrd_options .= ' DEF:inoctets'.$i.'='.$rrd_file.':INOCTETS:AVERAGE';
         $rrd_options .= ' DEF:outoctets'.$i.'='.$rrd_file.':OUTOCTETS:AVERAGE';
-        $in_thing    .= $seperator.'inoctets'.$i.',UN,0,'.'inoctets'.$i.',IF';
-        $out_thing   .= $seperator.'outoctets'.$i.',UN,0,'.'outoctets'.$i.',IF';
-        $pluses      .= $plus;
-        $seperator    = ',';
-        $plus         = ',+';
+        $in_thing .= $seperator.'inoctets'.$i.',UN,0,'.'inoctets'.$i.',IF';
+        $out_thing .= $seperator.'outoctets'.$i.',UN,0,'.'outoctets'.$i.',IF';
+        $pluses .= $plus;
+        $seperator = ',';
+        $plus = ',+';
         $i++;
     }
 }
@@ -31,25 +31,25 @@ unset($seperator);
 unset($plus);
 
 foreach (explode(',', $_GET['idb']) as $ifid) {
-    $int = dbFetchRow('SELECT `hostname` FROM `ports` AS I, devices as D WHERE I.port_id = ? AND I.device_id = D.device_id', array($ifid));
+    $int = dbFetchRow('SELECT `hostname` FROM `ports` AS I, devices as D WHERE I.port_id = ? AND I.device_id = D.device_id', [$ifid]);
     $rrd_file = get_port_rrdfile_path($int['hostname'], $ifid);
     if (rrdtool_check_rrd_exists($rrd_file)) {
         $rrd_options .= ' DEF:inoctetsb'.$i.'='.$rrd_file.':INOCTETS:AVERAGE';
         $rrd_options .= ' DEF:outoctetsb'.$i.'='.$rrd_file.':OUTOCTETS:AVERAGE';
-        $in_thingb   .= $seperator.'inoctetsb'.$i.',UN,0,'.'inoctetsb'.$i.',IF';
-        $out_thingb  .= $seperator.'outoctetsb'.$i.',UN,0,'.'outoctetsb'.$i.',IF';
-        $plusesb     .= $plus;
-        $seperator    = ',';
-        $plus         = ',+';
+        $in_thingb .= $seperator.'inoctetsb'.$i.',UN,0,'.'inoctetsb'.$i.',IF';
+        $out_thingb .= $seperator.'outoctetsb'.$i.',UN,0,'.'outoctetsb'.$i.',IF';
+        $plusesb .= $plus;
+        $seperator = ',';
+        $plus = ',+';
         $i++;
     }
 }
 
 if ($inverse) {
-    $in  = 'out';
+    $in = 'out';
     $out = 'in';
 } else {
-    $in  = 'in';
+    $in = 'in';
     $out = 'out';
 }
 
@@ -129,5 +129,5 @@ if ($legend == 'no') {
 }//end if
 
 if ($width <= '300') {
-    $rrd_options .= ' --font LEGEND:7:' . \LibreNMS\Config::get('mono_font') . ' --font AXIS:6:' . \LibreNMS\Config::get('mono_font') . ' --font-render-mode normal';
+    $rrd_options .= ' --font LEGEND:7:'.\LibreNMS\Config::get('mono_font').' --font AXIS:6:'.\LibreNMS\Config::get('mono_font').' --font-render-mode normal';
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * ns-bsd.inc.php
+ * ns-bsd.inc.php.
  *
  * LibreNMS os poller module for Technicolor TG MediaAccess devices
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Thomas GAGNIERE
  * @author     Thomas GAGNIERE <tgagniere@reseau-concept.com>
  */
-
 $data = snmp_get_multi_oid($device, ['snsModel.0', 'snsVersion.0', 'snsSerialNumber.0', 'snsSystemName.0'], '-OUQs', 'STORMSHIELD-PROPERTY-MIB');
 
 $hardware = $data['snsModel.0'];

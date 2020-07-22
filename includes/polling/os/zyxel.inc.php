@@ -1,6 +1,6 @@
 <?php
 /**
- * zyxel.inc.php
+ * zyxel.inc.php.
  *
  * LibreNMS os poller module for Zyxel devices
  *
@@ -22,13 +22,12 @@
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
-$oids = array('.1.3.6.1.4.1.890.1.15.3.1.11.0', '.1.3.6.1.4.1.890.1.15.3.1.6.0', '.1.3.6.1.4.1.890.1.15.3.1.12.0');
+$oids = ['.1.3.6.1.4.1.890.1.15.3.1.11.0', '.1.3.6.1.4.1.890.1.15.3.1.6.0', '.1.3.6.1.4.1.890.1.15.3.1.12.0'];
 $zyxel = snmp_get_multi_oid($device, $oids, '-OUQnt');
 
 $hardware = $zyxel['.1.3.6.1.4.1.890.1.15.3.1.11.0'];
-list($version,)  = explode(' | ', $zyxel['.1.3.6.1.4.1.890.1.15.3.1.6.0']);
-$serial   = $zyxel['.1.3.6.1.4.1.890.1.15.3.1.12.0'];
+[$version,] = explode(' | ', $zyxel['.1.3.6.1.4.1.890.1.15.3.1.6.0']);
+$serial = $zyxel['.1.3.6.1.4.1.890.1.15.3.1.12.0'];
 
 unset(
     $zyxel

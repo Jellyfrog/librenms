@@ -10,11 +10,11 @@
  * the source code distribution for details.
  */
 
-$temp_data  = snmp_get_multi_oid($device, ['fnSysSerial.0', 'fwSysModel.0', 'fwSysVersion.0'], '-OUQs', 'FORTINET-FORTIWEB-MIB');
+$temp_data = snmp_get_multi_oid($device, ['fnSysSerial.0', 'fwSysModel.0', 'fwSysVersion.0'], '-OUQs', 'FORTINET-FORTIWEB-MIB');
 $temp_version = explode(' ', $temp_data['fwSysVersion.0']);
 
-$hardware        = $temp_data['fwSysModel.0'];
-$serial          = $temp_data['fnSysSerial.0'];
-$version         = $temp_version[1];
+$hardware = $temp_data['fwSysModel.0'];
+$serial = $temp_data['fnSysSerial.0'];
+$version = $temp_version[1];
 
 unset($temp_data, $temp_version);

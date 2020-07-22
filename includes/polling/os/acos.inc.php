@@ -1,6 +1,6 @@
 <?php
 /**
- * acos.inc.php
+ * acos.inc.php.
  *
  * LibreNMS os poller module for A10 ACOS
  *
@@ -22,7 +22,6 @@
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 $acos_temp = snmp_get_multi($device, ['axSysSerialNumber.0', 'axSysFirmwareVersion.0'], '-OQUs', 'A10-AX-MIB');
-$serial    = $acos_temp[0]['axSysSerialNumber'];
-$version   = $acos_temp[0]['axSysFirmwareVersion'];
+$serial = $acos_temp[0]['axSysSerialNumber'];
+$version = $acos_temp[0]['axSysFirmwareVersion'];

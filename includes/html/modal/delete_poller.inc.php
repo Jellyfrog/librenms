@@ -1,6 +1,6 @@
 <?php
 /**
- * delete_poller.inc.php
+ * delete_poller.inc.php.
  *
  * -Description-
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
 if (Auth::user()->hasGlobalAdmin()) {
     ?>
 

@@ -7,13 +7,12 @@
  *
 */
 
-
 $ft_tmp = snmp_get($device, '.1.3.6.1.4.1.2021.51.12.4.1.2.7.76.73.67.69.78.83.69.1', '-Oqv');
 if (gettype($ft_tmp) === 'string') {
     $ft_tmp = trim($ft_tmp, '" ');
 }
 
-if (!empty($ft_tmp)) {
+if (! empty($ft_tmp)) {
     if ($ft_tmp === 'FULL:0') {
         $features = 'Non-Expiry License';
     }

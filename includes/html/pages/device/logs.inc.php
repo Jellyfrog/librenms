@@ -15,7 +15,7 @@
  * @author     LibreNMS Contributors
 */
 
-if (!isset($vars['section'])) {
+if (! isset($vars['section'])) {
     $vars['section'] = 'eventlog';
 }
 
@@ -28,7 +28,7 @@ if ($vars['section'] == 'eventlog') {
     echo '<span class="pagemenu-selected">';
 }
 
-echo generate_link('Event Log', $vars, array('section' => 'eventlog'));
+echo generate_link('Event Log', $vars, ['section' => 'eventlog']);
 if ($vars['section'] == 'eventlog') {
     echo '</span>';
 }
@@ -40,7 +40,7 @@ if (\LibreNMS\Config::get('enable_syslog') == 1) {
         echo '<span class="pagemenu-selected">';
     }
 
-    echo generate_link('Syslog', $vars, array('section' => 'syslog'));
+    echo generate_link('Syslog', $vars, ['section' => 'syslog']);
     if ($vars['section'] == 'syslog') {
         echo '</span>';
     }
@@ -51,7 +51,7 @@ if (\LibreNMS\Config::get('graylog.port')) {
     if ($vars['section'] == 'graylog') {
         echo '<span class="pagemenu-selected">';
     }
-    echo generate_link('Graylog', $vars, array('section' => 'graylog'));
+    echo generate_link('Graylog', $vars, ['section' => 'graylog']);
     if ($vars['section'] == 'graylog') {
         echo '</span>';
     }

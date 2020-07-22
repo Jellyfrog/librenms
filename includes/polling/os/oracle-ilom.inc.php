@@ -11,6 +11,6 @@
  */
 
 if (preg_match('/^(.*), ILOM v(.*), (.*)/', $device['sysDescr'], $regexp_result)) {
-    $hardware = 'Oracle ' . $regexp_result[1];
+    $hardware = 'Oracle '.$regexp_result[1];
     $version = $regexp_result[2];
 }

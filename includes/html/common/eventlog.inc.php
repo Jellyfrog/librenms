@@ -35,11 +35,11 @@ var eventlog_grid = $("#eventlog").bootgrid({
     post: function ()
     {
         return {
-            device: "' . (int)($vars['device']) . '",
-            eventtype: "' . addcslashes($vars['eventtype'], '"') . '",
+            device: "'.(int) ($vars['device']).'",
+            eventtype: "'.addcslashes($vars['eventtype'], '"').'",
         };
     },
-    url: "' . url('/ajax/table/eventlog') . '"
+    url: "'.url('/ajax/table/eventlog').'"
 });
 
 </script>

@@ -12,26 +12,26 @@
 
 header('Content-type: application/json');
 
-$status    = 'error';
-$message   = 'unknown error';
+$status = 'error';
+$message = 'unknown error';
 
 $device_id = mres($_POST['device_id']);
 $notes = $_POST['notes'];
 
-if (!Auth::user()->hasGlobalAdmin()) {
+if (! Auth::user()->hasGlobalAdmin()) {
     $message = 'Only admin accounts can update notes';
-} elseif (isset($notes) && (dbUpdate(array('notes' => $notes), 'devices', 'device_id = ?', array($device_id)))) {
-    $status  = 'ok';
+} elseif (isset($notes) && (dbUpdate(['notes' => $notes], 'devices', 'device_id = ?', [$device_id]))) {
+    $status = 'ok';
     $message = 'Updated';
 } else {
-    $status  = 'error';
+    $status = 'error';
     $message = 'ERROR: Could not update';
 }
 echo _json_encode(
-    array(
+    [
         'status'       => $status,
         'message'      => $message,
         'notes'        => $notes,
         'device_id'    => $device_id,
-    )
+    ]
 );

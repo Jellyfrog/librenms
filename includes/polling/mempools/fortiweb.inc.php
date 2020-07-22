@@ -1,4 +1,5 @@
 <?php
+
 echo 'FortiWeb MemPool';
 $mempool['perc'] = snmp_get($device, 'FORTINET-FORTIWEB-MIB::fwSysMemUsage.0', '-OvQ');
 $mempool['total'] = (snmp_get($device, 'FORTINET-FORTIWEB-MIB::fwSysMemCapacity.0', '-OvQ')) * $mempool['mempool_precision'];

@@ -1,6 +1,6 @@
 <?php
 /**
- * remoteye4.inc.php
+ * remoteye4.inc.php.
  *
  * LibreNMS os poller module for SOCOMEC Netvision with UPS-MIB support
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 $data = snmp_get_multi($device, ['upsIdentAgentSoftwareVersion.0'], '-OQUs', 'UPS-MIB');
 
-$version  = str_replace('Net Vision ', '', $data[0]['upsIdentAgentSoftwareVersion']);
+$version = str_replace('Net Vision ', '', $data[0]['upsIdentAgentSoftwareVersion']);

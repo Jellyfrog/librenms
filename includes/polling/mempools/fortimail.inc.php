@@ -1,4 +1,5 @@
 <?php
+
 echo 'FortiMail MemPool';
 $mempool['perc'] = snmp_get($device, 'FORTINET-FORTIMAIL-MIB::fmlSysMemUsage.0', '-OvQ');
 // There is no OID for MemCapacity. Using fixed value based on "diag hardware sysinfo"

@@ -1,6 +1,6 @@
 <?php
 /**
- * ipolis.inc.php
+ * ipolis.inc.php.
  *
  * LibreNMS os poller module for Hanwha Techwin devices
  *
@@ -21,12 +21,11 @@
  * @link       http://librenms.org
  * @copyright  2018 Priit Mustasaar
  * @author     Priit Mustasaar <priit.mustasaar@gmail.com>
-*/
-
-$oids = array(
+ */
+$oids = [
     'hardware' => $device['sysObjectID'].'.1.0',
-    'version' => $device['sysObjectID'].'.2.1.1.0'
-);
+    'version' => $device['sysObjectID'].'.2.1.1.0',
+];
 
 $os_data = snmp_get_multi_oid($device, $oids);
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * alteonos.inc.php
+ * alteonos.inc.php.
  *
  * LibreNMS os poller module for RADWARE/Alteon Application Switch
  *

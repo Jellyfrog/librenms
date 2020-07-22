@@ -1,6 +1,6 @@
 <?php
 /**
- * wireless.inc.php
+ * wireless.inc.php.
  *
  * -Description-
  *

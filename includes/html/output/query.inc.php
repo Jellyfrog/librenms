@@ -1,6 +1,6 @@
 <?php
 /**
- * output.php
+ * output.php.
  *
  * runs the requested query and outputs as a file or text
  *
@@ -27,8 +27,8 @@ use LibreNMS\Alert\AlertDB;
 use LibreNMS\Alert\AlertUtil;
 use LibreNMS\Alerting\QueryBuilderParser;
 
-if (!Auth::user()->hasGlobalAdmin()) {
-    echo("Insufficient Privileges");
+if (! Auth::user()->hasGlobalAdmin()) {
+    echo 'Insufficient Privileges';
     exit();
 }
 
@@ -42,13 +42,13 @@ switch ($type) {
         $device = device_by_id_cache($device_id);
         $rules = AlertUtil::getRules($device_id);
         $output = '';
-        $results = array();
+        $results = [];
         foreach ($rules as $rule) {
             if (empty($rule['query'])) {
                 $rule['query'] = AlertDB::genSQL($rule['rule'], $rule['builder']);
             }
             $sql = $rule['query'];
-            $qry = dbFetchRow($sql, array($device_id));
+            $qry = dbFetchRow($sql, [$device_id]);
             if (is_array($qry)) {
                 $results[] = $qry;
                 $response = 'matches';
@@ -65,22 +65,22 @@ switch ($type) {
                 $qb = QueryBuilderParser::fromOld($rule['rule']);
             }
 
-            $output .= 'Rule name: ' . $rule['name'] . PHP_EOL;
+            $output .= 'Rule name: '.$rule['name'].PHP_EOL;
             if ($qb instanceof QueryBuilderParser) {
-                $output .= 'Alert rule: ' . $qb->toSql(false) . PHP_EOL;
+                $output .= 'Alert rule: '.$qb->toSql(false).PHP_EOL;
             } else {
-                $output .= 'Alert rule: Custom SQL Query' . PHP_EOL;
+                $output .= 'Alert rule: Custom SQL Query'.PHP_EOL;
             }
-            $output .= 'Alert query: ' . $rule['query'] . PHP_EOL;
-            $output .= 'Rule match: ' . $response . PHP_EOL . PHP_EOL;
+            $output .= 'Alert query: '.$rule['query'].PHP_EOL;
+            $output .= 'Rule match: '.$response.PHP_EOL.PHP_EOL;
         }
         if (\LibreNMS\Config::get('alert.transports.mail') === true) {
             $contacts = AlertUtil::getContacts($results);
             if (count($contacts) > 0) {
-                $output .= 'Found ' . count($contacts) . ' contacts to send alerts to.' . PHP_EOL;
+                $output .= 'Found '.count($contacts).' contacts to send alerts to.'.PHP_EOL;
             }
             foreach ($contacts as $email => $name) {
-                $output .= $name . '<' . $email . '>' . PHP_EOL;
+                $output .= $name.'<'.$email.'>'.PHP_EOL;
             }
             $output .= PHP_EOL;
         }
@@ -88,12 +88,12 @@ switch ($type) {
         $x = 0;
         foreach (\LibreNMS\Config::get('alert.transports') as $name => $v) {
             if (\LibreNMS\Config::get("alert.transports.$name") === true) {
-                $transports .= 'Transport: ' . $name . PHP_EOL;
+                $transports .= 'Transport: '.$name.PHP_EOL;
                 $x++;
             }
         }
-        if (!empty($transports)) {
-            $output .= 'Found ' . $x . ' transports to send alerts to.' . PHP_EOL;
+        if (! empty($transports)) {
+            $output .= 'Found '.$x.' transports to send alerts to.'.PHP_EOL;
             $output .= $transports;
         }
         break;
@@ -105,7 +105,7 @@ switch ($type) {
 // ---- Output ----
 
 if ($_GET['format'] == 'text') {
-    header("Content-type: text/plain");
+    header('Content-type: text/plain');
     header('X-Accel-Buffering: no');
 
     echo $output;

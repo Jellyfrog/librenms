@@ -1,6 +1,6 @@
 <?php
 /**
- * gaia.inc.php
+ * gaia.inc.php.
  *
  * LibreNMS OS poller module for Check Point GAIA
  *
@@ -22,9 +22,8 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 $tmp_gaia = snmp_get_multi_oid($device, ['svnVersion.0', 'svnApplianceProductName.0', 'svnApplianceSerialNumber.0'], '-OUQs', 'CHECKPOINT-MIB');
-$serial   = $tmp_gaia['svnApplianceSerialNumber.0'];
+$serial = $tmp_gaia['svnApplianceSerialNumber.0'];
 $hardware = $tmp_gaia['svnApplianceProductName.0'];
-$version  = $tmp_gaia['svnVersion.0'];
+$version = $tmp_gaia['svnVersion.0'];
 unset($tmp_gaia);

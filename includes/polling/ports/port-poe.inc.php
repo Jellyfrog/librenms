@@ -14,12 +14,12 @@ if (($device['os'] == 'vrp')) {
     if (isset($this_port['hwPoePortEnable'])) {
         $upd = "$polled:".$this_port['hwPoePortReferencePower'].':'.$this_port['hwPoePortMaximumPower'].':'.$this_port['hwPoePortConsumingPower'].':'.$this_port['hwPoePortPeakPower'];
 
-        $fields = array(
-                'PortPwrAllocated'   => $this_port['hwPoePortReferencePower'],
-                'PortPwrAvailable'   => $this_port['hwPoePortMaximumPower'],
-                'PortConsumption'    => $this_port['hwPoePortConsumingPower'],
-                'PortMaxPwrDrawn'    => $this_port['hwPoePortPeakPower'],
-                   );
+        $fields = [
+            'PortPwrAllocated'   => $this_port['hwPoePortReferencePower'],
+            'PortPwrAvailable'   => $this_port['hwPoePortMaximumPower'],
+            'PortConsumption'    => $this_port['hwPoePortConsumingPower'],
+            'PortMaxPwrDrawn'    => $this_port['hwPoePortPeakPower'],
+        ];
 
         $tags = compact('ifName', 'rrd_name', 'rrd_def');
         data_update($device, 'poe', $tags, $fields);
@@ -30,12 +30,12 @@ if (($device['os'] == 'vrp')) {
     if (isset($this_port['pethPsePortAdminEnable'])) {
         $upd = "$polled:".$this_port['rlPethPsePortPowerLimit'].':'.$this_port['rlPethPsePortOutputPower'];
 
-        $fields = array(
-                'PortPwrAllocated'   => $this_port['rlPethPsePortPowerLimit'],
-                'PortPwrAvailable'   => $this_port['rlPethPsePortPowerLimit'],
-                'PortConsumption'    => $this_port['rlPethPsePortOutputPower'],
-                'PortMaxPwrDrawn'    => $this_port['rlPethPsePortPowerLimit'],
-                   );
+        $fields = [
+            'PortPwrAllocated'   => $this_port['rlPethPsePortPowerLimit'],
+            'PortPwrAvailable'   => $this_port['rlPethPsePortPowerLimit'],
+            'PortConsumption'    => $this_port['rlPethPsePortOutputPower'],
+            'PortMaxPwrDrawn'    => $this_port['rlPethPsePortPowerLimit'],
+        ];
 
         $tags = compact('ifName', 'rrd_name', 'rrd_def');
         data_update($device, 'poe', $tags, $fields);
@@ -48,12 +48,12 @@ if (($device['os'] == 'vrp')) {
         $upd = "$polled:".$port['cpeExtPsePortPwrAllocated'].':'.$port['cpeExtPsePortPwrAvailable'].':'.
             $port['cpeExtPsePortPwrConsumption'].':'.$port['cpeExtPsePortMaxPwrDrawn'];
         echo "$this_port[cpeExtPsePortPwrAllocated],$this_port[cpeExtPsePortPwrAvailable],$this_port[cpeExtPsePortPwrConsumption],$this_port[cpeExtPsePortMaxPwrDrawn]\n";
-        $fields = array(
-                'PortPwrAllocated'   => $this_port['cpeExtPsePortPwrAllocated'],
-                'PortPwrAvailable'   => $this_port['cpeExtPsePortPwrAvailable'],
-                'PortConsumption'    => $this_port['cpeExtPsePortPwrConsumption'],
-                'PortMaxPwrDrawn'    => $this_port['cpeExtPsePortMaxPwrDrawn'],
-                   );
+        $fields = [
+            'PortPwrAllocated'   => $this_port['cpeExtPsePortPwrAllocated'],
+            'PortPwrAvailable'   => $this_port['cpeExtPsePortPwrAvailable'],
+            'PortConsumption'    => $this_port['cpeExtPsePortPwrConsumption'],
+            'PortMaxPwrDrawn'    => $this_port['cpeExtPsePortMaxPwrDrawn'],
+        ];
 
         $tags = compact('ifName', 'rrd_name', 'rrd_def');
         data_update($device, 'poe', $tags, $fields);

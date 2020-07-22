@@ -12,10 +12,10 @@
  * the source code distribution for details.
  */
 
-$asentsysdescr    = $device['sysDescr'];
-$version          = preg_replace('/^\s*(\S+\s+\S+\s+)/', '', $asentsysdescr);
-$hardware         = preg_match('/^\S+\s+\d+\s+/', $asentsysdescr, $matches);
-$hardware         = trim($matches[0]);
+$asentsysdescr = $device['sysDescr'];
+$version = preg_replace('/^\s*(\S+\s+\S+\s+)/', '', $asentsysdescr);
+$hardware = preg_match('/^\S+\s+\d+\s+/', $asentsysdescr, $matches);
+$hardware = trim($matches[0]);
 
 unset(
     $asentsysdescr,

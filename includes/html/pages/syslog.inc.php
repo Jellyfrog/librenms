@@ -18,7 +18,7 @@ use LibreNMS\Config;
 
 $no_refresh = true;
 $param = [];
-$device_id = (int)$vars['device'];
+$device_id = (int) $vars['device'];
 
 if ($vars['action'] == 'expunge' && \Auth::user()->hasGlobalAdmin()) {
     dbQuery('TRUNCATE TABLE `syslog`');
@@ -44,19 +44,18 @@ $pagetitle[] = 'Syslog';
         '<?php echo csrf_field() ?>'+
         '<div class="form-group">' +
         <?php
-        if (!isset($vars['fromdevice'])) {
+        if (! isset($vars['fromdevice'])) {
             ?>
         '<select name="device" id="device" class="form-control">' +
         '<option value="">All Devices&nbsp;&nbsp;</option>' +
             <?php
             if ($device_id) {
-                echo "'<option value=$device_id>" . format_hostname(device_by_id_cache($device_id)) . "</option>' +";
-            }
-            ?>
+                echo "'<option value=$device_id>".format_hostname(device_by_id_cache($device_id))."</option>' +";
+            } ?>
         '</select>' +
             <?php
         } else {
-            echo "'&nbsp;&nbsp;<input type=\"hidden\" name=\"device\" id=\"device\" value=\"" . $device_id . "\">' + ";
+            echo "'&nbsp;&nbsp;<input type=\"hidden\" name=\"device\" id=\"device\" value=\"".$device_id."\">' + ";
         }
         ?>
         '</div>' +
@@ -140,7 +139,7 @@ $pagetitle[] = 'Syslog';
         }
     });
 
-    <?php if (!isset($vars['fromdevice'])) { ?>
+    <?php if (! isset($vars['fromdevice'])) { ?>
     $("#device").select2({
         theme: "bootstrap",
         dropdownAutoWidth : true,
@@ -172,7 +171,7 @@ $pagetitle[] = 'Syslog';
                 }
             }
         }
-    })<?php echo $vars['program'] ? ".val('" . addcslashes($vars['program'], "'") . "').trigger('change');" : ''; ?>;
+    })<?php echo $vars['program'] ? ".val('".addcslashes($vars['program'], "'")."').trigger('change');" : ''; ?>;
 
     $("#priority").select2({
         theme: "bootstrap",
@@ -192,6 +191,6 @@ $pagetitle[] = 'Syslog';
                 }
             }
         }
-    })<?php echo $vars['priority'] ? ".val('" . addcslashes($vars['priority'], "'") . "').trigger('change');" : ''; ?>;
+    })<?php echo $vars['priority'] ? ".val('".addcslashes($vars['priority'], "'")."').trigger('change');" : ''; ?>;
 </script>
 

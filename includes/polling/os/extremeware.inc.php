@@ -7,12 +7,12 @@
 // Summit48(Yonetan) - Version 4.1.19 (Build 2) by Release_Master  Wed 08/09/2000  6:09p
 // Alpine3808 - Version 7.2.0 (Build 33) by Release_Master 07/09/04 14:05:12
 echo " Extremeware \n";
-list(, $datas) = explode(' - ', $device['sysDescr']);
-$datas         = str_replace('(', '', $datas);
-$datas         = str_replace(')', '', $datas);
-list($a,$b,$c,$d,$e,$f,$g,$h) = explode(' ', $datas);
+[, $datas] = explode(' - ', $device['sysDescr']);
+$datas = str_replace('(', '', $datas);
+$datas = str_replace(')', '', $datas);
+[$a,$b,$c,$d,$e,$f,$g,$h] = explode(' ', $datas);
 if ($a == 'Version') {
-    $version  = $b;
+    $version = $b;
     $features = $c.' '.$d.' '.$g;
 }
 
@@ -21,6 +21,6 @@ if ($hardware == $device['sysObjectID']) {
     unset($hardware);
 }
 
-$version  = str_replace('"', '', $version);
+$version = str_replace('"', '', $version);
 $features = str_replace('"', '', $features);
 $hardware = str_replace('"', '', $hardware);

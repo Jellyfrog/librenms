@@ -1,9 +1,9 @@
 <?php
 
-$oids = array (
+$oids = [
     'hardware' => 'netspireDeviceModelName.0',
-    'serial'   => 'netSpireDeviceDeviceSerialNo.0'
-);
+    'serial'   => 'netSpireDeviceDeviceSerialNo.0',
+];
 
 $data = snmp_get_multi_oid($device, $oids, '-OUQs', 'OACOMMON-MIB');
 

@@ -18,5 +18,5 @@ $serial = snmp_get($device, 'ENTITY-MIB::entPhysicalSerialNum.1', '-OQv');
 
 // Let's use sysDescr as nothing else is found in the OIDs.
 if (empty($hardware)) {
-    $hardware = 'Ubiquoss ' . trim($device['sysDescr']);
+    $hardware = 'Ubiquoss '.trim($device['sysDescr']);
 }

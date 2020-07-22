@@ -2,7 +2,7 @@
 
 $no_refresh = true;
 
-if (!Auth::user()->hasGlobalAdmin()) {
+if (! Auth::user()->hasGlobalAdmin()) {
     include 'includes/html/error-no-perm.inc.php';
 } else {
     if ($vars['addsrv']) {
@@ -11,7 +11,7 @@ if (!Auth::user()->hasGlobalAdmin()) {
 
             $service_id = add_service($vars['device'], $vars['type'], $vars['descr'], $vars['ip'], $vars['params'], 0);
             if ($service_id) {
-                $message       .= $message_break.'Service added ('.$service_id.')!';
+                $message .= $message_break.'Service added ('.$service_id.')!';
                 $message_break .= '<br />';
             }
         }

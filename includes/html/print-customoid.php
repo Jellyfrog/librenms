@@ -43,7 +43,7 @@ if (isset($_POST['num_of_rows']) && $_POST['num_of_rows'] > 0) {
 <?php
 echo '<tr>
 <td colspan="4">
-<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#create-oid-form" data-device_id="'.$device['device_id'].'"'.(Auth::user()->hasGlobalAdmin() ? "" : " disabled").'><i class="fa fa-plus"></i> Add New OID</button>
+<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#create-oid-form" data-device_id="'.$device['device_id'].'"'.(Auth::user()->hasGlobalAdmin() ? '' : ' disabled').'><i class="fa fa-plus"></i> Add New OID</button>
 </td>
 <th><small>High</small></th>
 <th><small>Low</small></th>
@@ -53,14 +53,14 @@ echo '<tr>
 <td></td>
 <td><select name="rows" id="rows" class="form-control input-sm" onChange="updateResults(this);">';
 
-$num_of_rows_options = array(
+$num_of_rows_options = [
     '10',
     '25',
     '50',
     '100',
-);
+];
 foreach ($num_of_rows_options as $option) {
-    echo "<option value='".$option."'".($rows == $option ? " selected" : "").">".$option."</option>";
+    echo "<option value='".$option."'".($rows == $option ? ' selected' : '').'>'.$option.'</option>';
 }
 
 echo '</select></td>
@@ -70,7 +70,7 @@ $query = 'FROM customoids';
 $where = '';
 $param = [];
 if (isset($device['device_id']) && $device['device_id'] > 0) {
-    $where   = 'WHERE (device_id=?)';
+    $where = 'WHERE (device_id=?)';
     $param[] = $device['device_id'];
 }
 
@@ -94,13 +94,13 @@ foreach (dbFetchRows($full_query, $param) as $oid) {
     echo '<td>'.$oid['customoid_limit_low'].'</td>';
     echo '<td>'.$oid['customoid_limit_warn'].'</td>';
     echo '<td>'.$oid['customoid_limit_low_warn'].'</td>';
-    echo "<td><input id='".$oid['customoid_id']."' type='checkbox' name='alert'".($oid['customoid_alert'] ? " checked" : "")." disabled></td>";
-    echo "<td><input id='".$oid['customoid_id']."' type='checkbox' name='passed'".($oid['customoid_passed'] ? " checked" : "")." disabled></td>";
+    echo "<td><input id='".$oid['customoid_id']."' type='checkbox' name='alert'".($oid['customoid_alert'] ? ' checked' : '').' disabled></td>';
+    echo "<td><input id='".$oid['customoid_id']."' type='checkbox' name='passed'".($oid['customoid_passed'] ? ' checked' : '').' disabled></td>';
     echo '<td>';
     echo "<div class='btn-group btn-group-sm' role='group'>";
-    echo "<button type='button' class='btn btn-primary' data-toggle='modal' data-target='#create-oid-form' data-customoid_id='".$oid['customoid_id']."' name='edit-oid' data-content='' data-container='body'".(Auth::user()->hasGlobalAdmin() ? "" : " disabled")."><i class='fa fa-lg fa-pencil' aria-hidden='true'></i></button>";
-    echo "<button type='button' class='btn btn-danger' aria-label='Delete' data-toggle='modal' data-target='#delete-oid-form' data-customoid_id='".$oid['customoid_id']."' name='delete-oid' data-content='' data-container='body'><i class='fa fa-lg fa-trash' aria-hidden='true'".(Auth::user()->hasGlobalAdmin() ? "" : " disabled")."></i></button>";
-    echo "</div>";
+    echo "<button type='button' class='btn btn-primary' data-toggle='modal' data-target='#create-oid-form' data-customoid_id='".$oid['customoid_id']."' name='edit-oid' data-content='' data-container='body'".(Auth::user()->hasGlobalAdmin() ? '' : ' disabled')."><i class='fa fa-lg fa-pencil' aria-hidden='true'></i></button>";
+    echo "<button type='button' class='btn btn-danger' aria-label='Delete' data-toggle='modal' data-target='#delete-oid-form' data-customoid_id='".$oid['customoid_id']."' name='delete-oid' data-content='' data-container='body'><i class='fa fa-lg fa-trash' aria-hidden='true'".(Auth::user()->hasGlobalAdmin() ? '' : ' disabled').'></i></button>';
+    echo '</div>';
     echo '</td>';
     echo "</tr>\r\n";
 }//end foreach

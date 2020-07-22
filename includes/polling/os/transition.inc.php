@@ -12,7 +12,7 @@
  * the source code distribution for details.
  */
 
-$data = snmp_get($device, ".1.0.8802.1.1.2.1.3.3.0", "-OQv");
+$data = snmp_get($device, '.1.0.8802.1.1.2.1.3.3.0', '-OQv');
 
 if (isset($data)) {
     $hardware = $data;

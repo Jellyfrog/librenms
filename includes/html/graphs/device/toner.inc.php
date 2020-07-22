@@ -4,9 +4,9 @@ require 'includes/html/graphs/common.inc.php';
 
 $rrd_options .= ' -l 0 -E ';
 
-$iter         = '1';
+$iter = '1';
 $rrd_options .= " COMMENT:'Toner level            Cur     Min      Max\\n'";
-foreach (dbFetchRows('SELECT * FROM toner where device_id = ?', array($device['device_id'])) as $toner) {
+foreach (dbFetchRows('SELECT * FROM toner where device_id = ?', [$device['device_id']]) as $toner) {
     $colour = toner2colour($toner['toner_descr'], 100 - $toner['toner_current']);
 
     if ($colour['left'] == null) {
@@ -46,9 +46,9 @@ foreach (dbFetchRows('SELECT * FROM toner where device_id = ?', array($device['d
 
     $hostname = gethostbyid($toner['device_id']);
 
-    $descr        = safedescr(substr(str_pad($toner['toner_descr'], 16), 0, 16));
-    $rrd_filename = rrd_name($device['hostname'], array('toner', $toner['toner_index']));
-    $toner_id     = $toner['toner_id'];
+    $descr = safedescr(substr(str_pad($toner['toner_descr'], 16), 0, 16));
+    $rrd_filename = rrd_name($device['hostname'], ['toner', $toner['toner_index']]);
+    $toner_id = $toner['toner_id'];
 
     $rrd_options .= " DEF:toner$toner_id=$rrd_filename:toner:AVERAGE";
     $rrd_options .= " LINE2:toner$toner_id#".$colour['left'].":'".$descr."'";

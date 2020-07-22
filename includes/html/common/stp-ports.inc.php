@@ -29,7 +29,7 @@ var grid = $("#stp-ports").bootgrid( {
     {
         return {
             id: "stp-ports",
-            device_id: ' . $device['device_id'] . ',
+            device_id: '.$device['device_id'].',
         };
     },
     url: "ajax_table.php"
