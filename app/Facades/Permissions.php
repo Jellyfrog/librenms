@@ -1,6 +1,6 @@
 <?php
 /**
- * Permissions.php
+ * Permissions.php.
  *
  * -Description-
  *

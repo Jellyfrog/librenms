@@ -1,7 +1,7 @@
 <?php
 
-$hostname     = (isset($_GET['hostname']) ? $_GET['hostname'] : 'unkown');
-$rrd_filename = rrd_name($device['hostname'], array('app', 'shoutcast', $app['app_id'], $hostname));
+$hostname = (isset($_GET['hostname']) ? $_GET['hostname'] : 'unkown');
+$rrd_filename = rrd_name($device['hostname'], ['app', 'shoutcast', $app['app_id'], $hostname]);
 
 require 'includes/html/graphs/common.inc.php';
 
@@ -26,7 +26,7 @@ if ($width >= 355) {
     $rrd_options .= ' GPRINT:cur:LAST:"\:%8.2lf"';
     $rrd_options .= ' GPRINT:max:LAST:"from%8.2lf"';
     $rrd_options .= ' GPRINT:bitrate:LAST:"(bitrate\:%8.2lf%s"';
-    $rrd_options .= " COMMENT:\")\\n\"";
+    $rrd_options .= ' COMMENT:")\\n"';
 } else {
     $rrd_options .= " GPRINT:cur:LAST:\"\:%8.2lf\\n\"";
 }
@@ -37,5 +37,5 @@ $rrd_options .= ' HRULE:avg#FF9000FF:"Average Listeners"';
 $rrd_options .= " GPRINT:avg:\"\:%8.2lf\\n\"";
 $rrd_options .= ' LINE1:peak#C000FFFF:"Peak Listeners   "';
 $rrd_options .= " GPRINT:peak:LAST:\"\:%8.2lf\\n\"";
-$rrd_options .= " TICK:stream_offline#B4FF00FF:1.0:\"Streaming client offline\\n\"";
-$rrd_options .= ' TICK:server_offline' . \LibreNMS\Config::get('warn_colour_alt') . 'FF:1.0:"Streaming server offline"';
+$rrd_options .= ' TICK:stream_offline#B4FF00FF:1.0:"Streaming client offline\\n"';
+$rrd_options .= ' TICK:server_offline'.\LibreNMS\Config::get('warn_colour_alt').'FF:1.0:"Streaming server offline"';

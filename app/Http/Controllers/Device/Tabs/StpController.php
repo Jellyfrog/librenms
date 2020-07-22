@@ -1,6 +1,6 @@
 <?php
 /**
- * StpController.php
+ * StpController.php.
  *
  * -Description-
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * DeviceAttrib.php
+ * DeviceAttrib.php.
  *
  * -Description-
  *

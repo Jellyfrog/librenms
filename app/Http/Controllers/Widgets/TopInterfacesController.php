@@ -1,6 +1,6 @@
 <?php
 /**
- * TopInterfacesController.php
+ * TopInterfacesController.php.
  *
  * -Description-
  *
@@ -72,7 +72,6 @@ class TopInterfacesController extends WidgetController
 
         return view('widgets.top-interfaces', $data);
     }
-
 
     public function getSettingsView(Request $request)
     {

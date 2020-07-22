@@ -1,6 +1,6 @@
 <?php
 /**
- * AlertScheduleController.php
+ * AlertScheduleController.php.
  *
  * -Description-
  *
@@ -54,7 +54,7 @@ class AlertScheduleController extends TableController
             'recurring' => 'recurring',
             'start' => 'start',
             'end' => 'end',
-            'status' => DB::raw("end < '" . Carbon::now('UTC') ."'"), // only partition lapsed
+            'status' => DB::raw("end < '".Carbon::now('UTC')."'"), // only partition lapsed
         ];
     }
 

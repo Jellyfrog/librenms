@@ -1,6 +1,6 @@
 <?php
 /**
- * LogsController.php
+ * LogsController.php.
  *
  * -Description-
  *

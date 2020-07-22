@@ -1,6 +1,6 @@
 <?php
 /**
- * DatastoreServiceProvider.php
+ * DatastoreServiceProvider.php.
  *
  * -Description-
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * AuthLog.php
+ * AuthLog.php.
  *
  * -Description-
  *

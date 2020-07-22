@@ -1,6 +1,6 @@
 <?php
 /**
- * PrinterController.php
+ * PrinterController.php.
  *
  * -Description-
  *

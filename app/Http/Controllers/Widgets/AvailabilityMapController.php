@@ -1,6 +1,6 @@
 <?php
 /**
- * AvailabilityMapController.php
+ * AvailabilityMapController.php.
  *
  * -Description-
  *
@@ -39,7 +39,7 @@ class AvailabilityMapController extends WidgetController
     {
         $this->defaults = [
             'title' => null,
-            'type' => (int)Config::get('webui.availability_map_compact', 0),
+            'type' => (int) Config::get('webui.availability_map_compact', 0),
             'tile_size' => 12,
             'color_only_select' => 0,
             'show_disabled_and_ignored' => 0,
@@ -60,10 +60,10 @@ class AvailabilityMapController extends WidgetController
 
         $mode = $data['mode_select'];
         if ($mode == 0 || $mode == 2) {
-            list($devices, $device_totals) = $this->getDevices($request);
+            [$devices, $device_totals] = $this->getDevices($request);
         }
         if ($mode > 0) {
-            list($services, $services_totals) = $this->getServices($request);
+            [$services, $services_totals] = $this->getServices($request);
         }
 
         $data['device'] = Device::first();
@@ -75,8 +75,6 @@ class AvailabilityMapController extends WidgetController
 
         return view('widgets.availability-map', $data);
     }
-
-
 
     public function getSettingsView(Request $request)
     {
@@ -98,7 +96,7 @@ class AvailabilityMapController extends WidgetController
             $device_query = Device::hasAccess($request->user());
         }
 
-        if (!$settings['show_disabled_and_ignored']) {
+        if (! $settings['show_disabled_and_ignored']) {
             $device_query->isNotDisabled();
         }
         $device_query->orderBy($settings['order_by']);
@@ -110,12 +108,12 @@ class AvailabilityMapController extends WidgetController
         foreach ($devices as $device) {
             if ($device->disabled) {
                 $totals['disabled']++;
-                $device->stateName = "disabled";
-                $device->labelClass = "blackbg";
+                $device->stateName = 'disabled';
+                $device->labelClass = 'blackbg';
             } elseif ($device->disable_notify) {
                 $totals['ignored']++;
-                $device->stateName = "alert-dis";
-                $device->labelClass = "label-default";
+                $device->stateName = 'alert-dis';
+                $device->labelClass = 'label-default';
             } elseif ($device->status == 1) {
                 if (($device->uptime < $uptime_warn) && ($device->uptime != 0)) {
                     $totals['warn']++;
@@ -137,6 +135,7 @@ class AvailabilityMapController extends WidgetController
                 $totals['maintenance']++;
             }
         }
+
         return [$devices, $totals];
     }
 
@@ -164,19 +163,20 @@ class AvailabilityMapController extends WidgetController
         $totals = ['warn' => 0, 'up' => 0, 'down' => 0];
         foreach ($services as $service) {
             if ($service->service_status == 0) {
-                $service->labelClass = "label-success";
-                $service->stateName = "up";
+                $service->labelClass = 'label-success';
+                $service->stateName = 'up';
                 $totals['up']++;
             } elseif ($service->service_status == 1) {
-                $service->labelClass = "label-warning";
-                $service->stateName = "warn";
+                $service->labelClass = 'label-warning';
+                $service->stateName = 'warn';
                 $totals['warn']++;
             } else {
-                $service->labelClass = "label-danger";
-                $service->stateName = "down";
+                $service->labelClass = 'label-danger';
+                $service->stateName = 'down';
                 $totals['down']++;
             }
         }
+
         return [$services, $totals];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * MuninController.php
+ * MuninController.php.
  *
  * -Description-
  *

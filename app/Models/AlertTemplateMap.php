@@ -1,6 +1,6 @@
 <?php
 /**
- * app/Models/AlertTemplateMap.php
+ * app/Models/AlertTemplateMap.php.
  *
  * Model for access to alert_template_map table data
  *

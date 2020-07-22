@@ -1,6 +1,6 @@
 <?php
 /**
- * LocationsController.php
+ * LocationsController.php.
  *
  * -Description-
  *
@@ -31,7 +31,7 @@ use App\Models\Location;
 class LocationController extends TableController
 {
     /**
-     * Defines search fields will be searched in order
+     * Defines search fields will be searched in order.
      *
      * @param \Illuminate\Http\Request $request
      * @return array
@@ -48,7 +48,7 @@ class LocationController extends TableController
     }
 
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
@@ -117,7 +117,7 @@ class LocationController extends TableController
                         ->where('devices.type', 'firewall');
                 };
             default:
-                return null;
+                return;
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * EventlogController.php
+ * EventlogController.php.
  *
  * -Description-
  *

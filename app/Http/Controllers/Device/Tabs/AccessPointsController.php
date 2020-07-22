@@ -1,6 +1,6 @@
 <?php
 /**
- * AccessPointsController.php
+ * AccessPointsController.php.
  *
  * -Description-
  *

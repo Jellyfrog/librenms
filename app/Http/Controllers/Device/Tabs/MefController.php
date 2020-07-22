@@ -1,6 +1,6 @@
 <?php
 /**
- * MefController.php
+ * MefController.php.
  *
  * -Description-
  *

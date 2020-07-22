@@ -1,6 +1,6 @@
 <?php
 /**
- * powerdns-recursor.inc.php
+ * powerdns-recursor.inc.php.
  *
  * PowerDNS Recursor application polling module
  * Capable of collecting stats from the agent or via direct connection
@@ -31,7 +31,7 @@ $data = '';
 $name = 'powerdns-recursor';
 $app_id = $app['app_id'];
 
-echo ' ' . $name;
+echo ' '.$name;
 
 if ($agent_data['app'][$name]) {
     $data = $agent_data['app'][$name];
@@ -39,11 +39,11 @@ if ($agent_data['app'][$name]) {
     $port = Config::get('apps.powerdns-recursor.port', 8082);
     $scheme = Config::get('apps.powerdns-recursor.https') ? 'https://' : 'http://';
 
-    d_echo("\nNo Agent Data. Attempting to connect directly to the powerdns-recursor server $scheme" . $device['hostname'] . ":$port\n");
-    $context = stream_context_create(['http' => ['header' => 'X-API-Key: ' . Config::get('apps.powerdns-recursor.api-key')]]);
-    $data = file_get_contents($scheme . $device['hostname'] . ':' . $port . '/api/v1/servers/localhost/statistics', false, $context);
+    d_echo("\nNo Agent Data. Attempting to connect directly to the powerdns-recursor server $scheme".$device['hostname'].":$port\n");
+    $context = stream_context_create(['http' => ['header' => 'X-API-Key: '.Config::get('apps.powerdns-recursor.api-key')]]);
+    $data = file_get_contents($scheme.$device['hostname'].':'.$port.'/api/v1/servers/localhost/statistics', false, $context);
     if ($data === false) {
-        $data = file_get_contents($scheme . $device['hostname'] . ':' . $port . '/servers/localhost/statistics', false, $context);
+        $data = file_get_contents($scheme.$device['hostname'].':'.$port.'/servers/localhost/statistics', false, $context);
     }
 } else {
     // nsExtendOutputFull."powerdns-recursor"
@@ -51,8 +51,8 @@ if ($agent_data['app'][$name]) {
     $data = stripslashes(snmp_get($device, $oid, '-Oqv'));
 }
 
-if (!empty($data)) {
-    $ds_list = array(
+if (! empty($data)) {
+    $ds_list = [
         'all-outqueries' => 'DERIVE',
         'answers-slow' => 'DERIVE',
         'answers0-1' => 'DERIVE',
@@ -111,10 +111,10 @@ if (!empty($data)) {
         'unreachables' => 'DERIVE',
         'uptime' => 'DERIVE',
         'user-msec' => 'DERIVE',
-    );
+    ];
 
     //decode and flatten the data
-    $stats = array();
+    $stats = [];
     foreach (json_decode($data, true) as $stat) {
         $stats[$stat['name']] = $stat['value'];
     }
@@ -122,7 +122,7 @@ if (!empty($data)) {
 
     // only the stats we store in rrd
     $rrd_def = new RrdDefinition();
-    $fields = array();
+    $fields = [];
     foreach ($ds_list as $key => $type) {
         $rrd_def->addDataset($key, $type, 0);
 
@@ -133,7 +133,7 @@ if (!empty($data)) {
         }
     }
 
-    $rrd_name = array('app', 'powerdns', 'recursor', $app_id);
+    $rrd_name = ['app', 'powerdns', 'recursor', $app_id];
     $tags = compact('name', 'app_id', 'rrd_name', 'rrd_def');
     data_update($device, 'app', $tags, $fields);
     update_application($app, $data, $fields);

@@ -1,6 +1,6 @@
 <?php
 /**
- * VmInfoController.php
+ * VmInfoController.php.
  *
  * -Description-
  *

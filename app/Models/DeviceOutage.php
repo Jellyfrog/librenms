@@ -1,6 +1,6 @@
 <?php
 /**
- * DeviceOutage.php
+ * DeviceOutage.php.
  *
  * -Description-
  *

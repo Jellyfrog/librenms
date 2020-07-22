@@ -1,6 +1,6 @@
 <?php
 /**
- * PortController.php
+ * PortController.php.
  *
  * -Description-
  *
@@ -30,7 +30,7 @@ use App\Models\Port;
 class PortController extends SelectController
 {
     /**
-     * Defines validation rules (will override base validation rules for select2 responses too)
+     * Defines validation rules (will override base validation rules for select2 responses too).
      *
      * @return array
      */
@@ -42,18 +42,18 @@ class PortController extends SelectController
     }
 
     /**
-     * Defines search fields will be searched in order
+     * Defines search fields will be searched in order.
      *
      * @param \Illuminate\Http\Request $request
      * @return array
      */
     protected function searchFields($request)
     {
-        return (array)$request->get('field', ['ifAlias', 'ifName', 'ifDescr', 'devices.hostname', 'devices.sysName']);
+        return (array) $request->get('field', ['ifAlias', 'ifName', 'ifDescr', 'devices.hostname', 'devices.sysName']);
     }
 
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
@@ -86,11 +86,11 @@ class PortController extends SelectController
     {
         /** @var Port $port */
         $label = $port->getShortLabel();
-        $description = ($label == $port->ifAlias ? '' : ' - ' . $port->ifAlias);
+        $description = ($label == $port->ifAlias ? '' : ' - '.$port->ifAlias);
 
         return [
             'id' => $port->port_id,
-            'text' => $label . ' - ' . $port->device->shortDisplayName() . $description,
+            'text' => $label.' - '.$port->device->shortDisplayName().$description,
         ];
     }
 }

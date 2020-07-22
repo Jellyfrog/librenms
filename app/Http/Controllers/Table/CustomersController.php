@@ -1,6 +1,6 @@
 <?php
 /**
- * CustomersController.php
+ * CustomersController.php.
  *
  * -Description-
  *
@@ -44,7 +44,7 @@ class CustomersController extends TableController
     }
 
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
@@ -84,6 +84,7 @@ class CustomersController extends TableController
 
             // add graphs row
             $rows->push($graph_row);
+
             return $rows;
         }, collect());
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Eventlog.php
+ * Eventlog.php.
  *
  * -Description-
  *
@@ -38,7 +38,7 @@ class Eventlog extends DeviceRelatedModel
     // ---- Helper Functions ----
 
     /**
-     * Log events to the event table
+     * Log events to the event table.
      *
      * @param string $text message describing the event
      * @param Device $device related device

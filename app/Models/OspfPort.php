@@ -1,6 +1,6 @@
 <?php
 /**
- * OspfPort.php
+ * OspfPort.php.
  *
  * -Description-
  *

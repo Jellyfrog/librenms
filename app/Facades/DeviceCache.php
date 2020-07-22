@@ -1,6 +1,6 @@
 <?php
 /**
- * DeviceCache.php
+ * DeviceCache.php.
  *
  * -Description-
  *

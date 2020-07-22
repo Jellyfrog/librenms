@@ -1,6 +1,6 @@
 <?php
 /**
- * DevicePerf.php
+ * DevicePerf.php.
  *
  * -Description-
  *

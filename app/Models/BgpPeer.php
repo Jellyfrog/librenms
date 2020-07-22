@@ -1,6 +1,6 @@
 <?php
 /**
- * BgpPeer.php
+ * BgpPeer.php.
  *
  * -Description-
  *
@@ -32,7 +32,6 @@ class BgpPeer extends DeviceRelatedModel
     public $timestamps = false;
     protected $table = 'bgpPeers';
     protected $primaryKey = 'bgpPeer_id';
-
 
     // ---- Query scopes ----
 

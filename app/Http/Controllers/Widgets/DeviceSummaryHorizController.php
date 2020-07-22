@@ -1,6 +1,6 @@
 <?php
 /**
- * DeviceSummaryHoriz.php
+ * DeviceSummaryHoriz.php.
  *
  * -Description-
  *

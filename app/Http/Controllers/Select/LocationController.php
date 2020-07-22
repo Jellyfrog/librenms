@@ -1,6 +1,6 @@
 <?php
 /**
- * LocationController.php
+ * LocationController.php.
  *
  * -Description-
  *
@@ -35,7 +35,7 @@ class LocationController extends SelectController
     }
 
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder

@@ -1,6 +1,6 @@
 <?php
 /**
- * PortRelatedModel.php
+ * PortRelatedModel.php.
  *
  * -Description-
  *

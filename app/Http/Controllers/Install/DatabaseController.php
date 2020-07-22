@@ -1,6 +1,6 @@
 <?php
 /**
- * DatabaseController.php
+ * DatabaseController.php.
  *
  * -Description-
  *
@@ -40,7 +40,7 @@ class DatabaseController extends InstallationController implements InstallerStep
 
     public function index(Request $request)
     {
-        if (!$this->initInstallStep()) {
+        if (! $this->initInstallStep()) {
             return $this->redirectToIncomplete();
         }
 
@@ -70,7 +70,7 @@ class DatabaseController extends InstallationController implements InstallerStep
         $message = '';
         try {
             $conn = Eloquent::DB('setup');
-            $ok = $conn && !is_null($conn->getPdo());
+            $ok = $conn && ! is_null($conn->getPdo());
         } catch (\Exception $e) {
             $message = $e->getMessage();
         }
@@ -95,7 +95,7 @@ class DatabaseController extends InstallationController implements InstallerStep
                 echo "\n\nSuccess!";
                 $this->markStepComplete();
             } catch (\Exception $e) {
-                echo $e->getMessage() . "\n\nError!";
+                echo $e->getMessage()."\n\nError!";
             }
         });
 
@@ -114,6 +114,7 @@ class DatabaseController extends InstallationController implements InstallerStep
         $this->configureDatabase();
         if (Eloquent::isConnected() && Schema::isCurrent()) {
             $this->markStepComplete();
+
             return true;
         }
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * ApiToken.php
+ * ApiToken.php.
  *
  * api_tokens simple tokens for api
  *
@@ -35,7 +35,7 @@ class ApiToken extends BaseModel
     // ---- Helper Functions ----
 
     /**
-     * Check if the given token is valid
+     * Check if the given token is valid.
      *
      * @param string $token
      * @return bool
@@ -44,7 +44,7 @@ class ApiToken extends BaseModel
     {
         $query = self::query()->isEnabled()->where('token_hash', $token);
 
-        if (!is_null($user_id)) {
+        if (! is_null($user_id)) {
             $query->where('user_id', $user_id);
         }
 
@@ -52,7 +52,7 @@ class ApiToken extends BaseModel
     }
 
     /**
-     * Get User model based on the given API token (or null if invalid)
+     * Get User model based on the given API token (or null if invalid).
      *
      * @param string $token
      * @return User|null

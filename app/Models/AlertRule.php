@@ -1,6 +1,6 @@
 <?php
 /**
- * app/Models/AlertRule.php
+ * app/Models/AlertRule.php.
  *
  * Model for access to alert_rules table data
  *
@@ -44,7 +44,7 @@ class AlertRule extends BaseModel
     }
 
     /**
-     * Scope for only alert rules that are currently in alarm
+     * Scope for only alert rules that are currently in alarm.
      *
      * @param Builder $query
      * @return Builder
@@ -58,7 +58,7 @@ class AlertRule extends BaseModel
 
     /**
      * Scope to filter rules for devices permitted to user
-     * (do not use for admin and global read-only users)
+     * (do not use for admin and global read-only users).
      *
      * @param $query
      * @param User $user
@@ -70,7 +70,7 @@ class AlertRule extends BaseModel
             return $query;
         }
 
-        if (!$this->isJoined($query, 'alerts')) {
+        if (! $this->isJoined($query, 'alerts')) {
             $query->join('alerts', 'alerts.rule_id', 'alert_rules.id');
         }
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Ipv4Network.php
+ * Ipv4Network.php.
  *
  * -Description-
  *

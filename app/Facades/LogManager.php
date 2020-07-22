@@ -1,6 +1,6 @@
 <?php
 /**
- * Log.php
+ * Log.php.
  *
  * Extending the built in logging to add an event logger function
  *
@@ -31,7 +31,7 @@ use LibreNMS\Enum\Alert;
 class LogManager extends \Illuminate\Log\LogManager
 {
     /**
-     * Log events to the event table
+     * Log events to the event table.
      *
      * @param string $text message describing the event
      * @param \App\Models\Device|int $device device array or device_id

@@ -1,6 +1,6 @@
 <?php
 /**
- * PackagesController.php
+ * PackagesController.php.
  *
  * -Description-
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * BaseModel.php
+ * BaseModel.php.
  *
  * -Description-
  *
@@ -25,13 +25,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 abstract class BaseModel extends Model
 {
     /**
-     * Check if query is already joined with a table
+     * Check if query is already joined with a table.
      *
      * @param Builder $query
      * @param string $table
@@ -48,11 +48,12 @@ abstract class BaseModel extends Model
                 return true;
             }
         }
+
         return false;
     }
 
     /**
-     * Helper function to determine if user has access based on device permissions
+     * Helper function to determine if user has access based on device permissions.
      *
      * @param Builder $query
      * @param User $user
@@ -73,7 +74,7 @@ abstract class BaseModel extends Model
     }
 
     /**
-     * Helper function to determine if user has access based on port permissions
+     * Helper function to determine if user has access based on port permissions.
      *
      * @param Builder $query
      * @param User $user

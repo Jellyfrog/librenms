@@ -1,6 +1,6 @@
 <?php
 /**
- * GoogleGeocodeApi.php
+ * GoogleGeocodeApi.php.
  *
  * -Description-
  *
@@ -37,7 +37,7 @@ class GoogleMapsApi extends BaseApi implements Geocoder
     protected $geocoding_uri = '/maps/api/geocode/json';
 
     /**
-     * Get latitude and longitude from geocode response
+     * Get latitude and longitude from geocode response.
      *
      * @param array $data
      * @return array
@@ -65,7 +65,7 @@ class GoogleMapsApi extends BaseApi implements Geocoder
     }
 
     /**
-     * Build Guzzle request option array
+     * Build Guzzle request option array.
      *
      * @param string $address
      * @return array
@@ -74,7 +74,7 @@ class GoogleMapsApi extends BaseApi implements Geocoder
     protected function buildGeocodingOptions($address)
     {
         $api_key = Config::get('geoloc.api_key');
-        if (!$api_key) {
+        if (! $api_key) {
             throw new Exception('Google Maps API key missing, set geoloc.api_key');
         }
 
@@ -82,12 +82,12 @@ class GoogleMapsApi extends BaseApi implements Geocoder
             'query' => [
                 'key' => $api_key,
                 'address' => $address,
-            ]
+            ],
         ];
     }
 
     /**
-     * Checks if the request was a success
+     * Checks if the request was a success.
      *
      * @param \Psr\Http\Message\ResponseInterface $response
      * @param array $data decoded response data

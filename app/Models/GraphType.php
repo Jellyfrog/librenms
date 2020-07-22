@@ -1,6 +1,6 @@
 <?php
 /**
- * GraphTypes.php
+ * GraphTypes.php.
  *
  * -Description-
  *

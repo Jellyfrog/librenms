@@ -1,6 +1,6 @@
 <?php
 /**
- * ComposerServiceProvider.php
+ * ComposerServiceProvider.php.
  *
  * -Description-
  *

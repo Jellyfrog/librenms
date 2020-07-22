@@ -1,6 +1,6 @@
 <?php
 /**
- * CefSwitching.php
+ * CefSwitching.php.
  *
  * -Description-
  *

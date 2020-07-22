@@ -30,12 +30,13 @@ d_echo($name);
 try {
     $mailcow_postfix = json_app_get($device, $name);
 } catch (JsonAppException $e) {
-    echo PHP_EOL . $name . ':' . $e->getCode() . ':' . $e->getMessage() . PHP_EOL;
-    update_application($app, $e->getCode() . ':' . $e->getMessage(), []); // Set empty metrics and error message
+    echo PHP_EOL.$name.':'.$e->getCode().':'.$e->getMessage().PHP_EOL;
+    update_application($app, $e->getCode().':'.$e->getMessage(), []); // Set empty metrics and error message
+
     return;
 }
 
-$rrd_name = array('app', $name, $app_id);
+$rrd_name = ['app', $name, $app_id];
 
 $rrd_def = RrdDefinition::make()
     ->addDataset('received', 'GAUGE', 0)
@@ -54,8 +55,7 @@ $rrd_def = RrdDefinition::make()
     ->addDataset('recipients', 'GAUGE', 0)
     ->addDataset('recipienthostsdomains', 'GAUGE', 0);
 
-
-$fields = array(
+$fields = [
     'received' => $mailcow_postfix['data']['received'],
     'delivered' => $mailcow_postfix['data']['delivered'],
     'forwarded' => $mailcow_postfix['data']['forwarded'],
@@ -71,7 +71,7 @@ $fields = array(
     'sendinghostsdomains' => $mailcow_postfix['data']['sendinghostsdomains'],
     'recipients' => $mailcow_postfix['data']['recipients'],
     'recipienthostsdomains' => $mailcow_postfix['data']['recipienthostsdomains'],
-);
+];
 
 $tags = compact('name', 'app_id', 'rrd_name', 'rrd_def');
 data_update($device, 'app', $tags, $fields);

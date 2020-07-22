@@ -1,6 +1,6 @@
 <?php
 /**
- * HealthController.php
+ * HealthController.php.
  *
  * -Description-
  *

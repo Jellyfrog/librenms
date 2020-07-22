@@ -1,6 +1,6 @@
 <?php
 /**
- * HandleCors.php
+ * HandleCors.php.
  *
  * Check and load cors settings from db config at runtime
  *

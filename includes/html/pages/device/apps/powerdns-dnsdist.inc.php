@@ -13,7 +13,7 @@
  * @author     Cercel Valentin <crc@nuamchefazi.ro>
 */
 
-$graphs = array(
+$graphs = [
     'powerdns-dnsdist_latency' => 'Latency',
     'powerdns-dnsdist_cache' => 'Cache',
     'powerdns-dnsdist_downstream' => 'Downstream servers',
@@ -22,15 +22,15 @@ $graphs = array(
     'powerdns-dnsdist_queries_stats' => 'Queries stats',
     'powerdns-dnsdist_queries_latency' => 'Queries latency',
     'powerdns-dnsdist_queries_drop' => 'Queries drop',
-);
+];
 
 foreach ($graphs as $key => $text) {
-    $graph_type            = $key;
+    $graph_type = $key;
     $graph_array['height'] = '100';
-    $graph_array['width']  = '215';
+    $graph_array['width'] = '215';
     $graph_array['to'] = \LibreNMS\Config::get('time.now');
-    $graph_array['id']     = $app['app_id'];
-    $graph_array['type']   = 'application_'.$key;
+    $graph_array['id'] = $app['app_id'];
+    $graph_array['type'] = 'application_'.$key;
 
     echo '<div class="panel panel-default">
     <div class="panel-heading">

@@ -1,6 +1,6 @@
 <?php
 /**
- * MapquestGeocodeApi.php
+ * MapquestGeocodeApi.php.
  *
  * -Description-
  *
@@ -37,7 +37,7 @@ class MapquestApi extends BaseApi implements Geocoder
     protected $geocoding_uri = '/geocoding/v1/address';
 
     /**
-     * Get latitude and longitude from geocode response
+     * Get latitude and longitude from geocode response.
      *
      * @param array $data
      * @return array
@@ -51,7 +51,7 @@ class MapquestApi extends BaseApi implements Geocoder
     }
 
     /**
-     * Build Guzzle request option array
+     * Build Guzzle request option array.
      *
      * @param string $address
      * @return array
@@ -60,8 +60,8 @@ class MapquestApi extends BaseApi implements Geocoder
     protected function buildGeocodingOptions($address)
     {
         $api_key = Config::get('geoloc.api_key');
-        if (!$api_key) {
-            throw new Exception("MapQuest API key missing, set geoloc.api_key");
+        if (! $api_key) {
+            throw new Exception('MapQuest API key missing, set geoloc.api_key');
         }
 
         return [
@@ -69,12 +69,12 @@ class MapquestApi extends BaseApi implements Geocoder
                 'key' => $api_key,
                 'location' => $address,
                 'thumbMaps' => 'false',
-            ]
+            ],
         ];
     }
 
     /**
-     * Checks if the request was a success
+     * Checks if the request was a success.
      *
      * @param \Psr\Http\Message\ResponseInterface $response
      * @param array $data decoded response data

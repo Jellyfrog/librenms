@@ -1,6 +1,6 @@
 <?php
 /**
- * Ipv6Network.php
+ * Ipv6Network.php.
  *
  * -Description-
  *

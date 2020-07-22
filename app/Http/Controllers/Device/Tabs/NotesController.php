@@ -1,6 +1,6 @@
 <?php
 /**
- * NotesController.php
+ * NotesController.php.
  *
  * -Description-
  *

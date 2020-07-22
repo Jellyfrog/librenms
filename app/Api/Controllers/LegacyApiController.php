@@ -1,6 +1,6 @@
 <?php
 /**
- * LegacyApiController.php
+ * LegacyApiController.php.
  *
  * -Description-
  *
@@ -28,7 +28,7 @@ namespace App\Api\Controllers;
 class LegacyApiController
 {
     /**
-     * Pass through api functions to api_functions.inc.php
+     * Pass through api functions to api_functions.inc.php.
      *
      * @param string $method_name
      * @param array $arguments

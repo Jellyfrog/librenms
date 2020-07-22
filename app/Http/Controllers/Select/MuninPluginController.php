@@ -1,6 +1,6 @@
 <?php
 /**
- * MuninPluginController.php
+ * MuninPluginController.php.
  *
  * -Description-
  *
@@ -29,9 +29,8 @@ use App\Models\MuninPlugin;
 
 class MuninPluginController extends SelectController
 {
-
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
@@ -49,7 +48,7 @@ class MuninPluginController extends SelectController
     {
         return [
             'id' => $munin_plugin->mplug_id,
-            'text' => $munin_plugin->device->shortDisplayName() . ' - ' . $munin_plugin->mplug_type
+            'text' => $munin_plugin->device->shortDisplayName().' - '.$munin_plugin->mplug_type,
         ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * OspfInstance.php
+ * OspfInstance.php.
  *
  * -Description-
  *
