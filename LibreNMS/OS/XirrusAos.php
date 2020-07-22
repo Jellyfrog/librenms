@@ -1,6 +1,6 @@
 <?php
 /**
- * XirrusAos.php
+ * XirrusAos.php.
  *
  * Xirrus AOS OS
  *
@@ -46,23 +46,23 @@ class XirrusAos extends OS implements
     WirelessRssiDiscovery,
     WirelessSnrDiscovery
 {
-
     /**
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessClients()
     {
         $oid = '.1.3.6.1.4.1.21013.1.2.12.1.2.22.0'; // XIRRUS-MIB::globalNumStations.0
-        return array(
+
+        return [
             new WirelessSensor('clients', $this->getDeviceId(), $oid, 'xirrus', 0, 'Clients'),
-        );
+        ];
     }
 
     /**
      * Discover wireless frequency.  This is in MHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -73,7 +73,7 @@ class XirrusAos extends OS implements
 
     /**
      * Poll wireless frequency as MHz
-     * The returned array should be sensor_id => value pairs
+     * The returned array should be sensor_id => value pairs.
      *
      * @param array $sensors Array of sensors needed to be polled
      * @return array of polled data
@@ -84,7 +84,7 @@ class XirrusAos extends OS implements
     }
 
     /**
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -95,7 +95,7 @@ class XirrusAos extends OS implements
 
     /**
      * Discover wireless rate. This is in bps. Type is rate.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -106,7 +106,7 @@ class XirrusAos extends OS implements
 
     /**
      * Discover wireless RSSI (Received Signal Strength Indicator). This is in dBm. Type is rssi.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -118,7 +118,7 @@ class XirrusAos extends OS implements
     /**
      * Discover wireless SNR.  This is in dB. Type is snr.
      * Formula: SNR = Signal or Rx Power - Noise Floor
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -129,7 +129,7 @@ class XirrusAos extends OS implements
 
     /**
      * Discover wireless utilization.  This is in %. Type is utilization.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -141,18 +141,18 @@ class XirrusAos extends OS implements
     private function discoverSensor($type, $oid, $oid_num_prefix)
     {
         $names = $this->getCacheByIndex('realtimeMonitorIfaceName', 'XIRRUS-MIB');
-        $nf = snmp_cache_oid($oid, $this->getDevice(), array(), 'XIRRUS-MIB');
+        $nf = snmp_cache_oid($oid, $this->getDevice(), [], 'XIRRUS-MIB');
 
-        $sensors = array();
+        $sensors = [];
         foreach ($nf as $index => $entry) {
             $sensors[] = new WirelessSensor(
                 $type,
                 $this->getDeviceId(),
-                $oid_num_prefix . $index,
+                $oid_num_prefix.$index,
                 'xirrus',
                 $index,
                 $names[$index],
-                $type == 'frequency' ? WirelessSensor::channelToFrequency($entry[$oid]) :$entry[$oid]
+                $type == 'frequency' ? WirelessSensor::channelToFrequency($entry[$oid]) : $entry[$oid]
             );
         }
 

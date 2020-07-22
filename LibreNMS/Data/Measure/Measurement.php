@@ -1,6 +1,6 @@
 <?php
 /**
- * Measurement.php
+ * Measurement.php.
  *
  * -Description-
  *
@@ -38,7 +38,7 @@ class Measurement
     }
 
     /**
-     * Start the timer for a new operation
+     * Start the timer for a new operation.
      *
      * @param string $type
      * @return static
@@ -49,18 +49,19 @@ class Measurement
     }
 
     /**
-     * End the timer for this operation
+     * End the timer for this operation.
      *
      * @return $this
      */
     public function end()
     {
         $this->duration = microtime(true) - $this->start;
+
         return $this;
     }
 
     /**
-     * Get the duration of the operation
+     * Get the duration of the operation.
      *
      * @return float
      */
@@ -70,7 +71,7 @@ class Measurement
     }
 
     /**
-     * Get the type of the operation
+     * Get the type of the operation.
      *
      * @return string
      */

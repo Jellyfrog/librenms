@@ -26,7 +26,7 @@ interface Authorizer
     public function userExists($username, $throw_exception = false);
 
     /**
-     * Get the userlevel of $username
+     * Get the userlevel of $username.
      *
      * @param string $username The username to check
      * @return int
@@ -34,7 +34,7 @@ interface Authorizer
     public function getUserlevel($username);
 
     /**
-     * Get the user_id of $username
+     * Get the user_id of $username.
      *
      * @param string $username
      * @return int
@@ -73,7 +73,7 @@ interface Authorizer
     public function addUser($username, $password, $level = 0, $email = '', $realname = '', $can_modify_passwd = 0, $description = '');
 
     /**
-     * Update the some of the fields of a user
+     * Update the some of the fields of a user.
      *
      * @param int $user_id The user_id to update
      * @param string $realname
@@ -101,7 +101,7 @@ interface Authorizer
 
     /**
      * Get a list of all users in this Authorizer
-     * !Warning! this could be very slow for some Authorizer types or configurations
+     * !Warning! this could be very slow for some Authorizer types or configurations.
      *
      * @return array
      */

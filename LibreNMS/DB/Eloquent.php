@@ -1,6 +1,6 @@
 <?php
 /**
- * Eloquent.php
+ * Eloquent.php.
  *
  * Class for managing Eloquent outside of Laravel
  *
@@ -40,12 +40,12 @@ class Eloquent
     public static function boot()
     {
         // boot Eloquent outside of Laravel
-        if (!Laravel::isBooted() && is_null(self::$capsule)) {
-            $install_dir = realpath(__DIR__ . '/../../');
+        if (! Laravel::isBooted() && is_null(self::$capsule)) {
+            $install_dir = realpath(__DIR__.'/../../');
 
             Dotenv::create($install_dir)->load();
 
-            $db_config = include($install_dir . '/config/database.php');
+            $db_config = include $install_dir.'/config/database.php';
             $settings = $db_config['connections'][$db_config['default']];
 
             self::$capsule = new Capsule;
@@ -73,7 +73,7 @@ class Eloquent
     }
 
     /**
-     * Set the strict mode for the current connection (will not persist)
+     * Set the strict mode for the current connection (will not persist).
      * @param bool $strict
      */
     public static function setStrictMode($strict = true)
@@ -92,7 +92,7 @@ class Eloquent
         try {
             $conn = self::DB($name);
             if ($conn) {
-                return !is_null($conn->getPdo());
+                return ! is_null($conn->getPdo());
             }
         } catch (\PDOException $e) {
             return false;
@@ -115,7 +115,7 @@ class Eloquent
         }
 
         if (is_null(self::$capsule)) {
-            return null;
+            return;
         }
 
         return self::$capsule->getDatabaseManager()->connection($name);
@@ -124,24 +124,25 @@ class Eloquent
     public static function getDriver()
     {
         $connection = config('database.default');
+
         return config("database.connections.{$connection}.driver");
     }
 
     public static function setConnection($name, $db_host = null, $db_user = '', $db_pass = '', $db_name = '', $db_port = null, $db_socket = null)
     {
         \Config::set("database.connections.$name", [
-            "driver" => "mysql",
-            "host" => $db_host,
-            "port" => $db_port,
-            "database" => $db_name,
-            "username" => $db_user,
-            "password" => $db_pass,
-            "unix_socket" => $db_socket,
-            "charset" => "utf8",
-            "collation" => "utf8_unicode_ci",
-            "prefix" => "",
-            "strict" => true,
-            "engine" => null
+            'driver' => 'mysql',
+            'host' => $db_host,
+            'port' => $db_port,
+            'database' => $db_name,
+            'username' => $db_user,
+            'password' => $db_pass,
+            'unix_socket' => $db_socket,
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
         ]);
         \Config::set('database.default', $name);
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * IP.php
+ * IP.php.
  *
  * -Description-
  *
@@ -34,7 +34,7 @@ abstract class IP
     public $host_bits;
 
     /**
-     * Convert a hex-string to an IP address. For example: "c0 a8 01 fe" -> 192.168.1.254
+     * Convert a hex-string to an IP address. For example: "c0 a8 01 fe" -> 192.168.1.254.
      * @param string $hex
      * @param bool $ignore_errors Do not throw exceptions, instead return null on error.
      * @return IP|null
@@ -42,7 +42,7 @@ abstract class IP
      */
     public static function fromHexString($hex, $ignore_errors = false)
     {
-        $hex = str_replace(array(' ', '"'), '', $hex);
+        $hex = str_replace([' ', '"'], '', $hex);
 
         try {
             return self::parse($hex);
@@ -50,7 +50,7 @@ abstract class IP
             // ignore
         }
 
-        $hex = str_replace(array(':', '.'), '', $hex);
+        $hex = str_replace([':', '.'], '', $hex);
 
         try {
             if (strlen($hex) == 8) {
@@ -61,22 +61,20 @@ abstract class IP
                 return new IPv6(implode(':', str_split($hex, 4)));
             }
         } catch (InvalidIpException $e) {
-            if (!$ignore_errors) {
+            if (! $ignore_errors) {
                 throw $e;
             }
         }
 
-        if (!$ignore_errors) {
+        if (! $ignore_errors) {
             throw new InvalidIpException("Could not parse into IP: $hex");
         }
-
-        return null;
     }
 
     /**
      * Convert a decimal space-separated string to an IP address. For example:
      * "192 168 1 154" -> 192.168.1.254
-     * "32 01 72 96 72 96 00 00 00 00 00 00 00 00 136 136" -> 2001:4860:4860::8888
+     * "32 01 72 96 72 96 00 00 00 00 00 00 00 00 136 136" -> 2001:4860:4860::8888.
      * @param string $snmpOid
      * @param bool $ignore_errors Do not throw exceptions, instead return null on error.
      * @return IP|null
@@ -86,15 +84,16 @@ abstract class IP
     {
         $snmpOid = str_replace(['.', '"'], ' ', $snmpOid);
         $hex = implode(
-            ":",
+            ':',
             array_map(
                 function ($dec) {
                     return sprintf('%02x', $dec);
                 },
-                explode(" ", (string)$snmpOid)
+                explode(' ', (string) $snmpOid)
             )
         );
-        return IP::fromHexString($hex, $ignore_errors);
+
+        return self::fromHexString($hex, $ignore_errors);
     }
 
     /**
@@ -115,12 +114,10 @@ abstract class IP
         try {
             return new IPv6($ip);
         } catch (InvalidIpException $e) {
-            if (!$ignore_errors) {
+            if (! $ignore_errors) {
                 throw new InvalidIpException("$ip is not a valid IP address");
             }
         }
-
-        return null;
     }
 
     /**
@@ -145,32 +142,32 @@ abstract class IP
             $cidr = $this->cidr;
         }
 
-        return $this->getNetworkAddress($cidr) . "/$cidr";
+        return $this->getNetworkAddress($cidr)."/$cidr";
     }
 
     /**
-     * Get the network address of this IP
+     * Get the network address of this IP.
      * @param int $cidr If not given will use the cidr stored with this IP
      * @return string
      */
     abstract public function getNetworkAddress($cidr = null);
 
     /**
-     * Check if this IP address is contained inside the network
+     * Check if this IP address is contained inside the network.
      * @param string $network should be in cidr format.
      * @return mixed
      */
     abstract public function inNetwork($network);
 
     /**
-     * Check if this IP is in one of multiple networks
+     * Check if this IP is in one of multiple networks.
      *
      * @param array $networks
      * @return bool
      */
     public function inNetworks($networks)
     {
-        foreach ((array)$networks as $network) {
+        foreach ((array) $networks as $network) {
             if ($this->inNetwork($network)) {
                 return true;
             }
@@ -195,7 +192,7 @@ abstract class IP
      */
     public function compressed()
     {
-        return (string)$this->ip;
+        return (string) $this->ip;
     }
 
     /**
@@ -205,17 +202,17 @@ abstract class IP
      */
     public function uncompressed()
     {
-        return (string)$this->ip;
+        return (string) $this->ip;
     }
 
     /**
-     * Packed address for storage in database
+     * Packed address for storage in database.
      *
      * return string
      */
     public function packed()
     {
-        return inet_pton((string)$this->ip);
+        return inet_pton((string) $this->ip);
     }
 
     /**
@@ -230,14 +227,14 @@ abstract class IP
     public function __toString()
     {
         if ($this->cidr == $this->host_bits) {
-            return (string)$this->ip;
+            return (string) $this->ip;
         }
 
-        return $this->ip . "/{$this->cidr}";
+        return $this->ip."/{$this->cidr}";
     }
 
     /**
-     * Extract an address from a cidr, assume a host is given if it does not contain /
+     * Extract an address from a cidr, assume a host is given if it does not contain /.
      * @param string $ip
      * @return array [$ip, $cidr]
      */
@@ -247,7 +244,7 @@ abstract class IP
     }
 
     /**
-     * Convert this IP to an snmp index hex encoded
+     * Convert this IP to an snmp index hex encoded.
      *
      * @return string
      */

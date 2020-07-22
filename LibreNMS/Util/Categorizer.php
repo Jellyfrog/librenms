@@ -1,6 +1,6 @@
 <?php
 /**
- * Categorizer.php
+ * Categorizer.php.
  *
  * Categorize a list of items according to a dynamic list
  *

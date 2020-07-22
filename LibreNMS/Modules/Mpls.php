@@ -1,6 +1,6 @@
 <?php
 /**
- * Mpls.php
+ * Mpls.php.
  *
  * -Description-
  *
@@ -40,7 +40,7 @@ class Mpls implements Module
 
     /**
      * Discover this module. Heavier processes can be run here
-     * Run infrequently (default 4 times a day)
+     * Run infrequently (default 4 times a day).
      *
      * @param OS $os
      */
@@ -86,7 +86,7 @@ class Mpls implements Module
     /**
      * Poll data for this module and update the DB / RRD.
      * Try to keep this efficient and only run if discovery has indicated there is a reason to run.
-     * Run frequently (default every 5 minutes)
+     * Run frequently (default every 5 minutes).
      *
      * @param OS $os
      */

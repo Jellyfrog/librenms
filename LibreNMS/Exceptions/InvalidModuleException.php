@@ -1,6 +1,6 @@
 <?php
 /**
- * InvalideModuleException.php
+ * InvalideModuleException.php.
  *
  * Thrown when the given name isn't a valid discovery or poller module
  *

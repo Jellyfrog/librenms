@@ -1,6 +1,6 @@
 <?php
 /**
- * Quanta.php
+ * Quanta.php.
  *
  * Netgear Quanta OS
  *

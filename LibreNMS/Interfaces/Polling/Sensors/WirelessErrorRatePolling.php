@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessErrorRatePolling.php
+ * WirelessErrorRatePolling.php.
  *
  * Custom polling interface for wireless bit error rate in bps
  *
@@ -29,7 +29,7 @@ interface WirelessErrorRatePolling
 {
     /**
      * Poll wireless bit error rate as bps
-     * The returned array should be sensor_id => value pairs
+     * The returned array should be sensor_id => value pairs.
      *
      * @param array $sensors Array of sensors needed to be polled
      * @return array of polled data

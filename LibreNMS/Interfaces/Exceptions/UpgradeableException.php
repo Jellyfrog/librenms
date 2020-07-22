@@ -1,6 +1,6 @@
 <?php
 /**
- * UpgradeableException.php
+ * UpgradeableException.php.
  *
  * -Description-
  *

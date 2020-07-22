@@ -1,6 +1,6 @@
 <?php
 /**
- * HostResources.php
+ * HostResources.php.
  *
  * -Description-
  *
@@ -31,33 +31,33 @@ trait HostResources
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
     public function discoverProcessors()
     {
-        echo "Host Resources: ";
-        $processors = array();
+        echo 'Host Resources: ';
+        $processors = [];
 
         try {
             $hrProcessorLoad = $this->getCacheByIndex('hrProcessorLoad', 'HOST-RESOURCES-MIB');
 
             if (empty($hrProcessorLoad)) {
                 // no hr data, return
-                return array();
+                return [];
             }
 
             $hrDeviceDescr = $this->getCacheByIndex('hrDeviceDescr', 'HOST-RESOURCES-MIB');
         } catch (\Exception $e) {
-            return array();
+            return [];
         }
 
         foreach ($hrProcessorLoad as $index => $usage) {
-            $usage_oid = '.1.3.6.1.2.1.25.3.3.1.2.' . $index;
+            $usage_oid = '.1.3.6.1.2.1.25.3.3.1.2.'.$index;
             $descr = $hrDeviceDescr[$index];
 
-            if (!is_numeric($usage)) {
+            if (! is_numeric($usage)) {
                 continue;
             }
 
@@ -73,19 +73,19 @@ trait HostResources
                 $descr = 'Processor';
             } else {
                 // Make the description a bit shorter
-                $remove_strings = array(
+                $remove_strings = [
                     'GenuineIntel: ',
                     'AuthenticAMD: ',
                     'CPU ',
                     '(TM)',
                     '(R)',
-                );
+                ];
                 $descr = str_replace($remove_strings, '', $descr);
                 $descr = str_replace('  ', ' ', $descr);
             }
 
-            $old_name = array('hrProcessor', $index);
-            $new_name = array('processor', 'hr', $index);
+            $old_name = ['hrProcessor', $index];
+            $new_name = ['processor', 'hr', $index];
             rrd_file_rename($this->getDevice(), $old_name, $new_name);
 
             $processor = Processor::discover(

@@ -1,6 +1,6 @@
 <?php
 /**
- * Ironware.php
+ * Ironware.php.
  *
  * Brocade Ironware OS
  *
@@ -29,5 +29,4 @@ use LibreNMS\OS\Shared\Foundry;
 
 class Ironware extends Foundry
 {
-
 }

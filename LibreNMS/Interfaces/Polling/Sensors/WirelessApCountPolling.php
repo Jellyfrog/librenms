@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessApsPolling.php
+ * WirelessApsPolling.php.
  *
  *Custom polling interface for wireless AP count
  *
@@ -29,7 +29,7 @@ interface WirelessApCountPolling
 {
     /**
      * Poll wireless AP count
-     * The returned array should be sensor_id => value pairs
+     * The returned array should be sensor_id => value pairs.
      *
      * @param array $sensors Array of sensors needed to be polled
      * @return array of polled data

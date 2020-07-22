@@ -1,6 +1,6 @@
 <?php
 /**
- * logTrap.php
+ * logTrap.php.
  *
  * -Description-
  *
@@ -32,7 +32,6 @@ use Log;
 
 class LogTrap implements SnmptrapHandler
 {
-
     /**
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
@@ -51,7 +50,7 @@ class LogTrap implements SnmptrapHandler
         $logPC = $trap->getOidData('LOG-MIB::logPC.'.$index);
         $logAI = $trap->getOidData('LOG-MIB::logAI.'.$index);
         $state = $trap->getOidData('LOG-MIB::logEquipStatusV2.'.$index);
-        
+
         $severity = $this->getSeverity($state);
         Log::event('SNMP Trap: Log '.$logName.' '.$logEvent.' '.$logPC.' '.$logAI.' '.$state, $device->device_id, 'log', $severity);
     }
@@ -70,6 +69,7 @@ class LogTrap implements SnmptrapHandler
             'nonAlarmed' => 1,
             '1' => 1,
         ];
+
         return $severity_map[$state] ?? 0;
     }
 }

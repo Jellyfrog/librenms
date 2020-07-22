@@ -1,6 +1,6 @@
 <?php
 /**
- * RrdCheck.php
+ * RrdCheck.php.
  *
  * Scan RRD files for errors.
  *
@@ -37,7 +37,7 @@ class RrdCheck extends BaseValidation
 
     /**
      * Validate this module.
-     * To return ValidationResults, call ok, warn, fail, or result methods on the $validator
+     * To return ValidationResults, call ok, warn, fail, or result methods on the $validator.
      *
      * @param Validator $validator
      */
@@ -51,7 +51,7 @@ class RrdCheck extends BaseValidation
         $rrd_total = iterator_count($rrd_iterator);
         $rrd_iterator->rewind(); // Rewind iterator in case iterator_count left iterator in unknown state
 
-        echo "\nScanning " . $rrd_total . " rrd files in " . Config::get('rrd_dir') . "...\n";
+        echo "\nScanning ".$rrd_total.' rrd files in '.Config::get('rrd_dir')."...\n";
 
         // Count loops so we can push status to the user
         $loopcount = 0;
@@ -63,26 +63,26 @@ class RrdCheck extends BaseValidation
             $loopcount++;
             if (($loopcount % 50) == 0) {
                 //This lets us update the previous status update without spamming in most consoles
-                echo "\033[" . $screenpad . "D";
-                $test_status = 'Status: ' . $loopcount . '/' . $rrd_total;
+                echo "\033[".$screenpad.'D';
+                $test_status = 'Status: '.$loopcount.'/'.$rrd_total;
                 echo $test_status;
                 $screenpad = strlen($test_status);
             }
 
             // A non zero result means there was some kind of error
             if ($rrd_test_result > 0) {
-                echo "\033[" . $screenpad . "D";
-                $validator->fail('Error parsing "' . $filename . '" RRD ' . trim($error));
+                echo "\033[".$screenpad.'D';
+                $validator->fail('Error parsing "'.$filename.'" RRD '.trim($error));
                 $screenpad = 0;
             }
         }
 
-        echo "\033[" . $screenpad . "D";
-        echo "Status: " . $loopcount . "/" . $rrd_total . " - Complete\n";
+        echo "\033[".$screenpad.'D';
+        echo 'Status: '.$loopcount.'/'.$rrd_total." - Complete\n";
     }
 
     /**
-     * Run rrdtool info on a file path
+     * Run rrdtool info on a file path.
      *
      * @param string $path Path to pass to rrdtool info
      * @param string $stdOutput Variable to recieve the output of STDOUT
@@ -94,18 +94,18 @@ class RrdCheck extends BaseValidation
     private function test($path, &$stdOutput, &$stdError)
     {
         //rrdtool info <escaped rrd path>
-        $command = Config::get('rrdtool') . ' info ' . escapeshellarg($path);
+        $command = Config::get('rrdtool').' info '.escapeshellarg($path);
         $process = proc_open(
             $command,
-            array (
-                0 => array('pipe', 'r'),
-                1 => array('pipe', 'w'),
-                2 => array('pipe', 'w'),
-            ),
+            [
+                0 => ['pipe', 'r'],
+                1 => ['pipe', 'w'],
+                2 => ['pipe', 'w'],
+            ],
             $pipes
         );
 
-        if (!is_resource($process)) {
+        if (! is_resource($process)) {
             throw new \RuntimeException('Could not create a valid process');
         }
 
@@ -116,8 +116,9 @@ class RrdCheck extends BaseValidation
         }
 
         $stdOutput = stream_get_contents($pipes[1]);
-        $stdError  = stream_get_contents($pipes[2]);
+        $stdError = stream_get_contents($pipes[2]);
         proc_close($process);
+
         return $status['exitcode'];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * IPv4.php
+ * IPv4.php.
  *
  * -Description-
  *
@@ -37,9 +37,9 @@ class IPv4 extends IP
     public function __construct($ipv4)
     {
         $this->host_bits = 32;
-        list($this->ip, $this->cidr) = $this->extractCidr($ipv4);
+        [$this->ip, $this->cidr] = $this->extractCidr($ipv4);
 
-        if (!self::isValid($this->ip)) {
+        if (! self::isValid($this->ip)) {
             throw new InvalidIpException("$ipv4 is not a valid ipv4 address");
         }
     }
@@ -61,7 +61,7 @@ class IPv4 extends IP
     }
 
     /**
-     * Convert an IPv4 network mask to a bit mask.  For example: 255.255.255.0 -> 24
+     * Convert an IPv4 network mask to a bit mask.  For example: 255.255.255.0 -> 24.
      * @param string $netmask
      * @return int
      */
@@ -69,11 +69,12 @@ class IPv4 extends IP
     {
         $long = ip2long($netmask);
         $base = ip2long('255.255.255.255');
-        return (int)(32 - log(($long ^ $base) + 1, 2));
+
+        return (int) (32 - log(($long ^ $base) + 1, 2));
     }
 
     /**
-     * Returns the netmask of this IP address. For example: 255.255.255.0
+     * Returns the netmask of this IP address. For example: 255.255.255.0.
      * @return string
      */
     public function getNetmask()
@@ -87,7 +88,7 @@ class IPv4 extends IP
      */
     private function cidr2long($cidr)
     {
-        return -1 << (32 - (int)$cidr);
+        return -1 << (32 - (int) $cidr);
     }
 
     /**
@@ -97,17 +98,18 @@ class IPv4 extends IP
      */
     public function inNetwork($network)
     {
-        list($net, $cidr) = $this->extractCidr($network);
-        if (!self::isValid($net)) {
+        [$net, $cidr] = $this->extractCidr($network);
+        if (! self::isValid($net)) {
             return false;
         }
 
         $mask = $this->cidr2long($cidr);
-        return ((ip2long($this->ip) & $mask) == (ip2long($net) & $mask));
+
+        return (ip2long($this->ip) & $mask) == (ip2long($net) & $mask);
     }
 
     /**
-     * Get the network address of this IP
+     * Get the network address of this IP.
      * @param int $cidr if not given will use the cidr stored with this IP
      * @return string
      */
@@ -121,12 +123,12 @@ class IPv4 extends IP
     }
 
     /**
-     * Convert this IP to an snmp index hex encoded
+     * Convert this IP to an snmp index hex encoded.
      *
      * @return string
      */
     public function toSnmpIndex()
     {
-        return (string)$this->ip;
+        return (string) $this->ip;
     }
 }

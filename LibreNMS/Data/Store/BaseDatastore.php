@@ -1,6 +1,6 @@
 <?php
 /**
- * BaseDatastore.php
+ * BaseDatastore.php.
  *
  * -Description-
  *
@@ -39,9 +39,9 @@ abstract class BaseDatastore implements DatastoreContract
     }
 
     /**
-     * Checks if the datastore wants rrdtags to be sent when issuing put()
+     * Checks if the datastore wants rrdtags to be sent when issuing put().
      *
-     * @return boolean
+     * @return bool
      */
     public function wantsRrdTags()
     {
@@ -49,7 +49,7 @@ abstract class BaseDatastore implements DatastoreContract
     }
 
     /**
-     * Record statistics for operation
+     * Record statistics for operation.
      * @param Measurement $stat
      */
     protected function recordStatistic(Measurement $stat)

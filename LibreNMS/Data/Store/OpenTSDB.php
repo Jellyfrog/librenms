@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenTSDB.php
+ * OpenTSDB.php.
  *
  * -Description-
  *
@@ -33,7 +33,7 @@ use Log;
 
 class OpenTSDB extends BaseDatastore
 {
-    /** @var \Socket\Raw\Socket $connection */
+    /** @var \Socket\Raw\Socket */
     protected $connection;
 
     public function __construct(\Socket\Raw\Factory $socketFactory)
@@ -44,7 +44,7 @@ class OpenTSDB extends BaseDatastore
         try {
             $this->connection = $socketFactory->createClient("$host:$port");
         } catch (\Socket\Raw\Exception $e) {
-            Log::debug('OpenTSDB Error: ' . $e->getMessage());
+            Log::debug('OpenTSDB Error: '.$e->getMessage());
         }
 
         if ($this->connection) {
@@ -76,19 +76,20 @@ class OpenTSDB extends BaseDatastore
      */
     public function put($device, $measurement, $tags, $fields)
     {
-        if (!$this->connection) {
+        if (! $this->connection) {
             Log::error("OpenTSDB Error: not connected\n");
+
             return;
         }
 
         $flag = Config::get('opentsdb.co');
         $timestamp = Carbon::now()->timestamp;
-        $tmp_tags = "hostname=".$device['hostname'];
+        $tmp_tags = 'hostname='.$device['hostname'];
 
         foreach ($tags as $k => $v) {
-            $v = str_replace(array(' ',',','='), '_', $v);
-            if (!empty($v)) {
-                $tmp_tags = $tmp_tags ." ". $k ."=".$v;
+            $v = str_replace([' ', ',', '='], '_', $v);
+            if (! empty($v)) {
+                $tmp_tags = $tmp_tags.' '.$k.'='.$v;
             }
         }
 
@@ -96,18 +97,18 @@ class OpenTSDB extends BaseDatastore
             foreach ($fields as $k => $v) {
                 $measurement = $k;
                 if ($flag == true) {
-                    $measurement = $measurement.".".$device['co'];
+                    $measurement = $measurement.'.'.$device['co'];
                 }
 
                 $this->putData('port.'.$measurement, $timestamp, $v, $tmp_tags);
             }
         } else {
             if ($flag == true) {
-                $measurement = $measurement . '.' . $device['co'];
+                $measurement = $measurement.'.'.$device['co'];
             }
 
             foreach ($fields as $k => $v) {
-                $tmp_tags_key = $tmp_tags . " " . "key" . "=" . $k;
+                $tmp_tags_key = $tmp_tags.' '.'key'.'='.$k;
                 $this->putData($measurement, $timestamp, $v, $tmp_tags_key);
             }
         }
@@ -124,7 +125,7 @@ class OpenTSDB extends BaseDatastore
 
             $this->recordStatistic($stat->end());
         } catch (\Socket\Raw\Exception $e) {
-            Log::error('OpenTSDB Error: ' . $e->getMessage());
+            Log::error('OpenTSDB Error: '.$e->getMessage());
         }
     }
 
@@ -134,9 +135,9 @@ class OpenTSDB extends BaseDatastore
     }
 
     /**
-     * Checks if the datastore wants rrdtags to be sent when issuing put()
+     * Checks if the datastore wants rrdtags to be sent when issuing put().
      *
-     * @return boolean
+     * @return bool
      */
     public function wantsRrdTags()
     {

@@ -1,6 +1,6 @@
 <?php
 /**
- * InstallerStep.php
+ * InstallerStep.php.
  *
  * -Description-
  *

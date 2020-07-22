@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessCcqDiscovery.php
+ * WirelessCcqDiscovery.php.
  *
  * Discover Client Connection Quality Sensors as a percent
  *
@@ -29,7 +29,7 @@ interface WirelessCcqDiscovery
 {
     /**
      * Discover wireless client connection quality.  This is a percent. Type is ccq.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

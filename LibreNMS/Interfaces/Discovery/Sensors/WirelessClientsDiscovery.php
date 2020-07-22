@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessClients.php
+ * WirelessClients.php.
  *
  * Discover wireless client count sensors
  *
@@ -29,7 +29,7 @@ interface WirelessClientsDiscovery
 {
     /**
      * Discover wireless client counts. Type is clients.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

@@ -1,6 +1,6 @@
 <?php
 /**
- * Ignitenet.php
+ * Ignitenet.php.
  *
  * Ignitenet HeliOS
  *
@@ -33,10 +33,9 @@ use LibreNMS\OS;
 
 class Helios extends OS implements WirelessFrequencyDiscovery, WirelessPowerDiscovery, WirelessRssiDiscovery
 {
-
     /**
      * Discover wireless frequency.  This is in GHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -47,7 +46,7 @@ class Helios extends OS implements WirelessFrequencyDiscovery, WirelessPowerDisc
 
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -58,7 +57,7 @@ class Helios extends OS implements WirelessFrequencyDiscovery, WirelessPowerDisc
 
     /**
      * Discover wireless RSSI (Received Signal Strength Indicator). This is in dBm. Type is rssi.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -69,20 +68,21 @@ class Helios extends OS implements WirelessFrequencyDiscovery, WirelessPowerDisc
 
     private function discoverOid($type, $oid, $oid_prefix)
     {
-        $oids = snmpwalk_cache_oid($this->getDevice(), $oid, array(), 'IGNITENET-MIB');
+        $oids = snmpwalk_cache_oid($this->getDevice(), $oid, [], 'IGNITENET-MIB');
 
-        $sensors = array();
+        $sensors = [];
         foreach ($oids as $index => $data) {
             $sensors[] = new WirelessSensor(
                 $type,
                 $this->getDeviceId(),
-                $oid_prefix . $index,
+                $oid_prefix.$index,
                 'ignitenet',
                 $index,
                 "Radio $index",
                 $data[$oid]
             );
         }
+
         return $sensors;
     }
 }

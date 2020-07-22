@@ -1,6 +1,6 @@
 <?php
 /**
- * SyncsModels.php
+ * SyncsModels.php.
  *
  * -Description-
  *
@@ -29,7 +29,7 @@ trait SyncsModels
 {
     /**
      * Sync several models for a device's relationship
-     * Model must implement \LibreNMS\Interfaces\Models\Keyable interface
+     * Model must implement \LibreNMS\Interfaces\Models\Keyable interface.
      *
      * @param \App\Models\Device $device
      * @param string $relationship

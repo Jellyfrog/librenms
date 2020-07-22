@@ -1,6 +1,6 @@
 <?php
 /**
- * JnxDomAlarmSet.php
+ * JnxDomAlarmSet.php.
  *
  * -Description-
  *
@@ -27,8 +27,8 @@ namespace LibreNMS\Snmptrap\Handlers;
 
 use App\Models\Device;
 use LibreNMS\Interfaces\SnmptrapHandler;
-use LibreNMS\Snmptrap\Trap;
 use LibreNMS\Snmptrap\Handlers\JnxDomAlarmId;
+use LibreNMS\Snmptrap\Trap;
 use Log;
 
 class JnxDomAlarmSet implements SnmptrapHandler

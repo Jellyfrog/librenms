@@ -1,6 +1,6 @@
 <?php
 /**
- * CpLowBattery.php
+ * CpLowBattery.php.
  *
  * -Description-
  *

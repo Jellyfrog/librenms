@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessSinrDiscovery.php
+ * WirelessSinrDiscovery.php.
  *
  * Discover wireless Signal-to-Interference-plus-Noise Ratio sensors in dB
  *
@@ -30,7 +30,7 @@ interface WirelessSinrDiscovery
     /**
      * Discover wireless SINR.  This is in dB. Type is sinr.
      * Signal-to-Interference-plus-Noise Ratio
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

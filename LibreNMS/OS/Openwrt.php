@@ -1,6 +1,6 @@
 <?php
 /**
- * Openwrt.php
+ * Openwrt.php.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,11 +48,12 @@ class Openwrt extends OS implements
     {
         // Need to use PHP_EOL, found newline (\n) not near as reliable / consistent! And this is as PHP says it should be done.
         $interfaces = explode(PHP_EOL, snmp_get($this->getDevice(), 'NET-SNMP-EXTEND-MIB::nsExtendOutputFull."interfaces"', '-Osqnv'));
-        $arrIfaces = array();
+        $arrIfaces = [];
         foreach ($interfaces as $interface) {
-            list($k, $v) = explode(',', $interface);
+            [$k, $v] = explode(',', $interface);
             $arrIfaces[$k] = $v;
         }
+
         return $arrIfaces;
     }
 
@@ -62,14 +63,14 @@ class Openwrt extends OS implements
      * query - string, query to be used at client (appends to type string, e.g. -tx, -rx)
      * system - boolean, flag to indicate that a combined ("system level") sensor (and OID) is to be added
      * stats - boolean, flag denoting that statistics are to be retrieved (min, max, avg)
-     * NOTE: system and stats are assumed to be mutually exclusive (at least for now!)
+     * NOTE: system and stats are assumed to be mutually exclusive (at least for now!).
      *
      * @return array Sensors
      */
     private function getSensorData($type, $query = '', $system = false, $stats = false)
     {
         // Initialize needed variables, and get interfaces (actual network name, and LibreNMS name)
-        $sensors = array();
+        $sensors = [];
         $interfaces = $this->getInterfaces();
         $count = 1;
 
@@ -100,7 +101,7 @@ class Openwrt extends OS implements
 
     /**
      * Discover wireless client counts. Type is clients.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -111,7 +112,7 @@ class Openwrt extends OS implements
 
     /**
      * Discover wireless frequency.  This is in MHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -122,7 +123,7 @@ class Openwrt extends OS implements
 
     /**
      * Discover wireless noise floor.  This is in dBm. Type is noise-floor.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -133,7 +134,7 @@ class Openwrt extends OS implements
 
     /**
      * Discover wireless rate. This is in bps. Type is rate.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -141,12 +142,13 @@ class Openwrt extends OS implements
     {
         $txrate = $this->getSensorData('rate', '-tx', false, true);
         $rxrate = $this->getSensorData('rate', '-rx', false, true);
+
         return array_merge($txrate, $rxrate);
     }
 
     /**
      * Discover wireless snr. This is in dB. Type is snr.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */

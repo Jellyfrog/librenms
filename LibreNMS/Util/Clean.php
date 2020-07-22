@@ -1,6 +1,6 @@
 <?php
 /**
- * Clean.php
+ * Clean.php.
  *
  * -Description-
  *
@@ -44,7 +44,7 @@ class Clean
     }
 
     /**
-     * Sanitize string to only contain alpha, numeric, dashes, and underscores
+     * Sanitize string to only contain alpha, numeric, dashes, and underscores.
      *
      * @param string $string
      * @return string
@@ -55,7 +55,7 @@ class Clean
     }
 
     /**
-     * Sanitize string to only contain alpha, numeric, dashes, underscores, and spaces
+     * Sanitize string to only contain alpha, numeric, dashes, underscores, and spaces.
      *
      * @param string $string
      * @return string
@@ -67,7 +67,7 @@ class Clean
 
     /**
      * Clean a string for display in an html page.
-     * For use in non-blade pages
+     * For use in non-blade pages.
      *
      * @param $value
      * @param array $purifier_config (key, value pair)
@@ -85,7 +85,7 @@ class Clean
             $value = htmlentities($value);
         }
 
-        if (!isset($purifier)) {
+        if (! isset($purifier)) {
             // initialize HTML Purifier here since this is the only user
             $p_config = HTMLPurifier_Config::createDefault();
             $p_config->set('Cache.SerializerPath', Config::get('temp_dir', '/tmp'));

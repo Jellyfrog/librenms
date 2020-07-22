@@ -1,6 +1,6 @@
 <?php
 /**
- * Availability.php
+ * Availability.php.
  *
  * Availability calculation
  *
@@ -25,7 +25,7 @@
 
 namespace LibreNMS\Device;
 
-use \App\Models\DeviceOutage;
+use App\Models\DeviceOutage;
 
 class Availability
 {
@@ -39,29 +39,33 @@ class Availability
     public static function day($device, $precision = 3)
     {
         $duration = 86400;
+
         return self::availability($device, $duration, $precision);
     }
 
     public static function week($device, $precision = 3)
     {
         $duration = 604800;
+
         return self::availability($device, $duration, $precision);
     }
 
     public static function month($device, $precision = 3)
     {
         $duration = 2592000;
+
         return self::availability($device, $duration, $precision);
     }
 
     public static function year($device, $precision = 3)
     {
         $duration = 31536000;
+
         return self::availability($device, $duration, $precision);
     }
 
     /**
-     * addition of all recorded outages in seconds
+     * addition of all recorded outages in seconds.
      *
      * @param object $found_outages filtered database object with all recorded outages
      * @param int $duration time period to calculate for
@@ -70,32 +74,33 @@ class Availability
      */
     protected static function outageSummary($found_outages, $duration, $now = null)
     {
-        if (!is_numeric($now)) {
+        if (! is_numeric($now)) {
             $now = time();
         }
 
-        # sum up time period of all outages
+        // sum up time period of all outages
         $outage_sum = 0;
         foreach ($found_outages as $outage) {
-            # if device is still down, outage goes till $now
+            // if device is still down, outage goes till $now
             $up_again = $outage->up_again ?: $now;
 
             if ($outage->going_down >= ($now - $duration)) {
-                # outage complete in duration period
+                // outage complete in duration period
                 $going_down = $outage->going_down;
             } else {
-                # outage partial in duration period, so consider only relevant part
+                // outage partial in duration period, so consider only relevant part
                 $going_down = $now - $duration;
             }
             $outage_sum += ($up_again - $going_down);
         }
+
         return $outage_sum;
     }
 
     /**
      * Get the availability (decreasing) of this device
      * means, starting with 100% as default
-     * substracts recorded outages
+     * substracts recorded outages.
      *
      * @param array $device device to be looked at
      * @param int $duration time period to calculate for
@@ -104,7 +109,7 @@ class Availability
      */
     public static function availability($device, $duration, $precision = 3, $now = null)
     {
-        if (!is_numeric($now)) {
+        if (! is_numeric($now)) {
             $now = time();
         }
 
@@ -114,8 +119,8 @@ class Availability
 
         $found_outages = $query->get();
 
-        # no recorded outages found, so use current uptime
-        if (!count($found_outages)) {
+        // no recorded outages found, so use current uptime
+        if (! count($found_outages)) {
             return 100 * 1;
         }
 

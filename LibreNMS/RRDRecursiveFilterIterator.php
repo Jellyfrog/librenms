@@ -1,6 +1,6 @@
 <?php
 /**
- * RRDRecursiveFilterIterator.php
+ * RRDRecursiveFilterIterator.php.
  *
  * Reursive Filter Iterator to iterate directories and locate .rrd files.
  *
@@ -28,12 +28,11 @@ namespace LibreNMS;
 /**
  * Reursive Filter Iterator to iterate directories and locate .rrd files.
  *
- * @method boolean isDir()
+ * @method bool isDir()
  *
  **/
 class RRDRecursiveFilterIterator extends \RecursiveFilterIterator
 {
-
     public function accept()
     {
         $filename = $this->current()->getFilename();

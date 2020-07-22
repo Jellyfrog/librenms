@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessErrorRateDiscovery.php
+ * WirelessErrorRateDiscovery.php.
  *
  * Discover bit error rate sensors in bps
  *
@@ -29,7 +29,7 @@ interface WirelessErrorRateDiscovery
 {
     /**
      * Discover wireless bit error rate.  This is in bps. Type is error-rate.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

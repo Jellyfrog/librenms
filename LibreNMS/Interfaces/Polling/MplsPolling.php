@@ -1,6 +1,6 @@
 <?php
 /**
- * MplsPolling.php
+ * MplsPolling.php.
  *
  * -Description-
  *

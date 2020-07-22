@@ -1,6 +1,6 @@
 <?php
 /**
- * FgTrapIpsAnomaly.php
+ * FgTrapIpsAnomaly.php.
  *
  * -Description-
  *

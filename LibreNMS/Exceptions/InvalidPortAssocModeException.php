@@ -1,6 +1,6 @@
 <?php
 /**
- * InvalidPortAssocModeException.php
+ * InvalidPortAssocModeException.php.
  *
  * -Description-
  *
@@ -27,5 +27,4 @@ namespace LibreNMS\Exceptions;
 
 class InvalidPortAssocModeException extends \Exception
 {
-
 }

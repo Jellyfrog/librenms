@@ -1,6 +1,6 @@
 <?php
 /**
- * SnmpVersionUnsupportedException.php
+ * SnmpVersionUnsupportedException.php.
  *
  * -Description-
  *
@@ -27,5 +27,4 @@ namespace LibreNMS\Exceptions;
 
 class SnmpVersionUnsupportedException extends \Exception
 {
-
 }

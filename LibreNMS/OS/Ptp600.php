@@ -1,6 +1,6 @@
 <?php
 /**
- * ptp600.php
+ * ptp600.php.
  *
  * Cambium
  *
@@ -38,7 +38,7 @@ class Ptp600 extends OS implements
 {
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -46,7 +46,8 @@ class Ptp600 extends OS implements
     {
         $transmit = '.1.3.6.1.4.1.17713.6.12.3.0'; //"CAMBIUM-PTP600-MIB::transmitPower.0"
         $receive = '.1.3.6.1.4.1.17713.6.12.1.0'; //"CAMBIUM-PTP600-MIB::receivePower.0";
-        return array(
+
+        return [
             new WirelessSensor(
                 'power',
                 $this->getDeviceId(),
@@ -68,14 +69,13 @@ class Ptp600 extends OS implements
                 null,
                 1,
                 10
-            )
-        );
+            ),
+        ];
     }
-
 
     /**
      * Discover wireless rate. This is in bps. Type is rate.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -84,7 +84,8 @@ class Ptp600 extends OS implements
         $receive = '.1.3.6.1.4.1.17713.6.20.1.0'; //"CAMBIUM-PTP600-MIB::receiveDataRate.0"
         $transmit = '.1.3.6.1.4.1.17713.6.20.2.0'; //"CAMBIUM-PTP600-MIB::transmitDataRate.0"
         $aggregate = '.1.3.6.1.4.1.17713.6.20.3.0'; //"CAMBIUM-PTP600-MIB::aggregateDataRate.0"
-        return array(
+
+        return [
             new WirelessSensor(
                 'rate',
                 $this->getDeviceId(),
@@ -117,20 +118,21 @@ class Ptp600 extends OS implements
                 null,
                 1000,
                 1
-            )
-        );
+            ),
+        ];
     }
 
     /**
      * Discover wireless SSR.  This is in dB. Type is ssr.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessSsr()
     {
         $ssr = '.1.3.6.1.4.1.17713.6.12.13.0'; // CAMBIUM-PTP600-MIB::signalStrengthRatio.0
-        return array(
+
+        return [
             new WirelessSensor(
                 'ssr',
                 $this->getDeviceId(),
@@ -141,7 +143,7 @@ class Ptp600 extends OS implements
                 null,
                 1,
                 10
-            )
-        );
+            ),
+        ];
     }
 }

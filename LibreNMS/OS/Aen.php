@@ -1,6 +1,6 @@
 <?php
 /**
- * Aen.php
+ * Aen.php.
  *
  * Accedian OS
  *
@@ -33,7 +33,7 @@ class Aen extends OS implements ProcessorDiscovery
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
@@ -43,16 +43,16 @@ class Aen extends OS implements ProcessorDiscovery
 
         // don't poll v5.3.1_22558 devices due to bug that crashes snmpd
         if ($device['version'] == 'AEN_5.3.1_22558') {
-            return array();
+            return [];
         }
 
-        return array(
+        return [
             Processor::discover(
                 $this->getName(),
                 $this->getDeviceId(),
                 '.1.3.6.1.4.1.22420.1.1.20.0', // ACD-DESC-MIB::acdDescCpuUsageCurrent
                 0
-            )
-        );
+            ),
+        ];
     }
 }

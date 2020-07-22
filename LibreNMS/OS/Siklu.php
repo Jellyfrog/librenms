@@ -1,6 +1,6 @@
 <?php
 /**
- * Siklu.php
+ * Siklu.php.
  *
  * Siklu Communication
  *
@@ -38,60 +38,63 @@ class Siklu extends OS implements
     WirelessRssiDiscovery,
     WirelessSnrDiscovery
 {
-
     /**
      * Discover wireless frequency.  This is in GHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessFrequency()
     {
         $oid = '.1.3.6.1.4.1.31926.2.1.1.4.1'; // RADIO-BRIDGE-MIB::rfOperationalFrequency.1
-        return array(
+
+        return [
             new WirelessSensor('frequency', $this->getDeviceId(), $oid, 'siklu', 1, 'Frequency', null, 1, 1000),
-        );
+        ];
     }
 
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
     public function discoverWirelessPower()
     {
         $oid = '.1.3.6.1.4.1.31926.2.1.1.42.1'; // RADIO-BRIDGE-MIB::rfTxPower.1
-        return array(
+
+        return [
             new WirelessSensor('power', $this->getDeviceId(), $oid, 'siklu', 1, 'Tx Power'),
-        );
+        ];
     }
 
     /**
      * Discover wireless RSSI (Received Signal Strength Indicator). This is in dBm. Type is rssi.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
     public function discoverWirelessRssi()
     {
         $oid = '.1.3.6.1.4.1.31926.2.1.1.19.1'; // RADIO-BRIDGE-MIB::rfAverageRssi.1
-        return array(
+
+        return [
             new WirelessSensor('rssi', $this->getDeviceId(), $oid, 'siklu', 1, 'RSSI'),
-        );
+        ];
     }
 
     /**
      * Discover wireless SNR.  This is in dB. Type is snr.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessSnr()
     {
         $oid = '.1.3.6.1.4.1.31926.2.1.1.18.1'; // RADIO-BRIDGE-MIB::rfAverageCinr.1
-        return array(
+
+        return [
             new WirelessSensor('snr', $this->getDeviceId(), $oid, 'siklu', 1, 'CINR'),
-        );
+        ];
     }
 }

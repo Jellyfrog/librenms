@@ -1,6 +1,6 @@
 <?php
 /**
- * Generic.php
+ * Generic.php.
  *
  * Generic OS Class, used when no specific OS is found
  *
@@ -29,5 +29,4 @@ use LibreNMS\OS;
 
 class Generic extends OS
 {
-
 }

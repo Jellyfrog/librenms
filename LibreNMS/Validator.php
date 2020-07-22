@@ -1,6 +1,6 @@
 <?php
 /**
- * Validator.php
+ * Validator.php.
  *
  * Class to run validations.  Also allows sharing data between ValidationGroups.
  *
@@ -31,8 +31,8 @@ use ReflectionClass;
 
 class Validator
 {
-    private $validation_groups = array();
-    private $results = array();
+    private $validation_groups = [];
+    private $results = [];
 
     // data cache
     private $username;
@@ -44,21 +44,20 @@ class Validator
     public function __construct()
     {
         // load all validations
-        $pattern = $this->getBaseDir() . '/LibreNMS/Validations/*.php';
+        $pattern = $this->getBaseDir().'/LibreNMS/Validations/*.php';
 
         foreach (glob($pattern) as $file) {
             $class_name = basename($file, '.php');
-            $class = '\LibreNMS\Validations\\' . $class_name;
+            $class = '\LibreNMS\Validations\\'.$class_name;
 
             $rc = new ReflectionClass($class);
-            if (!$rc->isAbstract()) {
+            if (! $rc->isAbstract()) {
                 $validation_name = strtolower($class_name);
                 $this->validation_groups[$validation_name] = new $class();
-                $this->results[$validation_name] = array();
+                $this->results[$validation_name] = [];
             }
         }
     }
-
 
     /**
      * Run validations. An empty array will run all default validations.
@@ -66,7 +65,7 @@ class Validator
      * @param array $validation_groups selected validation groups to run
      * @param bool $print_group_status print out group status
      */
-    public function validate($validation_groups = array(), $print_group_status = false)
+    public function validate($validation_groups = [], $print_group_status = false)
     {
         foreach ($this->validation_groups as $group_name => $group) {
             // only run each group once
@@ -127,11 +126,11 @@ class Validator
             if (isset($this->results[$validation_group])) {
                 return $this->results[$validation_group];
             } else {
-                return array();
+                return [];
             }
         }
 
-        return array_reduce($this->results, 'array_merge', array());
+        return array_reduce($this->results, 'array_merge', []);
     }
 
     /**
@@ -152,7 +151,6 @@ class Validator
      */
     public function printResults($validation_group = null)
     {
-
         $results = $this->getResults($validation_group);
 
         foreach ($results as $result) {
@@ -191,7 +189,6 @@ class Validator
      * @param string $message
      * @param string $fix
      * @param string $group manually specify the group, otherwise this will be inferred from the callers class name
-
      */
     public function ok($message, $fix = null, $group = null)
     {
@@ -230,10 +227,10 @@ class Validator
      */
     public function getVersions($remote = false)
     {
-        if (!isset($this->versions)) {
+        if (! isset($this->versions)) {
             $this->versions = version_info($remote);
         } else {
-            if ($remote && !isset($this->versions['github'])) {
+            if ($remote && ! isset($this->versions['github'])) {
                 $this->versions = version_info($remote);
             }
         }
@@ -243,7 +240,7 @@ class Validator
 
     /**
      * Execute a command, but don't run it as root.  If we are root, run as the LibreNMS user.
-     * Arguments match exec()
+     * Arguments match exec().
      *
      * @param string $command the command to run
      * @param array $output will hold the output of the command
@@ -252,7 +249,7 @@ class Validator
     public function execAsUser($command, &$output = null, &$code = null)
     {
         if (self::getUsername() === 'root') {
-            $command = 'su ' . \config('librenms.user') . ' -s /bin/sh -c "' . $command . '"';
+            $command = 'su '.\config('librenms.user').' -s /bin/sh -c "'.$command.'"';
         }
         exec($command, $output, $code);
     }
@@ -264,7 +261,7 @@ class Validator
      */
     public function getUsername()
     {
-        if (!isset($this->username)) {
+        if (! isset($this->username)) {
             if (function_exists('posix_getpwuid')) {
                 $userinfo = posix_getpwuid(posix_geteuid());
                 $this->username = $userinfo['name'];
@@ -278,18 +275,19 @@ class Validator
 
     /**
      * Get the base url for this LibreNMS install, this will only work from web pages.
-     * (unless base_url is set)
+     * (unless base_url is set).
      *
      * @return string the base url without a trailing /
      */
     public function getBaseURL()
     {
         $url = function_exists('get_url') ? get_url() : Config::get('base_url');
+
         return rtrim(str_replace('validate', '', $url), '/');  // get base_url from current url
     }
 
     public function getBaseDir()
     {
-        return realpath(__DIR__ . '/..');
+        return realpath(__DIR__.'/..');
     }
 }

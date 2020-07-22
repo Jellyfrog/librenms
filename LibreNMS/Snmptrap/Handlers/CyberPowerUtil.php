@@ -1,6 +1,6 @@
 <?php
 /**
- * CyberPowerUtil.php
+ * CyberPowerUtil.php.
  *
  * -Description-
  *
@@ -30,7 +30,7 @@ namespace LibreNMS\Snmptrap\Handlers;
 class CyberPowerUtil
 {
     /**
-     * Get the trap message
+     * Get the trap message.
      *
      * @param Trap $trap
      * @return string

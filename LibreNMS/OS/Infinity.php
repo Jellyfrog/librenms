@@ -1,6 +1,6 @@
 <?php
 /**
- * Infinity.php
+ * Infinity.php.
  *
  * -Description-
  *

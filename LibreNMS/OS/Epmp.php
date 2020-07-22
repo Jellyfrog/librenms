@@ -1,6 +1,6 @@
 <?php
 /**
- * Epmp.php
+ * Epmp.php.
  *
  * Cambium
  *
@@ -26,10 +26,10 @@
 namespace LibreNMS\OS;
 
 use LibreNMS\Device\WirelessSensor;
+use LibreNMS\Interfaces\Discovery\Sensors\WirelessClientsDiscovery;
+use LibreNMS\Interfaces\Discovery\Sensors\WirelessFrequencyDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessRssiDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessSnrDiscovery;
-use LibreNMS\Interfaces\Discovery\Sensors\WirelessFrequencyDiscovery;
-use LibreNMS\Interfaces\Discovery\Sensors\WirelessClientsDiscovery;
 use LibreNMS\OS;
 
 class Epmp extends OS implements
@@ -40,14 +40,15 @@ class Epmp extends OS implements
 {
     /**
      * Discover wireless bit/packet error ratio.  This is in percent. Type is error-ratio.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessRssi()
     {
         $rssi_oid = '.1.3.6.1.4.1.17713.21.1.2.3.0'; //CAMBIUM-PMP80211-MIB::cambiumSTADLRSSI.0
-        return array(
+
+        return [
             new WirelessSensor(
                 'rssi',
                 $this->getDeviceId(),
@@ -56,21 +57,22 @@ class Epmp extends OS implements
                 0,
                 'Cambium ePMP RSSI',
                 null
-            )
-        );
+            ),
+        ];
     }
 
     /**
      * Discover wireless SNR.  This is in dB. Type is snr.
      * Formula: SNR = Signal or Rx Power - Noise Floor
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessSnr()
     {
         $snr = '.1.3.6.1.4.1.17713.21.1.2.18.0'; //CAMBIUM-PMP80211-MIB::cambiumSTADLSNR.0
-        return array(
+
+        return [
             new WirelessSensor(
                 'snr',
                 $this->getDeviceId(),
@@ -79,20 +81,21 @@ class Epmp extends OS implements
                 0,
                 'Cambium ePMP SNR',
                 null
-            )
-        );
+            ),
+        ];
     }
 
     /**
      * Discover wireless frequency.  This is in MHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessFrequency()
     {
         $frequency = '.1.3.6.1.4.1.17713.21.1.2.1.0'; //CAMBIUM-PMP80211-MIB::cambiumSTAConnectedRFFrequency"
-        return array(
+
+        return [
             new WirelessSensor(
                 'frequency',
                 $this->getDeviceId(),
@@ -101,22 +104,21 @@ class Epmp extends OS implements
                 0,
                 'Cambium ePMP Frequency',
                 null
-            )
-        );
+            ),
+        ];
     }
-
-
 
     /**
      * Discover wireless client counts. Type is clients.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessClients()
     {
         $registeredSM = '.1.3.6.1.4.1.17713.21.1.2.10.0'; //CAMBIUM-PMP80211-MIB::cambiumAPNumberOfConnectedSTA.0
-        return array(
+
+        return [
             new WirelessSensor(
                 'clients',
                 $this->getDeviceId(),
@@ -125,7 +127,7 @@ class Epmp extends OS implements
                 0,
                 'Client Count',
                 null
-            )
-        );
+            ),
+        ];
     }
 }

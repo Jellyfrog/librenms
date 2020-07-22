@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessPowerDiscovery.php
+ * WirelessPowerDiscovery.php.
  *
  * Discover TX or RX power sensors in dBm
  *
@@ -29,7 +29,7 @@ interface WirelessPowerDiscovery
 {
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */

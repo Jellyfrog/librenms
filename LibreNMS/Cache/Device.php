@@ -1,6 +1,6 @@
 <?php
 /**
- * Device.php
+ * Device.php.
  *
  * -Description-
  *
@@ -35,14 +35,14 @@ class Device
      *
      * @return \App\Models\Device
      */
-    public function getPrimary() : \App\Models\Device
+    public function getPrimary(): \App\Models\Device
     {
         return $this->get($this->primary);
     }
 
     /**
      * Set the primary device.
-     * This will be fetched by getPrimary()
+     * This will be fetched by getPrimary().
      *
      * @param int $device_id
      */
@@ -52,14 +52,14 @@ class Device
     }
 
     /**
-     * Get a device by device_id
+     * Get a device by device_id.
      *
      * @param int $device_id
      * @return \App\Models\Device
      */
-    public function get($device_id) : \App\Models\Device
+    public function get($device_id): \App\Models\Device
     {
-        if (!array_key_exists($device_id, $this->devices)) {
+        if (! array_key_exists($device_id, $this->devices)) {
             return $this->load($device_id);
         }
 
@@ -67,16 +67,16 @@ class Device
     }
 
     /**
-     * Get a device by hostname
+     * Get a device by hostname.
      *
      * @param string $hostname
      * @return \App\Models\Device
      */
-    public function getByHostname($hostname) : \App\Models\Device
+    public function getByHostname($hostname): \App\Models\Device
     {
         $device_id = collect($this->devices)->pluck('device_id', 'hostname')->get($hostname);
 
-        if (!$device_id) {
+        if (! $device_id) {
             return $this->load($hostname, 'hostname');
         }
 
@@ -84,19 +84,20 @@ class Device
     }
 
     /**
-     * Ignore cache and load the device fresh from the database
+     * Ignore cache and load the device fresh from the database.
      *
      * @param int $device_id
      * @return \App\Models\Device
      */
-    public function refresh($device_id) : \App\Models\Device
+    public function refresh($device_id): \App\Models\Device
     {
         unset($this->devices[$device_id]);
+
         return $this->get($device_id);
     }
 
     /**
-     * Flush the cache
+     * Flush the cache.
      */
     public function flush()
     {
@@ -107,11 +108,12 @@ class Device
     {
         $device = \App\Models\Device::query()->where($field, $value)->first();
 
-        if (!$device) {
+        if (! $device) {
             return new \App\Models\Device;
         }
 
         $this->devices[$device->device_id] = $device;
+
         return $device;
     }
 }

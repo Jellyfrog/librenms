@@ -1,6 +1,6 @@
 <?php
 /**
- * FmTrapLogRateThreshold.php
+ * FmTrapLogRateThreshold.php.
  *
  * -Description-
  *

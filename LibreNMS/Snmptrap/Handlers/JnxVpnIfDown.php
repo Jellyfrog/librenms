@@ -1,6 +1,6 @@
 <?php
 /**
- * JnxVpnIfDown.php
+ * JnxVpnIfDown.php.
  *
  * -Description-
  *
@@ -42,7 +42,6 @@ class JnxVpnIfDown implements SnmptrapHandler
      */
     public function handle(Device $device, Trap $trap)
     {
-        
         $vpnType = $trap->getOidData($trap->findOid('JUNIPER-VPN-MIB::jnxVpnIfVpnType'));
         $vpnName = $trap->getOidData($trap->findOid('JUNIPER-VPN-MIB::jnxVpnIfVpnName'));
 

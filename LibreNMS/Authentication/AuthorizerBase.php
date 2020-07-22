@@ -1,6 +1,6 @@
 <?php
 /**
- * AuthorizerBase.php
+ * AuthorizerBase.php.
  *
  * authentication functions
  *
@@ -22,6 +22,7 @@
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
+
 namespace LibreNMS\Authentication;
 
 use LibreNMS\Interfaces\Authentication\Authorizer;
@@ -85,7 +86,5 @@ abstract class AuthorizerBase implements Authorizer
         } elseif (isset($_SERVER['PHP_AUTH_USER'])) {
             return $_SERVER['PHP_AUTH_USER'];
         }
-
-        return null;
     }
 }

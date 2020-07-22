@@ -1,6 +1,6 @@
 <?php
 /**
- * LockException.php
+ * LockException.php.
  *
  * -Description-
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
 
 namespace LibreNMS\Exceptions;
 

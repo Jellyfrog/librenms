@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessQualityDiscovery.php
+ * WirelessQualityDiscovery.php.
  *
  * Discover Quality Sensors as a percent
  *
@@ -29,7 +29,7 @@ interface WirelessQualityDiscovery
 {
     /**
      * Discover wireless quality.  This is a percent. Type is quality.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

@@ -1,6 +1,6 @@
 <?php
 /**
- * DuskUnsafeException.php
+ * DuskUnsafeException.php.
  *
  * Dusk is installed and the application is in production
  *
@@ -30,7 +30,7 @@ use LibreNMS\Interfaces\Exceptions\UpgradeableException;
 class DuskUnsafeException extends \Exception implements UpgradeableException
 {
     /**
-     * Try to convert the given Exception to this exception
+     * Try to convert the given Exception to this exception.
      *
      * @param \Exception $exception
      * @return static

@@ -1,6 +1,6 @@
 <?php
 /**
- * AdvaSnmpDyingGaspTrap.php
+ * AdvaSnmpDyingGaspTrap.php.
  *
  * -Description-
  *
@@ -45,6 +45,6 @@ class AdvaSnmpDyingGaspTrap implements SnmptrapHandler
      */
     public function handle(Device $device, Trap $trap)
     {
-        Log::event("Dying Gasp received", $device->device_id, 'trap', 5);
+        Log::event('Dying Gasp received', $device->device_id, 'trap', 5);
     }
 }

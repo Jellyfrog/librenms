@@ -1,6 +1,6 @@
 <?php
 /**
- * RuckusDiassocTrap.php
+ * RuckusDiassocTrap.php.
  *
  * -Description-
  *

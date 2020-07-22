@@ -1,6 +1,6 @@
 <?php
 /**
- * Datastore.php
+ * Datastore.php.
  *
  * Interface for datastores. Will be used to send them data through the put() method
  *
@@ -28,28 +28,28 @@ namespace LibreNMS\Interfaces\Data;
 interface Datastore
 {
     /**
-     * Check if this is enabled by the configuration
+     * Check if this is enabled by the configuration.
      *
-     * @return boolean
+     * @return bool
      */
     public static function isEnabled();
 
     /**
-     * Checks if the datastore wants rrdtags to be sent when issuing put()
+     * Checks if the datastore wants rrdtags to be sent when issuing put().
      *
-     * @return boolean
+     * @return bool
      */
     public function wantsRrdTags();
 
     /**
-     * The name of this datastore
+     * The name of this datastore.
      *
      * @return string
      */
     public function getName();
 
     /**
-     * Array of stats should be [type => [count => n, time => s]]
+     * Array of stats should be [type => [count => n, time => s]].
      *
      * @return array
      */

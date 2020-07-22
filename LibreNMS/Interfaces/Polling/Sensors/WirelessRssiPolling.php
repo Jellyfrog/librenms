@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessRssiPolling.php
+ * WirelessRssiPolling.php.
  *
  * Custom polling interface for wireless RSSI (Received Signal Strength Indicator)
  *
@@ -29,7 +29,7 @@ interface WirelessRssiPolling
 {
     /**
      * Poll wireless RSSI (Received Signal Strength Indicator) in dBm
-     * The returned array should be sensor_id => value pairs
+     * The returned array should be sensor_id => value pairs.
      *
      * @param array $sensors Array of sensors needed to be polled
      * @return array of polled data

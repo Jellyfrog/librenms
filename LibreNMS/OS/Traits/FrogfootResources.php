@@ -1,6 +1,6 @@
 <?php
 /**
- * FrogfootResources.php
+ * FrogfootResources.php.
  *
  * A trait to add FROGFOOT-RESOURCES-MIB support to an OS
  *
@@ -31,19 +31,19 @@ trait FrogfootResources
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
     public function discoverProcessors()
     {
-        return array(
+        return [
             Processor::discover(
                 $this->getName(),
                 $this->getDeviceID(),
                 '1.3.6.1.4.1.10002.1.1.1.4.2.1.3.2',
                 0
-            )
-        );
+            ),
+        ];
     }
 }

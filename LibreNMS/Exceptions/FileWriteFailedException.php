@@ -1,6 +1,6 @@
 <?php
 /**
- * FileWriteFailedException.php
+ * FileWriteFailedException.php.
  *
  * -Description-
  *

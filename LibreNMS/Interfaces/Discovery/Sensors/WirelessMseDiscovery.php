@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessMseDiscovery.php
+ * WirelessMseDiscovery.php.
  *
  * Discover wireless MSE. Mean square error value in dB.
  *
@@ -29,7 +29,7 @@ interface WirelessMseDiscovery
 {
     /**
      * Discover wireless MSE. Mean square error value in dB. Type is mse.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

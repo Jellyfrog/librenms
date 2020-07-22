@@ -1,6 +1,6 @@
 <?php
 /**
- * CpUpsStartBatteryTest.php
+ * CpUpsStartBatteryTest.php.
  *
  * -Description-
  *

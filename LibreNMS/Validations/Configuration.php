@@ -1,6 +1,6 @@
 <?php
 /**
- * Configuration.php
+ * Configuration.php.
  *
  * Checks various config settings are correct.
  *
@@ -33,7 +33,7 @@ class Configuration extends BaseValidation
 {
     /**
      * Validate this module.
-     * To return ValidationResults, call ok, warn, fail, or result methods on the $validator
+     * To return ValidationResults, call ok, warn, fail, or result methods on the $validator.
      *
      * @param Validator $validator
      */
@@ -48,8 +48,8 @@ class Configuration extends BaseValidation
             $validator->warn('Debug enabled.  This is a security risk.');
         }
 
-        if (Eloquent::isConnected() && !\DB::table('devices')->exists()) {
-            $validator->warn('You have no devices.', 'Consider adding a device such as localhost: ' . $validator->getBaseURL() . '/addhost');
+        if (Eloquent::isConnected() && ! \DB::table('devices')->exists()) {
+            $validator->warn('You have no devices.', 'Consider adding a device such as localhost: '.$validator->getBaseURL().'/addhost');
         }
     }
 }

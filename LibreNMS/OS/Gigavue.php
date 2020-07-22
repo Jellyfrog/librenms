@@ -1,6 +1,6 @@
 <?php
 /**
- * Gigavue.php
+ * Gigavue.php.
  *
  * Gigamon GigaVUE OS
  *

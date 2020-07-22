@@ -1,6 +1,6 @@
 <?php
 /**
- * OSPolling.php
+ * OSPolling.php.
  *
  * Custom OS polling data, this could be anything including custom graphs
  *

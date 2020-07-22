@@ -1,6 +1,6 @@
 <?php
 /**
- * Version.php
+ * Version.php.
  *
  * Get version info about LibreNMS and various components/dependencies
  *
@@ -59,6 +59,7 @@ class Version
         if (Eloquent::isConnected()) {
             try {
                 $query = Eloquent::DB()->table('migrations');
+
                 return [
                     'last' => $query->orderBy('id', 'desc')->value('migration'),
                     'total' => $query->count(),
@@ -96,7 +97,7 @@ class Version
         $proc->run();
 
         if ($proc->getExitCode() !== 0) {
-            return null;
+            return;
         }
 
         return explode(' ', rtrim($proc->getOutput()), 2)[1] ?? null;

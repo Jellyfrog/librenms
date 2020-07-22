@@ -1,6 +1,6 @@
 <?php
 /**
- * WirlessErrorRatioPolling.php
+ * WirlessErrorRatioPolling.php.
  *
  * Custom polling interface for wireless bit/packet error ratio
  *
@@ -29,7 +29,7 @@ interface WirelessErrorRatioPolling
 {
     /**
      * Poll wireless bit/packet error ratio as percent
-     * The returned array should be sensor_id => value pairs
+     * The returned array should be sensor_id => value pairs.
      *
      * @param array $sensors Array of sensors needed to be polled
      * @return array of polled data

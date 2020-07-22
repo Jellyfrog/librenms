@@ -1,6 +1,6 @@
 <?php
 /**
- * CpRtnDischarge.php
+ * CpRtnDischarge.php.
  *
  * -Description-
  *

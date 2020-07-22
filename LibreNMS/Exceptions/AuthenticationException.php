@@ -1,6 +1,6 @@
 <?php
 /**
- * AuthenticationException.php
+ * AuthenticationException.php.
  *
  * Throw this when authentication fails.  Sets the default message to 'Invalid credentials' so we don't leak any info.
  *

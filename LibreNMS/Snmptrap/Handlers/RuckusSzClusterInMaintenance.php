@@ -1,6 +1,6 @@
 <?php
 /**
- * RuckusSzClusterInMaintenance.php
+ * RuckusSzClusterInMaintenance.php.
  *
  * -Description-
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * Rewrite.php
+ * Rewrite.php.
  *
  * -Description-
  *
@@ -113,7 +113,7 @@ class Rewrite
     }
 
     /**
-     * Reformat a mac stored in the DB (only hex) to a nice readable format
+     * Reformat a mac stored in the DB (only hex) to a nice readable format.
      *
      * @param $mac
      * @return string
@@ -124,7 +124,7 @@ class Rewrite
     }
 
     /**
-     * Reformat hex MAC as oid MAC (dotted-decimal)
+     * Reformat hex MAC as oid MAC (dotted-decimal).
      *
      * 00:12:34:AB:CD:EF becomes 0.18.52.171.205.239
      * 0:12:34:AB:CD:EF  becomes 0.18.52.171.205.239
@@ -140,7 +140,7 @@ class Rewrite
     }
 
     /**
-     * Reformat Hex MAC with delimiters to Hex String without delimiters
+     * Reformat Hex MAC with delimiters to Hex String without delimiters.
      *
      * Assumes the MAC address is well-formed and in a common format.
      * 00:12:34:ab:cd:ef becomes 001234abcdef
@@ -157,14 +157,14 @@ class Rewrite
      */
     public static function macToHex($mac)
     {
-        $mac_array = explode(':', str_replace(['-','.'], ':', $mac));
-        $mac_padding = array_fill(0, count($mac_array), 12/count($mac_array));
+        $mac_array = explode(':', str_replace(['-', '.'], ':', $mac));
+        $mac_padding = array_fill(0, count($mac_array), 12 / count($mac_array));
 
         return implode(array_map('zeropad', $mac_array, $mac_padding));
     }
 
     /**
-     * Make Cisco hardware human readable
+     * Make Cisco hardware human readable.
      *
      * @param Device $device
      * @param bool $short
@@ -172,35 +172,35 @@ class Rewrite
      */
     public static function ciscoHardware(&$device, $short = false)
     {
-        if ($device['os'] == "ios") {
+        if ($device['os'] == 'ios') {
             if ($device['hardware']) {
-                if (preg_match("/^WS-C([A-Za-z0-9]+)/", $device['hardware'], $matches)) {
-                    if (!$short) {
-                        $device['hardware'] = "Catalyst " . $matches[1] . " (" . $device['hardware'] . ")";
+                if (preg_match('/^WS-C([A-Za-z0-9]+)/', $device['hardware'], $matches)) {
+                    if (! $short) {
+                        $device['hardware'] = 'Catalyst '.$matches[1].' ('.$device['hardware'].')';
                     } else {
-                        $device['hardware'] = "Catalyst " . $matches[1];
+                        $device['hardware'] = 'Catalyst '.$matches[1];
                     }
-                } elseif (preg_match("/^CISCO([0-9]+)(.*)/", $device['hardware'], $matches)) {
-                    if (!$short && $matches[2]) {
-                        $device['hardware'] = "Cisco " . $matches[1] . " (" . $device['hardware'] . ")";
+                } elseif (preg_match('/^CISCO([0-9]+)(.*)/', $device['hardware'], $matches)) {
+                    if (! $short && $matches[2]) {
+                        $device['hardware'] = 'Cisco '.$matches[1].' ('.$device['hardware'].')';
                     } else {
-                        $device['hardware'] = "Cisco " . $matches[1];
+                        $device['hardware'] = 'Cisco '.$matches[1];
                     }
                 }
-            } elseif (preg_match("/Cisco IOS Software, C([A-Za-z0-9]+) Software.*/", $device['sysDescr'], $matches)) {
-                $device['hardware'] = "Catalyst " . $matches[1];
-            } elseif (preg_match("/Cisco IOS Software, ([0-9]+) Software.*/", $device['sysDescr'], $matches)) {
-                $device['hardware'] = "Cisco " . $matches[1];
+            } elseif (preg_match('/Cisco IOS Software, C([A-Za-z0-9]+) Software.*/', $device['sysDescr'], $matches)) {
+                $device['hardware'] = 'Catalyst '.$matches[1];
+            } elseif (preg_match('/Cisco IOS Software, ([0-9]+) Software.*/', $device['sysDescr'], $matches)) {
+                $device['hardware'] = 'Cisco '.$matches[1];
             }
         }
 
-        if ($device['os'] == "iosxe") {
+        if ($device['os'] == 'iosxe') {
             if ($device['hardware']) {
-                if (preg_match('/CAT9K/', $device['sysDescr'], $matches) && preg_match("/^C(9[A-Za-z0-9]+)/", $device['hardware'], $matches2)) {
-                    if (!$short) {
-                        $device['hardware'] = "Catalyst " . $matches2[1] . " (" . $device['hardware'] . ")";
+                if (preg_match('/CAT9K/', $device['sysDescr'], $matches) && preg_match('/^C(9[A-Za-z0-9]+)/', $device['hardware'], $matches2)) {
+                    if (! $short) {
+                        $device['hardware'] = 'Catalyst '.$matches2[1].' ('.$device['hardware'].')';
                     } else {
-                        $device['hardware'] = "Catalyst " . $matches2[1];
+                        $device['hardware'] = 'Catalyst '.$matches2[1];
                     }
                 }
             }
@@ -237,7 +237,6 @@ class Rewrite
 
         return $location;
     }
-
 
     public static function vmwareGuest($guest_id)
     {

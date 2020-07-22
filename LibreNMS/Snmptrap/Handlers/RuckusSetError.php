@@ -1,6 +1,6 @@
 <?php
 /**
- * RuckusSetError.php
+ * RuckusSetError.php.
  *
  * -Description-
  *

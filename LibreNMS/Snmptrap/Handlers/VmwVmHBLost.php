@@ -1,6 +1,6 @@
 <?php
 /**
- * VmwVmHBLost.php
+ * VmwVmHBLost.php.
  *
  * -Description-
  *

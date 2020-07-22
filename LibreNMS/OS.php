@@ -1,6 +1,6 @@
 <?php
 /**
- * OS.php
+ * OS.php.
  *
  * Base OS class
  *
@@ -49,7 +49,7 @@ class OS implements ProcessorDiscovery
     private $pre_cache; // pre-fetch data cache
 
     /**
-     * OS constructor. Not allowed to be created directly.  Use OS::make()
+     * OS constructor. Not allowed to be created directly.  Use OS::make().
      * @param $device
      */
     private function __construct(&$device)
@@ -58,7 +58,7 @@ class OS implements ProcessorDiscovery
     }
 
     /**
-     * Get the device array that owns this OS instance
+     * Get the device array that owns this OS instance.
      *
      * @return array
      */
@@ -68,17 +68,17 @@ class OS implements ProcessorDiscovery
     }
 
     /**
-     * Get the device_id of the device that owns this OS instance
+     * Get the device_id of the device that owns this OS instance.
      *
      * @return int
      */
     public function getDeviceId()
     {
-        return (int)$this->device['device_id'];
+        return (int) $this->device['device_id'];
     }
 
     /**
-     * Get the Eloquent Device Model for the current device
+     * Get the Eloquent Device Model for the current device.
      *
      * @return Device
      */
@@ -110,11 +110,12 @@ class OS implements ProcessorDiscovery
     {
         if (Str::contains($oid, '.')) {
             echo "Error: don't use this with numeric oids!\n";
-            return null;
+
+            return;
         }
 
-        if (!isset($this->cache['cache_oid'][$oid])) {
-            $data = snmpwalk_cache_oid($this->getDevice(), $oid, array(), $mib, null, $snmpflags);
+        if (! isset($this->cache['cache_oid'][$oid])) {
+            $data = snmpwalk_cache_oid($this->getDevice(), $oid, [], $mib, null, $snmpflags);
             $this->cache['cache_oid'][$oid] = array_map('current', $data);
         }
 
@@ -135,10 +136,11 @@ class OS implements ProcessorDiscovery
     {
         if (Str::contains($oid, '.')) {
             echo "Error: don't use this with numeric oids!\n";
-            return null;
+
+            return;
         }
 
-        if (!isset($this->cache['group'][$depth][$oid])) {
+        if (! isset($this->cache['group'][$depth][$oid])) {
             $this->cache['group'][$depth][$oid] = snmpwalk_group($this->getDevice(), $oid, $mib, $depth);
         }
 
@@ -146,7 +148,7 @@ class OS implements ProcessorDiscovery
     }
 
     /**
-     * Check if an OID has been cached
+     * Check if an OID has been cached.
      *
      * @param $oid
      * @return bool
@@ -159,7 +161,7 @@ class OS implements ProcessorDiscovery
     /**
      * OS Factory, returns an instance of the OS for this device
      * If no specific OS is found, Try the OS group.
-     * Otherwise, returns Generic
+     * Otherwise, returns Generic.
      *
      * @param array $device device array, must have os set
      * @return OS
@@ -167,23 +169,26 @@ class OS implements ProcessorDiscovery
     public static function make(&$device)
     {
         $class = str_to_class($device['os'], 'LibreNMS\\OS\\');
-        d_echo('Attempting to initialize OS: ' . $device['os'] . PHP_EOL);
+        d_echo('Attempting to initialize OS: '.$device['os'].PHP_EOL);
         if (class_exists($class)) {
             d_echo("OS initialized: $class\n");
+
             return new $class($device);
         }
 
         // If not a specific OS, check for a group one.
         if (isset($device['os_group'])) {
             $class = str_to_class($device['os_group'], 'LibreNMS\\OS\\Shared\\');
-            d_echo('Attempting to initialize OS: ' . $device['os_group'] . PHP_EOL);
+            d_echo('Attempting to initialize OS: '.$device['os_group'].PHP_EOL);
             if (class_exists($class)) {
                 d_echo("OS initialized: $class\n");
+
                 return new $class($device);
             }
         }
 
         d_echo("OS initialized as Generic\n");
+
         return new Generic($device);
     }
 
@@ -195,13 +200,13 @@ class OS implements ProcessorDiscovery
 
         $rf = new \ReflectionClass($this);
         $name = $rf->getShortName();
-        preg_match_all("/[A-Z][a-z]*/", $name, $segments);
+        preg_match_all('/[A-Z][a-z]*/', $name, $segments);
 
         return implode('-', array_map('strtolower', $segments[0]));
     }
 
     /**
-     * Poll a channel based OID, but return data in MHz
+     * Poll a channel based OID, but return data in MHz.
      *
      * @param array $sensors
      * @param callable $callback Function to modify the value before converting it to a frequency
@@ -210,17 +215,17 @@ class OS implements ProcessorDiscovery
     protected function pollWirelessChannelAsFrequency($sensors, $callback = null)
     {
         if (empty($sensors)) {
-            return array();
+            return [];
         }
 
-        $oids = array();
+        $oids = [];
         foreach ($sensors as $sensor) {
             $oids[$sensor['sensor_id']] = current($sensor['sensor_oids']);
         }
 
         $snmp_data = snmp_get_multi_oid($this->getDevice(), $oids);
 
-        $data = array();
+        $data = [];
         foreach ($oids as $id => $oid) {
             if (isset($callback)) {
                 $channel = call_user_func($callback, $snmp_data[$oid]);
@@ -236,7 +241,7 @@ class OS implements ProcessorDiscovery
 
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */

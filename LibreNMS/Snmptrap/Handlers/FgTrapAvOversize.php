@@ -1,6 +1,6 @@
 <?php
 /**
- * FgTrapAvOversize.php
+ * FgTrapAvOversize.php.
  *
  * -Description-
  *

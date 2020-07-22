@@ -1,6 +1,6 @@
 <?php
 /**
- * Fallback.php
+ * Fallback.php.
  *
  * -Description-
  *
@@ -32,7 +32,6 @@ use Log;
 
 class Fallback implements SnmptrapHandler
 {
-
     /**
      * Handle snmptrap.
      * Data is pre-parsed and delivered as a Trap.
@@ -43,9 +42,9 @@ class Fallback implements SnmptrapHandler
      */
     public function handle(Device $device, Trap $trap)
     {
-        Log::info("Unhandled trap snmptrap", [
+        Log::info('Unhandled trap snmptrap', [
             'device' => $device->hostname,
-            'oid' => $trap->getTrapOid()
+            'oid' => $trap->getTrapOid(),
         ]);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * HostUnreachableSnmpException.php
+ * HostUnreachableSnmpException.php.
  *
  * -Description-
  *
@@ -27,5 +27,4 @@ namespace LibreNMS\Exceptions;
 
 class HostUnreachableSnmpException extends HostUnreachableException
 {
-
 }

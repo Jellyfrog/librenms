@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessRssiDiscovery.php
+ * WirelessRssiDiscovery.php.
  *
  * Discover wireless RSSI (Received Signal Strength Indicator) sensors in dBm
  *
@@ -29,7 +29,7 @@ interface WirelessRssiDiscovery
 {
     /**
      * Discover wireless RSSI (Received Signal Strength Indicator). This is in dBm. Type is rssi.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */

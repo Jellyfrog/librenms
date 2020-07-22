@@ -1,6 +1,6 @@
 <?php
 /**
- * CpUpsDiagFailed.php
+ * CpUpsDiagFailed.php.
  *
  * -Description-
  *

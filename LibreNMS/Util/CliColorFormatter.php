@@ -1,6 +1,6 @@
 <?php
 /**
- * CliColorFormatter.php
+ * CliColorFormatter.php.
  *
  * -Description-
  *

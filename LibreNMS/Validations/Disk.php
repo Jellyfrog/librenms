@@ -1,6 +1,6 @@
 <?php
 /**
- * Disk.php
+ * Disk.php.
  *
  * -Description-
  *
@@ -32,7 +32,7 @@ class Disk extends BaseValidation
 {
     /**
      * Validate this module.
-     * To return ValidationResults, call ok, warn, fail, or result methods on the $validator
+     * To return ValidationResults, call ok, warn, fail, or result methods on the $validator.
      *
      * @param Validator $validator
      */
@@ -41,7 +41,7 @@ class Disk extends BaseValidation
         // Disk space and permission checks
         $temp_dir = Config::get('temp_dir');
         if (substr(sprintf('%o', fileperms($temp_dir)), -3) != 777) {
-            $validator->warn("Your tmp directory ($temp_dir) " .
+            $validator->warn("Your tmp directory ($temp_dir) ".
                 "is not set to 777 so graphs most likely won't be generated");
         }
 

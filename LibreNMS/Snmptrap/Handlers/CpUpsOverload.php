@@ -1,6 +1,6 @@
 <?php
 /**
- * CpUpsOverload.php
+ * CpUpsOverload.php.
  *
  * -Description-
  *

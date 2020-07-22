@@ -1,6 +1,6 @@
 <?php
 /**
- * Geocoder.php
+ * Geocoder.php.
  *
  * Interface to resolve an address or location string to latitude and longitude coordinates.
  *
@@ -29,7 +29,7 @@ interface Geocoder
 {
     /**
      * Try to get the coordinates of a given address.
-     * If unsuccessful, the returned array will be empty
+     * If unsuccessful, the returned array will be empty.
      *
      * @param string $address
      * @return array ['lat' => 0, 'lng' => 0]

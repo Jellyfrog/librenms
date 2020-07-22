@@ -1,6 +1,6 @@
 <?php
 /**
- * Snmpsim.php
+ * Snmpsim.php.
  *
  * Light wrapper around Snmpsim
  *
@@ -34,7 +34,7 @@ class Snmpsim
     private $ip;
     private $port;
     private $log;
-    /** @var Proc $proc */
+    /** @var Proc */
     private $proc;
 
     public function __construct($ip = '127.1.6.1', $port = 1161, $log = '/tmp/snmpsimd.log')
@@ -42,12 +42,12 @@ class Snmpsim
         $this->ip = $ip;
         $this->port = $port;
         $this->log = $log;
-        $this->snmprec_dir = Config::get('install_dir') . "/tests/snmpsim/";
+        $this->snmprec_dir = Config::get('install_dir').'/tests/snmpsim/';
     }
 
     /**
      * Run snmpsimd and fork it into the background
-     * Captures all output to the log
+     * Captures all output to the log.
      *
      * @param int $wait Wait for x seconds after starting before returning
      */
@@ -55,6 +55,7 @@ class Snmpsim
     {
         if ($this->isRunning()) {
             echo "Snmpsim is already running!\n";
+
             return;
         }
 
@@ -71,11 +72,11 @@ class Snmpsim
             sleep($wait);
         }
 
-        if (isCli() && !$this->proc->isRunning()) {
+        if (isCli() && ! $this->proc->isRunning()) {
             // if starting failed, run snmpsim again and output to the console and validate the data
-            passthru($this->getCmd(false) . ' --validate-data');
+            passthru($this->getCmd(false).' --validate-data');
 
-            if (!is_executable($this->findSnmpsimd())) {
+            if (! is_executable($this->findSnmpsimd())) {
                 echo "\nCould not find snmpsim, you can install it with 'pip install snmpsim'.  If it is already installed, make sure snmpsimd or snmpsimd.py is in PATH\n";
             } else {
                 echo "\nFailed to start Snmpsim. Scroll up for error.\n";
@@ -85,7 +86,7 @@ class Snmpsim
     }
 
     /**
-     * Stop and start the running snmpsim process
+     * Stop and start the running snmpsim process.
      */
     public function restart()
     {
@@ -105,8 +106,7 @@ class Snmpsim
 
     /**
      * Run snmpsimd but keep it in the foreground
-     * Outputs to stdout
-     *
+     * Outputs to stdout.
      */
     public function run()
     {
@@ -148,7 +148,7 @@ class Snmpsim
     }
 
     /**
-     * Generate the command for snmpsimd
+     * Generate the command for snmpsimd.
      *
      * @param bool $with_log
      * @return string
@@ -160,7 +160,7 @@ class Snmpsim
         $cmd .= " --data-dir={$this->snmprec_dir} --agent-udpv4-endpoint={$this->ip}:{$this->port}";
 
         if (is_null($this->log)) {
-            $cmd .= " --logging-method=null";
+            $cmd .= ' --logging-method=null';
         } elseif ($with_log) {
             $cmd .= " --logging-method=file:{$this->log}";
         }
@@ -177,9 +177,10 @@ class Snmpsim
     private function findSnmpsimd()
     {
         $cmd = Config::locateBinary('snmpsimd');
-        if (!is_executable($cmd)) {
+        if (! is_executable($cmd)) {
             $cmd = Config::locateBinary('snmpsimd.py');
         }
+
         return $cmd;
     }
 }

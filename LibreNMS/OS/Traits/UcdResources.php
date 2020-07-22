@@ -1,6 +1,6 @@
 <?php
 /**
- * UcdProcessor.php
+ * UcdProcessor.php.
  *
  * -Description-
  *
@@ -31,14 +31,15 @@ trait UcdResources
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
     public function discoverProcessors()
     {
-        echo "UCD Resources: ";
-        return array(
+        echo 'UCD Resources: ';
+
+        return [
             Processor::discover(
                 'ucd-old',
                 $this->getDeviceId(),
@@ -46,7 +47,7 @@ trait UcdResources
                 0,
                 'CPU',
                 -1
-            )
-        );
+            ),
+        ];
     }
 }

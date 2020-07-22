@@ -1,6 +1,6 @@
 <?php
 /**
- * FileExistsException.php
+ * FileExistsException.php.
  *
  * -Description-
  *
@@ -27,5 +27,4 @@ namespace LibreNMS\Exceptions;
 
 class FileExistsException extends \Exception
 {
-
 }

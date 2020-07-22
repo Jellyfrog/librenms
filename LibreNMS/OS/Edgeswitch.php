@@ -1,6 +1,6 @@
 <?php
 /**
- * Edgeswitch.php
+ * Edgeswitch.php.
  *
  * -Description-
  *
