@@ -1,6 +1,6 @@
 <?php
 /**
- * BaseValidation.php
+ * BaseValidation.php.
  *
  * -Description-
  *
@@ -43,17 +43,17 @@ abstract class BaseValidation implements ValidationGroup
     }
 
     /**
-     * Returns true if this group has been run
+     * Returns true if this group has been run.
      *
      * @return bool
      */
     public function isCompleted()
     {
-        return $this->completed ;
+        return $this->completed;
     }
 
     /**
-     * Mark this group as completed
+     * Mark this group as completed.
      *
      * @return void
      */

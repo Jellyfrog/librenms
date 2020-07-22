@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessRsrqDiscovery.php
+ * WirelessRsrqDiscovery.php.
  *
  * Discover wireless RSRQ (Quality of the received signal,) sensors in dB
  *
@@ -29,7 +29,7 @@ interface WirelessRsrqDiscovery
 {
     /**
      * Discover wireless RSRQ (Quality of the received signal,). This is in dB. Type is rsrq.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */

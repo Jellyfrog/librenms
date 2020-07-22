@@ -1,6 +1,6 @@
 <?php
 /**
- * CpUpsBatteryNotPresent.php
+ * CpUpsBatteryNotPresent.php.
  *
  * -Description-
  *

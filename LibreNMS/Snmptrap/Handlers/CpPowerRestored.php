@@ -1,6 +1,6 @@
 <?php
 /**
- * CpPowerRestored.php
+ * CpPowerRestored.php.
  *
  * -Description-
  *

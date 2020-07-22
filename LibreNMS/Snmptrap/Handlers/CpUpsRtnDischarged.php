@@ -1,6 +1,6 @@
 <?php
 /**
- * CpUpsRtnDischarged.php
+ * CpUpsRtnDischarged.php.
  *
  * -Description-
  *

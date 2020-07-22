@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessFrequencyDiscovery.php
+ * WirelessFrequencyDiscovery.php.
  *
  * Discover Frequency Sensors as MHz
  *
@@ -29,7 +29,7 @@ interface WirelessFrequencyDiscovery
 {
     /**
      * Discover wireless frequency.  This is in MHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

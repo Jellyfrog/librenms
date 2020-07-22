@@ -1,6 +1,6 @@
 <?php
 /**
- * OsDiscovery.php
+ * OsDiscovery.php.
  *
  * Discovers information about an OS and updates it in the database
  * Examples of things that should be updated: version, hardware, features, serial
@@ -30,7 +30,7 @@ interface OSDiscovery
 {
     /**
      * Discover additional information about the OS.
-     * Primarily this is just version, hardware, features, serial, but could be anything
+     * Primarily this is just version, hardware, features, serial, but could be anything.
      */
     public function discoverOS(): void;
 }

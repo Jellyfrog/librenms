@@ -1,6 +1,6 @@
 <?php
 /**
- * OSDetection.php
+ * OSDetection.php.
  *
  * Used to detect the os of a device.  Primarily this should be done via yaml.
  *
@@ -32,7 +32,7 @@ interface OSDetection
     /**
      * Check if the give device is this OS.
      * $device->sysObjectID and $device->sysDescr will be pre-populated
-     * Please avoid additional snmp queries if possible
+     * Please avoid additional snmp queries if possible.
      *
      * @param Device $device
      * @return bool

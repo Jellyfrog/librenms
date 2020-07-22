@@ -1,6 +1,6 @@
 <?php
 /**
- * MaximumExecutionTimeExceeded.php
+ * MaximumExecutionTimeExceeded.php.
  *
  * Show nice explanation if the user hits their configured PHP max_execution_time
  *
@@ -25,14 +25,14 @@
 
 namespace LibreNMS\Exceptions;
 
-use LibreNMS\Interfaces\Exceptions\UpgradeableException;
 use Illuminate\Support\Str;
+use LibreNMS\Interfaces\Exceptions\UpgradeableException;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 
 class MaximumExecutionTimeExceeded extends \Exception implements UpgradeableException
 {
     /**
-     * Try to convert the given Exception to a FilePermissionsException
+     * Try to convert the given Exception to a FilePermissionsException.
      *
      * @param \Exception $exception
      * @return static
@@ -44,8 +44,6 @@ class MaximumExecutionTimeExceeded extends \Exception implements UpgradeableExce
             Str::startsWith($exception->getMessage(), 'Maximum execution time of')) {
             return new static($exception->getMessage(), $exception->getCode(), $exception);
         }
-
-        return null;
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * -Description-
+ * -Description-.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,12 +41,13 @@ class UpsmgUtilityRestored implements SnmptrapHandler
     public function handle(Device $device, Trap $trap)
     {
         $sensor = $device->sensors()->where('sensor_type', 'upsmgInputBadStatus')->first();
-        if (!$sensor) {
-            Log::warning("Snmptrap UpsmgUtilityRestored: Could not find matching sensor upsmgInputBadStatus for device: " . $device->hostname);
+        if (! $sensor) {
+            Log::warning('Snmptrap UpsmgUtilityRestored: Could not find matching sensor upsmgInputBadStatus for device: '.$device->hostname);
+
             return;
         }
         $sensor->sensor_current = 2;
         $sensor->save();
-        Log::event("UPS power restored, state sensor " . $sensor->sensor_descr . " has changed to ".$sensor->sensor_current . ".", $device->device_id, "Power", 1);
+        Log::event('UPS power restored, state sensor '.$sensor->sensor_descr.' has changed to '.$sensor->sensor_current.'.', $device->device_id, 'Power', 1);
     }
 }

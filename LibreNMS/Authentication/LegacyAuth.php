@@ -9,7 +9,7 @@ use LibreNMS\Interfaces\Authentication\Authorizer;
 class LegacyAuth
 {
     protected static $_instance;
-    private static $configToClassMap = array(
+    private static $configToClassMap = [
         'mysql' => 'LibreNMS\Authentication\MysqlAuthorizer',
         'active_directory' => 'LibreNMS\Authentication\ActiveDirectoryAuthorizer',
         'ldap' => 'LibreNMS\Authentication\LdapAuthorizer',
@@ -18,19 +18,20 @@ class LegacyAuth
         'ad-authorization' => 'LibreNMS\Authentication\ADAuthorizationAuthorizer',
         'ldap-authorization' => 'LibreNMS\Authentication\LdapAuthorizationAuthorizer',
         'sso' => 'LibreNMS\Authentication\SSOAuthorizer',
-    );
+    ];
 
     /**
-     * Gets the authorizer based on the config
+     * Gets the authorizer based on the config.
      *
      * @return Authorizer
      */
     public static function get()
     {
-        if (!static::$_instance) {
+        if (! static::$_instance) {
             $class = self::getClass();
             static::$_instance = new $class;
         }
+
         return static::$_instance;
     }
 
@@ -45,7 +46,7 @@ class LegacyAuth
     }
 
     /**
-     * Get class for the given or current authentication type/mechanism
+     * Get class for the given or current authentication type/mechanism.
      *
      * @param string $type
      * @return string
@@ -56,8 +57,8 @@ class LegacyAuth
             $type = self::getType();
         }
 
-        if (!isset(self::$configToClassMap[$type])) {
-            throw new \RuntimeException($type . ' not found as auth_mechanism');
+        if (! isset(self::$configToClassMap[$type])) {
+            throw new \RuntimeException($type.' not found as auth_mechanism');
         }
 
         return self::$configToClassMap[$type];
@@ -71,6 +72,7 @@ class LegacyAuth
     public static function reset()
     {
         static::$_instance = null;
+
         return static::get();
     }
 }

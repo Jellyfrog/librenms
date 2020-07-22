@@ -1,6 +1,6 @@
 <?php
 /**
- * OspfNbrStateChange.php
+ * OspfNbrStateChange.php.
  *
  * -Description-
  * Handles ospfNbrStateChange SNMP traps. Trap is sent when an OSPF

@@ -1,6 +1,6 @@
 <?php
 /**
- * JnxVpnPwUp.php
+ * JnxVpnPwUp.php.
  *
  * -Description-
  *

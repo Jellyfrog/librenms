@@ -1,6 +1,6 @@
 <?php
 /**
- * CpRtnLowBattery.php
+ * CpRtnLowBattery.php.
  *
  * -Description-
  *

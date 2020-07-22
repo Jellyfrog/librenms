@@ -1,6 +1,6 @@
 <?php
 /**
- * ColdBoot.php
+ * ColdBoot.php.
  *
  * -Description-
  *
@@ -40,6 +40,6 @@ class ColdBoot implements SnmptrapHandler
      */
     public function handle(Device $device, Trap $trap)
     {
-        Log::event('SNMP Trap: Device ' . $device->displayName() . ' cold booted', $device->device_id, 'reboot', 4);
+        Log::event('SNMP Trap: Device '.$device->displayName().' cold booted', $device->device_id, 'reboot', 4);
     }
 }

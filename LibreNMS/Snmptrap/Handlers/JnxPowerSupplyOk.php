@@ -1,6 +1,6 @@
 <?php
 /**
- * JnxPowerSupplyOK.php
+ * JnxPowerSupplyOK.php.
  *
  * -Description-
  *

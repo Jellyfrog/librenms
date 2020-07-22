@@ -1,6 +1,6 @@
 <?php
 /**
- * SafCfml4.php
+ * SafCfml4.php.
  *
  * Saf CFM wireless radios
  *
@@ -26,11 +26,11 @@
 namespace LibreNMS\OS;
 
 use LibreNMS\Device\WirelessSensor;
+use LibreNMS\Interfaces\Discovery\Sensors\WirelessErrorsDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessFrequencyDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessMseDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessPowerDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessQualityDiscovery;
-use LibreNMS\Interfaces\Discovery\Sensors\WirelessErrorsDiscovery;
 use LibreNMS\OS;
 
 class SafCfm extends OS implements
@@ -40,13 +40,13 @@ class SafCfm extends OS implements
 {
     /**
      * Discover wireless frequency.  This is in MHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessFrequency()
     {
-        return array(
+        return [
             // SAF-MPMUX-MIB::cfml4radioTxFrequency
             new WirelessSensor(
                 'frequency',
@@ -82,18 +82,18 @@ class SafCfm extends OS implements
                 'cfml4radioR2RxFrequency',
                 'Radio 2 Rx Frequency'
             ),
-        );
+        ];
     }
 
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
     public function discoverWirelessPower()
     {
-        return array(
+        return [
             // SAF-MPMUX-MIB::rf1TxLevel
             new WirelessSensor(
                 'power',
@@ -130,18 +130,18 @@ class SafCfm extends OS implements
                 'cfml4radioR2RxLevel',
                 'Radio 2 Rx Level'
             ),
-        );
+        ];
     }
 
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
     public function discoverWirelessErrors()
     {
-        return array(
+        return [
             // SAF-MPMUX-MIB::termFrameErrors
             new WirelessSensor(
                 'errors',
@@ -160,6 +160,6 @@ class SafCfm extends OS implements
                 'cfml4termBFrameErr',
                 'Background Frame errors'
             ),
-        );
+        ];
     }
 }

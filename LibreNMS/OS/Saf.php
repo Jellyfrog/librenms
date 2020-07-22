@@ -1,6 +1,6 @@
 <?php
 /**
- * Saf.php
+ * Saf.php.
  *
  * Saf Tehnika wireless radios
  *
@@ -40,13 +40,13 @@ class Saf extends OS implements
 {
     /**
      * Discover wireless frequency.  This is in MHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessFrequency()
     {
-        return array(
+        return [
             // SAF-IPRADIO::radioTxFrequency.local
             new WirelessSensor(
                 'frequency',
@@ -71,18 +71,18 @@ class Saf extends OS implements
                 1,
                 1000
             ),
-        );
+        ];
     }
 
     /**
      * Discover wireless MSE. Mean square error value *10 in dB.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessMse()
     {
-        return array(
+        return [
             // SAF-IPRADIO::modemRadialMSE.local
             new WirelessSensor(
                 'mse',
@@ -95,18 +95,18 @@ class Saf extends OS implements
                 1,
                 10
             ),
-        );
+        ];
     }
 
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
     public function discoverWirelessPower()
     {
-        return array(
+        return [
             // SAF-IPRADIO::radioRxLevel.local
             new WirelessSensor(
                 'power',
@@ -125,18 +125,18 @@ class Saf extends OS implements
                 1,
                 'Tx Power'
             ),
-        );
+        ];
     }
 
     /**
      * Discover wireless rate. This is in bps. Type is rate.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
     public function discoverWirelessRate()
     {
-        return array(
+        return [
             // SAF-IPRADIO::modemACMtotalCapacity.local
             new WirelessSensor(
                 'rate',
@@ -159,6 +159,6 @@ class Saf extends OS implements
                 null,
                 1000
             ),
-        );
+        ];
     }
 }

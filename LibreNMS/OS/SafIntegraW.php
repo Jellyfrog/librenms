@@ -1,6 +1,6 @@
 <?php
 /**
- * Saf-Integra.php
+ * Saf-Integra.php.
  *
  * Saf Integra wireless radios
  *
@@ -42,13 +42,13 @@ class SafIntegraW extends OS implements
 {
     /**
      * Discover wireless frequency.  This is in MHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessFrequency()
     {
-        return array(
+        return [
             // SAF-INTEGRAW-MIB::integraWradioTxFrequency
             new WirelessSensor(
                 'frequency',
@@ -73,18 +73,18 @@ class SafIntegraW extends OS implements
                 1,
                 1000
             ),
-        );
+        ];
     }
 
     /**
      * Discover wireless MSE. Mean square error value *10 in dB.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessMse()
     {
-        return array(
+        return [
             // SAF-INTEGRAW-MIB::integraWmodemMse
             new WirelessSensor(
                 'mse',
@@ -97,18 +97,18 @@ class SafIntegraW extends OS implements
                 1,
                 10
             ),
-        );
+        ];
     }
 
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
     public function discoverWirelessPower()
     {
-        return array(
+        return [
             // SAF-INTEGRAW-MIB::integraWradioTxPower
             new WirelessSensor(
                 'power',
@@ -127,18 +127,18 @@ class SafIntegraW extends OS implements
                 'integraWradioRxLevel',
                 'Rx Level'
             ),
-        );
+        ];
     }
 
     /**
      * Discover wireless rate. This is in bps. Type is rate.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
     public function discoverWirelessRate()
     {
-        return array(
+        return [
             // SAF-INTEGRAW-MIB::integraWmodemRxCapacity
             new WirelessSensor(
                 'rate',
@@ -161,18 +161,18 @@ class SafIntegraW extends OS implements
                 null,
                 1000
             ),
-        );
+        ];
     }
 
     /**
      * Discover wireless quality.  This is a percent. Type is quality.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessQuality()
     {
-        return array(
+        return [
             // SAF-INTEGRAW-MIB::integraWmodemSignalQuality
             new WirelessSensor(
                 'quality',
@@ -184,6 +184,6 @@ class SafIntegraW extends OS implements
                 null,
                 1
             ),
-        );
+        ];
     }
 }

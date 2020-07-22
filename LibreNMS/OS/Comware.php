@@ -1,6 +1,6 @@
 <?php
 /**
- * Comware.php
+ * Comware.php.
  *
  * H3C/HPE Comware OS
  *
@@ -33,7 +33,7 @@ class Comware extends OS implements ProcessorDiscovery
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
@@ -41,11 +41,11 @@ class Comware extends OS implements ProcessorDiscovery
     {
         $procdata = $this->getCacheByIndex('hh3cEntityExtCpuUsage', 'HH3C-ENTITY-EXT-MIB');
 
-        if (!empty($procdata)) {
+        if (! empty($procdata)) {
             $entity_data = $this->getCacheByIndex('entPhysicalName', 'ENTITY-MIB');
         }
 
-        $processors = array();
+        $processors = [];
 
         foreach ($procdata as $index => $usage) {
             if ($usage != 0) {

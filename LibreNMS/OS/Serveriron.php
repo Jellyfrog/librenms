@@ -1,6 +1,6 @@
 <?php
 /**
- * Serveriron.php
+ * Serveriron.php.
  *
  * Brocade ServerIron OS
  *
@@ -29,5 +29,4 @@ use LibreNMS\OS\Shared\Foundry;
 
 class Serveriron extends Foundry
 {
-
 }

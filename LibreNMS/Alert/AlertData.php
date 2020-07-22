@@ -1,6 +1,6 @@
 <?php
 /**
- * Template.php
+ * Template.php.
  *
  * Base Template class
  *
@@ -32,6 +32,7 @@ class AlertData extends \Illuminate\Support\Collection
         if ($this->has($name)) {
             return $this->get($name);
         }
+
         return "$name is not a valid \$alert data name";
     }
 }

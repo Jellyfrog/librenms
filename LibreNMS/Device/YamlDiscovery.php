@@ -1,6 +1,6 @@
 <?php
 /**
- * YamlDiscovery.php
+ * YamlDiscovery.php.
  *
  * -Description-
  *
@@ -41,14 +41,14 @@ class YamlDiscovery
     public static function discover(OS $os, $class, $yaml_data)
     {
         $pre_cache = $os->preCache();
-        $items = array();
+        $items = [];
 
         // convert to class name for static call below
         if (is_object($class)) {
             $class = get_class($class);
         }
 
-        d_echo("YAML Discovery Data: ");
+        d_echo('YAML Discovery Data: ');
         d_echo($yaml_data);
 
         foreach ($yaml_data as $first_key => $first_yaml) {
@@ -56,7 +56,7 @@ class YamlDiscovery
                 continue;
             }
 
-            $group_options = isset($first_yaml['options']) ? $first_yaml['options'] : array();
+            $group_options = isset($first_yaml['options']) ? $first_yaml['options'] : [];
 
             // find the data array, we could already be at for simple modules
             if (isset($data['data'])) {
@@ -66,7 +66,7 @@ class YamlDiscovery
             }
 
             foreach ($first_yaml as $data) {
-                $raw_data = (array)$pre_cache[$data['oid']];
+                $raw_data = (array) $pre_cache[$data['oid']];
 
                 d_echo("Data {$data['oid']}: ");
                 d_echo($raw_data);
@@ -74,9 +74,9 @@ class YamlDiscovery
                 $count = 0;
                 foreach ($raw_data as $index => $snmp_data) {
                     $count++;
-                    $current_data = array();
+                    $current_data = [];
 
-                    if (!isset($data['value'])) {
+                    if (! isset($data['value'])) {
                         $data['value'] = $data['oid'];
                     }
 
@@ -104,9 +104,9 @@ class YamlDiscovery
                 }
             }
         }
+
         return $items;
     }
-
 
     public static function replaceValues($name, $index, $count, $data, $pre_cache)
     {
@@ -124,7 +124,7 @@ class YamlDiscovery
 
             // prepare the $subindexX match variable replacement
             foreach (explode('.', $index) as $pos => $subindex) {
-                $search[] = '{{ $subindex' . $pos . ' }}';
+                $search[] = '{{ $subindex'.$pos.' }}';
                 $replace[] = $subindex;
             }
 
@@ -134,9 +134,11 @@ class YamlDiscovery
             $value = preg_replace_callback('/{{ \$([a-zA-Z0-9.]+) }}/', function ($matches) use ($index, $data, $pre_cache) {
                 $replace = static::getValueFromData($matches[1], $index, $data, $pre_cache, null);
                 if (is_null($replace)) {
-                    d_echo('Warning: No variable available to replace ' . $matches[1] . ".\n");
+                    d_echo('Warning: No variable available to replace '.$matches[1].".\n");
+
                     return ''; // remove the unavailable variable
                 }
+
                 return $replace;
             }, $value);
         }
@@ -144,9 +146,8 @@ class YamlDiscovery
         return $value;
     }
 
-
     /**
-     * Helper function for dynamic discovery to search for data from pre_cached snmp data
+     * Helper function for dynamic discovery to search for data from pre_cached snmp data.
      *
      * @param string $name The name of the field from the discovery data or just an oid
      * @param string $index The index of the current sensor
@@ -193,10 +194,10 @@ class YamlDiscovery
     public static function preCache(OS $os)
     {
         // Pre-cache data for later use
-        $pre_cache = array();
+        $pre_cache = [];
         $device = $os->getDevice();
 
-        $pre_cache_file = 'includes/discovery/sensors/pre-cache/' . $device['os'] . '.inc.php';
+        $pre_cache_file = 'includes/discovery/sensors/pre-cache/'.$device['os'].'.inc.php';
         if (is_file($pre_cache_file)) {
             echo "Pre-cache {$device['os']}: ";
             include $pre_cache_file;
@@ -209,8 +210,8 @@ class YamlDiscovery
             return $pre_cache;
         }
 
-        if (!empty($device['dynamic_discovery']['modules'])) {
-            echo "Caching data: ";
+        if (! empty($device['dynamic_discovery']['modules'])) {
+            echo 'Caching data: ';
             foreach ($device['dynamic_discovery']['modules'] as $module => $discovery_data) {
                 echo "$module ";
                 foreach ($discovery_data as $key => $data_array) {
@@ -222,8 +223,8 @@ class YamlDiscovery
                     }
 
                     foreach ($data_array as $data) {
-                        foreach ((array)$data['oid'] as $oid) {
-                            if (!array_key_exists($oid, $pre_cache)) {
+                        foreach ((array) $data['oid'] as $oid) {
+                            if (! array_key_exists($oid, $pre_cache)) {
                                 if (isset($data['snmp_flags'])) {
                                     $snmp_flag = Arr::wrap($data['snmp_flags']);
                                 } else {
@@ -245,7 +246,7 @@ class YamlDiscovery
     }
 
     /**
-     * Check to see if we should skip this discovery item
+     * Check to see if we should skip this discovery item.
      *
      * @param mixed $value
      * @param array $yaml_item_data The data key from this item
@@ -253,9 +254,9 @@ class YamlDiscovery
      * @param array $item_snmp_data The pre-cache data array
      * @return bool
      */
-    public static function canSkipItem($value, $index, $yaml_item_data, $group_options, $pre_cache = array())
+    public static function canSkipItem($value, $index, $yaml_item_data, $group_options, $pre_cache = [])
     {
-        $skip_values = array_replace((array)$group_options['skip_values'], (array)$yaml_item_data['skip_values']);
+        $skip_values = array_replace((array) $group_options['skip_values'], (array) $yaml_item_data['skip_values']);
 
         foreach ($skip_values as $skip_value) {
             if (is_array($skip_value) && $pre_cache) {
@@ -263,7 +264,7 @@ class YamlDiscovery
                 $op = isset($skip_value['op']) ? $skip_value['op'] : '!=';
                 $tmp_value = static::getValueFromData($skip_value['oid'], $index, $yaml_item_data, $pre_cache);
                 if (Str::contains($skip_value['oid'], '.')) {
-                    list($skip_value['oid'], $targeted_index) = explode('.', $skip_value['oid'], 2);
+                    [$skip_value['oid'], $targeted_index] = explode('.', $skip_value['oid'], 2);
                     $tmp_value = static::getValueFromData($skip_value['oid'], $targeted_index, $yaml_item_data, $pre_cache);
                 }
                 if (compare_var($tmp_value, $skip_value['value'], $op)) {
@@ -275,14 +276,14 @@ class YamlDiscovery
             }
         }
 
-        $skip_value_lt = array_replace((array)$group_options['skip_value_lt'], (array)$yaml_item_data['skip_value_lt']);
+        $skip_value_lt = array_replace((array) $group_options['skip_value_lt'], (array) $yaml_item_data['skip_value_lt']);
         foreach ($skip_value_lt as $skip_value) {
             if ($value < $skip_value) {
                 return true;
             }
         }
 
-        $skip_value_gt = array_replace((array)$group_options['skip_value_gt'], (array)$yaml_item_data['skip_value_gt']);
+        $skip_value_gt = array_replace((array) $group_options['skip_value_gt'], (array) $yaml_item_data['skip_value_gt']);
         foreach ($skip_value_gt as $skip_value) {
             if ($value > $skip_value) {
                 return true;

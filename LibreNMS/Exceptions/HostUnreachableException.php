@@ -1,6 +1,6 @@
 <?php
 /**
- * HostUnreachableException.php
+ * HostUnreachableException.php.
  *
  * -Description-
  *
@@ -27,19 +27,20 @@ namespace LibreNMS\Exceptions;
 
 class HostUnreachableException extends \Exception
 {
-    protected $reasons = array();
+    protected $reasons = [];
 
     public function __toString()
     {
-        $string = __CLASS__ . ": [{$this->code}]: {$this->message}\n";
+        $string = __CLASS__.": [{$this->code}]: {$this->message}\n";
         foreach ($this->reasons as $reason) {
             $string .= "  $reason\n";
         }
+
         return $string;
     }
 
     /**
-     * Add additional reasons
+     * Add additional reasons.
      * @param $message
      */
     public function addReason($message)
@@ -48,7 +49,7 @@ class HostUnreachableException extends \Exception
     }
 
     /**
-     * Get the reasons
+     * Get the reasons.
      * @return array
      */
     public function getReasons()

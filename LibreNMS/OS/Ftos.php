@@ -1,6 +1,6 @@
 <?php
 /**
- * Ftos.php
+ * Ftos.php.
  *
  * Dell Force10 OS
  *

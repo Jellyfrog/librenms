@@ -1,6 +1,6 @@
 <?php
 /**
- * CpUpsTurnedOff.php
+ * CpUpsTurnedOff.php.
  *
  * -Description-
  *

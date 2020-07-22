@@ -1,6 +1,6 @@
 <?php
 /**
- * ValidationResult.php
+ * ValidationResult.php.
  *
  * Encapsulates the result of a validation test.
  *
@@ -51,7 +51,7 @@ class ValidationResult
     }
 
     /**
-     * Create a new ok Validation result
+     * Create a new ok Validation result.
      * @param string $message The message to describe this result
      * @param string $fix a suggested fix to highlight for the user
      * @return ValidationResult
@@ -62,7 +62,7 @@ class ValidationResult
     }
 
     /**
-     * Create a new warning Validation result
+     * Create a new warning Validation result.
      * @param string $message The message to describe this result
      * @param string $fix a suggested fix to highlight for the user
      * @return ValidationResult
@@ -73,7 +73,7 @@ class ValidationResult
     }
 
     /**
-     * Create a new failure Validation result
+     * Create a new failure Validation result.
      * @param string $message The message to describe this result
      * @param string $fix a suggested fix to highlight for the user
      * @return ValidationResult
@@ -85,7 +85,7 @@ class ValidationResult
 
     /**
      * Returns the status an int representing
-     * ValidationResult::FAILURE, ValidationResult::WARNING, or ValidationResult::SUCCESS
+     * ValidationResult::FAILURE, ValidationResult::WARNING, or ValidationResult::SUCCESS.
      *
      * @return int
      */
@@ -101,7 +101,7 @@ class ValidationResult
 
     public function hasList()
     {
-        return !empty($this->list);
+        return ! empty($this->list);
     }
 
     public function getList()
@@ -119,12 +119,13 @@ class ValidationResult
 
         $this->list_description = $description;
         $this->list = $list;
+
         return $this;
     }
 
     public function hasFix()
     {
-        return !empty($this->fix);
+        return ! empty($this->fix);
     }
 
     public function getFix()
@@ -142,6 +143,7 @@ class ValidationResult
     public function setFix($fix)
     {
         $this->fix = $fix;
+
         return $this;
     }
 
@@ -150,23 +152,23 @@ class ValidationResult
      */
     public function consolePrint()
     {
-        c_echo(str_pad('[' . $this->getStatusText($this->status) . ']', 12) . $this->message . PHP_EOL);
+        c_echo(str_pad('['.$this->getStatusText($this->status).']', 12).$this->message.PHP_EOL);
 
         if (isset($this->fix)) {
             c_echo("\t[%BFIX%n]: \n");
-            foreach ((array)$this->fix as $fix) {
+            foreach ((array) $this->fix as $fix) {
                 c_echo("\t%B$fix%n\n");
             }
         }
 
-        if (!empty($this->list)) {
-            echo "\t" . $this->getListDescription() . ":\n";
+        if (! empty($this->list)) {
+            echo "\t".$this->getListDescription().":\n";
             $this->printList();
         }
     }
 
     /**
-     * Get the colorized string that represents the status of a ValidatonResult
+     * Get the colorized string that represents the status of a ValidatonResult.
      *
      * @return string
      */
@@ -179,6 +181,7 @@ class ValidationResult
         } elseif ($status === self::FAILURE) {
             return '%RFAIL%n';
         }
+
         return 'Unknown';
     }
 
@@ -189,7 +192,7 @@ class ValidationResult
 
     /**
      * Print a list of items up to a max amount
-     * If over that number, a line will print the total items
+     * If over that number, a line will print the total items.
      *
      * @param string $format format as consumed by printf()
      * @param int $max the max amount of items to print, default 15

@@ -1,6 +1,6 @@
 <?php
 /**
- * Pmp.php
+ * Pmp.php.
  *
  * Cambium
  *
@@ -27,13 +27,13 @@ namespace LibreNMS\OS;
 
 use Illuminate\Support\Str;
 use LibreNMS\Device\WirelessSensor;
-use LibreNMS\Interfaces\Discovery\Sensors\WirelessRssiDiscovery;
-use LibreNMS\Interfaces\Discovery\Sensors\WirelessSnrDiscovery;
-use LibreNMS\Interfaces\Discovery\Sensors\WirelessFrequencyDiscovery;
-use LibreNMS\Interfaces\Discovery\Sensors\WirelessUtilizationDiscovery;
-use LibreNMS\Interfaces\Discovery\Sensors\WirelessSsrDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessClientsDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessErrorsDiscovery;
+use LibreNMS\Interfaces\Discovery\Sensors\WirelessFrequencyDiscovery;
+use LibreNMS\Interfaces\Discovery\Sensors\WirelessRssiDiscovery;
+use LibreNMS\Interfaces\Discovery\Sensors\WirelessSnrDiscovery;
+use LibreNMS\Interfaces\Discovery\Sensors\WirelessSsrDiscovery;
+use LibreNMS\Interfaces\Discovery\Sensors\WirelessUtilizationDiscovery;
 use LibreNMS\OS;
 
 class Pmp extends OS implements
@@ -45,17 +45,17 @@ class Pmp extends OS implements
     WirelessClientsDiscovery,
     WirelessErrorsDiscovery
 {
-
     /**
      * Discover wireless bit/packet error ratio.  This is in percent. Type is error-ratio.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessRssi()
     {
         $rssi_oid = '.1.3.6.1.4.1.161.19.3.2.2.2.0';
-        return array(
+
+        return [
             new WirelessSensor(
                 'rssi',
                 $this->getDeviceId(),
@@ -64,14 +64,14 @@ class Pmp extends OS implements
                 0,
                 'Cambium RSSI',
                 null
-            )
-        );
+            ),
+        ];
     }
 
     /**
      * Discover wireless SNR.  This is in dB. Type is snr.
      * Formula: SNR = Signal or Rx Power - Noise Floor
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -85,7 +85,7 @@ class Pmp extends OS implements
             $snr_vertical = '.1.3.6.1.4.1.161.19.3.2.2.95.0'; //WHISP-SMS-MIB::signalToNoiseRatioSMVertical.0
         }
 
-        return array(
+        return [
             new WirelessSensor(
                 'snr',
                 $this->getDeviceId(),
@@ -103,20 +103,21 @@ class Pmp extends OS implements
                 0,
                 'Cambium SNR Vertical',
                 null
-            )
-        );
+            ),
+        ];
     }
 
     /**
      * Discover wireless frequency.  This is in MHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessFrequency()
     {
         $frequency = '.1.3.6.1.4.1.161.19.3.1.7.37.0'; //WHISP-APS-MIB::currentRadioFreqCarrier
-        return array(
+
+        return [
             new WirelessSensor(
                 'frequency',
                 $this->getDeviceId(),
@@ -127,32 +128,31 @@ class Pmp extends OS implements
                 null,
                 1,
                 $this->freqDivisor()
-            )
-        );
+            ),
+        ];
     }
-
 
     /**
      * Discover wireless utilization.  This is in %. Type is utilization.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessUtilization()
     {
-        $lowdownlink  = '.1.3.6.1.4.1.161.19.3.1.12.1.1.0'; // WHISP-APS-MIB::frUtlLowTotalDownlinkUtilization
-        $lowuplink    = '.1.3.6.1.4.1.161.19.3.1.12.1.2.0'; // WHISP-APS-MIB::frUtlLowTotalUplinkUtilization
-        $meddownlink  = '.1.3.6.1.4.1.161.19.3.1.12.2.1.0'; // WHISP-APS-MIB::frUtlMedTotalDownlinkUtilization
-        $meduplink    = '.1.3.6.1.4.1.161.19.3.1.12.2.2.0'; // WHISP-APS-MIB::frUtlMedTotalUplinkUtilization
+        $lowdownlink = '.1.3.6.1.4.1.161.19.3.1.12.1.1.0'; // WHISP-APS-MIB::frUtlLowTotalDownlinkUtilization
+        $lowuplink = '.1.3.6.1.4.1.161.19.3.1.12.1.2.0'; // WHISP-APS-MIB::frUtlLowTotalUplinkUtilization
+        $meddownlink = '.1.3.6.1.4.1.161.19.3.1.12.2.1.0'; // WHISP-APS-MIB::frUtlMedTotalDownlinkUtilization
+        $meduplink = '.1.3.6.1.4.1.161.19.3.1.12.2.2.0'; // WHISP-APS-MIB::frUtlMedTotalUplinkUtilization
         $highdownlink = '.1.3.6.1.4.1.161.19.3.1.12.3.1.0'; // WHISP-APS-MIB::frUtlHighTotalDownlinkUtilization
-        $highuplink   = '.1.3.6.1.4.1.161.19.3.1.12.3.2.0'; // WHISP-APS-MIB::frUtlHighTotalUplinkUtilization
+        $highuplink = '.1.3.6.1.4.1.161.19.3.1.12.3.2.0'; // WHISP-APS-MIB::frUtlHighTotalUplinkUtilization
 
         // 450M Specific Utilizations
         $muSectorDownlink = '.1.3.6.1.4.1.161.19.3.1.12.2.29.0'; // WHISP-APS-MIB::frUtlMedMumimoDownlinkSectorUtilization
         $muDownlink = '.1.3.6.1.4.1.161.19.3.1.12.2.30.0'; // WHISP-APS-MIB::frUtlMedMumimoDownlinkMumimoUtilization
         $suDownlink = '.1.3.6.1.4.1.161.19.3.1.12.2.31.0'; // WHISP-APS-MIB::frUtlMedMumimoDownlinkSumimoUtilization
 
-        return array(
+        return [
             new WirelessSensor(
                 'utilization',
                 $this->getDeviceId(),
@@ -233,13 +233,13 @@ class Pmp extends OS implements
                 0,
                 'SU-MIMO Downlink Utilization',
                 null
-            )
-        );
+            ),
+        ];
     }
 
     /**
      * Discover wireless SSR.  This is in dB. Type is ssr.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -250,7 +250,8 @@ class Pmp extends OS implements
         } else {
             $ssr = '.1.3.6.1.4.1.161.19.3.2.2.108.0'; //WHISP-SMSSM-MIB::signalStrengthRatio.0
         }
-        return array(
+
+        return [
             new WirelessSensor(
                 'ssr',
                 $this->getDeviceId(),
@@ -259,18 +260,19 @@ class Pmp extends OS implements
                 0,
                 'Cambium Signal Strength Ratio',
                 null
-            )
-        );
+            ),
+        ];
     }
 
     /**
-     * Private method to declare if device is an AP
+     * Private method to declare if device is an AP.
      *
-     * @return boolean
+     * @return bool
      */
     private function isAp()
     {
         $device = $this->getDevice();
+
         return Str::contains($device['hardware'], 'AP') || Str::contains($device['hardware'], 'Master');
     }
 
@@ -279,20 +281,20 @@ class Pmp extends OS implements
      * using the following for production:
      * FSK 5.2, 5.4, 5.7 GHz: OID returns MHz
      * FSK 900 MHz, 2.4 GHz: OID returns 100's of KHz
-     * OFDM: OID returns 10's of KHz"
+     * OFDM: OID returns 10's of KHz".
      */
     private function freqDivisor()
     {
         $device = $this->getDevice();
 
-        $types = array(
+        $types = [
             'OFDM' => 1000,
             '5.4GHz' => 1,
             '5.2Ghz' => 1,
             '5.7Ghz' => 1,
             '2.4Ghz' => 10,
-            '900Mhz' => 10
-        );
+            '900Mhz' => 10,
+        ];
 
         $boxType = snmp_get($device, 'boxDeviceType.0', '-Oqv', 'WHISP-BOX-MIBV2-MIB');
 
@@ -307,14 +309,15 @@ class Pmp extends OS implements
 
     /**
      * Discover wireless client counts. Type is clients.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessClients()
     {
         $registeredSM = '.1.3.6.1.4.1.161.19.3.1.7.1.0'; //WHISP-APS-MIB::regCount.0
-        return array(
+
+        return [
             new WirelessSensor(
                 'clients',
                 $this->getDeviceId(),
@@ -323,13 +326,13 @@ class Pmp extends OS implements
                 0,
                 'Client Count',
                 null
-            )
-        );
+            ),
+        ];
     }
 
     /**
      * Discover wireless bit errors.  This is in total bits. Type is errors.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -338,7 +341,8 @@ class Pmp extends OS implements
         $fecInErrorsCount = '.1.3.6.1.4.1.161.19.3.3.1.95.0';
         $fecOutErrorsCount = '.1.3.6.1.4.1.161.19.3.3.1.97.0';
         $fecCRCError = '.1.3.6.1.4.1.161.19.3.3.1.223.0';
-        return array(
+
+        return [
             new WirelessSensor(
                 'errors',
                 $this->getDeviceId(),
@@ -365,7 +369,7 @@ class Pmp extends OS implements
                 0,
                 'In Error Count',
                 null
-            )
-        );
+            ),
+        ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Sgos.php
+ * Sgos.php.
  *
  * -Description-
  *
@@ -33,7 +33,7 @@ class Sgos extends OS implements ProcessorDiscovery
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
@@ -41,7 +41,7 @@ class Sgos extends OS implements ProcessorDiscovery
     {
         $data = snmpwalk_group($this->getDevice(), 'sgProxyCpuCoreBusyPerCent', 'BLUECOAT-SG-PROXY-MIB');
 
-        $processors = array();
+        $processors = [];
         $count = 1;
         foreach ($data as $index => $entry) {
             $processors[] = Processor::discover(
@@ -56,7 +56,6 @@ class Sgos extends OS implements ProcessorDiscovery
 
             $count++;
         }
-
 
         return $processors;
     }

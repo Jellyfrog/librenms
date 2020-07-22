@@ -1,6 +1,6 @@
 <?php
 /**
- * LdapMissingException.php
+ * LdapMissingException.php.
  *
  * -Description-
  *

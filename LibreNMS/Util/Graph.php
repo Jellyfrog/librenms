@@ -1,6 +1,6 @@
 <?php
 /**
- * Graph.php
+ * Graph.php.
  *
  * -Description-
  *
@@ -36,7 +36,7 @@ class Graph
     }
 
     /**
-     * Get an array of all graph subtypes for the given type
+     * Get an array of all graph subtypes for the given type.
      * @param $type
      * @param Device $device
      * @return array
@@ -67,11 +67,12 @@ class Graph
         }
 
         sort($types);
+
         return $types;
     }
 
     /**
-     * Check if the given graph is a mib graph
+     * Check if the given graph is a mib graph.
      *
      * @param $type
      * @param $subtype
@@ -93,6 +94,7 @@ class Graph
         }
 
         $os_group = Config::getOsSetting($device->os, 'group');
+
         return Config::get("os_group.$os_group.over", Config::get('os.default.over'));
     }
 }

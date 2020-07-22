@@ -1,6 +1,6 @@
 <?php
 /**
- * MplsDiscovery.php
+ * MplsDiscovery.php.
  *
  * -Description-
  *

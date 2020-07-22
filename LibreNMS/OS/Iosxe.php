@@ -1,6 +1,6 @@
 <?php
 /**
- * Iosxe.php
+ * Iosxe.php.
  *
  * Cisco IOS-XE Wireless LAN Controller
  *

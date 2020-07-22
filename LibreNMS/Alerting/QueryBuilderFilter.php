@@ -1,6 +1,6 @@
 <?php
 /**
- * QueryBuilderFilter.php
+ * QueryBuilderFilter.php.
  *
  * -Description-
  *
@@ -64,7 +64,7 @@ class QueryBuilderFilter implements \JsonSerializable
         krsort($macros);
 
         foreach ($macros as $key => $value) {
-            $field = 'macros.' . $key;
+            $field = 'macros.'.$key;
 
             if (preg_match('/^past_\d+m$/', $key)) {
                 continue; // don't include the time based macros, they don't work like that
@@ -92,11 +92,11 @@ class QueryBuilderFilter implements \JsonSerializable
         $db_schema = $this->schema->getSchema();
         $valid_tables = array_diff(array_keys($this->schema->getAllRelationshipPaths()), self::$table_blacklist);
 
-        foreach ((array)$db_schema as $table => $data) {
+        foreach ((array) $db_schema as $table => $data) {
             $columns = array_column($data['Columns'], 'Type', 'Field');
 
             // only allow tables with a direct association to device_id
-            if (!in_array($table, $valid_tables)) {
+            if (! in_array($table, $valid_tables)) {
                 continue;
             }
 
@@ -143,7 +143,6 @@ class QueryBuilderFilter implements \JsonSerializable
         }
     }
 
-
     private function getColumnType($type)
     {
         if (Str::startsWith($type, ['varchar', 'text', 'double', 'float'])) {
@@ -158,11 +157,10 @@ class QueryBuilderFilter implements \JsonSerializable
         }
 
         // binary, blob
-        return null;
     }
 
     /**
-     * Specify data which should be serialized to JSON
+     * Specify data which should be serialized to JSON.
      * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
      * @return mixed data which can be serialized by <b>json_encode</b>,
      * which is a value of any type other than a resource.
@@ -172,11 +170,12 @@ class QueryBuilderFilter implements \JsonSerializable
     {
         $filter = $this->filter;
         asort($filter);
+
         return array_values($filter);
     }
 
     /**
-     * Get the filter for a specific item
+     * Get the filter for a specific item.
      *
      * @param string $id
      * @return array|null
@@ -186,7 +185,5 @@ class QueryBuilderFilter implements \JsonSerializable
         if (array_key_exists($id, $this->filter)) {
             return $this->filter[$id];
         }
-
-        return null;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Hpmsm.php
+ * Hpmsm.php.
  *
  * HP Msm Wireless
  *
@@ -32,13 +32,13 @@ use LibreNMS\OS;
 class Hpmsm extends OS implements WirelessClientsDiscovery
 {
     /**
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessClients()
     {
-        return array(
+        return [
             new WirelessSensor(
                 'clients',
                 $this->getDeviceId(),
@@ -46,7 +46,7 @@ class Hpmsm extends OS implements WirelessClientsDiscovery
                 'hpmsm',
                 0,
                 'Clients: Total'
-            )
-        );
+            ),
+        ];
     }
 }

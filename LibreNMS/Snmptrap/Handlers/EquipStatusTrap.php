@@ -1,6 +1,6 @@
 <?php
 /**
- * equipStatusTrap.php
+ * equipStatusTrap.php.
  *
  * -Description-
  *
@@ -45,7 +45,7 @@ class EquipStatusTrap implements SnmptrapHandler
         $state = $trap->getOidData('EQUIPMENT-MIB::equipStatus.0');
 
         $severity = $this->getSeverity($state);
-        Log::event('SNMP Trap: Equipment Status  ' . $state, $device->device_id, 'state', $severity);
+        Log::event('SNMP Trap: Equipment Status  '.$state, $device->device_id, 'state', $severity);
     }
 
     private function getSeverity($state)
@@ -62,6 +62,7 @@ class EquipStatusTrap implements SnmptrapHandler
             'nonAlarmed' => 1,
             '1' => 1,
         ];
+
         return $severity_map[$state] ?? 0;
     }
 }

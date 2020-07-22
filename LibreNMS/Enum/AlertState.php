@@ -1,6 +1,6 @@
 <?php
 /**
- * Alert.php
+ * Alert.php.
  *
  * Enumerates alarming Level
  *

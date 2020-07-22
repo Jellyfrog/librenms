@@ -1,6 +1,6 @@
 <?php
 /**
- * DiscoveryModule.php
+ * DiscoveryModule.php.
  *
  * LibreNMS Discovery Module
  *

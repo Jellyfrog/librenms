@@ -1,6 +1,6 @@
 <?php
 /**
- * Fs-switch.php
+ * Fs-switch.php.
  *
  * -Description-
  *
@@ -33,7 +33,7 @@ class FsSwitch extends OS implements ProcessorDiscovery
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
@@ -46,15 +46,16 @@ class FsSwitch extends OS implements ProcessorDiscovery
 
         foreach ($processors_data as $index => $entry) {
             $processors[] = Processor::discover(
-                "fs-SWITCHMIB",
+                'fs-SWITCHMIB',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.27975.1.2.11.' . $index,
+                '.1.3.6.1.4.1.27975.1.2.11.'.$index,
                 $index,
-                "CPU",
+                'CPU',
                 -1,
                 100 - $entry['ssCpuIdle']
             );
         }
+
         return $processors;
     }
 }

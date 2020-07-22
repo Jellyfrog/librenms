@@ -1,6 +1,6 @@
 <?php
 /**
- * NacPolling.php
+ * NacPolling.php.
  *
  * Nac Polling interface
  *

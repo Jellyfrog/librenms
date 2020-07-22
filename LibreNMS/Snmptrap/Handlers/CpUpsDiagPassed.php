@@ -1,6 +1,6 @@
 <?php
 /**
- * CpUpsDiagPassed.php
+ * CpUpsDiagPassed.php.
  *
  * -Description-
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * RuckusSzSeverity.php
+ * RuckusSzSeverity.php.
  *
  * -Description-
  *
@@ -52,6 +52,7 @@ class RuckusSzSeverity
                 $severityNum = 2;
                 break;
         }
+
         return $severityNum;
     }
 }

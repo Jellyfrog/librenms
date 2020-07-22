@@ -1,6 +1,6 @@
 <?php
 /**
- * Sensor.php
+ * Sensor.php.
  *
  * Base Sensor class
  *
@@ -99,7 +99,7 @@ class Sensor implements DiscoveryModule, PollerModule
     ) {
         $this->type = $type;
         $this->device_id = $device_id;
-        $this->oids = (array)$oids;
+        $this->oids = (array) $oids;
         $this->subtype = $subtype;
         $this->index = $index;
         $this->description = $description;
@@ -116,14 +116,14 @@ class Sensor implements DiscoveryModule, PollerModule
 
         // ensure leading dots
         array_walk($this->oids, function (&$oid) {
-            $oid = '.' . ltrim($oid, '.');
+            $oid = '.'.ltrim($oid, '.');
         });
 
         $sensor = $this->toArray();
         // validity not checked yet
         if (is_null($this->current)) {
             $sensor['sensor_oids'] = $this->oids;
-            $sensors = array($sensor);
+            $sensors = [$sensor];
 
             $prefetch = self::fetchSnmpData(device_by_id_cache($device_id), $sensors);
             $data = static::processSensorData($sensors, $prefetch);
@@ -132,7 +132,7 @@ class Sensor implements DiscoveryModule, PollerModule
             $this->valid = is_numeric($this->current);
         }
 
-        d_echo('Discovered ' . get_called_class() . ' ' . print_r($sensor, true));
+        d_echo('Discovered '.get_called_class().' '.print_r($sensor, true));
     }
 
     /**
@@ -159,7 +159,7 @@ class Sensor implements DiscoveryModule, PollerModule
             if (empty($update)) {
                 echo '.';
             } else {
-                dbUpdate($this->escapeNull($update), $this->getTable(), '`sensor_id`=?', array($this->sensor_id));
+                dbUpdate($this->escapeNull($update), $this->getTable(), '`sensor_id`=?', [$this->sensor_id]);
                 echo 'U';
             }
         } else {
@@ -187,21 +187,22 @@ class Sensor implements DiscoveryModule, PollerModule
         if (isset($this->sensor_id)) {
             return dbFetchRow(
                 "SELECT `$table` FROM ? WHERE `sensor_id`=?",
-                array($this->sensor_id)
+                [$this->sensor_id]
             );
         }
 
         $sensor = dbFetchRow(
-            "SELECT * FROM `$table` " .
-            "WHERE `device_id`=? AND `sensor_class`=? AND `sensor_type`=? AND `sensor_index`=?",
-            array($this->device_id, $this->type, $this->subtype, $this->index)
+            "SELECT * FROM `$table` ".
+            'WHERE `device_id`=? AND `sensor_class`=? AND `sensor_type`=? AND `sensor_index`=?',
+            [$this->device_id, $this->type, $this->subtype, $this->index]
         );
         $this->sensor_id = $sensor['sensor_id'];
+
         return $sensor;
     }
 
     /**
-     * Get the table for this sensor
+     * Get the table for this sensor.
      * @return string
      */
     public function getTable()
@@ -211,13 +212,13 @@ class Sensor implements DiscoveryModule, PollerModule
 
     /**
      * Get an array of this sensor with fields that line up with the database.
-     * Excludes sensor_id and current
+     * Excludes sensor_id and current.
      *
      * @return array
      */
     protected function toArray()
     {
-        return array(
+        return [
             'sensor_class' => $this->type,
             'device_id' => $this->device_id,
             'sensor_oids' => json_encode($this->oids),
@@ -234,12 +235,12 @@ class Sensor implements DiscoveryModule, PollerModule
             'sensor_current' => $this->current,
             'entPhysicalIndex' => $this->entPhysicalIndex,
             'entPhysicalIndex_measured' => $this->entPhysicalMeasured,
-        );
+        ];
     }
 
     /**
      * Escape null values so dbFacile doesn't mess them up
-     * honestly, this should be the default, but could break shit
+     * honestly, this should be the default, but could break shit.
      *
      * @param $array
      * @return array
@@ -247,12 +248,12 @@ class Sensor implements DiscoveryModule, PollerModule
     private function escapeNull($array)
     {
         return array_map(function ($value) {
-            return is_null($value) ? array('NULL') : $value;
+            return is_null($value) ? ['NULL'] : $value;
         }, $array);
     }
 
     /**
-     * Run Sensors discovery for the supplied OS (device)
+     * Run Sensors discovery for the supplied OS (device).
      *
      * @param OS $os
      */
@@ -262,7 +263,7 @@ class Sensor implements DiscoveryModule, PollerModule
     }
 
     /**
-     * Poll sensors for the supplied OS (device)
+     * Poll sensors for the supplied OS (device).
      *
      * @param OS $os
      */
@@ -274,8 +275,8 @@ class Sensor implements DiscoveryModule, PollerModule
         $params = [$os->getDeviceId()];
 
         $submodules = Config::get('poller_submodules.wireless', []);
-        if (!empty($submodules)) {
-            $query .= " AND `sensor_class` IN " . dbGenPlaceholders(count($submodules));
+        if (! empty($submodules)) {
+            $query .= ' AND `sensor_class` IN '.dbGenPlaceholders(count($submodules));
             $params = array_merge($params, $submodules);
         }
 
@@ -285,15 +286,16 @@ class Sensor implements DiscoveryModule, PollerModule
             function ($carry, $sensor) {
                 $sensor['sensor_oids'] = json_decode($sensor['sensor_oids']);
                 $carry[$sensor['sensor_class']][] = $sensor;
+
                 return $carry;
             },
-            array()
+            []
         );
 
         foreach ($sensors as $type => $type_sensors) {
             // check for custom polling
             $typeInterface = static::getPollingInterface($type);
-            if (!interface_exists($typeInterface)) {
+            if (! interface_exists($typeInterface)) {
                 echo "ERROR: Polling Interface doesn't exist! $typeInterface\n";
             }
 
@@ -315,14 +317,14 @@ class Sensor implements DiscoveryModule, PollerModule
     }
 
     /**
-     * Poll all sensors of a specific class
+     * Poll all sensors of a specific class.
      *
      * @param OS $os
      * @param string $type
      * @param array $sensors
      * @param array $prefetch
      */
-    protected static function pollSensorType($os, $type, $sensors, $prefetch = array())
+    protected static function pollSensorType($os, $type, $sensors, $prefetch = [])
     {
         echo "$type:\n";
 
@@ -343,7 +345,7 @@ class Sensor implements DiscoveryModule, PollerModule
 
     /**
      * Fetch snmp data from the device
-     * Return an array keyed by oid
+     * Return an array keyed by oid.
      *
      * @param array $device
      * @param array $sensors
@@ -353,7 +355,7 @@ class Sensor implements DiscoveryModule, PollerModule
     {
         $oids = self::getOidsFromSensors($sensors, get_device_oid_limit($device));
 
-        $snmp_data = array();
+        $snmp_data = [];
         foreach ($oids as $oid_chunk) {
             $multi_data = snmp_get_multi_oid($device, $oid_chunk, '-OUQnt');
             $snmp_data = array_merge($snmp_data, $multi_data);
@@ -372,10 +374,9 @@ class Sensor implements DiscoveryModule, PollerModule
         return $snmp_data;
     }
 
-
     /**
      * Process the snmp data for the specified sensors
-     * Returns an array sensor_id => value
+     * Returns an array sensor_id => value.
      *
      * @param $sensors
      * @param $prefetch
@@ -384,7 +385,7 @@ class Sensor implements DiscoveryModule, PollerModule
      */
     protected static function processSensorData($sensors, $prefetch)
     {
-        $sensor_data = array();
+        $sensor_data = [];
         foreach ($sensors as $sensor) {
             // pull out the data for this sensor
             $requested_oids = array_flip($sensor['sensor_oids']);
@@ -422,7 +423,6 @@ class Sensor implements DiscoveryModule, PollerModule
         return $sensor_data;
     }
 
-
     /**
      * Get a list of unique oids from an array of sensors and break it into chunks.
      *
@@ -435,7 +435,7 @@ class Sensor implements DiscoveryModule, PollerModule
         // Sort the incoming oids and sensors
         $oids = array_reduce($sensors, function ($carry, $sensor) {
             return array_merge($carry, $sensor['sensor_oids']);
-        }, array());
+        }, []);
 
         // only unique oids and chunk
         $oids = array_chunk(array_keys(array_flip($oids)), $chunk);
@@ -446,7 +446,7 @@ class Sensor implements DiscoveryModule, PollerModule
     protected static function discoverType(OS $os, $type)
     {
         $typeInterface = static::getDiscoveryInterface($type);
-        if (!interface_exists($typeInterface)) {
+        if (! interface_exists($typeInterface)) {
             echo "ERROR: Discovery Interface doesn't exist! $typeInterface\n";
         }
 
@@ -455,12 +455,12 @@ class Sensor implements DiscoveryModule, PollerModule
             echo "$type: ";
             $function = static::getDiscoveryMethod($type);
             $sensors = $os->$function();
-            if (!is_array($sensors)) {
+            if (! is_array($sensors)) {
                 c_echo("%RERROR:%n $function did not return an array! Skipping discovery.");
-                $sensors = array();
+                $sensors = [];
             }
         } else {
-            $sensors = array();  // delete non existent sensors
+            $sensors = [];  // delete non existent sensors
         }
 
         self::checkForDuplicateSensors($sensors);
@@ -474,7 +474,7 @@ class Sensor implements DiscoveryModule, PollerModule
 
     private static function checkForDuplicateSensors($sensors)
     {
-        $duplicate_check = array();
+        $duplicate_check = [];
         $dup = false;
 
         foreach ($sensors as $sensor) {
@@ -492,38 +492,38 @@ class Sensor implements DiscoveryModule, PollerModule
 
     /**
      * Returns a string that must be unique for each sensor
-     * type (class), subtype (type), index (index)
+     * type (class), subtype (type), index (index).
      *
      * @return string
      */
     private function getUniqueId()
     {
-        return $this->type . '-' . $this->subtype . '-' . $this->index;
+        return $this->type.'-'.$this->subtype.'-'.$this->index;
     }
 
     protected static function getDiscoveryInterface($type)
     {
-        return str_to_class($type, 'LibreNMS\\Interfaces\\Discovery\\Sensors\\') . 'Discovery';
+        return str_to_class($type, 'LibreNMS\\Interfaces\\Discovery\\Sensors\\').'Discovery';
     }
 
     protected static function getDiscoveryMethod($type)
     {
-        return 'discover' . str_to_class($type);
+        return 'discover'.str_to_class($type);
     }
 
     protected static function getPollingInterface($type)
     {
-        return str_to_class($type, 'LibreNMS\\Interfaces\\Polling\\Sensors\\') . 'Polling';
+        return str_to_class($type, 'LibreNMS\\Interfaces\\Polling\\Sensors\\').'Polling';
     }
 
     protected static function getPollingMethod($type)
     {
-        return 'poll' . str_to_class($type);
+        return 'poll'.str_to_class($type);
     }
 
     /**
      * Is this sensor valid?
-     * If not, it should not be added to or in the database
+     * If not, it should not be added to or in the database.
      *
      * @return bool
      */
@@ -535,7 +535,7 @@ class Sensor implements DiscoveryModule, PollerModule
     /**
      * Save sensors and remove invalid sensors
      * This the sensors array should contain all the sensors of a specific class
-     * It may contain sensors from multiple tables and devices, but that isn't the primary use
+     * It may contain sensors from multiple tables and devices, but that isn't the primary use.
      *
      * @param int $device_id
      * @param string $type
@@ -544,7 +544,7 @@ class Sensor implements DiscoveryModule, PollerModule
     final public static function sync($device_id, $type, array $sensors)
     {
         // save and collect valid ids
-        $valid_sensor_ids = array();
+        $valid_sensor_ids = [];
         foreach ($sensors as $sensor) {
             /** @var $this $sensor */
             if ($sensor->isValid()) {
@@ -557,7 +557,7 @@ class Sensor implements DiscoveryModule, PollerModule
     }
 
     /**
-     * Remove invalid sensors.  Passing an empty array will remove all sensors of that class
+     * Remove invalid sensors.  Passing an empty array will remove all sensors of that class.
      *
      * @param int $device_id
      * @param string $type
@@ -566,11 +566,11 @@ class Sensor implements DiscoveryModule, PollerModule
     private static function clean($device_id, $type, $sensor_ids)
     {
         $table = static::$table;
-        $params = array($device_id, $type);
+        $params = [$device_id, $type];
         $where = '`device_id`=? AND `sensor_class`=?';
 
-        if (!empty($sensor_ids)) {
-            $where .= ' AND `sensor_id` NOT IN ' . dbGenPlaceholders(count($sensor_ids));
+        if (! empty($sensor_ids)) {
+            $where .= ' AND `sensor_id` NOT IN '.dbGenPlaceholders(count($sensor_ids));
             $params = array_merge($params, $sensor_ids);
         }
 
@@ -582,7 +582,7 @@ class Sensor implements DiscoveryModule, PollerModule
             $message .= " Deleted: $type {$sensor['sensor_type']} {$sensor['sensor_index']} {$sensor['sensor_descr']}";
             log_event($message, $device_id, static::$table, 3, $sensor['sensor_id']);
         }
-        if (!empty($delete)) {
+        if (! empty($delete)) {
             dbDelete($table, $where, $params);
         }
     }
@@ -594,18 +594,18 @@ class Sensor implements DiscoveryModule, PollerModule
      *  'long'  - long text for this class
      *  'unit'  - units used by this class 'dBm' for example
      *  'icon'  - font awesome icon used by this class
-     * )
+     * ).
      * @param bool $valid filter this list by valid types in the database
      * @param int $device_id when filtering, only return types valid for this device_id
      * @return array
      */
     public static function getTypes($valid = false, $device_id = null)
     {
-        return array();
+        return [];
     }
 
     /**
-     * Record sensor data in the database and data stores
+     * Record sensor data in the database and data stores.
      *
      * @param $os
      * @param $sensors
@@ -618,38 +618,38 @@ class Sensor implements DiscoveryModule, PollerModule
         foreach ($sensors as $sensor) {
             $sensor_value = $data[$sensor['sensor_id']];
 
-            echo "  {$sensor['sensor_descr']}: $sensor_value " . __(static::$translation_prefix . '.' . $sensor['sensor_class'] . '.unit') . PHP_EOL;
+            echo "  {$sensor['sensor_descr']}: $sensor_value ".__(static::$translation_prefix.'.'.$sensor['sensor_class'].'.unit').PHP_EOL;
 
             // update rrd and database
-            $rrd_name = array(
+            $rrd_name = [
                 static::$data_name,
                 $sensor['sensor_class'],
                 $sensor['sensor_type'],
-                $sensor['sensor_index']
-            );
+                $sensor['sensor_index'],
+            ];
             $rrd_type = isset($types[$sensor['sensor_class']]['type']) ? strtoupper($types[$sensor['sensor_class']]['type']) : 'GAUGE';
             $rrd_def = RrdDefinition::make()->addDataset('sensor', $rrd_type);
 
-            $fields = array(
+            $fields = [
                 'sensor' => isset($sensor_value) ? $sensor_value : 'U',
-            );
+            ];
 
-            $tags = array(
+            $tags = [
                 'sensor_class' => $sensor['sensor_class'],
                 'sensor_type' => $sensor['sensor_type'],
                 'sensor_descr' => $sensor['sensor_descr'],
                 'sensor_index' => $sensor['sensor_index'],
                 'rrd_name' => $rrd_name,
-                'rrd_def' => $rrd_def
-            );
+                'rrd_def' => $rrd_def,
+            ];
             data_update($os->getDevice(), static::$data_name, $tags, $fields);
 
-            $update = array(
+            $update = [
                 'sensor_prev' => $sensor['sensor_current'],
                 'sensor_current' => $sensor_value,
-                'lastupdate' => array('NOW()'),
-            );
-            dbUpdate($update, static::$table, "`sensor_id` = ?", array($sensor['sensor_id']));
+                'lastupdate' => ['NOW()'],
+            ];
+            dbUpdate($update, static::$table, '`sensor_id` = ?', [$sensor['sensor_id']]);
         }
     }
 }

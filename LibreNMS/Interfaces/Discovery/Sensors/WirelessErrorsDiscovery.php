@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessErrorsDiscovery.php
+ * WirelessErrorsDiscovery.php.
  *
  * Discover bit error sensors in total bits
  *
@@ -29,7 +29,7 @@ interface WirelessErrorsDiscovery
 {
     /**
      * Discover wireless bit errors.  This is in total bits. Type is errors.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

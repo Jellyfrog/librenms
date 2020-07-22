@@ -1,6 +1,6 @@
 <?php
 /**
- * EndRun.php
+ * EndRun.php.
  *
  * EndRun Tempus LX NTP devices
  *

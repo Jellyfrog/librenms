@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessCapacityDiscovery.php
+ * WirelessCapacityDiscovery.php.
  *
  * Discover Capacity Sensors as a percent
  *
@@ -29,7 +29,7 @@ interface WirelessCapacityDiscovery
 {
     /**
      * Discover wireless capacity.  This is a percent. Type is capacity.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

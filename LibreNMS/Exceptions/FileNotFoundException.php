@@ -1,6 +1,6 @@
 <?php
 /**
- * FileNotFoundException.php
+ * FileNotFoundException.php.
  *
  * -Description-
  *
@@ -27,5 +27,4 @@ namespace LibreNMS\Exceptions;
 
 class FileNotFoundException extends \Exception
 {
-
 }

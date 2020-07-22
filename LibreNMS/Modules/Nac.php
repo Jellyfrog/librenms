@@ -1,6 +1,6 @@
 <?php
 /**
- * Nac.php
+ * Nac.php.
  *
  * network access controls module
  *
@@ -35,7 +35,7 @@ class Nac implements Module
 {
     /**
      * Discover this module. Heavier processes can be run here
-     * Run infrequently (default 4 times a day)
+     * Run infrequently (default 4 times a day).
      *
      * @param OS $os
      */
@@ -47,7 +47,7 @@ class Nac implements Module
     /**
      * Poll data for this module and update the DB / RRD.
      * Try to keep this efficient and only run if discovery has indicated there is a reason to run.
-     * Run frequently (default every 5 minutes)
+     * Run frequently (default every 5 minutes).
      *
      * @param OS $os
      */
@@ -55,7 +55,7 @@ class Nac implements Module
     {
         if ($os instanceof NacPolling) {
             // discovery output (but don't install it twice (testing can can do this)
-            if (!PortsNac::getEventDispatcher()->hasListeners('eloquent.created: App\Models\PortsNac')) {
+            if (! PortsNac::getEventDispatcher()->hasListeners('eloquent.created: App\Models\PortsNac')) {
                 PortsNac::observe(new ModuleModelObserver());
             }
 
@@ -75,7 +75,7 @@ class Nac implements Module
             $delete = $existing_entries->diffKeys($nac_entries)->pluck('ports_nac_id');
             if ($delete->isNotEmpty()) {
                 $count = PortsNac::query()->whereIn('ports_nac_id', $delete)->delete();
-                d_echo('Deleted ' . $count, str_repeat('-', $count));
+                d_echo('Deleted '.$count, str_repeat('-', $count));
             }
         }
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * IPv6.php
+ * IPv6.php.
  *
  * -Description-
  *
@@ -37,9 +37,9 @@ class IPv6 extends IP
     public function __construct($ipv6)
     {
         $this->host_bits = 128;
-        list($this->ip, $this->cidr) = $this->extractCidr($ipv6);
+        [$this->ip, $this->cidr] = $this->extractCidr($ipv6);
 
-        if (!self::isValid($this->ip)) {
+        if (! self::isValid($this->ip)) {
             throw new InvalidIpException("$ipv6 is not a valid ipv4 address");
         }
 
@@ -56,8 +56,9 @@ class IPv6 extends IP
     {
         $len = strlen($ip);
         if ($len == 16) {
-            return inet_ntop(pack('A' . $len, $ip));
+            return inet_ntop(pack('A'.$len, $ip));
         }
+
         return '';
     }
 
@@ -87,7 +88,7 @@ class IPv6 extends IP
     }
 
     /**
-     * Get the network address of this IP
+     * Get the network address of this IP.
      * @param int $cidr If not given will use the cidr stored with this IP
      * @return string
      */
@@ -109,19 +110,20 @@ class IPv6 extends IP
             }
         }
         array_unshift($net_bytes, 'n*'); // add pack format
+
         return self::ntop(call_user_func_array('pack', $net_bytes));
     }
 
     /**
-     * Check if this IP address is contained inside the network
+     * Check if this IP address is contained inside the network.
      * @param string $network should be in cidr format.
      * @return mixed
      */
     public function inNetwork($network)
     {
-        list($net, $cidr) = $this->extractCidr($network);
+        [$net, $cidr] = $this->extractCidr($network);
 
-        if (!self::isValid($net)) {
+        if (! self::isValid($net)) {
             return false;
         }
 
@@ -143,34 +145,37 @@ class IPv6 extends IP
                 break; // we've passed the network bits, who cares about the rest.
             }
         }
+
         return true;
     }
 
     /**
-     * Expand this IPv6 address to it's full IPv6 representation. For example: ::1 -> 0000:0000:0000:0000:0000:0000:0000:0001
+     * Expand this IPv6 address to it's full IPv6 representation. For example: ::1 -> 0000:0000:0000:0000:0000:0000:0000:0001.
      * @return string
      */
     public function uncompressed()
     {
         // remove ::
-        $replacement = ':' . str_repeat('0000:', 8 - substr_count($this->ip, ':'));
+        $replacement = ':'.str_repeat('0000:', 8 - substr_count($this->ip, ':'));
         $ip = str_replace('::', $replacement, $this->ip);
 
         // zero pad
         $parts = explode(':', $ip, 8);
+
         return implode(':', array_map(function ($section) {
             return Rewrite::zeropad($section, 4);
         }, $parts));
     }
 
     /**
-     * Convert this IP to an snmp index hex encoded
+     * Convert this IP to an snmp index hex encoded.
      *
      * @return string
      */
     public function toSnmpIndex()
     {
         $ipv6_split = str_split(str_replace(':', '', $this->uncompressed()), 2);
+
         return implode('.', array_map('hexdec', $ipv6_split));
     }
 }

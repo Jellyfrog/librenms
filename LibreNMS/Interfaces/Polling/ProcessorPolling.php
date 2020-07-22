@@ -1,6 +1,6 @@
 <?php
 /**
- * ProcessorPolling.php
+ * ProcessorPolling.php.
  *
  * -Description-
  *

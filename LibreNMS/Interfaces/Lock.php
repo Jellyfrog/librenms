@@ -1,6 +1,6 @@
 <?php
 /**
- * Lock.php
+ * Lock.php.
  *
  * -Description-
  *
@@ -42,7 +42,7 @@ interface Lock
     public static function lock($lock_name, $wait = 0);
 
     /**
-     * Renew an expiring lock
+     * Renew an expiring lock.
      *
      * @param int $expiration number of seconds to hold lock for (null to cancel expiration)
      */

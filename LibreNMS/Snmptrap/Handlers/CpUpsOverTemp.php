@@ -1,6 +1,6 @@
 <?php
 /**
- * CpUpsOverTemp.php
+ * CpUpsOverTemp.php.
  *
  * -Description-
  *

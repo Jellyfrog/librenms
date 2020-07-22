@@ -1,6 +1,6 @@
 <?php
 /**
- * VmwVmHBDetected.php
+ * VmwVmHBDetected.php.
  *
  * -Description-
  *

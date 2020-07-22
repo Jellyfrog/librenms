@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FileLock.php
+ * FileLock.php.
  *
  * -Description-
  *
@@ -47,7 +47,7 @@ class FileLock implements Lock
 
         $this->name = $lock_name;
         $this->file = "$install_dir/.$lock_name.lock";
-        $this->handle = fopen($this->file, "w+");
+        $this->handle = fopen($this->file, 'w+');
     }
 
     public function __destruct()
@@ -60,7 +60,7 @@ class FileLock implements Lock
      */
     public function release()
     {
-        if (!$this->acquired) {
+        if (! $this->acquired) {
             return;
         }
 
@@ -93,6 +93,7 @@ class FileLock implements Lock
         for ($i = 0; $i <= $wait || $wait < 0; $i++) {
             if (flock($lock->handle, $wait < 0 ? LOCK_EX : LOCK_EX | LOCK_NB)) {
                 $lock->acquired = true;
+
                 return $lock;
             }
 
@@ -116,19 +117,19 @@ class FileLock implements Lock
         try {
             return self::lock($lock_name, $timeout);
         } catch (LockException $e) {
-            echo $e->getMessage() . PHP_EOL;
+            echo $e->getMessage().PHP_EOL;
             exit(1);
         }
     }
 
     /**
-     * Renew an expiring lock
+     * Renew an expiring lock.
      *
      * @param int $expiration number of seconds to hold lock for (null to cancel expiration)
      */
     public function renew($expiration)
     {
-        echo "Unsupported";
+        echo 'Unsupported';
         // TODO: Implement renew() method.
     }
 }

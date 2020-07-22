@@ -1,6 +1,6 @@
 <?php
 /**
- * CpUpsWokeUp.php
+ * CpUpsWokeUp.php.
  *
  * -Description-
  *

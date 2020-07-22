@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessUtilizationDiscovery.php
+ * WirelessUtilizationDiscovery.php.
  *
  * Discover wireless utilization sensors in percent
  *
@@ -29,7 +29,7 @@ interface WirelessUtilizationDiscovery
 {
     /**
      * Discover wireless utilization.  This is in %. Type is utilization.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

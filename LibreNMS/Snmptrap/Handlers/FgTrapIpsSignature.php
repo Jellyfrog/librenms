@@ -1,6 +1,6 @@
 <?php
 /**
- * FgTrapIpsSignature.php
+ * FgTrapIpsSignature.php.
  *
  * -Description-
  *

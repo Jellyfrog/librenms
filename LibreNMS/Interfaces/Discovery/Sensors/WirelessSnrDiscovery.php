@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessSnrDiscovery.php
+ * WirelessSnrDiscovery.php.
  *
  * Discover wireless Signal-to-Noise Ratio sensors in dB
  *
@@ -30,7 +30,7 @@ interface WirelessSnrDiscovery
     /**
      * Discover wireless SNR.  This is in dB. Type is snr.
      * Formula: SNR = Signal or Rx Power - Noise Floor
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

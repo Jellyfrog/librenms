@@ -1,6 +1,6 @@
 <?php
 /**
- * Extendair.php
+ * Extendair.php.
  *
  * Exalt ExtendAir
  *
@@ -40,14 +40,15 @@ class Extendair extends OS implements
 {
     /**
      * Discover wireless bit/packet error ratio.  This is in percent. Type is error-ratio.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
     public function discoverWirelessErrorRatio()
     {
         $oid = '.1.3.6.1.4.1.25651.1.2.4.3.1.1.0'; // ExaltComProducts::locCurrentBER.0
-        return array(
+
+        return [
             new WirelessSensor(
                 'error-ratio',
                 $this->getDeviceId(),
@@ -59,12 +60,12 @@ class Extendair extends OS implements
                 1,
                 1000000
             ),
-        );
+        ];
     }
 
     /**
      * Discover wireless frequency.  This is in GHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -72,7 +73,8 @@ class Extendair extends OS implements
     {
         $tx_oid = '.1.3.6.1.4.1.25651.1.2.3.1.57.4.0'; // ExtendAirG2::extendAirG2TXfrequency.0
         $rx_oid = '.1.3.6.1.4.1.25651.1.2.3.1.57.5.0'; // ExtendAirG2::extendAirG2RXfrequency.0
-        return array(
+
+        return [
             new WirelessSensor(
                 'frequency',
                 $this->getDeviceId(),
@@ -95,12 +97,12 @@ class Extendair extends OS implements
                 1,
                 1000
             ),
-        );
+        ];
     }
 
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -108,22 +110,24 @@ class Extendair extends OS implements
     {
         $tx_oid = '.1.3.6.1.4.1.25651.1.2.3.1.57.1.0'; // ExtendAirG2::extendAirG2TxPower.0
         $rx_oid = '.1.3.6.1.4.1.25651.1.2.4.3.1.3.0'; // ExaltComProducts::locCurrentRSL.0
-        return array(
+
+        return [
             new WirelessSensor('power', $this->getDeviceId(), $tx_oid, 'extendair-tx', 0, 'Tx Power', null, 1, 10),
             new WirelessSensor('power', $this->getDeviceId(), $rx_oid, 'extendair-rx', 0, 'Signal Level'),
-        );
+        ];
     }
 
     /**
      * Discover wireless rate. This is in Mbps. Type is rate.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
     public function discoverWirelessRate()
     {
         $oid = '.1.3.6.1.4.1.25651.1.2.4.5.1.0'; // ExaltComProducts::aggregateUserThroughput.0
-        return array(
+
+        return [
             new WirelessSensor(
                 'rate',
                 $this->getDeviceId(),
@@ -134,6 +138,6 @@ class Extendair extends OS implements
                 null,
                 1000000
             ),
-        );
+        ];
     }
 }

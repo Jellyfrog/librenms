@@ -1,6 +1,6 @@
 <?php
 /**
- * ApcPduOutletReboot.php
+ * ApcPduOutletReboot.php.
  *
  * -Description-
  *

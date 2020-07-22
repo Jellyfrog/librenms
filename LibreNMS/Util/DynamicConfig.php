@@ -1,6 +1,6 @@
 <?php
 /**
- * DynamicConfig.php
+ * DynamicConfig.php.
  *
  * Class used by the webui to collect config definitions to create a dynamic config ui
  *
@@ -41,15 +41,16 @@ class DynamicConfig
 
         $this->definitions = collect(Config::getDefinitions())->map(function ($item, $key) use ($config) {
             $item['overridden'] = Arr::has($config, $key);
+
             return new DynamicConfigItem($key, $item);
         });
     }
 
     /**
-     * Check if a setting is valid
+     * Check if a setting is valid.
      *
      * @param string $name
-     * @return boolean
+     * @return bool
      */
     public function isValidSetting($name)
     {
@@ -57,7 +58,7 @@ class DynamicConfig
     }
 
     /**
-     * Get config item by name
+     * Get config item by name.
      *
      * @param string $name
      * @return DynamicConfigItem|null
@@ -68,7 +69,7 @@ class DynamicConfig
     }
 
     /**
-     * Get all groups defined
+     * Get all groups defined.
      *
      * @return \Illuminate\Support\Collection
      */
@@ -86,6 +87,7 @@ class DynamicConfig
             return $key;
         });
         $sections->prepend($sections->pull('', []), 'global'); // rename '' to global
+
         return $sections;
     }
 
@@ -104,6 +106,7 @@ class DynamicConfig
             });
         });
         $grouped->prepend($grouped->pull(''), 'global'); // rename '' to global
+
         return $grouped;
     }
 
@@ -124,7 +127,7 @@ class DynamicConfig
     }
 
     /**
-     * Get all config items keyed by name
+     * Get all config items keyed by name.
      *
      * @return Collection
      */

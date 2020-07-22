@@ -1,6 +1,6 @@
 <?php
 /**
- * Fs.php
+ * Fs.php.
  *
  * -Description-
  *
@@ -33,7 +33,7 @@ class FsGbn extends OS implements ProcessorDiscovery
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
@@ -55,6 +55,7 @@ class FsGbn extends OS implements ProcessorDiscovery
                 100 - $entry['cpuIdle']
             );
         }
+
         return $processors;
     }
 }

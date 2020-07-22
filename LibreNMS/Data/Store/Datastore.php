@@ -1,6 +1,6 @@
 <?php
 /**
- * Datastore.php
+ * Datastore.php.
  *
  * Aggregates all enabled datastores and dispatches data to them
  *
@@ -33,7 +33,7 @@ class Datastore
     protected $stores;
 
     /**
-     * Initialize and create the Datastore(s)
+     * Initialize and create the Datastore(s).
      *
      * @param array $options
      * @return DatastoreContract
@@ -70,7 +70,7 @@ class Datastore
     }
 
     /**
-     * Disable a datastore for the rest of this run
+     * Disable a datastore for the rest of this run.
      *
      * @param string $name
      */
@@ -107,7 +107,7 @@ class Datastore
         // data_update($device, 'mymeasurement', $tags, 1234);
         //     AND
         // data_update($device, 'mymeasurement', $tags, array('mymeasurement' => 1234));
-        if (!is_array($fields)) {
+        if (! is_array($fields)) {
             $fields = [$measurement => $fields];
         }
 
@@ -122,7 +122,7 @@ class Datastore
     }
 
     /**
-     * Filter all elements with keys that start with 'rrd_'
+     * Filter all elements with keys that start with 'rrd_'.
      *
      * @param array $arr input array
      * @return array Copy of $arr with all keys beginning with 'rrd_' removed.
@@ -136,11 +136,12 @@ class Datastore
             }
             $result[$k] = $v;
         }
+
         return $result;
     }
 
     /**
-     * Get all the active data stores
+     * Get all the active data stores.
      *
      * @return array
      */
@@ -153,6 +154,7 @@ class Datastore
     {
         return array_reduce($this->stores, function ($result, DatastoreContract $store) {
             $result[$store->getName()] = $store->getStats();
+
             return $result;
         }, []);
     }

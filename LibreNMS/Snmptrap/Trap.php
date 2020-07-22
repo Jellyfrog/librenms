@@ -1,6 +1,6 @@
 <?php
 /**
- * Trap.php
+ * Trap.php.
  *
  * -Description-
  *
@@ -40,11 +40,11 @@ class Trap
 
     protected $device;
 
-    /** @var Collection $oid_data */
+    /** @var Collection */
     protected $oid_data;
 
     /**
-     * Construct a trap from raw trap text
+     * Construct a trap from raw trap text.
      * @param $trap
      */
     public function __construct($trap)
@@ -62,17 +62,18 @@ class Trap
         $line = array_shift($lines);
         if (preg_match('/\[([0-9.:a-fA-F]+)\]/', $line, $matches)) {
             $this->ip = $matches[1];
-        };
+        }
 
         // parse the oid data
         $this->oid_data = collect($lines)->mapWithKeys(function ($line) {
-            list($oid, $data) = explode(' ', $line, 2);
+            [$oid, $data] = explode(' ', $line, 2);
+
             return [$oid => trim($data, '"')];
         });
     }
 
     /**
-     * Find the first in this trap by substring
+     * Find the first in this trap by substring.
      *
      * @param $search
      * @return string
@@ -85,7 +86,7 @@ class Trap
     }
 
     /**
-     * Find all oids that match the given string
+     * Find all oids that match the given string.
      * @param $search
      * @return array
      */

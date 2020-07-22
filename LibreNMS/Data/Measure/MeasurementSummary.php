@@ -1,6 +1,6 @@
 <?php
 /**
- * MeasurementSummary.php
+ * MeasurementSummary.php.
  *
  * -Description-
  *
@@ -47,7 +47,7 @@ class MeasurementSummary
 
     /**
      * Get the measurement summary
-     * ['count' => #, 'duration' => s]
+     * ['count' => #, 'duration' => s].
      *
      * @return array
      */

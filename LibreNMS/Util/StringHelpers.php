@@ -1,6 +1,6 @@
 <?php
 /**
- * Text.php
+ * Text.php.
  *
  * -Description-
  *
@@ -28,7 +28,7 @@ namespace LibreNMS\Util;
 class StringHelpers
 {
     /**
-     * Shorten text over 50 chars, if shortened, add ellipsis
+     * Shorten text over 50 chars, if shortened, add ellipsis.
      *
      * @param $string
      * @param int $max
@@ -37,7 +37,7 @@ class StringHelpers
     public static function shortenText($string, $max = 30)
     {
         if (strlen($string) > 50) {
-            return substr($string, 0, $max) . "...";
+            return substr($string, 0, $max).'...';
         }
 
         return $string;
@@ -83,7 +83,7 @@ class StringHelpers
     }
 
     /**
-     * Convert a camel or studly case string to Title case (with spaces)
+     * Convert a camel or studly case string to Title case (with spaces).
      * @param $string
      * @return string
      */

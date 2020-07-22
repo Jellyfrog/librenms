@@ -1,6 +1,6 @@
 <?php
 /**
- * Boss.php
+ * Boss.php.
  *
  * -Description-
  *
@@ -33,7 +33,7 @@ class Boss extends OS implements ProcessorDiscovery
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
@@ -41,11 +41,11 @@ class Boss extends OS implements ProcessorDiscovery
     {
         $data = snmpwalk_group($this->getDevice(), 's5ChasUtilCPUUsageLast10Minutes', 'S5-CHASSIS-MIB');
 
-        $processors = array();
+        $processors = [];
         $count = 1;
         foreach ($data as $index => $entry) {
             $processors[] = Processor::discover(
-                "avaya-ers",
+                'avaya-ers',
                 $this->getDeviceId(),
                 ".1.3.6.1.4.1.45.1.6.3.8.1.1.6.$index",
                 zeropad($count),
@@ -56,7 +56,6 @@ class Boss extends OS implements ProcessorDiscovery
 
             $count++;
         }
-
 
         return $processors;
     }

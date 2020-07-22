@@ -1,6 +1,6 @@
 <?php
 /**
- * Transport.php
+ * Transport.php.
  *
  * An interface for the transport of alerts.
  *
@@ -28,7 +28,7 @@ namespace LibreNMS\Interfaces\Alert;
 interface Transport
 {
     /**
-     * Gets called when an alert is sent
+     * Gets called when an alert is sent.
      *
      * @param $alert_data array An array created by DescribeAlert
      * @param $opts array|true The options from the alert_transports transport_config column

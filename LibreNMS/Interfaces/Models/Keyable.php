@@ -1,6 +1,6 @@
 <?php
 /**
- * Keyable.php
+ * Keyable.php.
  *
  * -Description-
  *
@@ -28,7 +28,7 @@ namespace LibreNMS\Interfaces\Models;
 interface Keyable
 {
     /**
-     * Get a string that can identify a unique instance of this model
+     * Get a string that can identify a unique instance of this model.
      * @return string
      */
     public function getCompositeKey();

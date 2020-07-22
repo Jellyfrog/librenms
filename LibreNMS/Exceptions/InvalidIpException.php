@@ -1,6 +1,6 @@
 <?php
 /**
- * InvalidIpException.php
+ * InvalidIpException.php.
  *
  * -Description-
  *

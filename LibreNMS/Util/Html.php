@@ -1,6 +1,6 @@
 <?php
 /**
- * Html.php
+ * Html.php.
  *
  * Helper functions to generate html snippets
  *
@@ -32,10 +32,9 @@ use LibreNMS\Config;
 class Html
 {
     /**
-     * return icon and color for application state
+     * return icon and color for application state.
      * @param string $app_state
      * @return array
-     *
      */
     public static function appStateIcon($app_state)
     {
@@ -71,7 +70,7 @@ class Html
     }
 
     /**
-     * Print or return a row of graphs
+     * Print or return a row of graphs.
      *
      * @param array $graph_array
      * @param bool $print
@@ -80,21 +79,21 @@ class Html
     public static function graphRow($graph_array, $print = false)
     {
         if (session('widescreen')) {
-            if (!array_key_exists('height', $graph_array)) {
+            if (! array_key_exists('height', $graph_array)) {
                 $graph_array['height'] = '110';
             }
 
-            if (!array_key_exists('width', $graph_array)) {
+            if (! array_key_exists('width', $graph_array)) {
                 $graph_array['width'] = '215';
             }
 
             $periods = Config::get('graphs.mini.widescreen');
         } else {
-            if (!array_key_exists('height', $graph_array)) {
+            if (! array_key_exists('height', $graph_array)) {
                 $graph_array['height'] = '100';
             }
 
-            if (!array_key_exists('width', $graph_array)) {
+            if (! array_key_exists('width', $graph_array)) {
                 $graph_array['width'] = '215';
             }
 

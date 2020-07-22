@@ -1,6 +1,6 @@
 <?php
 /**
- * PollerModule.php
+ * PollerModule.php.
  *
  * LibreNMS Poller Module
  *

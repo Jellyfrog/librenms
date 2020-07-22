@@ -1,6 +1,6 @@
 <?php
 /**
- * VxworksProcessorUsage.php
+ * VxworksProcessorUsage.php.
  *
  * Several devices use the janky output of this oid
  * Requires both ProcessorDiscovery and ProcessorPolling
@@ -32,7 +32,7 @@ trait VxworksProcessorUsage
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @param string $oid Custom OID to fetch from
      * @return array Processors
@@ -41,7 +41,7 @@ trait VxworksProcessorUsage
     {
         $usage = $this->parseCpuUsage(snmp_get($this->getDevice(), $oid, '-Ovq'));
         if (is_numeric($usage)) {
-            return array(
+            return [
                 Processor::discover(
                     $this->getName(),
                     $this->getDeviceId(),
@@ -50,11 +50,11 @@ trait VxworksProcessorUsage
                     'Processor',
                     1,
                     $usage
-                )
-            );
+                ),
+            ];
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -65,7 +65,7 @@ trait VxworksProcessorUsage
      */
     public function pollProcessors(array $processors)
     {
-        $data = array();
+        $data = [];
 
         foreach ($processors as $processor) {
             $data[$processor['processor_id']] = $this->parseCpuUsage(
@@ -78,7 +78,7 @@ trait VxworksProcessorUsage
 
     /**
      * Parse the silly cpu usage string
-     * "    5 Secs ( 96.4918%)   60 Secs ( 54.2271%)  300 Secs ( 38.2591%)"
+     * "    5 Secs ( 96.4918%)   60 Secs ( 54.2271%)  300 Secs ( 38.2591%)".
      *
      * @param $data
      * @return mixed
@@ -86,6 +86,7 @@ trait VxworksProcessorUsage
     private function parseCpuUsage($data)
     {
         preg_match('/([0-9]+.[0-9]+)%/', $data, $matches);
+
         return $matches[1];
     }
 }

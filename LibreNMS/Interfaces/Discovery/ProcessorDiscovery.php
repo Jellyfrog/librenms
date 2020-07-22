@@ -1,6 +1,6 @@
 <?php
 /**
- * ProcessorDiscovery.php
+ * ProcessorDiscovery.php.
  *
  * -Description-
  *
@@ -29,7 +29,7 @@ interface ProcessorDiscovery
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */

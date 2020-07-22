@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessXpiDiscovery.php
+ * WirelessXpiDiscovery.php.
  *
  * -Description-
  *
@@ -29,7 +29,7 @@ interface WirelessXpiDiscovery
 {
     /**
      * Discover wireless Cross Polar Interference.  Measured in dB. Type is xpi.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

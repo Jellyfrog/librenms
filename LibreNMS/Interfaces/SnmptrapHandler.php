@@ -1,6 +1,6 @@
 <?php
 /**
- * SnmptrapHandler.php
+ * SnmptrapHandler.php.
  *
  * -Description-
  *

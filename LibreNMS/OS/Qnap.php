@@ -1,6 +1,6 @@
 <?php
 /**
- * Qnap.php
+ * Qnap.php.
  *
  * QNAP Turbo NAS OS
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * CpUpsRtnChargerFailure.php
+ * CpUpsRtnChargerFailure.php.
  *
  * -Description-
  *

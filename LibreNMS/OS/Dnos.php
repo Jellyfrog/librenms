@@ -1,6 +1,6 @@
 <?php
 /**
- * Dnos.php
+ * Dnos.php.
  *
  * Dell Network OS
  *
@@ -34,14 +34,14 @@ class Dnos extends OS implements ProcessorDiscovery
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
     public function discoverProcessors()
     {
         $device = $this->getDevice();
-        $processors = array();
+        $processors = [];
 
         if (Str::startsWith($device['sysObjectID'], '.1.3.6.1.4.1.6027.1.3')) {
             d_echo('Dell S Series Chassis');
@@ -60,7 +60,7 @@ class Dnos extends OS implements ProcessorDiscovery
                 'F10-C-SERIES-CHASSIS-MIB',
                 '.1.3.6.1.4.1.6027.3.8.1.3.7.1.3',
                 'Route Process Module',
-                $this->getName() . '-rpm'
+                $this->getName().'-rpm'
             );
             $this->findProcessors(
                 $processors,
@@ -93,7 +93,7 @@ class Dnos extends OS implements ProcessorDiscovery
     }
 
     /**
-     * Find processors and append them to the $processors array
+     * Find processors and append them to the $processors array.
      *
      * @param array $processors
      * @param string $oid Textual OIDf

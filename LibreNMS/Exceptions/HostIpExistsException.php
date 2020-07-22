@@ -1,6 +1,6 @@
 <?php
 /**
- * HostIpExistsException.php
+ * HostIpExistsException.php.
  *
  * -Description-
  *
@@ -27,5 +27,4 @@ namespace LibreNMS\Exceptions;
 
 class HostIpExistsException extends HostExistsException
 {
-
 }
