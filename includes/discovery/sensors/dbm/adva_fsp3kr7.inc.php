@@ -1,6 +1,6 @@
 <?php
 /**
- * LibreNMS - ADVA device support - Pre-Cache for Sensors
+ * LibreNMS - ADVA device support - Pre-Cache for Sensors.
  *
  * @category   Network_Monitoring
  * @package    LibreNMS
@@ -8,7 +8,7 @@
  * @author     Christoph Zilian <czilian@hotmail.com>
  * @license    http://gnu.org/copyleft/gpl.html GNU GPL
  * @link       https://github.com/librenms/librenms/
-
+ *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
@@ -19,14 +19,14 @@
 //********* ADVA FSP3000 R7 Series
 
     $multiplier = 1;
-    $divisor    = 10;
+    $divisor = 10;
 
 foreach ($pre_cache['adva_fsp3kr7'] as $index => $entry) {
     if ($entry['entityFacilityAidString'] and $entry['pmSnapshotCurrentInputPower']) {
-        $oidRX        = '.1.3.6.1.4.1.2544.1.11.7.7.2.3.1.2.' . $index;
-        $descr        = $entry['entityFacilityAidString'].' RX';
-        $currentRX    = $entry['pmSnapshotCurrentInputPower']/$divisor;
-        $descr        = $entry['entityFacilityAidString'].' RX';
+        $oidRX = '.1.3.6.1.4.1.2544.1.11.7.7.2.3.1.2.'.$index;
+        $descr = $entry['entityFacilityAidString'].' RX';
+        $currentRX = $entry['pmSnapshotCurrentInputPower'] / $divisor;
+        $descr = $entry['entityFacilityAidString'].' RX';
 
         discover_sensor(
             $valid['sensor'],
@@ -47,9 +47,9 @@ foreach ($pre_cache['adva_fsp3kr7'] as $index => $entry) {
     }//End if Input Power
 
     if ($entry['entityFacilityAidString'] and $entry['pmSnapshotCurrentOutputPower']) {
-        $oidTX     = '.1.3.6.1.4.1.2544.1.11.7.7.2.3.1.1.' . $index;
-        $descr     = $entry['entityFacilityAidString'].' TX';
-        $currentTX = $entry['pmSnapshotCurrentOutputPower']/$divisor;
+        $oidTX = '.1.3.6.1.4.1.2544.1.11.7.7.2.3.1.1.'.$index;
+        $descr = $entry['entityFacilityAidString'].' TX';
+        $currentTX = $entry['pmSnapshotCurrentOutputPower'] / $divisor;
 
         discover_sensor(
             $valid['sensor'],

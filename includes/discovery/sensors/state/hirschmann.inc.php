@@ -27,9 +27,9 @@ if ($device['os'] == 'hirschmann') {
         }
     }
 
-   ////////////////////////////////
-   /// Common LED Status States ///
-   ////////////////////////////////
+    ////////////////////////////////
+    /// Common LED Status States ///
+    ////////////////////////////////
     $states = [
         ['value' => 1, 'generic' => 0, 'graph' => 0, 'descr' => 'off'],
         ['value' => 2, 'generic' => 0, 'graph' => 0, 'descr' => 'green'],
@@ -37,38 +37,38 @@ if ($device['os'] == 'hirschmann') {
         ['value' => 4, 'generic' => 2, 'graph' => 0, 'descr' => 'red'],
     ];
 
-   ///////////////////////////////
-   /// LED Status Power Supply ///
-   ///////////////////////////////
-    $temp = snmp_get($device, "hmLEDRSPowerSupply.0", "-Ovqe", "HMPRIV-MGMT-SNMP-MIB");
+    ///////////////////////////////
+    /// LED Status Power Supply ///
+    ///////////////////////////////
+    $temp = snmp_get($device, 'hmLEDRSPowerSupply.0', '-Ovqe', 'HMPRIV-MGMT-SNMP-MIB');
     $cur_oid = '.1.3.6.1.4.1.248.14.1.1.35.1.1.0';
     $index = '0';
 
     if (is_numeric($temp)) {
-       //Create State Index
+        //Create State Index
         $state_name = 'hmLEDRSPowerSupply';
         create_state_index($state_name, $states);
 
         $descr = 'LED Status Power Supply';
-    //Discover Sensors
+        //Discover Sensors
         discover_sensor($valid['sensor'], 'state', $device, $cur_oid, 'hmLEDRSPowerSupply.'.$index, $state_name, $descr, 1, 1, null, null, null, null, $temp, 'snmp', 'hmLEDRSPowerSupply.'.$index);
 
-    //Create Sensor To State Index
+        //Create Sensor To State Index
         create_sensor_to_state_index($device, $state_name, 'hmLEDRSPowerSupply.'.$index);
     }
 
-   //////////////////////////
-   /// LED Status Standby ///
-   //////////////////////////
-    $temp = snmp_get($device, "hmLEDRStandby.0", "-Ovqe", "HMPRIV-MGMT-SNMP-MIB");
+    //////////////////////////
+    /// LED Status Standby ///
+    //////////////////////////
+    $temp = snmp_get($device, 'hmLEDRStandby.0', '-Ovqe', 'HMPRIV-MGMT-SNMP-MIB');
     $cur_oid = '.1.3.6.1.4.1.248.14.1.1.35.1.2.0';
     $index = '0';
- 
+
     if (is_numeric($temp)) {
         //Create State Index
         $state_name = 'hmLEDRStandby';
         create_state_index($state_name, $states);
- 
+
         $descr = 'LED Status Standby';
         //Discover Sensors
         discover_sensor($valid['sensor'], 'state', $device, $cur_oid, 'hmLEDRStandby.'.$index, $state_name, $descr, 1, 1, null, null, null, null, $temp, 'snmp', 'hmLEDRStandby.'.$index);
@@ -80,7 +80,7 @@ if ($device['os'] == 'hirschmann') {
     /////////////////////////////////////
     /// LED Status Redundancy Manager ///
     /////////////////////////////////////
-    $temp = snmp_get($device, "hmLEDRSRedundancyManager.0", "-Ovqe", "HMPRIV-MGMT-SNMP-MIB");
+    $temp = snmp_get($device, 'hmLEDRSRedundancyManager.0', '-Ovqe', 'HMPRIV-MGMT-SNMP-MIB');
     $cur_oid = '.1.3.6.1.4.1.248.14.1.1.35.1.3.0';
     $index = '0';
 
@@ -100,7 +100,7 @@ if ($device['os'] == 'hirschmann') {
     ////////////////////////
     /// LED Status Fault ///
     ////////////////////////
-    $temp = snmp_get($device, "hmLEDRSFault.0", "-Ovqe", "HMPRIV-MGMT-SNMP-MIB");
+    $temp = snmp_get($device, 'hmLEDRSFault.0', '-Ovqe', 'HMPRIV-MGMT-SNMP-MIB');
     $cur_oid = '.1.3.6.1.4.1.248.14.1.1.35.1.4.0';
     $index = '0';
 

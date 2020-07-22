@@ -1,6 +1,6 @@
 <?php
 /**
- * liebert.inc.php
+ * liebert.inc.php.
  *
  * LibreNMS humidty discovery module for Liebert
  *
@@ -22,24 +22,23 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 $lib_data = snmpwalk_cache_oid($device, 'lgpEnvHumidityEntryRel', [], 'LIEBERT-GP-ENVIRONMENTAL-MIB');
 
 foreach ($lib_data as $index => $data) {
     if (is_numeric($data['lgpEnvHumidityMeasurementRelTenths'])) {
-        $oid = '.1.3.6.1.4.1.476.1.42.3.4.2.2.3.1.50.' . $index;
+        $oid = '.1.3.6.1.4.1.476.1.42.3.4.2.2.3.1.50.'.$index;
         $low_limit = $data['lgpEnvHumidityLowThresholdRelTenths'];
         $high_limit = $data['lgpEnvHumidityHighThresholdRelTenths'];
         $current = $data['lgpEnvHumidityMeasurementRelTenths'];
         $divisor = 10;
-        $new_index = 'lgpEnvHumidityMeasurementRelTenths.' . $index;
+        $new_index = 'lgpEnvHumidityMeasurementRelTenths.'.$index;
     } elseif (is_numeric($data['lgpEnvHumidityMeasurementRel'])) {
-        $oid = '.1.3.6.1.4.1.476.1.42.3.4.2.2.3.1.3.' . $index;
+        $oid = '.1.3.6.1.4.1.476.1.42.3.4.2.2.3.1.3.'.$index;
         $low_limit = $data['lgpEnvHumidityLowThresholdRel'];
         $high_limit = $data['lgpEnvHumidityHighThresholdRel'];
         $current = $data['lgpEnvHumidityMeasurementRel'];
         $divisor = 1;
-        $new_index = 'lgpEnvHumidityMeasurementRel.' . $index;
+        $new_index = 'lgpEnvHumidityMeasurementRel.'.$index;
     }
 
     if (is_numeric($current)) {
@@ -61,7 +60,7 @@ unset(
 
 $return_humidity = snmp_get($device, 'lgpEnvReturnAirHumidity.0', '-Oqv');
 if (is_numeric($return_humidity)) {
-    $oid   = '.1.3.6.1.4.1.476.1.42.3.4.2.1.2.0';
+    $oid = '.1.3.6.1.4.1.476.1.42.3.4.2.1.2.0';
     $index = 'lgpEnvReturnAirHumidity.0';
     $descr = 'Return Air Humidity';
     discover_sensor($valid['sensor'], 'humidity', $device, $oid, $index, 'liebert', $descr, $divisor, '1', null, null, null, null, $return_humidity);
@@ -69,7 +68,7 @@ if (is_numeric($return_humidity)) {
 
 $supply_humidity = snmp_get($device, 'lgpEnvSupplyAirHumidity.0', '-Oqv');
 if (is_numeric($supply_humidity)) {
-    $oid   = '.1.3.6.1.4.1.476.1.42.3.4.2.1.3.0';
+    $oid = '.1.3.6.1.4.1.476.1.42.3.4.2.1.3.0';
     $index = 'lgpEnvSupplyAirHumidity.0';
     $descr = 'Supply Air Humidity';
     discover_sensor($valid['sensor'], 'humidity', $device, $oid, $index, 'liebert', $descr, $divisor, '1', null, null, null, null, $supply_humidity);

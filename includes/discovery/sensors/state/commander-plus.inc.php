@@ -1,6 +1,6 @@
 <?php
 /**
- * commander-plus.inc.php
+ * commander-plus.inc.php.
  *
  * LibreNMS state discovery module for Commander Plus
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 $start_oid = '.1.3.6.1.4.1.18642.1.2.4';
 $state_table = snmpwalk_cache_oid($device, '.1.3.6.1.4.1.18642.1.2.4', [], 'CCPOWER-MIB');
 $x = 1;

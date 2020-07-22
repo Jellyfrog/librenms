@@ -1,6 +1,6 @@
 <?php
 /**
- * procurve.inc.php
+ * procurve.inc.php.
  *
  * LibreNMS sensors state discovery module for HP Procurve
  *
@@ -22,13 +22,12 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 foreach ($pre_cache['procurve_hpicfSensorTable'] as $index => $data) {
-    $state_name    = $data['hpicfSensorObjectId'];
-    $state_oid     = '.1.3.6.1.4.1.11.2.14.11.1.2.6.1.4.';
-    $state_descr   = $data['hpicfSensorDescr'];
-    $state          = $data['hpicfSensorStatus'];
-    $state_index      = $state_name . '.' . $index;
+    $state_name = $data['hpicfSensorObjectId'];
+    $state_oid = '.1.3.6.1.4.1.11.2.14.11.1.2.6.1.4.';
+    $state_descr = $data['hpicfSensorDescr'];
+    $state = $data['hpicfSensorStatus'];
+    $state_index = $state_name.'.'.$index;
 
     $states = [
         ['value' => 1, 'generic' => 3, 'graph' => 0, 'descr' => 'unknown'],
@@ -39,6 +38,6 @@ foreach ($pre_cache['procurve_hpicfSensorTable'] as $index => $data) {
     ];
     create_state_index($state_name, $states);
 
-    discover_sensor($valid['sensor'], 'state', $device, $state_oid . $index, $state_index, $state_name, $state_descr, '1', '1', null, null, null, null, $state);
+    discover_sensor($valid['sensor'], 'state', $device, $state_oid.$index, $state_index, $state_name, $state_descr, '1', '1', null, null, null, null, $state);
     create_sensor_to_state_index($device, $state_name, $state_index);
 }

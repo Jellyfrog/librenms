@@ -27,19 +27,19 @@ $prefixes = [
 ];
 
 foreach ($prefixes as $prefix => $numOidPrefix) {
-    $walk = snmpwalk_cache_oid($device, $prefix . 'Table', [], 'WEBMON-EDGE-MATRIX-MIB');
+    $walk = snmpwalk_cache_oid($device, $prefix.'Table', [], 'WEBMON-EDGE-MATRIX-MIB');
 
     foreach ($walk as $index => $oid) {
-        if ($oid[$prefix . 'Configured'] != '0' && ($oid[$prefix . 'SensorType'] == '2' || $oid[$prefix . 'SensorType'] == 'humidity') && $oid[$prefix . 'LiveRaw']) {
-            $num_oid        = $numOidPrefix . $index;
-            $descr          = $oid[$prefix . 'Description'];
-            $group          = $prefix;
-            $value          = $oid[$prefix . 'LiveRaw'];
-            $lowLimit       = $oid[$prefix . 'Thresh4'];
-            $lowWarnLimit   = $oid[$prefix . 'Thresh3'];
-            $highLimit      = $oid[$prefix . 'Thresh1'];
-            $highWarnLimit  = $oid[$prefix . 'Thresh2'];
-            discover_sensor($valid['sensor'], 'humidity', $device, $num_oid, $prefix . 'LiveRaw.' . $index, 'webmon', $descr, '1', '1', $lowLimit, $lowWarnLimit, $highWarnLimit, $highLimit, $value, 'snmp', null, null, null, $group);
+        if ($oid[$prefix.'Configured'] != '0' && ($oid[$prefix.'SensorType'] == '2' || $oid[$prefix.'SensorType'] == 'humidity') && $oid[$prefix.'LiveRaw']) {
+            $num_oid = $numOidPrefix.$index;
+            $descr = $oid[$prefix.'Description'];
+            $group = $prefix;
+            $value = $oid[$prefix.'LiveRaw'];
+            $lowLimit = $oid[$prefix.'Thresh4'];
+            $lowWarnLimit = $oid[$prefix.'Thresh3'];
+            $highLimit = $oid[$prefix.'Thresh1'];
+            $highWarnLimit = $oid[$prefix.'Thresh2'];
+            discover_sensor($valid['sensor'], 'humidity', $device, $num_oid, $prefix.'LiveRaw.'.$index, 'webmon', $descr, '1', '1', $lowLimit, $lowWarnLimit, $highWarnLimit, $highLimit, $value, 'snmp', null, null, null, $group);
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * geist-pdu.inc.php
+ * geist-pdu.inc.php.
  *
  * LibreNMS voltage discovery module for Geist PDU
  *
@@ -22,28 +22,27 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 foreach ($pre_cache['geist_pdu_iec'] as $index => $data) {
     $value = $data['ctrl3ChIECVoltsA'];
     $current_oid = '.1.3.6.1.4.1.21239.2.25.1.6.';
-    $descr = $data['ctrl3ChIECName'] . ' Phase A';
-    $oid = $current_oid . $index;
+    $descr = $data['ctrl3ChIECName'].' Phase A';
+    $oid = $current_oid.$index;
     if ($value > 0) {
         discover_sensor($valid['sensor'], 'voltage', $device, $oid, 'ctrl3ChIECVoltsA', 'geist-pdu', $descr, 1, 1, null, null, null, null, $value);
     }
 
     $value = $data['ctrl3ChIECVoltsB'];
     $current_oid = '.1.3.6.1.4.1.21239.2.25.1.14.';
-    $descr = $data['ctrl3ChIECName'] . ' Phase B';
-    $oid = $current_oid . $index;
+    $descr = $data['ctrl3ChIECName'].' Phase B';
+    $oid = $current_oid.$index;
     if ($value > 0) {
         discover_sensor($valid['sensor'], 'voltage', $device, $oid, 'ctrl3ChIECVoltsB', 'geist-pdu', $descr, 1, 1, null, null, null, null, $value);
     }
 
     $value = $data['ctrl3ChIECVoltsC'];
     $current_oid = '.1.3.6.1.4.1.21239.2.25.1.22.';
-    $descr = $data['ctrl3ChIECName'] . ' Phase C';
-    $oid = $current_oid . $index;
+    $descr = $data['ctrl3ChIECName'].' Phase C';
+    $oid = $current_oid.$index;
     if ($value > 0) {
         discover_sensor($valid['sensor'], 'voltage', $device, $oid, 'ctrl3ChIECVoltsC', 'geist-pdu', $descr, 1, 1, null, null, null, null, $value);
     }

@@ -21,12 +21,11 @@ $states = [
     ['value' => 12, 'generic' => 0, 'graph' => 1, 'descr' => '4096QAM'],
 ];
 
-
-if (!empty($modulation)) {
+if (! empty($modulation)) {
     create_state_index($state_name, $states);
 }
 
-if (!$os instanceof OS) {
+if (! $os instanceof OS) {
     $os = OS::make($device);
 }
 
@@ -41,7 +40,7 @@ foreach ($modulation as $link => $linkEntry) {
                 ".1.3.6.1.4.1.3373.1103.80.17.1.6.$index",
                 "rx-$index",
                 $state_name,
-                $os->getLinkLabel($link) . ' Rx ' . $os->getRadioLabel($radio)
+                $os->getLinkLabel($link).' Rx '.$os->getRadioLabel($radio)
             );
             create_sensor_to_state_index($device, $state_name, "rx-$index");
         }
@@ -53,7 +52,7 @@ foreach ($modulation as $link => $linkEntry) {
                 ".1.3.6.1.4.1.3373.1103.80.17.1.7.$index",
                 "tx-$index",
                 $state_name,
-                $os->getLinkLabel($link) . ' Tx ' . $os->getRadioLabel($radio)
+                $os->getLinkLabel($link).' Tx '.$os->getRadioLabel($radio)
             );
             create_sensor_to_state_index($device, $state_name, "tx-$index");
         }

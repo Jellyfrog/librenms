@@ -13,7 +13,7 @@ $deviceModel->fill([
 ]);
 
 foreach ($deviceModel->getDirty() as $attribute => $value) {
-    Log::event($value . ' -> ' . $deviceModel->$attribute, $deviceModel, 'system', 3);
+    Log::event($value.' -> '.$deviceModel->$attribute, $deviceModel, 'system', 3);
     $device[$attribute] = $value; // update device array
 }
 
@@ -21,10 +21,10 @@ foreach ($deviceModel->getDirty() as $attribute => $value) {
 $deviceModel->os = getHostOS($device, false);
 
 if ($deviceModel->isDirty('os')) {
-    Log::event('Device OS changed: ' . $deviceModel->getOriginal('os') . ' -> ' . $deviceModel->os, $deviceModel, 'system', 3);
+    Log::event('Device OS changed: '.$deviceModel->getOriginal('os').' -> '.$deviceModel->os, $deviceModel, 'system', 3);
     $device['os'] = $deviceModel->os;
 
-    echo "Changed ";
+    echo 'Changed ';
 }
 
 $deviceModel->save();
@@ -32,8 +32,8 @@ load_os($device);
 load_discovery($device);
 $os = OS::make($device);
 
-echo "OS: " . Config::getOsSetting($device['os'], 'text') . " ({$device['os']})\n\n";
+echo 'OS: '.Config::getOsSetting($device['os'], 'text')." ({$device['os']})\n\n";
 
-register_mibs($device, Config::getOsSetting($device['os'], 'register_mibs', []), 'includes/discovery/os/' . $device['os'] . '.inc.php');
+register_mibs($device, Config::getOsSetting($device['os'], 'register_mibs', []), 'includes/discovery/os/'.$device['os'].'.inc.php');
 
 unset($snmpdata, $attribute, $value, $deviceModel);

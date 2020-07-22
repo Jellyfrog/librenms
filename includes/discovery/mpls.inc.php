@@ -1,6 +1,6 @@
 <?php
 /**
- * mpls.inc.php
+ * mpls.inc.php.
  *
  * Discover MPLS LSPs
  *
@@ -25,7 +25,7 @@
 
 use LibreNMS\OS;
 
-if (!$os instanceof OS) {
+if (! $os instanceof OS) {
     $os = OS::make($device);
 }
 (new \LibreNMS\Modules\Mpls())->discover($os);

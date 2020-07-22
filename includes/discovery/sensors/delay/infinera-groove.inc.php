@@ -1,6 +1,6 @@
 <?php
 /**
- * infinera-groove.inc.php
+ * infinera-groove.inc.php.
  *
  * LibreNMS Delay discovery module for Infinera Groove
  *
@@ -24,12 +24,11 @@
  *
  * Modified for DGD, Magnus Bergroth
  */
-
 foreach ($pre_cache['infineragroove_portTable'] as $index => $data) {
     if (is_numeric($data['ochOsDGD']) && $data['ochOsDGD'] != 0) {
-        $descr   = $data['portAlias'].' Differential Group Delay';
-        $oid     = '.1.3.6.1.4.1.42229.1.2.4.1.19.1.1.22.' . $index;
-        $value   = $data['ochOsDGD'];
+        $descr = $data['portAlias'].' Differential Group Delay';
+        $oid = '.1.3.6.1.4.1.42229.1.2.4.1.19.1.1.22.'.$index;
+        $value = $data['ochOsDGD'];
         $divisor = 1000000000000;
         discover_sensor($valid['sensor'], 'delay', $device, $oid, 'ochOsOSNR.'.$index, 'infinera-groove', $descr, $divisor, '1', null, null, null, null, $value);
     }

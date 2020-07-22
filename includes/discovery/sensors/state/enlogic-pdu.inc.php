@@ -1,6 +1,6 @@
 <?php
 /**
- * enlogic-pdu.inc.php
+ * enlogic-pdu.inc.php.
  *
  * LibreNMS sensors state discovery module for enLOGIC PDU
  *
@@ -22,10 +22,9 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 foreach ($pre_cache['enlogic_pdu_status'] as $index => $data) {
     if (is_array($data)) {
-        $oid = '.1.3.6.1.4.1.38446.1.2.4.1.3.' . $index;
+        $oid = '.1.3.6.1.4.1.38446.1.2.4.1.3.'.$index;
         $state_name = 'pduUnitStatusLoadState';
         $current = $data['pduUnitStatusLoadState'];
 
@@ -49,12 +48,12 @@ foreach ($pre_cache['enlogic_pdu_status'] as $index => $data) {
 
 foreach ($pre_cache['enlogic_pdu_input'] as $index => $data) {
     if (is_array($data)) {
-        $oid = '.1.3.6.1.4.1.38446.1.3.4.1.3.' . $index;
-        $tmp_index = $state_name . '.' . $index;
+        $oid = '.1.3.6.1.4.1.38446.1.3.4.1.3.'.$index;
+        $tmp_index = $state_name.'.'.$index;
         $state_name = 'pduInputPhaseStatusCurrentState';
         $current = $data['pduInputPhaseStatusCurrentState'];
         $descr = "Current state #$index";
-        if (!is_numeric($current)) {
+        if (! is_numeric($current)) {
             $states = [
                 ['value' => 1, 'generic' => 2, 'graph' => 1, 'descr' => 'upperCritical'],
                 ['value' => 2, 'generic' => 1, 'graph' => 1, 'descr' => 'upperWarning'],
@@ -70,12 +69,12 @@ foreach ($pre_cache['enlogic_pdu_input'] as $index => $data) {
             create_sensor_to_state_index($device, $state_name, $tmp_index);
         }
 
-        $oid = '.1.3.6.1.4.1.38446.1.3.4.1.4.' . $index;
-        $tmp_index = $state_name . '.' . $index;
+        $oid = '.1.3.6.1.4.1.38446.1.3.4.1.4.'.$index;
+        $tmp_index = $state_name.'.'.$index;
         $state_name = 'pduInputPhaseStatusVoltageState';
         $current = $data['pduInputPhaseStatusVoltageState'];
         $descr = "Voltage state #$index";
-        if (!is_numeric($current)) {
+        if (! is_numeric($current)) {
             $states = [
                 ['value' => 1, 'generic' => 2, 'graph' => 1, 'descr' => 'upperCritical'],
                 ['value' => 2, 'generic' => 1, 'graph' => 1, 'descr' => 'upperWarning'],
@@ -95,11 +94,11 @@ foreach ($pre_cache['enlogic_pdu_input'] as $index => $data) {
 
 foreach ($pre_cache['enlogic_pdu_circuit'] as $index => $data) {
     if (is_array($data)) {
-        $oid = '.1.3.6.1.4.1.38446.1.4.4.1.4.' . $index;
+        $oid = '.1.3.6.1.4.1.38446.1.4.4.1.4.'.$index;
         $state_name = 'pduCircuitBreakerStatusLoadState';
         $current = $data['pduCircuitBreakerStatusLoadState'];
 
-        if (!is_numeric($current)) {
+        if (! is_numeric($current)) {
             //Create State Translation
             $states = [
                 ['value' => 1, 'generic' => 2, 'graph' => 1, 'descr' => 'upperCritical'],

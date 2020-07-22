@@ -1,6 +1,6 @@
 <?php
 /**
- * fabos.inc.php
+ * fabos.inc.php.
  *
  * LibreNMS states discovery module for fabos
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 foreach ($pre_cache['fabos_sensors'] as $data) {
     if (is_numeric($data['swSensorValue']) && $data['swSensorValue'] !== '-2147483648') {
         $descr = $data['swSensorInfo'];
@@ -37,7 +36,7 @@ foreach ($pre_cache['fabos_sensors'] as $data) {
         create_state_index($state_name, $states);
 
         $index = $data['swSensorIndex'];
-        $oid = '.1.3.6.1.4.1.1588.2.1.1.1.1.22.1.3.' . $index;
+        $oid = '.1.3.6.1.4.1.1588.2.1.1.1.1.22.1.3.'.$index;
         $value = $data['swSensorStatus'];
         discover_sensor($valid['sensor'], 'state', $device, $oid, $index, $descr, $descr, 1, 1, null, null, null, null, $value);
         create_sensor_to_state_index($device, $descr, $index);

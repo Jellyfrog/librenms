@@ -1,6 +1,6 @@
 <?php
 /**
- * procurve.inc.php
+ * procurve.inc.php.
  *
  * LibreNMS sensors pre-cache discovery module for HP Procurve
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 echo 'hpicfSensorTable ';
 $pre_cache['procurve_hpicfSensorTable'] = snmpwalk_cache_oid($device, 'hpicfSensorTable', [], 'HP-ICF-CHASSIS', null, '-OeQUs');
 

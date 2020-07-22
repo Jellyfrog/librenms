@@ -13,7 +13,7 @@ foreach ($oids as $index => $first) {
             ".1.3.6.1.4.1.1718.3.2.2.1.11.$index.$end",
             $index,
             'sentry3',
-            'Tower ' . $index,
+            'Tower '.$index,
             $divisor,
             1,
             null,

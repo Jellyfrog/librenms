@@ -1,6 +1,6 @@
 <?php
 /**
- * power.inc.php
+ * power.inc.php.
  *
  * LibreNMS power sensor discovery module for Linux
  *
@@ -22,11 +22,10 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 $temp = snmpwalk_cache_multi_oid($device, 'amperageProbeTableEntry', [], 'MIB-Dell-10892');
 $cur_oid = '.1.3.6.1.4.1.674.10892.1.600.30.1.6.';
 
-foreach ((array)$temp as $index => $entry) {
+foreach ((array) $temp as $index => $entry) {
     $descr = $entry['amperageProbeLocationName'];
     if ($entry['amperageProbeType'] === 'amperageProbeTypeIsSystemWatts') {
         $divisor = 1;
@@ -36,7 +35,7 @@ foreach ((array)$temp as $index => $entry) {
         $warnlimit = $entry['amperageProbeUpperNonCriticalThreshold'] / $divisor;
         $limit = $entry['amperageProbeUpperCriticalThreshold'] / $divisor;
 
-        discover_sensor($valid['sensor'], 'power', $device, $cur_oid . $index, $index, 'dell', $descr, $divisor, '1', $lowlimit, $low_warn_limit, $warnlimit, $limit, $value, 'snmp', $index);
+        discover_sensor($valid['sensor'], 'power', $device, $cur_oid.$index, $index, 'dell', $descr, $divisor, '1', $lowlimit, $low_warn_limit, $warnlimit, $limit, $value, 'snmp', $index);
     }
 }
 

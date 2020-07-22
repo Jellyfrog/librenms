@@ -1,6 +1,6 @@
 <?php
 /**
- * sinetica.inc.php
+ * sinetica.inc.php.
  *
  * -Description-
  *
@@ -22,7 +22,6 @@
  * @copyright  2016 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
 $oids = snmpwalk_cache_oid_num($device, '.1.3.6.1.4.1.13891.101.4.4.1.5', []);
 
 foreach ($oids as $oid => $data) {
@@ -35,7 +34,7 @@ foreach ($oids as $oid => $data) {
     }
     $current = current($data);
     $type = 'sinetica';
-    $index = '4.4.1.5.' . $current_id;
+    $index = '4.4.1.5.'.$current_id;
 
     discover_sensor($valid['sensor'], 'load', $device, $current_oid, $index, $type, $descr, 1, 1, null, null, null, null, $current);
 }

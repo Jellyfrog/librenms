@@ -1,6 +1,6 @@
 <?php
 /**
- * enlogic-pdu.inc.php
+ * enlogic-pdu.inc.php.
  *
  * LibreNMS sensors current discovery module for enLOGIC PDU
  *
@@ -22,14 +22,13 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 foreach ($pre_cache['enlogic_pdu_input'] as $index => $data) {
     if (is_array($data)) {
-        $oid = '.1.3.6.1.4.1.38446.1.3.4.1.5.' . $index;
-        $tmp_index = 'pduInputPhaseStatusCurrent.' . $index;
+        $oid = '.1.3.6.1.4.1.38446.1.3.4.1.5.'.$index;
+        $tmp_index = 'pduInputPhaseStatusCurrent.'.$index;
         $descr = "Input Phase $index";
         $divisor = 1;
-        $type = "enlogic-pdu";
+        $type = 'enlogic-pdu';
         $low_limit = $data['pduInputPhaseConfigCurrentLowerCriticalThreshold'];
         $low_warn = $data['pduInputPhaseConfigCurrentLowerWarningThreshold'];
         $high_limit = $data['pduInputPhaseConfigCurrentUpperCriticalThreshold'];
@@ -43,11 +42,11 @@ foreach ($pre_cache['enlogic_pdu_input'] as $index => $data) {
 
 foreach ($pre_cache['enlogic_pdu_circuit'] as $index => $data) {
     if (is_array($data)) {
-        $oid = '.1.3.6.1.4.1.38446.1.4.4.1.5.' . $index;
-        $tmp_index = 'pduCircuitBreakerStatusCurrent.' . $index;
+        $oid = '.1.3.6.1.4.1.38446.1.4.4.1.5.'.$index;
+        $tmp_index = 'pduCircuitBreakerStatusCurrent.'.$index;
         $descr = "Input Phase {$data['pduCircuitBreakerLabel']}";
         $divisor = 1;
-        $type = "enlogic-pdu";
+        $type = 'enlogic-pdu';
         $low_limit = $data['pduCircuitBreakerConfigLowerCriticalThreshold'];
         $low_warn = $data['pduCircuitBreakerConfigLowerWarningThreshold'];
         $high_limit = $data['pduCircuitBreakerConfigUpperCriticalThreshold'];

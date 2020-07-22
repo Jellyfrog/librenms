@@ -1,6 +1,6 @@
 <?php
 /**
- * eltek-webpower.inc.php
+ * eltek-webpower.inc.php.
  *
  * -Description-
  *
@@ -32,7 +32,7 @@ $symmetry_oid = [
     '.1.3.6.1.4.1.12148.9.3.19.3.1.15.0',
     '.1.3.6.1.4.1.12148.9.3.19.3.1.18.0',
     '.1.3.6.1.4.1.12148.9.3.19.3.1.21.0',
-    '.1.3.6.1.4.1.12148.9.3.19.3.1.24.0'
+    '.1.3.6.1.4.1.12148.9.3.19.3.1.24.0',
 ];
 $oid = snmp_get_multi($device, 'batteryBanksSymmetry1enable.0 batteryBanksSymmetry2enable.0 batteryBanksSymmetry3enable.0 batteryBanksSymmetry4enable.0 batteryBanksSymmetry5enable.0 batteryBanksSymmetry6enable.0 batteryBanksSymmetry7enable.0 batteryBanksSymmetry8enable.0 batteryBanksSymmetry1status.0 batteryBanksSymmetry2status.0 batteryBanksSymmetry3status.0 batteryBanksSymmetry4status.0 batteryBanksSymmetry5status.0 batteryBanksSymmetry6status.0 batteryBanksSymmetry7status.0 batteryBanksSymmetry8status.0', '-OQUs', 'ELTEK-DISTRIBUTED-MIB');
 $count = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -64,12 +64,12 @@ foreach ($count as &$countValue) {
         ];
         create_state_index($state_name, $states);
 
-        $index          = 0;
-        $limit          = 10;
-        $divisor        = 1;
-        $num_oid        = $symmetry_oid[$countValue-1];
-        $state          = $state_numeric / $divisor;
-        $descr          = 'Battery banks symmetry '.$countValue;
+        $index = 0;
+        $limit = 10;
+        $divisor = 1;
+        $num_oid = $symmetry_oid[$countValue - 1];
+        $state = $state_numeric / $divisor;
+        $descr = 'Battery banks symmetry '.$countValue;
         discover_sensor($valid['sensor'], 'state', $device, $num_oid, $index, $state_name, $descr, $divisor, '1', null, null, null, $limit, $state);
         create_sensor_to_state_index($device, $state_name, $index);
     }

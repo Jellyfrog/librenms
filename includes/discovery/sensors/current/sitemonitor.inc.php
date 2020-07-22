@@ -1,6 +1,6 @@
 <?php
 /**
- * sitemonitor.inc.php
+ * sitemonitor.inc.php.
  *
  * LibreNMS current discovery module for Packetflux SiteMonitor
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 $oid = '.1.3.6.1.4.1.32050.2.1.27.5.4';
 $current = (snmp_get($device, $oid, '-Oqv') / 10);
 if ($current > 0) {

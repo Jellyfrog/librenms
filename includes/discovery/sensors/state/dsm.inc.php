@@ -3,7 +3,7 @@
 echo 'DSM States';
 
 // System Status (Value : 1 Normal, 2 Failed)
-$state = snmp_get($device, "systemStatus.0", "-Ovqe", 'SYNOLOGY-SYSTEM-MIB');
+$state = snmp_get($device, 'systemStatus.0', '-Ovqe', 'SYNOLOGY-SYSTEM-MIB');
 $cur_oid = '.1.3.6.1.4.1.6574.1.1.0';
 $index = '0';
 
@@ -24,7 +24,7 @@ if (is_numeric($state)) {
 }
 
 // Power Status OID (Value : 1 Normal, 2 Failed)
-$state = snmp_get($device, "powerStatus.0", "-Ovqe", 'SYNOLOGY-SYSTEM-MIB');
+$state = snmp_get($device, 'powerStatus.0', '-Ovqe', 'SYNOLOGY-SYSTEM-MIB');
 $cur_oid = '.1.3.6.1.4.1.6574.1.3.0';
 $index = '0';
 
@@ -45,7 +45,7 @@ if (is_numeric($state)) {
 }
 
 // System Fan Status OID (Value : 1 Normal, 2 Failed)
-$state = snmp_get($device, "systemFanStatus.0", "-Ovqe", 'SYNOLOGY-SYSTEM-MIB');
+$state = snmp_get($device, 'systemFanStatus.0', '-Ovqe', 'SYNOLOGY-SYSTEM-MIB');
 $cur_oid = '.1.3.6.1.4.1.6574.1.4.1.0';
 $index = '0';
 
@@ -58,7 +58,6 @@ if (is_numeric($state)) {
     ];
     create_state_index($state_name, $states);
 
-
     //Discover Sensors
     discover_sensor($valid['sensor'], 'state', $device, $cur_oid, $index, $state_name, 'System Fan Status', 1, 1, null, null, null, null, $state, 'snmp', $index);
 
@@ -67,7 +66,7 @@ if (is_numeric($state)) {
 }
 
 // CPU Fan Status OID (Value : 1 Normal, 2 Failed)
-$state = snmp_get($device, "cpuFanStatus.0", "-Ovqe", 'SYNOLOGY-SYSTEM-MIB');
+$state = snmp_get($device, 'cpuFanStatus.0', '-Ovqe', 'SYNOLOGY-SYSTEM-MIB');
 $cur_oid = '.1.3.6.1.4.1.6574.1.4.2.0';
 $index = '0';
 
@@ -88,7 +87,7 @@ if (is_numeric($state)) {
 }
 
 // DSM Upgrade Available OID (Value : 1 Available, 2 Unavailable, 3 Connecting, 4 Disconnected, 5 Others)
-$state = snmp_get($device, "upgradeAvailable.0", "-Ovqe", 'SYNOLOGY-SYSTEM-MIB');
+$state = snmp_get($device, 'upgradeAvailable.0', '-Ovqe', 'SYNOLOGY-SYSTEM-MIB');
 $cur_oid = '.1.3.6.1.4.1.6574.1.5.4.0';
 $index = '0';
 
@@ -159,7 +158,7 @@ if (is_array($oids)) {
         ['value' => 5, 'generic' => 2, 'graph' => 0, 'descr' => 'Crashed'],
     ];
     create_state_index($state_name, $states);
-        
+
     foreach ($oids as $index => $entry) {
         //Discover Sensors
         discover_sensor($valid['sensor'], 'state', $device, $cur_oid.$index, $index, $state_name, 'Disk Status '.$index, 1, 1, null, null, null, null, $entry['diskStatus'], 'snmp', $index);

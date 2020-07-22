@@ -1,6 +1,6 @@
 <?php
 /**
- * aruba-instant.inc.php
+ * aruba-instant.inc.php.
  *
  * LibreNMS mempools discovery module for Aruba Instant
  *
@@ -42,12 +42,12 @@ if ($device['os'] === 'aruba-instant') {
 
         $usage_oid = snmp_translate($combined_oid, 'ALL', 'arubaos', '-On', null);
 
-        $index     = $entry['aiAPSerialNum'];
-        $descr     = $entry['aiAPName'] . ' [' . $entry['aiAPSerialNum'] . ']';
-        $total     = $entry['aiAPTotalMemory'];
-        $free      = $entry['aiAPMemoryFree'];
-        $used      = $total - $free;
-        $perc      = ($used / $total * 100);
+        $index = $entry['aiAPSerialNum'];
+        $descr = $entry['aiAPName'].' ['.$entry['aiAPSerialNum'].']';
+        $total = $entry['aiAPTotalMemory'];
+        $free = $entry['aiAPMemoryFree'];
+        $used = $total - $free;
+        $perc = ($used / $total * 100);
 
         discover_mempool($valid_mempool, $device, $index, 'aruba-instant', $descr, '1', null, null);
     } //end foreach

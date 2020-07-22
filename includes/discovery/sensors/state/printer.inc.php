@@ -1,6 +1,7 @@
 <?php
+
 echo 'Printer Status and Error State ';
-$state = snmp_get($device, "hrDeviceStatus.1", "-Ovqe", 'HOST-RESOURCES-MIB');
+$state = snmp_get($device, 'hrDeviceStatus.1', '-Ovqe', 'HOST-RESOURCES-MIB');
 if (is_numeric($state)) {
     //Create State Index
     $state_name = 'hrDeviceStatus';
@@ -37,7 +38,7 @@ if (is_numeric($state)) {
     create_sensor_to_state_index($device, $state_name, $sensor_index);
 }
 
-$state = snmp_get($device, "hrPrinterDetectedErrorState.1", "-Ovqe", 'HOST-RESOURCES-MIB');
+$state = snmp_get($device, 'hrPrinterDetectedErrorState.1', '-Ovqe', 'HOST-RESOURCES-MIB');
 if ($state) {
     // https://www.ietf.org/rfc/rfc1759.txt hrPrinterDetectedErrorState
     //Create State Index
@@ -73,7 +74,7 @@ if ($state) {
         }
         // cannot create an index for each bit combination, instead warning or critical
         if (count($bit_flags) > 1) {
-            $state = $is_critical?10:9;
+            $state = $is_critical ? 10 : 9;
         }
     }
 

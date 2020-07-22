@@ -1,10 +1,9 @@
 <?php
 /**
- * boss.inc.php
+ * boss.inc.php.
  *
  * LibreNMS Fan and Power Supply state Discovery module for Extreme/Avaya ERS
  */
-
 if ($device['os'] === 'boss') {
     $oid = snmpwalk_cache_oid($device, 's5ChasComTable', [], 'S5-CHASSIS-MIB');
     $cur_oid = '.1.3.6.1.4.1.45.1.6.3.3.1.1.10.';
@@ -34,12 +33,12 @@ if ($device['os'] === 'boss') {
                 $ers_sensors[$key] = $value;
             }
         }
-        
+
         $ps_num = 0;
         foreach ($ers_sensors as $index => $entry) {
             //Get unit number
-            $unit_array = explode(".", $index);
-            $unit = floor($unit_array[1]/10);
+            $unit_array = explode('.', $index);
+            $unit = floor($unit_array[1] / 10);
             //Set description with Power Supply number
             if ($unit_array[0] == 4) {
                 if ($unit != $temp_unit) {

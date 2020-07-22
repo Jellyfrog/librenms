@@ -1,6 +1,6 @@
 <?php
 /**
- * ict-psu.inc.php
+ * ict-psu.inc.php.
  *
  * LibreNMS current sensor discovery module for ICT Digital Series Power Supply
  *
@@ -27,7 +27,7 @@
 // SNMPv2-SMI::enterprises.39145.11.8.0 = STRING: "0.4" -- outputCurrent
 
 $outputCurrent = trim(snmp_get($device, 'outputCurrent.0', '-Oqv', 'ICT-DIGITAL-SERIES-MIB'), '" ');
-if (!empty($outputCurrent)) {
+if (! empty($outputCurrent)) {
     $divisor = 1;
     $index = 0;
     $oid = '.1.3.6.1.4.1.39145.11.8.0';

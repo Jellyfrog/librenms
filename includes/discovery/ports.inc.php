@@ -13,7 +13,6 @@ $port_stats = snmpwalk_cache_oid($device, 'ifOperStatus', $port_stats, 'IF-MIB')
 // End Building SNMP Cache Array
 d_echo($port_stats);
 
-
 // By default libreNMS uses the ifIndex to associate ports on devices with ports discoverd/polled
 // before and stored in the database. On Linux boxes this is a problem as ifIndexes may be
 // unstable between reboots or (re)configuration of tunnel interfaces (think: GRE/OpenVPN/Tinc/...)
@@ -42,7 +41,7 @@ foreach ($ports_mapped['maps']['ifIndex'] as $ifIndex => $port_id) {
 
 // Fill ifAlias for fibrechannel ports
 if ($device['os'] == 'fabos') {
-            require_once 'ports/brocade.inc.php';
+    require_once 'ports/brocade.inc.php';
 }
 
 // New interface detection
@@ -56,11 +55,11 @@ foreach ($port_stats as $ifIndex => $snmp_data) {
         port_fill_missing($snmp_data, $device);
 
         // Port newly discovered?
-        if (!is_array($ports_db[$port_id])) {
+        if (! is_array($ports_db[$port_id])) {
             $snmp_data['device_id'] = $device['device_id'];
             $port_id = dbInsert($snmp_data, 'ports');
             $ports[$port_id] = dbFetchRow('SELECT * FROM `ports` WHERE `device_id` = ? AND `port_id` = ?', [$device['device_id'], $port_id]);
-            echo 'Adding: ' . $snmp_data['ifName'] . '(' . $ifIndex . ')(' . $port_id . ')';
+            echo 'Adding: '.$snmp_data['ifName'].'('.$ifIndex.')('.$port_id.')';
         } elseif ($ports_db[$port_id]['deleted'] == 1) {
             // Port re-discovered after previous deletion?
             $snmp_data['deleted'] = 0;

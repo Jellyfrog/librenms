@@ -1,6 +1,6 @@
 <?php
 /**
- * apc.inc.php
+ * apc.inc.php.
  *
  * LibreNMS os sensor fanspeeds module for APC
  *
@@ -22,9 +22,8 @@
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 foreach ($pre_cache['cooling_unit_analog'] as $index => $data) {
-    $cur_oid = '.1.3.6.1.4.1.318.1.1.27.1.4.1.2.1.3.' . $index;
+    $cur_oid = '.1.3.6.1.4.1.318.1.1.27.1.4.1.2.1.3.'.$index;
     $descr = $data['coolingUnitStatusAnalogDescription'];
     $scale = $data['coolingUnitStatusAnalogScale'];
     $value = $data['coolingUnitStatusAnalogValue'];

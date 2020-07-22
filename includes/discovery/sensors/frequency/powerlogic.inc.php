@@ -1,6 +1,6 @@
 <?php
 /**
- * powerlogic.inc.php
+ * powerlogic.inc.php.
  *
  * LibreNMS frequency sensor discovery module for Schneider PowerLogic
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 $data = $pre_cache['powerlogic_frequencyTable'];
 
 if (is_numeric($data['fFrequency'][1])) {

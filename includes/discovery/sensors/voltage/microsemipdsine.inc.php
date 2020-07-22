@@ -1,6 +1,6 @@
 <?php
 /**
- * microsemipdsine.inc.php
+ * microsemipdsine.inc.php.
  *
  * LibreNMS voltage sensor discovery module for Microsemi PoE Switches
  *
@@ -27,7 +27,7 @@
 
 $mainVoltage = trim(snmp_get($device, '.1.3.6.1.4.1.7428.1.2.2.1.1.2.1', '-Oqv'), '" ');
 
-if (!empty($mainVoltage)) {
+if (! empty($mainVoltage)) {
     $divisor = 1;
     $index = '2.1';
     $descr = 'Power Supply Voltage';

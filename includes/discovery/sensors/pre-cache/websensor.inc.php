@@ -1,6 +1,6 @@
 <?php
 /**
- * websensor.inc.php
+ * websensor.inc.php.
  *
  * LibreNMS pre-cache sensor discovery module for Comet System Web Sensor
  *
@@ -22,6 +22,5 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */
-
 $pre_cache['websensor_valuesInt'] = snmpwalk_group($device, 'valuesInt', 'T3610-MIB');
 $pre_cache['websensor_settings'] = snmpwalk_group($device, 'settings', 'T3610-MIB');

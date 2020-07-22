@@ -8,8 +8,8 @@ if ($device['os_group'] == 'cisco') {
     if (is_array($array)) {
         foreach ($array as $index => $entry) {
             if (is_numeric($entry['cempMemPoolUsed']) && $entry['cempMemPoolValid'] == 'true') {
-                list($entPhysicalIndex) = explode('.', $index);
-                $entPhysicalName        = snmp_get($device, 'entPhysicalName.'.$entPhysicalIndex, '-Oqv', 'ENTITY-MIB');
+                [$entPhysicalIndex] = explode('.', $index);
+                $entPhysicalName = snmp_get($device, 'entPhysicalName.'.$entPhysicalIndex, '-Oqv', 'ENTITY-MIB');
 
                 $descr = $entPhysicalName.' - '.$entry['cempMemPoolName'];
 

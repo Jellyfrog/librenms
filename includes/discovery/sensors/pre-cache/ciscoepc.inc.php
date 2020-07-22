@@ -1,6 +1,6 @@
 <?php
 /**
- * ciscoepc.inc.php
+ * ciscoepc.inc.php.
  *
  * LibreNMS os sensor pre-cache module for Cisco EPC
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 echo 'docsIfDownstreamChannelTable ';
 $pre_cache['ciscoepc_docsIfDownstreamChannelTable'] = snmpwalk_cache_oid($device, 'docsIfDownstreamChannelTable', [], 'DOCS-IF-MIB');
 

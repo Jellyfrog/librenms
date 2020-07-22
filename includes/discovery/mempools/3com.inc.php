@@ -1,6 +1,6 @@
 <?php
 /**
- * 3com.inc.php
+ * 3com.inc.php.
  *
  * LibreNMS mempool discovery module for 3com
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 if ($device['os'] === '3com') {
     echo '3COM:';
 

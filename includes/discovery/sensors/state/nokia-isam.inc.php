@@ -4,10 +4,10 @@ $snmp_data['nokiaIsamEqpBoardTable'] = snmpwalk_cache_oid($device, 'eqptBoardTab
 
 foreach ($snmp_data['nokiaIsamEqpBoardTable'] as $index => $data) {
     if (is_array($data)) {
-        $oid = '.1.3.6.1.4.1.637.61.1.23.3.1.7.' . $index;
+        $oid = '.1.3.6.1.4.1.637.61.1.23.3.1.7.'.$index;
         $state_name = 'eqptBoardOperError';
         $current = $data['eqptBoardOperError'];
-        $descr = $pre_cache['nokiaIsamSlot'][$index]['numBasedSlot'] . ' ' . $data['eqptSlotActualType'] . ' (' . $data['eqptSlotPlannedType'] . ')';
+        $descr = $pre_cache['nokiaIsamSlot'][$index]['numBasedSlot'].' '.$data['eqptSlotActualType'].' ('.$data['eqptSlotPlannedType'].')';
         $states = [
             ['value' => 1, 'generic' => 0, 'graph' => 0, 'descr' => 'no-error'],
             ['value' => 2, 'generic' => 1, 'graph' => 0, 'descr' => 'type-mismatch'],

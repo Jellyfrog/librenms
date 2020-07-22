@@ -1,6 +1,6 @@
 <?php
 /**
- * infinera-groove.inc.php
+ * infinera-groove.inc.php.
  *
  * LibreNMS state discovery module for Infinera Groove
  *
@@ -25,11 +25,11 @@
 
 // create state index
 $state_name = 'cardMode';
-$states = array(
-     array('value' => 0, 'generic' => 3, 'graph' => 0, 'descr' => 'notapplicable'),
-     array('value' => 1, 'generic' => 0, 'graph' => 0, 'descr' => 'normal'),
-     array('value' => 2, 'generic' => 1, 'graph' => 0, 'descr' => 'regen'),
- );
+$states = [
+    ['value' => 0, 'generic' => 3, 'graph' => 0, 'descr' => 'notapplicable'],
+    ['value' => 1, 'generic' => 0, 'graph' => 0, 'descr' => 'normal'],
+    ['value' => 2, 'generic' => 1, 'graph' => 0, 'descr' => 'regen'],
+];
 create_state_index($state_name, $states);
 
 $num_oid = '.1.3.6.1.4.1.42229.1.2.3.3.1.1.10.';

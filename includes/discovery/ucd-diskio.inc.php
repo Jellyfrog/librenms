@@ -1,22 +1,22 @@
 <?php
 
-$diskio_array = snmpwalk_cache_oid($device, 'diskIOEntry', array(), 'UCD-DISKIO-MIB');
-$valid_diskio = array();
+$diskio_array = snmpwalk_cache_oid($device, 'diskIOEntry', [], 'UCD-DISKIO-MIB');
+$valid_diskio = [];
 if (is_array($diskio_array)) {
     foreach ($diskio_array as $index => $entry) {
         if (($entry['diskIONRead'] > '0' || $entry['diskIONWritten'] > '0') && is_disk_valid($entry, $device) === true) {
             d_echo("$index ".$entry['diskIODevice']."\n");
 
-            if (dbFetchCell('SELECT COUNT(*) FROM `ucd_diskio` WHERE `device_id` = ? AND `diskio_index` = ? and `diskio_descr` = ?', array($device['device_id'], $index, $entry['diskIODevice'])) == '0') {
-                $inserted = dbInsert(array('device_id' => $device['device_id'], 'diskio_index' => $index, 'diskio_descr' => $entry['diskIODevice']), 'ucd_diskio');
+            if (dbFetchCell('SELECT COUNT(*) FROM `ucd_diskio` WHERE `device_id` = ? AND `diskio_index` = ? and `diskio_descr` = ?', [$device['device_id'], $index, $entry['diskIODevice']]) == '0') {
+                $inserted = dbInsert(['device_id' => $device['device_id'], 'diskio_index' => $index, 'diskio_descr' => $entry['diskIODevice']], 'ucd_diskio');
                 echo '+';
                 d_echo($sql." - $inserted inserted ");
             } else {
-                  echo '.';
-                  // FIXME Need update code here!
+                echo '.';
+                // FIXME Need update code here!
             }
 
-                $valid_diskio[$index] = $entry['diskIODevice'];
+            $valid_diskio[$index] = $entry['diskIODevice'];
         } //end if
     } //end foreach
 } //end if
@@ -31,7 +31,7 @@ foreach (dbFetchRows($sql) as $test) {
 
     if ($valid_diskio[$test['diskio_index']] !== $test['diskio_descr']) {
         echo '-';
-        dbDelete('ucd_diskio', '`diskio_id` = ?', array($test['diskio_id']));
+        dbDelete('ucd_diskio', '`diskio_id` = ?', [$test['diskio_id']]);
     }
 }
 

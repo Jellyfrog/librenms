@@ -30,7 +30,7 @@
  * $config['leaflet']['default_zoom'] = 5;
  * $config['leaflet']['default_lat'] = 65.3258792;
  * $config['leaflet']['default_lng'] = 14.1115485;
- * Dag B <dag@bakke.com>
+ * Dag B <dag@bakke.com>.
  */
 $pagetitle[] = 'Geographical Map';
 

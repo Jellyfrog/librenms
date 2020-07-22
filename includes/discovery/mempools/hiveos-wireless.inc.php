@@ -1,6 +1,6 @@
 <?php
 /**
- * hiveos-wireless.inc.php
+ * hiveos-wireless.inc.php.
  *
  * AeroHive Hiveos-Wireless Discovery Module
  *

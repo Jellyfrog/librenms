@@ -13,7 +13,7 @@
 echo ' AIRESPACE temperature ';
 
 $temp = snmpwalk_cache_multi_oid($device, 'bsnSensorTemperature', [], 'AIRESPACE-WIRELESS-MIB');
-$low  = snmpwalk_cache_multi_oid($device, 'bsnTemperatureAlarmLowLimit', [], 'AIRESPACE-WIRELESS-MIB');
+$low = snmpwalk_cache_multi_oid($device, 'bsnTemperatureAlarmLowLimit', [], 'AIRESPACE-WIRELESS-MIB');
 $high = snmpwalk_cache_multi_oid($device, 'bsnTemperatureAlarmHighLimit', [], 'AIRESPACE-WIRELESS-MIB');
 
 if (is_array($temp)) {

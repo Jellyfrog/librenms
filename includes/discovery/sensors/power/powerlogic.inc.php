@@ -1,6 +1,6 @@
 <?php
 /**
- * powerlogic.inc.php
+ * powerlogic.inc.php.
  *
  * LibreNMS power sensor discovery module for Schneider PowerLogic
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 $data = $pre_cache['powerlogic_powerTable'];
 
 if (is_numeric($data['pReal'][1])) {

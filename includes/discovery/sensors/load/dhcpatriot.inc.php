@@ -25,24 +25,24 @@ $pool_size_base_oid = '1.3.6.1.4.1.2021.50.130';
 $auth_dhcp_index = '1';
 $standard_dhcp_index = '2';
 
-$auth_dhcp_networks_descr = snmpwalk_array_num($device, $dhcp_networks_base_oid . '.' . $auth_dhcp_index, 2);
-$standard_dhcp_networks_descr = snmpwalk_array_num($device, $dhcp_networks_base_oid . '.' . $standard_dhcp_index, 2);
+$auth_dhcp_networks_descr = snmpwalk_array_num($device, $dhcp_networks_base_oid.'.'.$auth_dhcp_index, 2);
+$standard_dhcp_networks_descr = snmpwalk_array_num($device, $dhcp_networks_base_oid.'.'.$standard_dhcp_index, 2);
 
-if (empty($standard_dhcp_networks_descr) && !empty($auth_dhcp_networks_descr)) {
+if (empty($standard_dhcp_networks_descr) && ! empty($auth_dhcp_networks_descr)) {
     $dhcp_networks = $auth_dhcp_networks_descr;
 }
-if (empty($auth_dhcp_networks_descr) && !empty($standard_dhcp_networks_descr)) {
+if (empty($auth_dhcp_networks_descr) && ! empty($standard_dhcp_networks_descr)) {
     $dhcp_networks = $standard_dhcp_networks_descr;
 }
-if (!empty($auth_dhcp_networks_descr) && !empty($standard_dhcp_networks_descr)) {
+if (! empty($auth_dhcp_networks_descr) && ! empty($standard_dhcp_networks_descr)) {
     $dhcp_networks = array_merge_recursive($auth_dhcp_networks_descr, $standard_dhcp_networks_descr);
 }
 
 $array_index = 0;
 
-if (!empty($dhcp_networks[$dhcp_networks_base_oid])) {
+if (! empty($dhcp_networks[$dhcp_networks_base_oid])) {
     foreach ($dhcp_networks[$dhcp_networks_base_oid] as $dhcp_type_index => $ignore_this) {
-        if (!empty($dhcp_networks[$dhcp_networks_base_oid][$dhcp_type_index])) {
+        if (! empty($dhcp_networks[$dhcp_networks_base_oid][$dhcp_type_index])) {
             foreach ($dhcp_networks[$dhcp_networks_base_oid][$dhcp_type_index] as $index => $entry) {
                 $description = (explode('[', $entry));
                 $data_array[$array_index]['index'] = $index;
@@ -55,8 +55,8 @@ if (!empty($dhcp_networks[$dhcp_networks_base_oid])) {
                     $data_array[$array_index]['group'] = 'Standard DHCP';
                 }
                 $data_array[$array_index]['description'] = $description[0];
-                $data_array[$array_index]['oid'] = '.' . $pool_usage_base_oid . '.' . $dhcp_type_index . '.' . $index;
-                $data_array[$array_index]['size_oid'] = '.' . $pool_size_base_oid . '.' . $dhcp_type_index . '.' . $index;
+                $data_array[$array_index]['oid'] = '.'.$pool_usage_base_oid.'.'.$dhcp_type_index.'.'.$index;
+                $data_array[$array_index]['size_oid'] = '.'.$pool_size_base_oid.'.'.$dhcp_type_index.'.'.$index;
                 $array_index = $array_index + 1;
             }
         }
@@ -70,7 +70,7 @@ if (!empty($dhcp_networks[$dhcp_networks_base_oid])) {
         $index = $value['index'];
         $type = $value['type'];
         $divisor = $pool_data[$value['size_oid']];
-        $descr = $value['description'] . ' (' . $pool_data[$value['oid']] . '/' . $divisor . ')';
+        $descr = $value['description'].' ('.$pool_data[$value['oid']].'/'.$divisor.')';
         $current = (($pool_data[$value['oid']] / $divisor) * 100);
         $group = $value['group'];
 

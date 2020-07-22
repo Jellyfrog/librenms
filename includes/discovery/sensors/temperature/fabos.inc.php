@@ -1,6 +1,6 @@
 <?php
 /**
- * fabos.inc.php
+ * fabos.inc.php.
  *
  * LibreNMS temperatures discovery module for fabos
  *
@@ -22,12 +22,11 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 foreach ($pre_cache['fabos_sensors'] as $data) {
     if ($data['swSensorType'] === 'temperature') {
         if (is_numeric($data['swSensorValue']) && $data['swSensorValue'] !== '-2147483648') {
             $index = $data['swSensorIndex'];
-            $oid = '.1.3.6.1.4.1.1588.2.1.1.1.1.22.1.4.' . $index;
+            $oid = '.1.3.6.1.4.1.1588.2.1.1.1.1.22.1.4.'.$index;
             $descr = $data['swSensorInfo'];
             $value = $data['swSensorValue'];
             discover_sensor($valid['sensor'], 'temperature', $device, $oid, $index, 'fabos', $descr, '1', '1', null, null, null, null, $value);

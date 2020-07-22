@@ -18,9 +18,9 @@ if (is_array($temp)) {
     foreach ($temp as $index => $entry) {
         if (is_numeric($temp[$index]['rlPethPsePortOutputPower']) && $temp[$index]['rlPethPsePortOutputPower'] > 0) {
             $port_descr = get_port_by_index_cache($device['device_id'], str_replace('1.', '', $index));
-            $descr = $port_descr['ifDescr'] . ' PoE';
+            $descr = $port_descr['ifDescr'].' PoE';
             $highlimit = $temp[$index]['rlPethPsePortOperPowerLimit'] / $divisor;
-            discover_sensor($valid['sensor'], 'power', $device, $cur_oid . $index, $index, 'ciscosb', $descr, $divisor, '1', null, null, null, $highlimit, $temp[$index]['rlPethPsePortOutputPower'] / $divisor, 'snmp', $index);
+            discover_sensor($valid['sensor'], 'power', $device, $cur_oid.$index, $index, 'ciscosb', $descr, $divisor, '1', null, null, null, $highlimit, $temp[$index]['rlPethPsePortOutputPower'] / $divisor, 'snmp', $index);
         }
     }
 }

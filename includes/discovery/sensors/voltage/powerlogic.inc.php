@@ -1,6 +1,6 @@
 <?php
 /**
- * powerlogic.inc.php
+ * powerlogic.inc.php.
  *
  * LibreNMS voltage sensor discovery module for Schneider PowerLogic
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 $data = $pre_cache['powerlogic_voltageTable'];
 
 if (is_numeric($data['vVab'][1])) {

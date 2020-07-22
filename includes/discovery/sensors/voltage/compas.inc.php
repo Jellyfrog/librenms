@@ -1,6 +1,6 @@
 <?php
 /**
- * compas.inc.php
+ * compas.inc.php.
  *
  * LibreNMS voltage sensor discovery module for Alpha Comp@s UPS
  *

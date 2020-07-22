@@ -1,6 +1,6 @@
 <?php
 /**
- * cyberoam-utm.inc.php
+ * cyberoam-utm.inc.php.
  *
  * LibreNMS mempools discovery module for Cyberoam-UTM
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 if ($device['os'] === 'cyberoam-utm') {
     echo 'Cyberoam UTM: ';
 

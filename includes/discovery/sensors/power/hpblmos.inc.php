@@ -10,7 +10,7 @@ $psus = trim(snmp_walk($device, $psu_oid, '-Osqn'));
 foreach (explode("\n", $psus) as $psu) {
     $psu = trim($psu);
     if ($psu) {
-        list($oid, $presence) = explode(' ', $psu, 2);
+        [$oid, $presence] = explode(' ', $psu, 2);
         if ($presence != 2) {
             $split_oid = explode('.', $oid);
             $current_id = $split_oid[(count($split_oid) - 1)];

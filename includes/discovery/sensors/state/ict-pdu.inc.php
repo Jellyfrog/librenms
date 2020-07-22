@@ -1,6 +1,6 @@
 <?php
 /**
- * ict-pdu.inc.php
+ * ict-pdu.inc.php.
  *
  * LibreNMS status sensor discovery module for ICT DC Distribution Panel
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Lorenzo Zafra
  * @author     Lorenzo Zafra<zafra@ualberta.ca>
  */
-
 $oids = snmpwalk_cache_oid($device, 'outputEntry', [], 'ICT-DISTRIBUTION-PANEL-MIB');
 
 if (is_array($oids)) {
@@ -34,9 +33,9 @@ if (is_array($oids)) {
     create_state_index($state_name, $states);
 
     foreach ($oids as $index => $entry) {
-        $fuse_state_oid = '.1.3.6.1.4.1.39145.10.8.1.4.' . $index;
-        $fuse_number = (int)$index + 1;
-        $descr = "Fuse #" . $fuse_number;
+        $fuse_state_oid = '.1.3.6.1.4.1.39145.10.8.1.4.'.$index;
+        $fuse_number = (int) $index + 1;
+        $descr = 'Fuse #'.$fuse_number;
 
         $current_value_string = $entry[$state_name];
         if ($current_value_string == 'OK') {

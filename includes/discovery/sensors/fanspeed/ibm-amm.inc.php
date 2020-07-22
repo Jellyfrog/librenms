@@ -23,7 +23,7 @@ foreach ($oids as $index => $oid) {
     $value = trim(snmp_get($device, $oid, '-Oqv'), '"');
 
     if (is_numeric($value)) {
-        $descr = $descr_prefix . ($index + 1);
+        $descr = $descr_prefix.($index + 1);
         discover_sensor($valid['sensor'], 'fanspeed', $device, $oid, $index, 'snmp', $descr, 1, 1, null, null, null, null, $value);
     }
 }

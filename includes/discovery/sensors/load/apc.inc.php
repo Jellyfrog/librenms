@@ -2,14 +2,14 @@
 
 echo 'APC Load ';
 
-$phasecount =  $phasecount = $pre_cache['apcups_phase_count'];
+$phasecount = $phasecount = $pre_cache['apcups_phase_count'];
 if ($phasecount > 1) {
     $oids = snmpwalk_cache_oid($device, 'upsPhaseOutputPercentLoad', [], 'PowerNet-MIB');
     d_echo($oids);
     foreach ($oids as $index => $data) {
         $type = 'apcUPS';
-        $descr = 'Phase ' . substr($index, -1);
-        $load_oid = '.1.3.6.1.4.1.318.1.1.1.9.3.3.1.10.' . $index;
+        $descr = 'Phase '.substr($index, -1);
+        $load_oid = '.1.3.6.1.4.1.318.1.1.1.9.3.3.1.10.'.$index;
         $divisor = 1;
         $load = $data['upsPhaseOutputPercentLoad'];
         if ($load >= 0) {
@@ -32,16 +32,16 @@ if ($phasecount > 1) {
     foreach ($oid_array as $item) {
         $oids = snmp_get($device, $item['HighPrecOid'].'.'.$item['index'], '-OsqnU', $item['mib']);
         if (empty($oids)) {
-            $oids        = snmp_get($device, $item['AdvOid'].'.'.$item['index'], '-OsqnU', $item['mib']);
+            $oids = snmp_get($device, $item['AdvOid'].'.'.$item['index'], '-OsqnU', $item['mib']);
             $current_oid = '.1.3.6.1.4.1.318.1.1.1.4.3.3';
             $current = $oids;
             $item['divisor'] = 1;
         } else {
             $current_oid = '.1.3.6.1.4.1.318.1.1.1.4.3.3';
-            $value = explode(" ", $oids);
-            $current = $value[1]/$item['divisor'];
+            $value = explode(' ', $oids);
+            $current = $value[1] / $item['divisor'];
         }
-        if (!empty($oids)) {
+        if (! empty($oids)) {
             d_echo($oids);
             $oids = trim($oids);
             if ($oids) {

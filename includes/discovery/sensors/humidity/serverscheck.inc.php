@@ -1,6 +1,6 @@
 <?php
 /**
- * serverscheck.inc.php
+ * serverscheck.inc.php.
  *
  * LibreNMS sensors humidty discovery module for ServersCheck
  *
@@ -36,7 +36,7 @@ $serverscheck_oids = [
 $temp_x = 1;
 foreach ($pre_cache['serverscheck_control'] as $oid_name => $oid_value) {
     if (Str::contains($oid_name, 'name')) {
-        $tmp_oid = 'sensor' . $temp_x . 'Value.0';
+        $tmp_oid = 'sensor'.$temp_x.'Value.0';
         $current = $pre_cache['serverscheck_control'][$tmp_oid];
         if (Str::contains($oid_value, 'Humid')) {
             if (is_numeric($current)) {

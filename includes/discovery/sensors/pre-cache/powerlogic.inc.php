@@ -1,6 +1,6 @@
 <?php
 /**
- * powerlogic.inc.php
+ * powerlogic.inc.php.
  *
  * LibreNMS pre-cache sensor discovery module for Schneider PowerLogic
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 echo 'loadCurrentTable ';
 $pre_cache['powerlogic_loadCurrentTable'] = snmpwalk_cache_index($device, 'loadCurrentTable', [], 'PM8ECCMIB');
 

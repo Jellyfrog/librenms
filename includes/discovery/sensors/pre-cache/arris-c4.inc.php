@@ -1,6 +1,6 @@
 <?php
 /**
- * arris-c4.inc.php
+ * arris-c4.inc.php.
  *
  * LibreNMS os sensor pre-cache module for Arris CMTS
  *
@@ -23,7 +23,6 @@
  * @author     TheGreatDoc
  * Based on Neil Lathwood Cisco EPC files
  */
-
 echo 'ifName ';
 $pre_cache['ar-c4_ifName'] = snmpwalk_cache_oid($device, 'ifName', [], 'DOCS-IF-MIB');
 

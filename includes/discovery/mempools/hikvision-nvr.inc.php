@@ -1,6 +1,6 @@
 <?php
 /**
- * hikvision-nvr.inc.php
+ * hikvision-nvr.inc.php.
  *
  * LibreNMS mempool discovery module for hikvision-nvr
  *
@@ -22,7 +22,6 @@
  * @copyright  2019 Spencer Butler
  * @author     Spencer Butler <github@crooked.app>
  */
-
 if ($device['os'] === 'hikvision-nvr') {
     echo 'hikvision-nvr:';
 

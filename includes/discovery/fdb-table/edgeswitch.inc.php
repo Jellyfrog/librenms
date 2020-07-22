@@ -1,6 +1,6 @@
 <?php
 /**
- * edgeswitch.inc.php
+ * edgeswitch.inc.php.
  *
  * FDP Table discovery file for EdgeSwitch
  *
@@ -22,7 +22,6 @@
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
 $binding = snmpwalk_group($device, 'agentDynamicDsBindingTable', 'EdgeSwitch-SWITCHING-MIB', 1);
 
 foreach ($binding as $mac => $data) {

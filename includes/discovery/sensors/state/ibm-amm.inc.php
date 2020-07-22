@@ -28,9 +28,9 @@ $oids = [
 
 foreach ($oids as $oid) {
     $state = snmp_get($device, $oid, '-Oqv');
-    $descr = $state_descr . $index;
+    $descr = $state_descr.$index;
 
-    if (!empty($state)) {
+    if (! empty($state)) {
         $states = [
             ['value' => 0, 'generic' => 3, 'graph' => 0, 'descr' => 'unknown'],
             ['value' => 1, 'generic' => 0, 'graph' => 1, 'descr' => 'good'],
@@ -65,7 +65,7 @@ $oids = [
 */
 foreach ($oids as $oid) {
     $state = snmp_get($device, $oid, '-Oqv');
-    $descr = $state_descr . $index;
+    $descr = $state_descr.$index;
 
     if (is_numeric($state) && $state != 2) {
         $states = [
@@ -87,7 +87,7 @@ foreach ($oids as $oid) {
 $index = 1;
 $state_name = 'ibm-amm_PowerModuleState';
 $state_descr = 'Power Module ';
-$powerModuleStateOid= '.1.3.6.1.4.1.2.3.51.2.2.4.1.1.3'; // BLADE-MIB::powerModuleState
+$powerModuleStateOid = '.1.3.6.1.4.1.2.3.51.2.2.4.1.1.3'; // BLADE-MIB::powerModuleState
 $data = snmpwalk_cache_oid_num($device, $powerModuleStateOid, []);
 
 /*  BLADE-MIB: powerModuleState
@@ -99,7 +99,7 @@ $data = snmpwalk_cache_oid_num($device, $powerModuleStateOid, []);
 */
 foreach ($data as $oid => $array) {
     $state = current($array);  // get the first (and only) item from the array
-    $descr = $state_descr . $index;
+    $descr = $state_descr.$index;
 
     if (is_numeric($state) && $state != 3) {
         $states = [

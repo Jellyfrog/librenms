@@ -8,13 +8,13 @@ if (empty($entity_array)) {
     $entity_array = [];
     echo ' entPhysicalDescr';
     $entity_array = snmpwalk_cache_multi_oid($device, 'entPhysicalDescr', $entity_array, 'ENTITY-MIB');
-    if (!empty($entity_array)) {
+    if (! empty($entity_array)) {
         echo ' entPhysicalName';
         $entity_array = snmpwalk_cache_multi_oid($device, 'entPhysicalName', $entity_array, 'ENTITY-MIB');
     }
 }
 
-if (!empty($entity_array)) {
+if (! empty($entity_array)) {
     echo ' entPhySensorType';
     $entity_oids = snmpwalk_cache_multi_oid($device, 'entPhySensorType', [], 'ENTITY-SENSOR-MIB');
     echo ' entPhySensorScale';
@@ -30,7 +30,7 @@ if (!empty($entity_array)) {
     $entity_oids = snmpwalk_cache_multi_oid($device, 'entPhySensorOperStatus', $entity_oids, 'ENTITY-SENSOR-MIB');
 }
 
-if (!empty($entity_oids)) {
+if (! empty($entity_oids)) {
     $entitysensor = [
         'voltsDC'   => 'voltage',
         'voltsAC'   => 'voltage',
@@ -44,10 +44,10 @@ if (!empty($entity_oids)) {
     ];
 
     foreach ($entity_oids as $index => $entry) {
-        $low_limit      = null;
+        $low_limit = null;
         $low_warn_limit = null;
-        $warn_limit     = null;
-        $high_limit     = null;
+        $warn_limit = null;
+        $high_limit = null;
 
         // Fix for Cisco ASR920, 15.5(2)S
         if ($entry['entPhySensorType'] == 'other' && Str::contains($entity_array[$index]['entPhysicalName'], ['Rx Power Sensor', 'Tx Power Sensor'])) {
@@ -55,16 +55,16 @@ if (!empty($entity_oids)) {
         }
         if ($entitysensor[$entry['entPhySensorType']] && is_numeric($entry['entPhySensorValue']) && is_numeric($index)) {
             $entPhysicalIndex = $index;
-            $oid              = '.1.3.6.1.2.1.99.1.1.1.4.' . $index;
-            $current          = $entry['entPhySensorValue'];
+            $oid = '.1.3.6.1.2.1.99.1.1.1.4.'.$index;
+            $current = $entry['entPhySensorValue'];
             if ($device['os'] === 'arris-d5') {
                 $card = str_split($index);
                 if (count($card) === 3) {
-                    $card = $card[0] . "00";
+                    $card = $card[0].'00';
                 } elseif (count($card) === 4) {
-                    $card = $card[0] . $card[1] . "00";
+                    $card = $card[0].$card[1].'00';
                 }
-                $descr = ucwords($entity_array[$card]['entPhysicalName']) . " " . ucwords($entity_array[$index]['entPhysicalDescr']);
+                $descr = ucwords($entity_array[$card]['entPhysicalName']).' '.ucwords($entity_array[$index]['entPhysicalDescr']);
             } else {
                 $descr = ucwords($entity_array[$index]['entPhysicalName']);
             }
@@ -78,35 +78,35 @@ if (!empty($entity_oids)) {
             $type = $entitysensor[$entry['entPhySensorType']];
             // FIXME this stuff is foul
             if ($entry['entPhySensorScale'] == 'nano') {
-                $divisor    = '1000000000';
+                $divisor = '1000000000';
                 $multiplier = '1';
             }
             if ($entry['entPhySensorScale'] == 'micro') {
-                $divisor    = '1000000';
+                $divisor = '1000000';
                 $multiplier = '1';
             }
             if ($entry['entPhySensorScale'] == 'milli') {
-                $divisor    = '1000';
+                $divisor = '1000';
                 $multiplier = '1';
             }
             if ($entry['entPhySensorScale'] == 'units') {
-                $divisor    = '1';
+                $divisor = '1';
                 $multiplier = '1';
             }
             if ($entry['entPhySensorScale'] == 'kilo') {
-                $divisor    = '1';
+                $divisor = '1';
                 $multiplier = '1000';
             }
             if ($entry['entPhySensorScale'] == 'mega') {
-                $divisor    = '1';
+                $divisor = '1';
                 $multiplier = '1000000';
             }
             if ($entry['entPhySensorScale'] == 'giga') {
-                $divisor    = '1';
+                $divisor = '1';
                 $multiplier = '1000000000';
             }
             if ($entry['entPhySensorScale'] == 'yocto') {
-                $divisor    = '1';
+                $divisor = '1';
                 $multiplier = '1';
             }
             if (is_numeric($entry['entPhySensorPrecision']) && $entry['entPhySensorPrecision'] > '0') {
@@ -143,8 +143,8 @@ if (!empty($entity_oids)) {
             }
             if ($valid_sensor && dbFetchCell("SELECT COUNT(*) FROM `sensors` WHERE device_id = ? AND `sensor_class` = ? AND `sensor_type` = 'cisco-entity-sensor' AND `sensor_index` = ?", [$device['device_id'], $type, $index]) == '0') {
                 // Check to make sure we've not already seen this sensor via cisco's entity sensor mib
-                if ($type == "power" && $device['os'] == "arista_eos" && preg_match("/DOM (R|T)x Power/i", $descr)) {
-                    $type = "dbm";
+                if ($type == 'power' && $device['os'] == 'arista_eos' && preg_match('/DOM (R|T)x Power/i', $descr)) {
+                    $type = 'dbm';
                     $current = round(10 * log10($entry['entPhySensorValue'] / 10000), 3);
                     $multiplier = 1;
                     $divisor = 1;
@@ -152,7 +152,7 @@ if (!empty($entity_oids)) {
 
                 if ($device['os'] === 'arista_eos') {
                     if ($entry['aristaEntSensorThresholdLowWarning'] != '-1000000000') {
-                        if ($entry['entPhySensorScale'] == 'milli' &&  $entry['entPhySensorType'] == 'watts') {
+                        if ($entry['entPhySensorScale'] == 'milli' && $entry['entPhySensorType'] == 'watts') {
                             $temp_low_warn_limit = $entry['aristaEntSensorThresholdLowWarning'] / 10000;
                             $low_warn_limit = round(10 * log10($temp_low_warn_limit), 2);
                         } else {
@@ -160,7 +160,7 @@ if (!empty($entity_oids)) {
                         }
                     }
                     if ($entry['aristaEntSensorThresholdLowCritical'] != '-1000000000') {
-                        if ($entry['entPhySensorScale'] == 'milli' &&  $entry['entPhySensorType'] == 'watts') {
+                        if ($entry['entPhySensorScale'] == 'milli' && $entry['entPhySensorType'] == 'watts') {
                             $temp_low_limit = $entry['aristaEntSensorThresholdLowCritical'] / 10000;
                             $low_limit = round(10 * log10($temp_low_limit), 2);
                         } else {
@@ -168,7 +168,7 @@ if (!empty($entity_oids)) {
                         }
                     }
                     if ($entry['aristaEntSensorThresholdHighWarning'] != '1000000000') {
-                        if ($entry['entPhySensorScale'] == 'milli' &&  $entry['entPhySensorType'] == 'watts') {
+                        if ($entry['entPhySensorScale'] == 'milli' && $entry['entPhySensorType'] == 'watts') {
                             $temp_warn_limit = $entry['aristaEntSensorThresholdHighWarning'] / 10000;
                             $warn_limit = round(10 * log10($temp_warn_limit), 2);
                         } else {
@@ -176,7 +176,7 @@ if (!empty($entity_oids)) {
                         }
                     }
                     if ($entry['aristaEntSensorThresholdHighCritical'] != '1000000000') {
-                        if ($entry['entPhySensorScale'] == 'milli' &&  $entry['entPhySensorType'] == 'watts') {
+                        if ($entry['entPhySensorScale'] == 'milli' && $entry['entPhySensorType'] == 'watts') {
                             $temp_high_limit = $entry['aristaEntSensorThresholdHighCritical'] / 10000;
                             $high_limit = round(10 * log10($temp_high_limit), 2);
                         } else {

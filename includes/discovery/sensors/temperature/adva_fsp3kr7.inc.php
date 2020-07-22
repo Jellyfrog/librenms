@@ -1,6 +1,6 @@
 <?php
 /**
- * LibreNMS - ADVA device support - Temperature Sensors
+ * LibreNMS - ADVA device support - Temperature Sensors.
  *
  * @category   Network_Monitoring
  * @package    LibreNMS
@@ -8,7 +8,7 @@
  * @author     Christoph Zilian <czilian@hotmail.com>
  * @license    http://gnu.org/copyleft/gpl.html GNU GPL
  * @link       https://github.com/librenms/librenms/
-
+ *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
@@ -21,15 +21,15 @@
 // *************************************************************
 
     $multiplier = 1;
-    $divisor    = 10;
+    $divisor = 10;
 
 if (is_array($pre_cache['adva_fsp3kr7_Card'])) {
     foreach (array_keys($pre_cache['adva_fsp3kr7_Card']) as $index) {
         if ($pre_cache['adva_fsp3kr7_Card'][$index]['eqptPhysInstValueTemp']) {
-            $oid        = '.1.3.6.1.4.1.2544.1.11.11.1.2.1.1.1.5.'.$index;
-            $descr      = $pre_cache['adva_fsp3kr7_Card'][$index]['entityEqptAidString'];
-            $high_limit = $pre_cache['adva_fsp3kr7_Card'][$index]['eqptPhysThresholdTempHigh']/$divisor;
-            $current    = $pre_cache['adva_fsp3kr7_Card'][$index]['eqptPhysInstValueTemp']/$divisor;
+            $oid = '.1.3.6.1.4.1.2544.1.11.11.1.2.1.1.1.5.'.$index;
+            $descr = $pre_cache['adva_fsp3kr7_Card'][$index]['entityEqptAidString'];
+            $high_limit = $pre_cache['adva_fsp3kr7_Card'][$index]['eqptPhysThresholdTempHigh'] / $divisor;
+            $current = $pre_cache['adva_fsp3kr7_Card'][$index]['eqptPhysInstValueTemp'] / $divisor;
 
             discover_sensor(
                 $valid['sensor'],

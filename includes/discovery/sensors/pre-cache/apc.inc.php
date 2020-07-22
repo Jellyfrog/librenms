@@ -1,6 +1,6 @@
 <?php
 /**
- * apc.inc.php
+ * apc.inc.php.
  *
  * LibreNMS os sensor pre-cache module for APC
  *

@@ -3,7 +3,7 @@
 $temps = snmp_walk($device, '.1.3.6.1.4.1.45.1.6.3.7.1.1.5.5', '-Osqn');
 
 foreach (explode("\n", $temps) as $i => $t) {
-    $t   = explode(' ', $t);
+    $t = explode(' ', $t);
     $oid = $t[0];
     $val = $t[1];
     // Sensors are reported as 2 * value

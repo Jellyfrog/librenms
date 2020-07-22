@@ -1,6 +1,6 @@
 <?php
 /**
- * hikvision-cam.inc.php
+ * hikvision-cam.inc.php.
  *
  * LibreNMS mempool discovery module for hikvision-cam
  *
@@ -22,7 +22,6 @@
  * @copyright  2019 Spencer Butler
  * @author     Spencer Butler <github@crooked.app>
  */
-
 if ($device['os'] === 'hikvision-cam') {
     echo 'hikvision-cam:';
 

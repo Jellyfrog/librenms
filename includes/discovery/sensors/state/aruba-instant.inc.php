@@ -1,6 +1,6 @@
 <?php
 /**
- * aruba-instant.inc.php
+ * aruba-instant.inc.php.
  *
  * LibreNMS state discovery module for Aruba Instant
  *
@@ -28,7 +28,7 @@ $oids = snmpwalk_group($device, 'aiAPStatus', $ai_mib, 1, $oids);
 $oids = snmpwalk_group($device, 'aiRadioStatus', $ai_mib, 1, $oids);
 $oids = snmpwalk_group($device, 'aiAPName', $ai_mib, 1, $oids);
 
-if (!empty($oids)) {
+if (! empty($oids)) {
     $ap_state_name = 'aiAPStatus';
     //Create State Translation
     $ap_states = [
@@ -51,7 +51,7 @@ if (!empty($oids)) {
         $ap_state_index = implode('.', array_map('hexdec', explode(':', $ap_index)));
         $combined_oid = implode('.', [$ai_mib.'::'.'aiAPStatus', $ap_state_index]);
         $ap_state_oid = snmp_translate($combined_oid, 'ALL', 'arubaos', '-On', null);
-        $ap_descr = $ap_entry['aiAPName'] . ' (' . $ap_entry['aiAPSerialNum'] . ')';
+        $ap_descr = $ap_entry['aiAPName'].' ('.$ap_entry['aiAPSerialNum'].')';
         discover_sensor($valid['sensor'], 'state', $device, $ap_state_oid, $ap_state_index, $ap_state_name, $ap_entry['aiAPSerialNum'], '1', '1', null, null, null, null, $ap_descr, 'snmp', null, null, null, 'Cluster APs');
 
         //Create Sensor To State Index
