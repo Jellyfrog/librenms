@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 /**
- * rrdstep.php
+ * rrdstep.php.
  *
  * LibreNMS Script to convert rrd files from default 300 step to user defined
  *
@@ -26,8 +26,8 @@
 
 use LibreNMS\Config;
 
-$init_modules = array();
-require realpath(__DIR__ . '/..') . '/includes/init.php';
+$init_modules = [];
+require realpath(__DIR__.'/..').'/includes/init.php';
 
 $options = getopt('h:');
 
@@ -43,7 +43,7 @@ if (empty($hostname)) {
 }
 
 if ($hostname !== 'all') {
-    $hostname = !ctype_digit($hostname) ? $hostname : gethostbyid($hostname);
+    $hostname = ! ctype_digit($hostname) ? $hostname : gethostbyid($hostname);
 }
 
 if (empty($hostname)) {
@@ -51,23 +51,23 @@ if (empty($hostname)) {
     exit;
 }
 
-$system_step      = Config::get('rrd.step', 300);
-$icmp_step        = Config::get('ping_rrd_step', $system_step);
+$system_step = Config::get('rrd.step', 300);
+$icmp_step = Config::get('ping_rrd_step', $system_step);
 $system_heartbeat = Config::get('rrd.heartbeat', $system_step * 2);
-$rrdtool          = Config::get('rrdtool', 'rrdtool');
-$tmp_path         = Config::get('temp_dir', '/tmp');
+$rrdtool = Config::get('rrdtool', 'rrdtool');
+$tmp_path = Config::get('temp_dir', '/tmp');
 
 if ($hostname === 'all') {
     $hostname = '*';
 }
-$files = glob(get_rrd_dir($hostname) . '/*.rrd');
+$files = glob(get_rrd_dir($hostname).'/*.rrd');
 
 $converted = 0;
 $skipped = 0;
 $failed = 0;
 
 foreach ($files as $file) {
-    $random = $tmp_path.'/'.mt_rand() . '.xml';
+    $random = $tmp_path.'/'.mt_rand().'.xml';
     $rrd_file = basename($file, '.rrd');
 
     if ($rrd_file == 'ping-perf') {
@@ -95,7 +95,7 @@ foreach ($files as $file) {
             $skipped++;
             continue;
         } catch (Exception $e) {
-            echo $e->getMessage() . PHP_EOL;
+            echo $e->getMessage().PHP_EOL;
         }
     }
 

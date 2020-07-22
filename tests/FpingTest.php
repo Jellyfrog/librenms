@@ -1,6 +1,6 @@
 <?php
 /**
- * FpingTest.php
+ * FpingTest.php.
  *
  * -Description-
  *
@@ -36,14 +36,14 @@ class FpingTest extends TestCase
         $this->mockFpingProcess($output, 0);
 
         $expected = [
-            "xmt" => 3,
-            "rcv" => 3,
-            "loss" => 0,
-            "min" => 0.62,
-            "max" => 0.93,
-            "avg" => 0.71,
-            "dup" => 0,
-            "exitcode" => 0,
+            'xmt' => 3,
+            'rcv' => 3,
+            'loss' => 0,
+            'min' => 0.62,
+            'max' => 0.93,
+            'avg' => 0.71,
+            'dup' => 0,
+            'exitcode' => 0,
         ];
 
         $actual = app()->make(Fping::class)->ping('192.168.1.3');
@@ -57,14 +57,14 @@ class FpingTest extends TestCase
         $this->mockFpingProcess($output, 0);
 
         $expected = [
-            "xmt" => 5,
-            "rcv" => 3,
-            "loss" => 40,
-            "min" => 0.13,
-            "max" => 0.32,
-            "avg" => 0.23,
-            "dup" => 0,
-            "exitcode" => 0,
+            'xmt' => 5,
+            'rcv' => 3,
+            'loss' => 40,
+            'min' => 0.13,
+            'max' => 0.32,
+            'avg' => 0.23,
+            'dup' => 0,
+            'exitcode' => 0,
         ];
 
         $actual = app()->make(Fping::class)->ping('192.168.1.7');
@@ -78,14 +78,14 @@ class FpingTest extends TestCase
         $this->mockFpingProcess($output, 1);
 
         $expected = [
-            "xmt" => 3,
-            "rcv" => 0,
-            "loss" => 100,
-            "min" => 0.0,
-            "max" => 0.0,
-            "avg" => 0.0,
-            "dup" => 0,
-            "exitcode" => 1,
+            'xmt' => 3,
+            'rcv' => 0,
+            'loss' => 100,
+            'min' => 0.0,
+            'max' => 0.0,
+            'avg' => 0.0,
+            'dup' => 0,
+            'exitcode' => 1,
         ];
 
         $actual = app()->make(Fping::class)->ping('192.168.53.1');
@@ -104,14 +104,14 @@ OUT;
         $this->mockFpingProcess($output, 1);
 
         $expected = [
-            "xmt" => 3,
-            "rcv" => 3,
-            "loss" => 0,
-            "min" => 0.68,
-            "max" => 0.91,
-            "avg" => 0.79,
-            "dup" => 2,
-            "exitcode" => 1,
+            'xmt' => 3,
+            'rcv' => 3,
+            'loss' => 0,
+            'min' => 0.68,
+            'max' => 0.91,
+            'avg' => 0.79,
+            'dup' => 2,
+            'exitcode' => 1,
         ];
 
         $actual = app()->make(Fping::class)->ping('192.168.1.2');

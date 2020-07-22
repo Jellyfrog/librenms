@@ -2,7 +2,7 @@
 <?php
 
 /**
- * LibreNMS
+ * LibreNMS.
  *
  *   This file is part of LibreNMS.
  *
@@ -14,8 +14,8 @@
 use LibreNMS\Config;
 use LibreNMS\Exceptions\HostUnreachableException;
 
-$init_modules = array();
-require __DIR__ . '/includes/init.php';
+$init_modules = [];
+require __DIR__.'/includes/init.php';
 
 $options = getopt('Pbg:p:f::');
 
@@ -45,8 +45,8 @@ $valid_assoc_modes = get_port_assoc_modes();
 if (isset($options['p'])) {
     $port_assoc_mode = $options['p'];
     if (! in_array($port_assoc_mode, $valid_assoc_modes)) {
-        echo "Invalid port association mode '" . $port_assoc_mode . "'\n";
-        echo 'Valid modes: ' . join(', ', $valid_assoc_modes) . "\n";
+        echo "Invalid port association mode '".$port_assoc_mode."'\n";
+        echo 'Valid modes: '.implode(', ', $valid_assoc_modes)."\n";
         exit(1);
     }
 
@@ -69,51 +69,51 @@ if (isset($options['b'])) {
 }
 
 $transports_regex = implode('|', Config::get('snmp.transports'));
-if (!empty($argv[1])) {
-    $host      = strtolower($argv[1]);
+if (! empty($argv[1])) {
+    $host = strtolower($argv[1]);
     $community = $argv[2];
-    $snmpver   = strtolower($argv[3]);
+    $snmpver = strtolower($argv[3]);
 
-    $port      = 161;
+    $port = 161;
     $transport = 'udp';
 
-    $additional = array();
+    $additional = [];
     if (isset($options['b'])) {
-        $additional = array(
+        $additional = [
             'ping_fallback' => 1,
-        );
+        ];
     }
     if (isset($options['P'])) {
         $community = '';
-        $snmpver   = 'v2c';
-        $additional = array(
+        $snmpver = 'v2c';
+        $additional = [
             'snmp_disable' => 1,
-            'os'           => $argv[2] ? mres($argv[2]) : "ping",
+            'os'           => $argv[2] ? mres($argv[2]) : 'ping',
             'hardware'     => $argv[3] ? mres($argv[3]) : '',
-        );
+        ];
     } elseif ($snmpver === 'v3') {
         $seclevel = $community;
 
         // These values are the same as in defaults.inc.php
-        $v3 = array(
+        $v3 = [
             'authlevel'  => 'noAuthNoPriv',
             'authname'   => 'root',
             'authpass'   => '',
             'authalgo'   => 'MD5',
             'cryptopass' => '',
             'cryptoalgo' => 'AES',
-        );
+        ];
 
         // v3
         if ($seclevel === 'nanp' or $seclevel === 'any' or $seclevel === 'noAuthNoPriv') {
             $v3['authlevel'] = 'noAuthNoPriv';
-            $v3args          = array_slice($argv, 4);
+            $v3args = array_slice($argv, 4);
 
             while ($arg = array_shift($v3args)) {
                 // parse all remaining args
                 if (is_numeric($arg)) {
                     $port = $arg;
-                } elseif (preg_match('/^(' . $transports_regex . ')$/', $arg)) {
+                } elseif (preg_match('/^('.$transports_regex.')$/', $arg)) {
                     $transport = $arg;
                 } else {
                     // should add a sanity check of chars allowed in user
@@ -128,15 +128,15 @@ if (!empty($argv[1])) {
             }
         } elseif ($seclevel === 'anp' or $seclevel === 'authNoPriv') {
             $v3['authlevel'] = 'authNoPriv';
-            $v3args          = array_slice($argv, 4);
-            $v3['authname']  = array_shift($v3args);
-            $v3['authpass']  = array_shift($v3args);
+            $v3args = array_slice($argv, 4);
+            $v3['authname'] = array_shift($v3args);
+            $v3['authpass'] = array_shift($v3args);
 
             while ($arg = array_shift($v3args)) {
                 // parse all remaining args
                 if (is_numeric($arg)) {
                     $port = $arg;
-                } elseif (preg_match('/^(' . $transports_regex . ')$/i', $arg)) {
+                } elseif (preg_match('/^('.$transports_regex.')$/i', $arg)) {
                     $transport = $arg;
                 } elseif (preg_match('/^(sha|md5)$/i', $arg)) {
                     $v3['authalgo'] = $arg;
@@ -150,17 +150,17 @@ if (!empty($argv[1])) {
             array_unshift($v3_config, $v3);
             Config::set('snmp.v3', $v3_config);
         } elseif ($seclevel === 'ap' or $seclevel === 'authPriv') {
-            $v3['authlevel']  = 'authPriv';
-            $v3args           = array_slice($argv, 4);
-            $v3['authname']   = array_shift($v3args);
-            $v3['authpass']   = array_shift($v3args);
+            $v3['authlevel'] = 'authPriv';
+            $v3args = array_slice($argv, 4);
+            $v3['authname'] = array_shift($v3args);
+            $v3['authpass'] = array_shift($v3args);
             $v3['cryptopass'] = array_shift($v3args);
 
             while ($arg = array_shift($v3args)) {
                 // parse all remaining args
                 if (is_numeric($arg)) {
                     $port = $arg;
-                } elseif (preg_match('/^(' . $transports_regex . ')$/i', $arg)) {
+                } elseif (preg_match('/^('.$transports_regex.')$/i', $arg)) {
                     $transport = $arg;
                 } elseif (preg_match('/^(sha|md5)$/i', $arg)) {
                     $v3['authalgo'] = $arg;
@@ -184,7 +184,7 @@ if (!empty($argv[1])) {
             // parse all remaining args
             if (is_numeric($arg)) {
                 $port = $arg;
-            } elseif (preg_match('/(' . $transports_regex . ')/i', $arg)) {
+            } elseif (preg_match('/('.$transports_regex.')/i', $arg)) {
                 $transport = $arg;
             } elseif (preg_match('/^(v1|v2c)$/i', $arg)) {
                 $snmpver = $arg;
@@ -215,22 +215,22 @@ if (!empty($argv[1])) {
     }
 } else {
     c_echo(
-        "\n". Config::get('project_name').' Add Host Tool
+        "\n".Config::get('project_name').' Add Host Tool
 
-    Usage (SNMPv1/2c)    : ./addhost.php [-g <poller group>] [-f] [-b] [-p <port assoc mode>] <%Whostname or IP%n> [community] [v1|v2c] [port] [' . $transports_regex . ']
+    Usage (SNMPv1/2c)    : ./addhost.php [-g <poller group>] [-f] [-b] [-p <port assoc mode>] <%Whostname or IP%n> [community] [v1|v2c] [port] ['.$transports_regex.']
     Usage (SNMPv3)       :
-        Config Defaults  : ./addhost.php [-g <poller group>] [-f] [-b] [-p <port assoc mode>] <%Whostname or IP%n> any v3 [user] [port] [' . $transports_regex . ']
-        No Auth, No Priv : ./addhost.php [-g <poller group>] [-f] [-b] [-p <port assoc mode>] <%Whostname or IP%n> nanp v3 [user] [port] [' . $transports_regex . ']
-        Auth, No Priv    : ./addhost.php [-g <poller group>] [-f] [-b] [-p <port assoc mode>] <%Whostname or IP%n> anp v3 <user> <password> [md5|sha] [port] [' . $transports_regex . ']
-        Auth,    Priv    : ./addhost.php [-g <poller group>] [-f] [-b] [-p <port assoc mode>] <%Whostname or IP%n> ap v3 <user> <password> <enckey> [md5|sha] [aes|des] [port] [' . $transports_regex . ']
+        Config Defaults  : ./addhost.php [-g <poller group>] [-f] [-b] [-p <port assoc mode>] <%Whostname or IP%n> any v3 [user] [port] ['.$transports_regex.']
+        No Auth, No Priv : ./addhost.php [-g <poller group>] [-f] [-b] [-p <port assoc mode>] <%Whostname or IP%n> nanp v3 [user] [port] ['.$transports_regex.']
+        Auth, No Priv    : ./addhost.php [-g <poller group>] [-f] [-b] [-p <port assoc mode>] <%Whostname or IP%n> anp v3 <user> <password> [md5|sha] [port] ['.$transports_regex.']
+        Auth,    Priv    : ./addhost.php [-g <poller group>] [-f] [-b] [-p <port assoc mode>] <%Whostname or IP%n> ap v3 <user> <password> <enckey> [md5|sha] [aes|des] [port] ['.$transports_regex.']
     Usage (ICMP only)    : ./addhost.php [-g <poller group>] [-f] -P <%Whostname or IP%n> [os] [hardware]
 
     -g <poller group> allows you to add a device to be pinned to a specific poller when using distributed polling. X can be any number associated with a poller group
     -f forces the device to be added by skipping the icmp and snmp check against the host.
     -p <port assoc mode> allow you to set a port association mode for this device. By default ports are associated by \'ifIndex\'.
         For Linux/Unix based devices \'ifName\' or \'ifDescr\' might be useful for a stable iface mapping.
-        The default for this installation is \'' . Config::get('default_port_association_mode') . '\'
-        Valid port assoc modes are: ' . join(', ', $valid_assoc_modes) . '
+        The default for this installation is \''.Config::get('default_port_association_mode').'\'
+        Valid port assoc modes are: '.implode(', ', $valid_assoc_modes).'
     -b Add the host with SNMP if it replies to it, otherwise only ICMP.
     -P Add the host with only ICMP, no SNMP or OS discovery.
 

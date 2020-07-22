@@ -12,10 +12,10 @@
  * the source code distribution for details.
  */
 
-$init_modules = array('web', 'auth', 'alerts');
-require realpath(__DIR__ . '/..') . '/includes/init.php';
+$init_modules = ['web', 'auth', 'alerts'];
+require realpath(__DIR__.'/..').'/includes/init.php';
 
-if (!Auth::check()) {
+if (! Auth::check()) {
     die('Unauthorized');
 }
 

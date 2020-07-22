@@ -1,6 +1,6 @@
 <?php
 /**
- * AdvaStateChangeTrapTest.php
+ * AdvaStateChangeTrapTest.php.
  *
  * -Description-
  *

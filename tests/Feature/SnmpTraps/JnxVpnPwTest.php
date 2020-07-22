@@ -1,6 +1,6 @@
 <?php
 /**
- * JnxVpnPwTest.php
+ * JnxVpnPwTest.php.
  *
  * -Description-
  *

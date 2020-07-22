@@ -1,6 +1,6 @@
 <?php
 /**
- * SVGTest.php
+ * SVGTest.php.
  *
  * -Description-
  *
@@ -32,7 +32,7 @@ use RecursiveRegexIterator;
 use RegexIterator;
 
 /**
- * Class SVGTest
+ * Class SVGTest.
  * @package LibreNMS\Tests
  * @group os
  */
@@ -82,6 +82,7 @@ class SVGTest extends TestCase
     private function getSvgFiles()
     {
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('html/images'));
+
         return new RegexIterator($iterator, '/^.+\.svg$/i', RecursiveRegexIterator::GET_MATCH);
     }
 }

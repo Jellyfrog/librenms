@@ -1,6 +1,6 @@
 <?php
 /**
- * PreferencesPage.php
+ * PreferencesPage.php.
  *
  * -Description-
  *

@@ -1,6 +1,6 @@
 <?php
 /**
- * CiHelperTest.php
+ * CiHelperTest.php.
  *
  * -Description-
  *

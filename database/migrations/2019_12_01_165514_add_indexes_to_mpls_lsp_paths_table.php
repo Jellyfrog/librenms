@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddIndexesToMplsLspPathsTable extends Migration
 {
@@ -17,7 +17,7 @@ class AddIndexesToMplsLspPathsTable extends Migration
             /** add
              * vRtrMplsLspPathTunnelARHopListIndex
              * vRtrMplsLspPathTunnelCHopListIndex
-             * indexes to table
+             * indexes to table.
              */
             $table->unsignedInteger('mplsLspPathTunnelARHopListIndex')->nullable();
             $table->unsignedInteger('mplsLspPathTunnelCHopListIndex')->nullable();

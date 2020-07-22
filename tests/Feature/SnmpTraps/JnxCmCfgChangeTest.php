@@ -1,6 +1,6 @@
 <?php
 /**
- * JnxCmCfgChangeTest.php
+ * JnxCmCfgChangeTest.php.
  *
  * -Description-
  *
@@ -36,7 +36,6 @@ class JnxCmCfgChangeTest extends SnmpTrapTestCase
 {
     public function testConfigChangeTrap()
     {
-
         $device = factory(Device::class)->create();
 
         $trapText = "$device->hostname
@@ -50,7 +49,7 @@ JUNIPER-CFGMGMT-MIB::jnxCmCfgChgEventUser.54 TestUser
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameEX2200";
 
         $trap = new Trap($trapText);
-        $message = "Config modified by TestUser from cli at 2018-11-21,7:34:39.0,-6:0";
+        $message = 'Config modified by TestUser from cli at 2018-11-21,7:34:39.0,-6:0';
         \Log::shouldReceive('event')->once()->with($message, $device->device_id, 'trap', 2);
 
         $this->assertTrue(Dispatcher::handle($trap), 'Could not handle JnxCmCfgChange trap');
@@ -71,7 +70,7 @@ JUNIPER-CFGMGMT-MIB::jnxCmCfgChgEventUser.54 root
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameEX2200";
 
         $trap = new Trap($trapText);
-        $message = "Config rolled back at 2017-12-21,7:34:39.0,-6:0";
+        $message = 'Config rolled back at 2017-12-21,7:34:39.0,-6:0';
         \Log::shouldReceive('event')->once()->with($message, $device->device_id, 'trap', 2);
 
         $this->assertTrue(Dispatcher::handle($trap), 'Could not handle JnxCmCfgChange config rolled back');

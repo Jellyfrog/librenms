@@ -1,6 +1,6 @@
 <?php
 /**
- * GitIgnoreTest.php
+ * GitIgnoreTest.php.
  *
  * -Description-
  *

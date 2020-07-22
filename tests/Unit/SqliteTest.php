@@ -1,6 +1,6 @@
 <?php
 /**
- * SqliteTest.php
+ * SqliteTest.php.
  *
  * -Description-
  *
@@ -44,8 +44,8 @@ class SqliteTest extends TestCase
         } catch (QueryException $queryException) {
             preg_match('/Migrating: (\w+)$/', Artisan::output(), $matches);
             $migration = $matches[1] ?? '?';
-            $output = isset($matches[1]) ? '' : "\n\n" . Artisan::output();
-            $this->fail($queryException->getMessage() . $output . "\n\nCould not run migration {$migration}) on SQLite");
+            $output = isset($matches[1]) ? '' : "\n\n".Artisan::output();
+            $this->fail($queryException->getMessage().$output."\n\nCould not run migration {$migration}) on SQLite");
         }
 
         $count = \DB::connection($this->connection)->table('alert_templates')->count();
