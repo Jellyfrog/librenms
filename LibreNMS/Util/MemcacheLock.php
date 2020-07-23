@@ -40,8 +40,8 @@ class MemcacheLock implements Lock
 
     private function __construct($lock_name)
     {
-        if (!class_exists('Memcached')) {
-            throw new LockException("Missing PHP Memcached extension, this is required for distributed polling.");
+        if (! class_exists('Memcached')) {
+            throw new LockException('Missing PHP Memcached extension, this is required for distributed polling.');
         }
 
         // check all config vars or fallback
@@ -66,7 +66,7 @@ class MemcacheLock implements Lock
         try {
             return self::lock($lock_name, $timeout);
         } catch (LockException $e) {
-            echo $e->getMessage() . PHP_EOL;
+            echo $e->getMessage().PHP_EOL;
             exit(1);
         }
     }
@@ -84,7 +84,7 @@ class MemcacheLock implements Lock
     {
         $lock = new self($lock_name);
 
-        if (!$lock->isConnected()) {
+        if (! $lock->isConnected()) {
             throw new LockException("Could not connect to memcached ($lock->host:$lock->port)");
         }
 

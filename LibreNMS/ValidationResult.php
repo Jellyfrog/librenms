@@ -101,7 +101,7 @@ class ValidationResult
 
     public function hasList()
     {
-        return !empty($this->list);
+        return ! empty($this->list);
     }
 
     public function getList()
@@ -119,12 +119,13 @@ class ValidationResult
 
         $this->list_description = $description;
         $this->list = $list;
+
         return $this;
     }
 
     public function hasFix()
     {
-        return !empty($this->fix);
+        return ! empty($this->fix);
     }
 
     public function getFix()
@@ -142,6 +143,7 @@ class ValidationResult
     public function setFix($fix)
     {
         $this->fix = $fix;
+
         return $this;
     }
 
@@ -150,17 +152,17 @@ class ValidationResult
      */
     public function consolePrint()
     {
-        c_echo(str_pad('[' . $this->getStatusText($this->status) . ']', 12) . $this->message . PHP_EOL);
+        c_echo(str_pad('['.$this->getStatusText($this->status).']', 12).$this->message.PHP_EOL);
 
         if (isset($this->fix)) {
             c_echo("\t[%BFIX%n]: \n");
-            foreach ((array)$this->fix as $fix) {
+            foreach ((array) $this->fix as $fix) {
                 c_echo("\t%B$fix%n\n");
             }
         }
 
-        if (!empty($this->list)) {
-            echo "\t" . $this->getListDescription() . ":\n";
+        if (! empty($this->list)) {
+            echo "\t".$this->getListDescription().":\n";
             $this->printList();
         }
     }
@@ -179,6 +181,7 @@ class ValidationResult
         } elseif ($status === self::FAILURE) {
             return '%RFAIL%n';
         }
+
         return 'Unknown';
     }
 

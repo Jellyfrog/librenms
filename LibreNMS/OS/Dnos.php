@@ -41,7 +41,7 @@ class Dnos extends OS implements ProcessorDiscovery
     public function discoverProcessors()
     {
         $device = $this->getDevice();
-        $processors = array();
+        $processors = [];
 
         if (Str::startsWith($device['sysObjectID'], '.1.3.6.1.4.1.6027.1.3')) {
             d_echo('Dell S Series Chassis');
@@ -60,7 +60,7 @@ class Dnos extends OS implements ProcessorDiscovery
                 'F10-C-SERIES-CHASSIS-MIB',
                 '.1.3.6.1.4.1.6027.3.8.1.3.7.1.3',
                 'Route Process Module',
-                $this->getName() . '-rpm'
+                $this->getName().'-rpm'
             );
             $this->findProcessors(
                 $processors,

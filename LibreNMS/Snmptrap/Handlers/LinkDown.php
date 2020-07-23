@@ -46,22 +46,23 @@ class LinkDown implements SnmptrapHandler
 
         $port = $device->ports()->where('ifIndex', $ifIndex)->first();
 
-        if (!$port) {
-            Log::warning("Snmptrap linkDown: Could not find port at ifIndex $ifIndex for device: " . $device->hostname);
+        if (! $port) {
+            Log::warning("Snmptrap linkDown: Could not find port at ifIndex $ifIndex for device: ".$device->hostname);
+
             return;
         }
 
         $port->ifOperStatus = $trap->getOidData("IF-MIB::ifOperStatus.$ifIndex");
         $port->ifAdminStatus = $trap->getOidData("IF-MIB::ifAdminStatus.$ifIndex");
 
-        Log::event("SNMP Trap: linkDown $port->ifAdminStatus/$port->ifOperStatus " . $port->ifDescr, $device->device_id, 'interface', 5, $port->port_id);
+        Log::event("SNMP Trap: linkDown $port->ifAdminStatus/$port->ifOperStatus ".$port->ifDescr, $device->device_id, 'interface', 5, $port->port_id);
 
         if ($port->isDirty('ifAdminStatus')) {
-            Log::event("Interface Disabled : $port->ifDescr (TRAP)", $device->device_id, "interface", 3, $port->port_id);
+            Log::event("Interface Disabled : $port->ifDescr (TRAP)", $device->device_id, 'interface', 3, $port->port_id);
         }
 
         if ($port->isDirty('ifOperStatus')) {
-            Log::event("Interface went Down : $port->ifDescr (TRAP)", $device->device_id, "interface", 5, $port->port_id);
+            Log::event("Interface went Down : $port->ifDescr (TRAP)", $device->device_id, 'interface', 5, $port->port_id);
         }
 
         $port->save();

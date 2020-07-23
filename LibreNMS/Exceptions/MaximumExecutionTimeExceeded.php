@@ -25,8 +25,8 @@
 
 namespace LibreNMS\Exceptions;
 
-use LibreNMS\Interfaces\Exceptions\UpgradeableException;
 use Illuminate\Support\Str;
+use LibreNMS\Interfaces\Exceptions\UpgradeableException;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 
 class MaximumExecutionTimeExceeded extends \Exception implements UpgradeableException
@@ -44,8 +44,6 @@ class MaximumExecutionTimeExceeded extends \Exception implements UpgradeableExce
             Str::startsWith($exception->getMessage(), 'Maximum execution time of')) {
             return new static($exception->getMessage(), $exception->getCode(), $exception);
         }
-
-        return null;
     }
 
     /**

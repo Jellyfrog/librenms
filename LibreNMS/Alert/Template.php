@@ -33,7 +33,6 @@ class Template
     public $template;
 
     /**
-     *
      * Get the template details
      *
      * @param null $obj
@@ -48,9 +47,10 @@ class Template
         $this->template = AlertTemplate::whereHas('map', function ($query) use ($obj) {
             $query->where('alert_rule_id', '=', $obj['rule_id']);
         })->first();
-        if (!$this->template) {
+        if (! $this->template) {
             $this->template = AlertTemplate::where('name', '=', 'Default Alert Template')->first();
         }
+
         return $this->template;
     }
 
@@ -65,7 +65,6 @@ class Template
     }
 
     /**
-     *
      * Parse Blade body
      *
      * @param $data
@@ -82,7 +81,6 @@ class Template
     }
 
     /**
-     *
      * Parse Blade title
      *
      * @param $data
@@ -94,28 +92,27 @@ class Template
         try {
             return view(['template' => $data['title']], $alert)->__toString();
         } catch (\Exception $e) {
-            return $data['title'] ?: view(['template' => "Template " . $data['name']], $alert)->__toString();
+            return $data['title'] ?: view(['template' => 'Template '.$data['name']], $alert)->__toString();
         }
     }
 
     /**
-     *
      * Get the default template
      *
      * @return string
      */
     public function getDefaultTemplate()
     {
-        return '{{ $alert->title }}' . PHP_EOL .
-            'Severity: {{ $alert->severity }}' . PHP_EOL .
-            '@if ($alert->state == '.AlertState::RECOVERED.')Time elapsed: {{ $alert->elapsed }} @endif ' . PHP_EOL .
-            'Timestamp: {{ $alert->timestamp }}' . PHP_EOL .
-            'Unique-ID: {{ $alert->uid }}' . PHP_EOL .
-            'Rule: @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif ' . PHP_EOL .
-            '@if ($alert->faults)Faults:' . PHP_EOL .
-            '@foreach ($alert->faults as $key => $value)' . PHP_EOL .
-            '  #{{ $key }}: {{ $value[\'string\'] }} @endforeach' . PHP_EOL .
-            '@endif' . PHP_EOL .
+        return '{{ $alert->title }}'.PHP_EOL.
+            'Severity: {{ $alert->severity }}'.PHP_EOL.
+            '@if ($alert->state == '.AlertState::RECOVERED.')Time elapsed: {{ $alert->elapsed }} @endif '.PHP_EOL.
+            'Timestamp: {{ $alert->timestamp }}'.PHP_EOL.
+            'Unique-ID: {{ $alert->uid }}'.PHP_EOL.
+            'Rule: @if ($alert->name) {{ $alert->name }} @else {{ $alert->rule }} @endif '.PHP_EOL.
+            '@if ($alert->faults)Faults:'.PHP_EOL.
+            '@foreach ($alert->faults as $key => $value)'.PHP_EOL.
+            '  #{{ $key }}: {{ $value[\'string\'] }} @endforeach'.PHP_EOL.
+            '@endif'.PHP_EOL.
             'Alert sent to: @foreach ($alert->contacts as $key => $value) {{ $value }} <{{ $key }}> @endforeach';
     }
 }

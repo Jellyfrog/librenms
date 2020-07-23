@@ -27,10 +27,10 @@
 namespace LibreNMS\Data\Store;
 
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Str;
 use LibreNMS\Config;
 use LibreNMS\Data\Measure\Measurement;
 use Log;
-use Illuminate\Support\Str;
 
 class Prometheus extends BaseDatastore
 {
@@ -72,13 +72,13 @@ class Prometheus extends BaseDatastore
     {
         $stat = Measurement::start('put');
         // skip if needed
-        if (!$this->enabled) {
+        if (! $this->enabled) {
             return;
         }
 
         try {
-            $vals = "";
-            $promtags = "/measurement/" . $measurement;
+            $vals = '';
+            $promtags = '/measurement/'.$measurement;
 
             foreach ($fields as $k => $v) {
                 if ($v !== null) {
@@ -88,14 +88,14 @@ class Prometheus extends BaseDatastore
 
             foreach ($tags as $t => $v) {
                 if ($v !== null) {
-                    $promtags .= (Str::contains($v, "/") ? "/$t@base64/". base64_encode($v) : "/$t/$v");
+                    $promtags .= (Str::contains($v, '/') ? "/$t@base64/".base64_encode($v) : "/$t/$v");
                 }
             }
             $options = $this->getDefaultOptions();
             $options['body'] = $vals;
 
-            $promurl = $this->base_uri . $device['hostname'] . $promtags;
-            $promurl = str_replace(" ", "-", $promurl); // Prometheus doesn't handle tags with spaces in url
+            $promurl = $this->base_uri.$device['hostname'].$promtags;
+            $promurl = str_replace(' ', '-', $promurl); // Prometheus doesn't handle tags with spaces in url
 
             Log::debug("Prometheus put $promurl: ", [
                 'measurement' => $measurement,
@@ -109,10 +109,10 @@ class Prometheus extends BaseDatastore
             $this->recordStatistic($stat->end());
 
             if ($result->getStatusCode() !== 200) {
-                Log::error('Prometheus Error: ' . $result->getReasonPhrase());
+                Log::error('Prometheus Error: '.$result->getReasonPhrase());
             }
         } catch (GuzzleException $e) {
-            Log::error("Prometheus Exception: " . $e->getMessage());
+            Log::error('Prometheus Exception: '.$e->getMessage());
         }
     }
 
@@ -124,7 +124,7 @@ class Prometheus extends BaseDatastore
     /**
      * Checks if the datastore wants rrdtags to be sent when issuing put()
      *
-     * @return boolean
+     * @return bool
      */
     public function wantsRrdTags()
     {

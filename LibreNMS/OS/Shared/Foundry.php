@@ -39,10 +39,10 @@ class Foundry extends OS implements ProcessorDiscovery
      */
     public function discoverProcessors()
     {
-        $processors_data = snmpwalk_cache_triple_oid($this->getDevice(), 'snAgentCpuUtilTable', array(), 'FOUNDRY-SN-AGENT-MIB');
+        $processors_data = snmpwalk_cache_triple_oid($this->getDevice(), 'snAgentCpuUtilTable', [], 'FOUNDRY-SN-AGENT-MIB');
         $module_descriptions = $this->getCacheByIndex('snAgentConfigModuleDescription', 'FOUNDRY-SN-AGENT-MIB');
 
-        $processors = array();
+        $processors = [];
         foreach ($processors_data as $index => $entry) {
             // use the 5 minute readings
             if ($entry['snAgentCpuUtilInterval'] != 300) {
@@ -50,11 +50,11 @@ class Foundry extends OS implements ProcessorDiscovery
             }
 
             if (is_numeric($entry['snAgentCpuUtil100thPercent'])) {
-                $usage_oid = '.1.3.6.1.4.1.1991.1.1.2.11.1.1.6.' . $index;
+                $usage_oid = '.1.3.6.1.4.1.1991.1.1.2.11.1.1.6.'.$index;
                 $precision = 100;
                 $usage = $entry['snAgentCpuUtil100thPercent'] / $precision;
             } elseif (is_numeric($entry['snAgentCpuUtilValue'])) {
-                $usage_oid = '.1.3.6.1.4.1.1991.1.1.2.11.1.1.4.' . $index;
+                $usage_oid = '.1.3.6.1.4.1.1991.1.1.2.11.1.1.4.'.$index;
                 $precision = 1;
                 $usage = $entry['snAgentCpuUtilValue'] / $precision;
             } else {
@@ -62,7 +62,7 @@ class Foundry extends OS implements ProcessorDiscovery
             }
 
             $module_description = $module_descriptions[$entry['snAgentCpuUtilSlotNum']];
-            list($module_description) = explode(' ', $module_description);
+            [$module_description] = explode(' ', $module_description);
             $descr = "Slot {$entry['snAgentCpuUtilSlotNum']} $module_description [{$entry['snAgentCpuUtilSlotNum']}]";
 
             $processors[] = Processor::discover(

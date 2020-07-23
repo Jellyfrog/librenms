@@ -41,8 +41,8 @@ class Laravel
         }
 
         define('LARAVEL_START', microtime(true));
-        $install_dir = realpath(__DIR__ . '/../..');
-        $app = require_once $install_dir . '/bootstrap/app.php';
+        $install_dir = realpath(__DIR__.'/../..');
+        $app = require_once $install_dir.'/bootstrap/app.php';
         $kernel = $app->make(\Illuminate\Contracts\Console\Kernel::class);
         $kernel->bootstrap();
     }
@@ -60,8 +60,8 @@ class Laravel
         }
 
         define('LARAVEL_START', microtime(true));
-        $install_dir = realpath(__DIR__ . '/../..');
-        $app = require_once $install_dir . '/bootstrap/app.php';
+        $install_dir = realpath(__DIR__.'/../..');
+        $app = require_once $install_dir.'/bootstrap/app.php';
         $kernel = $app->make(\Illuminate\Contracts\Http\Kernel::class);
 
         $request = \Illuminate\Http\Request::capture();
@@ -75,7 +75,7 @@ class Laravel
 
     public static function isBooted()
     {
-        return function_exists('app') && !empty(app()->isAlias('Illuminate\Foundation\Application')) && app()->isBooted();
+        return function_exists('app') && ! empty(app()->isAlias('Illuminate\Foundation\Application')) && app()->isBooted();
     }
 
     public static function enableQueryDebug()
@@ -83,7 +83,7 @@ class Laravel
         static $sql_debug_enabled;
         $db = Eloquent::DB();
 
-        if ($db && !$sql_debug_enabled) {
+        if ($db && ! $sql_debug_enabled) {
             $db->listen(function (QueryExecuted $query) {
                 // collect bindings and make them a little more readable
                 $bindings = collect($query->bindings)->map(function ($item) {
@@ -139,7 +139,7 @@ class Laravel
         // set dummy path allows url helper to work and prevents full init again
         $new_uri = ($auth ? '/dummy_legacy_auth' : '/dummy_legacy_unauth');
         $request->server->set('REQUEST_URI', $new_uri);
-        
+
         // tests fail without this
         if ($request->server->get('REMOTE_ADDR') === null) {
             $request->server->set('REMOTE_ADDR', '127.0.0.1');

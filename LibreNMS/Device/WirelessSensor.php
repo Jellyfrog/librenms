@@ -102,6 +102,7 @@ class WirelessSensor extends Sensor
     {
         $sensor = parent::toArray();
         $sensor['access_point_id'] = $this->access_point_ip;
+
         return $sensor;
     }
 
@@ -204,7 +205,7 @@ class WirelessSensor extends Sensor
 
         if ($valid) {
             $sql = 'SELECT `sensor_class` FROM `wireless_sensors`';
-            $params = array();
+            $params = [];
             if (isset($device_id)) {
                 $sql .= ' WHERE `device_id`=?';
                 $params[] = $device_id;
@@ -212,6 +213,7 @@ class WirelessSensor extends Sensor
             $sql .= ' GROUP BY `sensor_class`';
 
             $sensors = dbFetchColumn($sql, $params);
+
             return array_intersect_key($types, array_flip($sensors));
         }
 
@@ -220,22 +222,22 @@ class WirelessSensor extends Sensor
 
     protected static function getDiscoveryInterface($type)
     {
-        return str_to_class($type, 'LibreNMS\\Interfaces\\Discovery\\Sensors\\Wireless') . 'Discovery';
+        return str_to_class($type, 'LibreNMS\\Interfaces\\Discovery\\Sensors\\Wireless').'Discovery';
     }
 
     protected static function getDiscoveryMethod($type)
     {
-        return 'discoverWireless' . str_to_class($type);
+        return 'discoverWireless'.str_to_class($type);
     }
 
     protected static function getPollingInterface($type)
     {
-        return str_to_class($type, 'LibreNMS\\Interfaces\\Polling\\Sensors\\Wireless') . 'Polling';
+        return str_to_class($type, 'LibreNMS\\Interfaces\\Polling\\Sensors\\Wireless').'Polling';
     }
 
     protected static function getPollingMethod($type)
     {
-        return 'pollWireless' . str_to_class($type);
+        return 'pollWireless'.str_to_class($type);
     }
 
     /**
@@ -246,7 +248,7 @@ class WirelessSensor extends Sensor
      */
     public static function channelToFrequency($channel)
     {
-        $channels = array(
+        $channels = [
             1 => 2412,
             2 => 2417,
             3 => 2422,
@@ -289,7 +291,7 @@ class WirelessSensor extends Sensor
             157 => 5785,
             161 => 5805,
             165 => 5825,
-        );
+        ];
 
         return $channels[$channel];
     }

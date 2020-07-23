@@ -56,44 +56,44 @@ class TwoFactor
      * Base32 Decoding dictionary
      */
     private static $base32 = [
-        "A" => 0,
-        "B" => 1,
-        "C" => 2,
-        "D" => 3,
-        "E" => 4,
-        "F" => 5,
-        "G" => 6,
-        "H" => 7,
-        "I" => 8,
-        "J" => 9,
-        "K" => 10,
-        "L" => 11,
-        "M" => 12,
-        "N" => 13,
-        "O" => 14,
-        "P" => 15,
-        "Q" => 16,
-        "R" => 17,
-        "S" => 18,
-        "T" => 19,
-        "U" => 20,
-        "V" => 21,
-        "W" => 22,
-        "X" => 23,
-        "Y" => 24,
-        "Z" => 25,
-        "2" => 26,
-        "3" => 27,
-        "4" => 28,
-        "5" => 29,
-        "6" => 30,
-        "7" => 31
+        'A' => 0,
+        'B' => 1,
+        'C' => 2,
+        'D' => 3,
+        'E' => 4,
+        'F' => 5,
+        'G' => 6,
+        'H' => 7,
+        'I' => 8,
+        'J' => 9,
+        'K' => 10,
+        'L' => 11,
+        'M' => 12,
+        'N' => 13,
+        'O' => 14,
+        'P' => 15,
+        'Q' => 16,
+        'R' => 17,
+        'S' => 18,
+        'T' => 19,
+        'U' => 20,
+        'V' => 21,
+        'W' => 22,
+        'X' => 23,
+        'Y' => 24,
+        'Z' => 25,
+        '2' => 26,
+        '3' => 27,
+        '4' => 28,
+        '5' => 29,
+        '6' => 30,
+        '7' => 31,
     ];
 
     /**
      * Base32 Encoding dictionary
      */
-    private static $base32_enc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+    private static $base32_enc = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
     /**
      * Generate Secret Key
@@ -103,24 +103,25 @@ class TwoFactor
     {
         // RFC 4226 recommends 160bits Secret Keys, that's 20 Bytes for the lazy ones.
         $crypto = false;
-        $raw = "";
+        $raw = '';
         $x = -1;
         while ($crypto == false || ++$x < 10) {
             $raw = openssl_random_pseudo_bytes(20, $crypto);
         }
         // RFC 4648 Base32 Encoding without padding
         $len = strlen($raw);
-        $bin = "";
+        $bin = '';
         $x = -1;
         while (++$x < $len) {
             $bin .= str_pad(base_convert(ord($raw[$x]), 10, 2), 8, '0', STR_PAD_LEFT);
         }
         $bin = str_split($bin, 5);
-        $ret = "";
+        $ret = '';
         $x = -1;
-        while (++$x < sizeof($bin)) {
+        while (++$x < count($bin)) {
             $ret .= self::$base32_enc[base_convert(str_pad($bin[$x], 5, '0'), 2, 10)];
         }
+
         return $ret;
     }
 
@@ -129,8 +130,8 @@ class TwoFactor
      *
      * @param string $key Secret Key
      * @param int $otp OTP supplied by user
-     * @param int|boolean $counter Counter, if false timestamp is used
-     * @return boolean|int
+     * @param int|bool $counter Counter, if false timestamp is used
+     * @return bool|int
      */
     public static function verifyHOTP($key, $otp, $counter = false)
     {
@@ -151,7 +152,7 @@ class TwoFactor
             }
             while (++$initcount <= $endcount) {
                 if (self::oathHOTP($key, $initcount) == $otp) {
-                    if (!$totp) {
+                    if (! $totp) {
                         return $initcount;
                     } else {
                         return true;
@@ -159,13 +160,14 @@ class TwoFactor
                 }
             }
         }
+
         return false;
     }
 
     /**
      * Generate HOTP (RFC 4226)
      * @param string $key Secret Key
-     * @param int|boolean $counter Optional Counter, Defaults to Timestamp
+     * @param int|bool $counter Optional Counter, Defaults to Timestamp
      * @return int
      */
     private static function oathHOTP($key, $counter = false)
@@ -177,7 +179,7 @@ class TwoFactor
         $length = strlen($key);
         $x = -1;
         $y = $z = 0;
-        $kbin = "";
+        $kbin = '';
         while (++$x < $length) {
             $y <<= 5;
             $y += self::$base32[$key[$x]];
@@ -187,12 +189,13 @@ class TwoFactor
                 $kbin .= chr(($y & (0xFF << $z)) >> $z);
             }
         }
-        $hash = hash_hmac('sha1', pack('N*', 0) . pack('N*', $counter), $kbin, true);
+        $hash = hash_hmac('sha1', pack('N*', 0).pack('N*', $counter), $kbin, true);
         $offset = ord($hash[19]) & 0xf;
         $truncated = (((ord($hash[$offset + 0]) & 0x7f) << 24) |
                 ((ord($hash[$offset + 1]) & 0xff) << 16) |
                 ((ord($hash[$offset + 2]) & 0xff) << 8) |
                 (ord($hash[$offset + 3]) & 0xff)) % pow(10, self::OTP_SIZE);
+
         return str_pad($truncated, self::OTP_SIZE, '0', STR_PAD_LEFT);
     }
 
@@ -205,7 +208,7 @@ class TwoFactor
      */
     public static function generateUri($username, $key, $counter = false)
     {
-        $title = "LibreNMS:" . urlencode($username);
+        $title = 'LibreNMS:'.urlencode($username);
 
         return $counter ?
             "otpauth://hotp/$title?issuer=LibreNMS&counter=1&secret=$key" : // counter based

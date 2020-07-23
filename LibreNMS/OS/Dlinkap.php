@@ -39,15 +39,15 @@ class Dlinkap extends OS implements ProcessorDiscovery
      */
     public function discoverProcessors()
     {
-        return array(
+        return [
             Processor::discover(
                 'dlinkap-cpu',
                 $this->getDeviceId(),
-                $this->getDevice()['sysObjectID'] . '.5.1.3.0',  // different OID for each model
+                $this->getDevice()['sysObjectID'].'.5.1.3.0',  // different OID for each model
                 0,
                 'Processor',
                 100
-            )
-        );
+            ),
+        ];
     }
 }

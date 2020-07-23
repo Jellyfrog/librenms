@@ -37,8 +37,9 @@ trait UcdResources
      */
     public function discoverProcessors()
     {
-        echo "UCD Resources: ";
-        return array(
+        echo 'UCD Resources: ';
+
+        return [
             Processor::discover(
                 'ucd-old',
                 $this->getDeviceId(),
@@ -46,7 +47,7 @@ trait UcdResources
                 0,
                 'CPU',
                 -1
-            )
-        );
+            ),
+        ];
     }
 }

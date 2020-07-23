@@ -55,6 +55,7 @@ class FsGbn extends OS implements ProcessorDiscovery
                 100 - $entry['cpuIdle']
             );
         }
+
         return $processors;
     }
 }

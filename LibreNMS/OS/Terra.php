@@ -41,24 +41,24 @@ class Terra extends OS implements ProcessorDiscovery
     {
         $device = $this->getDevice();
 
-        $query = array(
-            "sti410C" => ".1.3.6.1.4.1.30631.1.9.1.1.3.0",
-            "sti440" =>  ".1.3.6.1.4.1.30631.1.18.1.326.3.0"
-        );
+        $query = [
+            'sti410C' => '.1.3.6.1.4.1.30631.1.9.1.1.3.0',
+            'sti440' =>  '.1.3.6.1.4.1.30631.1.18.1.326.3.0',
+        ];
 
         foreach ($query as $decr => $oid) {
-            if (strpos($device["sysDescr"], $decr) !== false) {
-                return array(
+            if (strpos($device['sysDescr'], $decr) !== false) {
+                return [
                     Processor::discover(
                         'cpu',
                         $this->getDeviceId(),
                         $oid,
                         0
-                    )
-                );
+                    ),
+                ];
             }
         }
 
-        return array();
+        return [];
     }
 }

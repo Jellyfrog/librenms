@@ -26,14 +26,14 @@
 namespace LibreNMS\OS;
 
 use LibreNMS\Device\WirelessSensor;
-use LibreNMS\Interfaces\Discovery\Sensors\WirelessFrequencyDiscovery;
-use LibreNMS\Interfaces\Polling\Sensors\WirelessFrequencyPolling;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessCapacityDiscovery;
+use LibreNMS\Interfaces\Discovery\Sensors\WirelessCcqDiscovery;
+use LibreNMS\Interfaces\Discovery\Sensors\WirelessFrequencyDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessNoiseFloorDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessPowerDiscovery;
-use LibreNMS\Interfaces\Discovery\Sensors\WirelessCcqDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessRateDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessRssiDiscovery;
+use LibreNMS\Interfaces\Polling\Sensors\WirelessFrequencyPolling;
 use LibreNMS\OS;
 use LibreNMS\Util\Rewrite;
 
@@ -56,8 +56,9 @@ class Lcos extends OS implements
     private function strToDecOid($index)
     {
         for ($i = 0, $j = strlen($index); $i < $j; $i++) {
-                $dec_index[] = ord($index[$i]);
+            $dec_index[] = ord($index[$i]);
         }
+
         return implode('.', $dec_index);
     }
 
@@ -81,13 +82,14 @@ class Lcos extends OS implements
             $sensors[$radio] = new WirelessSensor(
                 'frequency',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.57.1.3.' . '6.' . $this->strToDecOid($index),
+                '.1.3.6.1.4.1.2356.11.1.3.57.1.3.'.'6.'.$this->strToDecOid($index),
                 'lcos',
                 $radio,
                 "Frequency ($radio)",
                 WirelessSensor::channelToFrequency($entry['lcsStatusWlanRadiosEntryRadioChannel'])
             );
         }
+
         return $sensors;
     }
 
@@ -123,13 +125,14 @@ class Lcos extends OS implements
             $sensors[$radio] = new WirelessSensor(
                 'capacity',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.57.1.6.' . '6.' . $this->strToDecOid($index),
+                '.1.3.6.1.4.1.2356.11.1.3.57.1.6.'.'6.'.$this->strToDecOid($index),
                 'lcos',
                 $radio,
                 "Modem Load ($radio)",
                 $entry['lcsStatusWlanRadiosEntryModemLoad']
             );
         }
+
         return $sensors;
     }
 
@@ -153,13 +156,14 @@ class Lcos extends OS implements
             $sensors[$radio] = new WirelessSensor(
                 'noise-floor',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.57.1.5.' . '6.' . $this->strToDecOid($index),
+                '.1.3.6.1.4.1.2356.11.1.3.57.1.5.'.'6.'.$this->strToDecOid($index),
                 'lcos',
                 $radio,
                 "Noise Floor ($radio)",
                 $entry['lcsStatusWlanRadiosEntryNoiseLevel']
             );
         }
+
         return $sensors;
     }
 
@@ -184,13 +188,14 @@ class Lcos extends OS implements
             $sensors[$radio] = new WirelessSensor(
                 'power',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.57.1.7.' . '6.' . $this->strToDecOid($index),
+                '.1.3.6.1.4.1.2356.11.1.3.57.1.7.'.'6.'.$this->strToDecOid($index),
                 'lcos-tx',
                 $radio,
                 "Tx Power ($radio)",
                 $entry['lcsStatusWlanRadiosEntryTransmitPower']
             );
         }
+
         return $sensors;
     }
 
@@ -216,13 +221,14 @@ class Lcos extends OS implements
             $sensors[$bssid] = new WirelessSensor(
                 'ccq',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.44.1.10.' . Rewrite::oidMac($bssid) . '.0',
+                '.1.3.6.1.4.1.2356.11.1.3.44.1.10.'.Rewrite::oidMac($bssid).'.0',
                 'lcos',
                 $bssid,
-                "CCQ " . $entry['lcsStatusWlanCompetingNetworksEntryInterpointPeerName'] . " $bssid",
+                'CCQ '.$entry['lcsStatusWlanCompetingNetworksEntryInterpointPeerName']." $bssid",
                 $entry['lcsStatusWlanCompetingNetworksEntryPhySigal']
             );
         }
+
         return $sensors;
     }
 
@@ -248,14 +254,15 @@ class Lcos extends OS implements
             $sensors[$bssid] = new WirelessSensor(
                 'rate',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.44.1.35.' . Rewrite::oidMac($bssid) . '.0',
+                '.1.3.6.1.4.1.2356.11.1.3.44.1.35.'.Rewrite::oidMac($bssid).'.0',
                 'lcos-tx',
                 $bssid,
-                "TX Rate " . $entry['lcsStatusWlanCompetingNetworksEntryInterpointPeerName'] . " $bssid",
+                'TX Rate '.$entry['lcsStatusWlanCompetingNetworksEntryInterpointPeerName']." $bssid",
                 $entry['lcsStatusWlanCompetingNetworksEntryEffRate'],
                 1000000
             );
         }
+
         return $sensors;
     }
 
@@ -282,13 +289,14 @@ class Lcos extends OS implements
             $sensors[$bssid] = new WirelessSensor(
                 'rssi',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.44.1.26.' . Rewrite::oidMac($bssid) . '.0',
+                '.1.3.6.1.4.1.2356.11.1.3.44.1.26.'.Rewrite::oidMac($bssid).'.0',
                 'lcos',
                 $bssid,
-                "RSSI " . $entry['lcsStatusWlanCompetingNetworksEntryInterpointPeerName'] . " $bssid",
+                'RSSI '.$entry['lcsStatusWlanCompetingNetworksEntryInterpointPeerName']." $bssid",
                 $entry['lcsStatusWlanCompetingNetworksEntrySignalLevel']
             );
         }
+
         return $sensors;
     }
 }

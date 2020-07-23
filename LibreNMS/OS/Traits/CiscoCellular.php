@@ -37,17 +37,17 @@ trait CiscoCellular
      */
     public function discoverWirelessRssi()
     {
-        $sensors = array();
+        $sensors = [];
 
-        $data = snmpwalk_cache_oid($this->getDevice(), 'c3gCurrentGsmRssi', array(), 'CISCO-WAN-3G-MIB');
+        $data = snmpwalk_cache_oid($this->getDevice(), 'c3gCurrentGsmRssi', [], 'CISCO-WAN-3G-MIB');
         foreach ($data as $index => $entry) {
             $sensors[] = new WirelessSensor(
                 'rssi',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.9.9.661.1.3.4.1.1.1.' . $index,
+                '.1.3.6.1.4.1.9.9.661.1.3.4.1.1.1.'.$index,
                 'ios',
                 $index,
-                'RSSI: Chain ' . str_replace('1.', '', $index),
+                'RSSI: Chain '.str_replace('1.', '', $index),
                 $entry['c3gCurrentGsmRssi.1']
             );
         }

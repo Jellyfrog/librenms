@@ -39,7 +39,7 @@ class OS
      */
     public static function loadDefinition($os)
     {
-        if (!Config::get("os.$os.definition_loaded")) {
+        if (! Config::get("os.$os.definition_loaded")) {
             $yaml_file = base_path("/includes/definitions/$os.yaml");
             if (file_exists($yaml_file)) {
                 $os_def = Yaml::parse(file_get_contents($yaml_file));
@@ -60,7 +60,7 @@ class OS
     public static function loadAllDefinitions($existing = false, $cached = true)
     {
         $install_dir = \LibreNMS\Config::get('install_dir');
-        $cache_file = $install_dir . '/cache/os_defs.cache';
+        $cache_file = $install_dir.'/cache/os_defs.cache';
         if ($cached && is_file($cache_file) && (time() - filemtime($cache_file) < \LibreNMS\Config::get('os_def_cache_time'))) {
             // Cached
             $os_defs = unserialize(file_get_contents($cache_file));
@@ -75,7 +75,7 @@ class OS
             if ($existing && Eloquent::isConnected()) {
                 $os_list = Device::query()->distinct()->pluck('os');
             } else {
-                $os_list = glob($install_dir . '/includes/definitions/*.yaml');
+                $os_list = glob($install_dir.'/includes/definitions/*.yaml');
             }
             foreach ($os_list as $file) {
                 $os = basename($file, '.yaml');
@@ -95,7 +95,7 @@ class OS
         $cache_file = "$install_dir/cache/os_defs.cache";
         $cache_keep_time = Config::get('os_def_cache_time', 86400) - 7200; // 2hr buffer
 
-        if ($force === true || !is_file($cache_file) || time() - filemtime($cache_file) > $cache_keep_time) {
+        if ($force === true || ! is_file($cache_file) || time() - filemtime($cache_file) > $cache_keep_time) {
             Log::debug('Updating os_def.cache');
 
             // remove previously cached os settings and replace with user settings
@@ -107,6 +107,7 @@ class OS
             self::loadAllDefinitions(false, false);
 
             file_put_contents($cache_file, serialize(Config::get('os')));
+
             return true;
         }
 

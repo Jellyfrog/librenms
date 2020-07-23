@@ -44,15 +44,15 @@ class Cisco extends OS implements ProcessorDiscovery, NacPolling
     public function discoverProcessors()
     {
         $processors_data = snmpwalk_group($this->getDevice(), 'cpmCPU', 'CISCO-PROCESS-MIB');
-        $processors = array();
+        $processors = [];
 
         foreach ($processors_data as $index => $entry) {
             if (is_numeric($entry['cpmCPUTotal5minRev'])) {
                 $usage_oid = '.1.3.6.1.4.1.9.9.109.1.1.1.1.8.'.$index;
-                $usage     = $entry['cpmCPUTotal5minRev'];
+                $usage = $entry['cpmCPUTotal5minRev'];
             } elseif (is_numeric($entry['cpmCPUTotal5min'])) {
                 $usage_oid = '.1.3.6.1.4.1.9.9.109.1.1.1.1.5.'.$index;
-                $usage     = $entry['cpmCPUTotal5min'];
+                $usage = $entry['cpmCPUTotal5min'];
             } else {
                 continue; // skip bad data
             }
@@ -123,7 +123,7 @@ class Cisco extends OS implements ProcessorDiscovery, NacPolling
              * .3 OID suffix is for 5 min SMA ('fiveMinute')
              * Could be dynamically changed to appropriate value if config had pol interval value
              */
-            $qfp_usage_oid = '.1.3.6.1.4.1.9.9.715.1.1.6.1.14.' . $entQfpPhysicalIndex . '.3';
+            $qfp_usage_oid = '.1.3.6.1.4.1.9.9.715.1.1.6.1.14.'.$entQfpPhysicalIndex.'.3';
             $qfp_usage = $entry['fiveMinute'];
 
             if ($entQfpPhysicalIndex) {
@@ -144,7 +144,7 @@ class Cisco extends OS implements ProcessorDiscovery, NacPolling
                 'qfp',
                 $this->getDeviceId(),
                 $qfp_usage_oid,
-                $entQfpPhysicalIndex . '.3',
+                $entQfpPhysicalIndex.'.3',
                 $qfp_descr,
                 1,
                 $qfp_usage,
@@ -161,10 +161,11 @@ class Cisco extends OS implements ProcessorDiscovery, NacPolling
         $nac = collect();
 
         $portAuthSessionEntry = snmpwalk_cache_oid($this->getDevice(), 'cafSessionEntry', [], 'CISCO-AUTH-FRAMEWORK-MIB');
-        if (!empty($portAuthSessionEntry)) {
+        if (! empty($portAuthSessionEntry)) {
             $cafSessionMethodsInfoEntry = collect(snmpwalk_cache_oid($this->getDevice(), 'cafSessionMethodsInfoEntry', [], 'CISCO-AUTH-FRAMEWORK-MIB'))->mapWithKeys(function ($item, $key) {
                 $key_parts = explode('.', $key);
                 $key = implode('.', array_slice($key_parts, 0, 2)); // remove the auth method
+
                 return [$key => ['method' => $key_parts[2], 'authc_status' => $item['cafSessionMethodState']]];
             });
 
@@ -173,8 +174,8 @@ class Cisco extends OS implements ProcessorDiscovery, NacPolling
 
             // update the DB
             foreach ($portAuthSessionEntry as $index => $portAuthSessionEntryParameters) {
-                list($ifIndex, $auth_id) = explode('.', str_replace("'", '', $index));
-                $session_info = $cafSessionMethodsInfoEntry->get($ifIndex . '.' . $auth_id);
+                [$ifIndex, $auth_id] = explode('.', str_replace("'", '', $index));
+                $session_info = $cafSessionMethodsInfoEntry->get($ifIndex.'.'.$auth_id);
                 $mac_address = strtolower(implode(array_map('zeropad', explode(':', $portAuthSessionEntryParameters['cafSessionClientMacAddress']))));
 
                 $nac->put($mac_address, new PortsNac([
@@ -183,7 +184,7 @@ class Cisco extends OS implements ProcessorDiscovery, NacPolling
                     'auth_id' => $auth_id,
                     'domain' => $portAuthSessionEntryParameters['cafSessionDomain'],
                     'username' => $portAuthSessionEntryParameters['cafSessionAuthUserName'],
-                    'ip_address' => (string)IP::fromHexString($portAuthSessionEntryParameters['cafSessionClientAddress'], true),
+                    'ip_address' => (string) IP::fromHexString($portAuthSessionEntryParameters['cafSessionClientAddress'], true),
                     'host_mode' => $portAuthSessionEntryParameters['cafSessionAuthHostMode'],
                     'authz_status' => $portAuthSessionEntryParameters['cafSessionStatus'],
                     'authz_by' => $portAuthSessionEntryParameters['cafSessionAuthorizedBy'],
