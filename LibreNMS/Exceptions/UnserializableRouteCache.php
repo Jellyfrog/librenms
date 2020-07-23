@@ -55,8 +55,6 @@ class UnserializableRouteCache extends \Exception implements UpgradeableExceptio
                 return new static($exception->getMessage(), $exception->getCode(), $exception, $cli, PHP_VERSION);
             }
         }
-
-        return null;
     }
 
     /**

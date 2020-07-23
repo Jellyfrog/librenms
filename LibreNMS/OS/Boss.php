@@ -41,7 +41,7 @@ class Boss extends OS implements ProcessorDiscovery
     {
         $data = snmpwalk_group($this->getDevice(), 's5ChasUtilCPUUsageLast10Minutes', 'S5-CHASSIS-MIB');
 
-        $processors = array();
+        $processors = [];
         $count = 1;
         foreach ($data as $index => $entry) {
             $processors[] = Processor::discover(
@@ -56,7 +56,6 @@ class Boss extends OS implements ProcessorDiscovery
 
             $count++;
         }
-
 
         return $processors;
     }

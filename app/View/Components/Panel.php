@@ -6,14 +6,12 @@ use Illuminate\View\Component;
 
 class Panel extends Component
 {
-
     /**
      * The Panel title.
      *
      * @var string
      */
     public $title;
-
 
     /**
      * Create a new component instance.

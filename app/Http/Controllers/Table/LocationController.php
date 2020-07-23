@@ -117,7 +117,7 @@ class LocationController extends TableController
                         ->where('devices.type', 'firewall');
                 };
             default:
-                return null;
+                return;
         }
     }
 }

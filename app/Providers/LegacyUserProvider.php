@@ -77,8 +77,8 @@ class LegacyUserProvider implements UserProvider
         $user = new User();
         $user = $user->where($user->getAuthIdentifierName(), $identifier)->first();
 
-        if (!$user) {
-            return null;
+        if (! $user) {
+            return;
         }
 
         $rememberToken = $user->getRememberToken();
@@ -87,8 +87,6 @@ class LegacyUserProvider implements UserProvider
                 return $user;
             }
         }
-
-        return null;
     }
 
     /**
@@ -126,7 +124,7 @@ class LegacyUserProvider implements UserProvider
                 $credentials['username'] = $authorizer->getExternalUsername();
             }
 
-            if (empty($credentials['username']) || !$authorizer->authenticate($credentials)) {
+            if (empty($credentials['username']) || ! $authorizer->authenticate($credentials)) {
                 throw new AuthenticationException('Invalid Credentials');
             }
 
@@ -191,7 +189,8 @@ class LegacyUserProvider implements UserProvider
 
             if (empty($new_user)) {
                 Log::error("Auth Error ($type): No user ($auth_id) [$username]");
-                return null;
+
+                return;
             }
         }
 
@@ -199,14 +198,12 @@ class LegacyUserProvider implements UserProvider
 
         // remove null fields
         $new_user = array_filter($new_user, function ($var) {
-            return !is_null($var);
+            return ! is_null($var);
         });
 
         // always create an entry in the users table, but separate by type
         $user = User::thisAuth()->firstOrNew(['username' => $username], $new_user);
         /** @var User $user */
-
-
         $user->fill($new_user); // fill all attributes
         $user->auth_type = $type; // doing this here in case it was null (legacy)
         $user->auth_id = $auth_id;
