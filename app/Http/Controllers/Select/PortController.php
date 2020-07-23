@@ -49,7 +49,7 @@ class PortController extends SelectController
      */
     protected function searchFields($request)
     {
-        return (array)$request->get('field', ['ifAlias', 'ifName', 'ifDescr', 'devices.hostname', 'devices.sysName']);
+        return (array) $request->get('field', ['ifAlias', 'ifName', 'ifDescr', 'devices.hostname', 'devices.sysName']);
     }
 
     /**
@@ -86,11 +86,11 @@ class PortController extends SelectController
     {
         /** @var Port $port */
         $label = $port->getShortLabel();
-        $description = ($label == $port->ifAlias ? '' : ' - ' . $port->ifAlias);
+        $description = ($label == $port->ifAlias ? '' : ' - '.$port->ifAlias);
 
         return [
             'id' => $port->port_id,
-            'text' => $label . ' - ' . $port->device->shortDisplayName() . $description,
+            'text' => $label.' - '.$port->device->shortDisplayName().$description,
         ];
     }
 }

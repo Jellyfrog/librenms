@@ -34,7 +34,7 @@ class NetflowController implements DeviceTab
     public function visible(Device $device): bool
     {
         if (Config::get('nfsen_enable')) {
-            foreach ((array)Config::get('nfsen_rrds', []) as $nfsenrrds) {
+            foreach ((array) Config::get('nfsen_rrds', []) as $nfsenrrds) {
                 if ($nfsenrrds[(strlen($nfsenrrds) - 1)] != '/') {
                     $nfsenrrds .= '/';
                 }

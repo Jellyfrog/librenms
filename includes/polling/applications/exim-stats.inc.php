@@ -29,17 +29,17 @@ $stats = snmp_get($device, $oid, '-Oqv');
 
 echo ' '.$name;
 
-list ($frozen, $queue) = explode("\n", $stats);
+[$frozen, $queue] = explode("\n", $stats);
 
-$rrd_name = array('app', $name, $app_id);
+$rrd_name = ['app', $name, $app_id];
 $rrd_def = RrdDefinition::make()
     ->addDataset('frozen', 'GAUGE', 0)
     ->addDataset('queue', 'GAUGE', 0);
 
-$fields = array(
+$fields = [
     'frozen' => intval(trim($frozen, '"')),
-    'queue' => intval(trim($queue, '"'))
-);
+    'queue' => intval(trim($queue, '"')),
+];
 
 $tags = compact('name', 'app_id', 'rrd_name', 'rrd_def');
 data_update($device, 'app', $tags, $fields);

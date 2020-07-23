@@ -77,9 +77,9 @@ class AboutController extends Controller
             'version_python'    => Version::python(),
             'version_webserver' => $request->server('SERVER_SOFTWARE'),
             'version_rrdtool'   => str_replace('1.7.01.7.0', '1.7.0', implode(' ', array_slice(explode(' ', shell_exec(
-                Config::get('rrdtool', 'rrdtool') . ' --version | head -n1'
+                Config::get('rrdtool', 'rrdtool').' --version | head -n1'
             )), 1, 1))),
-            'version_netsnmp'   => str_replace('version: ', '', rtrim(shell_exec(Config::get('snmpget', 'snmpget') . ' -V 2>&1'))),
+            'version_netsnmp'   => str_replace('version: ', '', rtrim(shell_exec(Config::get('snmpget', 'snmpget').' -V 2>&1'))),
 
             'stat_apps'       => Application::count(),
             'stat_devices'    => Device::count(),

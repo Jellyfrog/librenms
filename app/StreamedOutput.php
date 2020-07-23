@@ -36,7 +36,7 @@ class StreamedOutput extends StreamOutput
             throw new RuntimeException('Unable to write output.');
         }
 
-        echo $message . PHP_EOL;
+        echo $message.PHP_EOL;
 
         if (ob_get_level() > 0) {
             ob_flush();

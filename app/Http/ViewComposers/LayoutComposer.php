@@ -43,7 +43,7 @@ class LayoutComposer
         // build page title
         if ($view->getFactory()->hasSection('title')) {
             $title = str_replace('    ', ' : ', trim($view->getFactory()->getSection('title')));
-            $title .= ' | ' . Config::get('page_title_suffix');
+            $title .= ' | '.Config::get('page_title_suffix');
         } else {
             $title = Config::get('page_title_suffix');
         }
@@ -51,8 +51,8 @@ class LayoutComposer
         Checks::postAuth();
 
         $show_menu = auth()->check();
-        if ($show_menu && Config::get('twofactor') && !session('twofactor')) {
-             $show_menu = empty(UserPref::getPref(auth()->user(), 'twofactor'));
+        if ($show_menu && Config::get('twofactor') && ! session('twofactor')) {
+            $show_menu = empty(UserPref::getPref(auth()->user(), 'twofactor'));
         }
 
         $view->with('pagetitle', $title)

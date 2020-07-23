@@ -75,28 +75,28 @@ class GlobeController extends WidgetController
 
             if ($data['markers'] == 'devices') {
                 $count = $location->devices->count();
-                list($devices_down, $devices_up) = $location->devices->partition(function ($device) {
+                [$devices_down, $devices_up] = $location->devices->partition(function ($device) {
                     return $device->disable = 0 && $device->ignore = 0 && $device->status = 0;
                 });
                 $up = $devices_up->count();
                 $down_items = $devices_down->map(function ($device) {
-                    return $device->displayName() . ' DOWN';
+                    return $device->displayName().' DOWN';
                 });
             } elseif ($data['markers'] == 'ports') {
                 foreach ($location->devices as $device) {
-                    list($ports_down, $ports_up) = $device->ports->partition(function ($port) {
+                    [$ports_down, $ports_up] = $device->ports->partition(function ($port) {
                         return $port->ifOperStatus != 'up' && $port->ifAdminStatus == 'up';
                     });
                     $count += $device->ports->count();
                     $up += $ports_up->count();
                     $down_items = $ports_down->map(function ($port) use ($device) {
-                        return $device->displayName() . '/' . $port->getShortLabel() . ' DOWN';
+                        return $device->displayName().'/'.$port->getShortLabel().' DOWN';
                     });
                 }
             }
 
             // indicate the number of up items before the itemized down
-            $down_items->prepend($up .  '&nbsp;' . ucfirst($data['markers']) . '&nbsp;OK');
+            $down_items->prepend($up.'&nbsp;'.ucfirst($data['markers']).'&nbsp;OK');
 
             if ($count > 0) {
                 $locations->push([

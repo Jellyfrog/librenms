@@ -41,7 +41,7 @@ class TwoFactorManagementController extends Controller
             return response()->json(['msg' => __('Two-Factor unlocked.')]);
         }
 
-        return response()->json(['error' => __("Failed to unlock Two-Factor.")]);
+        return response()->json(['error' => __('Failed to unlock Two-Factor.')]);
     }
 
     public function destroy(TwoFactorManagementRequest $request, User $user)
@@ -50,6 +50,6 @@ class TwoFactorManagementController extends Controller
             return response()->json(['msg' => __('Two-Factor removed.')]);
         }
 
-        return response()->json(['error' => __("Failed to remove Two-Factor.")]);
+        return response()->json(['error' => __('Failed to remove Two-Factor.')]);
     }
 }
