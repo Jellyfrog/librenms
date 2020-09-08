@@ -35,6 +35,9 @@ use Symfony\Component\Yaml\Yaml;
 
 class YamlTest extends TestCase
 {
+
+
+
     public function testConfigSchema()
     {
         $this->validateFileAgainstSchema('/misc/config_definitions.json', '/misc/config_schema.json');
@@ -42,10 +45,18 @@ class YamlTest extends TestCase
 
     /**
      * @group os
+     * @dataProvider dumpedDiscoveryDefinition
+     * @testdox OS definition schema
      */
-    public function testOSDefinitionSchema()
+    public function testOSDefinitionSchema($a)
     {
-        $this->validateYamlFilesAgainstSchema('/includes/definitions', '/misc/os_schema.json');
+          //$this->validateYamlFilesAgainstSchema('/includes/definitions', '/misc/os_schema.json');
+       $this->validateFileAgainstSchema($a, '/misc/os_schema.json');
+    }
+
+    public function testOSDefinitionSchema1()
+    {
+          $this->validateYamlFilesAgainstSchema('/includes/definitions', '/misc/os_schema.json');
     }
 
     /**
@@ -84,6 +95,32 @@ class YamlTest extends TestCase
                 return $array;
             }, []);
     }
+
+    private function dumpedDataProvider($pattern)
+    {
+        $pattern = Config::get('install_dir') . $pattern;
+
+        return collect(glob($pattern))
+            ->reduce(function ($array, $file) {
+                $name = basename($file);
+                $array[$name] = [$file];
+                return $array;
+            }, []);
+/*
+        return collect(glob($pattern))->map(function ($item, $key) {
+            return basename($item) => [$item];
+        });
+*/
+
+
+    }
+
+    public function dumpedDiscoveryDefinition() {
+        $a = $this->dumpedDataProvider('/includes/definitions/*.yaml');
+        dump($a);
+        return $a;
+    }
+
 
     /**
      * @param $filePath
