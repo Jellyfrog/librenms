@@ -34,14 +34,14 @@ class Endrun extends OS implements OSDiscovery
     {
         $device = $this->getDeviceModel();
         $sysDescr = snmp_get($this->getDevice(), 'sysDescr.0', '-OvQ', 'SNMPv2-MIB');
-        
-        if (strpos($sysDescr, "Sonoma") !==false) {
+
+        if (strpos($sysDescr, "Sonoma") !== false) {
             $info = snmp_get_multi($this->getDevice(), ['gntpVersion.0', 'snmpSetSerialNo.0'], '-OQUs', 'SONOMA-MIB:SNMPv2-MIB');
-            
+
             // The gntpVersion string output is rather long. Ex. Sonoma_D12 GPS 6010-0065-000 v 3.04 - Sep 24 22:58:19 2019
             preg_match('/(.+) v (.+) - /', $info[0]['gntpVersion'], $matches);
             $device->hardware = $matches[1] ?? null;
-            
+
             // The EndRun Sonoma D12 does not report a system capbility (cdmaVersion) like the Tempus devices.
             $device->serial = $info[0]['snmpSetSerialNo'] ?? null;
         } else {

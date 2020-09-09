@@ -56,19 +56,19 @@ class Edgecos extends OS implements ProcessorDiscovery
             $oid = '.1.3.6.1.4.1.259.10.1.27.1.39.2.1.0';
         } elseif (Str::startsWith($device['sysObjectID'], '.1.3.6.1.4.1.259.8.1.11.')) { //ES3510MA
             $oid = '.1.3.6.1.4.1.259.8.1.11.1.39.2.1.0';
-        };
+        }
 
         if (isset($oid)) {
-            return array(
+            return [
                 Processor::discover(
                     $this->getName(),
                     $this->getDeviceId(),
                     $oid,
                     0
-                )
-            );
+                ),
+            ];
         }
 
-        return array();
+        return [];
     }
 }

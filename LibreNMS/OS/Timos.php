@@ -29,23 +29,22 @@ namespace LibreNMS\OS;
 
 use App\Models\MplsLsp;
 use App\Models\MplsLspPath;
-use App\Models\MplsSdp;
-use App\Models\MplsService;
 use App\Models\MplsSap;
+use App\Models\MplsSdp;
 use App\Models\MplsSdpBind;
+use App\Models\MplsService;
 use App\Models\MplsTunnelArHop;
 use App\Models\MplsTunnelCHop;
 use Illuminate\Support\Collection;
-use LibreNMS\Interfaces\Discovery\MplsDiscovery;
-use LibreNMS\Interfaces\Polling\MplsPolling;
 use LibreNMS\Device\WirelessSensor;
+use LibreNMS\Interfaces\Discovery\MplsDiscovery;
 use LibreNMS\Interfaces\Discovery\Sensors\WirelessPowerDiscovery;
+use LibreNMS\Interfaces\Polling\MplsPolling;
 use LibreNMS\OS;
 
 class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDiscovery
 {
-
-   /**
+    /**
      * Discover wireless Rx (Received Signal Strength). This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      * ALU-MICROWAVE-MIB::aluMwRadioLocalRxMainPower
@@ -54,9 +53,9 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
     public function discoverWirelesspower()
     {
         $name = $this->getCacheByIndex('aluMwRadioName', 'ALU-MICROWAVE-MIB');
-        $rsl = snmpwalk_cache_oid($this->getDevice(), 'aluMwRadioLocalRxMainPower', array(), 'ALU-MICROWAVE-MIB');
+        $rsl = snmpwalk_cache_oid($this->getDevice(), 'aluMwRadioLocalRxMainPower', [], 'ALU-MICROWAVE-MIB');
 
-        $sensors = array();
+        $sensors = [];
         $divisor = 10;
 
         foreach ($rsl as $index => $data) {
@@ -72,6 +71,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
                 '10'
             );
         }
+
         return $sensors;
     }
 
@@ -100,13 +100,13 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
     public function discoverMplsLsps()
     {
         $mplsLspCache = snmpwalk_cache_multi_oid($this->getDevice(), 'vRtrMplsLspTable', [], 'TIMETRA-MPLS-MIB', 'nokia');
-        if (!empty($mplsLspCache)) {
+        if (! empty($mplsLspCache)) {
             $mplsLspCache = snmpwalk_cache_multi_oid($this->getDevice(), 'vRtrMplsLspLastChange', $mplsLspCache, 'TIMETRA-MPLS-MIB', 'nokia', '-OQUst');
         }
 
         $lsps = collect();
         foreach ($mplsLspCache as $key => $value) {
-            list($vrf_oid, $lsp_oid) = explode('.', $key);
+            [$vrf_oid, $lsp_oid] = explode('.', $key);
 
             $mplsLspFromAddr = $value['vRtrMplsLspFromAddr'];
             if (isset($value['vRtrMplsLspNgFromAddr'])) {
@@ -143,13 +143,13 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
     public function discoverMplsPaths($lsps)
     {
         $mplsPathCache = snmpwalk_cache_multi_oid($this->getDevice(), 'vRtrMplsLspPathTable', [], 'TIMETRA-MPLS-MIB', 'nokia');
-        if (!empty($mplsPathCache)) {
+        if (! empty($mplsPathCache)) {
             $mplsPathCache = snmpwalk_cache_multi_oid($this->getDevice(), 'vRtrMplsLspPathLastChange', $mplsPathCache, 'TIMETRA-MPLS-MIB', 'nokia', '-OQUst');
         }
 
         $paths = collect();
         foreach ($mplsPathCache as $key => $value) {
-            list($vrf_oid, $lsp_oid, $path_oid) = explode('.', $key);
+            [$vrf_oid, $lsp_oid, $path_oid] = explode('.', $key);
             $lsp_id = $lsps->where('lsp_oid', $lsp_oid)->firstWhere('vrf_oid', $vrf_oid)->lsp_id;
             $paths->push(new MplsLspPath([
                 'lsp_id' => $lsp_id,
@@ -184,10 +184,10 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
 
         $sdps = collect();
         foreach ($mplsSdpCache as $value) {
-            if ((!empty($value['sdpFarEndInetAddress'])) && ($value['sdpFarEndInetAddressType'] == 'ipv4')) {
+            if ((! empty($value['sdpFarEndInetAddress'])) && ($value['sdpFarEndInetAddressType'] == 'ipv4')) {
                 $ip = long2ip(hexdec(str_replace(' ', '', $value['sdpFarEndInetAddress'])));
             } else {
-                #Fixme implement ipv6 conversion
+                //Fixme implement ipv6 conversion
                 $ip = $value['sdpFarEndInetAddress'];
             }
             $sdps->push(new MplsSdp([
@@ -253,6 +253,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
                 'svcTlsFdbNumEntries' => $value['svcTlsFdbNumEntries'],
             ]));
         }
+
         return $svcs;
     }
 
@@ -276,7 +277,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
                 unset($key);
                 continue;
             }
-            list($svcId, $sapPortId, $sapEncapValue) = explode('.', $key);
+            [$svcId, $sapPortId, $sapEncapValue] = explode('.', $key);
             $svc_id = $svcs->firstWhere('svc_oid', $svcId)->svc_id;
             $saps->push(new MplsSap([
                 'svc_id' => $svc_id,
@@ -293,9 +294,9 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
                 'sapLastStatusChange' => round($value['sapLastStatusChange'] / 100),
             ]));
         }
+
         return $saps;
     }
-
 
     /**
      * @return Collection MplsSdpBind objects
@@ -307,7 +308,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
 
         $binds = collect();
         foreach ($mplsBindCache as $key => $value) {
-            list($svcId) = explode('.', $key);
+            [$svcId] = explode('.', $key);
             $bind_id = str_replace(' ', '', $value['sdpBindId']);
             $sdp_oid = hexdec(substr($bind_id, 0, 8));
             $svc_oid = hexdec(substr($bind_id, 9, 16));
@@ -334,6 +335,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
                 ]));
             }
         }
+
         return $binds;
     }
 
@@ -353,10 +355,9 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
         $preemptionPending = 0b00001000;
         $nodeId = 0b00000100;
 
-
         $arhops = collect();
         foreach ($mplsTunnelArHopCache as $key => $value) {
-            list($mplsTunnelARHopListIndex, $mplsTunnelARHopIndex) = explode('.', $key);
+            [$mplsTunnelARHopListIndex, $mplsTunnelARHopIndex] = explode('.', $key);
             $lsp_path_id = $paths->firstWhere('mplsLspPathTunnelARHopListIndex', $mplsTunnelARHopListIndex)->lsp_path_id;
             $protection = intval($value['vRtrMplsTunnelARHopProtection'], 16);
 
@@ -389,6 +390,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
                 ]));
             }
         }
+
         return $arhops;
     }
 
@@ -401,7 +403,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
 
         $chops = collect();
         foreach ($mplsTunnelCHopCache as $key => $value) {
-            list($mplsTunnelCHopListIndex, $mplsTunnelCHopIndex) = explode('.', $key);
+            [$mplsTunnelCHopListIndex, $mplsTunnelCHopIndex] = explode('.', $key);
             $lsp_path_id = $paths->firstWhere('mplsLspPathTunnelCHopListIndex', $mplsTunnelCHopListIndex)->lsp_path_id;
 
             $chops->push(new MplsTunnelCHop([
@@ -417,6 +419,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
                 'mplsTunnelCHopRouterId' => $value['vRtrMplsTunnelCHopRtrID'],
             ]));
         }
+
         return $chops;
     }
 
@@ -426,14 +429,14 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
     public function pollMplsLsps()
     {
         $mplsLspCache = snmpwalk_cache_multi_oid($this->getDevice(), 'vRtrMplsLspTable', [], 'TIMETRA-MPLS-MIB', 'nokia');
-        if (!empty($mplsLspCache)) {
+        if (! empty($mplsLspCache)) {
             $mplsLspCache = snmpwalk_cache_multi_oid($this->getDevice(), 'vRtrMplsLspLastChange', $mplsLspCache, 'TIMETRA-MPLS-MIB', 'nokia', '-OQUst');
             $mplsLspCache = snmpwalk_cache_multi_oid($this->getDevice(), 'vRtrMplsLspStatTable', $mplsLspCache, 'TIMETRA-MPLS-MIB', 'nokia');
         }
 
         $lsps = collect();
         foreach ($mplsLspCache as $key => $value) {
-            list($vrf_oid, $lsp_oid) = explode('.', $key);
+            [$vrf_oid, $lsp_oid] = explode('.', $key);
 
             $mplsLspFromAddr = $value['vRtrMplsLspFromAddr'];
             if (isset($value['vRtrMplsLspNgFromAddr'])) {
@@ -479,14 +482,14 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
     public function pollMplsPaths($lsps)
     {
         $mplsPathCache = snmpwalk_cache_multi_oid($this->getDevice(), 'vRtrMplsLspPathTable', [], 'TIMETRA-MPLS-MIB', 'nokia');
-        if (!empty($mplsPathCache)) {
+        if (! empty($mplsPathCache)) {
             $mplsPathCache = snmpwalk_cache_multi_oid($this->getDevice(), 'vRtrMplsLspPathLastChange', $mplsPathCache, 'TIMETRA-MPLS-MIB', 'nokia', '-OQUst');
             $mplsPathCache = snmpwalk_cache_multi_oid($this->getDevice(), 'vRtrMplsLspPathStatTable', $mplsPathCache, 'TIMETRA-MPLS-MIB', 'nokia');
         }
 
         $paths = collect();
         foreach ($mplsPathCache as $key => $value) {
-            list($vrf_oid, $lsp_oid, $path_oid) = explode('.', $key);
+            [$vrf_oid, $lsp_oid, $path_oid] = explode('.', $key);
             $lsp_id = $lsps->where('lsp_oid', $lsp_oid)->firstWhere('vrf_oid', $vrf_oid)->lsp_id;
             $paths->push(new MplsLspPath([
                 'lsp_id' => $lsp_id,
@@ -524,10 +527,10 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
 
         $sdps = collect();
         foreach ($mplsSdpCache as $value) {
-            if ((!empty($value['sdpFarEndInetAddress'])) && ($value['sdpFarEndInetAddressType'] == 'ipv4')) {
+            if ((! empty($value['sdpFarEndInetAddress'])) && ($value['sdpFarEndInetAddressType'] == 'ipv4')) {
                 $ip = long2ip(hexdec(str_replace(' ', '', $value['sdpFarEndInetAddress'])));
             } else {
-                #Fixme implement ipv6 conversion
+                //Fixme implement ipv6 conversion
                 $ip = $value['sdpFarEndInetAddress'];
             }
             $sdps->push(new MplsSdp([
@@ -619,7 +622,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
                 unset($key);
                 continue;
             }
-            list($svcId, $sapPortId, $sapEncapValue) = explode('.', $key);
+            [$svcId, $sapPortId, $sapEncapValue] = explode('.', $key);
             $svc_id = $svcs->firstWhere('svc_oid', $svcId)->svc_id;
 
             $saps->push(new MplsSap([
@@ -638,6 +641,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
                 'sapLastStatusChange' => round($value['sapLastStatusChange'] / 100),
             ]));
         }
+
         return $saps;
     }
 
@@ -651,7 +655,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
 
         $binds = collect();
         foreach ($mplsBindCache as $key => $value) {
-            list($svcId) = explode('.', $key);
+            [$svcId] = explode('.', $key);
             $bind_id = str_replace(' ', '', $value['sdpBindId']);
             $sdp_oid = hexdec(substr($bind_id, 0, 8));
             $svc_oid = hexdec(substr($bind_id, 9, 16));
@@ -678,6 +682,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
                 ]));
             }
         }
+
         return $binds;
     }
 
@@ -697,10 +702,9 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
         $preemptionPending = 0b00001000;
         $nodeId = 0b00000100;
 
-
         $arhops = collect();
         foreach ($mplsTunnelArHopCache as $key => $value) {
-            list($mplsTunnelARHopListIndex, $mplsTunnelARHopIndex) = explode('.', $key);
+            [$mplsTunnelARHopListIndex, $mplsTunnelARHopIndex] = explode('.', $key);
             $lsp_path_id = $paths->firstWhere('mplsLspPathTunnelARHopListIndex', $mplsTunnelARHopListIndex)->lsp_path_id;
             $protection = intval($value['vRtrMplsTunnelARHopProtection'], 16);
 
@@ -733,6 +737,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
                 ]));
             }
         }
+
         return $arhops;
     }
 
@@ -745,7 +750,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
 
         $chops = collect();
         foreach ($mplsTunnelCHopCache as $key => $value) {
-            list($mplsTunnelCHopListIndex, $mplsTunnelCHopIndex) = explode('.', $key);
+            [$mplsTunnelCHopListIndex, $mplsTunnelCHopIndex] = explode('.', $key);
             $lsp_path_id = $paths->firstWhere('mplsLspPathTunnelCHopListIndex', $mplsTunnelCHopListIndex)->lsp_path_id;
 
             $chops->push(new MplsTunnelCHop([
@@ -761,7 +766,9 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
                 'mplsTunnelCHopRouterId' => $value['vRtrMplsTunnelCHopRtrID'],
             ]));
         }
+
         return $chops;
     }
-// End Class Timos
+
+    // End Class Timos
 }

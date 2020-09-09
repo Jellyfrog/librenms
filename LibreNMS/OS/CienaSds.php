@@ -37,7 +37,7 @@ class CienaSds extends OS implements OSDiscovery
             'serial' => '.1.3.6.1.4.1.1271.2.1.5.1.1.4.0',
             'version' => '.1.3.6.1.4.1.1271.2.1.2.1.2.4.2.1.2.1.1.31',
             'hardware' => '.1.3.6.1.4.1.1271.2.1.5.1.1.3.0',
-            'features' => '.1.3.6.1.4.1.1271.2.1.2.1.2.1.1.6.1.1'
+            'features' => '.1.3.6.1.4.1.1271.2.1.2.1.2.1.1.6.1.1',
         ];
         $os_data = snmp_get_multi_oid($this->getDevice(), $oids);
         foreach ($oids as $var => $oid) {

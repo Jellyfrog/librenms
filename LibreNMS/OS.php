@@ -77,7 +77,7 @@ class OS implements ProcessorDiscovery
      */
     public function getDeviceId()
     {
-        return (int)$this->device['device_id'];
+        return (int) $this->device['device_id'];
     }
 
     /**
@@ -136,11 +136,12 @@ class OS implements ProcessorDiscovery
     {
         if (Str::contains($oid, '.')) {
             echo "Error: don't use this with numeric oids!\n";
+
             return null;
         }
 
-        if (!isset($this->cache['cache_oid'][$oid])) {
-            $data = snmpwalk_cache_oid($this->getDevice(), $oid, array(), $mib, null, $snmpflags);
+        if (! isset($this->cache['cache_oid'][$oid])) {
+            $data = snmpwalk_cache_oid($this->getDevice(), $oid, [], $mib, null, $snmpflags);
             $this->cache['cache_oid'][$oid] = array_map('current', $data);
         }
 
@@ -161,10 +162,11 @@ class OS implements ProcessorDiscovery
     {
         if (Str::contains($oid, '.')) {
             echo "Error: don't use this with numeric oids!\n";
+
             return null;
         }
 
-        if (!isset($this->cache['group'][$depth][$oid])) {
+        if (! isset($this->cache['group'][$depth][$oid])) {
             $this->cache['group'][$depth][$oid] = snmpwalk_group($this->getDevice(), $oid, $mib, $depth);
         }
 
@@ -196,6 +198,7 @@ class OS implements ProcessorDiscovery
         d_echo('Attempting to initialize OS: ' . $device['os'] . PHP_EOL);
         if (class_exists($class)) {
             d_echo("OS initialized: $class\n");
+
             return new $class($device);
         }
 
@@ -205,11 +208,13 @@ class OS implements ProcessorDiscovery
             d_echo('Attempting to initialize OS: ' . $device['os_group'] . PHP_EOL);
             if (class_exists($class)) {
                 d_echo("OS initialized: $class\n");
+
                 return new $class($device);
             }
         }
 
         d_echo("OS initialized as Generic\n");
+
         return new Generic($device);
     }
 
@@ -236,17 +241,17 @@ class OS implements ProcessorDiscovery
     protected function pollWirelessChannelAsFrequency($sensors, $callback = null)
     {
         if (empty($sensors)) {
-            return array();
+            return [];
         }
 
-        $oids = array();
+        $oids = [];
         foreach ($sensors as $sensor) {
             $oids[$sensor['sensor_id']] = current($sensor['sensor_oids']);
         }
 
         $snmp_data = snmp_get_multi_oid($this->getDevice(), $oids);
 
-        $data = array();
+        $data = [];
         foreach ($oids as $id => $oid) {
             if (isset($callback)) {
                 $channel = call_user_func($callback, $snmp_data[$oid]);

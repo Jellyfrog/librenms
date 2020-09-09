@@ -43,7 +43,7 @@ class OS implements Module
                 'features' => null,
                 'serial' => null,
                 'icon' => null,
-//            'location_id' => null, // TODO set location
+                //            'location_id' => null, // TODO set location
             ]);
 
             $os->discoverOS();
@@ -108,7 +108,7 @@ class OS implements Module
         }
 
         // make sure the location has coordinates
-        if (Config::get('geoloc.latlng', true) && $device->location && !$device->location->hasCoordinates()) {
+        if (Config::get('geoloc.latlng', true) && $device->location && ! $device->location->hasCoordinates()) {
             $device->location->lookupCoordinates();
             $device->location->save();
         }
