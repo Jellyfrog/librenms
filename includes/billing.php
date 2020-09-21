@@ -7,11 +7,12 @@ function format_bytes_billing($value)
     return format_number($value, Config::get('billing.base')) . 'B';
 }//end format_bytes_billing()
 
-function format_bytes_billing_short($value){
+function format_bytes_billing_short($value)
+{
     return format_number($value, Config::get('billing.base'), 2, 3);
 }//end format_bytes_billing_short()
 
-function getDates($dayofmonth,$months = 0)
+function getDates($dayofmonth, $months = 0)
 {
     $dayofmonth = zeropad($dayofmonth);
     $year = date('Y');
@@ -29,7 +30,7 @@ function getDates($dayofmonth,$months = 0)
         date_sub($date_start, date_interval_create_from_date_string('1 month'));
     }
 
-    if($months > 0) {
+    if ($months > 0) {
         date_sub($date_start, date_interval_create_from_date_string($months . ' month'));
         date_sub($date_end, date_interval_create_from_date_string($months . ' month'));
     }
