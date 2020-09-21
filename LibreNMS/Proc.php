@@ -73,7 +73,7 @@ class Proc
         $blocking = false
     ) {
         $this->_process = proc_open($cmd, $descriptorspec, $this->_pipes, $cwd, $env);
-        if (!is_resource($this->_process)) {
+        if (! is_resource($this->_process)) {
             throw new Exception("Command failed: $cmd");
         }
         stream_set_blocking($this->_pipes[1], $blocking);
@@ -210,7 +210,7 @@ class Proc
 
         $time = 0;
         while ($time < $timeout) {
-            $closed = !$this->isRunning();
+            $closed = ! $this->isRunning();
             if ($closed) {
                 break;
             }
@@ -219,7 +219,7 @@ class Proc
             $time += 100;
         }
 
-        if (!$closed) {
+        if (! $closed) {
             // try harder
             if (function_exists('posix_kill')) {
                 $killed = posix_kill($status['pid'], 9); //9 is the SIGKILL signal
@@ -228,7 +228,7 @@ class Proc
             }
             proc_close($this->_process);
 
-            if (!$killed && $this->isRunning()) {
+            if (! $killed && $this->isRunning()) {
                 throw new Exception('Terminate failed!');
             }
         }
@@ -258,7 +258,7 @@ class Proc
      */
     public function isRunning()
     {
-        if (!is_resource($this->_process)) {
+        if (! is_resource($this->_process)) {
             return false;
         }
         $st = $this->getStatus();
@@ -309,7 +309,7 @@ class Proc
      */
     private function checkAddEOL($string)
     {
-        if (!Str::endsWith($string, PHP_EOL)) {
+        if (! Str::endsWith($string, PHP_EOL)) {
             $string .= PHP_EOL;
         }
 

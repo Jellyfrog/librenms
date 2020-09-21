@@ -46,8 +46,8 @@ class Rrd extends BaseValidation
         ) {
             $validator->fail(
                 'The rrdtool version you have specified is newer than what is installed.',
-                "Either comment out \$config['rrdtool_version'] = '".
-                Config::get('rrdtool_version')."'; or set \$config['rrdtool_version'] = '{$versions['rrdtool_ver']}';"
+                "Either comment out \$config['rrdtool_version'] = '" .
+                Config::get('rrdtool_version') . "'; or set \$config['rrdtool_version'] = '{$versions['rrdtool_ver']}';"
             );
         }
 
@@ -72,7 +72,7 @@ class Rrd extends BaseValidation
         [$host,$port] = explode(':', Config::get('rrdcached'));
         if ($host == 'unix') {
             // Using socket, check that file exists
-            if (!file_exists($port)) {
+            if (! file_exists($port)) {
                 $validator->fail("$port doesn't appear to exist, rrdcached test failed");
             }
         } else {

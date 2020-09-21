@@ -53,9 +53,9 @@ class ImageController extends WidgetController
 
         // bust cache
         if (Str::contains($data['image_url'], '?')) {
-            $data['image_url'] .= '&'.mt_rand();
+            $data['image_url'] .= '&' . mt_rand();
         } else {
-            $data['image_url'] .= '?'.mt_rand();
+            $data['image_url'] .= '?' . mt_rand();
         }
 
         return view('widgets.image', $data);
@@ -70,7 +70,7 @@ class ImageController extends WidgetController
     {
         if (is_null($this->settings)) {
             parent::getSettings();
-            if (!empty($this->settings['image_title'])) {
+            if (! empty($this->settings['image_title'])) {
                 $this->settings['title'] = $this->settings['image_title'];
             }
         }

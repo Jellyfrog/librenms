@@ -29,7 +29,7 @@ class Pushbullet extends Transport
 {
     public function deliverAlert($obj, $opts)
     {
-        if (!empty($this->config)) {
+        if (! empty($this->config)) {
             $opts = $this->config['pushbullet-token'];
         }
 
@@ -50,8 +50,8 @@ class Pushbullet extends Transport
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json',
-            'Content-Length: '.strlen($data),
-            'Authorization: Bearer '.$opts,
+            'Content-Length: ' . strlen($data),
+            'Authorization: Bearer ' . $opts,
         ]);
 
         $ret = curl_exec($curl);
@@ -61,7 +61,7 @@ class Pushbullet extends Transport
                 var_dump($ret);
             }
 
-            return 'HTTP Status code '.$code;
+            return 'HTTP Status code ' . $code;
         }
 
         return true;

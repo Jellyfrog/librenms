@@ -53,19 +53,19 @@ class Url
             return '';
         }
 
-        if (!$device->canAccess(Auth::user())) {
+        if (! $device->canAccess(Auth::user())) {
             return $device->displayName();
         }
 
-        if (!$start) {
+        if (! $start) {
             $start = Carbon::now()->subDay()->timestamp;
         }
 
-        if (!$end) {
+        if (! $end) {
             $end = Carbon::now()->timestamp;
         }
 
-        if (!$text) {
+        if (! $text) {
             $text = $device->displayName();
         }
 
@@ -78,25 +78,25 @@ class Url
         $url = self::deviceUrl($device, $vars);
 
         // beginning of overlib box contains large hostname followed by hardware & OS details
-        $contents = '<div><span class="list-large">'.$device->displayName().'</span>';
+        $contents = '<div><span class="list-large">' . $device->displayName() . '</span>';
         if ($device->hardware) {
-            $contents .= ' - '.htmlentities($device->hardware);
+            $contents .= ' - ' . htmlentities($device->hardware);
         }
 
         if ($device->os) {
-            $contents .= ' - '.htmlentities(Config::getOsSetting($device->os, 'text'));
+            $contents .= ' - ' . htmlentities(Config::getOsSetting($device->os, 'text'));
         }
 
         if ($device->version) {
-            $contents .= ' '.htmlentities($device->version);
+            $contents .= ' ' . htmlentities($device->version);
         }
 
         if ($device->features) {
-            $contents .= ' ('.htmlentities($device->features).')';
+            $contents .= ' (' . htmlentities($device->features) . ')';
         }
 
         if ($device->location_id) {
-            $contents .= ' - '.htmlentities($device->location);
+            $contents .= ' - ' . htmlentities($device->location);
         }
 
         $contents .= '</div>';
@@ -105,7 +105,7 @@ class Url
             $graph = isset($entry['graph']) ? $entry['graph'] : 'unknown';
             $graphhead = isset($entry['text']) ? $entry['text'] : 'unknown';
             $contents .= '<div class="overlib-box">';
-            $contents .= '<span class="overlib-title">'.$graphhead.'</span><br />';
+            $contents .= '<span class="overlib-title">' . $graphhead . '</span><br />';
             $contents .= self::minigraphImage($device, $start, $end, $graph);
             $contents .= self::minigraphImage($device, Carbon::now()->subWeek()->timestamp, $end, $graph);
             $contents .= '</div>';
@@ -133,13 +133,13 @@ class Url
     public static function portLink($port, $text = null, $type = null, $overlib = true, $single_graph = false)
     {
         $label = Rewrite::normalizeIfName($port->getLabel());
-        if (!$text) {
+        if (! $text) {
             $text = $label;
         }
 
-        $content = '<div class=list-large>'.addslashes(htmlentities($port->device->displayName().' - '.$label)).'</div>';
+        $content = '<div class=list-large>' . addslashes(htmlentities($port->device->displayName() . ' - ' . $label)) . '</div>';
         if ($port->ifAlias) {
-            $content .= addslashes(htmlentities($port->ifAlias)).'<br />';
+            $content .= addslashes(htmlentities($port->ifAlias)) . '<br />';
         }
 
         $content .= "<div style=\'width: 850px\'>";
@@ -154,7 +154,7 @@ class Url
         ];
 
         $content .= self::graphTag($graph_array);
-        if (!$single_graph) {
+        if (! $single_graph) {
             $graph_array['from'] = Carbon::now()->subWeek()->timestamp;
             $content .= self::graphTag($graph_array);
             $graph_array['from'] = Carbon::now()->subMonth()->timestamp;
@@ -165,7 +165,7 @@ class Url
 
         $content .= '</div>';
 
-        if (!$overlib) {
+        if (! $overlib) {
             return $content;
         } elseif ($port->canAccess(Auth::user())) {
             return self::overlibLink(self::portUrl($port), $text, $content, self::portLinkDisplayClass($port));
@@ -186,15 +186,15 @@ class Url
     public static function sensorLink($sensor, $text = null, $type = null, $overlib = true, $single_graph = false)
     {
         $label = $sensor->sensor_descr;
-        if (!$text) {
+        if (! $text) {
             $text = $label;
         }
 
-        $content = '<div class=list-large>'.addslashes(htmlentities($sensor->device->displayName().' - '.$label)).'</div>';
+        $content = '<div class=list-large>' . addslashes(htmlentities($sensor->device->displayName() . ' - ' . $label)) . '</div>';
 
         $content .= "<div style=\'width: 850px\'>";
         $graph_array = [
-            'type'   => $type ?: 'sensor_'.$sensor->sensor_class,
+            'type'   => $type ?: 'sensor_' . $sensor->sensor_class,
             'legend' => 'yes',
             'height' => 100,
             'width'  => 340,
@@ -204,7 +204,7 @@ class Url
         ];
 
         $content .= self::graphTag($graph_array);
-        if (!$single_graph) {
+        if (! $single_graph) {
             $graph_array['from'] = Carbon::now()->subWeek()->timestamp;
             $content .= self::graphTag($graph_array);
             $graph_array['from'] = Carbon::now()->subMonth()->timestamp;
@@ -215,7 +215,7 @@ class Url
 
         $content .= '</div>';
 
-        if (!$overlib) {
+        if (! $overlib) {
             return $content;
         }
 
@@ -236,7 +236,7 @@ class Url
             unset($vars['tab']);
         }
 
-        return route('device', $routeParams).self::urlParams($vars);
+        return route('device', $routeParams) . self::urlParams($vars);
     }
 
     public static function portUrl($port, $vars = [])
@@ -274,17 +274,17 @@ class Url
             $args['bg'] = 'FFFFFF00';
         }
 
-        return '<img src="'.url('graph.php').'?type='.$args['graph_type'].'&amp;id='.$args['port_id'].'&amp;from='.$args['from'].'&amp;to='.$args['to'].'&amp;width='.$args['width'].'&amp;height='.$args['height'].'&amp;bg='.$args['bg'].'">';
+        return '<img src="' . url('graph.php') . '?type=' . $args['graph_type'] . '&amp;id=' . $args['port_id'] . '&amp;from=' . $args['from'] . '&amp;to=' . $args['to'] . '&amp;width=' . $args['width'] . '&amp;height=' . $args['height'] . '&amp;bg=' . $args['bg'] . '">';
     }
 
     public static function generate($vars, $new_vars = [])
     {
         $vars = array_merge($vars, $new_vars);
 
-        $url = url(Config::get('base_url', true).$vars['page'].'');
+        $url = url(Config::get('base_url', true) . $vars['page'] . '');
         unset($vars['page']);
 
-        return $url.self::urlParams($vars);
+        return $url . self::urlParams($vars);
     }
 
     /**
@@ -300,8 +300,8 @@ class Url
     {
         $url = empty($vars) ? '' : $prefix;
         foreach ($vars as $var => $value) {
-            if ($value == '0' || $value != '' && !Str::contains($var, 'opt') && !is_numeric($var)) {
-                $url .= $var.'='.urlencode($value).'/';
+            if ($value == '0' || $value != '' && ! Str::contains($var, 'opt') && ! is_numeric($var)) {
+                $url .= $var . '=' . urlencode($value) . '/';
             }
         }
 
@@ -317,10 +317,10 @@ class Url
     {
         $urlargs = [];
         foreach ($args as $key => $arg) {
-            $urlargs[] = $key.'='.urlencode($arg);
+            $urlargs[] = $key . '=' . urlencode($arg);
         }
 
-        return '<img src="'.url('graph.php').'?'.implode('&amp;', $urlargs).'" style="border:0;" />';
+        return '<img src="' . url('graph.php') . '?' . implode('&amp;', $urlargs) . '" style="border:0;" />';
     }
 
     public static function graphPopup($args)
@@ -330,7 +330,7 @@ class Url
         $now = CarbonImmutable::now();
 
         $graph = self::graphTag($args);
-        $content = '<div class=list-large>'.$args['popup_title'].'</div>';
+        $content = '<div class=list-large>' . $args['popup_title'] . '</div>';
         $content .= '<div style="width: 850px">';
         $args['width'] = 340;
         $args['height'] = 100;
@@ -357,24 +357,24 @@ class Url
         $urlargs = [];
 
         foreach ($args as $key => $arg) {
-            $urlargs[] = $key.'='.urlencode($arg);
+            $urlargs[] = $key . '=' . urlencode($arg);
         }
 
         if (Config::get('enable_lazy_load', true)) {
-            return '<img class="lazy img-responsive" data-original="'.url('graph.php').'?'.implode('&amp;', $urlargs).'" style="border:0;" />';
+            return '<img class="lazy img-responsive" data-original="' . url('graph.php') . '?' . implode('&amp;', $urlargs) . '" style="border:0;" />';
         }
 
-        return '<img class="img-responsive" src="'.url('graph.php').'?'.implode('&amp;', $urlargs).'" style="border:0;" />';
+        return '<img class="img-responsive" src="' . url('graph.php') . '?' . implode('&amp;', $urlargs) . '" style="border:0;" />';
     }
 
     public static function overlibLink($url, $text, $contents, $class = null)
     {
-        $contents = "<div class=\'overlib-contents\'>".$contents.'</div>';
+        $contents = "<div class=\'overlib-contents\'>" . $contents . '</div>';
         $contents = str_replace('"', "\'", $contents);
         if ($class === null) {
-            $output = '<a href="'.$url.'"';
+            $output = '<a href="' . $url . '"';
         } else {
-            $output = '<a class="'.$class.'" href="'.$url.'"';
+            $output = '<a class="' . $class . '" href="' . $url . '"';
         }
 
         if (Config::get('web_mouseover', true)) {
@@ -384,14 +384,14 @@ class Url
             $output .= '>';
         }
 
-        $output .= $text.'</a>';
+        $output .= $text . '</a>';
 
         return $output;
     }
 
     public static function overlibContent($graph_array, $text)
     {
-        $overlib_content = '<div class=overlib><span class=overlib-text>'.$text.'</span><br />';
+        $overlib_content = '<div class=overlib><span class=overlib-text>' . $text . '</span><br />';
 
         $now = Carbon::now();
 
@@ -423,9 +423,9 @@ class Url
      */
     public static function minigraphImage($device, $start, $end, $type, $legend = 'no', $width = 275, $height = 100, $sep = '&amp;', $class = 'minigraph-image', $absolute_size = 0)
     {
-        $vars = ['device='.$device->device_id, "from=$start", "to=$end", "width=$width", "height=$height", "type=$type", "legend=$legend", "absolute=$absolute_size"];
+        $vars = ['device=' . $device->device_id, "from=$start", "to=$end", "width=$width", "height=$height", "type=$type", "legend=$legend", "absolute=$absolute_size"];
 
-        return '<img class="'.$class.'" width="'.$width.'" height="'.$height.'" src="'.url('graph.php').'?'.implode($sep, $vars).'">';
+        return '<img class="' . $class . '" width="' . $width . '" height="' . $height . '" src="' . url('graph.php') . '?' . implode($sep, $vars) . '">';
     }
 
     /**
@@ -519,7 +519,7 @@ class Url
         }
 
         foreach ($possibilities as $file) {
-            if (is_file(Config::get('html_dir')."/$dir".$file)) {
+            if (is_file(Config::get('html_dir') . "/$dir" . $file)) {
                 return $file;
             }
         }

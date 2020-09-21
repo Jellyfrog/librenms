@@ -197,7 +197,7 @@ class TopDevicesController extends WidgetController
             }, function ($query) {
                 $query->has('device');
             })
-            ->orderByRaw('SUM(ifInOctets_rate + ifOutOctets_rate) '.$sort)
+            ->orderByRaw('SUM(ifInOctets_rate + ifOutOctets_rate) ' . $sort)
             ->limit($settings['device_count']);
 
         $results = $query->get()->map(function ($port) {
@@ -241,7 +241,7 @@ class TopDevicesController extends WidgetController
 
         /** @var Builder $query */
         $query = $this->withDeviceQuery(Processor::hasAccess(Auth::user()), (new Processor())->getTable())
-            ->orderByRaw('AVG(`processor_usage`) '.$sort)
+            ->orderByRaw('AVG(`processor_usage`) ' . $sort)
             ->limit($settings['device_count']);
 
         $results = $query->get()->map(function ($port) {
@@ -310,7 +310,7 @@ class TopDevicesController extends WidgetController
                 'type'   => 'device_storage',
                 'legend' => 'no',
             ];
-            $overlib_content = Url::overlibContent($graph_array, $device->displayName().' - '.$storage->storage_descr);
+            $overlib_content = Url::overlibContent($graph_array, $device->displayName() . ' - ' . $storage->storage_descr);
 
             $link_array = $graph_array;
             $link_array['page'] = 'graphs';
@@ -325,7 +325,7 @@ class TopDevicesController extends WidgetController
                 StringHelpers::shortenText($storage->storage_descr, 50),
                 Url::overlibLink(
                     $link,
-                    Html::percentageBar(150, 20, $percent, null, 'ffffff', $background['left'], $percent.'%', 'ffffff', $background['right']),
+                    Html::percentageBar(150, 20, $percent, null, 'ffffff', $background['left'], $percent . '%', 'ffffff', $background['right']),
                     $overlib_content
                 ),
             ];

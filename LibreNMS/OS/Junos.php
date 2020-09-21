@@ -45,7 +45,7 @@ class Junos extends \LibreNMS\OS implements OSPolling
             preg_match('/\[(.+)]/', $data[2]['hrSWInstalledName'], $parsedVersion);
         }
 
-        $device->hardware = $data[0]['jnxBoxDescr'] ?? (isset($parsed['hardware']) ? 'Juniper '.strtoupper($parsed['hardware']) : null);
+        $device->hardware = $data[0]['jnxBoxDescr'] ?? (isset($parsed['hardware']) ? 'Juniper ' . strtoupper($parsed['hardware']) : null);
         $device->serial = $data[0]['jnxBoxSerialNo'] ?? null;
         $device->version = $data[0]['jnxVirtualChassisMemberSWVersion'] ?? $parsedVersion[1] ?? $parsed['version'] ?? null;
     }

@@ -30,7 +30,7 @@ class Gitlab extends Transport
 {
     public function deliverAlert($obj, $opts)
     {
-        if (!empty($this->config)) {
+        if (! empty($this->config)) {
             $opts['project-id'] = $this->config['gitlab-id'];
             $opts['key'] = $this->config['gitlab-key'];
             $opts['host'] = $this->config['gitlab-host'];
@@ -47,11 +47,11 @@ class Gitlab extends Transport
 
             $project_id = $opts['project-id'];
             $project_key = $opts['key'];
-            $details = 'Librenms alert for: '.$obj['hostname'];
+            $details = 'Librenms alert for: ' . $obj['hostname'];
             $description = $obj['msg'];
             $title = urlencode($details);
             $desc = urlencode($description);
-            $url = $opts['host']."/api/v4/projects/$project_id/issues?title=$title&description=$desc";
+            $url = $opts['host'] . "/api/v4/projects/$project_id/issues?title=$title&description=$desc";
             $curl = curl_init();
 
             $data = ['title'  => $details,
@@ -62,7 +62,7 @@ class Gitlab extends Transport
 
             set_curl_proxy($curl);
 
-            $headers = ['Accept: application/json', 'Content-Type: application/json', 'PRIVATE-TOKEN: '.$project_key];
+            $headers = ['Accept: application/json', 'Content-Type: application/json', 'PRIVATE-TOKEN: ' . $project_key];
 
             curl_setopt($curl, CURLOPT_URL, $url);
             curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
@@ -75,11 +75,11 @@ class Gitlab extends Transport
             $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             if ($code == 200) {
                 $gitlabout = json_decode($ret, true);
-                d_echo('Created Gitlab issue '.$gitlabout['key'].' for '.$device);
+                d_echo('Created Gitlab issue ' . $gitlabout['key'] . ' for ' . $device);
 
                 return true;
             } else {
-                d_echo('Gitlab connection error: '.serialize($ret));
+                d_echo('Gitlab connection error: ' . serialize($ret));
 
                 return false;
             }

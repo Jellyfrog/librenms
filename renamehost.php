@@ -12,7 +12,7 @@
  */
 
 $init_modules = [];
-require __DIR__.'/includes/init.php';
+require __DIR__ . '/includes/init.php';
 
 // Remove a host and all related data from the system
 if ($argv[1] && $argv[2]) {

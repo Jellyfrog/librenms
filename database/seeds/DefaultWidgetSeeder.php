@@ -107,7 +107,7 @@ class DefaultWidgetSeeder extends Seeder
         $existing = DB::table('widgets')->pluck('widget');
 
         \DB::table('widgets')->insert(array_filter($widgets, function ($entry) use ($existing) {
-            return !$existing->contains($entry['widget']);
+            return ! $existing->contains($entry['widget']);
         }));
     }
 }

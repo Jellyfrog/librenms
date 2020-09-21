@@ -34,7 +34,7 @@ class MplsSap extends Model implements Keyable
      */
     public function getCompositeKey()
     {
-        return $this->svc_oid.'-'.$this->sapPortId.'-'.$this->sapEncapValue;
+        return $this->svc_oid . '-' . $this->sapPortId . '-' . $this->sapEncapValue;
     }
 
     // ---- Define Relationships ----

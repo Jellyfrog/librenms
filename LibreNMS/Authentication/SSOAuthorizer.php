@@ -55,7 +55,7 @@ class SSOAuthorizer extends MysqlAuthorizer
         $level = $this->authSSOCalculateLevel();
 
         // User has already been approved by the authenicator so if automatic user create/update is enabled, do it
-        if (Config::get('sso.create_users') && !$this->userExists($credentials['username'])) {
+        if (Config::get('sso.create_users') && ! $this->userExists($credentials['username'])) {
             $this->addUser($credentials['username'], null, $level, $email, $realname, $can_modify_passwd, $description ? $description : 'SSO User');
         } elseif (Config::get('sso.update_users') && $this->userExists($credentials['username'])) {
             $this->updateUser($this->getUserid($credentials['username']), $realname, $level, $can_modify_passwd, $email);
@@ -86,7 +86,7 @@ class SSOAuthorizer extends MysqlAuthorizer
                 return null;
             }
 
-            $header_key = $prefix.str_replace('-', '_', strtoupper($attr));
+            $header_key = $prefix . str_replace('-', '_', strtoupper($attr));
 
             if (Config::get('sso.mode') === 'header' && array_key_exists($header_key, $_SERVER)) {
                 return $_SERVER[$header_key];
@@ -96,7 +96,7 @@ class SSOAuthorizer extends MysqlAuthorizer
                 return null;
             }
         } else {
-            throw new AuthenticationException('\'sso.trusted_proxies\'] is set in your config, but this connection did not originate from trusted source: '.$_SERVER['REMOTE_ADDR']);
+            throw new AuthenticationException('\'sso.trusted_proxies\'] is set in your config, but this connection did not originate from trusted source: ' . $_SERVER['REMOTE_ADDR']);
         }
     }
 

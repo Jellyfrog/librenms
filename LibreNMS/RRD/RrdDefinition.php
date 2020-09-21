@@ -80,7 +80,7 @@ class RrdDefinition
     public function __toString()
     {
         return array_reduce($this->dataSets, function ($carry, $ds) {
-            return $carry.'DS:'.implode(':', $ds).' ';
+            return $carry . 'DS:' . implode(':', $ds) . ' ';
         }, '');
     }
 
@@ -120,8 +120,8 @@ class RrdDefinition
      */
     private function checkType($type)
     {
-        if (!in_array($type, self::$types)) {
-            $msg = "$type is not valid, must be: ".implode(' | ', self::$types);
+        if (! in_array($type, self::$types)) {
+            $msg = "$type is not valid, must be: " . implode(' | ', self::$types);
 
             throw new InvalidRrdTypeException($msg);
         }

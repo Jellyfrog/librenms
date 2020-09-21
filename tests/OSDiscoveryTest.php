@@ -39,7 +39,7 @@ class OSDiscoveryTest extends TestCase
     {
         parent::setUpBeforeClass();
 
-        $glob = Config::get('install_dir').'/tests/snmpsim/*.snmprec';
+        $glob = Config::get('install_dir') . '/tests/snmpsim/*.snmprec';
 
         self::$unchecked_files = array_flip(array_map(function ($file) {
             return basename($file, '.snmprec');
@@ -64,12 +64,12 @@ class OSDiscoveryTest extends TestCase
      */
     public function testOS($os_name)
     {
-        $glob = Config::get('install_dir')."/tests/snmpsim/$os_name*.snmprec";
+        $glob = Config::get('install_dir') . "/tests/snmpsim/$os_name*.snmprec";
         $files = array_map(function ($file) {
             return basename($file, '.snmprec');
         }, glob($glob));
         $files = array_filter($files, function ($file) use ($os_name) {
-            return $file == $os_name || Str::startsWith($file, $os_name.'_');
+            return $file == $os_name || Str::startsWith($file, $os_name . '_');
         });
 
         if (empty($files)) {
@@ -91,7 +91,7 @@ class OSDiscoveryTest extends TestCase
     {
         $this->assertEmpty(
             self::$unchecked_files,
-            'Not all snmprec files were checked: '.print_r(array_keys(self::$unchecked_files), true)
+            'Not all snmprec files were checked: ' . print_r(array_keys(self::$unchecked_files), true)
         );
     }
 
@@ -149,7 +149,7 @@ class OSDiscoveryTest extends TestCase
     {
         // make sure all OS are loaded
         $config_os = array_keys(Config::get('os'));
-        if (count($config_os) < count(glob(Config::get('install_dir').'/includes/definitions/*.yaml'))) {
+        if (count($config_os) < count(glob(Config::get('install_dir') . '/includes/definitions/*.yaml'))) {
             OS::loadAllDefinitions(false, true);
             $config_os = array_keys(Config::get('os'));
         }

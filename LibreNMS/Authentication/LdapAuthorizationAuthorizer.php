@@ -38,7 +38,7 @@ class LdapAuthorizationAuthorizer extends AuthorizerBase
 
     public function __construct()
     {
-        if (!function_exists('ldap_connect')) {
+        if (! function_exists('ldap_connect')) {
             throw new LdapMissingException();
         }
 
@@ -46,8 +46,8 @@ class LdapAuthorizationAuthorizer extends AuthorizerBase
          * Set up connection to LDAP server.
          */
         $this->ldap_connection = @ldap_connect(Config::get('auth_ldap_server'), Config::get('auth_ldap_port'));
-        if (!$this->ldap_connection) {
-            throw new AuthenticationException('Fatal error while connecting to LDAP server '.Config::get('auth_ldap_server').':'.Config::get('auth_ldap_port').': '.ldap_error($this->ldap_connection));
+        if (! $this->ldap_connection) {
+            throw new AuthenticationException('Fatal error while connecting to LDAP server ' . Config::get('auth_ldap_server') . ':' . Config::get('auth_ldap_port') . ': ' . ldap_error($this->ldap_connection));
         }
         if (Config::get('auth_ldap_version')) {
             ldap_set_option($this->ldap_connection, LDAP_OPT_PROTOCOL_VERSION, Config::get('auth_ldap_version'));
@@ -56,7 +56,7 @@ class LdapAuthorizationAuthorizer extends AuthorizerBase
         if (Config::get('auth_ldap_starttls') && (Config::get('auth_ldap_starttls') == 'optional' || Config::get('auth_ldap_starttls') == 'require')) {
             $tls = ldap_start_tls($this->ldap_connection);
             if (Config::get('auth_ldap_starttls') == 'require' && $tls === false) {
-                throw new AuthenticationException('Fatal error: LDAP TLS required but not successfully negotiated:'.ldap_error($this->ldap_connection));
+                throw new AuthenticationException('Fatal error: LDAP TLS required but not successfully negotiated:' . ldap_error($this->ldap_connection));
             }
         }
     }
@@ -81,7 +81,7 @@ class LdapAuthorizationAuthorizer extends AuthorizerBase
             return 1;
         }
 
-        $filter = '('.Config::get('auth_ldap_prefix').$username.')';
+        $filter = '(' . Config::get('auth_ldap_prefix') . $username . ')';
         $search = ldap_search($this->ldap_connection, trim(Config::get('auth_ldap_suffix'), ','), $filter);
         $entries = ldap_get_entries($this->ldap_connection, $search);
         if ($entries['count']) {
@@ -112,7 +112,7 @@ class LdapAuthorizationAuthorizer extends AuthorizerBase
         }
 
         // Find all defined groups $username is in
-        $filter = '(&(|(cn='.implode(')(cn=', array_keys(Config::get('auth_ldap_groups'))).'))('.Config::get('auth_ldap_groupmemberattr').'='.$this->getMembername($username).'))';
+        $filter = '(&(|(cn=' . implode(')(cn=', array_keys(Config::get('auth_ldap_groups'))) . '))(' . Config::get('auth_ldap_groupmemberattr') . '=' . $this->getMembername($username) . '))';
         $search = ldap_search($this->ldap_connection, Config::get('auth_ldap_groupbase'), $filter);
         $entries = ldap_get_entries($this->ldap_connection, $search);
 
@@ -140,7 +140,7 @@ class LdapAuthorizationAuthorizer extends AuthorizerBase
         $guest_username = Config::get('http_auth_guest');
         $user_id = User::thisAuth()->where('username', $guest_username)->value('auth_id') ?: -1;
 
-        $filter = '('.Config::get('auth_ldap_prefix').$username.')';
+        $filter = '(' . Config::get('auth_ldap_prefix') . $username . ')';
         $search = ldap_search($this->ldap_connection, trim(Config::get('auth_ldap_suffix'), ','), $filter);
         $entries = ldap_get_entries($this->ldap_connection, $search);
 
@@ -166,7 +166,7 @@ class LdapAuthorizationAuthorizer extends AuthorizerBase
     {
         $userlist = [];
 
-        $filter = '('.Config::get('auth_ldap_prefix').'*)';
+        $filter = '(' . Config::get('auth_ldap_prefix') . '*)';
 
         $search = ldap_search($this->ldap_connection, trim(Config::get('auth_ldap_suffix'), ','), $filter);
         $entries = ldap_get_entries($this->ldap_connection, $search);
@@ -185,7 +185,7 @@ class LdapAuthorizationAuthorizer extends AuthorizerBase
                         Config::get('auth_ldap_groupmemberattr'),
                         $this->getMembername($username)
                     );
-                    if (!Config::has('auth_ldap_group') || $ldap_comparison === true) {
+                    if (! Config::has('auth_ldap_group') || $ldap_comparison === true) {
                         $userlist[] = [
                             'username' => $username,
                             'realname' => $realname,
@@ -216,9 +216,9 @@ class LdapAuthorizationAuthorizer extends AuthorizerBase
     protected function getMembername($username)
     {
         if (Config::get('auth_ldap_groupmembertype') == 'fulldn') {
-            $membername = Config::get('auth_ldap_prefix').$username.Config::get('auth_ldap_suffix');
+            $membername = Config::get('auth_ldap_prefix') . $username . Config::get('auth_ldap_suffix');
         } elseif (Config::get('auth_ldap_groupmembertype') == 'puredn') {
-            $filter = '('.Config::get('auth_ldap_attr.uid').'='.$username.')';
+            $filter = '(' . Config::get('auth_ldap_attr.uid') . '=' . $username . ')';
             $search = ldap_search($this->ldap_connection, Config::get('auth_ldap_groupbase'), $filter);
             $entries = ldap_get_entries($this->ldap_connection, $search);
             $membername = $entries[0]['dn'];
@@ -240,7 +240,7 @@ class LdapAuthorizationAuthorizer extends AuthorizerBase
         }
 
         foreach (Config::get('auth_ldap_groups') as $key => $value) {
-            $dn = "cn=$key,".Config::get('auth_ldap_groupbase');
+            $dn = "cn=$key," . Config::get('auth_ldap_groupbase');
             $ldap_groups[] = $dn;
         }
 

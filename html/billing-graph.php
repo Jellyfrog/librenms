@@ -12,7 +12,7 @@
 ini_set('allow_url_fopen', 0);
 
 $init_modules = ['web', 'auth'];
-require realpath(__DIR__.'/..').'/includes/init.php';
+require realpath(__DIR__ . '/..') . '/includes/init.php';
 
 $urlargs = [
     'type'          => 'bill_historicbits',
@@ -36,7 +36,7 @@ if (isset($_GET['ave'])) {
     $urlargs['ave'] = $_GET['ave'];
 }
 
-$url = Config::get('base_url').'graph.php?';
+$url = Config::get('base_url') . 'graph.php?';
 $i = 0;
 foreach ($urlargs as $name => $value) {
     if ($i++ > 0) {

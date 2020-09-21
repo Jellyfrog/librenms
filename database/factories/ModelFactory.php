@@ -49,7 +49,7 @@ $factory->define(\App\Models\Bill::class, function (Faker\Generator $faker) {
 
 $factory->define(\App\Models\Device::class, function (Faker\Generator $faker) {
     return [
-        'hostname' => $faker->domainWord.'-'.$faker->domainWord.'-'.$faker->domainWord.'.'.$faker->domainName,
+        'hostname' => $faker->domainWord . '-' . $faker->domainWord . '-' . $faker->domainWord . '.' . $faker->domainName,
         'ip'       => $faker->randomElement([$faker->ipv4, $faker->ipv6]),
         'type'     => $faker->randomElement([
             'appliance',
@@ -113,7 +113,7 @@ $factory->define(\App\Models\BgpPeer::class, function (Faker\Generator $faker) {
 
 $factory->define(\App\Models\Ipv4Address::class, function (Faker\Generator $faker) {
     $prefix = $faker->numberBetween(0, 32);
-    $ip = new IPv4($faker->ipv4.'/'.$prefix);
+    $ip = new IPv4($faker->ipv4 . '/' . $prefix);
 
     return [
         'ipv4_address'   => $ip->uncompressed(),
@@ -122,14 +122,14 @@ $factory->define(\App\Models\Ipv4Address::class, function (Faker\Generator $fake
             return factory(\App\Models\Port::class)->create()->port_id;
         },
         'ipv4_network_id' => function () use ($ip) {
-            return factory(\App\Models\Ipv4Network::class)->create(['ipv4_network' => $ip->getNetworkAddress().'/'.$ip->cidr])->ipv4_network_id;
+            return factory(\App\Models\Ipv4Network::class)->create(['ipv4_network' => $ip->getNetworkAddress() . '/' . $ip->cidr])->ipv4_network_id;
         },
     ];
 });
 
 $factory->define(\App\Models\Ipv4Network::class, function (Faker\Generator $faker) {
     return [
-        'ipv4_network' => $faker->ipv4.'/'.$faker->numberBetween(0, 32),
+        'ipv4_network' => $faker->ipv4 . '/' . $faker->numberBetween(0, 32),
     ];
 });
 
@@ -152,7 +152,7 @@ $factory->define(\App\Models\Vminfo::class, function (Faker\Generator $faker) {
     return [
         'vm_type'          => $faker->text(16),
         'vmwVmVMID'        => $faker->randomDigit,
-        'vmwVmDisplayName' => $faker->domainWord.'.'.$faker->domainName,
+        'vmwVmDisplayName' => $faker->domainWord . '.' . $faker->domainName,
         'vmwVmGuestOS'     => $faker->text(128),
         'vmwVmMemSize'     => $faker->randomDigit,
         'vmwVmCpus'        => $faker->randomDigit,
@@ -194,7 +194,7 @@ $factory->define(\App\Models\Component::class, function (Faker\Generator $faker)
 });
 $factory->define(\App\Models\Sensor::class, function (Faker\Generator $faker) {
     $sensor_class = ['airflow', 'ber', 'charge', 'chromatic_dispersion', 'cooling', 'count', 'current', 'dbm', 'delay', 'eer', 'fanspeed', 'frequency', 'humidity', 'load', 'loss', 'power', 'power_consumed', 'power_factor', 'pressure', 'quality_factor', 'runtime', 'signal', 'snr', 'state', 'temperature', 'voltage', 'waterflow'];
-    $sensor_oid = '.1.3.6.1.4.1.4115.1.4.3.3.'.$faker->numberBetween(0, 10).'.'.$faker->numberBetween(0, 10).'.'.$faker->numberBetween(0, 10);
+    $sensor_oid = '.1.3.6.1.4.1.4115.1.4.3.3.' . $faker->numberBetween(0, 10) . '.' . $faker->numberBetween(0, 10) . '.' . $faker->numberBetween(0, 10);
 
     return [
         'sensor_index'   => $faker->randomDigit,

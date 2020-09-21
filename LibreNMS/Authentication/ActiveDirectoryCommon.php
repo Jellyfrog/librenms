@@ -49,7 +49,7 @@ trait ActiveDirectoryCommon
         $revLevel = hexdec(substr($sidHex, 0, 2));
         $authIdent = hexdec(substr($sidHex, 4, 12));
 
-        return 'S-'.$revLevel.'-'.$authIdent.'-'.implode('-', $subAuths);
+        return 'S-' . $revLevel . '-' . $authIdent . '-' . implode('-', $subAuths);
     }
 
     protected function getCn($dn)
@@ -137,7 +137,7 @@ trait ActiveDirectoryCommon
             }
         }
 
-        if (!Config::has('auth_ad_groups') && !Config::has('auth_ad_group')) {
+        if (! Config::has('auth_ad_groups') && ! Config::has('auth_ad_group')) {
             $ldap_groups[] = $this->getDn($default_group);
         }
 
@@ -158,7 +158,7 @@ trait ActiveDirectoryCommon
         foreach ($ldap_groups as $ldap_group) {
             $search_filter = "(&(memberOf:1.2.840.113556.1.4.1941:=$ldap_group)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))";
             if (Config::get('auth_ad_user_filter')) {
-                $search_filter = '(&'.Config::get('auth_ad_user_filter').$search_filter.')';
+                $search_filter = '(&' . Config::get('auth_ad_user_filter') . $search_filter . ')';
             }
             $attributes = ['samaccountname', 'displayname', 'objectsid', 'mail'];
             $search = ldap_search($connection, Config::get('auth_ad_base_dn'), $search_filter, $attributes);

@@ -42,7 +42,7 @@ function cache_snmprec($file)
     }
     $snmpMockCache[$file] = [];
 
-    $data = file_get_contents(Config::get('install_dir')."/tests/snmpsim/$file.snmprec");
+    $data = file_get_contents(Config::get('install_dir') . "/tests/snmpsim/$file.snmprec");
     $line = strtok($data, "\r\n");
     while ($line !== false) {
         [$oid, $type, $data] = explode('|', $line, 3);
@@ -146,7 +146,7 @@ function snmp_translate_number($oid, $mib = null, $mibdir = null)
     }
 
     $cmd = "snmptranslate -IR -On '$oid'";
-    $cmd .= ' -M '.(isset($mibdir) ? Config::get('mib_dir').':'.Config::get('mib_dir')."/$mibdir" : Config::get('mib_dir'));
+    $cmd .= ' -M ' . (isset($mibdir) ? Config::get('mib_dir') . ':' . Config::get('mib_dir') . "/$mibdir" : Config::get('mib_dir'));
     if (isset($mib) && $mib) {
         $cmd .= " -m $mib";
     }
@@ -154,7 +154,7 @@ function snmp_translate_number($oid, $mib = null, $mibdir = null)
     $number = shell_exec($cmd);
 
     if (empty($number)) {
-        throw new Exception('Could not translate oid: '.$oid.PHP_EOL.'Tried: '.$cmd);
+        throw new Exception('Could not translate oid: ' . $oid . PHP_EOL . 'Tried: ' . $cmd);
     }
 
     return trim($number, ". \n\r");
@@ -163,7 +163,7 @@ function snmp_translate_number($oid, $mib = null, $mibdir = null)
 function snmp_translate_type($oid, $mib = null, $mibdir = null)
 {
     $cmd = "snmptranslate -IR -Td $oid";
-    $cmd .= ' -M '.(isset($mibdir) ? Config::get('mib_dir').':'.Config::get('mib_dir')."/$mibdir" : Config::get('mib_dir'));
+    $cmd .= ' -M ' . (isset($mibdir) ? Config::get('mib_dir') . ':' . Config::get('mib_dir') . "/$mibdir" : Config::get('mib_dir'));
     if (isset($mib) && $mib) {
         $cmd .= " -m $mib";
     }
@@ -171,7 +171,7 @@ function snmp_translate_type($oid, $mib = null, $mibdir = null)
     $result = shell_exec($cmd);
 
     if (empty($result)) {
-        throw new Exception('Could not translate oid: '.$oid.PHP_EOL.'Tried: '.$cmd);
+        throw new Exception('Could not translate oid: ' . $oid . PHP_EOL . 'Tried: ' . $cmd);
     }
 
     if (Str::contains($result, 'OCTET STRING')) {
@@ -220,7 +220,7 @@ function snmp_get($device, $oid, $options = null, $mib = null, $mibdir = null)
 
         $result = $data[1];
         if ($data[0] == 6) {
-            $result = '.'.$data[1];
+            $result = '.' . $data[1];
         }
 
         d_echo("[SNMP] snmpget $community $oid ($num_oid): $result\n");
@@ -235,14 +235,14 @@ function snmp_get($device, $oid, $options = null, $mib = null, $mibdir = null)
 
 function snmp_get_multi_oid($device, $oids, $options = '-OUQn', $mib = null, $mibdir = null)
 {
-    if (!is_array($oids)) {
+    if (! is_array($oids)) {
         $oids = explode(' ', $oids);
     }
 
     $data = [];
     foreach ($oids as $index => $oid) {
         if (Str::contains($options, 'n')) {
-            $oid_name = '.'.snmp_translate_number($oid, $mib, $mibdir);
+            $oid_name = '.' . snmp_translate_number($oid, $mib, $mibdir);
             $val = snmp_get($device, $oid_name, $options, $mib, $mibdir);
         } elseif (Str::contains($options, 's') && Str::contains($oid, '::')) {
             $tmp = explode('::', $oid);
@@ -271,9 +271,9 @@ function snmp_walk($device, $oid, $options = null, $mib = null, $mibdir = null)
     foreach ($dev as $key => $data) {
         if (Str::startsWith($key, $num_oid)) {
             if ($data[0] == 6) {
-                $output .= '.'.$data[1].PHP_EOL;
+                $output .= '.' . $data[1] . PHP_EOL;
             } else {
-                $output .= $data[1].PHP_EOL;
+                $output .= $data[1] . PHP_EOL;
             }
         }
     }

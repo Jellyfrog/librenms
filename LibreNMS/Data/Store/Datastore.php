@@ -109,7 +109,7 @@ class Datastore
         // data_update($device, 'mymeasurement', $tags, 1234);
         //     AND
         // data_update($device, 'mymeasurement', $tags, array('mymeasurement' => 1234));
-        if (!is_array($fields)) {
+        if (! is_array($fields)) {
             $fields = [$measurement => $fields];
         }
 

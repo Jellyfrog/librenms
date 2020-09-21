@@ -60,7 +60,7 @@ class Device
      */
     public function get(?int $device_id): \App\Models\Device
     {
-        if (!is_null($device_id) && !array_key_exists($device_id, $this->devices)) {
+        if (! is_null($device_id) && ! array_key_exists($device_id, $this->devices)) {
             return $this->load($device_id);
         }
 
@@ -78,7 +78,7 @@ class Device
     {
         $device_id = collect($this->devices)->pluck('device_id', 'hostname')->get($hostname);
 
-        if (!$device_id) {
+        if (! $device_id) {
             return $this->load($hostname, 'hostname');
         }
 
@@ -111,7 +111,7 @@ class Device
     {
         $device = \App\Models\Device::query()->where($field, $value)->first();
 
-        if (!$device) {
+        if (! $device) {
             return new \App\Models\Device();
         }
 

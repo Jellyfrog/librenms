@@ -81,7 +81,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
             $sensors[] = new WirelessSensor(
                 'power',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.6527.6.1.2.2.7.1.3.1.2.'.$index,
+                '.1.3.6.1.4.1.6527.6.1.2.2.7.1.3.1.2.' . $index,
                 'Nokia-Packet-MW-Rx',
                 $index,
                 "Rx ({$name[$index]})",
@@ -120,7 +120,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
     public function discoverMplsLsps()
     {
         $mplsLspCache = snmpwalk_cache_multi_oid($this->getDeviceArray(), 'vRtrMplsLspTable', [], 'TIMETRA-MPLS-MIB', 'nokia');
-        if (!empty($mplsLspCache)) {
+        if (! empty($mplsLspCache)) {
             $mplsLspCache = snmpwalk_cache_multi_oid($this->getDeviceArray(), 'vRtrMplsLspLastChange', $mplsLspCache, 'TIMETRA-MPLS-MIB', 'nokia', '-OQUst');
         }
 
@@ -164,7 +164,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
     public function discoverMplsPaths($lsps)
     {
         $mplsPathCache = snmpwalk_cache_multi_oid($this->getDeviceArray(), 'vRtrMplsLspPathTable', [], 'TIMETRA-MPLS-MIB', 'nokia');
-        if (!empty($mplsPathCache)) {
+        if (! empty($mplsPathCache)) {
             $mplsPathCache = snmpwalk_cache_multi_oid($this->getDeviceArray(), 'vRtrMplsLspPathLastChange', $mplsPathCache, 'TIMETRA-MPLS-MIB', 'nokia', '-OQUst');
         }
 
@@ -205,7 +205,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
 
         $sdps = collect();
         foreach ($mplsSdpCache as $value) {
-            if ((!empty($value['sdpFarEndInetAddress'])) && ($value['sdpFarEndInetAddressType'] == 'ipv4')) {
+            if ((! empty($value['sdpFarEndInetAddress'])) && ($value['sdpFarEndInetAddressType'] == 'ipv4')) {
                 $ip = long2ip(hexdec(str_replace(' ', '', $value['sdpFarEndInetAddress'])));
             } else {
                 //Fixme implement ipv6 conversion
@@ -450,7 +450,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
     public function pollMplsLsps()
     {
         $mplsLspCache = snmpwalk_cache_multi_oid($this->getDeviceArray(), 'vRtrMplsLspTable', [], 'TIMETRA-MPLS-MIB', 'nokia');
-        if (!empty($mplsLspCache)) {
+        if (! empty($mplsLspCache)) {
             $mplsLspCache = snmpwalk_cache_multi_oid($this->getDeviceArray(), 'vRtrMplsLspLastChange', $mplsLspCache, 'TIMETRA-MPLS-MIB', 'nokia', '-OQUst');
             $mplsLspCache = snmpwalk_cache_multi_oid($this->getDeviceArray(), 'vRtrMplsLspStatTable', $mplsLspCache, 'TIMETRA-MPLS-MIB', 'nokia');
         }
@@ -504,7 +504,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
     public function pollMplsPaths($lsps)
     {
         $mplsPathCache = snmpwalk_cache_multi_oid($this->getDeviceArray(), 'vRtrMplsLspPathTable', [], 'TIMETRA-MPLS-MIB', 'nokia');
-        if (!empty($mplsPathCache)) {
+        if (! empty($mplsPathCache)) {
             $mplsPathCache = snmpwalk_cache_multi_oid($this->getDeviceArray(), 'vRtrMplsLspPathLastChange', $mplsPathCache, 'TIMETRA-MPLS-MIB', 'nokia', '-OQUst');
             $mplsPathCache = snmpwalk_cache_multi_oid($this->getDeviceArray(), 'vRtrMplsLspPathStatTable', $mplsPathCache, 'TIMETRA-MPLS-MIB', 'nokia');
         }
@@ -549,7 +549,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
 
         $sdps = collect();
         foreach ($mplsSdpCache as $value) {
-            if ((!empty($value['sdpFarEndInetAddress'])) && ($value['sdpFarEndInetAddressType'] == 'ipv4')) {
+            if ((! empty($value['sdpFarEndInetAddress'])) && ($value['sdpFarEndInetAddressType'] == 'ipv4')) {
                 $ip = long2ip(hexdec(str_replace(' ', '', $value['sdpFarEndInetAddress'])));
             } else {
                 //Fixme implement ipv6 conversion

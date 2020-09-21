@@ -29,10 +29,10 @@ use LibreNMS\Config;
 use LibreNMS\Data\Store\Datastore;
 
 $init_modules = ['polling', 'alerts', 'laravel'];
-require __DIR__.'/includes/init.php';
+require __DIR__ . '/includes/init.php';
 
 $poller_start = microtime(true);
-echo Config::get('project_name')." Poller\n";
+echo Config::get('project_name') . " Poller\n";
 
 $options = getopt('h:m:i:n:r::d::v::a::f::q');
 
@@ -48,13 +48,13 @@ if (isset($options['h'])) {
         $doing = 'all';
     } elseif ($options['h']) {
         if (is_numeric($options['h'])) {
-            $where = 'AND `device_id` = '.$options['h'];
+            $where = 'AND `device_id` = ' . $options['h'];
             $doing = $options['h'];
         } else {
             if (preg_match('/\*/', $options['h'])) {
-                $where = "AND `hostname` LIKE '".str_replace('*', '%', mres($options['h']))."'";
+                $where = "AND `hostname` LIKE '" . str_replace('*', '%', mres($options['h'])) . "'";
             } else {
-                $where = "AND `hostname` = '".mres($options['h'])."'";
+                $where = "AND `hostname` = '" . mres($options['h']) . "'";
             }
             $doing = $options['h'];
         }
@@ -71,8 +71,8 @@ if (isset($options['i']) && $options['i'] && isset($options['n'])) {
             WHERE `disabled` = 0
             ORDER BY `device_id` ASC
         ) temp
-        WHERE MOD(temp.rownum, '.mres($options['i']).') = '.mres($options['n']).';';
-    $doing = $options['n'].'/'.$options['i'];
+        WHERE MOD(temp.rownum, ' . mres($options['i']) . ') = ' . mres($options['n']) . ';';
+    $doing = $options['n'] . '/' . $options['i'];
 }
 
 if (empty($where)) {
@@ -125,19 +125,19 @@ $datastore = Datastore::init($options);
 echo "Starting polling run:\n\n";
 $polled_devices = 0;
 $unreachable_devices = 0;
-if (!isset($query)) {
+if (! isset($query)) {
     $query = "SELECT * FROM `devices` WHERE `disabled` = 0 $where ORDER BY `device_id` ASC";
 }
 
 foreach (dbFetch($query) as $device) {
     DeviceCache::setPrimary($device['device_id']);
     if ($device['os_group'] == 'cisco') {
-        $device['vrf_lite_cisco'] = dbFetchRows('SELECT * FROM `vrf_lite_cisco` WHERE `device_id` = '.$device['device_id']);
+        $device['vrf_lite_cisco'] = dbFetchRows('SELECT * FROM `vrf_lite_cisco` WHERE `device_id` = ' . $device['device_id']);
     } else {
         $device['vrf_lite_cisco'] = '';
     }
 
-    if (!poll_device($device, $module_override)) {
+    if (! poll_device($device, $module_override)) {
         $unreachable_devices++;
     }
 
@@ -145,9 +145,9 @@ foreach (dbFetch($query) as $device) {
     echo "### Start Device Groups ###\n";
     $dg_start = microtime(true);
     $group_changes = \App\Models\DeviceGroup::updateGroupsFor($device['device_id']);
-    d_echo('Groups Added: '.implode(',', $group_changes['attached']).PHP_EOL);
-    d_echo('Groups Removed: '.implode(',', $group_changes['detached']).PHP_EOL);
-    echo '### End Device Groups, runtime: '.round(microtime(true) - $dg_start, 4)."s ### \n\n";
+    d_echo('Groups Added: ' . implode(',', $group_changes['attached']) . PHP_EOL);
+    d_echo('Groups Removed: ' . implode(',', $group_changes['detached']) . PHP_EOL);
+    echo '### End Device Groups, runtime: ' . round(microtime(true) - $dg_start, 4) . "s ### \n\n";
 
     echo "#### Start Alerts ####\n";
     $rules = new AlertRules();
@@ -171,10 +171,10 @@ if ($polled_devices) {
     ], 'perf_times');
 }
 
-$string = $argv[0]." $doing ".date(Config::get('dateformat.compact'))." - $polled_devices devices polled in $poller_time secs";
+$string = $argv[0] . " $doing " . date(Config::get('dateformat.compact')) . " - $polled_devices devices polled in $poller_time secs";
 d_echo("$string\n");
 
-if (!isset($options['q'])) {
+if (! isset($options['q'])) {
     printStats();
 }
 

@@ -46,7 +46,7 @@ class Smsfeedback extends Transport
             'text'   => $obj['title'],
             'sender' => $opts['sender'],
         ];
-        $url = 'http://'.$opts['user'].':'.$opts['token'].'@'.'api.smsfeedback.ru/messages/v2/send/?'.http_build_query($params);
+        $url = 'http://' . $opts['user'] . ':' . $opts['token'] . '@' . 'api.smsfeedback.ru/messages/v2/send/?' . http_build_query($params);
         $curl = curl_init($url);
 
         set_curl_proxy($curl);

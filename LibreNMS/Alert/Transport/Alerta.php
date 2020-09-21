@@ -38,7 +38,7 @@ class Alerta extends Transport
         $curl = curl_init();
         $text = strip_tags($obj['msg']);
         $severity = ($obj['state'] == AlertState::RECOVERED ? $opts['recoverstate'] : $opts['alertstate']);
-        $deviceurl = (Config::get('base_url').'device/device='.$obj['device_id']);
+        $deviceurl = (Config::get('base_url') . 'device/device=' . $obj['device_id']);
         $devicehostname = $obj['hostname'];
         $data = [
             'resource'    => $devicehostname,
@@ -57,14 +57,14 @@ class Alerta extends Transport
                 'type'     => $obj['type'],
                 'ip'       => $obj['ip'],
                 'uptime'   => $obj['uptime_long'],
-                'moreInfo' => '<a href='.$deviceurl.'>'.$devicehostname.'</a>',
+                'moreInfo' => '<a href=' . $deviceurl . '>' . $devicehostname . '</a>',
             ],
             'origin' => $obj['rule'],
             'type'   => $obj['title'],
         ];
         $alert_message = json_encode($data);
         set_curl_proxy($curl);
-        $headers = ['Content-Type: application/json', 'Authorization: Key '.$opts['apikey']];
+        $headers = ['Content-Type: application/json', 'Authorization: Key ' . $opts['apikey']];
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_URL, $host);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -74,11 +74,11 @@ class Alerta extends Transport
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         if ($code != 201) {
             var_dump("API '$host' returned Error");
-            var_dump('Params: '.$alert_message);
-            var_dump('Return: '.$ret);
-            var_dump('Headers: '.$headers);
+            var_dump('Params: ' . $alert_message);
+            var_dump('Return: ' . $ret);
+            var_dump('Headers: ' . $headers);
 
-            return 'HTTP Status code '.$code;
+            return 'HTTP Status code ' . $code;
         }
 
         return true;

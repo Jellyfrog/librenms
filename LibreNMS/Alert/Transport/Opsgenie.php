@@ -29,7 +29,7 @@ class Opsgenie extends Transport
 {
     public function deliverAlert($obj, $opts)
     {
-        if (!empty($this->config)) {
+        if (! empty($this->config)) {
             $opts['url'] = $this->config['genie-url'];
         }
 
@@ -53,7 +53,7 @@ class Opsgenie extends Transport
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
         if ($code != 200) {
-            var_dump('Error when sending post request to OpsGenie. Response code: '.$code.' Response body: '.$ret); //FIXME: proper debugging
+            var_dump('Error when sending post request to OpsGenie. Response code: ' . $code . ' Response body: ' . $ret); //FIXME: proper debugging
 
             return false;
         }

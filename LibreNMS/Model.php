@@ -61,8 +61,8 @@ abstract class Model
         $params = [$device_id];
         $where = '`device_id`=?';
 
-        if (!empty($model_ids)) {
-            $where .= " AND `$key` NOT IN ".dbGenPlaceholders(count($model_ids));
+        if (! empty($model_ids)) {
+            $where .= " AND `$key` NOT IN " . dbGenPlaceholders(count($model_ids));
             $params = array_merge($params, $model_ids);
         }
 
@@ -70,7 +70,7 @@ abstract class Model
         foreach ($rows as $row) {
             static::onDelete(static::create($row));
         }
-        if (!empty($rows)) {
+        if (! empty($rows)) {
             dbDelete($table, $where, $params);
         }
     }
@@ -143,7 +143,7 @@ abstract class Model
         }
 
         $row = dbFetchRow(
-            "SELECT * FROM `$table` WHERE ".implode(' AND', $where),
+            "SELECT * FROM `$table` WHERE " . implode(' AND', $where),
             $params
         );
 

@@ -112,7 +112,7 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'frequency',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.6.'.$index,
+                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.6.' . $index,
                 'mimosa-ptp',
                 $index,
                 sprintf($descr, $this->getPolarization($polar[$index])),
@@ -128,7 +128,7 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'frequency',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.9.3.3.1.7.'.$index,
+                '.1.3.6.1.4.1.43356.2.1.2.9.3.3.1.7.' . $index,
                 'mimosa',
                 $index,
                 $ptmpRadioName[$index],
@@ -161,7 +161,7 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'noise-floor',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.4.'.$index,
+                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.4.' . $index,
                 'mimosa',
                 $index,
                 sprintf('Rx Noise: %s Chain', $this->getPolarization($polar[$index])),
@@ -193,7 +193,7 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'power',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.2.'.$index,
+                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.2.' . $index,
                 'mimosa-ptp-tx',
                 $index,
                 sprintf('Tx Power: %s Chain', $this->getPolarization($polar[$index])),
@@ -204,7 +204,7 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'power',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.3.'.$index,
+                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.3.' . $index,
                 'mimosa-ptp-rx',
                 $index,
                 sprintf('Rx Power: %s Chain', $this->getPolarization($polar[$index])),
@@ -222,10 +222,10 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'power',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.9.3.3.1.10.'.$index,
+                '.1.3.6.1.4.1.43356.2.1.2.9.3.3.1.10.' . $index,
                 'mimosa-tx',
                 $index,
-                'Tx Power: '.$ptmpRadioName[$index],
+                'Tx Power: ' . $ptmpRadioName[$index],
                 $entry['mimosaPtmpChPwrTxPowerCur']
             );
         }
@@ -236,10 +236,10 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'power',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.9.3.3.1.12.'.$index,
+                '.1.3.6.1.4.1.43356.2.1.2.9.3.3.1.12.' . $index,
                 'mimosa-rx',
                 $index,
-                'Min Rx Power: '.$ptmpRadioName[$index],
+                'Min Rx Power: ' . $ptmpRadioName[$index],
                 $entry['mimosaPtmpChPwrMinRxPower']
             );
         }
@@ -263,7 +263,7 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'rate',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.6.2.1.2.'.$index,
+                '.1.3.6.1.4.1.43356.2.1.2.6.2.1.2.' . $index,
                 'mimosa-tx',
                 $index,
                 "Stream $index Tx Rate",
@@ -273,7 +273,7 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'rate',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.6.2.1.5.'.$index,
+                '.1.3.6.1.4.1.43356.2.1.2.6.2.1.5.' . $index,
                 'mimosa-rx',
                 $index,
                 "Stream $index Rx Rate",
@@ -301,7 +301,7 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'snr',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.5.'.$index,
+                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.5.' . $index,
                 'mimosa',
                 $index,
                 sprintf('SNR: %s Chain', $this->getPolarization($polar[$index])),

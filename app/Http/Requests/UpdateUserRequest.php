@@ -43,7 +43,7 @@ class UpdateUserRequest extends FormRequest
             'descr'                     => 'nullable|max:30|alpha_space',
             'level'                     => 'int',
             'old_password'              => 'nullable|string',
-            'new_password'              => 'nullable|confirmed|min:'.Config::get('password.min_length', 8),
+            'new_password'              => 'nullable|confirmed|min:' . Config::get('password.min_length', 8),
             'new_password_confirmation' => 'nullable|same:new_password',
             'dashboard'                 => 'int',
         ];
@@ -60,11 +60,11 @@ class UpdateUserRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             // if not an admin and new_password is set, check old password matches
-            if (!$this->user()->isAdmin()) {
+            if (! $this->user()->isAdmin()) {
                 if ($this->has('new_password')) {
                     if ($this->has('old_password')) {
                         $user = $this->route('user');
-                        if ($user && !Hash::check($this->old_password, $user->password)) {
+                        if ($user && ! Hash::check($this->old_password, $user->password)) {
                             $validator->errors()->add('old_password', __('Existing password did not match'));
                         }
                     } else {

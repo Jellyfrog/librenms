@@ -42,21 +42,21 @@ class Allied extends OS implements OSDiscovery
         $software = $data['atiswitchSw.0'];
 
         if ($software && $version) {
-            $version = $software.' '.$version;
+            $version = $software . ' ' . $version;
         }
 
         //OS: AT-S41
         // sysDescr.0 = STRING: "AT-8126XL, AT-S21 version 1.4.2"
         // AtiL2-MIB::atiL2SwProduct.0 = STRING: "AT-8326GB"
         // AtiL2-MIB::atiL2SwVersion.0 = STRING: "AT-S41 v1.1.6 "
-        if (!$hardware && !$version && !$software) {
+        if (! $hardware && ! $version && ! $software) {
             $hardware = snmp_get($this->getDeviceArray(), 'atiL2SwProduct.0', '-OsvQU', 'AtiL2-MIB');
             $version = snmp_get($this->getDeviceArray(), 'atiL2SwVersion.0', '-OsvQU', 'AtiL2-MIB');
         }
 
         //Alliedware Plus 2.x.x.x | Legacy products: 8100S
         //SNMPv2-MIB::sysDescr.0 = STRING: AlliedWare Plus (TM) 2.2.3.0
-        if (!$hardware && !$version) {
+        if (! $hardware && ! $version) {
             $data = snmp_get_multi_oid($this->getDeviceArray(), ['.1.3.6.1.4.1.207.8.17.1.3.1.6.1', '.1.3.6.1.4.1.207.8.17.1.3.1.5.1', '.1.3.6.1.4.1.207.8.17.1.3.1.8.1']);
 
             $hardware = $data['.1.3.6.1.4.1.207.8.17.1.3.1.6.1'];
@@ -66,7 +66,7 @@ class Allied extends OS implements OSDiscovery
 
         //Gets OS outputting "Alliedware Plus" instead of just Alliedware.
         if ($hardware && $version) {
-            $version = 'Plus '.$version;
+            $version = 'Plus ' . $version;
         }
 
         /*Products running Alliedware OS
@@ -74,7 +74,7 @@ class Allied extends OS implements OSDiscovery
           sysDescr.0 = STRING: "Allied Telesis AT-8624T/2M version 2.9.1-13 11-Dec-2007"
         Use sysDescr to get Hardware, SW version, and Serial*/
         [$a, $b, $c, $d, $e, $f] = explode(' ', $this->getDeviceArray()['sysDescr']);
-        if (!$hardware && !$version) {
+        if (! $hardware && ! $version) {
             if ($a == 'Allied' && $d == 'version') {
                 $version = $e;
                 $features = $f;
@@ -92,7 +92,7 @@ class Allied extends OS implements OSDiscovery
                 //Also requires system description as no OIDs provide $hardware
             } elseif ($d == 'WebSmart' && $e == 'Switch') {
                 $version = snmp_get($this->getDeviceArray(), 'swhub.167.81.1.3.0', '-OsvQU', 'AtiL2-MIB');
-                $version = $d.' '.$version;
+                $version = $d . ' ' . $version;
                 $hardware = $a;
             }
         }

@@ -57,7 +57,7 @@ class GraphAggregateController extends Controller
         // handle search
         if ($search = strtolower($request->get('term'))) {
             $types = array_filter($types, function ($type) use ($search) {
-                return !Str::contains(strtolower($type), $search);
+                return ! Str::contains(strtolower($type), $search);
             });
         }
 

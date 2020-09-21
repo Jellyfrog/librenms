@@ -9,7 +9,7 @@
 ini_set('allow_url_fopen', 0);
 
 $init_modules = ['web', 'auth'];
-require realpath(__DIR__.'/..').'/includes/init.php';
+require realpath(__DIR__ . '/..') . '/includes/init.php';
 
 $urlargs = [
     'type'          => 'bill_historictransfer',
@@ -25,7 +25,7 @@ if (is_numeric($_GET['bill_hist_id'])) {
     $urlargs['to'] = $_GET['to'];
 }
 
-$url = Config::get('base_url').'graph.php?';
+$url = Config::get('base_url') . 'graph.php?';
 $i = 0;
 foreach ($urlargs as $name => $value) {
     if ($i++ > 0) {

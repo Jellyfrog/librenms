@@ -34,11 +34,11 @@ class Dlinkap extends OS implements ProcessorDiscovery
 {
     public function discoverOS(Device $device): void
     {
-        $firmware_oid = $device->sysObjectID.'.5.1.1.0';
-        $hardware_oid = $device->sysObjectID.'.5.1.5.0';
+        $firmware_oid = $device->sysObjectID . '.5.1.1.0';
+        $hardware_oid = $device->sysObjectID . '.5.1.5.0';
 
         $device->version = snmp_get($device, $firmware_oid, '-Oqv') ?: null;
-        $device->hardware = trim($device->sysDescr.' '.snmp_get($device, $hardware_oid, '-Oqv'));
+        $device->hardware = trim($device->sysDescr . ' ' . snmp_get($device, $hardware_oid, '-Oqv'));
     }
 
     /**
@@ -53,7 +53,7 @@ class Dlinkap extends OS implements ProcessorDiscovery
             Processor::discover(
                 'dlinkap-cpu',
                 $this->getDeviceId(),
-                $this->getDeviceArray()['sysObjectID'].'.5.1.3.0',  // different OID for each model
+                $this->getDeviceArray()['sysObjectID'] . '.5.1.3.0',  // different OID for each model
                 0,
                 'Processor',
                 100

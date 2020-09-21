@@ -70,7 +70,7 @@ class TwoFactorController extends Controller
         $twoFactorSettings = $this->loadSettings($request->user());
 
         // don't allow visiting this page if not needed
-        if (empty($twoFactorSettings) || !Config::get('twofactor') || session('twofactor')) {
+        if (empty($twoFactorSettings) || ! Config::get('twofactor') || session('twofactor')) {
             return redirect()->intended();
         }
 
@@ -80,7 +80,7 @@ class TwoFactorController extends Controller
         if (isset($twoFactorSettings['fails']) && $twoFactorSettings['fails'] >= 3) {
             $lockout_time = Config::get('twofactor_lock', 0);
 
-            if (!$lockout_time) {
+            if (! $lockout_time) {
                 $errors['lockout'] = __('Too many two-factor failures, please contact administrator.');
             } elseif ((time() - $twoFactorSettings['last']) < $lockout_time) {
                 $errors['lockout'] = __('Too many two-factor failures, please wait :time seconds', ['time' => $lockout_time]);
@@ -160,7 +160,7 @@ class TwoFactorController extends Controller
      */
     private function checkToken($user, $token)
     {
-        if (!$token) {
+        if (! $token) {
             throw new AuthenticationException(__('No Two-Factor Token entered.'));
         }
 

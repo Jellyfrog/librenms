@@ -42,10 +42,10 @@ class Programs extends BaseValidation
         // Check programs
         $bins = ['fping', 'rrdtool', 'snmpwalk', 'snmpget', 'snmpgetnext', 'snmpbulkwalk'];
         foreach ($bins as $bin) {
-            if (!($cmd = $this->findExecutable($bin))) {
+            if (! ($cmd = $this->findExecutable($bin))) {
                 $validator->fail(
                     "$bin location is incorrect or bin not installed.",
-                    "Install $bin or manually set the path to $bin by placing the following in config.php: ".
+                    "Install $bin or manually set the path to $bin by placing the following in config.php: " .
                     "\$config['$bin'] = '/path/to/$bin';"
                 );
             } elseif ($bin == 'fping') {
@@ -58,7 +58,7 @@ class Programs extends BaseValidation
     public function checkFping6(Validator $validator, $fping)
     {
         $fping6 = $this->findExecutable('fping6');
-        $fping6 = (!is_executable($fping6) && is_executable($fping)) ? "$fping -6" : $fping6;
+        $fping6 = (! is_executable($fping6) && is_executable($fping)) ? "$fping -6" : $fping6;
 
         $validator->execAsUser("$fping6 ::1 2>&1", $output, $return);
         $output = implode(' ', $output);
@@ -106,13 +106,13 @@ class Programs extends BaseValidation
             $getcap_out = shell_exec("$getcap $cmd");
             preg_match("#^$cmd = (.*)$#", $getcap_out, $matches);
 
-            if (is_null($matches) || !Str::contains($matches[1], 'cap_net_raw+ep')) {
+            if (is_null($matches) || ! Str::contains($matches[1], 'cap_net_raw+ep')) {
                 $validator->fail(
                     "$cmd should have CAP_NET_RAW!",
                     "setcap cap_net_raw+ep $cmd"
                 );
             }
-        } elseif (!(fileperms($cmd) & 2048)) {
+        } elseif (! (fileperms($cmd) & 2048)) {
             $validator->fail("$cmd should be suid!", "chmod u+s $cmd");
         }
     }

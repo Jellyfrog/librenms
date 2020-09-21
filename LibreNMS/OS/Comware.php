@@ -51,7 +51,7 @@ class Comware extends OS implements ProcessorDiscovery
     {
         $procdata = $this->getCacheByIndex('hh3cEntityExtCpuUsage', 'HH3C-ENTITY-EXT-MIB');
 
-        if (!empty($procdata)) {
+        if (! empty($procdata)) {
             $entity_data = $this->getCacheByIndex('entPhysicalName', 'ENTITY-MIB');
         }
 

@@ -79,7 +79,7 @@ class LegacyUserProvider implements UserProvider
         $user = new User();
         $user = $user->where($user->getAuthIdentifierName(), $identifier)->first();
 
-        if (!$user) {
+        if (! $user) {
             return null;
         }
 
@@ -130,7 +130,7 @@ class LegacyUserProvider implements UserProvider
                 $credentials['username'] = $authorizer->getExternalUsername();
             }
 
-            if (empty($credentials['username']) || !$authorizer->authenticate($credentials)) {
+            if (empty($credentials['username']) || ! $authorizer->authenticate($credentials)) {
                 throw new AuthenticationException('Invalid Credentials');
             }
 
@@ -140,7 +140,7 @@ class LegacyUserProvider implements UserProvider
 
             $auth_message = $ae->getMessage();
             if ($debug) {
-                $auth_message .= '<br /> '.$ae->getFile().': '.$ae->getLine();
+                $auth_message .= '<br /> ' . $ae->getFile() . ': ' . $ae->getLine();
             }
             \Toastr::error($auth_message);
 
@@ -205,7 +205,7 @@ class LegacyUserProvider implements UserProvider
 
         // remove null fields
         $new_user = array_filter($new_user, function ($var) {
-            return !is_null($var);
+            return ! is_null($var);
         });
 
         // always create an entry in the users table, but separate by type

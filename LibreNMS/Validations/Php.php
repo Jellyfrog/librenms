@@ -52,7 +52,7 @@ class Php extends BaseValidation
     {
         // if update is not set to false and version is min or newer
         if (Config::get('update') && version_compare(PHP_VERSION, self::PHP_MIN_VERSION, '<')) {
-            $validator->warn('PHP version '.self::PHP_MIN_VERSION.' is the minimum supported version as of '.self::PHP_MIN_VERSION_DATE.'. We recommend you update PHP to a supported version ('.self::PHP_RECOMMENDED_VERSION.' suggested) to continue to receive updates. If you do not update PHP, LibreNMS will continue to function but stop receiving bug fixes and updates.');
+            $validator->warn('PHP version ' . self::PHP_MIN_VERSION . ' is the minimum supported version as of ' . self::PHP_MIN_VERSION_DATE . '. We recommend you update PHP to a supported version (' . self::PHP_RECOMMENDED_VERSION . ' suggested) to continue to receive updates. If you do not update PHP, LibreNMS will continue to function but stop receiving bug fixes and updates.');
         }
 
         $web_version = PHP_VERSION;
@@ -71,7 +71,7 @@ class Php extends BaseValidation
         }
 
         foreach ($required_modules as $extension) {
-            if (!extension_loaded($extension)) {
+            if (! extension_loaded($extension)) {
                 $validator->fail("Missing PHP extension: $extension", "Please install $extension");
             } elseif (shell_exec("php -r \"var_export(extension_loaded('$extension'));\"") == 'false') {
                 $validator->fail("Missing CLI PHP extension: $extension", "Please install $extension");
@@ -80,7 +80,7 @@ class Php extends BaseValidation
 
         $suggested_extensions = ['posix' => 'php-process'];
         foreach ($suggested_extensions as $extension => $packages) {
-            if (!extension_loaded($extension)) {
+            if (! extension_loaded($extension)) {
                 $validator->warn("Missing optional PHP extension: $extension", "It is suggested you install $packages or the one that matches your php version");
             }
         }
@@ -106,9 +106,9 @@ class Php extends BaseValidation
             }
         }
 
-        if (!function_exists('openssl_random_pseudo_bytes')) {
+        if (! function_exists('openssl_random_pseudo_bytes')) {
             $validator->warn('openssl_random_pseudo_bytes is not being used for user password hashing. This is a recommended function (https://secure.php.net/openssl_random_pseudo_bytes)');
-            if (!is_readable('/dev/urandom')) {
+            if (! is_readable('/dev/urandom')) {
                 $validator->warn("It also looks like we can't use /dev/urandom for user password hashing. We will fall back to generating our own hash - be warned");
             }
         }

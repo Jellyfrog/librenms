@@ -31,7 +31,7 @@ class Victorops extends Transport
 {
     public function deliverAlert($obj, $opts)
     {
-        if (!empty($this->config)) {
+        if (! empty($this->config)) {
             $opts['url'] = $this->config['victorops-url'];
         }
 

@@ -10,13 +10,13 @@
  * @license    BSD
  */
 $init_modules = ['web', 'auth'];
-require realpath(__DIR__.'/..').'/includes/init.php';
+require realpath(__DIR__ . '/..') . '/includes/init.php';
 
 if (is_numeric($_GET['id']) && (Config::get('allow_unauth_graphs') || port_permitted($_GET['id']))) {
     $port = cleanPort(get_port_by_id($_GET['id']));
     $device = device_by_id_cache($port['device_id']);
     $title = generate_device_link($device);
-    $title .= ' :: Port  '.generate_port_link($port);
+    $title .= ' :: Port  ' . generate_port_link($port);
     $auth = true;
 } else {
     echo 'Unauthenticad';
@@ -44,7 +44,7 @@ if (is_numeric($_GET['interval'])) {
     $time_interval = 1;      //Refresh time Interval
 }
 
-$fetch_link = 'data.php?id='.$_GET['id'];
+$fetch_link = 'data.php?id=' . $_GET['id'];
 
 //SVG attributes
 $attribs['axis'] = 'fill="black" stroke="black"';
@@ -70,16 +70,16 @@ $height = 125;            //SVG internal height : do not modify
 $width = 300;             //SVG internal width : do not modify
 
 /********* Graph DATA **************/
-echo '<?xml version="1.0" encoding="iso-8859-1"?>'."\n"; ?>
+echo '<?xml version="1.0" encoding="iso-8859-1"?>' . "\n"; ?>
 <svg width="100%" height="100%" viewBox="0 0 <?php echo "$width $height" ?>" preserveAspectRatio="none" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
      onload="init(evt)">
   <g id="graph">
     <rect id="bg" x1="0" y1="0" width="100%" height="100%" fill="white"/>
     <line id="axis_x" x1="0" y1="0" x2="0" y2="100%" <?php echo $attribs['axis'] ?>/>
     <line id="axis_y" x1="0" y1="100%" x2="100%" y2="100%" <?php echo $attribs['axis'] ?>/>
-    <path id="graph_out" d="M0 <?php echo $height ?> L 0 <?php echo $height.'" '.$attribs['graph_out'] ?>/>
-    <path id="graph_in"  d="M0 <?php echo $height ?> L 0 <?php echo $height.'" '.$attribs['graph_in'] ?>/>
-    <path id="grid"  d="M0 <?php echo $height / 4 * 1 ?> L <?php echo $width ?> <?php echo $height / 4 * 1 ?> M0 <?php echo $height / 4 * 2 ?> L <?php echo $width ?> <?php echo $height / 4 * 2 ?> M0 <?php echo $height / 4 * 3 ?> L <?php echo $width.' '.($height / 4 * 3) ?>" <?php echo $attribs['grid']?>/>
+    <path id="graph_out" d="M0 <?php echo $height ?> L 0 <?php echo $height . '" ' . $attribs['graph_out'] ?>/>
+    <path id="graph_in"  d="M0 <?php echo $height ?> L 0 <?php echo $height . '" ' . $attribs['graph_in'] ?>/>
+    <path id="grid"  d="M0 <?php echo $height / 4 * 1 ?> L <?php echo $width ?> <?php echo $height / 4 * 1 ?> M0 <?php echo $height / 4 * 2 ?> L <?php echo $width ?> <?php echo $height / 4 * 2 ?> M0 <?php echo $height / 4 * 3 ?> L <?php echo $width . ' ' . ($height / 4 * 3) ?>" <?php echo $attribs['grid']?>/>
     <text id="grid_txt1" x="<?php echo $width ?>" y="<?php echo $height / 4 * 1 ?>" <?php echo $attribs['grid_txt'] ?> text-anchor="end"> </text>
     <text id="grid_txt2" x="<?php echo $width ?>" y="<?php echo $height / 4 * 2 ?>" <?php echo $attribs['grid_txt'] ?> text-anchor="end"> </text>
     <text id="grid_txt3" x="<?php echo $width ?>" y="<?php echo $height / 4 * 3 ?>" <?php echo $attribs['grid_txt'] ?> text-anchor="end"> </text>
@@ -94,7 +94,7 @@ echo '<?xml version="1.0" encoding="iso-8859-1"?>'."\n"; ?>
     <text id="datetime" x="<?php echo $width * 0.33 ?>" y="5" <?php echo $attribs['legend'] ?>> </text>
     <text id="graphlast" x="<?php echo $width * 0.48 ?>" y="17" <?php echo $attribs['legend'] ?>>Graph shows last <?php echo $time_interval * $nb_plot ?> seconds</text>
     <text id="cachewarning" x="<?php echo $width * 0.48 ?>" y="22" <?php echo $attribs['cachewarning'] ?> visibility="hidden">Caching may be in effect (<tspan id="cacheinterval">?</tspan>s)</text>
-    <polygon id="axis_arrow_x" <?php echo $attribs['axis'] ?> points="<?php echo $width.','.$height ?> <?php echo($width - 2).','.($height - 2) ?> <?php echo($width - 2).','.$height ?>"/>
+    <polygon id="axis_arrow_x" <?php echo $attribs['axis'] ?> points="<?php echo $width . ',' . $height ?> <?php echo($width - 2) . ',' . ($height - 2) ?> <?php echo($width - 2) . ',' . $height ?>"/>
     <text id="error" x="<?php echo $width * 0.5 ?>" y="<?php echo $height * 0.5 ?>"  visibility="hidden" <?php echo $attribs['error'] ?> text-anchor="middle"><?php echo $error_text ?></text>
     <text id="collect_initial" x="<?php echo $width * 0.5 ?>" y="<?php echo $height * 0.5 ?>"  visibility="hidden" <?php echo $attribs['collect_initial'] ?> text-anchor="middle">Collecting initial data, please wait...</text>
   </g>

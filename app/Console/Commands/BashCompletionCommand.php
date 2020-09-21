@@ -62,7 +62,7 @@ class BashCompletionCommand extends Command
                     foreach ($input->getArguments() as $name => $value) {
                         if ($current == $value) {
                             $values = $command->completeArgument($name, $value);
-                            if (!empty($values)) {
+                            if (! empty($values)) {
                                 echo implode(PHP_EOL, $values);
 
                                 return 0;
@@ -76,7 +76,7 @@ class BashCompletionCommand extends Command
                     $completions = $this->completeOptionValue($option, $current);
                 } else {
                     $completions = collect();
-                    if (!Str::startsWith($previous, '-')) {
+                    if (! Str::startsWith($previous, '-')) {
                         $completions = $this->completeArguments($command_name, $current, end($words));
                     }
                     $completions = $completions->merge($this->completeOption($command_def, $current, $this->getPreviousOptions($words)));
@@ -124,11 +124,11 @@ class BashCompletionCommand extends Command
         $opts = [];
 
         if ($shortcut = $def->getShortcut()) {
-            $opts[] = '-'.$shortcut;
+            $opts[] = '-' . $shortcut;
         }
 
         if ($name = $def->getName()) {
-            $opts[] = '--'.$name;
+            $opts[] = '--' . $name;
         }
 
         return $opts;
@@ -258,7 +258,7 @@ class BashCompletionCommand extends Command
             case 'device:rename':
                 $device_query = Device::select('hostname')->limit(5)->orderBy('hostname');
                 if ($partial) {
-                    $device_query->where('hostname', 'like', $partial.'%');
+                    $device_query->where('hostname', 'like', $partial . '%');
                 }
 
                 return $device_query->pluck('hostname');

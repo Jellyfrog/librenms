@@ -60,7 +60,7 @@ class FileLock implements Lock
      */
     public function release()
     {
-        if (!$this->acquired) {
+        if (! $this->acquired) {
             return;
         }
 
@@ -122,7 +122,7 @@ class FileLock implements Lock
         try {
             return self::lock($lock_name, $timeout);
         } catch (LockException $e) {
-            echo $e->getMessage().PHP_EOL;
+            echo $e->getMessage() . PHP_EOL;
             exit(1);
         }
     }

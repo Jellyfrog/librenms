@@ -64,12 +64,12 @@ abstract class IP
                 return new IPv6(implode(':', str_split($hex, 4)));
             }
         } catch (InvalidIpException $e) {
-            if (!$ignore_errors) {
+            if (! $ignore_errors) {
                 throw $e;
             }
         }
 
-        if (!$ignore_errors) {
+        if (! $ignore_errors) {
             throw new InvalidIpException("Could not parse into IP: $hex");
         }
 
@@ -125,7 +125,7 @@ abstract class IP
         try {
             return new IPv6($ip);
         } catch (InvalidIpException $e) {
-            if (!$ignore_errors) {
+            if (! $ignore_errors) {
                 throw new InvalidIpException("$ip is not a valid IP address");
             }
         }
@@ -159,7 +159,7 @@ abstract class IP
             $cidr = $this->cidr;
         }
 
-        return $this->getNetworkAddress($cidr)."/$cidr";
+        return $this->getNetworkAddress($cidr) . "/$cidr";
     }
 
     /**
@@ -256,7 +256,7 @@ abstract class IP
             return (string) $this->ip;
         }
 
-        return $this->ip."/{$this->cidr}";
+        return $this->ip . "/{$this->cidr}";
     }
 
     /**

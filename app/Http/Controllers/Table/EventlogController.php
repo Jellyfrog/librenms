@@ -93,14 +93,14 @@ class EventlogController extends TableController
             if (is_numeric($eventlog->reference)) {
                 $port = $eventlog->related;
                 if (isset($port)) {
-                    return '<b>'.Url::portLink($port, $port->getShortLabel()).'</b>';
+                    return '<b>' . Url::portLink($port, $port->getShortLabel()) . '</b>';
                 }
             }
         } elseif (in_array($eventlog->type, \App\Models\Sensor::getTypes())) {
             if (is_numeric($eventlog->reference)) {
                 $sensor = $eventlog->related;
                 if (isset($sensor)) {
-                    return '<b>'.Url::sensorLink($sensor, $sensor->sensor_descr).'</b>';
+                    return '<b>' . Url::sensorLink($sensor, $sensor->sensor_descr) . '</b>';
                 }
             }
         }

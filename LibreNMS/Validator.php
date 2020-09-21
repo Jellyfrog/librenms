@@ -44,14 +44,14 @@ class Validator
     public function __construct()
     {
         // load all validations
-        $pattern = $this->getBaseDir().'/LibreNMS/Validations/*.php';
+        $pattern = $this->getBaseDir() . '/LibreNMS/Validations/*.php';
 
         foreach (glob($pattern) as $file) {
             $class_name = basename($file, '.php');
-            $class = '\LibreNMS\Validations\\'.$class_name;
+            $class = '\LibreNMS\Validations\\' . $class_name;
 
             $rc = new ReflectionClass($class);
-            if (!$rc->isAbstract()) {
+            if (! $rc->isAbstract()) {
                 $validation_name = strtolower($class_name);
                 $this->validation_groups[$validation_name] = new $class();
                 $this->results[$validation_name] = [];
@@ -230,10 +230,10 @@ class Validator
      */
     public function getVersions($remote = false)
     {
-        if (!isset($this->versions)) {
+        if (! isset($this->versions)) {
             $this->versions = version_info($remote);
         } else {
-            if ($remote && !isset($this->versions['github'])) {
+            if ($remote && ! isset($this->versions['github'])) {
                 $this->versions = version_info($remote);
             }
         }
@@ -252,7 +252,7 @@ class Validator
     public function execAsUser($command, &$output = null, &$code = null)
     {
         if (self::getUsername() === 'root') {
-            $command = 'su '.\config('librenms.user').' -s /bin/sh -c "'.$command.'"';
+            $command = 'su ' . \config('librenms.user') . ' -s /bin/sh -c "' . $command . '"';
         }
         exec($command, $output, $code);
     }
@@ -264,7 +264,7 @@ class Validator
      */
     public function getUsername()
     {
-        if (!isset($this->username)) {
+        if (! isset($this->username)) {
             if (function_exists('posix_getpwuid')) {
                 $userinfo = posix_getpwuid(posix_geteuid());
                 $this->username = $userinfo['name'];
@@ -291,6 +291,6 @@ class Validator
 
     public function getBaseDir()
     {
-        return realpath(__DIR__.'/..');
+        return realpath(__DIR__ . '/..');
     }
 }

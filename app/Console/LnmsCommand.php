@@ -42,7 +42,7 @@ abstract class LnmsCommand extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->setDescription(__('commands.'.$this->getName().'.description'));
+        $this->setDescription(__('commands.' . $this->getName() . '.description'));
     }
 
     public function isHidden()
@@ -69,7 +69,7 @@ abstract class LnmsCommand extends Command
     {
         // use a generated translation location by default
         if (is_null($description)) {
-            $description = __('commands.'.$this->getName().'.arguments.'.$name);
+            $description = __('commands.' . $this->getName() . '.arguments.' . $name);
         }
 
         parent::addArgument($name, $mode, $description, $default);
@@ -95,7 +95,7 @@ abstract class LnmsCommand extends Command
     {
         // use a generated translation location by default
         if (is_null($description)) {
-            $description = __('commands.'.$this->getName().'.options.'.$name);
+            $description = __('commands.' . $this->getName() . '.options.' . $name);
         }
 
         parent::addOption($name, $shortcut, $mode, $description, $default);

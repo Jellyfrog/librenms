@@ -65,7 +65,7 @@ class Component
             $row = dbFetchRow($SQL, [$TYPE]);
         }
 
-        if (!isset($row)) {
+        if (! isset($row)) {
             // We didn't find any component types
             return false;
         } else {
@@ -80,7 +80,7 @@ class Component
             ->with('prefs');
 
         // Device_id is shorthand for filter C.device_id = $device_id.
-        if (!is_null($device_id)) {
+        if (! is_null($device_id)) {
             $options['filter']['device_id'] = ['=', $device_id];
         }
 
@@ -126,7 +126,7 @@ class Component
         $sql_param = [];
         $add = 0;
 
-        if (!is_null($device)) {
+        if (! is_null($device)) {
             // Add a device filter to the SQL query.
             $sql_query .= ' `device_id` = ?';
             $sql_param[] = $device;
@@ -138,7 +138,7 @@ class Component
             $sql_query = substr($sql_query, 0, strlen($sql_query) - 6);
         }
         $sql_query .= ' GROUP BY status';
-        d_echo('SQL Query: '.$sql_query);
+        d_echo('SQL Query: ' . $sql_query);
 
         // $service is not null, get only what we want.
         $result = dbFetchRows($sql_query, $sql_param);
@@ -150,7 +150,7 @@ class Component
             $count[$v['status']] = $v['count'];
         }
 
-        d_echo('Component Count by Status: '.print_r($count, true)."\n");
+        d_echo('Component Count by Status: ' . print_r($count, true) . "\n");
 
         return $count;
     }
@@ -159,7 +159,7 @@ class Component
     {
         if (($component_id == null) || ($start == null) || ($end == null)) {
             // Error...
-            d_echo('Required arguments are missing. Component ID: '.$component_id.', Start: '.$start.', End: '.$end."\n");
+            d_echo('Required arguments are missing. Component ID: ' . $component_id . ', Start: ' . $start . ', End: ' . $end . "\n");
 
             return false;
         }
@@ -182,7 +182,7 @@ class Component
         $sql_param = [$component_id, $start, $end];
         $return['data'] = dbFetchRows($sql_query, $sql_param);
 
-        d_echo('Status Log Data: '.print_r($return, true)."\n");
+        d_echo('Status Log Data: ' . print_r($return, true) . "\n");
 
         return $return;
     }
@@ -236,7 +236,7 @@ class Component
 
                     // If the Status has changed we need to add a log entry
                     if ($component->isDirty('status')) {
-                        Log::debug('Status Changed - Old: '.$component->getOriginal('status').", New: $component->status\n");
+                        Log::debug('Status Changed - Old: ' . $component->getOriginal('status') . ", New: $component->status\n");
                         $this->createStatusLogEntry($component->id, $component->status, $component->error);
                     }
                     $component->save();
@@ -246,7 +246,7 @@ class Component
 
                 // update preferences
                 $prefs = collect($updated[$component->id])->filter(function ($value, $attr) {
-                    return !array_key_exists($attr, $this->reserved);
+                    return ! array_key_exists($attr, $this->reserved);
                 });
 
                 $invalid = $component->prefs->keyBy('id');
@@ -257,7 +257,7 @@ class Component
                         $invalid->forget($existing->id);
                         $existing->fill(['value' => $value]);
                         if ($existing->isDirty()) {
-                            Log::event("Component: $component->type($component->id). Attribute: $attribute, was modified from: ".$existing->getOriginal('value').", to: $value", $device_id, 'component', 3, $component_id);
+                            Log::event("Component: $component->type($component->id). Attribute: $attribute, was modified from: " . $existing->getOriginal('value') . ", to: $value", $device_id, 'component', 3, $component_id);
                             $existing->save();
                         }
                     } else {
@@ -286,7 +286,7 @@ class Component
      */
     public function getFirstComponentID($component_array, $device_id = null)
     {
-        if (!is_null($device_id) && isset($component_array[$device_id])) {
+        if (! is_null($device_id) && isset($component_array[$device_id])) {
             $component_array = $component_array[$device_id];
         }
 

@@ -14,9 +14,9 @@
  */
 
 $init_modules = ['web', 'auth'];
-require realpath(__DIR__.'/..').'/includes/init.php';
+require realpath(__DIR__ . '/..') . '/includes/init.php';
 
-if (!Auth::check()) {
+if (! Auth::check()) {
     exit('Unauthorized');
 }
 

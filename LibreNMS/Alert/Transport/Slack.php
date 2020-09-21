@@ -54,7 +54,7 @@ class Slack extends Transport
             ],
             'channel'    => $api['channel'],
             'username'   => $api['username'],
-            'icon_emoji' => ':'.$api['icon_emoji'].':',
+            'icon_emoji' => ':' . $api['icon_emoji'] . ':',
         ];
         $alert_message = json_encode($data);
         curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
@@ -68,10 +68,10 @@ class Slack extends Transport
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         if ($code != 200) {
             var_dump("API '$host' returned Error"); //FIXME: propper debuging
-            var_dump('Params: '.$alert_message); //FIXME: propper debuging
-            var_dump('Return: '.$ret); //FIXME: propper debuging
+            var_dump('Params: ' . $alert_message); //FIXME: propper debuging
+            var_dump('Return: ' . $ret); //FIXME: propper debuging
 
-            return 'HTTP Status code '.$code;
+            return 'HTTP Status code ' . $code;
         }
 
         return true;

@@ -44,7 +44,7 @@ class InfluxDB extends BaseDatastore
 
         // if the database doesn't exist, create it.
         try {
-            if (!$influx->exists()) {
+            if (! $influx->exists()) {
                 $influx->create();
             }
         } catch (\Exception $e) {
@@ -123,7 +123,7 @@ class InfluxDB extends BaseDatastore
             $this->connection->writePoints($points);
             $this->recordStatistic($stat->end());
         } catch (\Exception $e) {
-            Log::error('InfluxDB exception: '.$e->getMessage());
+            Log::error('InfluxDB exception: ' . $e->getMessage());
             Log::debug($e->getTraceAsString());
         }
     }

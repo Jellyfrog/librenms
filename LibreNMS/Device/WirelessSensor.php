@@ -224,22 +224,22 @@ class WirelessSensor extends Sensor
 
     protected static function getDiscoveryInterface($type)
     {
-        return str_to_class($type, 'LibreNMS\\Interfaces\\Discovery\\Sensors\\Wireless').'Discovery';
+        return str_to_class($type, 'LibreNMS\\Interfaces\\Discovery\\Sensors\\Wireless') . 'Discovery';
     }
 
     protected static function getDiscoveryMethod($type)
     {
-        return 'discoverWireless'.str_to_class($type);
+        return 'discoverWireless' . str_to_class($type);
     }
 
     protected static function getPollingInterface($type)
     {
-        return str_to_class($type, 'LibreNMS\\Interfaces\\Polling\\Sensors\\Wireless').'Polling';
+        return str_to_class($type, 'LibreNMS\\Interfaces\\Polling\\Sensors\\Wireless') . 'Polling';
     }
 
     protected static function getPollingMethod($type)
     {
-        return 'pollWireless'.str_to_class($type);
+        return 'pollWireless' . str_to_class($type);
     }
 
     /**

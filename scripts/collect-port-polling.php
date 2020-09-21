@@ -4,11 +4,11 @@
 use Illuminate\Support\Str;
 use LibreNMS\Config;
 
-$install_dir = realpath(__DIR__.'/..');
+$install_dir = realpath(__DIR__ . '/..');
 chdir($install_dir);
 
 $init_modules = [];
-require $install_dir.'/includes/init.php';
+require $install_dir . '/includes/init.php';
 $options = getopt('dh:e:', ['help']);
 
 Config::set('rrd.enable', false);
@@ -40,7 +40,7 @@ if (isset($options['h'])) {
     } elseif (Str::contains($options['h'], ',')) {
         $device_ids = array_map('trim', explode(',', $options['h']));
         $device_ids = array_filter($device_ids, 'is_numeric');
-        $where = 'AND `device_id` in '.dbGenPlaceholders(count($device_ids));
+        $where = 'AND `device_id` in ' . dbGenPlaceholders(count($device_ids));
         $params = $device_ids;
     } else {
         $where = 'AND `hostname` LIKE ?';
@@ -50,7 +50,7 @@ if (isset($options['h'])) {
 $devices = dbFetchRows("SELECT * FROM `devices` WHERE status = 1 AND disabled = 0 $where ORDER BY `hostname` ASC", $params);
 
 if (isset($options['e'])) {
-    if (!is_numeric($options['e']) || $options['e'] < 0) {
+    if (! is_numeric($options['e']) || $options['e'] < 0) {
         print_help();
         exit(1);
     }
@@ -60,13 +60,13 @@ if (isset($options['e'])) {
 echo 'Full Polling: ';
 Config::set('polling.selected_ports', false);
 foreach ($devices as $index => $device) {
-    echo $device['device_id'].' ';
-    if (!$debug) {
+    echo $device['device_id'] . ' ';
+    if (! $debug) {
         ob_start();
     }
 
     $port_test_start = microtime(true);
-    include $install_dir.'/includes/polling/ports.inc.php';
+    include $install_dir . '/includes/polling/ports.inc.php';
     $devices[$index]['full_time_sec'] = microtime(true) - $port_test_start;
     ob_end_clean();
 }
@@ -75,13 +75,13 @@ echo PHP_EOL;
 Config::set('polling.selected_ports', true);
 echo 'Selective Polling: ';
 foreach ($devices as $index => $device) {
-    echo $device['device_id'].' ';
-    if (!$debug) {
+    echo $device['device_id'] . ' ';
+    if (! $debug) {
         ob_start();
     }
 
     $port_test_start = microtime(true);
-    include $install_dir.'/includes/polling/ports.inc.php';
+    include $install_dir . '/includes/polling/ports.inc.php';
     $devices[$index]['selective_time_sec'] = microtime(true) - $port_test_start;
     ob_end_clean();
 }

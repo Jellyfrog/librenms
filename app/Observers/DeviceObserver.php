@@ -83,8 +83,8 @@ class DeviceObserver
 
     public static function attributeChangedMessage($attribute, $value, $previous)
     {
-        return trans("device.attributes.$attribute").': '
-            .(($previous && $previous != $value) ? "$previous -> " : '')
-            .$value;
+        return trans("device.attributes.$attribute") . ': '
+            . (($previous && $previous != $value) ? "$previous -> " : '')
+            . $value;
     }
 }

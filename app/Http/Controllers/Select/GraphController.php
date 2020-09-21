@@ -108,12 +108,12 @@ class GraphController extends Controller
             $subtype = '';
         }
 
-        if (!Graph::isMibGraph($type, $subtype)) {
-            $text = ucwords($top.' '.str_replace(['_', '-'], ' ', $text));
+        if (! Graph::isMibGraph($type, $subtype)) {
+            $text = ucwords($top . ' ' . str_replace(['_', '-'], ' ', $text));
         }
 
         return [
-            'id'   => $top.'_'.$graph,
+            'id'   => $top . '_' . $graph,
             'text' => $text,
         ];
     }
@@ -135,7 +135,7 @@ class GraphController extends Controller
 
             if (Str::contains($type, $first)) {
                 // search matches type, show all unless there are more terms.
-                if (!empty($terms)) {
+                if (! empty($terms)) {
                     $sub_search = array_shift($terms);
                     $graphs = $graphs->filter(function ($graph) use ($sub_search) {
                         return Str::contains(strtolower($graph), $sub_search);

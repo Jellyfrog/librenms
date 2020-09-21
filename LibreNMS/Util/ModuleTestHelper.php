@@ -85,14 +85,14 @@ class ModuleTestHelper
 
         // preset the file names
         if ($variant) {
-            $variant = '_'.$this->variant;
+            $variant = '_' . $this->variant;
         }
         $install_dir = Config::get('install_dir');
-        $this->file_name = $os.$variant;
+        $this->file_name = $os . $variant;
         $this->snmprec_dir = "$install_dir/tests/snmpsim/";
-        $this->snmprec_file = $this->snmprec_dir.$this->file_name.'.snmprec';
+        $this->snmprec_file = $this->snmprec_dir . $this->file_name . '.snmprec';
         $this->json_dir = "$install_dir/tests/data/";
-        $this->json_file = $this->json_dir.$this->file_name.'.json';
+        $this->json_file = $this->json_dir . $this->file_name . '.json';
 
         // never store time series data
         Config::set('rrd.enable', false);
@@ -103,7 +103,7 @@ class ModuleTestHelper
 
         if (is_null(self::$module_tables)) {
             // only load the yaml once, then keep it in memory
-            self::$module_tables = Yaml::parse(file_get_contents($install_dir.'/tests/module_tables.yaml'));
+            self::$module_tables = Yaml::parse(file_get_contents($install_dir . '/tests/module_tables.yaml'));
         }
     }
 
@@ -152,7 +152,7 @@ class ModuleTestHelper
 
         $snmprec_data = [];
         foreach ($snmp_oids as $oid_data) {
-            $this->qPrint(' '.$oid_data['oid']);
+            $this->qPrint(' ' . $oid_data['oid']);
 
             $snmp_options = ['-OUneb', '-Ih'];
             if ($oid_data['method'] == 'walk') {
@@ -249,7 +249,7 @@ class ModuleTestHelper
     {
         $os_list = [];
 
-        foreach (glob(Config::get('install_dir').'/tests/data/*.json') as $file) {
+        foreach (glob(Config::get('install_dir') . '/tests/data/*.json') as $file) {
             $base_name = basename($file, '.json');
             [$os, $variant] = self::extractVariant($file);
 
@@ -278,7 +278,7 @@ class ModuleTestHelper
                     self::resolveModuleDependencies($valid_modules),
                 ];
             } catch (InvalidModuleException $e) {
-                throw new InvalidModuleException('Invalid module '.$e->getMessage()." in $os $variant");
+                throw new InvalidModuleException('Invalid module ' . $e->getMessage() . " in $os $variant");
             }
         }
 
@@ -296,9 +296,9 @@ class ModuleTestHelper
     {
         $full_name = basename($os_file, '.json');
 
-        if (!Str::contains($full_name, '_')) {
+        if (! Str::contains($full_name, '_')) {
             return [$full_name, ''];
-        } elseif (is_file(Config::get('install_dir')."/includes/definitions/$full_name.yaml")) {
+        } elseif (is_file(Config::get('install_dir') . "/includes/definitions/$full_name.yaml")) {
             return [$full_name, ''];
         } else {
             [$rvar, $ros] = explode('_', strrev($full_name), 2);
@@ -323,7 +323,7 @@ class ModuleTestHelper
         $full_list = [];
         foreach ($modules as $module) {
             // only allow valid modules
-            if (!(Config::has("poller_modules.$module") || Config::has("discovery_modules.$module"))) {
+            if (! (Config::has("poller_modules.$module") || Config::has("discovery_modules.$module"))) {
                 throw new InvalidModuleException("Invalid module name: $module");
             }
 
@@ -403,9 +403,9 @@ class ModuleTestHelper
 
                 [$oid, $type, $data] = explode('|', $last, 3);
                 if ($type == '4x') {
-                    $result[key($result)] .= bin2hex(PHP_EOL.$line);
+                    $result[key($result)] .= bin2hex(PHP_EOL . $line);
                 } else {
-                    $result[key($result)] = "$oid|4x|".bin2hex($data.PHP_EOL.$line);
+                    $result[key($result)] = "$oid|4x|" . bin2hex($data . PHP_EOL . $line);
                 }
             }
         }
@@ -462,7 +462,7 @@ class ModuleTestHelper
         // put data in the proper order for snmpsim
         uksort($results, [$this, 'compareOid']);
 
-        $output = implode(PHP_EOL, $results).PHP_EOL;
+        $output = implode(PHP_EOL, $results) . PHP_EOL;
 
         if ($write) {
             $this->qPrint("\nUpdated snmprec data $this->snmprec_file\n");
@@ -478,7 +478,7 @@ class ModuleTestHelper
         $result = [];
 
         foreach ($snmprec_data as $line) {
-            if (!empty($line)) {
+            if (! empty($line)) {
                 [$oid,] = explode('|', $line, 2);
                 $result[$oid] = $line;
             }
@@ -520,7 +520,7 @@ class ModuleTestHelper
         global $device, $debug, $vdebug;
         Config::set('rrd.enable', false); // disable rrd
 
-        if (!is_file($this->snmprec_file)) {
+        if (! is_file($this->snmprec_file)) {
             throw new FileNotFoundException("$this->snmprec_file does not exist!");
         }
 
@@ -539,7 +539,7 @@ class ModuleTestHelper
 
             $this->qPrint("Added device: $device_id\n");
         } catch (\Exception $e) {
-            echo $this->file_name.': '.$e->getMessage().PHP_EOL;
+            echo $this->file_name . ': ' . $e->getMessage() . PHP_EOL;
 
             return null;
         }
@@ -612,7 +612,7 @@ class ModuleTestHelper
             delete_device($device['device_id']);
         }
 
-        if (!$no_save) {
+        if (! $no_save) {
             d_echo($data);
 
             // Save the data to the default test data location (or elsewhere if specified)
@@ -634,7 +634,7 @@ class ModuleTestHelper
                 }
             }
 
-            file_put_contents($this->json_file, _json_encode($existing_data).PHP_EOL);
+            file_put_contents($this->json_file, _json_encode($existing_data) . PHP_EOL);
             $this->qPrint("Saved to $this->json_file\nReady for testing!\n");
         }
 
@@ -665,7 +665,7 @@ class ModuleTestHelper
             $end_pos = strrpos($part, $end) ?: -1;
 
             // save output, re-add bits we used for parsing
-            $module_output[$module] = $module_start.substr($part, 0, $end_pos).$end;
+            $module_output[$module] = $module_start . substr($part, 0, $end_pos) . $end;
         }
 
         return $module_output;
@@ -712,7 +712,7 @@ class ModuleTestHelper
                 $select = ["`$table`.*"];
                 foreach ($info['joins'] ?: [] as $join_info) {
                     if (isset($join_info['custom'])) {
-                        $join .= ' '.$join_info['custom'];
+                        $join .= ' ' . $join_info['custom'];
 
                         $default_select = [];
                     } else {
@@ -785,7 +785,7 @@ class ModuleTestHelper
             if (isset($this->discovery_module_output[$module])) {
                 return $this->discovery_module_output[$module];
             } else {
-                return "Module $module not run. Modules: ".implode(',', array_keys($this->poller_module_output));
+                return "Module $module not run. Modules: " . implode(',', array_keys($this->poller_module_output));
             }
         }
 
@@ -806,7 +806,7 @@ class ModuleTestHelper
             if (isset($this->poller_module_output[$module])) {
                 return $this->poller_module_output[$module];
             } else {
-                return "Module $module not run. Modules: ".implode(',', array_keys($this->poller_module_output));
+                return "Module $module not run. Modules: " . implode(',', array_keys($this->poller_module_output));
             }
         }
 
@@ -859,7 +859,7 @@ class ModuleTestHelper
     private function dataIsEmpty($data)
     {
         foreach ($data as $table_data) {
-            if (!empty($table_data)) {
+            if (! empty($table_data)) {
                 return false;
             }
         }

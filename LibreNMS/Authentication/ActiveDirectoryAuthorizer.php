@@ -25,7 +25,7 @@ class ActiveDirectoryAuthorizer extends AuthorizerBase
 
         if ($this->ldap_connection) {
             // bind with sAMAccountName instead of full LDAP DN
-            if (!empty($credentials['username']) && !empty($credentials['password']) && ldap_bind($this->ldap_connection, $credentials['username'].'@'.Config::get('auth_ad_domain'), $credentials['password'])) {
+            if (! empty($credentials['username']) && ! empty($credentials['password']) && ldap_bind($this->ldap_connection, $credentials['username'] . '@' . Config::get('auth_ad_domain'), $credentials['password'])) {
                 $this->is_bound = true;
                 // group membership in one of the configured groups is required
                 if (Config::get('auth_ad_require_groupmembership', true)) {
@@ -54,7 +54,7 @@ class ActiveDirectoryAuthorizer extends AuthorizerBase
         } elseif (Config::get('auth_ad_debug', false)) {
             ldap_get_option($this->ldap_connection, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
 
-            throw new AuthenticationException(ldap_error($this->ldap_connection).'<br />'.$extended_error);
+            throw new AuthenticationException(ldap_error($this->ldap_connection) . '<br />' . $extended_error);
         }
 
         throw new AuthenticationException(ldap_error($this->ldap_connection));
@@ -98,7 +98,7 @@ class ActiveDirectoryAuthorizer extends AuthorizerBase
             Config::get('auth_ad_base_dn'),
             // add 'LDAP_MATCHING_RULE_IN_CHAIN to the user filter to search for $username in nested $group_dn
             // limiting to "DN" for shorter array
-            '(&'.$this->userFilter($username)."(memberOf:1.2.840.113556.1.4.1941:=$group_dn))",
+            '(&' . $this->userFilter($username) . "(memberOf:1.2.840.113556.1.4.1941:=$group_dn))",
             ['DN']
         );
         $entries = ldap_get_entries($connection, $search);
@@ -128,7 +128,7 @@ class ActiveDirectoryAuthorizer extends AuthorizerBase
     public function getUserlevel($username)
     {
         $userlevel = 0;
-        if (!Config::get('auth_ad_require_groupmembership', true)) {
+        if (! Config::get('auth_ad_require_groupmembership', true)) {
             if (Config::get('auth_ad_global_read', false)) {
                 $userlevel = 5;
             }
@@ -187,12 +187,12 @@ class ActiveDirectoryAuthorizer extends AuthorizerBase
             return;
         }
 
-        if (!function_exists('ldap_connect')) {
+        if (! function_exists('ldap_connect')) {
             throw new LdapMissingException();
         }
 
         if (Config::has('auth_ad_check_certificates') &&
-            !Config::get('auth_ad_check_certificates')) {
+            ! Config::get('auth_ad_check_certificates')) {
             putenv('LDAPTLS_REQCERT=never');
         }
 
@@ -209,7 +209,7 @@ class ActiveDirectoryAuthorizer extends AuthorizerBase
 
     public function bind($credentials = [])
     {
-        if (!$this->ldap_connection) {
+        if (! $this->ldap_connection) {
             $this->connect();
         }
 
@@ -220,7 +220,7 @@ class ActiveDirectoryAuthorizer extends AuthorizerBase
             $username = Config::get('auth_ad_binduser');
             $password = Config::get('auth_ad_bindpassword');
         }
-        $username .= '@'.Config::get('auth_ad_domain');
+        $username .= '@' . Config::get('auth_ad_domain');
 
         ldap_set_option($this->ldap_connection, LDAP_OPT_NETWORK_TIMEOUT, Config::get('auth_ad_timeout', 5));
         $bind_result = ldap_bind($this->ldap_connection, $username, $password);

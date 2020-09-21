@@ -39,7 +39,7 @@ class QueryBuilderFluentParser extends QueryBuilderParser
      */
     public function toQuery()
     {
-        if (empty($this->builder) || !array_key_exists('condition', $this->builder)) {
+        if (empty($this->builder) || ! array_key_exists('condition', $this->builder)) {
             return null;
         }
 
@@ -120,7 +120,7 @@ class QueryBuilderFluentParser extends QueryBuilderParser
                 Log::error('Could not parse in values, use comma or space delimiters');
                 break;
             default:
-                Log::error('Unhandled QueryBuilderFluentParser operation: '.$op);
+                Log::error('Unhandled QueryBuilderFluentParser operation: ' . $op);
         }
 
         return $query;
@@ -143,7 +143,7 @@ class QueryBuilderFluentParser extends QueryBuilderParser
         $op = $rule['operator'];
 
         $value = $rule['value'];
-        if (!is_array($value) && Str::startsWith($value, '`') && Str::endsWith($value, '`')) {
+        if (! is_array($value) && Str::startsWith($value, '`') && Str::endsWith($value, '`')) {
             $value = DB::raw($this->expandMacro(trim($value, '`')));
         }
 
@@ -157,7 +157,7 @@ class QueryBuilderFluentParser extends QueryBuilderParser
      */
     protected function joinTables($query)
     {
-        if (!isset($this->builder['joins'])) {
+        if (! isset($this->builder['joins'])) {
             $this->generateJoins();
         }
 

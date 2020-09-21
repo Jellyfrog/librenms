@@ -88,7 +88,7 @@ class DeviceGroupController extends Controller
      */
     public function show(DeviceGroup $deviceGroup)
     {
-        return redirect(url('/devices/group='.$deviceGroup->id));
+        return redirect(url('/devices/group=' . $deviceGroup->id));
     }
 
     /**
@@ -161,7 +161,7 @@ class DeviceGroupController extends Controller
                 }
             } catch (\Illuminate\Database\QueryException $e) {
                 return redirect()->back()->withInput()->withErrors([
-                    'rules' => __('Rules resulted in invalid query: ').$e->getMessage(),
+                    'rules' => __('Rules resulted in invalid query: ') . $e->getMessage(),
                 ]);
             }
         } else {

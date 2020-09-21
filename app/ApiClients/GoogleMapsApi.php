@@ -78,7 +78,7 @@ class GoogleMapsApi extends BaseApi implements Geocoder
     protected function buildGeocodingOptions($address)
     {
         $api_key = Config::get('geoloc.api_key');
-        if (!$api_key) {
+        if (! $api_key) {
             throw new Exception('Google Maps API key missing, set geoloc.api_key');
         }
 

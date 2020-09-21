@@ -41,7 +41,7 @@ class IPv6 extends IP
         $this->host_bits = 128;
         [$this->ip, $this->cidr] = $this->extractCidr($ipv6);
 
-        if (!self::isValid($this->ip)) {
+        if (! self::isValid($this->ip)) {
             throw new InvalidIpException("$ipv6 is not a valid ipv4 address");
         }
 
@@ -60,7 +60,7 @@ class IPv6 extends IP
     {
         $len = strlen($ip);
         if ($len == 16) {
-            return inet_ntop(pack('A'.$len, $ip));
+            return inet_ntop(pack('A' . $len, $ip));
         }
 
         return '';
@@ -134,7 +134,7 @@ class IPv6 extends IP
     {
         [$net, $cidr] = $this->extractCidr($network);
 
-        if (!self::isValid($net)) {
+        if (! self::isValid($net)) {
             return false;
         }
 
@@ -168,7 +168,7 @@ class IPv6 extends IP
     public function uncompressed()
     {
         // remove ::
-        $replacement = ':'.str_repeat('0000:', 8 - substr_count($this->ip, ':'));
+        $replacement = ':' . str_repeat('0000:', 8 - substr_count($this->ip, ':'));
         $ip = str_replace('::', $replacement, $this->ip);
 
         // zero pad

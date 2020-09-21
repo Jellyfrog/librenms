@@ -43,6 +43,6 @@ class Aix extends OS implements OSDiscovery
         } else {
             [, , $aix_version_min, $device->version, $device->serial] = explode(' ', $aix_descr[0]);
         }
-        $device->version .= '.'.$aix_version_min;
+        $device->version .= '.' . $aix_version_min;
     }
 }

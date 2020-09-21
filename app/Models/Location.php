@@ -60,7 +60,7 @@ class Location extends Model
      */
     public function hasCoordinates()
     {
-        return !(is_null($this->lat) || is_null($this->lng));
+        return ! (is_null($this->lat) || is_null($this->lng));
     }
 
     /**
@@ -79,12 +79,12 @@ class Location extends Model
      */
     public function lookupCoordinates()
     {
-        if (!$this->hasCoordinates() && $this->location) {
+        if (! $this->hasCoordinates() && $this->location) {
             $this->parseCoordinates();
 
-            if (!$this->hasCoordinates() &&
+            if (! $this->hasCoordinates() &&
                 \LibreNMS\Config::get('geoloc.latlng', true) &&
-                (!$this->id || $this->timestamp && $this->timestamp->diffInDays() > 2)
+                (! $this->id || $this->timestamp && $this->timestamp->diffInDays() > 2)
             ) {
                 $this->fetchCoordinates();
                 $this->updateTimestamps();

@@ -291,7 +291,7 @@ class ArubaInstant extends OS implements
     public function pollWirelessClients(array $sensors)
     {
         $data = [];
-        if (!empty($sensors)) {
+        if (! empty($sensors)) {
             $device = $this->getDeviceArray();
 
             if (intval(explode('.', $device['version'])[0]) >= 8 && intval(explode('.', $device['version'])[1]) >= 4) {
@@ -309,7 +309,7 @@ class ArubaInstant extends OS implements
                 }
             } else {
                 // version is lower than 8.4.0.0
-                if (!empty($sensors) && count($sensors) == 1) {
+                if (! empty($sensors) && count($sensors) == 1) {
                     $ai_mib = 'AI-AP-MIB';
                     $client_data = $this->getCacheTable('aiClientMACAddress', $ai_mib);
 
@@ -338,13 +338,13 @@ class ArubaInstant extends OS implements
     public function pollWirelessApCount(array $sensors)
     {
         $data = [];
-        if (!empty($sensors) && count($sensors) == 1) {
+        if (! empty($sensors) && count($sensors) == 1) {
             $ai_mib = 'AI-AP-MIB';
             $ap_data = $this->getCacheTable('aiAPSerialNum', $ai_mib);
 
             $total_aps = 0;
 
-            if (!empty($ap_data)) {
+            if (! empty($ap_data)) {
                 $total_aps = count($ap_data);
             }
 

@@ -45,7 +45,7 @@ class Config
     public static function load()
     {
         // don't reload the config if it is already loaded, reload() should be used for that
-        if (!is_null(self::$config)) {
+        if (! is_null(self::$config)) {
             return self::$config;
         }
 
@@ -129,7 +129,7 @@ class Config
             return self::$config[$key];
         }
 
-        if (!Str::contains($key, '.')) {
+        if (! Str::contains($key, '.')) {
             return $default;
         }
 
@@ -212,15 +212,15 @@ class Config
      */
     public static function getCombined($os, $key, $default = [])
     {
-        if (!self::has($key)) {
+        if (! self::has($key)) {
             return self::getOsSetting($os, $key, $default);
         }
 
-        if (!isset(self::$config['os'][$os][$key])) {
-            if (!Str::contains($key, '.')) {
+        if (! isset(self::$config['os'][$os][$key])) {
+            if (! Str::contains($key, '.')) {
                 return self::get($key, $default);
             }
-            if (!self::has("os.$os.$key")) {
+            if (! self::has("os.$os.$key")) {
                 return self::get($key, $default);
             }
         }
@@ -308,7 +308,7 @@ class Config
             return true;
         }
 
-        if (!Str::contains($key, '.')) {
+        if (! Str::contains($key, '.')) {
             return false;
         }
 
@@ -341,7 +341,7 @@ class Config
      */
     private static function loadDB()
     {
-        if (!Eloquent::isConnected()) {
+        if (! Eloquent::isConnected()) {
             return;
         }
 
@@ -394,7 +394,7 @@ class Config
 
         // set base_url from access URL
         if (isset($_SERVER['SERVER_NAME']) && isset($_SERVER['SERVER_PORT'])) {
-            $port = $_SERVER['SERVER_PORT'] != 80 ? ':'.$_SERVER['SERVER_PORT'] : '';
+            $port = $_SERVER['SERVER_PORT'] != 80 ? ':' . $_SERVER['SERVER_PORT'] : '';
             // handle literal IPv6
             $server = Str::contains($_SERVER['SERVER_NAME'], ':') ? "[{$_SERVER['SERVER_NAME']}]" : $_SERVER['SERVER_NAME'];
             Arr::set(self::$config, 'base_url', "http://$server$port/");
@@ -422,8 +422,8 @@ class Config
 
         self::set('base_url', Str::finish(self::get('base_url'), '/'));
 
-        if (!self::get('email_from')) {
-            self::set('email_from', '"'.self::get('project_name').'" <'.self::get('email_user').'@'.php_uname('n').'>');
+        if (! self::get('email_from')) {
+            self::set('email_from', '"' . self::get('project_name') . '" <' . self::get('email_user') . '@' . php_uname('n') . '>');
         }
 
         // Define some variables if they aren't set by user definition in config_definitions.json
@@ -449,7 +449,7 @@ class Config
         $persist = Eloquent::isConnected();
         // make sure we have full path to binaries in case PATH isn't set
         foreach (['fping', 'fping6', 'snmpgetnext', 'rrdtool', 'traceroute', 'traceroute6'] as $bin) {
-            if (!is_executable(self::get($bin))) {
+            if (! is_executable(self::get($bin))) {
                 if ($persist) {
                     self::persist($bin, self::locateBinary($bin));
                 } else {
@@ -473,7 +473,7 @@ class Config
      */
     private static function setDefault($key, $value, $format_values = [])
     {
-        if (!self::has($key)) {
+        if (! self::has($key)) {
             if (is_string($value)) {
                 $format_values = array_map('self::get', $format_values);
                 self::set($key, vsprintf($value, $format_values));
@@ -509,7 +509,7 @@ class Config
      */
     public static function locateBinary($binary)
     {
-        if (!Str::contains($binary, '/')) {
+        if (! Str::contains($binary, '/')) {
             $output = `whereis -b $binary`;
             $list = trim(substr($output, strpos($output, ':') + 1));
             $targets = explode(' ', $list);

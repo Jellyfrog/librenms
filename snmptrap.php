@@ -11,7 +11,7 @@
  * Adapted from old snmptrap.php handler
  */
 $init_modules = [];
-require __DIR__.'/includes/init.php';
+require __DIR__ . '/includes/init.php';
 
 $options = getopt('d::');
 

@@ -12,7 +12,7 @@
  */
 
 $init_modules = [];
-require realpath(__DIR__.'/..').'/includes/init.php';
+require realpath(__DIR__ . '/..') . '/includes/init.php';
 
 include_once 'Net/IPv4.php';
 
@@ -29,7 +29,7 @@ foreach (dbFetchRows('SELECT * FROM `ipv4_networks`') as $data) {
         while ($ip < $end) {
             $ipdotted = long2ip($ip);
             if (dbFetchCell('SELECT COUNT(ipv4_address_id) FROM `ipv4_addresses` WHERE `ipv4_address` = ?', [$ipdotted]) == '0' && match_network(\LibreNMS\Config::get('nets'), $ipdotted)) {
-                fwrite($handle, $ipdotted."\n");
+                fwrite($handle, $ipdotted . "\n");
             }
 
             $ip++;
@@ -39,4 +39,4 @@ foreach (dbFetchRows('SELECT * FROM `ipv4_networks`') as $data) {
 
 fclose($handle);
 
-shell_exec(\LibreNMS\Config::get('fping').' -t 100 -f ips.txt > ips-scanned.txt');
+shell_exec(\LibreNMS\Config::get('fping') . ' -t 100 -f ips.txt > ips-scanned.txt');

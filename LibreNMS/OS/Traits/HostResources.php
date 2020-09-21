@@ -54,10 +54,10 @@ trait HostResources
         }
 
         foreach ($hrProcessorLoad as $index => $usage) {
-            $usage_oid = '.1.3.6.1.2.1.25.3.3.1.2.'.$index;
+            $usage_oid = '.1.3.6.1.2.1.25.3.3.1.2.' . $index;
             $descr = $hrDeviceDescr[$index];
 
-            if (!is_numeric($usage)) {
+            if (! is_numeric($usage)) {
                 continue;
             }
 

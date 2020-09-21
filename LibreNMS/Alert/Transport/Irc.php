@@ -35,10 +35,10 @@ class Irc extends Transport
 
     public function contactIrc($obj, $opts)
     {
-        $f = Config::get('install_dir').'/.ircbot.alert';
+        $f = Config::get('install_dir') . '/.ircbot.alert';
         if (file_exists($f) && filetype($f) == 'fifo') {
             $f = fopen($f, 'w+');
-            $r = fwrite($f, json_encode($obj)."\n");
+            $r = fwrite($f, json_encode($obj) . "\n");
             $f = fclose($f);
             if ($r === false) {
                 return false;

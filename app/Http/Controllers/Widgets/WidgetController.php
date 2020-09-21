@@ -70,14 +70,14 @@ abstract class WidgetController extends Controller
 
         $settings = $this->getSettings();
 
-        if (!$this->show_settings) {
-            if (!empty($settings['device_group'])) {
-                $this->title .= ' ('.DeviceGroup::find($settings['device_group'])->name.')';
+        if (! $this->show_settings) {
+            if (! empty($settings['device_group'])) {
+                $this->title .= ' (' . DeviceGroup::find($settings['device_group'])->name . ')';
             }
             $view = $this->getView($request);
         }
 
-        if (!empty($settings['title'])) {
+        if (! empty($settings['title'])) {
             $title = $settings['title'];
         } else {
             $title = __(method_exists($this, 'title') ? app()->call([$this, 'title']) : $this->title);

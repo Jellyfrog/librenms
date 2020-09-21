@@ -79,7 +79,7 @@ class DeviceGroup extends BaseModel
     public static function updateGroupsFor($device)
     {
         $device = ($device instanceof Device ? $device : Device::find($device));
-        if (!$device instanceof Device) {
+        if (! $device instanceof Device) {
             // could not load device
             return [
                 'attached' => [],
@@ -102,7 +102,7 @@ class DeviceGroup extends BaseModel
                             ->where('devices.device_id', $device->device_id)
                             ->exists();
                     } catch (\Illuminate\Database\QueryException $e) {
-                        Log::error("Device Group '$device_group->name' generates invalid query: ".$e->getMessage());
+                        Log::error("Device Group '$device_group->name' generates invalid query: " . $e->getMessage());
 
                         return false;
                     }
@@ -124,7 +124,7 @@ class DeviceGroup extends BaseModel
      */
     public function getParser()
     {
-        return !empty($this->rules) ?
+        return ! empty($this->rules) ?
             QueryBuilderFluentParser::fromJson($this->rules) :
             QueryBuilderFluentParser::fromOld($this->pattern);
     }

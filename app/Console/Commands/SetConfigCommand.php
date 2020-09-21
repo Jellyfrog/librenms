@@ -40,19 +40,19 @@ class SetConfigCommand extends LnmsCommand
         $value = $this->argument('value');
         $force = $this->option('ignore-checks');
 
-        if (!$force && !$definition->isValidSetting($setting)) {
+        if (! $force && ! $definition->isValidSetting($setting)) {
             $this->error(trans('commands.config:set.errors.invalid'));
 
             return 2;
         }
 
-        if (!Eloquent::isConnected()) {
+        if (! Eloquent::isConnected()) {
             $this->error(trans('commands.config:set.errors.nodb'));
 
             return 1;
         }
 
-        if (!$force && !$value) {
+        if (! $force && ! $value) {
             if ($this->confirm(trans('commands.config:set.confirm', ['setting' => $setting]))) {
                 Config::erase($setting);
 
@@ -64,7 +64,7 @@ class SetConfigCommand extends LnmsCommand
 
         $value = $this->juggleType($value);
         $configItem = $definition->get($setting);
-        if (!$force && !$configItem->checkValue($value)) {
+        if (! $force && ! $configItem->checkValue($value)) {
             $message = ($configItem->type || $configItem->validate)
                 ? $configItem->getValidationMessage($value)
                 : trans('commands.config:set.errors.no-validation', ['setting' => $setting]);

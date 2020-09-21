@@ -75,7 +75,7 @@ class Helios extends OS implements WirelessFrequencyDiscovery, WirelessPowerDisc
             $sensors[] = new WirelessSensor(
                 $type,
                 $this->getDeviceId(),
-                $oid_prefix.$index,
+                $oid_prefix . $index,
                 'ignitenet',
                 $index,
                 "Radio $index",

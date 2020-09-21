@@ -64,7 +64,7 @@ class QueryBuilderFilter implements \JsonSerializable
         krsort($macros);
 
         foreach ($macros as $key => $value) {
-            $field = 'macros.'.$key;
+            $field = 'macros.' . $key;
 
             if (preg_match('/^past_\d+m$/', $key)) {
                 continue; // don't include the time based macros, they don't work like that
@@ -96,7 +96,7 @@ class QueryBuilderFilter implements \JsonSerializable
             $columns = array_column($data['Columns'], 'Type', 'Field');
 
             // only allow tables with a direct association to device_id
-            if (!in_array($table, $valid_tables)) {
+            if (! in_array($table, $valid_tables)) {
                 continue;
             }
 

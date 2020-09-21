@@ -149,7 +149,7 @@ class XirrusAos extends OS implements
             $sensors[] = new WirelessSensor(
                 $type,
                 $this->getDeviceId(),
-                $oid_num_prefix.$index,
+                $oid_num_prefix . $index,
                 'xirrus',
                 $index,
                 $names[$index],

@@ -52,13 +52,13 @@ class Rrd extends BaseDatastore
         $this->rrdcached = Config::get('rrdcached', false);
 
         $this->init();
-        $this->rrd_dir = Config::get('rrd_dir', Config::get('install_dir').'/rrd');
+        $this->rrd_dir = Config::get('rrd_dir', Config::get('install_dir') . '/rrd');
         $this->step = Config::get('rrd.step', 300);
         $this->rra = Config::get(
             'rrd_rra',
-            'RRA:AVERAGE:0.5:1:2016 RRA:AVERAGE:0.5:6:1440 RRA:AVERAGE:0.5:24:1440 RRA:AVERAGE:0.5:288:1440 '.
-            ' RRA:MIN:0.5:1:2016 RRA:MIN:0.5:6:1440     RRA:MIN:0.5:24:1440     RRA:MIN:0.5:288:1440 '.
-            ' RRA:MAX:0.5:1:2016 RRA:MAX:0.5:6:1440     RRA:MAX:0.5:24:1440     RRA:MAX:0.5:288:1440 '.
+            'RRA:AVERAGE:0.5:1:2016 RRA:AVERAGE:0.5:6:1440 RRA:AVERAGE:0.5:24:1440 RRA:AVERAGE:0.5:288:1440 ' .
+            ' RRA:MIN:0.5:1:2016 RRA:MIN:0.5:6:1440     RRA:MIN:0.5:24:1440     RRA:MIN:0.5:288:1440 ' .
+            ' RRA:MAX:0.5:1:2016 RRA:MAX:0.5:6:1440     RRA:MAX:0.5:24:1440     RRA:MAX:0.5:288:1440 ' .
             ' RRA:LAST:0.5:1:2016 '
         );
         $this->version = Config::get('rrdtool_version', '1.4');
@@ -83,7 +83,7 @@ class Rrd extends BaseDatastore
      */
     public function init($dual_process = true)
     {
-        $command = Config::get('rrdtool', 'rrdtool').' -';
+        $command = Config::get('rrdtool', 'rrdtool') . ' -';
 
         $descriptor_spec = [
             0 => ['pipe', 'r'], // stdin  is a pipe that the child will read from
@@ -93,11 +93,11 @@ class Rrd extends BaseDatastore
 
         $cwd = Config::get('rrd_dir');
 
-        if (!$this->isSyncRunning()) {
+        if (! $this->isSyncRunning()) {
             $this->sync_process = new Proc($command, $descriptor_spec, $cwd);
         }
 
-        if ($dual_process && !$this->isAsyncRunning()) {
+        if ($dual_process && ! $this->isAsyncRunning()) {
             $this->async_process = new Proc($command, $descriptor_spec, $cwd);
             $this->async_process->setSynchronous(false);
         }
@@ -147,7 +147,7 @@ class Rrd extends BaseDatastore
     {
         $rrd_name = isset($tags['rrd_name']) ? $tags['rrd_name'] : $measurement;
         $step = isset($tags['rrd_step']) ? $tags['rrd_step'] : $this->step;
-        if (!empty($tags['rrd_oldname'])) {
+        if (! empty($tags['rrd_oldname'])) {
             self::renameFile($device, $tags['rrd_oldname'], $rrd_name);
         }
 
@@ -164,14 +164,14 @@ class Rrd extends BaseDatastore
             // filter out data not in the definition
             $fields = array_filter($fields, function ($key) use ($rrd_def) {
                 $valid = $rrd_def->isValidDataset($key);
-                if (!$valid) {
+                if (! $valid) {
                     Log::warning("RRD warning: unused data sent $key");
                 }
 
                 return $valid;
             }, ARRAY_FILTER_USE_KEY);
 
-            if (!$this->checkRrdExists($rrd)) {
+            if (! $this->checkRrdExists($rrd)) {
                 $newdef = "--step $step $rrd_def $this->rra";
                 $this->command('create', $rrd, $newdef);
             }
@@ -199,7 +199,7 @@ class Rrd extends BaseDatastore
         if (is_array($data)) {
             $values[] = 'N';
             foreach ($data as $v) {
-                if (!is_numeric($v)) {
+                if (! is_numeric($v)) {
                     $v = 'U';
                 }
 
@@ -252,7 +252,7 @@ class Rrd extends BaseDatastore
             ];
         }
         if (count($fields) > 0) {
-            $options = '--maximum '.implode(":$max --maximum ", $fields).":$max";
+            $options = '--maximum ' . implode(":$max --maximum ", $fields) . ":$max";
             $this->command('tune', $filename, $options);
         }
 
@@ -274,11 +274,11 @@ class Rrd extends BaseDatastore
     {
         $pmxcdir = implode('/', [$this->rrd_dir, 'proxmox', self::safeName($pmxcluster)]);
         // this is not needed for remote rrdcached
-        if (!is_dir($pmxcdir)) {
+        if (! is_dir($pmxcdir)) {
             mkdir($pmxcdir, 0775, true);
         }
 
-        return implode('/', [$pmxcdir, self::safeName($vmid.'_netif_'.$vmport.'.rrd')]);
+        return implode('/', [$pmxcdir, self::safeName($vmid . '_netif_' . $vmport . '.rrd')]);
     }
 
     /**
@@ -291,7 +291,7 @@ class Rrd extends BaseDatastore
      */
     public function portName($port_id, $suffix = null)
     {
-        return "port-id$port_id".(empty($suffix) ? '' : '-'.$suffix);
+        return "port-id$port_id" . (empty($suffix) ? '' : '-' . $suffix);
     }
 
     /**
@@ -307,7 +307,7 @@ class Rrd extends BaseDatastore
     {
         $oldrrd = self::name($device['hostname'], $oldname);
         $newrrd = self::name($device['hostname'], $newname);
-        if (is_file($oldrrd) && !is_file($newrrd)) {
+        if (is_file($oldrrd) && ! is_file($newrrd)) {
             if (rename($oldrrd, $newrrd)) {
                 log_event("Renamed $oldrrd to $newrrd", $device, 'poller', 1);
 
@@ -336,7 +336,7 @@ class Rrd extends BaseDatastore
     {
         $filename = self::safeName(is_array($extra) ? implode('-', $extra) : $extra);
 
-        return implode('/', [$this->dirFromHost($host), $filename.$extension]);
+        return implode('/', [$this->dirFromHost($host), $filename . $extension]);
     }
 
     /**
@@ -383,8 +383,8 @@ class Rrd extends BaseDatastore
 
         // do not write rrd files, but allow read-only commands
         $ro_commands = ['graph', 'graphv', 'dump', 'fetch', 'first', 'last', 'lastupdate', 'info', 'xport'];
-        if ($this->disabled && !in_array($command, $ro_commands)) {
-            if (!Config::get('hide_rrd_disabled')) {
+        if ($this->disabled && ! in_array($command, $ro_commands)) {
+            if (! Config::get('hide_rrd_disabled')) {
                 Log::debug('[%rRRD Disabled%n]', ['color' => true]);
             }
 
@@ -443,14 +443,14 @@ class Rrd extends BaseDatastore
 
         // no remote for create < 1.5.5 and tune < 1.5
         if ($this->rrdcached &&
-            !($command == 'create' && version_compare($this->version, '1.5.5', '<')) &&
-            !($command == 'tune' && $this->rrdcached && version_compare($this->version, '1.5', '<'))
+            ! ($command == 'create' && version_compare($this->version, '1.5.5', '<')) &&
+            ! ($command == 'tune' && $this->rrdcached && version_compare($this->version, '1.5', '<'))
         ) {
             // only relative paths if using rrdcached
-            $filename = str_replace([$this->rrd_dir.'/', $this->rrd_dir], '', $filename);
-            $options = str_replace([$this->rrd_dir.'/', $this->rrd_dir], '', $options);
+            $filename = str_replace([$this->rrd_dir . '/', $this->rrd_dir], '', $filename);
+            $options = str_replace([$this->rrd_dir . '/', $this->rrd_dir], '', $options);
 
-            return "$command $filename $options --daemon ".$this->rrdcached;
+            return "$command $filename $options --daemon " . $this->rrdcached;
         }
 
         return "$command $filename $options";
@@ -468,9 +468,9 @@ class Rrd extends BaseDatastore
     {
         if ($this->rrdcached && version_compare($this->version, '1.5', '>=')) {
             $chk = $this->command('last', $filename, '');
-            $filename = str_replace([$this->rrd_dir.'/', $this->rrd_dir], '', $filename);
+            $filename = str_replace([$this->rrd_dir . '/', $this->rrd_dir], '', $filename);
 
-            return !Str::contains(implode($chk), "$filename': No such file or directory");
+            return ! Str::contains(implode($chk), "$filename': No such file or directory");
         } else {
             return is_file($filename);
         }

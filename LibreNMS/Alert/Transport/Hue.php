@@ -36,7 +36,7 @@ class Hue extends Transport
 {
     public function deliverAlert($obj, $opts)
     {
-        if (!empty($this->config)) {
+        if (! empty($this->config)) {
             $opts['user'] = $this->config['hue-user'];
             $opts['bridge'] = $this->config['hue-host'];
             $opts['duration'] = $this->config['hue-duration'];
@@ -53,7 +53,7 @@ class Hue extends Transport
         } else {
             $device = device_by_id_cache($obj['device_id']); // for event logging
             $hue_user = $opts['user'];
-            $url = $opts['bridge']."/api/$hue_user/groups/0/action";
+            $url = $opts['bridge'] . "/api/$hue_user/groups/0/action";
             $curl = curl_init();
             $duration = $opts['duration'];
             $data = ['alert' => $duration];
@@ -73,11 +73,11 @@ class Hue extends Transport
             $ret = curl_exec($curl);
             $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             if ($code == 200) {
-                d_echo('Sent alert to Phillips Hue Bridge '.$opts['host'].' for '.$device);
+                d_echo('Sent alert to Phillips Hue Bridge ' . $opts['host'] . ' for ' . $device);
 
                 return true;
             } else {
-                d_echo('Hue bridge connection error: '.serialize($ret));
+                d_echo('Hue bridge connection error: ' . serialize($ret));
 
                 return false;
             }

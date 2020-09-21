@@ -115,7 +115,7 @@ class Ewc extends OS implements
             $sensors[] = new WirelessSensor(
                 'clients',
                 $this->getDeviceId(),
-                '1.3.6.1.4.1.4329.15.3.5.2.2.1.14.'.$index,
+                '1.3.6.1.4.1.4329.15.3.5.2.2.1.14.' . $index,
                 'ewc',
                 $index,
                 "Clients ($name)",
@@ -131,7 +131,7 @@ class Ewc extends OS implements
             $sensors[] = new WirelessSensor(
                 'clients',
                 $this->getDeviceId(),
-                '1.3.6.1.4.1.4329.15.3.3.4.5.1.2.'.$index,
+                '1.3.6.1.4.1.4329.15.3.3.4.5.1.2.' . $index,
                 'ewc',
                 $name,
                 "SSID: $name"
@@ -158,10 +158,10 @@ class Ewc extends OS implements
             $sensors[] = new WirelessSensor(
                 'errors',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.4329.15.3.5.2.5.1.18.'.$index,
+                '.1.3.6.1.4.1.4329.15.3.5.2.5.1.18.' . $index,
                 'ewc',
-                $index.'Retx',
-                "Retransmits ($name radio ".explode('.', $index)[1].')'
+                $index . 'Retx',
+                "Retransmits ($name radio " . explode('.', $index)[1] . ')'
             );
         }
 
@@ -185,7 +185,7 @@ class Ewc extends OS implements
             $sensors[] = new WirelessSensor(
                 'frequency',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.4329.15.3.5.2.4.1.1.'.$index,
+                '.1.3.6.1.4.1.4329.15.3.5.2.4.1.1.' . $index,
                 'ewc',
                 $index,
                 "Frequency ($name)"
@@ -213,7 +213,7 @@ class Ewc extends OS implements
             $sensors[] = new WirelessSensor(
                 'noise-floor',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.4329.15.3.1.4.3.1.32.'.$index,
+                '.1.3.6.1.4.1.4329.15.3.1.4.3.1.32.' . $index,
                 'ewc',
                 $index,
                 "Noise floor ($name)",
@@ -246,10 +246,10 @@ class Ewc extends OS implements
             $sensors[] = new WirelessSensor(
                 'rssi',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.4329.15.3.5.2.5.1.9.'.$index,
+                '.1.3.6.1.4.1.4329.15.3.5.2.5.1.9.' . $index,
                 'ewc',
                 $index,
-                "RSS ($name radio ".explode('.', $index)[1].')'
+                "RSS ($name radio " . explode('.', $index)[1] . ')'
             );
         }
 
@@ -273,10 +273,10 @@ class Ewc extends OS implements
             $sensors[] = new WirelessSensor(
                 'snr',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.4329.15.3.5.2.5.1.13.'.$index,
+                '.1.3.6.1.4.1.4329.15.3.5.2.5.1.13.' . $index,
                 'ewc',
                 $index,
-                "SNR ($name radio ".explode('.', $index)[1].')'
+                "SNR ($name radio " . explode('.', $index)[1] . ')'
             );
         }
 
@@ -300,10 +300,10 @@ class Ewc extends OS implements
             $sensors[] = new WirelessSensor(
                 'utilization',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.4329.15.3.5.2.5.1.5.'.$index,
+                '.1.3.6.1.4.1.4329.15.3.5.2.5.1.5.' . $index,
                 'ewc',
                 $index,
-                "Utilization ($name radio ".explode('.', $index)[1].')'
+                "Utilization ($name radio " . explode('.', $index)[1] . ')'
             );
         }
 

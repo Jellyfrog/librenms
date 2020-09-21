@@ -225,10 +225,10 @@ class Airos extends OS implements
             $sensors[] = new WirelessSensor(
                 'rssi',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.41112.1.4.2.1.2.'.$index,
+                '.1.3.6.1.4.1.41112.1.4.2.1.2.' . $index,
                 'airos',
                 $index,
-                'RSSI: Chain '.str_replace('1.', '', $index),
+                'RSSI: Chain ' . str_replace('1.', '', $index),
                 $entry['ubntRadioRssi.1']
             );
         }

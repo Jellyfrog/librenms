@@ -45,7 +45,7 @@ class Device extends BaseModel
      */
     public static function pollerTarget($device)
     {
-        if (!is_array($device)) {
+        if (! is_array($device)) {
             $ret = static::where('hostname', $device)->first(['hostname', 'overwrite_ip']);
             if (empty($ret)) {
                 return $device;
@@ -64,7 +64,7 @@ class Device extends BaseModel
 
     public static function findByIp($ip)
     {
-        if (!IP::isValid($ip)) {
+        if (! IP::isValid($ip)) {
             return null;
         }
 
@@ -134,7 +134,7 @@ class Device extends BaseModel
 
     public function isUnderMaintenance()
     {
-        if (!$this->device_id) {
+        if (! $this->device_id) {
             return false;
         }
 
@@ -196,7 +196,7 @@ class Device extends BaseModel
      */
     public function canAccess($user)
     {
-        if (!$user) {
+        if (! $user) {
             return false;
         }
 
@@ -228,7 +228,7 @@ class Device extends BaseModel
         ];
 
         foreach ($options as $file) {
-            if (is_file(public_path()."/$file")) {
+            if (is_file(public_path() . "/$file")) {
                 return asset($file);
             }
         }
@@ -246,7 +246,7 @@ class Device extends BaseModel
     {
         // optimize for memory instead of time
         $query = $this->parents()->getQuery();
-        if (!is_null($exclude)) {
+        if (! is_null($exclude)) {
             $query->where('device_id', '!=', $exclude);
         }
 
@@ -293,7 +293,7 @@ class Device extends BaseModel
             return $item->attrib_type === $name;
         });
 
-        if (!$attrib) {
+        if (! $attrib) {
             $attrib = new DeviceAttrib(['attrib_type' => $name]);
             $this->attribs->push($attrib);
         }

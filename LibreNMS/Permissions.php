@@ -185,7 +185,7 @@ class Permissions
         $user_id = $this->getUserId($user);
 
         // if we don't have a map for this user yet, populate it.
-        if (!isset($this->deviceGroupMap[$user_id])) {
+        if (! isset($this->deviceGroupMap[$user_id])) {
             $this->deviceGroupMap[$user_id] = DB::table('device_group_device')
                 ->whereIn('device_id', $this->devicesForUser($user))
                 ->distinct('device_group_id')
@@ -206,7 +206,7 @@ class Permissions
     {
         $user_id = $this->getUserId($user);
 
-        if (!isset($this->devicePermissions[$user_id])) {
+        if (! isset($this->devicePermissions[$user_id])) {
             $this->devicePermissions[$user_id] = DB::table('devices_perms')->where('user_id', $user_id)
                 ->union($this->getDeviceGroupPermissionsQuery()->where('user_id', $user_id))
                 ->get();
@@ -291,7 +291,7 @@ class Permissions
         return DB::table('devices_group_perms')
         ->select('devices_group_perms.user_id', 'device_group_device.device_id')
         ->join('device_group_device', 'device_group_device.device_group_id', '=', 'devices_group_perms.device_group_id')
-        ->when(!Config::get('permission.device_group.allow_dynamic'), function ($query) {
+        ->when(! Config::get('permission.device_group.allow_dynamic'), function ($query) {
             return $query
                 ->join('device_groups', 'device_groups.id', '=', 'devices_group_perms.device_group_id')
                 ->where('device_groups.type', 'static');

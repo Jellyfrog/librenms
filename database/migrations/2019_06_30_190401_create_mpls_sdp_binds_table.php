@@ -26,7 +26,7 @@ class CreateMplsSdpBindsTable extends Migration
             $table->bigInteger('sdpBindLastMgmtChange')->nullable();
             $table->bigInteger('sdpBindLastStatusChange')->nullable();
             $table->enum('sdpBindType', ['spoke', 'mesh'])->nullable();
-            $table->enum('sdpBindVcType', ['undef', 'ether', 'vlan', 'mirrior', 'atmSdu'.'atmCell', 'atmVcc', 'atmVpc', 'frDlci', 'ipipe', 'satopE1', 'satopT1', 'satopE3', 'satopT3', 'cesopsn', 'cesopsnCas'])->nullable();
+            $table->enum('sdpBindVcType', ['undef', 'ether', 'vlan', 'mirrior', 'atmSdu' . 'atmCell', 'atmVcc', 'atmVpc', 'frDlci', 'ipipe', 'satopE1', 'satopT1', 'satopE3', 'satopT3', 'cesopsn', 'cesopsnCas'])->nullable();
             $table->bigInteger('sdpBindBaseStatsIngFwdPackets')->nullable();
             $table->bigInteger('sdpBindBaseStatsIngFwdOctets')->nullable();
             $table->bigInteger('sdpBindBaseStatsEgrFwdPackets')->nullable();

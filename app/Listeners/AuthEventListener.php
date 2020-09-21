@@ -35,7 +35,7 @@ class AuthEventListener
 
         DB::table('authlog')->insert(['user' => $user->username ?: '', 'address' => Request::ip(), 'result' => 'Logged In']);
 
-        Toastr::info('Welcome '.($user->realname ?: $user->username));
+        Toastr::info('Welcome ' . ($user->realname ?: $user->username));
     }
 
     /**

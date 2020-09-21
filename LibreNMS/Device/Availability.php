@@ -75,7 +75,7 @@ class Availability
      */
     protected static function outageSummary($found_outages, $duration, $now = null)
     {
-        if (!is_numeric($now)) {
+        if (! is_numeric($now)) {
             $now = time();
         }
 
@@ -111,7 +111,7 @@ class Availability
      */
     public static function availability($device, $duration, $precision = 3, $now = null)
     {
-        if (!is_numeric($now)) {
+        if (! is_numeric($now)) {
             $now = time();
         }
 
@@ -122,7 +122,7 @@ class Availability
         $found_outages = $query->get();
 
         // no recorded outages found, so use current uptime
-        if (!count($found_outages)) {
+        if (! count($found_outages)) {
             return 100 * 1;
         }
 

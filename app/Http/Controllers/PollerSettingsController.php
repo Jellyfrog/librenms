@@ -36,7 +36,7 @@ class PollerSettingsController extends Controller
         $this->authorize('update', $poller);
 
         $definition = collect($poller->configDefinition())->keyBy('name');
-        if (!$definition->has($setting)) {
+        if (! $definition->has($setting)) {
             return response()->json(['error' => 'Invalid setting'], 422);
         }
 
@@ -52,7 +52,7 @@ class PollerSettingsController extends Controller
         $this->authorize('delete', $poller);
 
         $definition = collect($poller->configDefinition())->keyBy('name');
-        if (!$definition->has($setting)) {
+        if (! $definition->has($setting)) {
             return response()->json(['error' => 'Invalid setting'], 422);
         }
 

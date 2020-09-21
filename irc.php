@@ -20,7 +20,7 @@
  * */
 
 $init_modules = [];
-require __DIR__.'/includes/init.php';
+require __DIR__ . '/includes/init.php';
 error_reporting(E_ERROR);
 
 $irc = new LibreNMS\IRCBot();

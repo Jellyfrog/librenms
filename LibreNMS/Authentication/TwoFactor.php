@@ -150,7 +150,7 @@ class TwoFactor
             }
             while (++$initcount <= $endcount) {
                 if (self::oathHOTP($key, $initcount) == $otp) {
-                    if (!$totp) {
+                    if (! $totp) {
                         return $initcount;
                     } else {
                         return true;
@@ -189,7 +189,7 @@ class TwoFactor
                 $kbin .= chr(($y & (0xFF << $z)) >> $z);
             }
         }
-        $hash = hash_hmac('sha1', pack('N*', 0).pack('N*', $counter), $kbin, true);
+        $hash = hash_hmac('sha1', pack('N*', 0) . pack('N*', $counter), $kbin, true);
         $offset = ord($hash[19]) & 0xf;
         $truncated = (((ord($hash[$offset + 0]) & 0x7f) << 24) |
                 ((ord($hash[$offset + 1]) & 0xff) << 16) |
@@ -210,7 +210,7 @@ class TwoFactor
      */
     public static function generateUri($username, $key, $counter = false)
     {
-        $title = 'LibreNMS:'.urlencode($username);
+        $title = 'LibreNMS:' . urlencode($username);
 
         return $counter ?
             "otpauth://hotp/$title?issuer=LibreNMS&counter=1&secret=$key" : // counter based

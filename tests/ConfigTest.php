@@ -40,7 +40,7 @@ class ConfigTest extends TestCase
 
     public function testGetBasic()
     {
-        $dir = realpath(__DIR__.'/..');
+        $dir = realpath(__DIR__ . '/..');
         $this->assertEquals($dir, Config::get('install_dir'));
     }
 

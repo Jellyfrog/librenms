@@ -98,9 +98,9 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
                 return string_to_oid($matches[1]);
             }, $oid);
         }
-        $proc->processor_oid = '.'.ltrim($oid, '.');
+        $proc->processor_oid = '.' . ltrim($oid, '.');
 
-        if (!is_null($warn_percent)) {
+        if (! is_null($warn_percent)) {
             $proc->processor_perc_warn = $warn_percent;
         }
 
@@ -108,13 +108,13 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
         if (is_null($proc->processor_usage)) {
             $data = snmp_get(device_by_id_cache($proc->device_id), $proc->processor_oid, '-Ovq');
             $proc->valid = ($data !== false);
-            if (!$proc->valid) {
+            if (! $proc->valid) {
                 return $proc;
             }
             $proc->processor_usage = static::processData($data, $proc->processor_precision);
         }
 
-        d_echo('Discovered '.get_called_class().' '.print_r($proc->toArray(), true));
+        d_echo('Discovered ' . get_called_class() . ' ' . print_r($proc->toArray(), true));
 
         return $proc;
     }

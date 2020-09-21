@@ -48,10 +48,10 @@ class Hipchat extends Transport
         // Generate our URL from the base URL + room_id and the auth token if the version is 2.
         $url = $option['url'];
         if ($version == 2) {
-            $url .= '/'.urlencode($option['room_id']).'/notification?auth_token='.urlencode($option['auth_token']);
+            $url .= '/' . urlencode($option['room_id']) . '/notification?auth_token=' . urlencode($option['auth_token']);
         }
         foreach ($obj as $key => $value) {
-            $api = str_replace('%'.$key, $method == 'get' ? urlencode($value) : $value, $api);
+            $api = str_replace('%' . $key, $method == 'get' ? urlencode($value) : $value, $api);
         }
         $curl = curl_init();
 
@@ -77,14 +77,14 @@ class Hipchat extends Transport
             }
         }
 
-        $data[] = 'message='.urlencode($obj['msg']);
+        $data[] = 'message=' . urlencode($obj['msg']);
         if ($version == 1) {
-            $data[] = 'room_id='.urlencode($option['room_id']);
+            $data[] = 'room_id=' . urlencode($option['room_id']);
         }
-        $data[] = 'from='.urlencode($option['from']);
-        $data[] = 'color='.urlencode($color);
-        $data[] = 'notify='.urlencode($option['notify']);
-        $data[] = 'message_format='.urlencode($option['message_format']);
+        $data[] = 'from=' . urlencode($option['from']);
+        $data[] = 'color=' . urlencode($color);
+        $data[] = 'notify=' . urlencode($option['notify']);
+        $data[] = 'message_format=' . urlencode($option['message_format']);
 
         $data = implode('&', $data);
         set_curl_proxy($curl);
@@ -100,10 +100,10 @@ class Hipchat extends Transport
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         if ($code != 200 && $code != 204) {
             var_dump("API '$url' returned Error");
-            var_dump('Params: '.$message);
-            var_dump('Return: '.$ret);
+            var_dump('Params: ' . $message);
+            var_dump('Return: ' . $ret);
 
-            return 'HTTP Status code '.$code;
+            return 'HTTP Status code ' . $code;
         }
 
         return true;

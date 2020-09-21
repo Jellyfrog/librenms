@@ -13,16 +13,16 @@
  */
 
 $init_modules = ['web', 'auth', 'alerts'];
-require realpath(__DIR__.'/..').'/includes/init.php';
+require realpath(__DIR__ . '/..') . '/includes/init.php';
 
-if (!Auth::check()) {
+if (! Auth::check()) {
     exit('Unauthorized');
 }
 
 set_debug(isset($_REQUEST['debug']) ? $_REQUEST['debug'] : false);
 
 if (preg_match('/^[a-zA-Z0-9\-]+$/', $_POST['type']) == 1) {
-    if (file_exists('includes/html/forms/'.$_POST['type'].'.inc.php')) {
-        include_once 'includes/html/forms/'.$_POST['type'].'.inc.php';
+    if (file_exists('includes/html/forms/' . $_POST['type'] . '.inc.php')) {
+        include_once 'includes/html/forms/' . $_POST['type'] . '.inc.php';
     }
 }

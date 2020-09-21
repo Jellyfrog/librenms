@@ -108,7 +108,7 @@ class ValidationResult
 
     public function hasList()
     {
-        return !empty($this->list);
+        return ! empty($this->list);
     }
 
     public function getList()
@@ -132,7 +132,7 @@ class ValidationResult
 
     public function hasFix()
     {
-        return !empty($this->fix);
+        return ! empty($this->fix);
     }
 
     public function getFix()
@@ -160,7 +160,7 @@ class ValidationResult
      */
     public function consolePrint()
     {
-        c_echo(str_pad('['.$this->getStatusText($this->status).']', 12).$this->message.PHP_EOL);
+        c_echo(str_pad('[' . $this->getStatusText($this->status) . ']', 12) . $this->message . PHP_EOL);
 
         if (isset($this->fix)) {
             c_echo("\t[%BFIX%n]: \n");
@@ -169,8 +169,8 @@ class ValidationResult
             }
         }
 
-        if (!empty($this->list)) {
-            echo "\t".$this->getListDescription().":\n";
+        if (! empty($this->list)) {
+            echo "\t" . $this->getListDescription() . ":\n";
             $this->printList();
         }
     }

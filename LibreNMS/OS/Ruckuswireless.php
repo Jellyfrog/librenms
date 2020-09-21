@@ -22,7 +22,7 @@ class Ruckuswireless extends OS implements
         $total_oids = [];
         $total = 0;
         foreach ($counts as $index => $count) {
-            $oid = '.1.3.6.1.4.1.25053.1.2.2.1.1.1.1.1.12.'.$index;
+            $oid = '.1.3.6.1.4.1.25053.1.2.2.1.1.1.1.1.12.' . $index;
             $total_oids[] = $oid;
             $total += $count;
 
@@ -32,7 +32,7 @@ class Ruckuswireless extends OS implements
                 $oid,
                 'ruckuswireless',
                 $index,
-                'SSID: '.$ssids[$index],
+                'SSID: ' . $ssids[$index],
                 $count
             );
         }

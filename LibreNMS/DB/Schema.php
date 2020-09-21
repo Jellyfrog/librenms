@@ -71,7 +71,7 @@ class Schema
      */
     private static function getMigrationFiles()
     {
-        $migrations = collect(glob(base_path('database/migrations/').'*.php'))
+        $migrations = collect(glob(base_path('database/migrations/') . '*.php'))
             ->map(function ($migration_file) {
                 return basename($migration_file, '.php');
             });
@@ -104,8 +104,8 @@ class Schema
 
     public function getSchema()
     {
-        if (!isset($this->schema)) {
-            $file = Config::get('install_dir').'/misc/db_schema.yaml';
+        if (! isset($this->schema)) {
+            $file = Config::get('install_dir') . '/misc/db_schema.yaml';
             $this->schema = Yaml::parse(file_get_contents($file));
         }
 
@@ -147,7 +147,7 @@ class Schema
     public function getAllRelationshipPaths($base = 'devices')
     {
         $update_cache = true;
-        $cache_file = Config::get('install_dir')."/cache/{$base}_relationships.cache";
+        $cache_file = Config::get('install_dir') . "/cache/{$base}_relationships.cache";
         $db_version = Version::get()->database();
 
         if (is_file($cache_file)) {
@@ -207,10 +207,10 @@ class Schema
     {
         $relationships = $this->getTableRelationships();
 
-        d_echo('Starting Tables: '.json_encode($tables).PHP_EOL);
-        if (!empty($history)) {
+        d_echo('Starting Tables: ' . json_encode($tables) . PHP_EOL);
+        if (! empty($history)) {
             $tables = array_diff($tables, $history);
-            d_echo('Filtered Tables: '.json_encode($tables).PHP_EOL);
+            d_echo('Filtered Tables: ' . json_encode($tables) . PHP_EOL);
         }
 
         foreach ($tables as $table) {
@@ -222,9 +222,9 @@ class Schema
             }
 
             $table_relations = $relationships[$table] ?? [];
-            d_echo("Searching $table: ".json_encode($table_relations).PHP_EOL);
+            d_echo("Searching $table: " . json_encode($table_relations) . PHP_EOL);
 
-            if (!empty($table_relations)) {
+            if (! empty($table_relations)) {
                 if (in_array($target, $relationships[$table])) {
                     d_echo("Found in $table\n");
 
@@ -240,7 +240,7 @@ class Schema
                     return in_array($table, $related);
                 }));
 
-                d_echo("Dead end at $table, searching for relationships ".json_encode($relations).PHP_EOL);
+                d_echo("Dead end at $table, searching for relationships " . json_encode($relations) . PHP_EOL);
                 $recurse = $this->findPathRecursive($relations, $target, array_merge($history, $tables));
                 if ($recurse) {
                     return array_merge($recurse, [$table]);
@@ -253,7 +253,7 @@ class Schema
 
     public function getTableRelationships()
     {
-        if (!isset($this->relationships)) {
+        if (! isset($this->relationships)) {
             $schema = $this->getSchema();
 
             $relations = array_column(array_map(function ($table, $data) {
@@ -292,7 +292,7 @@ class Schema
             // try to guess assuming key_id = keys table
             $guessed_table = substr($key, 0, -3);
 
-            if (!Str::endsWith($guessed_table, 's')) {
+            if (! Str::endsWith($guessed_table, 's')) {
                 if (Str::endsWith($guessed_table, 'x')) {
                     $guessed_table .= 'es';
                 } else {

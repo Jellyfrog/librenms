@@ -73,7 +73,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      */
     public function handle()
     {
-        if (!$this->validateOptions()) {
+        if (! $this->validateOptions()) {
             return 1;
         }
 
@@ -209,7 +209,7 @@ class SmokepingGenerateCommand extends LnmsCommand
             $lines[] = '';
         }
 
-        if (!$noHeader) {
+        if (! $noHeader) {
             $lines[] = sprintf('# %s', __('commands.smokeping:generate.header-first'));
             $lines[] = sprintf('# %s', __('commands.smokeping:generate.header-second'));
             $lines[] = sprintf('# %s', __('commands.smokeping:generate.header-third'));
@@ -255,16 +255,16 @@ class SmokepingGenerateCommand extends LnmsCommand
      */
     private function validateOptions()
     {
-        if (!Config::has('smokeping.probes') ||
-            !Config::has('fping') ||
-            !Config::has('fping6')
+        if (! Config::has('smokeping.probes') ||
+            ! Config::has('fping') ||
+            ! Config::has('fping6')
         ) {
             $this->error(__('commands.smokeping:generate.config-insufficient'));
 
             return false;
         }
 
-        if (!($this->option('probes') xor $this->option('targets'))) {
+        if (! ($this->option('probes') xor $this->option('targets'))) {
             $this->error(__('commands.smokeping:generate.args-nonsense'));
 
             return false;
@@ -276,7 +276,7 @@ class SmokepingGenerateCommand extends LnmsCommand
             return false;
         }
 
-        if ($this->option('compat') && !$this->option('targets')) {
+        if ($this->option('compat') && ! $this->option('targets')) {
             $this->error(__('commands.smokeping:generate.args-nonsense'));
 
             return false;
@@ -317,12 +317,12 @@ class SmokepingGenerateCommand extends LnmsCommand
         $lines = [];
 
         foreach ($devices as $hostname => $config) {
-            if (!$this->dnsLookup || $this->deviceIsResolvable($hostname)) {
+            if (! $this->dnsLookup || $this->deviceIsResolvable($hostname)) {
                 $lines[] = sprintf('++ %s', $this->buildMenuEntry($hostname));
                 $lines[] = sprintf('   menu = %s', $hostname);
                 $lines[] = sprintf('   title = %s', $hostname);
 
-                if (!$singleProcess) {
+                if (! $singleProcess) {
                     $lines[] = sprintf('   probe = %s', $this->balanceProbes($config['transport'], $probeCount));
                 }
 

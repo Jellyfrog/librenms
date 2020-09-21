@@ -88,11 +88,11 @@ class PortController extends SelectController
     {
         /** @var Port $port */
         $label = $port->getShortLabel();
-        $description = ($label == $port->ifAlias ? '' : ' - '.$port->ifAlias);
+        $description = ($label == $port->ifAlias ? '' : ' - ' . $port->ifAlias);
 
         return [
             'id'   => $port->port_id,
-            'text' => $label.' - '.$port->device->shortDisplayName().$description,
+            'text' => $label . ' - ' . $port->device->shortDisplayName() . $description,
         ];
     }
 }

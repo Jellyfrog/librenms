@@ -58,13 +58,13 @@ class Pushover extends Transport
         switch ($obj['severity']) {
             case 'critical':
                 $data['priority'] = 1;
-                if (!empty($api['options']['sound_critical'])) {
+                if (! empty($api['options']['sound_critical'])) {
                     $data['sound'] = $api['options']['sound_critical'];
                 }
                 break;
             case 'warning':
                 $data['priority'] = 1;
-                if (!empty($api['options']['sound_warning'])) {
+                if (! empty($api['options']['sound_warning'])) {
                     $data['sound'] = $api['options']['sound_warning'];
                 }
                 break;
@@ -72,7 +72,7 @@ class Pushover extends Transport
         switch ($obj['state']) {
             case AlertState::RECOVERED:
                 $data['priority'] = 0;
-                if (!empty($api['options']['sound_ok'])) {
+                if (! empty($api['options']['sound_ok'])) {
                     $data['sound'] = $api['options']['sound_ok'];
                 }
                 break;
@@ -93,7 +93,7 @@ class Pushover extends Transport
         if ($code != 200) {
             var_dump('Pushover returned error'); //FIXME: proper debugging
 
-            return 'HTTP Status code '.$code;
+            return 'HTTP Status code ' . $code;
         }
 
         return true;

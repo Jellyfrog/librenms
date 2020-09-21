@@ -53,7 +53,7 @@ class Terra extends OS implements ProcessorDiscovery, OSDiscovery
         foreach ($models as $model => $index) {
             if (Str::contains($device->sysDescr, $model)) {
                 $oid_terra = '.1.3.6.1.4.1.30631.1.';
-                $oid = [$oid_terra.$index.'.4.1.0', $oid_terra.$index.'.4.2.0'];
+                $oid = [$oid_terra . $index . '.4.1.0', $oid_terra . $index . '.4.2.0'];
 
                 $data = snmp_get_multi_oid($device, $oid);
                 $device->hardware = $model;

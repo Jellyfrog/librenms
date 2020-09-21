@@ -102,7 +102,7 @@ class PingCheck implements ShouldQueue
 
         $this->fetchDevices();
 
-        d_echo($this->process->getCommandLine().PHP_EOL);
+        d_echo($this->process->getCommandLine() . PHP_EOL);
 
         // send hostnames to stdin to avoid overflowing cli length limits
         $ordered_device_list = $this->tiered->get(1, collect())->keys()// root nodes before standalone nodes
@@ -140,8 +140,8 @@ class PingCheck implements ShouldQueue
 
         // check for any left over devices
         if ($this->deferred->isNotEmpty()) {
-            d_echo("Leftover devices, this shouldn't happen: ".$this->deferred->flatten(1)->implode('hostname', ', ').PHP_EOL);
-            d_echo('Devices left in tier: '.collect($this->current)->implode('hostname', ', ').PHP_EOL);
+            d_echo("Leftover devices, this shouldn't happen: " . $this->deferred->flatten(1)->implode('hostname', ', ') . PHP_EOL);
+            d_echo('Devices left in tier: ' . collect($this->current)->implode('hostname', ', ') . PHP_EOL);
         }
 
         if (\App::runningInConsole()) {
@@ -180,7 +180,7 @@ class PingCheck implements ShouldQueue
 
         if ($vdebug) {
             $this->tiered->each(function (Collection $tier, $index) {
-                echo "Tier $index (".$tier->count().'): ';
+                echo "Tier $index (" . $tier->count() . '): ';
                 echo $tier->implode('hostname', ', ');
                 echo PHP_EOL;
             });
@@ -203,7 +203,7 @@ class PingCheck implements ShouldQueue
 
         $this->current_tier++;  // next tier
 
-        if (!$this->tiered->has($this->current_tier)) {
+        if (! $this->tiered->has($this->current_tier)) {
             // out of devices
             return;
         }
@@ -255,7 +255,7 @@ class PingCheck implements ShouldQueue
                 // if changed, update reason
                 $device->status_reason = $device->status ? '' : 'icmp';
                 $type = $device->status ? 'up' : 'down';
-                Log::event('Device status changed to '.ucfirst($type).' from icmp check.', $device->device_id, $type);
+                Log::event('Device status changed to ' . ucfirst($type) . ' from icmp check.', $device->device_id, $type);
             }
 
             $device->save(); // only saves if needed (which is every time because of last_ping)
@@ -303,7 +303,7 @@ class PingCheck implements ShouldQueue
         if ($this->deferred->has($device->max_depth)) {
             // add this data to the proper tier, unless it already exists...
             $tier = $this->deferred->get($device->max_depth);
-            if (!$tier->has($device->hostname)) {
+            if (! $tier->has($device->hostname)) {
                 $tier->put($device->hostname, $data);
             }
         } else {

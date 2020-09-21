@@ -123,7 +123,7 @@ class RoutesTablesController extends TableController
     protected function search($search, $query, $fields = [])
     {
         if ($search = trim(\Request::get('searchPhrase'))) {
-            $searchLike = '%'.$search.'%';
+            $searchLike = '%' . $search . '%';
 
             return $query->where(function ($query) use ($searchLike) {
                 return $query->where('route.inetCidrRouteNextHop', 'like', $searchLike)
@@ -197,7 +197,7 @@ class RoutesTablesController extends TableController
                 $item['inetCidrRouteDest'] = $route_entry->inetCidrRouteDest;
             }
         }
-        $item['inetCidrRouteIfIndex'] = 'ifIndex '.$item['inetCidrRouteIfIndex'];
+        $item['inetCidrRouteIfIndex'] = 'ifIndex ' . $item['inetCidrRouteIfIndex'];
         if ($port = $route_entry->port()->first()) {
             $item['inetCidrRouteIfIndex'] = Url::portLink($port, htmlspecialchars($port->getShortLabel()));
         }
@@ -206,7 +206,7 @@ class RoutesTablesController extends TableController
             if ($device->device_id == $route_entry->device_id || in_array($route_entry->inetCidrRouteNextHop, ['127.0.0.1', '::1'])) {
                 $item['inetCidrRouteNextHop'] = Url::deviceLink($device, 'localhost');
             } else {
-                $item['inetCidrRouteNextHop'] = $item['inetCidrRouteNextHop'].'<br>('.Url::deviceLink($device).')';
+                $item['inetCidrRouteNextHop'] = $item['inetCidrRouteNextHop'] . '<br>(' . Url::deviceLink($device) . ')';
             }
         }
         if ($route_entry->inetCidrRouteProto && $route_entry::$translateProto[$route_entry->inetCidrRouteProto]) {
@@ -217,7 +217,7 @@ class RoutesTablesController extends TableController
         }
         $item['context_name'] = '[global]';
         if ($route_entry->context_name != '') {
-            $item['context_name'] = '<a href="'.Url::generate(['page' => 'routing', 'protocol' => 'vrf', 'vrf' => $route_entry->context_name]).'">'.htmlspecialchars($route_entry->context_name).'</a>';
+            $item['context_name'] = '<a href="' . Url::generate(['page' => 'routing', 'protocol' => 'vrf', 'vrf' => $route_entry->context_name]) . '">' . htmlspecialchars($route_entry->context_name) . '</a>';
         }
 
         return $item;

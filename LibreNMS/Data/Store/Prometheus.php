@@ -72,13 +72,13 @@ class Prometheus extends BaseDatastore
     {
         $stat = Measurement::start('put');
         // skip if needed
-        if (!$this->enabled) {
+        if (! $this->enabled) {
             return;
         }
 
         try {
             $vals = '';
-            $promtags = '/measurement/'.$measurement;
+            $promtags = '/measurement/' . $measurement;
 
             foreach ($fields as $k => $v) {
                 if ($v !== null) {
@@ -88,15 +88,15 @@ class Prometheus extends BaseDatastore
 
             foreach ($tags as $t => $v) {
                 if ($v !== null) {
-                    $promtags .= (Str::contains($v, '/') ? "/$t@base64/".base64_encode($v) : "/$t/$v");
+                    $promtags .= (Str::contains($v, '/') ? "/$t@base64/" . base64_encode($v) : "/$t/$v");
                 }
             }
             $options = $this->getDefaultOptions();
             $options['body'] = $vals;
 
-            $promurl = $this->base_uri.$device['hostname'].$promtags;
+            $promurl = $this->base_uri . $device['hostname'] . $promtags;
             if (Config::get('prometheus.attach_sysname', false)) {
-                $promurl .= '/sysName/'.$device['sysName'];
+                $promurl .= '/sysName/' . $device['sysName'];
             }
             $promurl = str_replace(' ', '-', $promurl); // Prometheus doesn't handle tags with spaces in url
 
@@ -112,10 +112,10 @@ class Prometheus extends BaseDatastore
             $this->recordStatistic($stat->end());
 
             if ($result->getStatusCode() !== 200) {
-                Log::error('Prometheus Error: '.$result->getReasonPhrase());
+                Log::error('Prometheus Error: ' . $result->getReasonPhrase());
             }
         } catch (GuzzleException $e) {
-            Log::error('Prometheus Exception: '.$e->getMessage());
+            Log::error('Prometheus Exception: ' . $e->getMessage());
         }
     }
 

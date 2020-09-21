@@ -29,7 +29,7 @@ class Jira extends Transport
 {
     public function deliverAlert($obj, $opts)
     {
-        if (!empty($this->config)) {
+        if (! empty($this->config)) {
             $opts['username'] = $this->config['jira-username'];
             $opts['password'] = $this->config['jira-password'];
             $opts['prjkey'] = $this->config['jira-key'];
@@ -53,9 +53,9 @@ class Jira extends Transport
         $password = $opts['password'];
         $prjkey = $opts['prjkey'];
         $issuetype = $opts['issuetype'];
-        $details = 'Librenms alert for: '.$obj['hostname'];
+        $details = 'Librenms alert for: ' . $obj['hostname'];
         $description = $obj['msg'];
-        $url = $opts['url'].'/rest/api/latest/issue';
+        $url = $opts['url'] . '/rest/api/latest/issue';
         $curl = curl_init();
 
         $data = ['project' => ['key' => $prjkey],
@@ -81,11 +81,11 @@ class Jira extends Transport
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         if ($code == 200) {
             $jiraout = json_decode($ret, true);
-            d_echo('Created jira issue '.$jiraout['key'].' for '.$device);
+            d_echo('Created jira issue ' . $jiraout['key'] . ' for ' . $device);
 
             return true;
         } else {
-            d_echo('Jira connection error: '.serialize($ret));
+            d_echo('Jira connection error: ' . serialize($ret));
 
             return false;
         }

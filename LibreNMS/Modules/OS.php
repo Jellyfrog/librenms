@@ -59,12 +59,12 @@ class OS implements Module
         } else {
             // legacy poller files
             global $graphs, $device;
-            if (is_file(base_path('/includes/polling/os/'.$device['os'].'.inc.php'))) {
+            if (is_file(base_path('/includes/polling/os/' . $device['os'] . '.inc.php'))) {
                 // OS Specific
-                include base_path('/includes/polling/os/'.$device['os'].'.inc.php');
-            } elseif ($device['os_group'] && base_path('/includes/polling/os/'.$device['os_group'].'.inc.php')) {
+                include base_path('/includes/polling/os/' . $device['os'] . '.inc.php');
+            } elseif ($device['os_group'] && base_path('/includes/polling/os/' . $device['os_group'] . '.inc.php')) {
                 // OS Group Specific
-                include base_path('/includes/polling/os/'.$device['os_group'].'.inc.php');
+                include base_path('/includes/polling/os/' . $device['os_group'] . '.inc.php');
             } else {
                 echo "Generic :(\n";
             }
@@ -74,7 +74,7 @@ class OS implements Module
             $deviceModel->hardware = ($hardware ?? $deviceModel->hardware) ?: null;
             $deviceModel->features = ($features ?? $deviceModel->features) ?: null;
             $deviceModel->serial = ($serial ?? $deviceModel->serial) ?: null;
-            if (!empty($location)) {
+            if (! empty($location)) {
                 $deviceModel->setLocation($location);
             }
         }
@@ -93,9 +93,9 @@ class OS implements Module
 
         $device->icon = basename(Url::findOsImage($device->os, $device->features, null, 'images/os/'));
 
-        echo trans('device.attributes.location').": $device->location\n";
+        echo trans('device.attributes.location') . ": $device->location\n";
         foreach (['hardware', 'version', 'features', 'serial'] as $attribute) {
-            echo \App\Observers\DeviceObserver::attributeChangedMessage($attribute, $device->$attribute, $device->getOriginal($attribute)).PHP_EOL;
+            echo \App\Observers\DeviceObserver::attributeChangedMessage($attribute, $device->$attribute, $device->getOriginal($attribute)) . PHP_EOL;
         }
 
         $device->save();
@@ -109,7 +109,7 @@ class OS implements Module
         }
 
         // make sure the location has coordinates
-        if (Config::get('geoloc.latlng', true) && $device->location && !$device->location->hasCoordinates()) {
+        if (Config::get('geoloc.latlng', true) && $device->location && ! $device->location->hasCoordinates()) {
             $device->location->lookupCoordinates();
             $device->location->save();
         }

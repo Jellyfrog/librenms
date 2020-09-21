@@ -352,21 +352,21 @@ class SmokepingCliTest extends DBTestCase
     {
         // This is the code taken from the old gen_smokeping script, with echos and sql queries replaced
         $lines = [];
-        $lines[] = ''.PHP_EOL;
-        $lines[] = 'menu = Top'.PHP_EOL;
-        $lines[] = 'title = Network Latency Grapher'.PHP_EOL;
-        $lines[] = ''.PHP_EOL;
+        $lines[] = '' . PHP_EOL;
+        $lines[] = 'menu = Top' . PHP_EOL;
+        $lines[] = 'title = Network Latency Grapher' . PHP_EOL;
+        $lines[] = '' . PHP_EOL;
 
         foreach ($data as $groupName => $devices) {
             //Dot and space need to be replaced, since smokeping doesn't accept it at this level
-            $lines[] = '+ '.str_replace(['.', ' '], '_', $groupName).PHP_EOL;
-            $lines[] = 'menu = '.$groupName.PHP_EOL;
-            $lines[] = 'title = '.$groupName.PHP_EOL;
+            $lines[] = '+ ' . str_replace(['.', ' '], '_', $groupName) . PHP_EOL;
+            $lines[] = 'menu = ' . $groupName . PHP_EOL;
+            $lines[] = 'title = ' . $groupName . PHP_EOL;
             foreach ($devices as $device) {
-                $lines[] = '++ '.str_replace(['.', ' '], '_', $device).PHP_EOL;
-                $lines[] = 'menu = '.$device.PHP_EOL;
-                $lines[] = 'title = '.$device.PHP_EOL;
-                $lines[] = 'host = '.$device.PHP_EOL.PHP_EOL;
+                $lines[] = '++ ' . str_replace(['.', ' '], '_', $device) . PHP_EOL;
+                $lines[] = 'menu = ' . $device . PHP_EOL;
+                $lines[] = 'title = ' . $device . PHP_EOL;
+                $lines[] = 'host = ' . $device . PHP_EOL . PHP_EOL;
             }
         }
 

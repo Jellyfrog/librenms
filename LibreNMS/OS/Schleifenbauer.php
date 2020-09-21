@@ -45,7 +45,7 @@ class Schleifenbauer extends \LibreNMS\OS
         $device->hardware = $data[$oids['hardware']] ?? null;
         $device->serial = $data[$oids['serial']] ?? null;
         $device->version = $data[$oids['firmware']] ?? null;
-        if (!empty($data[$oids['build']])) {
+        if (! empty($data[$oids['build']])) {
             $device->version = trim("$device->version ({$data[$oids['build']]})");
         }
     }

@@ -1,9 +1,9 @@
 <?php
 
 $init_modules = ['web', 'auth'];
-require realpath(__DIR__.'/..').'/includes/init.php';
+require realpath(__DIR__ . '/..') . '/includes/init.php';
 
-if (!Auth::check()) {
+if (! Auth::check()) {
     exit('Unauthorized');
 }
 
@@ -20,9 +20,9 @@ if (isset($_REQUEST['search'])) {
     if (strlen($search) > 0) {
         $found = 0;
 
-        if (!Auth::user()->hasGlobalRead()) {
+        if (! Auth::user()->hasGlobalRead()) {
             $device_ids = Permissions::devicesForUser()->toArray() ?: [0];
-            $perms_sql = '`D`.`device_id` IN '.dbGenPlaceholders(count($device_ids));
+            $perms_sql = '`D`.`device_id` IN ' . dbGenPlaceholders(count($device_ids));
         } else {
             $device_ids = [];
             $perms_sql = '1';
@@ -32,7 +32,7 @@ if (isset($_REQUEST['search'])) {
             foreach (dbFetchRows('SELECT id,name FROM device_groups WHERE name LIKE ?', ["%$search%"]) as $group) {
                 if ($_REQUEST['map']) {
                     $results[] = [
-                        'name'     => 'g:'.$group['name'],
+                        'name'     => 'g:' . $group['name'],
                         'group_id' => $group['id'],
                     ];
                 } else {
@@ -54,7 +54,7 @@ if (isset($_REQUEST['search'])) {
                       LEFT JOIN `locations` AS `L` ON `L`.`id` = `D`.`location_id`';
 
             // user depending limitation
-            if (!Auth::user()->hasGlobalRead()) {
+            if (! Auth::user()->hasGlobalRead()) {
                 $query_args_list = $device_ids;
                 $query_filter = $perms_sql;
             } else {
@@ -93,8 +93,8 @@ if (isset($_REQUEST['search'])) {
 
             // result limitation
             $query_args_list[] = $limit;
-            $results = dbFetchRows($query.
-                                   ' WHERE '.$query_filter.
+            $results = dbFetchRows($query .
+                                   ' WHERE ' . $query_filter .
                                    ' GROUP BY `D`.`hostname`
                                      ORDER BY `D`.`hostname` LIMIT ?', $query_args_list);
 
@@ -104,8 +104,8 @@ if (isset($_REQUEST['search'])) {
 
                 foreach ($results as $result) {
                     $name = $result['hostname'];
-                    if ($_REQUEST['map'] != 1 && $result['sysName'] != $name && !empty($result['sysName'])) {
-                        $name .= ' ('.$result['sysName'].') ';
+                    if ($_REQUEST['map'] != 1 && $result['sysName'] != $name && ! empty($result['sysName'])) {
+                        $name .= ' (' . $result['sysName'] . ') ';
                     }
                     if ($result['disabled'] == 1) {
                         $highlight_colour = '#808080';
@@ -117,7 +117,7 @@ if (isset($_REQUEST['search'])) {
                         $highlight_colour = '#008000';
                     }
 
-                    $num_ports = dbFetchCell('SELECT COUNT(*) FROM `ports` AS `I`, `devices` AS `D` WHERE '.$perms_sql.' AND `I`.`device_id` = `D`.`device_id` AND `I`.`ignore` = 0 AND `I`.`deleted` = 0 AND `D`.`device_id` = ?', array_merge($device_ids, [$result['device_id']]));
+                    $num_ports = dbFetchCell('SELECT COUNT(*) FROM `ports` AS `I`, `devices` AS `D` WHERE ' . $perms_sql . ' AND `I`.`device_id` = `D`.`device_id` AND `I`.`ignore` = 0 AND `I`.`deleted` = 0 AND `D`.`device_id` = ?', array_merge($device_ids, [$result['device_id']]));
 
                     $device[] = [
                         'name'            => $name,

@@ -41,7 +41,7 @@ class IPv4 extends IP
         $this->host_bits = 32;
         [$this->ip, $this->cidr] = $this->extractCidr($ipv4);
 
-        if (!self::isValid($this->ip)) {
+        if (! self::isValid($this->ip)) {
             throw new InvalidIpException("$ipv4 is not a valid ipv4 address");
         }
     }
@@ -109,7 +109,7 @@ class IPv4 extends IP
     public function inNetwork($network)
     {
         [$net, $cidr] = $this->extractCidr($network);
-        if (!self::isValid($net)) {
+        if (! self::isValid($net)) {
             return false;
         }
 

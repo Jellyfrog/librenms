@@ -43,7 +43,7 @@ class GraylogApi
         if (empty($config)) {
             $base_uri = Config::get('graylog.server');
             if ($port = Config::get('graylog.port')) {
-                $base_uri .= ':'.$port;
+                $base_uri .= ':' . $port;
             }
 
             $config = [
@@ -58,11 +58,11 @@ class GraylogApi
 
     public function getStreams()
     {
-        if (!$this->isConfigured()) {
+        if (! $this->isConfigured()) {
             return [];
         }
 
-        $uri = $this->api_prefix.'/streams';
+        $uri = $this->api_prefix . '/streams';
 
         $response = $this->client->get($uri);
         $data = json_decode($response->getBody(), true);
@@ -84,13 +84,13 @@ class GraylogApi
      */
     public function query($query = '*', $range = 0, $limit = 0, $offset = 0, $sort = null, $filter = null)
     {
-        if (!$this->isConfigured()) {
+        if (! $this->isConfigured()) {
             return [];
         }
 
         $uri = Config::get('graylog.base_uri');
-        if (!$uri) {
-            $uri = $this->api_prefix.'/search/universal/relative';
+        if (! $uri) {
+            $uri = $this->api_prefix . '/search/universal/relative';
         }
 
         $data = [
@@ -120,11 +120,11 @@ class GraylogApi
     {
         $query = [];
         if ($search) {
-            $query[] = 'message:"'.$search.'"';
+            $query[] = 'message:"' . $search . '"';
         }
 
         if ($device) {
-            $query[] = 'source: ("'.$this->getAddresses($device)->implode('" OR "').'")';
+            $query[] = 'source: ("' . $this->getAddresses($device)->implode('" OR "') . '")';
         }
 
         if (empty($query)) {

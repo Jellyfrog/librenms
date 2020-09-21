@@ -58,9 +58,9 @@ class TranslationGenerateCommand extends LnmsCommand
         $manifest = json_decode(file_get_contents($manifest_file), true);
         foreach (glob(public_path('js/lang/*.js')) as $file) {
             $file_name = str_replace(public_path(), '', $file);
-            $manifest[$file_name] = $file_name.'?id='.substr(md5(file_get_contents($file)), 0, 20);
+            $manifest[$file_name] = $file_name . '?id=' . substr(md5(file_get_contents($file)), 0, 20);
         }
 
-        file_put_contents($manifest_file, json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES).PHP_EOL);
+        file_put_contents($manifest_file, json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL);
     }
 }

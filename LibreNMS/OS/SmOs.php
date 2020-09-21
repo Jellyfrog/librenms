@@ -30,7 +30,7 @@ class SmOs extends OS implements
             foreach ($radioEntry as $radio => $entry) {
                 $index = "$link.$radio";
                 if (isset($entry['linkTxETHCapacity'])) {
-                    $txOid = '.1.3.6.1.4.1.3373.1103.80.17.1.10.'.$index;
+                    $txOid = '.1.3.6.1.4.1.3373.1103.80.17.1.10.' . $index;
                     $totalOids['tx'][] = $txOid;
                     $sensors[] = new WirelessSensor(
                         'rate',
@@ -38,14 +38,14 @@ class SmOs extends OS implements
                         $txOid,
                         'tx',
                         $index,
-                        $this->getLinkLabel($link).' Tx '.$this->getRadioLabel($radio),
+                        $this->getLinkLabel($link) . ' Tx ' . $this->getRadioLabel($radio),
                         $entry['linkTxETHCapacity'],
                         1000
                     );
                 }
 
                 if (isset($entry['linkRxETHCapacity'])) {
-                    $rxOid = '.1.3.6.1.4.1.3373.1103.80.17.1.11.'.$index;
+                    $rxOid = '.1.3.6.1.4.1.3373.1103.80.17.1.11.' . $index;
                     $totalOids['rx'][] = $rxOid;
                     $sensors[] = new WirelessSensor(
                         'rate',
@@ -53,34 +53,34 @@ class SmOs extends OS implements
                         $rxOid,
                         'rx',
                         $index,
-                        $this->getLinkLabel($link).' Rx '.$this->getRadioLabel($radio),
+                        $this->getLinkLabel($link) . ' Rx ' . $this->getRadioLabel($radio),
                         $entry['linkRxETHCapacity'],
                         1000
                     );
                 }
             }
 
-            if (!empty($totalOids['rx'])) {
+            if (! empty($totalOids['rx'])) {
                 $sensors[] = new WirelessSensor(
                     'rate',
                     $this->getDeviceId(),
                     $totalOids['rx'],
                     'total-rx',
                     $index,
-                    $this->getLinkLabel($link).' Total Rx',
+                    $this->getLinkLabel($link) . ' Total Rx',
                     array_sum(array_column($radioEntry, 'linkRxETHCapacity')),
                     1000
                 );
             }
 
-            if (!empty($totalOids['tx'])) {
+            if (! empty($totalOids['tx'])) {
                 $sensors[] = new WirelessSensor(
                     'rate',
                     $this->getDeviceId(),
                     $totalOids['tx'],
                     'total-tx',
                     $index,
-                    $this->getLinkLabel($link).' Total Tx',
+                    $this->getLinkLabel($link) . ' Total Tx',
                     array_sum(array_column($radioEntry, 'linkTxETHCapacity')),
                     1000
                 );
@@ -99,7 +99,7 @@ class SmOs extends OS implements
             $sensors[] = new WirelessSensor(
                 'rssi',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.3373.1103.80.12.1.3.'.$index,
+                '.1.3.6.1.4.1.3373.1103.80.12.1.3.' . $index,
                 'sm-os',
                 $index,
                 $this->getRadioLabel($index),
@@ -119,10 +119,10 @@ class SmOs extends OS implements
             $sensors[] = new WirelessSensor(
                 'frequency',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.3373.1103.80.9.1.4.'.$index,
+                '.1.3.6.1.4.1.3373.1103.80.9.1.4.' . $index,
                 'sm-os',
                 $index,
-                'Tx '.$this->getRadioLabel($index),
+                'Tx ' . $this->getRadioLabel($index),
                 $entry['radioTxFrequency'],
                 1,
                 1000
@@ -141,7 +141,7 @@ class SmOs extends OS implements
             $sensors[] = new WirelessSensor(
                 'mse',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.3373.1103.80.12.1.5.'.$index,
+                '.1.3.6.1.4.1.3373.1103.80.12.1.5.' . $index,
                 'sm-os',
                 $index,
                 $this->getRadioLabel($index),

@@ -16,9 +16,9 @@
  */
 
 $init_modules = ['web', 'auth'];
-require realpath(__DIR__.'/..').'/includes/init.php';
+require realpath(__DIR__ . '/..') . '/includes/init.php';
 
-if (!Auth::check()) {
+if (! Auth::check()) {
     exit('Unauthorized');
 }
 
@@ -65,7 +65,7 @@ if (isset($_GET['term'])) {
         $ret[$lev] = array_intersect_key($os, ['os' => true, 'text' => true]);
     }
 }
-if (!isset($ret)) {
+if (! isset($ret)) {
     $ret = [['Error: No suggestions found.']];
 }
 

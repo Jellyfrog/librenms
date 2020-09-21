@@ -39,7 +39,7 @@ class Twilio extends Transport
             'sender' => $opts['sender'],
         ];
 
-        $url = 'https://api.twilio.com/2010-04-01/Accounts/'.$params['sid'].'/Messages.json';
+        $url = 'https://api.twilio.com/2010-04-01/Accounts/' . $params['sid'] . '/Messages.json';
 
         $data = [
             'From' => $params['sender'],
@@ -56,7 +56,7 @@ class Twilio extends Transport
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($curl, CURLOPT_USERPWD, $params['sid'].':'.$params['token']);
+        curl_setopt($curl, CURLOPT_USERPWD, $params['sid'] . ':' . $params['token']);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
 
         curl_exec($curl);

@@ -90,8 +90,8 @@ class RipeApi extends BaseApi
                 throw new ApiException('RIPE API call failed', $response_data);
             }
         } catch (RequestException $e) {
-            $message = 'RIPE API call to '.$e->getRequest()->getUri().' failed: ';
-            $message .= $e->getResponse()->getReasonPhrase().' '.$e->getResponse()->getStatusCode();
+            $message = 'RIPE API call to ' . $e->getRequest()->getUri() . ' failed: ';
+            $message .= $e->getResponse()->getReasonPhrase() . ' ' . $e->getResponse()->getStatusCode();
 
             throw new ApiException(
                 $message,

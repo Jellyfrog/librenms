@@ -37,7 +37,7 @@ class MakeUserController extends InstallationController implements InstallerStep
 
     public function index(Request $request)
     {
-        if (!$this->initInstallStep()) {
+        if (! $this->initInstallStep()) {
             return $this->redirectToIncomplete();
         }
 
@@ -67,7 +67,7 @@ class MakeUserController extends InstallationController implements InstallerStep
 
         try {
             // only allow the first admin to be created
-            if (!$this->complete()) {
+            if (! $this->complete()) {
                 $this->configureDatabase();
                 $user = new User($request->only(['username', 'password', 'email']));
                 $user->level = 10; // admin

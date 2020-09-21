@@ -77,7 +77,7 @@ class YamlDiscovery
                     $count++;
                     $current_data = [];
 
-                    if (!isset($data['value'])) {
+                    if (! isset($data['value'])) {
                         $data['value'] = $data['oid'];
                     }
 
@@ -125,7 +125,7 @@ class YamlDiscovery
 
             // prepare the $subindexX match variable replacement
             foreach (explode('.', $index) as $pos => $subindex) {
-                $search[] = '{{ $subindex'.$pos.' }}';
+                $search[] = '{{ $subindex' . $pos . ' }}';
                 $replace[] = $subindex;
             }
 
@@ -135,7 +135,7 @@ class YamlDiscovery
             $value = preg_replace_callback('/{{ \$([a-zA-Z0-9\-.]+) }}/', function ($matches) use ($index, $data, $pre_cache) {
                 $replace = static::getValueFromData($matches[1], $index, $data, $pre_cache, null);
                 if (is_null($replace)) {
-                    d_echo('Warning: No variable available to replace '.$matches[1].".\n");
+                    d_echo('Warning: No variable available to replace ' . $matches[1] . ".\n");
 
                     return ''; // remove the unavailable variable
                 }
@@ -199,7 +199,7 @@ class YamlDiscovery
         $pre_cache = [];
         $device = $os->getDeviceArray();
 
-        $pre_cache_file = 'includes/discovery/sensors/pre-cache/'.$device['os'].'.inc.php';
+        $pre_cache_file = 'includes/discovery/sensors/pre-cache/' . $device['os'] . '.inc.php';
         if (is_file($pre_cache_file)) {
             echo "Pre-cache {$device['os']}: ";
             include $pre_cache_file;
@@ -212,7 +212,7 @@ class YamlDiscovery
             return $pre_cache;
         }
 
-        if (!empty($device['dynamic_discovery']['modules'])) {
+        if (! empty($device['dynamic_discovery']['modules'])) {
             echo 'Caching data: ';
             foreach ($device['dynamic_discovery']['modules'] as $module => $discovery_data) {
                 echo "$module ";
@@ -226,7 +226,7 @@ class YamlDiscovery
 
                     foreach ($data_array as $data) {
                         foreach ((array) $data['oid'] as $oid) {
-                            if (!array_key_exists($oid, $pre_cache)) {
+                            if (! array_key_exists($oid, $pre_cache)) {
                                 if (isset($data['snmp_flags'])) {
                                     $snmp_flag = Arr::wrap($data['snmp_flags']);
                                 } else {

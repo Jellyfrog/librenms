@@ -78,9 +78,9 @@ class Smokeping
     public function generateFileName($file = '')
     {
         if (Config::get('smokeping.integration') === true) {
-            return Config::get('smokeping.dir').'/'.$this->device->type.'/'.$file;
+            return Config::get('smokeping.dir') . '/' . $this->device->type . '/' . $file;
         } else {
-            return Config::get('smokeping.dir').'/'.$file;
+            return Config::get('smokeping.dir') . '/' . $file;
         }
     }
 
@@ -99,7 +99,7 @@ class Smokeping
                 $data[] = [
                     'device' => $device,
                     'graph'  => [
-                        'type'   => 'smokeping_'.$direction,
+                        'type'   => 'smokeping_' . $direction,
                         'device' => $this->device->device_id,
                         $remote  => $device->device_id,
                     ],
@@ -117,12 +117,12 @@ class Smokeping
 
     public function hasInGraph()
     {
-        return !empty($this->getFiles()['in'][$this->device->hostname]);
+        return ! empty($this->getFiles()['in'][$this->device->hostname]);
     }
 
     public function hasOutGraph()
     {
-        return !empty($this->getFiles()['out'][$this->device->hostname]);
+        return ! empty($this->getFiles()['out'][$this->device->hostname]);
     }
 
     private function filenameToHostname($name)

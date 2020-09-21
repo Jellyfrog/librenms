@@ -49,7 +49,7 @@ class ServiceController extends SelectController
     {
         return [
             'id'   => $service->service_id,
-            'text' => $service->device->shortDisplayName().' - '.$service->service_type.' ('.$service->service_desc.')',
+            'text' => $service->device->shortDisplayName() . ' - ' . $service->service_type . ' (' . $service->service_desc . ')',
         ];
     }
 }

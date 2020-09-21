@@ -46,13 +46,13 @@ class Iosxr extends Shared\Cisco implements OSDiscovery
         $oids = ['entPhysicalSoftwareRev.1', 'entPhysicalModelName.8384513', 'entPhysicalModelName.8384518'];
         $data = snmp_get_multi($this->getDeviceArray(), $oids, '-OQUs', 'ENTITY-MIB');
 
-        if (!empty($data[1]['entPhysicalSoftwareRev'])) {
+        if (! empty($data[1]['entPhysicalSoftwareRev'])) {
             $device->version = $data[1]['entPhysicalSoftwareRev'];
         }
 
-        if (!empty($data[8384513]['entPhysicalModelName'])) {
+        if (! empty($data[8384513]['entPhysicalModelName'])) {
             $device->hardware = $data[8384513]['entPhysicalModelName'];
-        } elseif (!empty($data[8384518]['entPhysicalModelName'])) {
+        } elseif (! empty($data[8384518]['entPhysicalModelName'])) {
             $device->hardware = $data[8384518]['entPhysicalModelName'];
         }
     }

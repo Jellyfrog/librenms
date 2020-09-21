@@ -85,7 +85,7 @@ class Graphite extends BaseDatastore
      */
     public function put($device, $measurement, $tags, $fields)
     {
-        if (!$this->connection) {
+        if (! $this->connection) {
             d_echo("Graphite Error: not connected\n");
 
             return;
@@ -94,7 +94,7 @@ class Graphite extends BaseDatastore
         $timestamp = Carbon::now()->timestamp;
 
         if ($measurement == 'ports') {
-            $measurement = 'ports|'.$tags['ifName'];
+            $measurement = 'ports|' . $tags['ifName'];
         }
 
         // metrics will be built as prefix.hostname.measurement.field value timestamp
@@ -142,7 +142,7 @@ class Graphite extends BaseDatastore
 
             $this->recordStatistic($stat->end());
         } catch (\Socket\Raw\Exception $e) {
-            Log::error('Graphite write error: '.$e->getMessage());
+            Log::error('Graphite write error: ' . $e->getMessage());
         }
     }
 }

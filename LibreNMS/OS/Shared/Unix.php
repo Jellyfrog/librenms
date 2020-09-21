@@ -79,10 +79,10 @@ class Unix extends \LibreNMS\OS
         // Detect Dell hardware via OpenManage SNMP
         $hw = snmp_get($this->getDeviceArray(), '.1.3.6.1.4.1.674.10892.1.300.10.1.9.1', '-Oqv', 'MIB-Dell-10892');
         if ($hw) {
-            $this->getDevice()->hardware = 'Dell '.$hw;
+            $this->getDevice()->hardware = 'Dell ' . $hw;
         } else {
             $hw = trim(snmp_get($this->getDeviceArray(), 'cpqSiProductName.0', '-Oqv', 'CPQSINFO-MIB', 'hp'), '"');
-            if (!empty($hw)) {
+            if (! empty($hw)) {
                 $this->getDevice()->hardware = $hw;
             }
         }

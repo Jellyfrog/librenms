@@ -9,7 +9,7 @@
  * @copyright  (C) 2006 - 2012 Adam Armstrong
  */
 $init_modules = [];
-require __DIR__.'/includes/init.php';
+require __DIR__ . '/includes/init.php';
 
 $options = getopt('r');
 
@@ -19,7 +19,7 @@ if (isset($options['r'])) {
 }
 
 foreach (dbFetchRows('SELECT * FROM `bills` ORDER BY `bill_id`') as $bill) {
-    echo str_pad($bill['bill_id'].' '.$bill['bill_name'], 30)." \n";
+    echo str_pad($bill['bill_id'] . ' ' . $bill['bill_name'], 30) . " \n";
 
     $i = 0;
     while ($i <= 24) {
@@ -50,8 +50,8 @@ foreach (dbFetchRows('SELECT * FROM `bills` ORDER BY `bill_id`') as $bill) {
                 $type = 'CDR';
                 $allowed = $bill['bill_cdr'];
                 $used = $rate_data['rate_95th'];
-                $allowed_text = format_si($allowed).'bps';
-                $used_text = format_si($used).'bps';
+                $allowed_text = format_si($allowed) . 'bps';
+                $used_text = format_si($used) . 'bps';
                 $overuse = ($used - $allowed);
                 $overuse = (($overuse <= 0) ? '0' : $overuse);
                 $percent = round((($rate_data['rate_95th'] / $bill['bill_cdr']) * 100), 2);
@@ -66,7 +66,7 @@ foreach (dbFetchRows('SELECT * FROM `bills` ORDER BY `bill_id`') as $bill) {
                 $percent = round((($rate_data['total_data'] / $bill['bill_quota']) * 100), 2);
             }
 
-            echo strftime('%x @ %X', strtotime($datefrom)).' to '.strftime('%x @ %X', strtotime($dateto)).' '.str_pad($type, 8).' '.str_pad($allowed_text, 10).' '.str_pad($used_text, 10).' '.$percent.'%';
+            echo strftime('%x @ %X', strtotime($datefrom)) . ' to ' . strftime('%x @ %X', strtotime($dateto)) . ' ' . str_pad($type, 8) . ' ' . str_pad($allowed_text, 10) . ' ' . str_pad($used_text, 10) . ' ' . $percent . '%';
 
             if ($i == '0') {
                 $update = [

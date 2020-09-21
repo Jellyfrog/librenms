@@ -77,7 +77,7 @@ class AlertDB
                 $tmpp = explode('.', $opt, 2);
                 $tmpp[0] = str_replace('%', '', $tmpp[0]);
                 $tables[] = mres(str_replace('(', '', $tmpp[0]));
-                $rule = str_replace($opt, $tmpp[0].'.'.$tmpp[1], $rule);
+                $rule = str_replace($opt, $tmpp[0] . '.' . $tmpp[1], $rule);
             }
         }
         $tables = array_keys(array_flip($tables));
@@ -100,21 +100,21 @@ class AlertDB
                 foreach ($gtmp as $glue) {
                     if (empty($last)) {
                         [$tmp,$last] = explode('.', $glue);
-                        $qry .= $glue.' = ';
+                        $qry .= $glue . ' = ';
                     } else {
                         [$tmp,$new] = explode('.', $glue);
-                        $qry .= $tmp.'.'.$last.' && '.$tmp.'.'.$new.' = ';
+                        $qry .= $tmp . '.' . $last . ' && ' . $tmp . '.' . $new . ' = ';
                         $last = $new;
                     }
-                    if (!in_array($tmp, $tables)) {
+                    if (! in_array($tmp, $tables)) {
                         $tables[] = $tmp;
                     }
                 }
-                $join .= '( '.$qry.$tables[0].'.device_id ) && ';
+                $join .= '( ' . $qry . $tables[0] . '.device_id ) && ';
             }
             $i++;
         }
-        $sql = 'SELECT * FROM '.implode(',', $tables).' WHERE ('.$join.''.str_replace('(', '', $tables[0]).'.device_id = ?) && ('.str_replace(['%', '@', '!~', '~'], ['', '.*', 'NOT REGEXP', 'REGEXP'], $rule).')';
+        $sql = 'SELECT * FROM ' . implode(',', $tables) . ' WHERE (' . $join . '' . str_replace('(', '', $tables[0]) . '.device_id = ?) && (' . str_replace(['%', '@', '!~', '~'], ['', '.*', 'NOT REGEXP', 'REGEXP'], $rule) . ')';
 
         return $sql;
     }

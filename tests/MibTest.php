@@ -47,7 +47,7 @@ class MibTest extends TestCase
      */
     public function testMibDirectory($dir)
     {
-        $output = shell_exec('snmptranslate -M +'.Config::get('mib_dir').":$dir -m +ALL SNMPv2-MIB::system 2>&1");
+        $output = shell_exec('snmptranslate -M +' . Config::get('mib_dir') . ":$dir -m +ALL SNMPv2-MIB::system 2>&1");
         $errors = str_replace("SNMPv2-MIB::system\n", '', $output);
 
         $this->assertEmpty($errors, "MIBs in $dir have errors!\n$errors");
@@ -78,7 +78,7 @@ class MibTest extends TestCase
         if (isset($existing_mibs[$mib_name])) {
             $existing_mibs[$mib_name][] = $file_path;
 
-            $this->fail("$highligted_mib has duplicates: ".implode(', ', $existing_mibs[$mib_name]));
+            $this->fail("$highligted_mib has duplicates: " . implode(', ', $existing_mibs[$mib_name]));
         } else {
             $existing_mibs[$mib_name] = [$file_path];
         }
@@ -119,7 +119,7 @@ class MibTest extends TestCase
         $file_path = "$path/$file";
         $highlighted_file = $console_color->convert("%r$file_path%n");
 
-        $output = shell_exec('snmptranslate -M +'.Config::get('mib_dir').":$path -m +$mib_name SNMPv2-MIB::system 2>&1");
+        $output = shell_exec('snmptranslate -M +' . Config::get('mib_dir') . ":$path -m +$mib_name SNMPv2-MIB::system 2>&1");
         $errors = str_replace("SNMPv2-MIB::system\n", '', $output);
 
         $this->assertEmpty($errors, "$highlighted_file has errors!\n$errors");
@@ -139,7 +139,7 @@ class MibTest extends TestCase
             if ($file->isDir()) {
                 continue;
             }
-            $mib_path = str_replace(Config::get('mib_dir').'/', '', $file->getPathName());
+            $mib_path = str_replace(Config::get('mib_dir') . '/', '', $file->getPathName());
             $file_list[$mib_path] = [
                 str_replace(Config::get('install_dir'), '.', $file->getPath()),
                 $file->getFilename(),
@@ -157,12 +157,12 @@ class MibTest extends TestCase
      */
     public function mibDirs()
     {
-        $dirs = glob(Config::get('mib_dir').'/*', GLOB_ONLYDIR);
+        $dirs = glob(Config::get('mib_dir') . '/*', GLOB_ONLYDIR);
         array_unshift($dirs, Config::get('mib_dir'));
 
         $final_list = [];
         foreach ($dirs as $dir) {
-            $relative_dir = str_replace(Config::get('mib_dir').'/', '', $dir);
+            $relative_dir = str_replace(Config::get('mib_dir') . '/', '', $dir);
             $final_list[$relative_dir] = [$dir];
         }
 

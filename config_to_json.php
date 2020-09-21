@@ -10,7 +10,7 @@
 use LibreNMS\Config;
 
 $init_modules = ['nodb'];
-require __DIR__.'/includes/init.php';
+require __DIR__ . '/includes/init.php';
 
 if (isCli()) {
     // fill in db variables for legacy external scripts

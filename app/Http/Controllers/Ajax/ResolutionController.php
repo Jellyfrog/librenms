@@ -43,6 +43,6 @@ class ResolutionController extends Controller
             'screen_height' => $request->height,
         ]);
 
-        return $request->width.'x'.$request->height;
+        return $request->width . 'x' . $request->height;
     }
 }

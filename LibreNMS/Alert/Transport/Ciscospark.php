@@ -63,7 +63,7 @@ class Ciscospark extends Transport
         curl_setopt($curl, CURLOPT_HTTPHEADER, [
             'Content-type' => 'application/json',
             'Expect:',
-            'Authorization: Bearer '.$token,
+            'Authorization: Bearer ' . $token,
         ]);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
         $ret = curl_exec($curl);

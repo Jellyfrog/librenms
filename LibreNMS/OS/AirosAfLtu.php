@@ -46,7 +46,7 @@ class AirosAfLtu extends OS implements
 
         foreach ($oids as $index => $entry) {
             return [
-                new WirelessSensor('distance', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.23.'.$index, 'airos-af-ltu', 1, 'Distance', $entry['afLTUStaRemoteDistance'], 1, 1000), //UBNT-AFLTU-MIB::afLTUStaRemoteDistance
+                new WirelessSensor('distance', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.23.' . $index, 'airos-af-ltu', 1, 'Distance', $entry['afLTUStaRemoteDistance'], 1, 1000), //UBNT-AFLTU-MIB::afLTUStaRemoteDistance
             ];
         }
     }
@@ -69,10 +69,10 @@ class AirosAfLtu extends OS implements
         $oids = snmpwalk_cache_oid($this->getDeviceArray(), 'afLTUStaIdealRxPower1', $oids, 'UBNT-AFLTU-MIB', null, '-OteQUsb');
 
         foreach ($oids as $index => $entry) {
-            $sensors[] = new WirelessSensor('power', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.5.'.$index, 'airos-af-ltu-rx-chain-0', 1, 'RX Power Chain 0', $entry['afLTUStaRxPower0']); //UBNT-AFLTU-MIB::afLTUStaRxPower0
-            $sensors[] = new WirelessSensor('power', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.6.'.$index, 'airos-af-ltu-rx-chain-1', 1, 'RX Power Chain 1', $entry['afLTUStaRxPower1']); //UBNT-AFLTU-MIB::afLTUStaRxPower1
-            $sensors[] = new WirelessSensor('power', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.7.'.$index, 'airos-af-ltu-ideal-rx-chain-0', 1, 'RX Ideal Power Chain 0', $entry['afLTUStaIdealRxPower0']); //UBNT-AFLTU-MIB::afLTUStaIdealRxPower0
-            $sensors[] = new WirelessSensor('power', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.8.'.$index, 'airos-af-ltu-ideal-rx-chain-1', 1, 'RX Ideal Power Chain 1', $entry['afLTUStaIdealRxPower1']); //UBNT-AFLTU-MIB::afLTUStaIdealRxPower1
+            $sensors[] = new WirelessSensor('power', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.5.' . $index, 'airos-af-ltu-rx-chain-0', 1, 'RX Power Chain 0', $entry['afLTUStaRxPower0']); //UBNT-AFLTU-MIB::afLTUStaRxPower0
+            $sensors[] = new WirelessSensor('power', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.6.' . $index, 'airos-af-ltu-rx-chain-1', 1, 'RX Power Chain 1', $entry['afLTUStaRxPower1']); //UBNT-AFLTU-MIB::afLTUStaRxPower1
+            $sensors[] = new WirelessSensor('power', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.7.' . $index, 'airos-af-ltu-ideal-rx-chain-0', 1, 'RX Ideal Power Chain 0', $entry['afLTUStaIdealRxPower0']); //UBNT-AFLTU-MIB::afLTUStaIdealRxPower0
+            $sensors[] = new WirelessSensor('power', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.8.' . $index, 'airos-af-ltu-ideal-rx-chain-1', 1, 'RX Ideal Power Chain 1', $entry['afLTUStaIdealRxPower1']); //UBNT-AFLTU-MIB::afLTUStaIdealRxPower1
             break;
         }
 
@@ -95,8 +95,8 @@ class AirosAfLtu extends OS implements
         $oids = snmpwalk_cache_oid($this->getDeviceArray(), 'afLTUStaRxPowerLevel1', $oids, 'UBNT-AFLTU-MIB', null, '-OteQUsb');
 
         foreach ($oids as $index => $entry) {
-            $sensors[] = new WirelessSensor('quality', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.9.'.$index, 'airos-af-ltu-level-rx-chain-0', 1, 'Signal Level Chain 0', $entry['afLTUStaRxPower0']); //UBNT-AFLTU-MIB::afLTUStaRxPowerLevel0
-            $sensors[] = new WirelessSensor('quality', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.10.'.$index, 'airos-af-ltu-level-rx-chain-1', 1, 'Signal Level Chain 1', $entry['afLTUStaRxPower1']); //UBNT-AFLTU-MIB::afLTUStaRxPowerLevel1
+            $sensors[] = new WirelessSensor('quality', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.9.' . $index, 'airos-af-ltu-level-rx-chain-0', 1, 'Signal Level Chain 0', $entry['afLTUStaRxPower0']); //UBNT-AFLTU-MIB::afLTUStaRxPowerLevel0
+            $sensors[] = new WirelessSensor('quality', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.10.' . $index, 'airos-af-ltu-level-rx-chain-1', 1, 'Signal Level Chain 1', $entry['afLTUStaRxPower1']); //UBNT-AFLTU-MIB::afLTUStaRxPowerLevel1
             break;
         }
 
@@ -117,8 +117,8 @@ class AirosAfLtu extends OS implements
         $oids = snmpwalk_cache_oid($this->getDeviceArray(), 'afLTUStaRxCapacity', $oids, 'UBNT-AFLTU-MIB', null, '-OteQUsb');
 
         foreach ($oids as $index => $entry) {
-            $sensors[] = new WirelessSensor('rate', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.3.'.$index, 'airos-af-ltu-tx', 1, 'TX Rate', $entry['afLTUStaTxCapacity'], 1000); //UBNT-AFLTU-MIB::afLTUStaTxCapacity
-            $sensors[] = new WirelessSensor('rate', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.4.'.$index, 'airos-af-ltu-rx', 1, 'RX Rate', $entry['afLTUStaRxCapacity'], 1000); //UBNT-AFLTU-MIB::afLTUStaRxCapacity
+            $sensors[] = new WirelessSensor('rate', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.3.' . $index, 'airos-af-ltu-tx', 1, 'TX Rate', $entry['afLTUStaTxCapacity'], 1000); //UBNT-AFLTU-MIB::afLTUStaTxCapacity
+            $sensors[] = new WirelessSensor('rate', $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.10.1.4.1.4.' . $index, 'airos-af-ltu-rx', 1, 'RX Rate', $entry['afLTUStaRxCapacity'], 1000); //UBNT-AFLTU-MIB::afLTUStaRxCapacity
             break;
         }
 

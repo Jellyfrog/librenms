@@ -19,7 +19,7 @@ class Kayako extends Transport
 {
     public function deliverAlert($host, $kayako)
     {
-        if (!empty($this->config)) {
+        if (! empty($this->config)) {
             $kayako['url'] = $this->config['kayako-url'];
             $kayako['key'] = $this->config['kayako-key'];
             $kayako['secret'] = $this->config['kayako-secret'];
@@ -31,7 +31,7 @@ class Kayako extends Transport
 
     public function contactKayako($host, $kayako)
     {
-        $url = $kayako['url'].'/Tickets/Ticket';
+        $url = $kayako['url'] . '/Tickets/Ticket';
         $key = $kayako['key'];
         $secret = $kayako['secret'];
         $user = Config::get('email_from');
@@ -43,7 +43,7 @@ class Kayako extends Transport
         $signature = base64_encode(hash_hmac('sha256', $salt, $secret, true));
 
         $protocol = [
-            'subject'             => ($host['name'] ? $host['name'].' on '.$host['hostname'] : $host['title']),
+            'subject'             => ($host['name'] ? $host['name'] . ' on ' . $host['hostname'] : $host['title']),
             'fullname'            => 'LibreNMS Alert',
             'email'               => $user,
             'contents'            => strip_tags($host['msg']),

@@ -41,7 +41,7 @@ class DeviceDependencyController extends MapController
     {
         $group_id = $request->get('group');
 
-        if (!$group_id) {
+        if (! $group_id) {
             return Device::hasAccess($request->user())->with('parents', 'location')->get();
         }
 
@@ -77,7 +77,7 @@ class DeviceDependencyController extends MapController
     protected function getParentDevices($device)
     {
         foreach ($device->parents as $parent) {
-            if (!in_array($parent->device_id, $this->deviceIdAll)) {
+            if (! in_array($parent->device_id, $this->deviceIdAll)) {
                 continue;
             }
             if (in_array($parent->device_id, $this->parentDeviceIds)) {

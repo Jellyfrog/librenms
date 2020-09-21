@@ -65,7 +65,7 @@ class Pagerduty extends Transport
                 'device_groups'   => \DeviceCache::get($obj['device_id'])->groups->pluck('name'),
                 'source'          => $obj['hostname'],
                 'severity'        => $obj['severity'],
-                'summary'         => ($obj['name'] ? $obj['name'].' on '.$obj['hostname'] : $obj['title']),
+                'summary'         => ($obj['name'] ? $obj['name'] . ' on ' . $obj['hostname'] : $obj['title']),
             ],
         ];
 
@@ -81,7 +81,7 @@ class Pagerduty extends Transport
 
             return $result->getReasonPhrase();
         } catch (GuzzleException $e) {
-            return 'Request to PagerDuty API failed. '.$e->getMessage();
+            return 'Request to PagerDuty API failed. ' . $e->getMessage();
         }
     }
 
@@ -95,7 +95,7 @@ class Pagerduty extends Transport
                     'type'  => 'oauth',
                     'icon'  => 'pagerduty-white.svg',
                     'class' => 'btn-success',
-                    'url'   => 'https://connect.pagerduty.com/connect?vendor='.self::$integrationKey.'&callback=',
+                    'url'   => 'https://connect.pagerduty.com/connect?vendor=' . self::$integrationKey . '&callback=',
                 ],
                 [
                     'title' => 'Account',

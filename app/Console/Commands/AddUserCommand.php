@@ -81,7 +81,7 @@ class AddUserCommand extends LnmsCommand
 
         // set get password
         $password = $this->option('password');
-        if (!$password) {
+        if (! $password) {
             $password = $this->secret(__('commands.user:add.password-request'));
         }
 

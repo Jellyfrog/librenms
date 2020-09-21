@@ -175,7 +175,7 @@ class User extends Authenticatable
     public function getDevicesAttribute()
     {
         // pseudo relation
-        if (!array_key_exists('devices', $this->relations)) {
+        if (! array_key_exists('devices', $this->relations)) {
             $this->setRelation('devices', $this->devices()->get());
         }
 
@@ -192,7 +192,7 @@ class User extends Authenticatable
     public function devices()
     {
         // pseudo relation
-        return Device::query()->when(!$this->hasGlobalRead(), function ($query) {
+        return Device::query()->when(! $this->hasGlobalRead(), function ($query) {
             return $query->whereIn('device_id', Permissions::devicesForUser($this));
         });
     }

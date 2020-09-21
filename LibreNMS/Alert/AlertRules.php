@@ -57,7 +57,7 @@ class AlertRules
         }
         //Checks each rule.
         foreach (AlertUtil::getRules($device_id) as $rule) {
-            c_echo('Rule %p#'.$rule['id'].' ('.$rule['name'].'):%n ');
+            c_echo('Rule %p#' . $rule['id'] . ' (' . $rule['name'] . '):%n ');
             $extra = json_decode($rule['extra'], true);
             if (isset($extra['invert'])) {
                 $inv = (bool) $extra['invert'];
@@ -98,7 +98,7 @@ class AlertRules
                     $alert_log = dbFetchRow('SELECT alert_log.id, alert_log.details FROM alert_log,alert_rules WHERE alert_log.rule_id = alert_rules.id && alert_log.device_id = ? && alert_log.rule_id = ? && alert_rules.disabled = 0
      ORDER BY alert_log.id DESC LIMIT 1', [$device_id, $rule['id']]);
                     $details = [];
-                    if (!empty($alert_log['details'])) {
+                    if (! empty($alert_log['details'])) {
                         $details = json_decode(gzuncompress($alert_log['details']), true);
                     }
                     $details['contacts'] = AlertUtil::getContacts($qry);
@@ -113,11 +113,11 @@ class AlertRules
                         } else {
                             dbUpdate(['state' => AlertState::ACTIVE, 'open' => 1, 'timestamp' => Carbon::now()], 'alerts', 'device_id = ? && rule_id = ?', [$device_id, $rule['id']]);
                         }
-                        c_echo(PHP_EOL.'Status: %rALERT');
+                        c_echo(PHP_EOL . 'Status: %rALERT');
                     }
                 }
             } else {
-                if (!is_null($current_state) && $current_state == AlertState::RECOVERED) {
+                if (! is_null($current_state) && $current_state == AlertState::RECOVERED) {
                     c_echo('Status: %bNOCHG');
                 } else {
                     if (dbInsert(['state' => AlertState::RECOVERED, 'device_id' => $device_id, 'rule_id' => $rule['id']], 'alert_log')) {
@@ -127,11 +127,11 @@ class AlertRules
                             dbUpdate(['state' => AlertState::RECOVERED, 'open' => 1, 'note' => '', 'timestamp' => Carbon::now()], 'alerts', 'device_id = ? && rule_id = ?', [$device_id, $rule['id']]);
                         }
 
-                        c_echo(PHP_EOL.'Status: %gOK');
+                        c_echo(PHP_EOL . 'Status: %gOK');
                     }
                 }
             }
-            c_echo('%n'.PHP_EOL);
+            c_echo('%n' . PHP_EOL);
         }
     }
 }

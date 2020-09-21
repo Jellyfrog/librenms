@@ -54,7 +54,7 @@ class NetCommand extends Controller
                 $cmd = [Config::get('mtr', 'mtr'), '-r', '-c', '5', $request->get('query')];
                 break;
             case 'nmap':
-                if (!$request->user()->isAdmin()) {
+                if (! $request->user()->isAdmin()) {
                     return response('Insufficient privileges');
                 } else {
                     $cmd = [Config::get('nmap', 'nmap'), $request->get('query')];

@@ -8,7 +8,7 @@ class Canopsis extends Transport
 {
     public function deliverAlert($obj, $opts)
     {
-        if (!empty($this->config)) {
+        if (! empty($this->config)) {
             $opts['host'] = $this->config['canopsis-host'];
             $opts['port'] = $this->config['canopsis-port'];
             $opts['user'] = $this->config['canopsis-user'];
@@ -67,9 +67,9 @@ class Canopsis extends Transport
 
         // Build routing key
         if ($msg_body['source_type'] == 'resource') {
-            $msg_rk = $msg_rk.'.'.$msg_body['resource'];
+            $msg_rk = $msg_rk . '.' . $msg_body['resource'];
         } else {
-            $msg_rk = $msg_body['connector'].'.'.$msg_body['connector_name'].'.'.$msg_body['event_type'].'.'.$msg_body['source_type'].'.'.$msg_body['component'];
+            $msg_rk = $msg_body['connector'] . '.' . $msg_body['connector_name'] . '.' . $msg_body['event_type'] . '.' . $msg_body['source_type'] . '.' . $msg_body['component'];
         }
 
         // Publish Event

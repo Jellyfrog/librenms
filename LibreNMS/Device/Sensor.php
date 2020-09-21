@@ -116,7 +116,7 @@ class Sensor implements DiscoveryModule, PollerModule
 
         // ensure leading dots
         array_walk($this->oids, function (&$oid) {
-            $oid = '.'.ltrim($oid, '.');
+            $oid = '.' . ltrim($oid, '.');
         });
 
         $sensor = $this->toArray();
@@ -132,7 +132,7 @@ class Sensor implements DiscoveryModule, PollerModule
             $this->valid = is_numeric($this->current);
         }
 
-        d_echo('Discovered '.get_called_class().' '.print_r($sensor, true));
+        d_echo('Discovered ' . get_called_class() . ' ' . print_r($sensor, true));
     }
 
     /**
@@ -192,7 +192,7 @@ class Sensor implements DiscoveryModule, PollerModule
         }
 
         $sensor = dbFetchRow(
-            "SELECT * FROM `$table` ".
+            "SELECT * FROM `$table` " .
             'WHERE `device_id`=? AND `sensor_class`=? AND `sensor_type`=? AND `sensor_index`=?',
             [$this->device_id, $this->type, $this->subtype, $this->index]
         );
@@ -277,8 +277,8 @@ class Sensor implements DiscoveryModule, PollerModule
         $params = [$os->getDeviceId()];
 
         $submodules = Config::get('poller_submodules.wireless', []);
-        if (!empty($submodules)) {
-            $query .= ' AND `sensor_class` IN '.dbGenPlaceholders(count($submodules));
+        if (! empty($submodules)) {
+            $query .= ' AND `sensor_class` IN ' . dbGenPlaceholders(count($submodules));
             $params = array_merge($params, $submodules);
         }
 
@@ -297,7 +297,7 @@ class Sensor implements DiscoveryModule, PollerModule
         foreach ($sensors as $type => $type_sensors) {
             // check for custom polling
             $typeInterface = static::getPollingInterface($type);
-            if (!interface_exists($typeInterface)) {
+            if (! interface_exists($typeInterface)) {
                 echo "ERROR: Polling Interface doesn't exist! $typeInterface\n";
             }
 
@@ -452,7 +452,7 @@ class Sensor implements DiscoveryModule, PollerModule
     protected static function discoverType(OS $os, $type)
     {
         $typeInterface = static::getDiscoveryInterface($type);
-        if (!interface_exists($typeInterface)) {
+        if (! interface_exists($typeInterface)) {
             echo "ERROR: Discovery Interface doesn't exist! $typeInterface\n";
         }
 
@@ -461,7 +461,7 @@ class Sensor implements DiscoveryModule, PollerModule
             echo "$type: ";
             $function = static::getDiscoveryMethod($type);
             $sensors = $os->$function();
-            if (!is_array($sensors)) {
+            if (! is_array($sensors)) {
                 c_echo("%RERROR:%n $function did not return an array! Skipping discovery.");
                 $sensors = [];
             }
@@ -504,27 +504,27 @@ class Sensor implements DiscoveryModule, PollerModule
      */
     private function getUniqueId()
     {
-        return $this->type.'-'.$this->subtype.'-'.$this->index;
+        return $this->type . '-' . $this->subtype . '-' . $this->index;
     }
 
     protected static function getDiscoveryInterface($type)
     {
-        return str_to_class($type, 'LibreNMS\\Interfaces\\Discovery\\Sensors\\').'Discovery';
+        return str_to_class($type, 'LibreNMS\\Interfaces\\Discovery\\Sensors\\') . 'Discovery';
     }
 
     protected static function getDiscoveryMethod($type)
     {
-        return 'discover'.str_to_class($type);
+        return 'discover' . str_to_class($type);
     }
 
     protected static function getPollingInterface($type)
     {
-        return str_to_class($type, 'LibreNMS\\Interfaces\\Polling\\Sensors\\').'Polling';
+        return str_to_class($type, 'LibreNMS\\Interfaces\\Polling\\Sensors\\') . 'Polling';
     }
 
     protected static function getPollingMethod($type)
     {
-        return 'poll'.str_to_class($type);
+        return 'poll' . str_to_class($type);
     }
 
     /**
@@ -575,8 +575,8 @@ class Sensor implements DiscoveryModule, PollerModule
         $params = [$device_id, $type];
         $where = '`device_id`=? AND `sensor_class`=?';
 
-        if (!empty($sensor_ids)) {
-            $where .= ' AND `sensor_id` NOT IN '.dbGenPlaceholders(count($sensor_ids));
+        if (! empty($sensor_ids)) {
+            $where .= ' AND `sensor_id` NOT IN ' . dbGenPlaceholders(count($sensor_ids));
             $params = array_merge($params, $sensor_ids);
         }
 
@@ -588,7 +588,7 @@ class Sensor implements DiscoveryModule, PollerModule
             $message .= " Deleted: $type {$sensor['sensor_type']} {$sensor['sensor_index']} {$sensor['sensor_descr']}";
             log_event($message, $device_id, static::$table, 3, $sensor['sensor_id']);
         }
-        if (!empty($delete)) {
+        if (! empty($delete)) {
             dbDelete($table, $where, $params);
         }
     }
@@ -626,7 +626,7 @@ class Sensor implements DiscoveryModule, PollerModule
         foreach ($sensors as $sensor) {
             $sensor_value = $data[$sensor['sensor_id']];
 
-            echo "  {$sensor['sensor_descr']}: $sensor_value ".__(static::$translation_prefix.'.'.$sensor['sensor_class'].'.unit').PHP_EOL;
+            echo "  {$sensor['sensor_descr']}: $sensor_value " . __(static::$translation_prefix . '.' . $sensor['sensor_class'] . '.unit') . PHP_EOL;
 
             // update rrd and database
             $rrd_name = [

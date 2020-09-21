@@ -47,8 +47,8 @@ class LinkUp implements SnmptrapHandler
 
         $port = $device->ports()->where('ifIndex', $ifIndex)->first();
 
-        if (!$port) {
-            Log::warning("Snmptrap linkUp: Could not find port at ifIndex $ifIndex for device: ".$device->hostname);
+        if (! $port) {
+            Log::warning("Snmptrap linkUp: Could not find port at ifIndex $ifIndex for device: " . $device->hostname);
 
             return;
         }
@@ -56,7 +56,7 @@ class LinkUp implements SnmptrapHandler
         $port->ifOperStatus = $trap->getOidData("IF-MIB::ifAdminStatus.$ifIndex");
         $port->ifAdminStatus = $trap->getOidData("IF-MIB::ifOperStatus.$ifIndex");
 
-        Log::event("SNMP Trap: linkUp $port->ifAdminStatus/$port->ifOperStatus ".$port->ifDescr, $device->device_id, 'interface', 1, $port->port_id);
+        Log::event("SNMP Trap: linkUp $port->ifAdminStatus/$port->ifOperStatus " . $port->ifDescr, $device->device_id, 'interface', 1, $port->port_id);
 
         if ($port->isDirty('ifAdminStatus')) {
             Log::event("Interface Enabled : $port->ifDescr (TRAP)", $device->device_id, 'interface', 3, $port->port_id);

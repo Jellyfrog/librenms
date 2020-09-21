@@ -35,7 +35,7 @@ class LegacyController extends Controller
 
         // Load the settings for Multi-Tenancy.
         if (Config::has('branding') && is_array(Config::get('branding'))) {
-            $branding = Arr::dot(Config::get('branding.'.$request->server('SERVER_NAME'), Config::get('branding.default')));
+            $branding = Arr::dot(Config::get('branding.' . $request->server('SERVER_NAME'), Config::get('branding.default')));
             foreach ($branding as $key => $value) {
                 Config::set($key, $value);
             }
@@ -49,8 +49,8 @@ class LegacyController extends Controller
         // render page
         ob_start();
         $vars['page'] = basename($vars['page'] ?? '');
-        if ($vars['page'] && is_file('includes/html/pages/'.$vars['page'].'.inc.php')) {
-            require 'includes/html/pages/'.$vars['page'].'.inc.php';
+        if ($vars['page'] && is_file('includes/html/pages/' . $vars['page'] . '.inc.php')) {
+            require 'includes/html/pages/' . $vars['page'] . '.inc.php';
         } else {
             abort(404);
         }

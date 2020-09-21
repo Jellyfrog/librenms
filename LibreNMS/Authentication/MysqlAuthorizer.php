@@ -23,7 +23,7 @@ class MysqlAuthorizer extends AuthorizerBase
         $hash = $user_data->password;
         $enabled = $user_data->enabled;
 
-        if (!$enabled) {
+        if (! $enabled) {
             throw new AuthenticationException($message = 'login denied');
         }
 
@@ -66,9 +66,9 @@ class MysqlAuthorizer extends AuthorizerBase
          * user is explicitly prohibited to do so.
          */
 
-        if (!static::$CAN_UPDATE_PASSWORDS) {
+        if (! static::$CAN_UPDATE_PASSWORDS) {
             return 0;
-        } elseif (empty($username) || !$this->userExists($username)) {
+        } elseif (empty($username) || ! $this->userExists($username)) {
             return 1;
         } else {
             return User::thisAuth()->where('username', $username)->value('can_modify_passwd');
@@ -78,7 +78,7 @@ class MysqlAuthorizer extends AuthorizerBase
     public function changePassword($username, $password)
     {
         // check if updating passwords is allowed (mostly for classes that extend this)
-        if (!static::$CAN_UPDATE_PASSWORDS) {
+        if (! static::$CAN_UPDATE_PASSWORDS) {
             return 0;
         }
 
@@ -100,13 +100,13 @@ class MysqlAuthorizer extends AuthorizerBase
 
         // no nulls
         $user_array = array_filter($user_array, function ($field) {
-            return !is_null($field);
+            return ! is_null($field);
         });
 
         $new_user = User::thisAuth()->firstOrNew(['username' => $username], $user_array);
 
         // only update new users
-        if (!$new_user->user_id) {
+        if (! $new_user->user_id) {
             $new_user->auth_type = LegacyAuth::getType();
             $new_user->setPassword($password);
             $new_user->email = (string) $new_user->email;

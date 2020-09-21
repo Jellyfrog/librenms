@@ -66,7 +66,7 @@ class Sensu extends Transport
         try {
             return $this->contactSensu($obj, $sensu_opts);
         } catch (GuzzleException $e) {
-            return 'Sending event to Sensu failed: '.$e->getMessage();
+            return 'Sending event to Sensu failed: ' . $e->getMessage();
         }
     }
 
@@ -74,7 +74,7 @@ class Sensu extends Transport
     {
         // The Sensu agent should be running on the poller - events can be sent directly to the backend but this has not been tested, and likely needs mTLS.
         // The agent API is documented at https://docs.sensu.io/sensu-go/latest/reference/agent/#create-monitoring-events-using-the-agent-api
-        if (self::$client->request('GET', $opts['url'].'/healthz')->getStatusCode() !== 200) {
+        if (self::$client->request('GET', $opts['url'] . '/healthz')->getStatusCode() !== 200) {
             return 'Sensu API is not responding';
         }
 
@@ -83,7 +83,7 @@ class Sensu extends Transport
             $data = self::generateData($obj, $opts, self::OK, round(Config::get('rrd.step', 300) / 2));
             Log::debug('Sensu transport sent last good event to socket: ', $data);
 
-            $result = self::$client->request('POST', $opts['url'].'/events', ['json' => $data]);
+            $result = self::$client->request('POST', $opts['url'] . '/events', ['json' => $data]);
             if ($result->getStatusCode() !== 202) {
                 return $result->getReasonPhrase();
             }
@@ -94,7 +94,7 @@ class Sensu extends Transport
         $data = self::generateData($obj, $opts, self::calculateStatus($obj['state'], $obj['severity']));
         Log::debug('Sensu transport sent event to socket: ', $data);
 
-        $result = self::$client->request('POST', $opts['url'].'/events', ['json' => $data]);
+        $result = self::$client->request('POST', $opts['url'] . '/events', ['json' => $data]);
         if ($result->getStatusCode() === 202) {
             return true;
         }

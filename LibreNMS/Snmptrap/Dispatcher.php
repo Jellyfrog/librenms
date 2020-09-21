@@ -52,12 +52,12 @@ class Dispatcher
         $fallback = $handler instanceof Fallback;
         $logging = Config::get('snmptraps.eventlog', 'unhandled');
         if ($logging == 'all' || ($fallback && $logging == 'unhandled')) {
-            Log::event('SNMP trap received: '.$trap->getTrapOid(), $trap->getDevice(), 'trap');
+            Log::event('SNMP trap received: ' . $trap->getTrapOid(), $trap->getDevice(), 'trap');
         } else {
             $rules = new AlertRules();
             $rules->runRules($trap->getDevice()->device_id);
         }
 
-        return !$fallback;
+        return ! $fallback;
     }
 }

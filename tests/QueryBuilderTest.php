@@ -51,7 +51,7 @@ class QueryBuilderTest extends TestCase
      */
     public function testQueryConversion($legacy, $builder, $display, $sql, $query)
     {
-        if (!empty($legacy)) {
+        if (! empty($legacy)) {
             // some rules don't have a legacy representation
             $this->assertEquals($builder, QueryBuilderParser::fromOld($legacy)->toArray());
         }

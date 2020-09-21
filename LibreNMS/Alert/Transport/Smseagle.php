@@ -47,7 +47,7 @@ class Smseagle extends Transport
             'message' => $obj['title'],
         ];
         $url = Str::startsWith($opts['url'], 'http') ? '' : 'http://';
-        $url .= $opts['url'].'/index.php/http_api/send_sms?'.http_build_query($params);
+        $url .= $opts['url'] . '/index.php/http_api/send_sms?' . http_build_query($params);
         $curl = curl_init($url);
 
         set_curl_proxy($curl);

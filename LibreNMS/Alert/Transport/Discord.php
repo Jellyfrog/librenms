@@ -54,12 +54,12 @@ class Discord extends Transport
     {
         $host = $discord_opts['url'];
         $curl = curl_init();
-        $discord_title = '#'.$obj['uid'].' '.$obj['title'];
+        $discord_title = '#' . $obj['uid'] . ' ' . $obj['title'];
         $discord_msg = strip_tags($obj['msg']);
         $color = self::getColorForState($obj['state']);
 
         // Special handling for the elapsed text in the footer if the elapsed is not set.
-        $footer_text = $obj['elapsed'] ? 'alert took '.$obj['elapsed'] : '';
+        $footer_text = $obj['elapsed'] ? 'alert took ' . $obj['elapsed'] : '';
 
         $data = [
             'embeds' => [
@@ -74,7 +74,7 @@ class Discord extends Transport
                 ],
             ],
         ];
-        if (!empty($discord_opts['options'])) {
+        if (! empty($discord_opts['options'])) {
             $data = array_merge($data, $discord_opts['options']);
         }
 
@@ -90,10 +90,10 @@ class Discord extends Transport
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         if ($code != 204) {
             var_dump("API '$host' returned Error"); //FIXME: propper debuging
-            var_dump('Params: '.$alert_message); //FIXME: propper debuging
-            var_dump('Return: '.$ret); //FIXME: propper debuging
+            var_dump('Params: ' . $alert_message); //FIXME: propper debuging
+            var_dump('Return: ' . $ret); //FIXME: propper debuging
 
-            return 'HTTP Status code '.$code;
+            return 'HTTP Status code ' . $code;
         }
 
         return true;
@@ -105,7 +105,7 @@ class Discord extends Transport
 
         foreach (self::ALERT_FIELDS_TO_DISCORD_FIELDS as $objKey => $discordKey) {
             // Skip over keys that do not exist so Discord does not give us a 400.
-            if (!$obj[$objKey]) {
+            if (! $obj[$objKey]) {
                 continue;
             }
 

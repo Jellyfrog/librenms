@@ -154,7 +154,7 @@ class UserController extends Controller
 
             // if enabled and 3 or more failures
             $last_failure = isset($twofactor['last']) ? (time() - $twofactor['last']) : 0;
-            $data['twofactor_locked'] = isset($twofactor['fails']) && $twofactor['fails'] >= 3 && (!$lockout_time || $last_failure < $lockout_time);
+            $data['twofactor_locked'] = isset($twofactor['fails']) && $twofactor['fails'] >= 3 && (! $lockout_time || $last_failure < $lockout_time);
         }
 
         return view('user.edit', $data);

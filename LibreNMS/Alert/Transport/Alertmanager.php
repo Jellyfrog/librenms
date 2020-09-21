@@ -43,8 +43,8 @@ class Alertmanager extends Transport
         } else {
             $alertmanager_status = 'startsAt';
         }
-        $gen_url = (Config::get('base_url').'device/device='.$obj['device_id']);
-        $host = ($api['url'].'/api/v2/alerts');
+        $gen_url = (Config::get('base_url') . 'device/device=' . $obj['device_id']);
+        $host = ($api['url'] . '/api/v2/alerts');
         $curl = curl_init();
         $alertmanager_msg = strip_tags($obj['msg']);
         $data = [[
@@ -78,7 +78,7 @@ class Alertmanager extends Transport
         $ret = curl_exec($curl);
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         if ($code != 200) {
-            return 'HTTP Status code '.$code;
+            return 'HTTP Status code ' . $code;
         }
 
         return true;

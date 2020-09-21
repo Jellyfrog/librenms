@@ -55,7 +55,7 @@ class AppServiceProvider extends ServiceProvider
             return \LibreNMS\Config::get($key);
         });
         Blade::if('notconfig', function ($key) {
-            return !\LibreNMS\Config::get($key);
+            return ! \LibreNMS\Config::get($key);
         });
         Blade::if('admin', function () {
             return auth()->check() && auth()->user()->isAdmin();
@@ -151,7 +151,7 @@ class AppServiceProvider extends ServiceProvider
                 return true;
             }
 
-            $validator = Validator::make([$attribute => $value], [$attribute => 'exists:'.implode(',', $parameters)]);
+            $validator = Validator::make([$attribute => $value], [$attribute => 'exists:' . implode(',', $parameters)]);
 
             return $validator->passes();
         }, __('validation.exists'));

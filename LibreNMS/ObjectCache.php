@@ -45,20 +45,20 @@ class ObjectCache implements ArrayAccess
         if (isset($GLOBALS['_ObjCache'][$obj])) {
             $this->data = $GLOBALS['_ObjCacheSkell'][$obj];
         } else {
-            if (!isset($GLOBALS['_ObjCacheSkell']) || !is_array($GLOBALS['_ObjCacheSkell'])) {
+            if (! isset($GLOBALS['_ObjCacheSkell']) || ! is_array($GLOBALS['_ObjCacheSkell'])) {
                 $GLOBALS['_ObjCacheSkell'] = [];
             }
 
-            if (!isset($GLOBALS['_ObjCache']) || !is_array($GLOBALS['_ObjCache'])) {
+            if (! isset($GLOBALS['_ObjCache']) || ! is_array($GLOBALS['_ObjCache'])) {
                 $GLOBALS['_ObjCache'] = [];
             }
 
-            if (file_exists(\LibreNMS\Config::get('install_dir').'/includes/caches/'.$obj.'.inc.php')) {
+            if (file_exists(\LibreNMS\Config::get('install_dir') . '/includes/caches/' . $obj . '.inc.php')) {
                 $data = [];
-                include \LibreNMS\Config::get('install_dir').'/includes/caches/'.$obj.'.inc.php';
+                include \LibreNMS\Config::get('install_dir') . '/includes/caches/' . $obj . '.inc.php';
                 $this->data = $data;
                 $GLOBALS['_ObjCacheSkell'][$obj] = $this->data;
-                if (!(isset($GLOBALS['_ObjCache'][$obj]) && is_array($GLOBALS['_ObjCache'][$obj]))) {
+                if (! (isset($GLOBALS['_ObjCache'][$obj]) && is_array($GLOBALS['_ObjCache'][$obj]))) {
                     $GLOBALS['_ObjCache'][$obj] = $this->data;
                 }
             }
@@ -122,7 +122,7 @@ class ObjectCache implements ArrayAccess
      */
     public function offsetSet($obj, $value)
     {
-        if (!isset($this->data[$obj])) {
+        if (! isset($this->data[$obj])) {
             $this->data[$obj] = [];
         }
 

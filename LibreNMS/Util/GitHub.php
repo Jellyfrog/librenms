@@ -80,7 +80,7 @@ class GitHub
         $this->from = $from;
         $this->file = $file;
         $this->pr = $pr;
-        if (!is_null($token) || getenv('GH_TOKEN')) {
+        if (! is_null($token) || getenv('GH_TOKEN')) {
             $this->token = $token ?: getenv('GH_TOKEN');
         }
     }
@@ -96,7 +96,7 @@ class GitHub
             'Content-Type' => 'application/json',
         ];
 
-        if (!is_null($this->token)) {
+        if (! is_null($this->token)) {
             $headers['Authorization'] = "token {$this->token}";
         }
 
@@ -112,7 +112,7 @@ class GitHub
      */
     public function getRelease($tag)
     {
-        $release = Requests::get($this->github."/releases/tags/$tag", $this->getHeaders());
+        $release = Requests::get($this->github . "/releases/tags/$tag", $this->getHeaders());
 
         return json_decode($release->body, true);
     }
@@ -122,7 +122,7 @@ class GitHub
      */
     public function getPullRequest()
     {
-        $pull_request = Requests::get($this->github."/pulls/{$this->pr}", $this->getHeaders());
+        $pull_request = Requests::get($this->github . "/pulls/{$this->pr}", $this->getHeaders());
         $this->pr = json_decode($pull_request->body, true);
     }
 
@@ -183,7 +183,7 @@ GRAPHQL;
         $data = json_encode(['query' => $query]);
         $prs = Requests::post($this->graphql, $this->getHeaders(), $data);
         $prs = json_decode($prs->body, true);
-        if (!isset($prs['data'])) {
+        if (! isset($prs['data'])) {
             var_dump($prs);
         }
 
@@ -238,9 +238,9 @@ GRAPHQL;
             }
 
             // only add the changelog if it isn't set to ignore
-            if (!in_array('ignore changelog', $pr['labels'])) {
+            if (! in_array('ignore changelog', $pr['labels'])) {
                 $title = addcslashes(ucfirst(trim(preg_replace('/^[\S]+: /', '', $pr['title']))), '<>');
-                $this->changelog[$category][] = "$title ([#{$pr['number']}]({$pr['url']})) - [{$pr['author']['login']}]({$pr['author']['url']})".PHP_EOL;
+                $this->changelog[$category][] = "$title ([#{$pr['number']}]({$pr['url']})) - [{$pr['author']['login']}]({$pr['author']['url']})" . PHP_EOL;
             }
 
             $this->recordUserInfo($pr['author']);
@@ -251,7 +251,7 @@ GRAPHQL;
 
             $ignore = [$pr['author']['login'], $pr['mergedBy']['login']];
             foreach (array_unique($pr['reviews']['nodes'], SORT_REGULAR) as $reviewer) {
-                if (!in_array($reviewer['author']['login'], $ignore)) {
+                if (! in_array($reviewer['author']['login'], $ignore)) {
                     $this->recordUserInfo($reviewer['author'], 'changelog_mergers');
                 }
             }
@@ -273,7 +273,7 @@ GRAPHQL;
             ? $user_count[$user['login']] + 1
             : 1;
 
-        if (!isset($this->profile_links[$user['login']])) {
+        if (! isset($this->profile_links[$user['login']])) {
             $this->profile_links[$user['login']] = $user['url'];
         }
     }
@@ -283,25 +283,25 @@ GRAPHQL;
      */
     public function formatChangeLog()
     {
-        $tmp_markdown = "## $this->tag".PHP_EOL;
-        $tmp_markdown .= '*('.date('Y-m-d').')*'.PHP_EOL.PHP_EOL;
+        $tmp_markdown = "## $this->tag" . PHP_EOL;
+        $tmp_markdown .= '*(' . date('Y-m-d') . ')*' . PHP_EOL . PHP_EOL;
 
-        if (!empty($this->changelog_users)) {
-            $tmp_markdown .= 'A big thank you to the following '.count($this->changelog_users).' contributors this last month:'.PHP_EOL.PHP_EOL;
+        if (! empty($this->changelog_users)) {
+            $tmp_markdown .= 'A big thank you to the following ' . count($this->changelog_users) . ' contributors this last month:' . PHP_EOL . PHP_EOL;
             $tmp_markdown .= $this->formatUserList($this->changelog_users);
         }
 
         $tmp_markdown .= PHP_EOL;
 
-        if (!empty($this->changelog_mergers)) {
-            $tmp_markdown .= 'Thanks to maintainers and others that helped with pull requests this month:'.PHP_EOL.PHP_EOL;
-            $tmp_markdown .= $this->formatUserList($this->changelog_mergers).PHP_EOL;
+        if (! empty($this->changelog_mergers)) {
+            $tmp_markdown .= 'Thanks to maintainers and others that helped with pull requests this month:' . PHP_EOL . PHP_EOL;
+            $tmp_markdown .= $this->formatUserList($this->changelog_mergers) . PHP_EOL;
         }
 
         foreach ($this->changelog as $section => $items) {
-            if (!empty($items)) {
-                $tmp_markdown .= '#### '.ucwords($section).PHP_EOL;
-                $tmp_markdown .= '* '.implode('* ', $items).PHP_EOL;
+            if (! empty($items)) {
+                $tmp_markdown .= '#### ' . ucwords($section) . PHP_EOL;
+                $tmp_markdown .= '* ' . implode('* ', $items) . PHP_EOL;
             }
         }
 
@@ -320,7 +320,7 @@ GRAPHQL;
         $output = '';
         arsort($users);
         foreach ($users as $user => $count) {
-            $output .= "  - [$user]({$this->profile_links[$user]}) ($count)".PHP_EOL;
+            $output .= "  - [$user]({$this->profile_links[$user]}) ($count)" . PHP_EOL;
         }
 
         return $output;
@@ -333,12 +333,12 @@ GRAPHQL;
     {
         if (file_exists($this->file)) {
             $existing = file_get_contents($this->file);
-            $content = $this->getMarkdown().PHP_EOL.$existing;
+            $content = $this->getMarkdown() . PHP_EOL . $existing;
             if (is_writable($this->file)) {
                 file_put_contents($this->file, $content);
             }
         } else {
-            echo "Couldn't write to file {$this->file}".PHP_EOL;
+            echo "Couldn't write to file {$this->file}" . PHP_EOL;
             exit;
         }
     }
@@ -369,7 +369,7 @@ GRAPHQL;
             $this->createChangelog(false);
         }
 
-        $release = Requests::post($this->github.'/releases', $this->getHeaders(), json_encode([
+        $release = Requests::post($this->github . '/releases', $this->getHeaders(), json_encode([
             'tag_name'         => $this->tag,
             'target_commitish' => $updated_sha,
             'body'             => $this->markdown,
@@ -389,11 +389,11 @@ GRAPHQL;
     public function createChangelog($write = true)
     {
         $previous_release = $this->getRelease($this->from);
-        if (!is_null($this->pr)) {
+        if (! is_null($this->pr)) {
             $this->getPullRequest();
         }
 
-        if (!isset($previous_release['published_at'])) {
+        if (! isset($previous_release['published_at'])) {
             throw new Exception(
                 $previous_release['message'] ??
                 "Could not find previous release tag. ($this->from)"
@@ -427,10 +427,10 @@ GRAPHQL;
      */
     private function pushFileContents($file, $contents, $message)
     {
-        $existing = Requests::get($this->github.'/contents/'.$file, $this->getHeaders());
+        $existing = Requests::get($this->github . '/contents/' . $file, $this->getHeaders());
         $existing_sha = json_decode($existing->body)->sha;
 
-        $updated = Requests::put($this->github.'/contents/'.$file, $this->getHeaders(), json_encode([
+        $updated = Requests::put($this->github . '/contents/' . $file, $this->getHeaders(), json_encode([
             'message' => $message,
             'content' => base64_encode($contents),
             'sha'     => $existing_sha,

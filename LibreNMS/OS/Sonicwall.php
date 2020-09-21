@@ -71,7 +71,7 @@ class Sonicwall extends OS implements OSPolling, ProcessorDiscovery
                 Processor::discover(
                     'sonicwall',
                     $this->getDeviceId(),
-                    $this->getDeviceArray()['sysObjectID'].'.2.1.3.0',  // different OID for each model
+                    $this->getDeviceArray()['sysObjectID'] . '.2.1.3.0',  // different OID for each model
                     0,
                     'CPU',
                     1

@@ -47,8 +47,8 @@ class JnxLdpSesUp implements SnmptrapHandler
         $ifIndex = $trap->getOidData($trap->findOid('JUNIPER-LDP-MIB::jnxLdpSesUpIf'));
         $port = $device->ports()->where('ifIndex', $ifIndex)->first();
 
-        if (!$port) {
-            Log::warning("Snmptrap LdpSesUp: Could not find port at ifIndex $ifIndex for device: ".$device->hostname);
+        if (! $port) {
+            Log::warning("Snmptrap LdpSesUp: Could not find port at ifIndex $ifIndex for device: " . $device->hostname);
 
             return;
         }

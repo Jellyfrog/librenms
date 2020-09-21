@@ -99,7 +99,7 @@ class HiveosWireless extends OS implements
             $sensors[] = new WirelessSensor(
                 'frequency',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.26928.1.1.1.2.1.5.1.1.'.$index,
+                '.1.3.6.1.4.1.26928.1.1.1.2.1.5.1.1.' . $index,
                 'hiveos-wireless',
                 $index,
                 $ahRadioName[$index],
@@ -126,10 +126,10 @@ class HiveosWireless extends OS implements
             $sensors[] = new WirelessSensor(
                 'power',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.26928.1.1.1.2.1.5.1.2.'.$index,
+                '.1.3.6.1.4.1.26928.1.1.1.2.1.5.1.2.' . $index,
                 'hiveos-wireless',
                 $index,
-                'Tx Power: '.$ahRadioName[$index],
+                'Tx Power: ' . $ahRadioName[$index],
                 $entry['ahRadioTxPower']
             );
         }
@@ -146,10 +146,10 @@ class HiveosWireless extends OS implements
             $sensors[] = new WirelessSensor(
                 'noise-floor',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.26928.1.1.1.2.1.5.1.3.'.$index,
+                '.1.3.6.1.4.1.26928.1.1.1.2.1.5.1.3.' . $index,
                 'hiveos-wireless',
                 $index,
-                'Noise floor '.$ahRadioName[$index],
+                'Noise floor ' . $ahRadioName[$index],
                 $entry['ahRadioNoiseFloor'] - 256
             );
         }

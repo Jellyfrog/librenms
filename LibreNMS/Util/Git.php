@@ -31,7 +31,7 @@ class Git
 {
     public static function repoPresent()
     {
-        $install_dir = Config::get('install_dir', realpath(__DIR__.'/../..'));
+        $install_dir = Config::get('install_dir', realpath(__DIR__ . '/../..'));
 
         return file_exists("$install_dir/.git");
     }

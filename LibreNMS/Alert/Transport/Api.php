@@ -53,7 +53,7 @@ class Api extends Transport
         foreach (preg_split('/\\r\\n|\\r|\\n/', $headers, -1, PREG_SPLIT_NO_EMPTY) as $current_line) {
             [$u_key, $u_val] = explode('=', $current_line, 2);
             foreach ($obj as $p_key => $p_val) {
-                $u_val = str_replace('{{ $'.$p_key.' }}', $p_val, $u_val);
+                $u_val = str_replace('{{ $' . $p_key . ' }}', $p_val, $u_val);
             }
             //store the parameter in the array for HTTP headers
             $request_heads[$u_key] = $u_val;
@@ -63,7 +63,7 @@ class Api extends Transport
             [$u_key, $u_val] = explode('=', $current_line, 2);
             // Replace the values
             foreach ($obj as $p_key => $p_val) {
-                $u_val = str_replace('{{ $'.$p_key.' }}', $p_val, $u_val);
+                $u_val = str_replace('{{ $' . $p_key . ' }}', $p_val, $u_val);
             }
             //store the parameter in the array for HTTP query
             $query[$u_key] = $u_val;
@@ -71,7 +71,7 @@ class Api extends Transport
 
         $client = new \GuzzleHttp\Client();
         $request_opts['proxy'] = get_guzzle_proxy();
-        if (isset($auth) && !empty($auth[0])) {
+        if (isset($auth) && ! empty($auth[0])) {
             $request_opts['auth'] = $auth;
         }
         if (count($request_heads) > 0) {
@@ -96,9 +96,9 @@ class Api extends Transport
             var_dump($query);
             var_dump('Response headers:');
             var_dump($res->getHeaders());
-            var_dump('Return: '.$res->getReasonPhrase());
+            var_dump('Return: ' . $res->getReasonPhrase());
 
-            return 'HTTP Status code '.$code;
+            return 'HTTP Status code ' . $code;
         }
 
         return true;

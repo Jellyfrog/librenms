@@ -63,7 +63,7 @@ class Pmp extends OS implements
 
         foreach ($ptp as $desc => $model) {
             if (Str::contains($device->features, $desc)) {
-                $hardware = $model.' '.str_replace(['timing', 'timeing'], '', $data['bhTimingMode.0']);
+                $hardware = $model . ' ' . str_replace(['timing', 'timeing'], '', $data['bhTimingMode.0']);
                 $device->version = $data['boxDeviceTypeID.0'] ?? $device->version;
                 break;
             }
@@ -75,7 +75,7 @@ class Pmp extends OS implements
             'OFDM'         => 'PMP 430',
         ];
 
-        if (!isset($hardware)) {
+        if (! isset($hardware)) {
             $hardware = 'PMP 100';
             foreach ($pmp as $desc => $model) {
                 if (Str::contains($device->features, $desc)) {

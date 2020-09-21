@@ -51,7 +51,7 @@ class InstallationController extends Controller
     {
         foreach ($this->filterActiveSteps() as $step => $controller) {
             /** @var InstallerStep $controller */
-            if (!$controller->complete()) {
+            if (! $controller->complete()) {
                 return redirect()->route("install.$step");
             }
         }
@@ -84,7 +84,7 @@ class InstallationController extends Controller
                 return true;
             }
 
-            if (!$status['complete']) {
+            if (! $status['complete']) {
                 return false;
             }
         }
@@ -94,7 +94,7 @@ class InstallationController extends Controller
 
     final protected function markStepComplete()
     {
-        if (!$this->stepCompleted($this->step)) {
+        if (! $this->stepCompleted($this->step)) {
             session(["install.$this->step" => true]);
             session()->save();
         }
@@ -116,7 +116,7 @@ class InstallationController extends Controller
     protected function configureDatabase()
     {
         $db = session('db');
-        if (!empty($db)) {
+        if (! empty($db)) {
             Eloquent::setConnection(
                 $this->connection,
                 $db['host'] ?? 'localhost',

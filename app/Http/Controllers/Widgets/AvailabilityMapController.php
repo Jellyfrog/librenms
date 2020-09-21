@@ -97,7 +97,7 @@ class AvailabilityMapController extends WidgetController
             $device_query = Device::hasAccess($request->user());
         }
 
-        if (!$settings['show_disabled_and_ignored']) {
+        if (! $settings['show_disabled_and_ignored']) {
             $device_query->isNotDisabled();
         }
         $device_query->orderBy($settings['order_by']);

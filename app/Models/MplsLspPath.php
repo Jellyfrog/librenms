@@ -41,7 +41,7 @@ class MplsLspPath extends Model implements Keyable
      */
     public function getCompositeKey()
     {
-        return $this->lsp_id.'-'.$this->path_oid;
+        return $this->lsp_id . '-' . $this->path_oid;
     }
 
     // ---- Define Relationships ----

@@ -66,7 +66,7 @@ class Fping
         ]);
 
         $process = app()->make(Process::class, ['command' => $cmd]);
-        Log::debug('[FPING] '.$process->getCommandLine().PHP_EOL);
+        Log::debug('[FPING] ' . $process->getCommandLine() . PHP_EOL);
         $process->run();
         $output = $process->getErrorOutput();
 

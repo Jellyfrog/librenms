@@ -44,10 +44,10 @@ trait CiscoCellular
             $sensors[] = new WirelessSensor(
                 'rssi',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.9.9.661.1.3.4.1.1.1.'.$index,
+                '.1.3.6.1.4.1.9.9.661.1.3.4.1.1.1.' . $index,
                 'ios',
                 $index,
-                'RSSI: Chain '.str_replace('1.', '', $index),
+                'RSSI: Chain ' . str_replace('1.', '', $index),
                 $entry['c3gCurrentGsmRssi.1']
             );
         }

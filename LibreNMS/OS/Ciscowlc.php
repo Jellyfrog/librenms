@@ -49,7 +49,7 @@ class Ciscowlc extends Cisco implements
         $total_oids = [];
         $total = 0;
         foreach ($counts as $index => $count) {
-            $oid = '.1.3.6.1.4.1.14179.2.1.1.1.38.'.$index;
+            $oid = '.1.3.6.1.4.1.14179.2.1.1.1.38.' . $index;
             $total_oids[] = $oid;
             $total += $count;
 
@@ -59,12 +59,12 @@ class Ciscowlc extends Cisco implements
                 $oid,
                 'ciscowlc-ssid',
                 $index,
-                'SSID: '.$ssids[$index],
+                'SSID: ' . $ssids[$index],
                 $count
             );
         }
 
-        if (!empty($counts)) {
+        if (! empty($counts)) {
             $sensors[] = new WirelessSensor(
                 'clients',
                 $this->getDeviceId(),

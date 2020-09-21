@@ -47,7 +47,7 @@ trait GeocodingHelper
      */
     public function getCoordinates($address)
     {
-        if (!Config::get('geoloc.latlng', true)) {
+        if (! Config::get('geoloc.latlng', true)) {
             Log::debug('Geocoding disabled');
 
             return [];
@@ -64,7 +64,7 @@ trait GeocodingHelper
                 Log::error('Geocoding failed.', ['response' => $response_data]);
             }
         } catch (Exception $e) {
-            Log::error('Geocoding failed: '.$e->getMessage());
+            Log::error('Geocoding failed: ' . $e->getMessage());
         }
 
         return [];

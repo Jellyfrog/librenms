@@ -62,7 +62,7 @@ class GraphController extends WidgetController
     {
         $settings = $this->getSettings();
 
-        if (!empty($settings['title'])) {
+        if (! empty($settings['title'])) {
             return $settings['title'];
         }
 
@@ -71,34 +71,34 @@ class GraphController extends WidgetController
         if ($type == 'device') {
             $device = Device::find($settings['graph_device']);
 
-            return ($device ? $device->displayName() : 'Device').' / '.$settings['graph_type'];
+            return ($device ? $device->displayName() : 'Device') . ' / ' . $settings['graph_type'];
         } elseif ($type == 'aggregate') {
-            return 'Overall '.$this->getGraphType(false).' Bits ('.$settings['graph_range'].')';
+            return 'Overall ' . $this->getGraphType(false) . ' Bits (' . $settings['graph_range'] . ')';
         } elseif ($type == 'port') {
             if ($port = Port::find($settings['graph_port'])) {
-                return $port->device->displayName().' / '.$port->getShortLabel().' / '.$settings['graph_type'];
+                return $port->device->displayName() . ' / ' . $port->getShortLabel() . ' / ' . $settings['graph_type'];
             }
         } elseif ($type == 'application') {
             if ($application = Application::find($settings['graph_application'])) {
-                return $application->device->displayName().' / '.$application->app_type.' / '.$settings['graph_type'];
+                return $application->device->displayName() . ' / ' . $application->app_type . ' / ' . $settings['graph_type'];
             }
         } elseif ($type == 'bill') {
             if ($bill = Bill::find($settings['graph_bill'])) {
-                return 'Bill: '.$bill->bill_name;
+                return 'Bill: ' . $bill->bill_name;
             }
         } elseif ($type == 'munin') {
             if ($munin = MuninPlugin::find($settings['graph_munin'])) {
-                return $munin->device->displayName().' / '.$munin->mplug_type.' / '.$settings['graph_type'];
+                return $munin->device->displayName() . ' / ' . $munin->mplug_type . ' / ' . $settings['graph_type'];
             }
         } elseif ($type == 'service') {
             if ($service = Service::find($settings['graph_service'])) {
-                return $service->device->displayName().' / '.$service->service_type.' ('.$service->service_desc.')'.' / '.$settings['graph_type'];
+                return $service->device->displayName() . ' / ' . $service->service_type . ' (' . $service->service_desc . ')' . ' / ' . $settings['graph_type'];
             }
         }
 
         // fall back for types where we couldn't find the item
         if ($settings['graph_type']) {
-            return 'Device / '.ucfirst($type).' / '.$settings['graph_type'];
+            return 'Device / ' . ucfirst($type) . ' / ' . $settings['graph_type'];
         }
 
         return $this->title;
@@ -112,7 +112,7 @@ class GraphController extends WidgetController
         $type_parts = explode('_', $data['graph_type']);
         $primary = array_shift($type_parts);
         $secondary = implode('_', $type_parts);
-        $name = $primary.' '.(Graph::isMibGraph($primary, $secondary) ? $secondary : implode(' ', $type_parts));
+        $name = $primary . ' ' . (Graph::isMibGraph($primary, $secondary) ? $secondary : implode(' ', $type_parts));
 
         // format display for selected items
         if ($primary == 'device' && $data['graph_device']) {
@@ -128,7 +128,7 @@ class GraphController extends WidgetController
         if ($primary == 'application' && $data['graph_application']) {
             $app = Application::find($data['graph_application']);
         }
-        $data['application_text'] = isset($app) ? $app->displayName().' - '.$app->device->displayName() : __('App does not exist');
+        $data['application_text'] = isset($app) ? $app->displayName() . ' - ' . $app->device->displayName() : __('App does not exist');
 
         if ($primary == 'bill' && $data['graph_bill']) {
             $bill = Bill::find($data['graph_bill']);
@@ -138,12 +138,12 @@ class GraphController extends WidgetController
         if ($primary == 'munin' && $data['graph_munin']) {
             $mplug = MuninPlugin::with('device')->find($data['graph_munin']);
         }
-        $data['munin_text'] = isset($mplug) ? $mplug->device->displayName().' - '.$mplug->mplug_type : __('Munin plugin does not exist');
+        $data['munin_text'] = isset($mplug) ? $mplug->device->displayName() . ' - ' . $mplug->mplug_type : __('Munin plugin does not exist');
 
         if ($primary == 'service' && $data['graph_service']) {
             $service = Service::with('device')->find($data['graph_service']);
         }
-        $data['service_text'] = isset($service) ? $service->device->displayName().' - '.$service->service_type.' ('.$service->service_desc.')' : __('Service does not exist');
+        $data['service_text'] = isset($service) ? $service->device->displayName() . ' - ' . $service->service_type . ' (' . $service->service_desc . ')' : __('Service does not exist');
 
         $data['graph_ports'] = Port::whereIn('port_id', $data['graph_ports'])
             ->select('ports.device_id', 'port_id', 'ifAlias', 'ifName', 'ifDescr')
@@ -176,18 +176,18 @@ class GraphController extends WidgetController
         $params = [];
 
         if ($type == 'device') {
-            $params[] = 'device='.$settings['graph_device'];
+            $params[] = 'device=' . $settings['graph_device'];
         } elseif ($type == 'application') {
-            $params[] = 'id='.$settings['graph_application'];
+            $params[] = 'id=' . $settings['graph_application'];
         } elseif ($type == 'munin') {
             if ($mplug = MuninPlugin::find($settings['graph_munin'])) {
-                $params[] = 'device='.$mplug->device_id;
-                $params[] = 'plugin='.$mplug->mplug_type;
+                $params[] = 'device=' . $mplug->device_id;
+                $params[] = 'plugin=' . $mplug->mplug_type;
             }
         } elseif ($type == 'service') {
             if ($service = Service::find($settings['graph_service'])) {
-                $params[] = 'device='.$service->device_id;
-                $params[] = 'id='.$service->service_id;
+                $params[] = 'device=' . $service->device_id;
+                $params[] = 'id=' . $service->service_id;
             }
         } elseif ($type == 'aggregate') {
             $aggregate_type = $this->getGraphType(false);
@@ -215,10 +215,10 @@ class GraphController extends WidgetController
                 })->pluck('port_id')->all();
             }
 
-            $params[] = 'id='.implode(',', $port_ids);
+            $params[] = 'id=' . implode(',', $port_ids);
             $settings['graph_type'] = 'multiport_bits_separate';
         } else {
-            $params[] = 'id='.$settings['graph_'.$type];
+            $params[] = 'id=' . $settings['graph_' . $type];
         }
 
         $data = $settings;
@@ -245,7 +245,7 @@ class GraphController extends WidgetController
     {
         $raw_type = $this->getGraphType(false);
         if ($raw_type == 'custom' || $this->getGraphType() != 'aggregate') {
-            return empty($this->getSettings()['graph_'.$raw_type]);
+            return empty($this->getSettings()['graph_' . $raw_type]);
         }
 
         return false; // non-custom aggregate types require no additional settings
@@ -287,7 +287,7 @@ class GraphController extends WidgetController
 
     private function convertLegacySettingId($setting, $key)
     {
-        if ($setting && !is_numeric($setting)) {
+        if ($setting && ! is_numeric($setting)) {
             $data = json_decode($setting, true);
 
             return isset($data[$key]) ? $data[$key] : 0;

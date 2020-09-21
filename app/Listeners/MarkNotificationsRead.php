@@ -44,6 +44,6 @@ class MarkNotificationsRead
             ];
         })->toArray());
 
-        \Log::info('Marked all notifications as read for user '.$user->username);
+        \Log::info('Marked all notifications as read for user ' . $user->username);
     }
 }

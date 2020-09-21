@@ -19,7 +19,7 @@ class Osticket extends Transport
 {
     public function deliverAlert($obj, $opts)
     {
-        if (!empty($this->config)) {
+        if (! empty($this->config)) {
             $opts['url'] = $this->config['os-url'];
             $opts['token'] = $this->config['os-token'];
         }
@@ -33,14 +33,14 @@ class Osticket extends Transport
         $token = $opts['token'];
 
         foreach (parse_email(Config::get('email_from')) as $from => $from_name) {
-            $email = $from_name.' <'.$from.'>';
+            $email = $from_name . ' <' . $from . '>';
             break;
         }
 
         $protocol = [
             'name'        => 'LibreNMS',
             'email'       => $email,
-            'subject'     => ($obj['name'] ? $obj['name'].' on '.$obj['hostname'] : $obj['title']),
+            'subject'     => ($obj['name'] ? $obj['name'] . ' on ' . $obj['hostname'] : $obj['title']),
             'message'     => strip_tags($obj['msg']),
             'ip'          => $_SERVER['REMOTE_ADDR'],
             'attachments' => [],
@@ -52,7 +52,7 @@ class Osticket extends Transport
         curl_setopt($curl, CURLOPT_HTTPHEADER, [
             'Content-type' => 'application/json',
             'Expect:',
-            'X-API-Key: '.$token,
+            'X-API-Key: ' . $token,
         ]);
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($protocol));
         $ret = curl_exec($curl);

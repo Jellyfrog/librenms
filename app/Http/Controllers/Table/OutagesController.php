@@ -96,7 +96,7 @@ class OutagesController extends TableController
 
         $output = "<span style='display:inline;'>";
         if ($duration_days) {
-            $output .= $duration_days.'d ';
+            $output .= $duration_days . 'd ';
         }
         $output .= (new Carbon($duration))->format(Config::get('dateformat.time'));
         $output .= '</span>';
@@ -106,7 +106,7 @@ class OutagesController extends TableController
 
     private function formatDatetime($timestamp)
     {
-        if (!$timestamp) {
+        if (! $timestamp) {
             $timestamp = 0;
         }
 
@@ -125,7 +125,7 @@ class OutagesController extends TableController
             $label = 'label-success';
         }
 
-        $output = "<span class='alert-status ".$label."'></span>";
+        $output = "<span class='alert-status " . $label . "'></span>";
 
         return $output;
     }

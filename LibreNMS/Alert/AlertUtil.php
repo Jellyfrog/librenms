@@ -115,7 +115,7 @@ class AlertUtil
                     } else {
                         $tmpa = dbFetchCell('SELECT sysContact FROM devices WHERE device_id = ?', [$result['device_id']]);
                     }
-                    if (!empty($tmpa)) {
+                    if (! empty($tmpa)) {
                         $contacts[$tmpa] = '';
                     }
                 }
@@ -146,7 +146,7 @@ class AlertUtil
             if (strstr($email, ',')) {
                 $split_contacts = preg_split('/[,\s]+/', $email);
                 foreach ($split_contacts as $split_email) {
-                    if (!empty($split_email)) {
+                    if (! empty($split_email)) {
                         $tmp_contacts[$split_email] = $name;
                     }
                 }
@@ -155,7 +155,7 @@ class AlertUtil
             }
         }
 
-        if (!empty($tmp_contacts)) {
+        if (! empty($tmp_contacts)) {
             // Validate contacts so we can fall back to default if configured.
             $mail = new PHPMailer();
             foreach ($tmp_contacts as $tmp_email => $tmp_name) {
@@ -167,7 +167,7 @@ class AlertUtil
 
         // Copy all email alerts to default contact if configured.
         $default_mail = Config::get('alert.default_mail');
-        if (!isset($tmp_contacts[$default_mail]) && Config::get('alert.default_copy')) {
+        if (! isset($tmp_contacts[$default_mail]) && Config::get('alert.default_copy')) {
             $tmp_contacts[$default_mail] = '';
         }
         // Send email to default contact if no other contact found
@@ -219,7 +219,7 @@ class AlertUtil
     {
         $device = Device::find($device_id);
 
-        return !is_null($device) && $device->disable_notify;
+        return ! is_null($device) && $device->disable_notify;
     }
 
     /**
@@ -232,11 +232,11 @@ class AlertUtil
      */
     public static function runMacros($rule, $x = 1)
     {
-        $macros = Config::get('alert.macros.rule', []).
+        $macros = Config::get('alert.macros.rule', []) .
         krsort($macros);
         foreach ($macros as $macro => $value) {
-            if (!strstr($macro, ' ')) {
-                $rule = str_replace('%macros.'.$macro, '('.$value.')', $rule);
+            if (! strstr($macro, ' ')) {
+                $rule = str_replace('%macros.' . $macro, '(' . $value . ')', $rule);
             }
         }
         if (strstr($rule, '%macros.')) {

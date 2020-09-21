@@ -27,7 +27,7 @@ class LegacyAuth
      */
     public static function get()
     {
-        if (!static::$_instance) {
+        if (! static::$_instance) {
             $class = self::getClass();
             static::$_instance = new $class();
         }
@@ -58,8 +58,8 @@ class LegacyAuth
             $type = self::getType();
         }
 
-        if (!isset(self::$configToClassMap[$type])) {
-            throw new \RuntimeException($type.' not found as auth_mechanism');
+        if (! isset(self::$configToClassMap[$type])) {
+            throw new \RuntimeException($type . ' not found as auth_mechanism');
         }
 
         return self::$configToClassMap[$type];
