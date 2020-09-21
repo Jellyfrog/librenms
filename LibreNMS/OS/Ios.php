@@ -1,6 +1,6 @@
 <?php
 /**
- * Ios.php
+ * Ios.php.
  *
  * Cisco IOS
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -44,7 +45,7 @@ class Ios extends Cisco implements
     {
         $device = $this->getDeviceArray();
 
-        if (! Str::startsWith($device['hardware'], 'AIR-') && ! Str::contains($device['hardware'], 'ciscoAIR')) {
+        if (!Str::startsWith($device['hardware'], 'AIR-') && !Str::contains($device['hardware'], 'ciscoAIR')) {
             // unsupported IOS hardware
             return [];
         }

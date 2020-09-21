@@ -1,6 +1,6 @@
 <?php
 /**
- * SimpleTableController.php
+ * SimpleTableController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -31,19 +32,20 @@ use Illuminate\Support\Collection;
 abstract class SimpleTableController extends Controller
 {
     public static $base_rules = [
-        'current' => 'int',
-        'rowCount' => 'int',
+        'current'      => 'int',
+        'rowCount'     => 'int',
         'searchPhrase' => 'nullable|string',
-        'sort.*' => 'in:asc,desc',
+        'sort.*'       => 'in:asc,desc',
     ];
 
     /**
      * Validate the given request with the given rules.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  array $rules
-     * @param  array $messages
-     * @param  array $customAttributes
+     * @param \Illuminate\Http\Request $request
+     * @param array                    $rules
+     * @param array                    $messages
+     * @param array                    $customAttributes
+     *
      * @return void
      */
     public function validate(Request $request, array $rules = [], array $messages = [], array $customAttributes = [])
@@ -54,18 +56,19 @@ abstract class SimpleTableController extends Controller
 
     /**
      * @param array|Collection $rows
-     * @param int $page
-     * @param int $currentCount
-     * @param int $total
+     * @param int              $page
+     * @param int              $currentCount
+     * @param int              $total
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     protected function formatResponse($rows, $page, $currentCount, $total)
     {
         return response()->json([
-            'current' => $page,
+            'current'  => $page,
             'rowCount' => $currentCount,
-            'rows' => $rows,
-            'total' => $total,
+            'rows'     => $rows,
+            'total'    => $total,
         ]);
     }
 }

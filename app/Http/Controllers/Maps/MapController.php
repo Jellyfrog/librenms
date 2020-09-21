@@ -1,6 +1,6 @@
 <?php
 /**
- * DependencyController.php
+ * DependencyController.php.
  *
  * Controller for graphing Relationships
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Thomas Berberich
  * @author     Thomas Berberich <sourcehhdoctor@gmail.com>
  */
@@ -40,7 +41,7 @@ class MapController extends Controller
             'highlight' => [
                 'background' => Config::get('network_map_legend.di.node'),
             ],
-            'border' => Config::get('network_map_legend.di.border'),
+            'border'     => Config::get('network_map_legend.di.border'),
             'background' => Config::get('network_map_legend.di.node'),
                      ],
                ];
@@ -63,9 +64,9 @@ class MapController extends Controller
         return ['color' => [
             'highlight' => [
                 'background' => Config::get('network_map_legend.dn.node'),
-                'border' => Config::get('network_map_legend.dn.border'),
+                'border'     => Config::get('network_map_legend.dn.border'),
             ],
-            'border' => Config::get('network_map_legend.dn.border'),
+            'border'     => Config::get('network_map_legend.dn.border'),
             'background' => Config::get('network_map_legend.dn.node'),
                      ],
                ];
@@ -80,7 +81,7 @@ class MapController extends Controller
     {
         if ($device->disabled) {
             $device_style = $this->nodeDisabledStyle();
-        } elseif (! $device->status) {
+        } elseif (!$device->status) {
             $device_style = $this->nodeDownStyle();
         } else {
             $device_style = $this->nodeUpStyle();

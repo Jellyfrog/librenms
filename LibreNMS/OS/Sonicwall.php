@@ -39,7 +39,7 @@ class Sonicwall extends OS implements OSPolling, ProcessorDiscovery
                 ->addDataset('maxsessions', 'GAUGE', 0);
             $fields = [
                 'activesessions' => $data[0]['sonicCurrentConnCacheEntries'],
-                'maxsessions' => $data[0]['sonicMaxConnCacheEntries'],
+                'maxsessions'    => $data[0]['sonicMaxConnCacheEntries'],
             ];
             $tags = compact('rrd_def');
             data_update($this->getDeviceArray(), 'sonicwall_sessions', $tags, $fields);
@@ -49,7 +49,7 @@ class Sonicwall extends OS implements OSPolling, ProcessorDiscovery
 
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
@@ -71,7 +71,7 @@ class Sonicwall extends OS implements OSPolling, ProcessorDiscovery
                 Processor::discover(
                     'sonicwall',
                     $this->getDeviceId(),
-                    $this->getDeviceArray()['sysObjectID'] . '.2.1.3.0',  // different OID for each model
+                    $this->getDeviceArray()['sysObjectID'].'.2.1.3.0',  // different OID for each model
                     0,
                     'CPU',
                     1

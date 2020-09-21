@@ -1,6 +1,6 @@
 <?php
 /**
- * ValidationResult.php
+ * ValidationResult.php.
  *
  * Encapsulates the result of a validation test.
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -38,9 +39,10 @@ class ValidationResult
 
     /**
      * ValidationResult constructor.
+     *
      * @param string $message The message to describe this result
-     * @param int $status The status of this result FAILURE, WARNING, or SUCCESS
-     * @param string $fix a suggested fix to highlight for the user
+     * @param int    $status  The status of this result FAILURE, WARNING, or SUCCESS
+     * @param string $fix     a suggested fix to highlight for the user
      */
     public function __construct($message, $status, $fix = null)
     {
@@ -50,9 +52,11 @@ class ValidationResult
     }
 
     /**
-     * Create a new ok Validation result
+     * Create a new ok Validation result.
+     *
      * @param string $message The message to describe this result
-     * @param string $fix a suggested fix to highlight for the user
+     * @param string $fix     a suggested fix to highlight for the user
+     *
      * @return ValidationResult
      */
     public static function ok($message, $fix = null)
@@ -61,9 +65,11 @@ class ValidationResult
     }
 
     /**
-     * Create a new warning Validation result
+     * Create a new warning Validation result.
+     *
      * @param string $message The message to describe this result
-     * @param string $fix a suggested fix to highlight for the user
+     * @param string $fix     a suggested fix to highlight for the user
+     *
      * @return ValidationResult
      */
     public static function warn($message, $fix = null)
@@ -72,9 +78,11 @@ class ValidationResult
     }
 
     /**
-     * Create a new failure Validation result
+     * Create a new failure Validation result.
+     *
      * @param string $message The message to describe this result
-     * @param string $fix a suggested fix to highlight for the user
+     * @param string $fix     a suggested fix to highlight for the user
+     *
      * @return ValidationResult
      */
     public static function fail($message, $fix = null)
@@ -84,7 +92,7 @@ class ValidationResult
 
     /**
      * Returns the status an int representing
-     * ValidationResult::FAILURE, ValidationResult::WARNING, or ValidationResult::SUCCESS
+     * ValidationResult::FAILURE, ValidationResult::WARNING, or ValidationResult::SUCCESS.
      *
      * @return int
      */
@@ -100,7 +108,7 @@ class ValidationResult
 
     public function hasList()
     {
-        return ! empty($this->list);
+        return !empty($this->list);
     }
 
     public function getList()
@@ -124,7 +132,7 @@ class ValidationResult
 
     public function hasFix()
     {
-        return ! empty($this->fix);
+        return !empty($this->fix);
     }
 
     public function getFix()
@@ -137,6 +145,7 @@ class ValidationResult
      * If there are multiple, use an array.
      *
      * @param string|array $fix
+     *
      * @return ValidationResult $this
      */
     public function setFix($fix)
@@ -151,7 +160,7 @@ class ValidationResult
      */
     public function consolePrint()
     {
-        c_echo(str_pad('[' . $this->getStatusText($this->status) . ']', 12) . $this->message . PHP_EOL);
+        c_echo(str_pad('['.$this->getStatusText($this->status).']', 12).$this->message.PHP_EOL);
 
         if (isset($this->fix)) {
             c_echo("\t[%BFIX%n]: \n");
@@ -160,14 +169,14 @@ class ValidationResult
             }
         }
 
-        if (! empty($this->list)) {
-            echo "\t" . $this->getListDescription() . ":\n";
+        if (!empty($this->list)) {
+            echo "\t".$this->getListDescription().":\n";
             $this->printList();
         }
     }
 
     /**
-     * Get the colorized string that represents the status of a ValidatonResult
+     * Get the colorized string that represents the status of a ValidatonResult.
      *
      * @return string
      */
@@ -191,10 +200,10 @@ class ValidationResult
 
     /**
      * Print a list of items up to a max amount
-     * If over that number, a line will print the total items
+     * If over that number, a line will print the total items.
      *
      * @param string $format format as consumed by printf()
-     * @param int $max the max amount of items to print, default 15
+     * @param int    $max    the max amount of items to print, default 15
      */
     private function printList($format = "\t %s\n", $max = 15)
     {

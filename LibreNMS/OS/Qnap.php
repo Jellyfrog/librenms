@@ -1,6 +1,6 @@
 <?php
 /**
- * Qnap.php
+ * Qnap.php.
  *
  * QNAP Turbo NAS OS
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Daniel Baeza
  * @author     Daniel Baeza <doctoruve@gmail.com>
  */

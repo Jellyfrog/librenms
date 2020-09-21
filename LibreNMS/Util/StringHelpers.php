@@ -1,6 +1,6 @@
 <?php
 /**
- * Text.php
+ * Text.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -27,16 +28,17 @@ namespace LibreNMS\Util;
 class StringHelpers
 {
     /**
-     * Shorten text over 50 chars, if shortened, add ellipsis
+     * Shorten text over 50 chars, if shortened, add ellipsis.
      *
      * @param $string
      * @param int $max
+     *
      * @return string
      */
     public static function shortenText($string, $max = 30)
     {
         if (strlen($string) > 50) {
-            return substr($string, 0, $max) . '...';
+            return substr($string, 0, $max).'...';
         }
 
         return $string;
@@ -45,45 +47,47 @@ class StringHelpers
     public static function niceCase($string)
     {
         $replacements = [
-            'bind' => 'BIND',
-            'dbm' => 'dBm',
-            'dhcp-stats' => 'DHCP Stats',
-            'entropy' => 'Random entropy',
-            'exim-stats' => 'EXIM Stats',
-            'fbsd-nfs-client' => 'FreeBSD NFS Client',
-            'fbsd-nfs-server' => 'FreeBSD NFS Server',
-            'freeradius' => 'FreeRADIUS',
-            'gpsd' => 'GPSD',
-            'mailcow-postfix' => 'mailcow-dockerized postfix',
-            'mysql' => 'MySQL',
-            'nfs-server' => 'NFS Server',
-            'nfs-stats' => 'NFS Stats',
-            'nfs-v3-stats' => 'NFS v3 Stats',
-            'ntp' => 'NTP',
-            'ntp-client' => 'NTP Client',
-            'ntp-server' => 'NTP Server',
+            'bind'              => 'BIND',
+            'dbm'               => 'dBm',
+            'dhcp-stats'        => 'DHCP Stats',
+            'entropy'           => 'Random entropy',
+            'exim-stats'        => 'EXIM Stats',
+            'fbsd-nfs-client'   => 'FreeBSD NFS Client',
+            'fbsd-nfs-server'   => 'FreeBSD NFS Server',
+            'freeradius'        => 'FreeRADIUS',
+            'gpsd'              => 'GPSD',
+            'mailcow-postfix'   => 'mailcow-dockerized postfix',
+            'mysql'             => 'MySQL',
+            'nfs-server'        => 'NFS Server',
+            'nfs-stats'         => 'NFS Stats',
+            'nfs-v3-stats'      => 'NFS v3 Stats',
+            'ntp'               => 'NTP',
+            'ntp-client'        => 'NTP Client',
+            'ntp-server'        => 'NTP Server',
             'opengridscheduler' => 'Open Grid Scheduler',
-            'os-updates' => 'OS Updates',
-            'php-fpm' => 'PHP-FPM',
-            'pi-hole' => 'pi-hole',
-            'powerdns' => 'PowerDNS',
-            'powerdns-dnsdist' => 'PowerDNS dnsdist',
+            'os-updates'        => 'OS Updates',
+            'php-fpm'           => 'PHP-FPM',
+            'pi-hole'           => 'pi-hole',
+            'powerdns'          => 'PowerDNS',
+            'powerdns-dnsdist'  => 'PowerDNS dnsdist',
             'powerdns-recursor' => 'PowerDNS Recursor',
-            'pureftpd' => 'PureFTPd',
-            'rrdcached' => 'RRDCached',
-            'sdfsinfo' => 'SDFS info',
-            'smart' => 'SMART',
-            'ups-apcups' => 'UPS apcups',
-            'ups-nut' => 'UPS nut',
-            'zfs' => 'ZFS',
+            'pureftpd'          => 'PureFTPd',
+            'rrdcached'         => 'RRDCached',
+            'sdfsinfo'          => 'SDFS info',
+            'smart'             => 'SMART',
+            'ups-apcups'        => 'UPS apcups',
+            'ups-nut'           => 'UPS nut',
+            'zfs'               => 'ZFS',
         ];
 
         return isset($replacements[$string]) ? $replacements[$string] : ucwords(str_replace(['_', '-'], ' ', $string));
     }
 
     /**
-     * Convert a camel or studly case string to Title case (with spaces)
+     * Convert a camel or studly case string to Title case (with spaces).
+     *
      * @param $string
+     *
      * @return string
      */
     public static function camelToTitle($string)

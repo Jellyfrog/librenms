@@ -1,6 +1,6 @@
 <?php
 /**
- * DynamicConfigItem.php
+ * DynamicConfigItem.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -59,6 +60,7 @@ class DynamicConfigItem implements \ArrayAccess
      * Check given value is valid. Using the type of this config item and possibly other variables.
      *
      * @param $value
+     *
      * @return bool|mixed
      */
     public function checkValue($value)
@@ -68,7 +70,7 @@ class DynamicConfigItem implements \ArrayAccess
         } elseif ($this->type == 'boolean') {
             return filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null;
         } elseif ($this->type == 'integer') {
-            return (! is_bool($value) && filter_var($value, FILTER_VALIDATE_INT)) || $value === '0' || $value === 0;
+            return (!is_bool($value) && filter_var($value, FILTER_VALIDATE_INT)) || $value === '0' || $value === 0;
         } elseif ($this->type == 'select') {
             return in_array($value, array_keys($this->options));
         } elseif ($this->type == 'email') {
@@ -83,7 +85,7 @@ class DynamicConfigItem implements \ArrayAccess
         } elseif ($this->type == 'color') {
             return (bool) preg_match('/^#?[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/', $value);
         } elseif (in_array($this->type, ['text', 'password'])) {
-            return ! is_array($value);
+            return !is_array($value);
         } elseif ($this->type === 'executable') {
             return is_file($value) && is_executable($value);
         } elseif ($this->type === 'directory') {
@@ -189,18 +191,19 @@ class DynamicConfigItem implements \ArrayAccess
 
     public function isValid()
     {
-        return ($this->group == '' || $this->type) && ! $this->hidden && ! $this->disabled;
+        return ($this->group == '' || $this->type) && !$this->hidden && !$this->disabled;
     }
 
     /**
      * @param mixed $value The value that was validated
+     *
      * @return string
      */
     public function getValidationMessage($value)
     {
         return $this->validate
             ? implode(" \n", $this->buildValidator($value)->messages()->all())
-            : __('settings.validate.' . $this->type, ['id' => $this->name, 'value' => json_encode($value)]);
+            : __('settings.validate.'.$this->type, ['id' => $this->name, 'value' => json_encode($value)]);
     }
 
     // ArrayAccess functions

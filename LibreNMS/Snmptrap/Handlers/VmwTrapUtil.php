@@ -1,6 +1,6 @@
 <?php
 /**
- * VmwTrapUtil.php
+ * VmwTrapUtil.php.
  *
  * -Description-
  *
@@ -25,6 +25,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -34,9 +35,10 @@ namespace LibreNMS\Snmptrap\Handlers;
 class VmwTrapUtil
 {
     /**
-     * Get the VMGuest hostname
+     * Get the VMGuest hostname.
      *
      * @param Trap $trap
+     *
      * @return string
      */
     public static function getGuestName($trap)
@@ -45,9 +47,10 @@ class VmwTrapUtil
     }
 
     /**
-     * Get the VMGuest ID number
+     * Get the VMGuest ID number.
      *
      * @param Trap $trap
+     *
      * @return string
      */
     public static function getGuestId($trap)
@@ -56,9 +59,10 @@ class VmwTrapUtil
     }
 
     /**
-     * Get the VMGuest configuration path
+     * Get the VMGuest configuration path.
      *
      * @param Trap $trap
+     *
      * @return string
      */
     public static function getGuestConfigPath($trap)

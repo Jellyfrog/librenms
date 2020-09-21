@@ -1,7 +1,7 @@
 <?php
 
 /**
- * LibreNMS
+ * LibreNMS.
  *
  *   This file is part of LibreNMS.
  *
@@ -13,9 +13,9 @@ use LibreNMS\Config;
 $links = 1;
 
 $init_modules = ['web', 'auth'];
-require realpath(__DIR__ . '/..') . '/includes/init.php';
+require realpath(__DIR__.'/..').'/includes/init.php';
 
-if (! Auth::check()) {
+if (!Auth::check()) {
     exit('Unauthorized');
 }
 
@@ -30,7 +30,7 @@ if (strpos($_SERVER['REQUEST_URI'], 'anon')) {
 }
 
 if (is_array(Config::get('branding'))) {
-    Config::set('branding', array_replace_recursive(Config::get('branding'), Config::get('branding.' . $_SERVER['SERVER_NAME']) ?: Config::get('branding.default')));
+    Config::set('branding', array_replace_recursive(Config::get('branding'), Config::get('branding.'.$_SERVER['SERVER_NAME']) ?: Config::get('branding.default')));
 }
 
 $where = '';
@@ -49,25 +49,25 @@ if (isset($_GET['format']) && preg_match('/^[a-z]*$/', $_GET['format'])) {
             graph [bgcolor=transparent];
 ';
 
-    if (! Auth::check()) {
+    if (!Auth::check()) {
         $map .= "\"Not authenticated\" [fontsize=20 fillcolor=\"lightblue\", URL=\"/\" shape=box3d]\n";
     } else {
         $locations = getlocations();
         $loc_count = 1;
-        foreach (dbFetch('SELECT *, locations.location FROM devices LEFT JOIN locations ON devices.location_id = locations.id WHERE 1 ' . $where, $param) as $device) {
+        foreach (dbFetch('SELECT *, locations.location FROM devices LEFT JOIN locations ON devices.location_id = locations.id WHERE 1 '.$where, $param) as $device) {
             if ($device) {
                 $links = dbFetch('SELECT * from ports AS I, links AS L WHERE I.device_id = ? AND L.local_port_id = I.port_id ORDER BY L.remote_hostname', [$device['device_id']]);
                 if (count($links)) {
                     if ($anon) {
                         $device['hostname'] = md5($device['hostname']);
                     }
-                    if (! isset($locations[$device['location']])) {
+                    if (!isset($locations[$device['location']])) {
                         $locations[$device['location']] = $loc_count;
                         $loc_count++;
                     }
                     $loc_id = $locations[$device['location']];
 
-                    $map .= '"' . $device['hostname'] . '" [fontsize=20, fillcolor="lightblue", group=' . $loc_id . ' URL="' . Config::get('base_url') . '/device/device=' . $device['device_id'] . "/tab=neighbours/selection=map/\" shape=box3d]\n";
+                    $map .= '"'.$device['hostname'].'" [fontsize=20, fillcolor="lightblue", group='.$loc_id.' URL="'.Config::get('base_url').'/device/device='.$device['device_id']."/tab=neighbours/selection=map/\" shape=box3d]\n";
                 }
 
                 foreach ($links as $link) {
@@ -80,7 +80,7 @@ if (isset($_GET['format']) && preg_match('/^[a-z]*$/', $_GET['format'])) {
                         $done = 1;
                     }
 
-                    if (! $done) {
+                    if (!$done) {
                         $linkdone[$local_port_id][$remote_port_id] = true;
 
                         $links++;
@@ -119,42 +119,42 @@ if (isset($_GET['format']) && preg_match('/^[a-z]*$/', $_GET['format'])) {
                             $dif = cleanPort(dbFetchRow('SELECT * FROM ports WHERE `port_id` = ?', [$link['remote_port_id']]));
                         } else {
                             $dif['label'] = $link['remote_port'];
-                            $dif['port_id'] = $link['remote_hostname'] . '/' . $link['remote_port'];
+                            $dif['port_id'] = $link['remote_hostname'].'/'.$link['remote_port'];
                         }
 
                         if ($where == '') {
-                            if (! $ifdone[$dst][$dif['port_id']] && ! $ifdone[$src][$sif['port_id']]) {
-                                $map .= "\"$src\" -> \"" . $dst . "\" [weight=500000, arrowsize=0, len=0];\n";
+                            if (!$ifdone[$dst][$dif['port_id']] && !$ifdone[$src][$sif['port_id']]) {
+                                $map .= "\"$src\" -> \"".$dst."\" [weight=500000, arrowsize=0, len=0];\n";
                             }
                             $ifdone[$src][$sif['port_id']] = 1;
                         } else {
-                            $map .= '"' . $sif['port_id'] . '" [label="' . $sif['label'] . '", fontsize=12, fillcolor=lightblue, URL="' . Config::get('base_url') . '/device/device=' . $device['device_id'] . "/tab=port/port=$local_port_id/\"]\n";
-                            if (! $ifdone[$src][$sif['port_id']]) {
-                                $map .= "\"$src\" -> \"" . $sif['port_id'] . "\" [weight=500000, arrowsize=0, len=0];\n";
+                            $map .= '"'.$sif['port_id'].'" [label="'.$sif['label'].'", fontsize=12, fillcolor=lightblue, URL="'.Config::get('base_url').'/device/device='.$device['device_id']."/tab=port/port=$local_port_id/\"]\n";
+                            if (!$ifdone[$src][$sif['port_id']]) {
+                                $map .= "\"$src\" -> \"".$sif['port_id']."\" [weight=500000, arrowsize=0, len=0];\n";
                                 $ifdone[$src][$sif['port_id']] = 1;
                             }
 
                             if ($dst_host) {
-                                $map .= "\"$dst\" [URL=\"" . Config::get('base_url') . "/device/device=$dst_host/tab=neighbours/selection=map/\", fontsize=20, shape=box3d]\n";
+                                $map .= "\"$dst\" [URL=\"".Config::get('base_url')."/device/device=$dst_host/tab=neighbours/selection=map/\", fontsize=20, shape=box3d]\n";
                             } else {
                                 $map .= "\"$dst\" [ fontsize=20 shape=box3d]\n";
                             }
 
                             if ($dst_host == $device['device_id'] || $where == '') {
-                                $map .= '"' . $dif['port_id'] . '" [label="' . $dif['label'] . '", fontsize=12, fillcolor=lightblue, URL="' . Config::get('base_url') . "/device/device=$dst_host/tab=port/port=$remote_port_id/\"]\n";
+                                $map .= '"'.$dif['port_id'].'" [label="'.$dif['label'].'", fontsize=12, fillcolor=lightblue, URL="'.Config::get('base_url')."/device/device=$dst_host/tab=port/port=$remote_port_id/\"]\n";
                             } else {
-                                $map .= '"' . $dif['port_id'] . '" [label="' . $dif['label'] . ' ", fontsize=12, fillcolor=lightgray';
+                                $map .= '"'.$dif['port_id'].'" [label="'.$dif['label'].' ", fontsize=12, fillcolor=lightgray';
                                 if ($dst_host) {
-                                    $map .= ', URL="' . Config::get('base_url') . "/device/device=$dst_host/tab=port/port=$remote_port_id/\"";
+                                    $map .= ', URL="'.Config::get('base_url')."/device/device=$dst_host/tab=port/port=$remote_port_id/\"";
                                 }
                                 $map .= "]\n";
                             }
 
-                            if (! $ifdone[$dst][$dif['port_id']]) {
-                                $map .= '"' . $dif['port_id'] . "\" -> \"$dst\" [weight=500000, arrowsize=0, len=0];\n";
+                            if (!$ifdone[$dst][$dif['port_id']]) {
+                                $map .= '"'.$dif['port_id']."\" -> \"$dst\" [weight=500000, arrowsize=0, len=0];\n";
                                 $ifdone[$dst][$dif['port_id']] = 1;
                             }
-                            $map .= '"' . $sif['port_id'] . '" -> "' . $dif['port_id'] . "\" [weight=1, arrowhead=normal, arrowtail=normal, len=2, $info] \n";
+                            $map .= '"'.$sif['port_id'].'" -> "'.$dif['port_id']."\" [weight=1, arrowhead=normal, arrowtail=normal, len=2, $info] \n";
                         }
                     }
                 }
@@ -191,20 +191,20 @@ if (isset($_GET['format']) && preg_match('/^[a-z]*$/', $_GET['format'])) {
     }
 
     if ($where == '') {
-        $maptool = Config::get('sfdp') . ' -Gpack -Goverlap=prism -Gcharset=latin1 -Gsize=20,20';
+        $maptool = Config::get('sfdp').' -Gpack -Goverlap=prism -Gcharset=latin1 -Gsize=20,20';
         $maptool = Config::get('dot');
     }
 
     $descriptorspec = [0 => ['pipe', 'r'], 1 => ['pipe', 'w']];
 
-    $mapfile = Config::get('temp_dir') . '/' . strgen() . '.png';
+    $mapfile = Config::get('temp_dir').'/'.strgen().'.png';
 
-    $process = proc_open($maptool . ' -T' . $_GET['format'], $descriptorspec, $pipes);
+    $process = proc_open($maptool.' -T'.$_GET['format'], $descriptorspec, $pipes);
 
     if (is_resource($process)) {
         fwrite($pipes[0], "$map");
         fclose($pipes[0]);
-        while (! feof($pipes[1])) {
+        while (!feof($pipes[1])) {
             $img .= fgets($pipes[1]);
         }
         fclose($pipes[1]);
@@ -222,7 +222,7 @@ if (isset($_GET['format']) && preg_match('/^[a-z]*$/', $_GET['format'])) {
     if (Auth::check()) {
         // FIXME level 10 only?
         echo '<center>
-                  <object width=1200 height=1000 data="' . Config::get('base_url') . '/network-map.php?format=svg" type="image/svg+xml"></object>
+                  <object width=1200 height=1000 data="'.Config::get('base_url').'/network-map.php?format=svg" type="image/svg+xml"></object>
               </center>
         ';
     }

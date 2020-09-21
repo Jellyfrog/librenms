@@ -1,6 +1,6 @@
 <?php
 /**
- * SmokepingGenerateCommand.php
+ * SmokepingGenerateCommand.php.
  *
  * CLI command to generate a smokeping configuration.
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Adam Bishop
  * @author     Adam Bishop <adam@omega.org.uk>
  */
@@ -72,13 +73,13 @@ class SmokepingGenerateCommand extends LnmsCommand
      */
     public function handle()
     {
-        if (! $this->validateOptions()) {
+        if (!$this->validateOptions()) {
             return 1;
         }
 
         $devices = Device::isNotDisabled()->orderBy('type')->orderBy('hostname')->get();
 
-        if (sizeof($devices) < 1) {
+        if (count($devices) < 1) {
             $this->error(__('commands.smokeping:generate.no-devices'));
 
             return 3;
@@ -94,7 +95,7 @@ class SmokepingGenerateCommand extends LnmsCommand
     }
 
     /**
-     * Disable DNS lookups by the configuration builder
+     * Disable DNS lookups by the configuration builder.
      *
      * @return bool
      */
@@ -104,7 +105,7 @@ class SmokepingGenerateCommand extends LnmsCommand
     }
 
     /**
-     * Build and output the probe configuration
+     * Build and output the probe configuration.
      *
      * @return int
      */
@@ -117,7 +118,7 @@ class SmokepingGenerateCommand extends LnmsCommand
     }
 
     /**
-     * Build and output the target configuration
+     * Build and output the target configuration.
      *
      * @return int
      */
@@ -135,7 +136,7 @@ class SmokepingGenerateCommand extends LnmsCommand
     }
 
     /**
-     * Set a warning to be emitted
+     * Set a warning to be emitted.
      *
      * @return void
      */
@@ -145,9 +146,9 @@ class SmokepingGenerateCommand extends LnmsCommand
     }
 
     /**
-     * Bring together the probe lists
+     * Bring together the probe lists.
      *
-     * @param int   $probeCount Number of processes to create
+     * @param int $probeCount Number of processes to create
      *
      * @return array
      */
@@ -164,13 +165,13 @@ class SmokepingGenerateCommand extends LnmsCommand
     }
 
     /**
-     * Determine if a list of probes is needed, and write one if so
+     * Determine if a list of probes is needed, and write one if so.
      *
-     * @param string $module The smokeping module to use for this probe (FPing or FPing6, typically)
+     * @param string $module       The smokeping module to use for this probe (FPing or FPing6, typically)
      * @param string $defaultProbe A default probe, needed by the smokeping configuration parser
-     * @param string $probe The first part of the probe name, e.g. 'lnmsFPing' or 'lnmsFPing6'
-     * @param string $binary Path to the relevant probe binary (i.e. the output of `which fping` or `which fping6`)
-     * @param int    $probeCount Number of processes to create
+     * @param string $probe        The first part of the probe name, e.g. 'lnmsFPing' or 'lnmsFPing6'
+     * @param string $binary       Path to the relevant probe binary (i.e. the output of `which fping` or `which fping6`)
+     * @param int    $probeCount   Number of processes to create
      *
      * @return array
      */
@@ -193,7 +194,7 @@ class SmokepingGenerateCommand extends LnmsCommand
     }
 
     /**
-     * Generate a header to append to the smokeping configuration file
+     * Generate a header to append to the smokeping configuration file.
      *
      * @return array
      */
@@ -208,7 +209,7 @@ class SmokepingGenerateCommand extends LnmsCommand
             $lines[] = '';
         }
 
-        if (! $noHeader) {
+        if (!$noHeader) {
             $lines[] = sprintf('# %s', __('commands.smokeping:generate.header-first'));
             $lines[] = sprintf('# %s', __('commands.smokeping:generate.header-second'));
             $lines[] = sprintf('# %s', __('commands.smokeping:generate.header-third'));
@@ -220,7 +221,7 @@ class SmokepingGenerateCommand extends LnmsCommand
     }
 
     /**
-     * Determine if a list of targets is needed, and write one if so
+     * Determine if a list of targets is needed, and write one if so.
      *
      * @param array $devices A list of devices to create a a config block for
      *
@@ -248,22 +249,22 @@ class SmokepingGenerateCommand extends LnmsCommand
     }
 
     /**
-     * Check arguments passed are sensible
+     * Check arguments passed are sensible.
      *
      * @return bool
      */
     private function validateOptions()
     {
-        if (! Config::has('smokeping.probes') ||
-            ! Config::has('fping') ||
-            ! Config::has('fping6')
+        if (!Config::has('smokeping.probes') ||
+            !Config::has('fping') ||
+            !Config::has('fping6')
         ) {
             $this->error(__('commands.smokeping:generate.config-insufficient'));
 
             return false;
         }
 
-        if (! ($this->option('probes') xor $this->option('targets'))) {
+        if (!($this->option('probes') xor $this->option('targets'))) {
             $this->error(__('commands.smokeping:generate.args-nonsense'));
 
             return false;
@@ -275,7 +276,7 @@ class SmokepingGenerateCommand extends LnmsCommand
             return false;
         }
 
-        if ($this->option('compat') && ! $this->option('targets')) {
+        if ($this->option('compat') && !$this->option('targets')) {
             $this->error(__('commands.smokeping:generate.args-nonsense'));
 
             return false;
@@ -289,7 +290,7 @@ class SmokepingGenerateCommand extends LnmsCommand
     }
 
     /**
-     * Take config lines and output them to stdout
+     * Take config lines and output them to stdout.
      *
      * @param array ...$blocks Blocks of smokeping configuration arranged in arrays of strings
      *
@@ -305,7 +306,7 @@ class SmokepingGenerateCommand extends LnmsCommand
     }
 
     /**
-     * Build the configuration for a set of devices inside a type block
+     * Build the configuration for a set of devices inside a type block.
      *
      * @param array $devices A list of devices to create a a config block for
      *
@@ -316,12 +317,12 @@ class SmokepingGenerateCommand extends LnmsCommand
         $lines = [];
 
         foreach ($devices as $hostname => $config) {
-            if (! $this->dnsLookup || $this->deviceIsResolvable($hostname)) {
+            if (!$this->dnsLookup || $this->deviceIsResolvable($hostname)) {
                 $lines[] = sprintf('++ %s', $this->buildMenuEntry($hostname));
                 $lines[] = sprintf('   menu = %s', $hostname);
                 $lines[] = sprintf('   title = %s', $hostname);
 
-                if (! $singleProcess) {
+                if (!$singleProcess) {
                     $lines[] = sprintf('   probe = %s', $this->balanceProbes($config['transport'], $probeCount));
                 }
 
@@ -334,7 +335,7 @@ class SmokepingGenerateCommand extends LnmsCommand
     }
 
     /**
-     * Smokeping refuses to load if it has an unresolvable host, so check for this
+     * Smokeping refuses to load if it has an unresolvable host, so check for this.
      *
      * @param string $hostname Hostname to be checked
      *
@@ -354,7 +355,7 @@ class SmokepingGenerateCommand extends LnmsCommand
     }
 
     /**
-     * Rewrite menu entries to a format that smokeping finds acceptable
+     * Rewrite menu entries to a format that smokeping finds acceptable.
      *
      * @param string $entry The LibreNMS device hostname to rewrite
      *

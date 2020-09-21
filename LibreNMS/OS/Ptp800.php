@@ -1,6 +1,6 @@
 <?php
 /**
- * ptp800.php
+ * ptp800.php.
  *
  * Cambium
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Paul Heinrichs
  * @author     Paul Heinrichs<pdheinrichs@gmail.com>
  */
@@ -35,7 +36,7 @@ class Ptp800 extends OS implements
 {
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -72,7 +73,7 @@ class Ptp800 extends OS implements
 
     /**
      * Discover wireless rate. This is in bps. Type is rate.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */

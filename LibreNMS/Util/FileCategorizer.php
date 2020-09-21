@@ -1,6 +1,6 @@
 <?php
 /**
- * FileCategorizer.php
+ * FileCategorizer.php.
  *
  * Categorizes files in LibreNMS
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -119,9 +120,10 @@ class FileCategorizer extends Categorizer
     }
 
     /**
-     * convert class name to os name
+     * convert class name to os name.
      *
      * @param string $class
+     *
      * @return string|null
      */
     private function osFromClass($class)

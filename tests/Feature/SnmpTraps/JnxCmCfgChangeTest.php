@@ -1,6 +1,6 @@
 <?php
 /**
- * JnxCmCfgChangeTest.php
+ * JnxCmCfgChangeTest.php.
  *
  * -Description-
  *
@@ -20,6 +20,7 @@
  * Test Juniper configuration change trap jnxCmCfgChange
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 KanREN, Inc
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */

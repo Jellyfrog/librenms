@@ -1,6 +1,6 @@
 <?php
 /**
- * DeviceController.php
+ * DeviceController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -40,19 +41,19 @@ class DeviceController extends TableController
     protected function rules()
     {
         return [
-            'format' => 'nullable|in:list_basic,list_detail',
-            'os' => 'nullable|string',
-            'version' => 'nullable|string',
-            'hardware' => 'nullable|string',
-            'features' => 'nullable|string',
-            'location' => 'nullable|string',
-            'type' => 'nullable|string',
-            'state' => 'nullable|in:0,1,up,down',
-            'disabled' => 'nullable|in:0,1',
-            'ignore' => 'nullable|in:0,1',
+            'format'         => 'nullable|in:list_basic,list_detail',
+            'os'             => 'nullable|string',
+            'version'        => 'nullable|string',
+            'hardware'       => 'nullable|string',
+            'features'       => 'nullable|string',
+            'location'       => 'nullable|string',
+            'type'           => 'nullable|string',
+            'state'          => 'nullable|in:0,1,up,down',
+            'disabled'       => 'nullable|in:0,1',
+            'ignore'         => 'nullable|in:0,1',
             'disable_notify' => 'nullable|in:0,1',
-            'group' => 'nullable|int',
-            'poller_group' => 'nullable|int',
+            'group'          => 'nullable|int',
+            'poller_group'   => 'nullable|int',
         ];
     }
 
@@ -69,20 +70,21 @@ class DeviceController extends TableController
     protected function sortFields($request)
     {
         return [
-            'status' => 'status',
-            'icon' => 'icon',
+            'status'   => 'status',
+            'icon'     => 'icon',
             'hostname' => 'hostname',
             'hardware' => 'hardware',
-            'os' => 'os',
-            'uptime' => \DB::raw('IF(`status` = 1, `uptime`, `last_polled` - NOW())'),
+            'os'       => 'os',
+            'uptime'   => \DB::raw('IF(`status` = 1, `uptime`, `last_polled` - NOW())'),
             'location' => 'location',
         ];
     }
 
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     protected function baseQuery($request)
@@ -111,11 +113,11 @@ class DeviceController extends TableController
 
     protected function adjustFilterValue($field, $value)
     {
-        if ($field == 'location' && ! is_numeric($value)) {
+        if ($field == 'location' && !is_numeric($value)) {
             return Location::query()->where('location', $value)->value('id');
         }
 
-        if ($field == 'state' && ! is_numeric($value)) {
+        if ($field == 'state' && !is_numeric($value)) {
             return str_replace(['up', 'down'], [1, 0], $value);
         }
 
@@ -133,28 +135,31 @@ class DeviceController extends TableController
 
     /**
      * @param Device $device
+     *
      * @return array|\Illuminate\Database\Eloquent\Model|\Illuminate\Support\Collection
      */
     public function formatItem($device)
     {
         return [
-            'extra' => $this->getLabel($device),
-            'status' => $this->getStatus($device),
+            'extra'       => $this->getLabel($device),
+            'status'      => $this->getStatus($device),
             'maintenance' => AlertUtil::isMaintenance($device->device_id),
-            'icon' => '<img src="' . asset($device->icon) . '" title="' . pathinfo($device->icon, PATHINFO_FILENAME) . '">',
-            'hostname' => $this->getHostname($device),
-            'metrics' => $this->getMetrics($device),
-            'hardware' => Rewrite::ciscoHardware($device),
-            'os' => $this->getOsText($device),
-            'uptime' => (! $device->status && ! $device->last_polled) ? __('Never polled') : Time::formatInterval($device->status ? $device->uptime : $device->last_polled->diffInSeconds(), 'short'),
-            'location' => $this->getLocation($device),
-            'actions' => $this->getActions($device),
+            'icon'        => '<img src="'.asset($device->icon).'" title="'.pathinfo($device->icon, PATHINFO_FILENAME).'">',
+            'hostname'    => $this->getHostname($device),
+            'metrics'     => $this->getMetrics($device),
+            'hardware'    => Rewrite::ciscoHardware($device),
+            'os'          => $this->getOsText($device),
+            'uptime'      => (!$device->status && !$device->last_polled) ? __('Never polled') : Time::formatInterval($device->status ? $device->uptime : $device->last_polled->diffInSeconds(), 'short'),
+            'location'    => $this->getLocation($device),
+            'actions'     => $this->getActions($device),
         ];
     }
 
     /**
-     * Get the device up/down status
+     * Get the device up/down status.
+     *
      * @param Device $device
+     *
      * @return string
      */
     private function getStatus($device)
@@ -169,8 +174,10 @@ class DeviceController extends TableController
     }
 
     /**
-     * Get the status label class
+     * Get the status label class.
+     *
      * @param Device $device
+     *
      * @return string
      */
     private function getLabel($device)
@@ -195,6 +202,7 @@ class DeviceController extends TableController
 
     /**
      * @param Device $device
+     *
      * @return string
      */
     private function getHostname($device)
@@ -202,7 +210,7 @@ class DeviceController extends TableController
         $hostname = Url::deviceLink($device);
 
         if ($this->isDetailed()) {
-            $hostname .= '<br />' . $device->name();
+            $hostname .= '<br />'.$device->name();
         }
 
         return $hostname;
@@ -210,6 +218,7 @@ class DeviceController extends TableController
 
     /**
      * @param Device $device
+     *
      * @return string
      */
     private function getOsText($device)
@@ -217,7 +226,7 @@ class DeviceController extends TableController
         $os_text = Config::getOsSetting($device->os, 'text');
 
         if ($this->isDetailed()) {
-            $os_text .= '<br />' . $device->version . ($device->features ? " ($device->features)" : '');
+            $os_text .= '<br />'.$device->version.($device->features ? " ($device->features)" : '');
         }
 
         return $os_text;
@@ -225,6 +234,7 @@ class DeviceController extends TableController
 
     /**
      * @param Device $device
+     *
      * @return string
      */
     private function getMetrics($device)
@@ -249,7 +259,7 @@ class DeviceController extends TableController
         $glue = $this->isDetailed() ? '<br />' : ' ';
         $metrics_content = implode(count($metrics) == 2 ? $glue : '', $metrics);
 
-        return '<div class="device-table-metrics">' . $metrics_content . '</div>';
+        return '<div class="device-table-metrics">'.$metrics_content.'</div>';
     }
 
     /**
@@ -257,12 +267,13 @@ class DeviceController extends TableController
      * @param $count
      * @param $tab
      * @param $icon
+     *
      * @return string
      */
     private function formatMetric($device, $count, $tab, $icon)
     {
-        $html = '<a href="' . Url::deviceUrl($device, ['tab' => $tab]) . '">';
-        $html .= '<span><i title="' . $tab . '" class="fa ' . $icon . ' fa-lg icon-theme"></i> ' . $count;
+        $html = '<a href="'.Url::deviceUrl($device, ['tab' => $tab]).'">';
+        $html .= '<span><i title="'.$tab.'" class="fa '.$icon.' fa-lg icon-theme"></i> '.$count;
         $html .= '</span></a> ';
 
         return $html;
@@ -270,6 +281,7 @@ class DeviceController extends TableController
 
     /**
      * @param Device $device
+     *
      * @return string
      */
     private function getLocation($device)
@@ -281,35 +293,36 @@ class DeviceController extends TableController
 
     /**
      * @param Device $device
+     *
      * @return string
      */
     private function getActions($device)
     {
         $actions = '<div class="container-fluid"><div class="row">';
-        $actions .= '<div class="col-xs-1"><a href="' . Url::deviceUrl($device) . '"> <i class="fa fa-id-card fa-lg icon-theme" title="View device"></i></a></div>';
-        $actions .= '<div class="col-xs-1"><a href="' . Url::deviceUrl($device, ['tab' => 'alerts']) . '"> <i class="fa fa-exclamation-circle fa-lg icon-theme" title="View alerts"></i></a></div>';
+        $actions .= '<div class="col-xs-1"><a href="'.Url::deviceUrl($device).'"> <i class="fa fa-id-card fa-lg icon-theme" title="View device"></i></a></div>';
+        $actions .= '<div class="col-xs-1"><a href="'.Url::deviceUrl($device, ['tab' => 'alerts']).'"> <i class="fa fa-exclamation-circle fa-lg icon-theme" title="View alerts"></i></a></div>';
 
         if (\Auth::user()->hasGlobalAdmin()) {
-            $actions .= '<div class="col-xs-1"><a href="' . Url::deviceUrl($device, ['tab' => 'edit']) . '"> <i class="fa fa-gear fa-lg icon-theme" title="Edit device"></i></a></div>';
+            $actions .= '<div class="col-xs-1"><a href="'.Url::deviceUrl($device, ['tab' => 'edit']).'"> <i class="fa fa-gear fa-lg icon-theme" title="Edit device"></i></a></div>';
         }
 
         if ($this->isDetailed()) {
             $actions .= '</div><div class="row">';
         }
 
-        $actions .= '<div class="col-xs-1"><a href="telnet://' . $device->hostname . '"><i class="fa fa-terminal fa-lg icon-theme" title="Telnet to ' . $device->hostname . '"></i></a></div>';
+        $actions .= '<div class="col-xs-1"><a href="telnet://'.$device->hostname.'"><i class="fa fa-terminal fa-lg icon-theme" title="Telnet to '.$device->hostname.'"></i></a></div>';
 
         if ($server = Config::get('gateone.server')) {
             if (Config::get('gateone.use_librenms_user')) {
-                $actions .= '<div class="col-xs-1"><a href="' . $server . '?ssh=ssh://' . \Auth::user()->username . '@' . $device->hostname . '&location=' . $device->hostname . '" target="_blank" rel="noopener"><i class="fa fa-lock fa-lg icon-theme" title="SSH to ' . $device->hostname . '"></i></a></div>';
+                $actions .= '<div class="col-xs-1"><a href="'.$server.'?ssh=ssh://'.\Auth::user()->username.'@'.$device->hostname.'&location='.$device->hostname.'" target="_blank" rel="noopener"><i class="fa fa-lock fa-lg icon-theme" title="SSH to '.$device->hostname.'"></i></a></div>';
             } else {
-                $actions .= '<div class="col-xs-1"><a href="' . $server . '?ssh=ssh://' . $device->hostname . '&location=' . $device->hostname . '" target="_blank" rel="noopener"><i class="fa fa-lock fa-lg icon-theme" title="SSH to ' . $device->hostname . '"></i></a></div>';
+                $actions .= '<div class="col-xs-1"><a href="'.$server.'?ssh=ssh://'.$device->hostname.'&location='.$device->hostname.'" target="_blank" rel="noopener"><i class="fa fa-lock fa-lg icon-theme" title="SSH to '.$device->hostname.'"></i></a></div>';
             }
         } else {
-            $actions .= '<div class="col-xs-1"><a href="ssh://' . $device->hostname . '"><i class="fa fa-lock fa-lg icon-theme" title="SSH to ' . $device->hostname . '"></i></a></div>';
+            $actions .= '<div class="col-xs-1"><a href="ssh://'.$device->hostname.'"><i class="fa fa-lock fa-lg icon-theme" title="SSH to '.$device->hostname.'"></i></a></div>';
         }
 
-        $actions .= '<div class="col-xs-1"><a href="https://' . $device->hostname . '" onclick="http_fallback(this); return false;" target="_blank" rel="noopener"><i class="fa fa-globe fa-lg icon-theme" title="Launch browser https://' . $device->hostname . '"></i></a></div>';
+        $actions .= '<div class="col-xs-1"><a href="https://'.$device->hostname.'" onclick="http_fallback(this); return false;" target="_blank" rel="noopener"><i class="fa fa-globe fa-lg icon-theme" title="Launch browser https://'.$device->hostname.'"></i></a></div>';
         $actions .= '</div></div>';
 
         return $actions;

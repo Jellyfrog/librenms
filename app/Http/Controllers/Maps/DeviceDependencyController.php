@@ -1,6 +1,6 @@
 <?php
 /**
- * DependencyController.php
+ * DependencyController.php.
  *
  * Controller for graphing Relationships
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Thomas Berberich
  * @author     Thomas Berberich <sourcehhdoctor@gmail.com>
  */
@@ -40,7 +41,7 @@ class DeviceDependencyController extends MapController
     {
         $group_id = $request->get('group');
 
-        if (! $group_id) {
+        if (!$group_id) {
             return Device::hasAccess($request->user())->with('parents', 'location')->get();
         }
 
@@ -76,7 +77,7 @@ class DeviceDependencyController extends MapController
     protected function getParentDevices($device)
     {
         foreach ($device->parents as $parent) {
-            if (! in_array($parent->device_id, $this->deviceIdAll)) {
+            if (!in_array($parent->device_id, $this->deviceIdAll)) {
                 continue;
             }
             if (in_array($parent->device_id, $this->parentDeviceIds)) {
@@ -157,14 +158,14 @@ class DeviceDependencyController extends MapController
 
         $data = [
             'showparentdevicepath' => $show_device_path,
-            'isolated_device_id' => $this->isolatedDeviceId,
-            'device_list' => $device_list,
-            'group_id' => $group_id,
-            'highlight_node' => $highlight_node,
-            'node_count' => count($devices_by_id),
-            'options' => $this->visOptions(),
-            'nodes' => json_encode(array_values($devices_by_id)),
-            'edges' => json_encode($dependencies),
+            'isolated_device_id'   => $this->isolatedDeviceId,
+            'device_list'          => $device_list,
+            'group_id'             => $group_id,
+            'highlight_node'       => $highlight_node,
+            'node_count'           => count($devices_by_id),
+            'options'              => $this->visOptions(),
+            'nodes'                => json_encode(array_values($devices_by_id)),
+            'edges'                => json_encode($dependencies),
         ];
 
         return view('map.device-dependency', $data);

@@ -1,6 +1,6 @@
 <?php
 /**
- * QueryBuilderTest.php
+ * QueryBuilderTest.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -42,14 +43,15 @@ class QueryBuilderTest extends TestCase
 
     /**
      * @dataProvider loadQueryData
+     *
      * @param string $legacy
-     * @param array $builder
+     * @param array  $builder
      * @param string $display
      * @param string $sql
      */
     public function testQueryConversion($legacy, $builder, $display, $sql, $query)
     {
-        if (! empty($legacy)) {
+        if (!empty($legacy)) {
             // some rules don't have a legacy representation
             $this->assertEquals($builder, QueryBuilderParser::fromOld($legacy)->toArray());
         }

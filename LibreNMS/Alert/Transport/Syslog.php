@@ -24,7 +24,7 @@ class Syslog extends Transport
 {
     public function deliverAlert($obj, $opts)
     {
-        if (! empty($this->config)) {
+        if (!empty($this->config)) {
             $opts['syslog_host'] = $this->config['syslog-host'];
             $opts['syslog_port'] = $this->config['syslog-port'];
             $opts['syslog_facility'] = $this->config['syslog-facility'];
@@ -43,12 +43,12 @@ class Syslog extends Transport
         $sev_txt = 'OK';
         $device = device_by_id_cache($obj['device_id']); // for event logging
 
-        if (! empty($opts['syslog_facility']) && preg_match("/^\d+$/", $opts['syslog_facility'])) {
+        if (!empty($opts['syslog_facility']) && preg_match("/^\d+$/", $opts['syslog_facility'])) {
             $facility = (int) $opts['syslog_facility'] * 8;
         } else {
-            log_event('Syslog facility is not an integer: ' . $opts['syslog_facility'], $device, 'poller', 5);
+            log_event('Syslog facility is not an integer: '.$opts['syslog_facility'], $device, 'poller', 5);
         }
-        if (! empty($opts['syslog_host'])) {
+        if (!empty($opts['syslog_host'])) {
             if (preg_match('/[a-zA-Z]/', $opts['syslog_host'])) {
                 $syslog_host = gethostbyname($opts['syslog_host']);
                 if ($syslog_host === $opts['syslog_host']) {
@@ -59,14 +59,14 @@ class Syslog extends Transport
             } elseif (filter_var($opts['syslog_host'], FILTER_VALIDATE_IP)) {
                 $syslog_host = $opts['syslog_host'];
             } else {
-                log_event('Syslog host is not a valid IP: ' . $opts['syslog_host'], $device, 'poller', 5);
+                log_event('Syslog host is not a valid IP: '.$opts['syslog_host'], $device, 'poller', 5);
 
                 return false;
             }
         } else {
             log_event('Syslog host is empty.', $device, 'poller');
         }
-        if (! empty($opts['syslog_port']) && preg_match("/^\d+$/", $opts['syslog_port'])) {
+        if (!empty($opts['syslog_port']) && preg_match("/^\d+$/", $opts['syslog_port'])) {
             $syslog_port = $opts['syslog_port'];
         } else {
             log_event('Syslog port is not an integer.', $device, 'poller', 5);
@@ -100,28 +100,28 @@ class Syslog extends Transport
         $priority = $facility + $severity;
 
         $syslog_prefix = '<'
-            . $priority
-            . '> '
-            . date('M d H:i:s ')
-            . gethostname()
-            . ' librenms'
-            . '['
-            . $obj['device_id']
-            . ']: '
-            . $obj['hostname']
-            . ': ['
-            . $state
-            . '] '
-            . $obj['name'];
+            .$priority
+            .'> '
+            .date('M d H:i:s ')
+            .gethostname()
+            .' librenms'
+            .'['
+            .$obj['device_id']
+            .']: '
+            .$obj['hostname']
+            .': ['
+            .$state
+            .'] '
+            .$obj['name'];
 
         if (($socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP)) === false) {
-            log_event('socket_create() failed: reason: ' . socket_strerror(socket_last_error()), $device, 'poller', 5);
+            log_event('socket_create() failed: reason: '.socket_strerror(socket_last_error()), $device, 'poller', 5);
 
             return false;
         } else {
-            if (! empty($obj['faults'])) {
+            if (!empty($obj['faults'])) {
                 foreach ($obj['faults'] as $k => $v) {
-                    $syslog_msg = $syslog_prefix . ' - ' . $v['string'];
+                    $syslog_msg = $syslog_prefix.' - '.$v['string'];
                     socket_sendto($socket, $syslog_msg, strlen($syslog_msg), 0, $syslog_host, $syslog_port);
                 }
             } else {
@@ -140,26 +140,26 @@ class Syslog extends Transport
             'config' => [
                 [
                     'title' => 'Host',
-                    'name' => 'syslog-host',
+                    'name'  => 'syslog-host',
                     'descr' => 'Syslog Host',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Port',
-                    'name' => 'syslog-port',
+                    'name'  => 'syslog-port',
                     'descr' => 'Syslog Port',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Facility',
-                    'name' => 'syslog-facility',
+                    'name'  => 'syslog-facility',
                     'descr' => 'Syslog Facility',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
             ],
             'validation' => [
-                'syslog-host' => 'required|string',
-                'syslog-port' => 'required|numeric',
+                'syslog-host'     => 'required|string',
+                'syslog-port'     => 'required|numeric',
                 'syslog-facility' => 'required|string',
             ],
         ];

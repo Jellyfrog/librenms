@@ -1,6 +1,6 @@
 <?php
 /**
- * Graphite.php
+ * Graphite.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @copyright  2017 Falk Stern <https://github.com/fstern/>
  * @author     Tony Murray <murraytony@gmail.com>
@@ -41,6 +42,7 @@ class Graphite extends BaseDatastore
         parent::__construct();
         $host = Config::get('graphite.host');
         $port = Config::get('graphite.port', 2003);
+
         try {
             $this->connection = $socketFactory->createClient("$host:$port");
         } catch (\Exception $e) {
@@ -75,15 +77,15 @@ class Graphite extends BaseDatastore
      *   rrd_oldname array|string: old rrd filename to rename, will be processed with rrd_name()
      *   rrd_step             int: rrd step, defaults to 300
      *
-     * @param array $device
-     * @param string $measurement Name of this measurement
-     * @param array $tags tags for the data (or to control rrdtool)
-     * @param array|mixed $fields The data to update in an associative array, the order must be consistent with rrd_def,
-     *                            single values are allowed and will be paired with $measurement
+     * @param array       $device
+     * @param string      $measurement Name of this measurement
+     * @param array       $tags        tags for the data (or to control rrdtool)
+     * @param array|mixed $fields      The data to update in an associative array, the order must be consistent with rrd_def,
+     *                                 single values are allowed and will be paired with $measurement
      */
     public function put($device, $measurement, $tags, $fields)
     {
-        if (! $this->connection) {
+        if (!$this->connection) {
             d_echo("Graphite Error: not connected\n");
 
             return;
@@ -92,7 +94,7 @@ class Graphite extends BaseDatastore
         $timestamp = Carbon::now()->timestamp;
 
         if ($measurement == 'ports') {
-            $measurement = 'ports|' . $tags['ifName'];
+            $measurement = 'ports|'.$tags['ifName'];
         }
 
         // metrics will be built as prefix.hostname.measurement.field value timestamp
@@ -140,7 +142,7 @@ class Graphite extends BaseDatastore
 
             $this->recordStatistic($stat->end());
         } catch (\Socket\Raw\Exception $e) {
-            Log::error('Graphite write error: ' . $e->getMessage());
+            Log::error('Graphite write error: '.$e->getMessage());
         }
     }
 }

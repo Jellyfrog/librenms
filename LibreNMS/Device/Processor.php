@@ -1,6 +1,6 @@
 <?php
 /**
- * Processor.php
+ * Processor.php.
  *
  * Processor Module
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -55,16 +56,18 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
 
     /**
      * Processor constructor.
-     * @param string $type
-     * @param int $device_id
-     * @param string $oid
+     *
+     * @param string     $type
+     * @param int        $device_id
+     * @param string     $oid
      * @param int|string $index
-     * @param string $description
-     * @param int $precision The returned value will be divided by this number (should be factor of 10) If negative this oid returns idle cpu
-     * @param int $current_usage
-     * @param int $warn_percent
-     * @param int $entPhysicalIndex
-     * @param int $hrDeviceIndex
+     * @param string     $description
+     * @param int        $precision        The returned value will be divided by this number (should be factor of 10) If negative this oid returns idle cpu
+     * @param int        $current_usage
+     * @param int        $warn_percent
+     * @param int        $entPhysicalIndex
+     * @param int        $hrDeviceIndex
+     *
      * @return Processor
      */
     public static function discover(
@@ -95,9 +98,9 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
                 return string_to_oid($matches[1]);
             }, $oid);
         }
-        $proc->processor_oid = '.' . ltrim($oid, '.');
+        $proc->processor_oid = '.'.ltrim($oid, '.');
 
-        if (! is_null($warn_percent)) {
+        if (!is_null($warn_percent)) {
             $proc->processor_perc_warn = $warn_percent;
         }
 
@@ -105,13 +108,13 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
         if (is_null($proc->processor_usage)) {
             $data = snmp_get(device_by_id_cache($proc->device_id), $proc->processor_oid, '-Ovq');
             $proc->valid = ($data !== false);
-            if (! $proc->valid) {
+            if (!$proc->valid) {
                 return $proc;
             }
             $proc->processor_usage = static::processData($data, $proc->processor_precision);
         }
 
-        d_echo('Discovered ' . get_called_class() . ' ' . print_r($proc->toArray(), true));
+        d_echo('Discovered '.get_called_class().' '.print_r($proc->toArray(), true));
 
         return $proc;
     }
@@ -260,7 +263,7 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
 
     /**
      * Is this sensor valid?
-     * If not, it should not be added to or in the database
+     * If not, it should not be added to or in the database.
      *
      * @return bool
      */
@@ -273,20 +276,21 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
      * Get an array of this sensor with fields that line up with the database.
      *
      * @param array $exclude exclude columns
+     *
      * @return array
      */
     public function toArray($exclude = [])
     {
         $array = [
-            'processor_id' => $this->processor_id,
-            'entPhysicalIndex' => (int) $this->entPhysicalIndex,
-            'hrDeviceIndex' => (int) $this->hrDeviceIndex,
-            'device_id' => $this->device_id,
-            'processor_oid' => $this->processor_oid,
-            'processor_index' => $this->processor_index,
-            'processor_type' => $this->processor_type,
-            'processor_usage' => $this->processor_usage,
-            'processor_descr' => $this->processor_descr,
+            'processor_id'        => $this->processor_id,
+            'entPhysicalIndex'    => (int) $this->entPhysicalIndex,
+            'hrDeviceIndex'       => (int) $this->hrDeviceIndex,
+            'device_id'           => $this->device_id,
+            'processor_oid'       => $this->processor_oid,
+            'processor_index'     => $this->processor_index,
+            'processor_type'      => $this->processor_type,
+            'processor_usage'     => $this->processor_usage,
+            'processor_descr'     => $this->processor_descr,
             'processor_precision' => (int) $this->processor_precision,
             'processor_perc_warn' => (int) $this->processor_perc_warn,
         ];

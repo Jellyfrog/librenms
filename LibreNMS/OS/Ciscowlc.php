@@ -1,6 +1,6 @@
 <?php
 /**
- * Ciscowlc.php
+ * Ciscowlc.php.
  *
  * Cisco Wireless LAN Controller
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -35,7 +36,7 @@ class Ciscowlc extends Cisco implements
 {
     /**
      * Discover wireless client counts. Type is clients.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -48,7 +49,7 @@ class Ciscowlc extends Cisco implements
         $total_oids = [];
         $total = 0;
         foreach ($counts as $index => $count) {
-            $oid = '.1.3.6.1.4.1.14179.2.1.1.1.38.' . $index;
+            $oid = '.1.3.6.1.4.1.14179.2.1.1.1.38.'.$index;
             $total_oids[] = $oid;
             $total += $count;
 
@@ -58,12 +59,12 @@ class Ciscowlc extends Cisco implements
                 $oid,
                 'ciscowlc-ssid',
                 $index,
-                'SSID: ' . $ssids[$index],
+                'SSID: '.$ssids[$index],
                 $count
             );
         }
 
-        if (! empty($counts)) {
+        if (!empty($counts)) {
             $sensors[] = new WirelessSensor(
                 'clients',
                 $this->getDeviceId(),
@@ -80,7 +81,7 @@ class Ciscowlc extends Cisco implements
 
     /**
      * Discover wireless capacity.  This is a percent. Type is capacity.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * OpsGenie API Transport
+ * OpsGenie API Transport.
+ *
  * @author Celal Emre CICEK <celal.emre@opsgenie.com>
  * @copyright 2017 Celal Emre CICEK
  * @license GPL
@@ -28,7 +29,7 @@ class Opsgenie extends Transport
 {
     public function deliverAlert($obj, $opts)
     {
-        if (! empty($this->config)) {
+        if (!empty($this->config)) {
             $opts['url'] = $this->config['genie-url'];
         }
 
@@ -52,7 +53,7 @@ class Opsgenie extends Transport
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
         if ($code != 200) {
-            var_dump('Error when sending post request to OpsGenie. Response code: ' . $code . ' Response body: ' . $ret); //FIXME: proper debugging
+            var_dump('Error when sending post request to OpsGenie. Response code: '.$code.' Response body: '.$ret); //FIXME: proper debugging
 
             return false;
         }
@@ -66,9 +67,9 @@ class Opsgenie extends Transport
             'config' => [
                 [
                     'title' => 'Webhook URL',
-                    'name' => 'genie-url',
+                    'name'  => 'genie-url',
                     'descr' => 'OpsGenie Webhook URL',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
             ],
             'validation' => [

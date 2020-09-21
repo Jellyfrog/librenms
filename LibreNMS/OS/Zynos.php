@@ -1,6 +1,6 @@
 <?php
 /**
- * Zynos.php
+ * Zynos.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -48,7 +49,7 @@ class Zynos extends Zyxel implements OSDiscovery
             $serials = snmp_get_multi_oid($this->getDeviceArray(), $serial_oids);
 
             foreach ($serial_oids as $oid) {
-                if (! empty($serials[$oid])) {
+                if (!empty($serials[$oid])) {
                     $device->serial = $serials[$oid];
                     break;
                 }

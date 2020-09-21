@@ -1,6 +1,6 @@
 <?php
 /**
- * AuthenticationException.php
+ * AuthenticationException.php.
  *
  * Throw this when authentication fails.  Sets the default message to 'Invalid credentials' so we don't leak any info.
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */

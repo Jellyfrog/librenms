@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessSsrDiscovery.php
+ * WirelessSsrDiscovery.php.
  *
  * Discover wireless Signal Strength Ratio sensors in dB
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Paul Heinrichs
  * @author     Paul Heinrichs <pdheinrichs@gmail.com>
  */
@@ -28,7 +29,7 @@ interface WirelessSsrDiscovery
 {
     /**
      * Discover wireless SSR.  This is in dB. Type is ssr.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

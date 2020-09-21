@@ -1,6 +1,6 @@
 <?php
 /**
- * WidgetSettingsController.php
+ * WidgetSettingsController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -37,9 +38,9 @@ class WidgetSettingsController extends Controller
         $widget = UserWidget::with('dashboard')->findOrFail($widget_settings);
         $widget_settings = (array) $request->get('settings', []);
 
-        if (! $widget->dashboard->canWrite($request->user())) {
+        if (!$widget->dashboard->canWrite($request->user())) {
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => 'ERROR: You have no write-access to this dashboard',
             ]);
         }
@@ -47,13 +48,13 @@ class WidgetSettingsController extends Controller
         $widget->settings = $widget_settings;
         if ($widget->save()) {
             return response()->json([
-                'status' => 'ok',
+                'status'  => 'ok',
                 'message' => 'Updated widget settings',
             ]);
         }
 
         return response()->json([
-            'status' => 'error',
+            'status'  => 'error',
             'message' => 'ERROR: Could not update',
         ]);
     }

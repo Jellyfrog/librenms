@@ -4,7 +4,7 @@
 use LibreNMS\Config;
 
 $init_modules = [''];
-require __DIR__ . '/../includes/init.php';
+require __DIR__.'/../includes/init.php';
 
 $options = getopt('h:o:t:v:d::');
 
@@ -15,16 +15,16 @@ if ($options['h'] && $options['o'] && $options['t'] && $options['v']) {
 
     $device_id = ctype_digit($options['h']) ? $options['h'] : getidbyname($options['h']);
     $device = device_by_id_cache($device_id);
-    $definition_file = Config::get('install_dir') . "/includes/definitions/{$options['o']}.yaml";
-    $discovery_file = Config::get('install_dir') . "/includes/definitions/discovery/{$options['o']}.yaml";
-    $test_file = Config::get('install_dir') . "/tests/snmpsim/{$options['o']}.snmprec";
+    $definition_file = Config::get('install_dir')."/includes/definitions/{$options['o']}.yaml";
+    $discovery_file = Config::get('install_dir')."/includes/definitions/discovery/{$options['o']}.yaml";
+    $test_file = Config::get('install_dir')."/tests/snmpsim/{$options['o']}.snmprec";
     if (file_exists($definition_file)) {
         c_echo("The OS {$options['o']} appears to exist already, skipping to sensors support\n");
     } else {
         $sysDescr = snmp_get($device, 'sysDescr.0', '-OvQ', 'SNMPv2-MIB');
         $sysObjectID = explode('.', ltrim(snmp_get($device, 'sysObjectID.0', '-OnvQ', 'SNMPv2-MIB'), '.'));
         $end_oid = array_pop($sysObjectID);
-        $sysObjectID = '.' . implode('.', $sysObjectID);
+        $sysObjectID = '.'.implode('.', $sysObjectID);
         $full_sysObjectID = "$sysObjectID.$end_oid";
 
         c_echo("
@@ -39,20 +39,20 @@ sysObjectID: $full_sysObjectID
             $continue = get_user_input("We already detect this device as OS $os type, do you want to continue to add sensors? (Y/n)");
         }
 
-        if (! str_i_contains($continue, 'y')) {
+        if (!str_i_contains($continue, 'y')) {
             $descr = get_user_input('Enter the description for this OS, i.e Cisco IOS:');
             $icon = get_user_input('Enter the logo to use, this can be the name of an existing one (i.e: cisco) or the url to retrieve one:');
 
             if (filter_var($icon, FILTER_VALIDATE_URL)) {
                 $icon_data = file_get_contents($icon);
-                file_put_contents(Config::get('temp_dir') . "/{$options['o']}", $icon_data);
-                $file_info = mime_content_type(Config::get('temp_dir') . "/{$options['o']}");
+                file_put_contents(Config::get('temp_dir')."/{$options['o']}", $icon_data);
+                $file_info = mime_content_type(Config::get('temp_dir')."/{$options['o']}");
                 if ($file_info === 'image/png') {
                     $ext = '.png';
                 } elseif ($file_info === 'image/svg+xml') {
                     $ext = '.svg';
                 }
-                rename(Config::get('temp_dir') . "/{$options['o']}", Config::get('install_dir') . "/html/images/os/$vendor$ext");
+                rename(Config::get('temp_dir')."/{$options['o']}", Config::get('install_dir')."/html/images/os/$vendor$ext");
                 $icon = $vendor;
             }
 
@@ -87,36 +87,36 @@ discovery:
 
     if (filter_var($mib_name, FILTER_VALIDATE_URL)) {
         $mib_data = file_get_contents($mib_name);
-        file_put_contents(Config::get('temp_dir') . "/{$options['o']}.mib", $mib_data);
-        $file_info = mime_content_type(Config::get('temp_dir') . "/{$options['o']}.mib");
+        file_put_contents(Config::get('temp_dir')."/{$options['o']}.mib", $mib_data);
+        $file_info = mime_content_type(Config::get('temp_dir')."/{$options['o']}.mib");
         if ($file_info !== 'text/plain') {
             c_echo("That mib file isn't a plain text file and is instead $file_info so we aren't using it");
             exit(1);
         }
         preg_match('/(.* DEFINITIONS ::)/', $mib_data, $matches);
         [$mib_name,] = explode(' ', $matches[0], 2);
-        if (file_exists(Config::get('install_dir') . "/mibs/$vendor/") == false) {
-            mkdir(Config::get('install_dir') . "/mibs/$vendor/");
+        if (file_exists(Config::get('install_dir')."/mibs/$vendor/") == false) {
+            mkdir(Config::get('install_dir')."/mibs/$vendor/");
         }
-        rename(Config::get('temp_dir') . "/{$options['o']}.mib", Config::get('install_dir') . "/mibs/$vendor/$mib_name");
+        rename(Config::get('temp_dir')."/{$options['o']}.mib", Config::get('install_dir')."/mibs/$vendor/$mib_name");
     } elseif ($mib_name) {
         $tmp_mib = explode('/', $mib_name);
         $mib_name = array_pop($tmp_mib);
     }
 
-    $translate_cmd = Config::get('snmptranslate') . ' -M ' . Config::get('mib_dir') . ':' . Config::get('mib_dir') . "/$vendor -m $mib_name -TB '.*Table$' -Os";
+    $translate_cmd = Config::get('snmptranslate').' -M '.Config::get('mib_dir').':'.Config::get('mib_dir')."/$vendor -m $mib_name -TB '.*Table$' -Os";
     $tables = shell_exec($translate_cmd);
     foreach (explode(PHP_EOL, $tables) as $table_name) {
         if ($table_name) {
             $continue = get_user_input("Do you want to add $table_name? (y/N)");
             if ($continue === 'y' || $continue === 'Y') {
-                $mib2c_cmd = 'env MIBDIRS=' . Config::get('mib_dir') . ':' . Config::get('mib_dir') . "/$vendor/ env MIBS=\"$mib_name\" mib2c -q -c misc/mib2c.conf $table_name";
+                $mib2c_cmd = 'env MIBDIRS='.Config::get('mib_dir').':'.Config::get('mib_dir')."/$vendor/ env MIBS=\"$mib_name\" mib2c -q -c misc/mib2c.conf $table_name";
                 $tmp_info = shell_exec($mib2c_cmd);
                 $table_info = Symfony\Component\Yaml\Yaml::parse($tmp_info);
                 $type = get_user_input('Enter the sensor type, i.e temperature, voltage, etc:');
-                echo 'Table info:' . PHP_EOL;
+                echo 'Table info:'.PHP_EOL;
                 foreach ($table_info['data'] as $data) {
-                    echo $data['name'] . PHP_EOL;
+                    echo $data['name'].PHP_EOL;
                     $tmp_table[$data['name']] = $data['oid'];
                 }
                 $value = get_user_input('Enter value:');
@@ -181,7 +181,7 @@ Example:
 
 function get_user_input($msg)
 {
-    c_echo($msg . ' ');
+    c_echo($msg.' ');
     $handle = fopen('php://stdin', 'r');
     $line = fgets($handle);
 

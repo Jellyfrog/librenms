@@ -1,6 +1,6 @@
 <?php
 /**
- * Beagleboard.php
+ * Beagleboard.php.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -30,7 +31,7 @@ class Beagleboard extends OS implements
     OSDiscovery
 {
     /**
-     * Retrieve basic information about the OS / device
+     * Retrieve basic information about the OS / device.
      */
     public function discoverOS(Device $device): void
     {

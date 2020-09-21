@@ -1,6 +1,6 @@
 <?php
 /**
- * Apsoluteos.php
+ * Apsoluteos.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Simone Fini
  * @author     Simone Fini<tomfordfirst@gmail.com>
  * @copyright  2020 Tony Murray
@@ -41,7 +42,7 @@ class Apsoluteos extends OS implements OSDiscovery
         $device->version = $data[0]['rndApsoluteOSVersion'] ?? null;
         $device->hardware = $data[0]['genGroupHWVersion'] ?? null;
         if (isset($data[0]['rdwrDevicePortsConfig'])) {
-            $device->features = 'Ver. ' . $data[0]['rdwrDevicePortsConfig'];
+            $device->features = 'Ver. '.$data[0]['rdwrDevicePortsConfig'];
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Datastore.php
+ * Datastore.php.
  *
  * Aggregates all enabled datastores and dispatches data to them
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -32,9 +33,10 @@ class Datastore
     protected $stores;
 
     /**
-     * Initialize and create the Datastore(s)
+     * Initialize and create the Datastore(s).
      *
      * @param array $options
+     *
      * @return DatastoreContract
      */
     public static function init($options = [])
@@ -61,6 +63,7 @@ class Datastore
 
     /**
      * Datastore constructor.
+     *
      * @param array $datastores Implement DatastoreInterface
      */
     public function __construct($datastores)
@@ -69,7 +72,7 @@ class Datastore
     }
 
     /**
-     * Disable a datastore for the rest of this run
+     * Disable a datastore for the rest of this run.
      *
      * @param string $name
      */
@@ -94,11 +97,11 @@ class Datastore
      *   rrd_oldname array|string: old rrd filename to rename, will be processed with rrd_name()
      *   rrd_step             int: rrd step, defaults to 300
      *
-     * @param array $device
-     * @param string $measurement Name of this measurement
-     * @param array $tags tags for the data (or to control rrdtool)
-     * @param array|mixed $fields The data to update in an associative array, the order must be consistent with rrd_def,
-     *                            single values are allowed and will be paired with $measurement
+     * @param array       $device
+     * @param string      $measurement Name of this measurement
+     * @param array       $tags        tags for the data (or to control rrdtool)
+     * @param array|mixed $fields      The data to update in an associative array, the order must be consistent with rrd_def,
+     *                                 single values are allowed and will be paired with $measurement
      */
     public function put($device, $measurement, $tags, $fields)
     {
@@ -106,7 +109,7 @@ class Datastore
         // data_update($device, 'mymeasurement', $tags, 1234);
         //     AND
         // data_update($device, 'mymeasurement', $tags, array('mymeasurement' => 1234));
-        if (! is_array($fields)) {
+        if (!is_array($fields)) {
             $fields = [$measurement => $fields];
         }
 
@@ -121,9 +124,10 @@ class Datastore
     }
 
     /**
-     * Filter all elements with keys that start with 'rrd_'
+     * Filter all elements with keys that start with 'rrd_'.
      *
      * @param array $arr input array
+     *
      * @return array Copy of $arr with all keys beginning with 'rrd_' removed.
      */
     private function rrdTagFilter($arr)
@@ -140,7 +144,7 @@ class Datastore
     }
 
     /**
-     * Get all the active data stores
+     * Get all the active data stores.
      *
      * @return array
      */

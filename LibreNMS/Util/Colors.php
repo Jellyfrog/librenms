@@ -1,6 +1,6 @@
 <?php
 /**
- * Colors.php
+ * Colors.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -36,34 +37,34 @@ class Colors
 
         if ($percentage > $perc_warn) {
             return [
-                'left' => 'c4323f',
+                'left'  => 'c4323f',
                 'right' => 'c96a73',
             ];
         }
 
         if ($percentage > 75) {
             return [
-                'left' => 'bf5d5b',
+                'left'  => 'bf5d5b',
                 'right' => 'd39392',
             ];
         }
 
         if ($percentage > 50) {
             return [
-                'left' => 'bf875b',
+                'left'  => 'bf875b',
                 'right' => 'd3ae92',
             ];
         }
 
         if ($percentage > 25) {
             return [
-                'left' => '5b93bf',
+                'left'  => '5b93bf',
                 'right' => '92b7d3',
             ];
         }
 
         return [
-            'left' => '9abf5b',
+            'left'  => '9abf5b',
             'right' => 'bbd392',
         ];
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Graph.php
+ * Graph.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -35,9 +36,11 @@ class Graph
     }
 
     /**
-     * Get an array of all graph subtypes for the given type
+     * Get an array of all graph subtypes for the given type.
+     *
      * @param $type
      * @param Device $device
+     *
      * @return array
      */
     public static function getSubtypes($type, $device = null)
@@ -71,10 +74,11 @@ class Graph
     }
 
     /**
-     * Check if the given graph is a mib graph
+     * Check if the given graph is a mib graph.
      *
      * @param $type
      * @param $subtype
+     *
      * @return bool
      */
     public static function isMibGraph($type, $subtype)

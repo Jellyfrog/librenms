@@ -12,7 +12,7 @@
 */
 
 $init_modules = [];
-require realpath(__DIR__ . '/..') . '/includes/init.php';
+require realpath(__DIR__.'/..').'/includes/init.php';
 
 ?>
 
@@ -56,7 +56,7 @@ foreach (dbFetchRows("SELECT `hostname`,`os`,`disabled`,`status` FROM `devices` 
         if ($devices['disabled']) {
             $status = 'down';
         }
-        echo $devices['hostname'] . ';' . $rancid_map[$devices['os']] . ';' . $status . PHP_EOL;
+        echo $devices['hostname'].';'.$rancid_map[$devices['os']].';'.$status.PHP_EOL;
     }
 }
-echo '# EOF ' . PHP_EOL;
+echo '# EOF '.PHP_EOL;

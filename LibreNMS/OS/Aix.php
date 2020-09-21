@@ -1,6 +1,6 @@
 <?php
 /**
- * Aix.php
+ * Aix.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -42,6 +43,6 @@ class Aix extends OS implements OSDiscovery
         } else {
             [, , $aix_version_min, $device->version, $device->serial] = explode(' ', $aix_descr[0]);
         }
-        $device->version .= '.' . $aix_version_min;
+        $device->version .= '.'.$aix_version_min;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * MoxaEtherdevice.php
+ * MoxaEtherdevice.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -32,7 +33,7 @@ class MoxaEtherdevice extends OS implements ProcessorDiscovery
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
@@ -43,7 +44,7 @@ class MoxaEtherdevice extends OS implements ProcessorDiscovery
         // Moxa people enjoy creating MIBs for each model!
         // .1.3.6.1.4.1.8691.7.116.1.54.0 = MOXA-IKS6726A-MIB::cpuLoading30s.0
         // .1.3.6.1.4.1.8691.7.69.1.54.0 = MOXA-EDSG508E-MIB::cpuLoading30s.0
-        $oid = $device['sysObjectID'] . '.1.54.0';
+        $oid = $device['sysObjectID'].'.1.54.0';
 
         return [
             Processor::discover(

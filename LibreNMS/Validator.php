@@ -1,6 +1,6 @@
 <?php
 /**
- * Validator.php
+ * Validator.php.
  *
  * Class to run validations.  Also allows sharing data between ValidationGroups.
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -43,14 +44,14 @@ class Validator
     public function __construct()
     {
         // load all validations
-        $pattern = $this->getBaseDir() . '/LibreNMS/Validations/*.php';
+        $pattern = $this->getBaseDir().'/LibreNMS/Validations/*.php';
 
         foreach (glob($pattern) as $file) {
             $class_name = basename($file, '.php');
-            $class = '\LibreNMS\Validations\\' . $class_name;
+            $class = '\LibreNMS\Validations\\'.$class_name;
 
             $rc = new ReflectionClass($class);
-            if (! $rc->isAbstract()) {
+            if (!$rc->isAbstract()) {
                 $validation_name = strtolower($class_name);
                 $this->validation_groups[$validation_name] = new $class();
                 $this->results[$validation_name] = [];
@@ -61,8 +62,8 @@ class Validator
     /**
      * Run validations. An empty array will run all default validations.
      *
-     * @param array $validation_groups selected validation groups to run
-     * @param bool $print_group_status print out group status
+     * @param array $validation_groups  selected validation groups to run
+     * @param bool  $print_group_status print out group status
      */
     public function validate($validation_groups = [], $print_group_status = false)
     {
@@ -99,6 +100,7 @@ class Validator
      * Get the overall status of a validation group.
      *
      * @param string $validation_group
+     *
      * @return int
      */
     public function getGroupStatus($validation_group)
@@ -117,6 +119,7 @@ class Validator
      * Get the ValidationResults for a specific validation group.
      *
      * @param string $validation_group
+     *
      * @return array
      */
     public function getResults($validation_group = null)
@@ -163,7 +166,7 @@ class Validator
      * This allows customizing ValidationResults before submitting.
      *
      * @param ValidationResult $result
-     * @param string $group manually specify the group, otherwise this will be inferred from the callers class name
+     * @param string           $group  manually specify the group, otherwise this will be inferred from the callers class name
      */
     public function result(ValidationResult $result, $group = null)
     {
@@ -187,7 +190,7 @@ class Validator
      *
      * @param string $message
      * @param string $fix
-     * @param string $group manually specify the group, otherwise this will be inferred from the callers class name
+     * @param string $group   manually specify the group, otherwise this will be inferred from the callers class name
      */
     public function ok($message, $fix = null, $group = null)
     {
@@ -199,7 +202,7 @@ class Validator
      *
      * @param string $message
      * @param string $fix
-     * @param string $group manually specify the group, otherwise this will be inferred from the callers class name
+     * @param string $group   manually specify the group, otherwise this will be inferred from the callers class name
      */
     public function warn($message, $fix = null, $group = null)
     {
@@ -211,7 +214,7 @@ class Validator
      *
      * @param string $message
      * @param string $fix
-     * @param string $group manually specify the group, otherwise this will be inferred from the callers class name
+     * @param string $group   manually specify the group, otherwise this will be inferred from the callers class name
      */
     public function fail($message, $fix = null, $group = null)
     {
@@ -222,14 +225,15 @@ class Validator
      * Get version_info() array.  This will cache the result and add remote data if requested and not already existing.
      *
      * @param bool $remote
+     *
      * @return array
      */
     public function getVersions($remote = false)
     {
-        if (! isset($this->versions)) {
+        if (!isset($this->versions)) {
             $this->versions = version_info($remote);
         } else {
-            if ($remote && ! isset($this->versions['github'])) {
+            if ($remote && !isset($this->versions['github'])) {
                 $this->versions = version_info($remote);
             }
         }
@@ -239,16 +243,16 @@ class Validator
 
     /**
      * Execute a command, but don't run it as root.  If we are root, run as the LibreNMS user.
-     * Arguments match exec()
+     * Arguments match exec().
      *
      * @param string $command the command to run
-     * @param array $output will hold the output of the command
-     * @param int $code will hold the return code from the command
+     * @param array  $output  will hold the output of the command
+     * @param int    $code    will hold the return code from the command
      */
     public function execAsUser($command, &$output = null, &$code = null)
     {
         if (self::getUsername() === 'root') {
-            $command = 'su ' . \config('librenms.user') . ' -s /bin/sh -c "' . $command . '"';
+            $command = 'su '.\config('librenms.user').' -s /bin/sh -c "'.$command.'"';
         }
         exec($command, $output, $code);
     }
@@ -260,7 +264,7 @@ class Validator
      */
     public function getUsername()
     {
-        if (! isset($this->username)) {
+        if (!isset($this->username)) {
             if (function_exists('posix_getpwuid')) {
                 $userinfo = posix_getpwuid(posix_geteuid());
                 $this->username = $userinfo['name'];
@@ -274,7 +278,7 @@ class Validator
 
     /**
      * Get the base url for this LibreNMS install, this will only work from web pages.
-     * (unless base_url is set)
+     * (unless base_url is set).
      *
      * @return string the base url without a trailing /
      */
@@ -287,6 +291,6 @@ class Validator
 
     public function getBaseDir()
     {
-        return realpath(__DIR__ . '/..');
+        return realpath(__DIR__.'/..');
     }
 }

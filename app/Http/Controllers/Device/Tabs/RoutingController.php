@@ -1,6 +1,6 @@
 <?php
 /**
- * RoutingController.php
+ * RoutingController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -37,15 +38,15 @@ class RoutingController implements DeviceTab
     {
         $device = DeviceCache::getPrimary();
         $this->tabs = [
-            'ospf' => $device->ospfInstances()->count(),
-            'bgp' => $device->bgppeers()->count(),
-            'vrf' => $device->vrfs()->count(),
-            'cef' => $device->cefSwitching()->count(),
-            'mpls' => $device->mplsLsps()->count(),
-            'cisco-otv' => Component::query()->where('device_id', $device->device_id)->where('type', 'Cisco-OTV')->count(),
+            'ospf'                  => $device->ospfInstances()->count(),
+            'bgp'                   => $device->bgppeers()->count(),
+            'vrf'                   => $device->vrfs()->count(),
+            'cef'                   => $device->cefSwitching()->count(),
+            'mpls'                  => $device->mplsLsps()->count(),
+            'cisco-otv'             => Component::query()->where('device_id', $device->device_id)->where('type', 'Cisco-OTV')->count(),
             'loadbalancer_rservers' => $device->rServers()->count(),
-            'ipsec_tunnels' => $device->ipsecTunnels()->count(),
-            'routes' => $device->routes()->count(),
+            'ipsec_tunnels'         => $device->ipsecTunnels()->count(),
+            'routes'                => $device->routes()->count(),
         ];
     }
 

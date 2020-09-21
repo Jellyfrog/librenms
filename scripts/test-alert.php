@@ -4,7 +4,7 @@
 use LibreNMS\Alert\RunAlerts;
 
 $init_modules = ['alerts', 'laravel'];
-require __DIR__ . '/../includes/init.php';
+require __DIR__.'/../includes/init.php';
 
 $options = getopt('t:h:r:p:s:d::');
 

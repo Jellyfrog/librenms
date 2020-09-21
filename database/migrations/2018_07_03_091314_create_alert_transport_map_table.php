@@ -1,6 +1,6 @@
 <?php
 /**
- * 2018_07_03_091314_create_alert_transport_map_table.php
+ * 2018_07_03_091314_create_alert_transport_map_table.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */

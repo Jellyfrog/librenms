@@ -1,6 +1,6 @@
 <?php
 /**
- * XirrusAos.php
+ * XirrusAos.php.
  *
  * Xirrus AOS OS
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -46,7 +47,7 @@ class XirrusAos extends OS implements
     WirelessSnrDiscovery
 {
     /**
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -61,7 +62,7 @@ class XirrusAos extends OS implements
 
     /**
      * Discover wireless frequency.  This is in MHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -72,9 +73,10 @@ class XirrusAos extends OS implements
 
     /**
      * Poll wireless frequency as MHz
-     * The returned array should be sensor_id => value pairs
+     * The returned array should be sensor_id => value pairs.
      *
      * @param array $sensors Array of sensors needed to be polled
+     *
      * @return array of polled data
      */
     public function pollWirelessFrequency(array $sensors)
@@ -83,7 +85,7 @@ class XirrusAos extends OS implements
     }
 
     /**
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -94,7 +96,7 @@ class XirrusAos extends OS implements
 
     /**
      * Discover wireless rate. This is in bps. Type is rate.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -105,7 +107,7 @@ class XirrusAos extends OS implements
 
     /**
      * Discover wireless RSSI (Received Signal Strength Indicator). This is in dBm. Type is rssi.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -117,7 +119,7 @@ class XirrusAos extends OS implements
     /**
      * Discover wireless SNR.  This is in dB. Type is snr.
      * Formula: SNR = Signal or Rx Power - Noise Floor
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -128,7 +130,7 @@ class XirrusAos extends OS implements
 
     /**
      * Discover wireless utilization.  This is in %. Type is utilization.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -147,7 +149,7 @@ class XirrusAos extends OS implements
             $sensors[] = new WirelessSensor(
                 $type,
                 $this->getDeviceId(),
-                $oid_num_prefix . $index,
+                $oid_num_prefix.$index,
                 'xirrus',
                 $index,
                 $names[$index],

@@ -1,6 +1,6 @@
 <?php
 /**
- * DiscoveryModelObserver.php
+ * DiscoveryModelObserver.php.
  *
  * Displays +,-,U,. while running discovery and adding,deleting,updating, and doing nothing.
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -30,7 +31,7 @@ use Illuminate\Support\Str;
 class ModuleModelObserver
 {
     /**
-     * Install observers to output +, -, U for models being created, deleted, and updated
+     * Install observers to output +, -, U for models being created, deleted, and updated.
      *
      * @param string $model The model name including namespace
      */
@@ -38,14 +39,14 @@ class ModuleModelObserver
     {
         $model = Str::start($model, '\\');
         // discovery output (but don't install it twice (testing can can do this)
-        if (! $model::getEventDispatcher()->hasListeners('eloquent.created: ' . ltrim('\\', $model))) {
-            $model::observe(new ModuleModelObserver());
+        if (!$model::getEventDispatcher()->hasListeners('eloquent.created: '.ltrim('\\', $model))) {
+            $model::observe(new self());
         }
     }
 
     public function saving(Eloquent $model)
     {
-        if (! $model->isDirty()) {
+        if (!$model->isDirty()) {
             echo '.';
         }
     }

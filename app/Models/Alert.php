@@ -1,6 +1,6 @@
 <?php
 /**
- * app/Models/Alert.php
+ * app/Models/Alert.php.
  *
  * Model for access to alerts table data
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
@@ -35,8 +36,10 @@ class Alert extends Model
     // ---- Query scopes ----
 
     /**
-     * Only select active alerts
+     * Only select active alerts.
+     *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeActive($query)
@@ -45,8 +48,10 @@ class Alert extends Model
     }
 
     /**
-     * Only select active alerts
+     * Only select active alerts.
+     *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeAcknowledged($query)

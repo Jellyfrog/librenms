@@ -1,6 +1,6 @@
 <?php
 /**
- * DeviceGroupController.php
+ * DeviceGroupController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -41,7 +42,7 @@ class DeviceGroupController extends SelectController
     public function formatItem($device_group)
     {
         return [
-            'id' => $device_group->id,
+            'id'   => $device_group->id,
             'text' => $device_group->name,
         ];
     }

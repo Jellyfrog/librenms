@@ -1,6 +1,6 @@
 <?php
 /**
- * GraylogApi.php
+ * GraylogApi.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -42,13 +43,13 @@ class GraylogApi
         if (empty($config)) {
             $base_uri = Config::get('graylog.server');
             if ($port = Config::get('graylog.port')) {
-                $base_uri .= ':' . $port;
+                $base_uri .= ':'.$port;
             }
 
             $config = [
                 'base_uri' => $base_uri,
-                'auth' => [Config::get('graylog.username'), Config::get('graylog.password')],
-                'headers' => ['Accept' => 'application/json'],
+                'auth'     => [Config::get('graylog.username'), Config::get('graylog.password')],
+                'headers'  => ['Accept' => 'application/json'],
             ];
         }
 
@@ -57,11 +58,11 @@ class GraylogApi
 
     public function getStreams()
     {
-        if (! $this->isConfigured()) {
+        if (!$this->isConfigured()) {
             return [];
         }
 
-        $uri = $this->api_prefix . '/streams';
+        $uri = $this->api_prefix.'/streams';
 
         $response = $this->client->get($uri);
         $data = json_decode($response->getBody(), true);
@@ -70,33 +71,34 @@ class GraylogApi
     }
 
     /**
-     * Query the Graylog server
+     * Query the Graylog server.
      *
      * @param string $query
-     * @param int $range
-     * @param int $limit
-     * @param int $offset
-     * @param string $sort field:asc or field:desc
+     * @param int    $range
+     * @param int    $limit
+     * @param int    $offset
+     * @param string $sort   field:asc or field:desc
      * @param string $filter
+     *
      * @return array
      */
     public function query($query = '*', $range = 0, $limit = 0, $offset = 0, $sort = null, $filter = null)
     {
-        if (! $this->isConfigured()) {
+        if (!$this->isConfigured()) {
             return [];
         }
 
         $uri = Config::get('graylog.base_uri');
-        if (! $uri) {
-            $uri = $this->api_prefix . '/search/universal/relative';
+        if (!$uri) {
+            $uri = $this->api_prefix.'/search/universal/relative';
         }
 
         $data = [
-            'query' => $query,
-            'range' => $range,
-            'limit' => $limit,
+            'query'  => $query,
+            'range'  => $range,
+            'limit'  => $limit,
             'offset' => $offset,
-            'sort' => $sort,
+            'sort'   => $sort,
             'filter' => $filter,
         ];
 
@@ -107,21 +109,22 @@ class GraylogApi
     }
 
     /**
-     * Build a simple query string that searches the messages field and/or filters by device
+     * Build a simple query string that searches the messages field and/or filters by device.
      *
      * @param string $search Search the message field for this string
      * @param Device $device
+     *
      * @return string
      */
     public function buildSimpleQuery($search = null, $device = null)
     {
         $query = [];
         if ($search) {
-            $query[] = 'message:"' . $search . '"';
+            $query[] = 'message:"'.$search.'"';
         }
 
         if ($device) {
-            $query[] = 'source: ("' . $this->getAddresses($device)->implode('" OR "') . '")';
+            $query[] = 'source: ("'.$this->getAddresses($device)->implode('" OR "').'")';
         }
 
         if (empty($query)) {

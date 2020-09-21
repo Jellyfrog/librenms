@@ -1,6 +1,6 @@
 <?php
 /**
- * Measurement.php
+ * Measurement.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -37,9 +38,10 @@ class Measurement
     }
 
     /**
-     * Start the timer for a new operation
+     * Start the timer for a new operation.
      *
      * @param string $type
+     *
      * @return static
      */
     public static function start(string $type)
@@ -48,7 +50,7 @@ class Measurement
     }
 
     /**
-     * End the timer for this operation
+     * End the timer for this operation.
      *
      * @return $this
      */
@@ -60,7 +62,7 @@ class Measurement
     }
 
     /**
-     * Get the duration of the operation
+     * Get the duration of the operation.
      *
      * @return float
      */
@@ -70,7 +72,7 @@ class Measurement
     }
 
     /**
-     * Get the type of the operation
+     * Get the type of the operation.
      *
      * @return string
      */

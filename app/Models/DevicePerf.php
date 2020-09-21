@@ -1,6 +1,6 @@
 <?php
 /**
- * DevicePerf.php
+ * DevicePerf.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -29,12 +30,12 @@ class DevicePerf extends DeviceRelatedModel
     protected $table = 'device_perf';
     protected $fillable = ['device_id', 'timestamp', 'xmt', 'rcv', 'loss', 'min', 'max', 'avg'];
     protected $casts = [
-        'xmt' => 'integer',
-        'rcv' => 'integer',
+        'xmt'  => 'integer',
+        'rcv'  => 'integer',
         'loss' => 'integer',
-        'min' => 'float',
-        'max' => 'float',
-        'avg' => 'float',
+        'min'  => 'float',
+        'max'  => 'float',
+        'avg'  => 'float',
     ];
     public $timestamps = false;
     const CREATED_AT = 'timestamp';

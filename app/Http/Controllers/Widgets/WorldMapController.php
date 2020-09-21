@@ -1,6 +1,6 @@
 <?php
 /**
- * WorldMapController.php
+ * WorldMapController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -35,13 +36,13 @@ class WorldMapController extends WidgetController
     public function __construct()
     {
         $this->defaults = [
-            'title' => null,
-            'title_url' => Config::get('leaflet.tile_url', '{s}.tile.openstreetmap.org'),
-            'init_lat' => Config::get('leaflet.default_lat', 51.4800),
-            'init_lng' => Config::get('leaflet.default_lng', 0),
-            'init_zoom' => Config::get('leaflet.default_zoom', 2),
+            'title'        => null,
+            'title_url'    => Config::get('leaflet.tile_url', '{s}.tile.openstreetmap.org'),
+            'init_lat'     => Config::get('leaflet.default_lat', 51.4800),
+            'init_lng'     => Config::get('leaflet.default_lng', 0),
+            'init_zoom'    => Config::get('leaflet.default_zoom', 2),
             'group_radius' => Config::get('leaflet.group_radius', 80),
-            'status' => '0,1',
+            'status'       => '0,1',
             'device_group' => null,
         ];
     }
@@ -63,7 +64,7 @@ class WorldMapController extends WidgetController
             ->get()
             ->filter(function ($device) use ($status) {
                 /** @var Device $device */
-                if (! ($device->location_id && $device->location && $device->location->coordinatesValid())) {
+                if (!($device->location_id && $device->location && $device->location->coordinatesValid())) {
                     return false;
                 }
 

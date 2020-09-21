@@ -7,7 +7,7 @@ use LibreNMS\Util\Snmpsim;
 
 global $device;
 
-$install_dir = realpath(__DIR__ . '/..');
+$install_dir = realpath(__DIR__.'/..');
 chdir($install_dir);
 
 $options = getopt(
@@ -25,7 +25,7 @@ $options = getopt(
 );
 
 $init_modules = ['discovery', 'polling'];
-require $install_dir . '/includes/init.php';
+require $install_dir.'/includes/init.php';
 
 $debug = (isset($options['d']) || isset($options['debug']));
 $vdebug = $debug;
@@ -38,7 +38,7 @@ if (isset($options['snmpsim'])) {
 
 if (isset($options['h'])
     || isset($options['help'])
-    || ! (isset($options['o']) || isset($options['os']) || isset($options['m']) || isset($options['modules']))
+    || !(isset($options['o']) || isset($options['os']) || isset($options['m']) || isset($options['modules']))
 ) {
     echo "Script to update test data. Database data is saved in tests/data.
 
@@ -78,10 +78,10 @@ $full_os_name = $os_name;
 $variant = '';
 if (isset($options['v'])) {
     $variant = $options['v'];
-    $full_os_name = $os_name . '_' . $variant;
+    $full_os_name = $os_name.'_'.$variant;
 } elseif (isset($options['variant'])) {
     $variant = $options['variant'];
-    $full_os_name = $os_name . '_' . $variant;
+    $full_os_name = $os_name.'_'.$variant;
 }
 
 $os_list = [];
@@ -95,7 +95,7 @@ if ($os_name) {
 if (isset($options['f'])) {
     if (count($os_list) != 1) {
         echo "Failed to create test data, -f/--file option can be used with one os/variant combination.\n";
-        echo 'Multiple combinations (' . count($os_list) . ") found.\n";
+        echo 'Multiple combinations ('.count($os_list).") found.\n";
         exit(1);
     }
     $output_file = $options['f'];
@@ -107,7 +107,7 @@ $snmpsim->fork();
 $snmpsim_ip = $snmpsim->getIp();
 $snmpsim_port = $snmpsim->getPort();
 
-if (! $snmpsim->isRunning()) {
+if (!$snmpsim->isRunning()) {
     echo "Failed to start snmpsim, make sure it is installed, working, and there are no bad snmprec files.\n";
     echo "Run ./scripts/save-test-data.php --snmpsim to see the log output\n";
     exit(1);
@@ -126,7 +126,7 @@ try {
 
         \LibreNMS\Util\OS::updateCache(true); // Force update of OS Cache
         $tester = new ModuleTestHelper($modules, $target_os, $target_variant);
-        if (! $no_save && ! empty($output_file)) {
+        if (!$no_save && !empty($output_file)) {
             $tester->setJsonSavePath($output_file);
         }
         $test_data = $tester->generateTestData($snmpsim, $no_save);
@@ -136,5 +136,5 @@ try {
         }
     }
 } catch (InvalidModuleException $e) {
-    echo $e->getMessage() . PHP_EOL;
+    echo $e->getMessage().PHP_EOL;
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * mock.snmp.inc.php
+ * mock.snmp.inc.php.
  *
  * Mock functions from includes/snmp.inc.php to allow tests to run without real snmp
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2016 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -29,7 +30,7 @@ $snmpMockCache = [];
 
 /**
  * Cache the data from an snmprec file
- * in ./tests/snmpsim/
+ * in ./tests/snmpsim/.
  *
  * @param string $file the snmprec file name (excluding .snmprec)
  */
@@ -41,7 +42,7 @@ function cache_snmprec($file)
     }
     $snmpMockCache[$file] = [];
 
-    $data = file_get_contents(Config::get('install_dir') . "/tests/snmpsim/$file.snmprec");
+    $data = file_get_contents(Config::get('install_dir')."/tests/snmpsim/$file.snmprec");
     $line = strtok($data, "\r\n");
     while ($line !== false) {
         [$oid, $type, $data] = explode('|', $line, 3);
@@ -59,11 +60,13 @@ function cache_snmprec($file)
 }
 
 /**
- * Get all data of the specified $community from the snmprec cache
+ * Get all data of the specified $community from the snmprec cache.
  *
  * @param string $community snmp community to return
- * @return array array of the data containing: [$oid][$type, $data]
+ *
  * @throws Exception this $community is not cached
+ *
+ * @return array array of the data containing: [$oid][$type, $data]
  */
 function snmprec_get($community)
 {
@@ -79,12 +82,14 @@ function snmprec_get($community)
 }
 
 /**
- * Get an $oid from the specified $community
+ * Get an $oid from the specified $community.
  *
  * @param string $community the community to fetch data from
- * @param string $oid numeric oid of data to fetch
- * @return array array of the data containing: [$type, $data]
+ * @param string $oid       numeric oid of data to fetch
+ *
  * @throws Exception this $oid is not cached
+ *
+ * @return array array of the data containing: [$type, $data]
  */
 function snmprec_get_oid($community, $oid)
 {
@@ -100,13 +105,15 @@ function snmprec_get_oid($community, $oid)
 
 /**
  * Get the numeric oid of an oid
- * The leading dot is ommited by default to be compatible with snmpsim
+ * The leading dot is ommited by default to be compatible with snmpsim.
  *
- * @param string $oid the oid to tranlslate
- * @param string $mib mib to use
+ * @param string $oid    the oid to tranlslate
+ * @param string $mib    mib to use
  * @param string $mibdir mib dir to look for mib in
- * @return string the oid in numeric format (.1.3.4.5)
+ *
  * @throws Exception Could not translate the oid
+ *
+ * @return string the oid in numeric format (.1.3.4.5)
  */
 function snmp_translate_number($oid, $mib = null, $mibdir = null)
 {
@@ -139,7 +146,7 @@ function snmp_translate_number($oid, $mib = null, $mibdir = null)
     }
 
     $cmd = "snmptranslate -IR -On '$oid'";
-    $cmd .= ' -M ' . (isset($mibdir) ? Config::get('mib_dir') . ':' . Config::get('mib_dir') . "/$mibdir" : Config::get('mib_dir'));
+    $cmd .= ' -M '.(isset($mibdir) ? Config::get('mib_dir').':'.Config::get('mib_dir')."/$mibdir" : Config::get('mib_dir'));
     if (isset($mib) && $mib) {
         $cmd .= " -m $mib";
     }
@@ -147,7 +154,7 @@ function snmp_translate_number($oid, $mib = null, $mibdir = null)
     $number = shell_exec($cmd);
 
     if (empty($number)) {
-        throw new Exception('Could not translate oid: ' . $oid . PHP_EOL . 'Tried: ' . $cmd);
+        throw new Exception('Could not translate oid: '.$oid.PHP_EOL.'Tried: '.$cmd);
     }
 
     return trim($number, ". \n\r");
@@ -156,7 +163,7 @@ function snmp_translate_number($oid, $mib = null, $mibdir = null)
 function snmp_translate_type($oid, $mib = null, $mibdir = null)
 {
     $cmd = "snmptranslate -IR -Td $oid";
-    $cmd .= ' -M ' . (isset($mibdir) ? Config::get('mib_dir') . ':' . Config::get('mib_dir') . "/$mibdir" : Config::get('mib_dir'));
+    $cmd .= ' -M '.(isset($mibdir) ? Config::get('mib_dir').':'.Config::get('mib_dir')."/$mibdir" : Config::get('mib_dir'));
     if (isset($mib) && $mib) {
         $cmd .= " -m $mib";
     }
@@ -164,7 +171,7 @@ function snmp_translate_type($oid, $mib = null, $mibdir = null)
     $result = shell_exec($cmd);
 
     if (empty($result)) {
-        throw new Exception('Could not translate oid: ' . $oid . PHP_EOL . 'Tried: ' . $cmd);
+        throw new Exception('Could not translate oid: '.$oid.PHP_EOL.'Tried: '.$cmd);
     }
 
     if (Str::contains($result, 'OCTET STRING')) {
@@ -213,7 +220,7 @@ function snmp_get($device, $oid, $options = null, $mib = null, $mibdir = null)
 
         $result = $data[1];
         if ($data[0] == 6) {
-            $result = '.' . $data[1];
+            $result = '.'.$data[1];
         }
 
         d_echo("[SNMP] snmpget $community $oid ($num_oid): $result\n");
@@ -228,14 +235,14 @@ function snmp_get($device, $oid, $options = null, $mib = null, $mibdir = null)
 
 function snmp_get_multi_oid($device, $oids, $options = '-OUQn', $mib = null, $mibdir = null)
 {
-    if (! is_array($oids)) {
+    if (!is_array($oids)) {
         $oids = explode(' ', $oids);
     }
 
     $data = [];
     foreach ($oids as $index => $oid) {
         if (Str::contains($options, 'n')) {
-            $oid_name = '.' . snmp_translate_number($oid, $mib, $mibdir);
+            $oid_name = '.'.snmp_translate_number($oid, $mib, $mibdir);
             $val = snmp_get($device, $oid_name, $options, $mib, $mibdir);
         } elseif (Str::contains($options, 's') && Str::contains($oid, '::')) {
             $tmp = explode('::', $oid);
@@ -264,9 +271,9 @@ function snmp_walk($device, $oid, $options = null, $mib = null, $mibdir = null)
     foreach ($dev as $key => $data) {
         if (Str::startsWith($key, $num_oid)) {
             if ($data[0] == 6) {
-                $output .= '.' . $data[1] . PHP_EOL;
+                $output .= '.'.$data[1].PHP_EOL;
             } else {
-                $output .= $data[1] . PHP_EOL;
+                $output .= $data[1].PHP_EOL;
             }
         }
     }

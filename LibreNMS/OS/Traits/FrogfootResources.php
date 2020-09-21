@@ -1,6 +1,6 @@
 <?php
 /**
- * FrogfootResources.php
+ * FrogfootResources.php.
  *
  * A trait to add FROGFOOT-RESOURCES-MIB support to an OS
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -30,7 +31,7 @@ trait FrogfootResources
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */

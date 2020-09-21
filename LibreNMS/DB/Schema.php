@@ -1,6 +1,6 @@
 <?php
 /**
- * Schema.php
+ * Schema.php.
  *
  * Class for querying the schema
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -42,7 +43,7 @@ class Schema
     private $schema;
 
     /**
-     * Check the database to see if the migrations have all been run
+     * Check the database to see if the migrations have all been run.
      *
      * @return bool
      */
@@ -56,7 +57,7 @@ class Schema
     }
 
     /**
-     * Check for extra migrations and return them
+     * Check for extra migrations and return them.
      *
      * @return \Illuminate\Support\Collection
      */
@@ -70,7 +71,7 @@ class Schema
      */
     private static function getMigrationFiles()
     {
-        $migrations = collect(glob(base_path('database/migrations/') . '*.php'))
+        $migrations = collect(glob(base_path('database/migrations/').'*.php'))
             ->map(function ($migration_file) {
                 return basename($migration_file, '.php');
             });
@@ -87,9 +88,10 @@ class Schema
     }
 
     /**
-     * Get the primary key column(s) for a table
+     * Get the primary key column(s) for a table.
      *
      * @param string $table
+     *
      * @return string if a single column just the name is returned, otherwise the first column listed will be returned
      */
     public function getPrimaryKey($table)
@@ -102,8 +104,8 @@ class Schema
 
     public function getSchema()
     {
-        if (! isset($this->schema)) {
-            $file = Config::get('install_dir') . '/misc/db_schema.yaml';
+        if (!isset($this->schema)) {
+            $file = Config::get('install_dir').'/misc/db_schema.yaml';
             $this->schema = Yaml::parse(file_get_contents($file));
         }
 
@@ -121,9 +123,10 @@ class Schema
     }
 
     /**
-     * Return all columns for the given table
+     * Return all columns for the given table.
      *
      * @param $table
+     *
      * @return array
      */
     public function getColumns($table)
@@ -135,15 +138,16 @@ class Schema
 
     /**
      * Get all relationship paths.
-     * Caches the data after the first call as long as the schema hasn't changed
+     * Caches the data after the first call as long as the schema hasn't changed.
      *
      * @param string $base
+     *
      * @return mixed
      */
     public function getAllRelationshipPaths($base = 'devices')
     {
         $update_cache = true;
-        $cache_file = Config::get('install_dir') . "/cache/{$base}_relationships.cache";
+        $cache_file = Config::get('install_dir')."/cache/{$base}_relationships.cache";
         $db_version = Version::get()->database();
 
         if (is_file($cache_file)) {
@@ -164,7 +168,7 @@ class Schema
 
             $cache = [
                 'version' => $db_version,
-                $base => $paths,
+                $base     => $paths,
             ];
 
             if (is_writable($cache_file)) {
@@ -178,10 +182,11 @@ class Schema
     }
 
     /**
-     * Find the relationship path from $start to $target
+     * Find the relationship path from $start to $target.
      *
      * @param string $target
-     * @param string $start Default: devices
+     * @param string $start  Default: devices
+     *
      * @return array|false list of tables in path order, or false if no path is found
      */
     public function findRelationshipPath($target, $start = 'devices')
@@ -202,10 +207,10 @@ class Schema
     {
         $relationships = $this->getTableRelationships();
 
-        d_echo('Starting Tables: ' . json_encode($tables) . PHP_EOL);
-        if (! empty($history)) {
+        d_echo('Starting Tables: '.json_encode($tables).PHP_EOL);
+        if (!empty($history)) {
             $tables = array_diff($tables, $history);
-            d_echo('Filtered Tables: ' . json_encode($tables) . PHP_EOL);
+            d_echo('Filtered Tables: '.json_encode($tables).PHP_EOL);
         }
 
         foreach ($tables as $table) {
@@ -217,9 +222,9 @@ class Schema
             }
 
             $table_relations = $relationships[$table] ?? [];
-            d_echo("Searching $table: " . json_encode($table_relations) . PHP_EOL);
+            d_echo("Searching $table: ".json_encode($table_relations).PHP_EOL);
 
-            if (! empty($table_relations)) {
+            if (!empty($table_relations)) {
                 if (in_array($target, $relationships[$table])) {
                     d_echo("Found in $table\n");
 
@@ -235,7 +240,7 @@ class Schema
                     return in_array($table, $related);
                 }));
 
-                d_echo("Dead end at $table, searching for relationships " . json_encode($relations) . PHP_EOL);
+                d_echo("Dead end at $table, searching for relationships ".json_encode($relations).PHP_EOL);
                 $recurse = $this->findPathRecursive($relations, $target, array_merge($history, $tables));
                 if ($recurse) {
                     return array_merge($recurse, [$table]);
@@ -248,7 +253,7 @@ class Schema
 
     public function getTableRelationships()
     {
-        if (! isset($this->relationships)) {
+        if (!isset($this->relationships)) {
             $schema = $this->getSchema();
 
             $relations = array_column(array_map(function ($table, $data) {
@@ -287,7 +292,7 @@ class Schema
             // try to guess assuming key_id = keys table
             $guessed_table = substr($key, 0, -3);
 
-            if (! Str::endsWith($guessed_table, 's')) {
+            if (!Str::endsWith($guessed_table, 's')) {
                 if (Str::endsWith($guessed_table, 'x')) {
                     $guessed_table .= 'es';
                 } else {

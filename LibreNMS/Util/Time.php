@@ -1,6 +1,6 @@
 <?php
 /**
- * Time.php
+ * Time.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -29,20 +30,20 @@ class Time
     public static function legacyTimeSpecToSecs($description)
     {
         $conversion = [
-            'now' => 0,
-            'onehour' => 3600,
-            'fourhour' => 14400,
-            'sixhour' => 21600,
+            'now'        => 0,
+            'onehour'    => 3600,
+            'fourhour'   => 14400,
+            'sixhour'    => 21600,
             'twelvehour' => 43200,
-            'day' => 86400,
-            'twoday' => 172800,
-            'week' => 604800,
-            'twoweek' => 1209600,
-            'month' => 2678400,
-            'twomonth' => 5356800,
+            'day'        => 86400,
+            'twoday'     => 172800,
+            'week'       => 604800,
+            'twoweek'    => 1209600,
+            'month'      => 2678400,
+            'twomonth'   => 5356800,
             'threemonth' => 8035200,
-            'year' => 31536000,
-            'twoyear' => 63072000,
+            'year'       => 31536000,
+            'twoyear'    => 63072000,
         ];
 
         return isset($conversion[$description]) ? $conversion[$description] : 0;
@@ -52,9 +53,9 @@ class Time
     {
         $result = '';
         $data = [
-            'years' => 31536000,
-            'days' => 86400,
-            'hours' => 3600,
+            'years'   => 31536000,
+            'days'    => 86400,
+            'hours'   => 3600,
             'minutes' => 60,
             'seconds' => 1,
         ];
@@ -69,11 +70,11 @@ class Time
                 }
 
                 if ($format != 'short' && $diff > 1) {
-                    $result .= ' ' . $k;
+                    $result .= ' '.$k;
                 }
 
                 if ($format != 'short' && $diff < 2) {
-                    $result .= ' ' . substr($k, 0, -1);
+                    $result .= ' '.substr($k, 0, -1);
                 }
 
                 $interval -= $v * $diff;
@@ -95,9 +96,9 @@ class Time
             $d = floor($s / 86400);
             $s -= $d * 86400;
             if ($d == 1) {
-                $ret[] = $d . ' day';
+                $ret[] = $d.' day';
             } else {
-                $ret[] = $d . ' days';
+                $ret[] = $d.' days';
             }
         }
 
@@ -105,9 +106,9 @@ class Time
             $h = floor($s / 3600);
             $s -= $h * 3600;
             if ($h == 1) {
-                $ret[] = $h . ' hour';
+                $ret[] = $h.' hour';
             } else {
-                $ret[] = $h . ' hours';
+                $ret[] = $h.' hours';
             }
         }
 
@@ -115,17 +116,17 @@ class Time
             $m = floor($s / 60);
             $s -= $m * 60;
             if ($m == 1) {
-                $ret[] = $m . ' minute';
+                $ret[] = $m.' minute';
             } else {
-                $ret[] = $m . ' minutes';
+                $ret[] = $m.' minutes';
             }
         }
 
         if ($s > 0) {
             if ($s == 1) {
-                $ret[] = $s . ' second';
+                $ret[] = $s.' second';
             } else {
-                $ret[] = $s . ' seconds';
+                $ret[] = $s.' seconds';
             }
         }
 

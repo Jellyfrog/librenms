@@ -1,6 +1,6 @@
 <?php
 /**
- * Eloquent.php
+ * Eloquent.php.
  *
  * Class for managing Eloquent outside of Laravel
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -38,15 +39,15 @@ class Eloquent
     public static function boot()
     {
         // boot Eloquent outside of Laravel
-        if (! Laravel::isBooted() && is_null(self::$capsule)) {
-            $install_dir = realpath(__DIR__ . '/../../');
+        if (!Laravel::isBooted() && is_null(self::$capsule)) {
+            $install_dir = realpath(__DIR__.'/../../');
 
             Dotenv::create($install_dir)->load();
 
-            $db_config = include $install_dir . '/config/database.php';
+            $db_config = include $install_dir.'/config/database.php';
             $settings = $db_config['connections'][$db_config['default']];
 
-            self::$capsule = new Capsule;
+            self::$capsule = new Capsule();
             self::$capsule->addConnection($settings);
             self::$capsule->setEventDispatcher(new Dispatcher());
             self::$capsule->setAsGlobal();
@@ -71,7 +72,8 @@ class Eloquent
     }
 
     /**
-     * Set the strict mode for the current connection (will not persist)
+     * Set the strict mode for the current connection (will not persist).
+     *
      * @param bool $strict
      */
     public static function setStrictMode($strict = true)
@@ -90,7 +92,7 @@ class Eloquent
         try {
             $conn = self::DB($name);
             if ($conn) {
-                return ! is_null($conn->getPdo());
+                return !is_null($conn->getPdo());
             }
         } catch (\PDOException $e) {
             return false;
@@ -103,6 +105,7 @@ class Eloquent
      * Access the Database Manager for Fluent style queries. Like the Laravel DB facade.
      *
      * @param string $name
+     *
      * @return \Illuminate\Database\Connection
      */
     public static function DB($name = null)
@@ -129,18 +132,18 @@ class Eloquent
     public static function setConnection($name, $db_host = null, $db_user = '', $db_pass = '', $db_name = '', $db_port = null, $db_socket = null)
     {
         \Config::set("database.connections.$name", [
-            'driver' => 'mysql',
-            'host' => $db_host,
-            'port' => $db_port,
-            'database' => $db_name,
-            'username' => $db_user,
-            'password' => $db_pass,
+            'driver'      => 'mysql',
+            'host'        => $db_host,
+            'port'        => $db_port,
+            'database'    => $db_name,
+            'username'    => $db_user,
+            'password'    => $db_pass,
             'unix_socket' => $db_socket,
-            'charset' => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix' => '',
-            'strict' => true,
-            'engine' => null,
+            'charset'     => 'utf8',
+            'collation'   => 'utf8_unicode_ci',
+            'prefix'      => '',
+            'strict'      => true,
+            'engine'      => null,
         ]);
         \Config::set('database.default', $name);
     }

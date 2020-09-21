@@ -1,6 +1,6 @@
 <?php
 /**
- * IPv4.php
+ * IPv4.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -30,7 +31,9 @@ class IPv4 extends IP
 {
     /**
      * IPv4 constructor.
+     *
      * @param $ipv4
+     *
      * @throws InvalidIpException
      */
     public function __construct($ipv4)
@@ -38,15 +41,17 @@ class IPv4 extends IP
         $this->host_bits = 32;
         [$this->ip, $this->cidr] = $this->extractCidr($ipv4);
 
-        if (! self::isValid($this->ip)) {
+        if (!self::isValid($this->ip)) {
             throw new InvalidIpException("$ipv4 is not a valid ipv4 address");
         }
     }
 
     /**
      * Check if the supplied IP is valid.
+     *
      * @param string $ipv4
-     * @param bool $exclude_reserved Exclude reserved IP ranges.
+     * @param bool   $exclude_reserved Exclude reserved IP ranges.
+     *
      * @return bool
      */
     public static function isValid($ipv4, $exclude_reserved = false)
@@ -60,8 +65,10 @@ class IPv4 extends IP
     }
 
     /**
-     * Convert an IPv4 network mask to a bit mask.  For example: 255.255.255.0 -> 24
+     * Convert an IPv4 network mask to a bit mask.  For example: 255.255.255.0 -> 24.
+     *
      * @param string $netmask
+     *
      * @return int
      */
     public static function netmask2cidr($netmask)
@@ -73,7 +80,8 @@ class IPv4 extends IP
     }
 
     /**
-     * Returns the netmask of this IP address. For example: 255.255.255.0
+     * Returns the netmask of this IP address. For example: 255.255.255.0.
+     *
      * @return string
      */
     public function getNetmask()
@@ -83,6 +91,7 @@ class IPv4 extends IP
 
     /**
      * Convert an IPv4 bit mask to a long. Generally used with long2ip() or bitwise operations.
+     *
      * @return int
      */
     private function cidr2long($cidr)
@@ -92,13 +101,15 @@ class IPv4 extends IP
 
     /**
      * Check if this IP address is contained inside the network.
+     *
      * @param string $network should be in cidr format.
+     *
      * @return mixed
      */
     public function inNetwork($network)
     {
         [$net, $cidr] = $this->extractCidr($network);
-        if (! self::isValid($net)) {
+        if (!self::isValid($net)) {
             return false;
         }
 
@@ -108,8 +119,10 @@ class IPv4 extends IP
     }
 
     /**
-     * Get the network address of this IP
+     * Get the network address of this IP.
+     *
      * @param int $cidr if not given will use the cidr stored with this IP
+     *
      * @return string
      */
     public function getNetworkAddress($cidr = null)
@@ -122,7 +135,7 @@ class IPv4 extends IP
     }
 
     /**
-     * Convert this IP to an snmp index hex encoded
+     * Convert this IP to an snmp index hex encoded.
      *
      * @return string
      */

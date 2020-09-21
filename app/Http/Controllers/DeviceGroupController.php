@@ -31,7 +31,7 @@ class DeviceGroupController extends Controller
         })->get();
 
         return view('device-group.index', [
-            'device_groups' => DeviceGroup::orderBy('name')->withCount('devices')->get(),
+            'device_groups'     => DeviceGroup::orderBy('name')->withCount('devices')->get(),
             'ungrouped_devices' => $ungrouped_devices,
         ]);
     }
@@ -45,7 +45,7 @@ class DeviceGroupController extends Controller
     {
         return view('device-group.create', [
             'device_group' => new DeviceGroup(),
-            'filters' => json_encode(new QueryBuilderFilter('group')),
+            'filters'      => json_encode(new QueryBuilderFilter('group')),
         ]);
     }
 
@@ -53,16 +53,17 @@ class DeviceGroupController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|string|unique:device_groups',
-            'type' => 'required|in:dynamic,static',
-            'devices' => 'array|required_if:type,static',
+            'name'      => 'required|string|unique:device_groups',
+            'type'      => 'required|in:dynamic,static',
+            'devices'   => 'array|required_if:type,static',
             'devices.*' => 'integer',
-            'rules' => 'json|required_if:type,dynamic',
+            'rules'     => 'json|required_if:type,dynamic',
         ]);
 
         $deviceGroup = DeviceGroup::make($request->only(['name', 'desc', 'type']));
@@ -82,17 +83,19 @@ class DeviceGroupController extends Controller
      * Display the specified resource.
      *
      * @param \App\Models\DeviceGroup $deviceGroup
+     *
      * @return \Illuminate\Http\Response
      */
     public function show(DeviceGroup $deviceGroup)
     {
-        return redirect(url('/devices/group=' . $deviceGroup->id));
+        return redirect(url('/devices/group='.$deviceGroup->id));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param \App\Models\DeviceGroup $deviceGroup
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(DeviceGroup $deviceGroup)
@@ -105,7 +108,7 @@ class DeviceGroupController extends Controller
 
         return view('device-group.edit', [
             'device_group' => $deviceGroup,
-            'filters' => json_encode(new QueryBuilderFilter('group')),
+            'filters'      => json_encode(new QueryBuilderFilter('group')),
         ]);
     }
 
@@ -113,7 +116,8 @@ class DeviceGroupController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\Models\DeviceGroup $deviceGroup
+     * @param \App\Models\DeviceGroup  $deviceGroup
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, DeviceGroup $deviceGroup)
@@ -126,10 +130,10 @@ class DeviceGroupController extends Controller
                     $query->where('id', '!=', $deviceGroup->id);
                 }),
             ],
-            'type' => 'required|in:dynamic,static',
-            'devices' => 'array|required_if:type,static',
+            'type'      => 'required|in:dynamic,static',
+            'devices'   => 'array|required_if:type,static',
             'devices.*' => 'integer',
-            'rules' => 'json|required_if:type,dynamic',
+            'rules'     => 'json|required_if:type,dynamic',
         ]);
 
         $deviceGroup->fill($request->only(['name', 'desc', 'type']));
@@ -157,7 +161,7 @@ class DeviceGroupController extends Controller
                 }
             } catch (\Illuminate\Database\QueryException $e) {
                 return redirect()->back()->withInput()->withErrors([
-                    'rules' => __('Rules resulted in invalid query: ') . $e->getMessage(),
+                    'rules' => __('Rules resulted in invalid query: ').$e->getMessage(),
                 ]);
             }
         } else {
@@ -171,6 +175,7 @@ class DeviceGroupController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Models\DeviceGroup $deviceGroup
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy(DeviceGroup $deviceGroup)

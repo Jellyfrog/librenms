@@ -1,6 +1,6 @@
 <?php
 /**
- * JnxBgpM2Established.php
+ * JnxBgpM2Established.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 KanREN, Inc.
  * @author     Neil Kahle <nkahle@kanren.net>
  */
@@ -37,7 +38,8 @@ class JnxBgpM2Established implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)
@@ -47,8 +49,8 @@ class JnxBgpM2Established implements SnmptrapHandler
 
         $bgpPeer = $device->bgppeers()->where('bgpPeerIdentifier', $peerAddr)->first();
 
-        if (! $bgpPeer) {
-            Log::error('Unknown bgp peer handling bgpEstablished trap: ' . $peerAddr);
+        if (!$bgpPeer) {
+            Log::error('Unknown bgp peer handling bgpEstablished trap: '.$peerAddr);
 
             return;
         }

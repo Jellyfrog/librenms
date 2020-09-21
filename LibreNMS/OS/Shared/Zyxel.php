@@ -1,6 +1,6 @@
 <?php
 /**
- * Zyxel.php
+ * Zyxel.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  * @copyright  2020 Tony Murray

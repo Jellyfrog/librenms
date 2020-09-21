@@ -6,11 +6,11 @@ use LibreNMS\Exceptions\InvalidModuleException;
 use LibreNMS\Util\ModuleTestHelper;
 use LibreNMS\Util\Snmpsim;
 
-$install_dir = realpath(__DIR__ . '/..');
+$install_dir = realpath(__DIR__.'/..');
 chdir($install_dir);
 
 $init_modules = ['discovery', 'polling'];
-require $install_dir . '/includes/init.php';
+require $install_dir.'/includes/init.php';
 
 $options = getopt(
     'h:m:no:v:f:d',
@@ -43,7 +43,7 @@ if (isset($options['h'])) {
 if (isset($hostname)) {
     if (is_numeric($hostname)) {
         $device = device_by_id_cache($hostname);
-    } elseif (! empty($hostname)) {
+    } elseif (!empty($hostname)) {
         $device = device_by_name($hostname);
     }
 
@@ -125,5 +125,5 @@ try {
     \LibreNMS\Util\OS::updateCache(true); // Force update of OS Cache
     $capture->captureFromDevice($device['device_id'], true, $prefer_new_snmprec);
 } catch (InvalidModuleException $e) {
-    echo $e->getMessage() . PHP_EOL;
+    echo $e->getMessage().PHP_EOL;
 }

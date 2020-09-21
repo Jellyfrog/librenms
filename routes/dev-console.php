@@ -9,6 +9,7 @@ Artisan::command('release:tag
                             {--pr= : The last PR to include in this release if not master branch}', function () {
     $tag = $this->argument('tag');
     $this->info("Creating release $tag.....");
+
     try {
         $gh = new GitHub(
             $tag,

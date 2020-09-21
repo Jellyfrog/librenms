@@ -1,6 +1,6 @@
 <?php
 /**
- * Validate.php
+ * Validate.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -27,8 +28,10 @@ namespace LibreNMS\Util;
 class Validate
 {
     /**
-     * Checks if the give string is a valid hostname
+     * Checks if the give string is a valid hostname.
+     *
      * @param string $hostname
+     *
      * @return bool
      */
     public static function hostname($hostname)

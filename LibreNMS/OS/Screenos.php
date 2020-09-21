@@ -46,8 +46,8 @@ class Screenos extends \LibreNMS\OS implements OSPolling
 
         $fields = [
             'allocate' => $sessalloc,
-            'max' => $sessmax,
-            'failed' => $sessfailed,
+            'max'      => $sessmax,
+            'failed'   => $sessfailed,
         ];
 
         $tags = compact('rrd_def');

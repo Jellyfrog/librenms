@@ -1,6 +1,6 @@
 <?php
 /**
- * RuckusAssocTrap.php
+ * RuckusAssocTrap.php.
  *
  * -Description-
  *
@@ -21,6 +21,7 @@
  * Contains the clients MAC addr.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net
  */
@@ -39,7 +40,8 @@ class RuckusAssocTrap implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)

@@ -1,6 +1,6 @@
 <?php
 /**
- * BaseValidation.php
+ * BaseValidation.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -42,7 +43,7 @@ abstract class BaseValidation implements ValidationGroup
     }
 
     /**
-     * Returns true if this group has been run
+     * Returns true if this group has been run.
      *
      * @return bool
      */
@@ -52,7 +53,7 @@ abstract class BaseValidation implements ValidationGroup
     }
 
     /**
-     * Mark this group as completed
+     * Mark this group as completed.
      *
      * @return void
      */

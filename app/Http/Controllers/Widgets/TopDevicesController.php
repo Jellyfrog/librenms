@@ -1,6 +1,6 @@
 <?php
 /**
- * TopDevices.php
+ * TopDevices.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -44,12 +45,12 @@ class TopDevicesController extends WidgetController
 {
     protected $title = 'Top Devices';
     protected $defaults = [
-        'title' => null,
-        'top_query' => 'traffic',
-        'sort_order' => 'desc',
-        'device_count' => 5,
+        'title'         => null,
+        'top_query'     => 'traffic',
+        'sort_order'    => 'desc',
+        'device_count'  => 5,
         'time_interval' => 15,
-        'device_group' => null,
+        'device_group'  => null,
     ];
 
     public function title()
@@ -61,6 +62,7 @@ class TopDevicesController extends WidgetController
 
     /**
      * @param Request $request
+     *
      * @return View
      */
     public function getView(Request $request)
@@ -104,20 +106,22 @@ class TopDevicesController extends WidgetController
 
     /**
      * @param array|string $headers
-     * @param Collection $rows
+     * @param Collection   $rows
+     *
      * @return array
      */
     private function formatData($headers, $rows)
     {
         return [
             'headers' => (array) $headers,
-            'rows' => $rows,
+            'rows'    => $rows,
         ];
     }
 
     /**
      * @param Builder $query
-     * @param string $left_table
+     * @param string  $left_table
+     *
      * @return Builder
      */
     private function withDeviceQuery($query, $left_table)
@@ -139,6 +143,7 @@ class TopDevicesController extends WidgetController
 
     /**
      * @param Builder $query
+     *
      * @return Builder
      */
     private function deviceQuery()
@@ -156,7 +161,8 @@ class TopDevicesController extends WidgetController
     /**
      * @param Device $device
      * @param string $graph_type
-     * @param array $graph_params
+     * @param array  $graph_params
+     *
      * @return array
      */
     private function standardRow($device, $graph_type, $graph_params = [])
@@ -191,7 +197,7 @@ class TopDevicesController extends WidgetController
             }, function ($query) {
                 $query->has('device');
             })
-            ->orderByRaw('SUM(ifInOctets_rate + ifOutOctets_rate) ' . $sort)
+            ->orderByRaw('SUM(ifInOctets_rate + ifOutOctets_rate) '.$sort)
             ->limit($settings['device_count']);
 
         $results = $query->get()->map(function ($port) {
@@ -234,8 +240,8 @@ class TopDevicesController extends WidgetController
         $settings = $this->getSettings();
 
         /** @var Builder $query */
-        $query = $this->withDeviceQuery(Processor::hasAccess(Auth::user()), (new Processor)->getTable())
-            ->orderByRaw('AVG(`processor_usage`) ' . $sort)
+        $query = $this->withDeviceQuery(Processor::hasAccess(Auth::user()), (new Processor())->getTable())
+            ->orderByRaw('AVG(`processor_usage`) '.$sort)
             ->limit($settings['device_count']);
 
         $results = $query->get()->map(function ($port) {
@@ -250,7 +256,7 @@ class TopDevicesController extends WidgetController
         $settings = $this->getSettings();
 
         /** @var Builder $query */
-        $query = $this->withDeviceQuery(Mempool::hasAccess(Auth::user()), (new Mempool)->getTable())
+        $query = $this->withDeviceQuery(Mempool::hasAccess(Auth::user()), (new Mempool())->getTable())
             ->orderBy('mempool_perc', $sort)
             ->limit($settings['device_count']);
 
@@ -297,14 +303,14 @@ class TopDevicesController extends WidgetController
 
             $graph_array = [
                 'height' => 100,
-                'width' => 210,
-                'to' => Carbon::now()->timestamp,
-                'from' => Carbon::now()->subDay()->timestamp,
-                'id' => $storage->storage_id,
-                'type' => 'device_storage',
+                'width'  => 210,
+                'to'     => Carbon::now()->timestamp,
+                'from'   => Carbon::now()->subDay()->timestamp,
+                'id'     => $storage->storage_id,
+                'type'   => 'device_storage',
                 'legend' => 'no',
             ];
-            $overlib_content = Url::overlibContent($graph_array, $device->displayName() . ' - ' . $storage->storage_descr);
+            $overlib_content = Url::overlibContent($graph_array, $device->displayName().' - '.$storage->storage_descr);
 
             $link_array = $graph_array;
             $link_array['page'] = 'graphs';
@@ -319,7 +325,7 @@ class TopDevicesController extends WidgetController
                 StringHelpers::shortenText($storage->storage_descr, 50),
                 Url::overlibLink(
                     $link,
-                    Html::percentageBar(150, 20, $percent, null, 'ffffff', $background['left'], $percent . '%', 'ffffff', $background['right']),
+                    Html::percentageBar(150, 20, $percent, null, 'ffffff', $background['left'], $percent.'%', 'ffffff', $background['right']),
                     $overlib_content
                 ),
             ];

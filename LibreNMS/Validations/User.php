@@ -1,6 +1,6 @@
 <?php
 /**
- * User.php
+ * User.php.
  *
  * Check that user is set properly and we are running as the correct user.  Check that user is the owner of install_dir.
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -35,7 +36,7 @@ class User extends BaseValidation
 {
     /**
      * Validate this module.
-     * To return ValidationResults, call ok, warn, fail, or result methods on the $validator
+     * To return ValidationResults, call ok, warn, fail, or result methods on the $validator.
      *
      * @param Validator $validator
      */
@@ -46,12 +47,12 @@ class User extends BaseValidation
         $lnms_username = \config('librenms.user');
         $lnms_groupname = \config('librenms.group');
 
-        if (! ($username === 'root' || $username === $lnms_username)) {
+        if (!($username === 'root' || $username === $lnms_username)) {
             if (isCli()) {
                 $validator->fail("You need to run this script as $lnms_username or root");
             } elseif (function_exists('posix_getgrnam')) {
                 $lnms_group = posix_getgrnam($lnms_groupname);
-                if (! in_array($username, $lnms_group['members'])) {
+                if (!in_array($username, $lnms_group['members'])) {
                     $validator->fail(
                         "Your web server or php-fpm is not running as user '$lnms_username' or in the group '$lnms_groupname''",
                         "usermod -a -G $lnms_groupname $username"
@@ -66,7 +67,7 @@ class User extends BaseValidation
         }
 
         // if no git, then we probably have different permissions by design
-        if (! Git::repoPresent()) {
+        if (!Git::repoPresent()) {
             return;
         }
 
@@ -84,7 +85,7 @@ class User extends BaseValidation
             ];
 
             $find_result = rtrim(`find $dir \! -user $lnms_username -o \! -group $lnms_groupname 2> /dev/null`);
-            if (! empty($find_result)) {
+            if (!empty($find_result)) {
                 // Ignore files created by the webserver
                 $ignore_files = [
                     "$log_dir/error_log",
@@ -105,9 +106,9 @@ class User extends BaseValidation
                     return true;
                 });
 
-                if (! empty($files)) {
+                if (!empty($files)) {
                     $result = ValidationResult::fail(
-                        "We have found some files that are owned by a different user than $lnms_username, this " .
+                        "We have found some files that are owned by a different user than $lnms_username, this ".
                         'will stop you updating automatically and / or rrd files being updated causing graphs to fail.'
                     )
                         ->setFix($fix)

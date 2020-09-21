@@ -12,7 +12,7 @@ class CliServiceProvider extends ArtisanServiceProvider
         // Restrict LibreNMS CLI commands
         if (defined('LIBRENMS_CLI') && $this->app->environment() == 'production') {
             $this->commands = array_intersect_key($this->commands, [
-                'Migrate' => true,
+                'Migrate'        => true,
                 'MigrateInstall' => true,
             ]);
 

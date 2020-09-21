@@ -1,6 +1,6 @@
 <?php
 /**
- * DistributedPoller.php
+ * DistributedPoller.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -26,7 +27,7 @@
  * Created by IntelliJ IDEA.
  * User: murrant
  * Date: 10/8/17
- * Time: 2:16 AM
+ * Time: 2:16 AM.
  */
 
 namespace LibreNMS\Validations;
@@ -40,25 +41,25 @@ class DistributedPoller extends BaseValidation
 
     /**
      * Validate this module.
-     * To return ValidationResults, call ok, warn, fail, or result methods on the $validator
+     * To return ValidationResults, call ok, warn, fail, or result methods on the $validator.
      *
      * @param Validator $validator
      */
     public function validate(Validator $validator)
     {
-        if (! Config::get('distributed_poller')) {
+        if (!Config::get('distributed_poller')) {
             $validator->fail('You have not enabled distributed_poller');
 
             return;
         }
 
-        if (! Config::get('distributed_poller_memcached_host')) {
+        if (!Config::get('distributed_poller_memcached_host')) {
             $validator->fail('You have not configured $config[\'distributed_poller_memcached_host\']');
-        } elseif (! Config::get('distributed_poller_memcached_port')) {
+        } elseif (!Config::get('distributed_poller_memcached_port')) {
             $validator->fail('You have not configured $config[\'distributed_poller_memcached_port\']');
         } else {
             $connection = @fsockopen(Config::get('distributed_poller_memcached_host'), Config::get('distributed_poller_memcached_port'));
-            if (! is_resource($connection)) {
+            if (!is_resource($connection)) {
                 $validator->fail('We could not get memcached stats, it is possible that we cannot connect to your memcached server, please check');
             } else {
                 fclose($connection);
@@ -66,9 +67,9 @@ class DistributedPoller extends BaseValidation
             }
         }
 
-        if (! Config::get('rrdcached')) {
+        if (!Config::get('rrdcached')) {
             $validator->fail('You have not configured $config[\'rrdcached\']');
-        } elseif (! is_dir(Config::get('rrd_dir'))) {
+        } elseif (!is_dir(Config::get('rrd_dir'))) {
             $validator->fail('You have not configured $config[\'rrd_dir\']');
         } else {
             Rrd::checkRrdcached($validator);

@@ -1,6 +1,6 @@
 <?php
 /**
- * BaseApi.php
+ * BaseApi.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -36,7 +37,7 @@ class BaseApi
         if (is_null($this->client)) {
             $this->client = new Client([
                 'base_uri' => $this->base_uri,
-                'timeout' => 2,
+                'timeout'  => 2,
             ]);
         }
 

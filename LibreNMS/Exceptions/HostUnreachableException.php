@@ -1,6 +1,6 @@
 <?php
 /**
- * HostUnreachableException.php
+ * HostUnreachableException.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2016 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -30,7 +31,7 @@ class HostUnreachableException extends \Exception
 
     public function __toString()
     {
-        $string = __CLASS__ . ": [{$this->code}]: {$this->message}\n";
+        $string = __CLASS__.": [{$this->code}]: {$this->message}\n";
         foreach ($this->reasons as $reason) {
             $string .= "  $reason\n";
         }
@@ -39,7 +40,8 @@ class HostUnreachableException extends \Exception
     }
 
     /**
-     * Add additional reasons
+     * Add additional reasons.
+     *
      * @param $message
      */
     public function addReason($message)
@@ -48,7 +50,8 @@ class HostUnreachableException extends \Exception
     }
 
     /**
-     * Get the reasons
+     * Get the reasons.
+     *
      * @return array
      */
     public function getReasons()

@@ -1,6 +1,6 @@
 <?php
 /**
- * Clean.php
+ * Clean.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -35,6 +36,7 @@ class Clean
      * Does not make the string safe for javascript or sql!
      *
      * @param string $file
+     *
      * @return string|string[]|null
      */
     public static function fileName($file)
@@ -43,9 +45,10 @@ class Clean
     }
 
     /**
-     * Sanitize string to only contain alpha, numeric, dashes, and underscores
+     * Sanitize string to only contain alpha, numeric, dashes, and underscores.
      *
      * @param string $string
+     *
      * @return string
      */
     public static function alphaDash($string)
@@ -54,9 +57,10 @@ class Clean
     }
 
     /**
-     * Sanitize string to only contain alpha, numeric, dashes, underscores, and spaces
+     * Sanitize string to only contain alpha, numeric, dashes, underscores, and spaces.
      *
      * @param string $string
+     *
      * @return string
      */
     public static function alphaDashSpace($string)
@@ -66,10 +70,11 @@ class Clean
 
     /**
      * Clean a string for display in an html page.
-     * For use in non-blade pages
+     * For use in non-blade pages.
      *
      * @param $value
      * @param array $purifier_config (key, value pair)
+     *
      * @return string
      */
     public static function html($value, $purifier_config = [])
@@ -84,7 +89,7 @@ class Clean
             $value = htmlentities($value);
         }
 
-        if (! isset($purifier)) {
+        if (!isset($purifier)) {
             // initialize HTML Purifier here since this is the only user
             $p_config = HTMLPurifier_Config::createDefault();
             $p_config->set('Cache.SerializerPath', Config::get('temp_dir', '/tmp'));

@@ -1,6 +1,6 @@
 <?php
 /**
- * SelectController.php
+ * SelectController.php.
  *
  * Controller class for select2 ajax controllers.
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -35,15 +36,16 @@ abstract class SelectController extends PaginatedAjaxController
     {
         return [
             'limit' => 'int',
-            'page' => 'int',
-            'term' => 'nullable|string',
+            'page'  => 'int',
+            'term'  => 'nullable|string',
         ];
     }
 
     /**
-     * The default method called by the route handler
+     * The default method called by the route handler.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function __invoke(Request $request)
@@ -59,12 +61,13 @@ abstract class SelectController extends PaginatedAjaxController
 
     /**
      * @param Paginator $paginator
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     protected function formatResponse($paginator)
     {
         return response()->json([
-            'results' => collect($paginator->items())->map([$this, 'formatItem']),
+            'results'    => collect($paginator->items())->map([$this, 'formatItem']),
             'pagination' => ['more' => $paginator->hasMorePages()],
         ]);
     }
@@ -76,6 +79,7 @@ abstract class SelectController extends PaginatedAjaxController
      * If only one value is in the model attributes, that is the id and text.
      *
      * @param Model $model
+     *
      * @return array
      */
     public function formatItem($model)
@@ -83,7 +87,7 @@ abstract class SelectController extends PaginatedAjaxController
         $attributes = collect($model->getAttributes());
 
         return [
-            'id' => $attributes->count() == 1 ? $attributes->first() : $model->getKey(),
+            'id'   => $attributes->count() == 1 ? $attributes->first() : $model->getKey(),
             'text' => $attributes->forget($model->getKeyName())->first(),
         ];
     }

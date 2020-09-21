@@ -1,6 +1,6 @@
 <?php
 /**
- * Config.php
+ * Config.php.
  *
  * Config convenience class to access and set config variables.
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -44,7 +45,7 @@ class Config
     public static function load()
     {
         // don't reload the config if it is already loaded, reload() should be used for that
-        if (! is_null(self::$config)) {
+        if (!is_null(self::$config)) {
             return self::$config;
         }
 
@@ -64,7 +65,8 @@ class Config
     }
 
     /**
-     * Reload the config from files/db
+     * Reload the config from files/db.
+     *
      * @return mixed
      */
     public static function reload()
@@ -75,7 +77,7 @@ class Config
     }
 
     /**
-     * Get the config setting definitions
+     * Get the config setting definitions.
      *
      * @return array
      */
@@ -103,7 +105,8 @@ class Config
     }
 
     /**
-     * Load the user config from config.php
+     * Load the user config from config.php.
+     *
      * @param array $config (this should be self::$config)
      */
     private static function loadUserConfigFile(&$config)
@@ -113,10 +116,11 @@ class Config
     }
 
     /**
-     * Get a config value, if non existent null (or default if set) will be returned
+     * Get a config value, if non existent null (or default if set) will be returned.
      *
-     * @param string $key period separated config variable name
-     * @param mixed $default optional value to return if the setting is not set
+     * @param string $key     period separated config variable name
+     * @param mixed  $default optional value to return if the setting is not set
+     *
      * @return mixed
      */
     public static function get($key, $default = null)
@@ -125,7 +129,7 @@ class Config
             return self::$config[$key];
         }
 
-        if (! Str::contains($key, '.')) {
+        if (!Str::contains($key, '.')) {
             return $default;
         }
 
@@ -134,7 +138,7 @@ class Config
 
     /**
      * Unset a config setting
-     * or multiple
+     * or multiple.
      *
      * @param string|array $key
      */
@@ -148,10 +152,11 @@ class Config
      * fall back to the global config setting prefixed by $global_prefix
      * The key must be the same for the global setting and the device setting.
      *
-     * @param array $device Device array
-     * @param string $key Name of setting to fetch
+     * @param array  $device        Device array
+     * @param string $key           Name of setting to fetch
      * @param string $global_prefix specify where the global setting lives in the global config
-     * @param mixed $default will be returned if the setting is not set on the device or globally
+     * @param mixed  $default       will be returned if the setting is not set on the device or globally
+     *
      * @return mixed
      */
     public static function getDeviceSetting($device, $key, $global_prefix = null, $default = null)
@@ -168,11 +173,12 @@ class Config
     }
 
     /**
-     * Get a setting from the $config['os'] array using the os of the given device
+     * Get a setting from the $config['os'] array using the os of the given device.
      *
-     * @param string $os The os name
-     * @param string $key period separated config variable name
-     * @param mixed $default optional value to return if the setting is not set
+     * @param string $os      The os name
+     * @param string $key     period separated config variable name
+     * @param mixed  $default optional value to return if the setting is not set
+     *
      * @return mixed
      */
     public static function getOsSetting($os, $key, $default = null)
@@ -196,24 +202,25 @@ class Config
     /**
      * Get the merged array from the global and os settings for the specified key.
      * Removes any duplicates.
-     * When the arrays have keys, os settings take precedence over global settings
+     * When the arrays have keys, os settings take precedence over global settings.
      *
-     * @param string $os The os name
-     * @param string $key period separated config variable name
-     * @param array $default optional array to return if the setting is not set
+     * @param string $os      The os name
+     * @param string $key     period separated config variable name
+     * @param array  $default optional array to return if the setting is not set
+     *
      * @return array
      */
     public static function getCombined($os, $key, $default = [])
     {
-        if (! self::has($key)) {
+        if (!self::has($key)) {
             return self::getOsSetting($os, $key, $default);
         }
 
-        if (! isset(self::$config['os'][$os][$key])) {
-            if (! Str::contains($key, '.')) {
+        if (!isset(self::$config['os'][$os][$key])) {
+            if (!Str::contains($key, '.')) {
                 return self::get($key, $default);
             }
-            if (! self::has("os.$os.$key")) {
+            if (!self::has("os.$os.$key")) {
                 return self::get($key, $default);
             }
         }
@@ -225,9 +232,9 @@ class Config
     }
 
     /**
-     * Set a variable in the global config
+     * Set a variable in the global config.
      *
-     * @param mixed $key period separated config variable name
+     * @param mixed $key   period separated config variable name
      * @param mixed $value
      */
     public static function set($key, $value)
@@ -238,15 +245,16 @@ class Config
     /**
      * Save setting to persistent storage.
      *
-     * @param mixed $key period separated config variable name
+     * @param mixed $key   period separated config variable name
      * @param mixed $value
+     *
      * @return bool if the save was successful
      */
     public static function persist($key, $value)
     {
         try {
             \App\Models\Config::updateOrCreate(['config_name' => $key], [
-                'config_name' => $key,
+                'config_name'  => $key,
                 'config_value' => $value,
             ]);
             Arr::set(self::$config, $key, $value);
@@ -273,11 +281,13 @@ class Config
      * This will effectively set it back to default.
      *
      * @param string $key
+     *
      * @return int|false
      */
     public static function erase($key)
     {
         self::forget($key);
+
         try {
             return \App\Models\Config::withChildren($key)->delete();
         } catch (Exception $e) {
@@ -286,9 +296,10 @@ class Config
     }
 
     /**
-     * Check if a setting is set
+     * Check if a setting is set.
      *
      * @param string $key period separated config variable name
+     *
      * @return bool
      */
     public static function has($key)
@@ -297,7 +308,7 @@ class Config
             return true;
         }
 
-        if (! Str::contains($key, '.')) {
+        if (!Str::contains($key, '.')) {
             return false;
         }
 
@@ -315,7 +326,8 @@ class Config
     }
 
     /**
-     * Get the full configuration array
+     * Get the full configuration array.
+     *
      * @return array
      */
     public static function getAll()
@@ -325,11 +337,11 @@ class Config
 
     /**
      * merge the database config with the global config
-     * Global config overrides db
+     * Global config overrides db.
      */
     private static function loadDB()
     {
-        if (! Eloquent::isConnected()) {
+        if (!Eloquent::isConnected()) {
             return;
         }
 
@@ -373,7 +385,7 @@ class Config
     }
 
     /**
-     * Handle defaults that are set programmatically
+     * Handle defaults that are set programmatically.
      */
     private static function processDefaults()
     {
@@ -382,7 +394,7 @@ class Config
 
         // set base_url from access URL
         if (isset($_SERVER['SERVER_NAME']) && isset($_SERVER['SERVER_PORT'])) {
-            $port = $_SERVER['SERVER_PORT'] != 80 ? ':' . $_SERVER['SERVER_PORT'] : '';
+            $port = $_SERVER['SERVER_PORT'] != 80 ? ':'.$_SERVER['SERVER_PORT'] : '';
             // handle literal IPv6
             $server = Str::contains($_SERVER['SERVER_NAME'], ':') ? "[{$_SERVER['SERVER_NAME']}]" : $_SERVER['SERVER_NAME'];
             Arr::set(self::$config, 'base_url', "http://$server$port/");
@@ -399,7 +411,7 @@ class Config
 
     /**
      * Process the config after it has been loaded.
-     * Make sure certain variables have been set properly and
+     * Make sure certain variables have been set properly and.
      */
     private static function processConfig()
     {
@@ -410,8 +422,8 @@ class Config
 
         self::set('base_url', Str::finish(self::get('base_url'), '/'));
 
-        if (! self::get('email_from')) {
-            self::set('email_from', '"' . self::get('project_name') . '" <' . self::get('email_user') . '@' . php_uname('n') . '>');
+        if (!self::get('email_from')) {
+            self::set('email_from', '"'.self::get('project_name').'" <'.self::get('email_user').'@'.php_uname('n').'>');
         }
 
         // Define some variables if they aren't set by user definition in config_definitions.json
@@ -437,7 +449,7 @@ class Config
         $persist = Eloquent::isConnected();
         // make sure we have full path to binaries in case PATH isn't set
         foreach (['fping', 'fping6', 'snmpgetnext', 'rrdtool', 'traceroute', 'traceroute6'] as $bin) {
-            if (! is_executable(self::get($bin))) {
+            if (!is_executable(self::get($bin))) {
                 if ($persist) {
                     self::persist($bin, self::locateBinary($bin));
                 } else {
@@ -453,15 +465,15 @@ class Config
     }
 
     /**
-     * Set default values for defaults that depend on other settings, if they are not already loaded
+     * Set default values for defaults that depend on other settings, if they are not already loaded.
      *
      * @param string $key
-     * @param string $value value to set to key or vsprintf() format string for values below
-     * @param array $format_values array of keys to send to vsprintf()
+     * @param string $value         value to set to key or vsprintf() format string for values below
+     * @param array  $format_values array of keys to send to vsprintf()
      */
     private static function setDefault($key, $value, $format_values = [])
     {
-        if (! self::has($key)) {
+        if (!self::has($key)) {
             if (is_string($value)) {
                 $format_values = array_map('self::get', $format_values);
                 self::set($key, vsprintf($value, $format_values));
@@ -489,14 +501,15 @@ class Config
     }
 
     /**
-     * Locate the actual path of a binary
+     * Locate the actual path of a binary.
      *
      * @param $binary
+     *
      * @return mixed
      */
     public static function locateBinary($binary)
     {
-        if (! Str::contains($binary, '/')) {
+        if (!Str::contains($binary, '/')) {
             $output = `whereis -b $binary`;
             $list = trim(substr($output, strpos($output, ':') + 1));
             $targets = explode(' ', $list);

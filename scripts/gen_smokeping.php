@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 /**
- * gen_smokeping.php
+ * gen_smokeping.php.
  *
  * Legacy wrapper for generating smokeping configurations
  *
@@ -19,12 +19,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Adam Bishop
  * @author     Adam Bishop <adam@omega.org.uk>
  */
 if (php_sapi_name() === 'cli') {
     $init_modules = [];
-    require realpath(__DIR__ . '/..') . '/includes/init.php';
+    require realpath(__DIR__.'/..').'/includes/init.php';
 
     $return = \Artisan::call('smokeping:generate --targets --no-header --no-dns --single-process --compat');
     echo \Artisan::Output();

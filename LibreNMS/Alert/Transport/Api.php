@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * API Transport
+ * API Transport.
+ *
  * @author f0o <f0o@devilcode.org>
  * @author PipoCanaja (github.com/PipoCanaja)
  * @copyright 2014 f0o, LibreNMS
@@ -52,7 +53,7 @@ class Api extends Transport
         foreach (preg_split('/\\r\\n|\\r|\\n/', $headers, -1, PREG_SPLIT_NO_EMPTY) as $current_line) {
             [$u_key, $u_val] = explode('=', $current_line, 2);
             foreach ($obj as $p_key => $p_val) {
-                $u_val = str_replace('{{ $' . $p_key . ' }}', $p_val, $u_val);
+                $u_val = str_replace('{{ $'.$p_key.' }}', $p_val, $u_val);
             }
             //store the parameter in the array for HTTP headers
             $request_heads[$u_key] = $u_val;
@@ -62,7 +63,7 @@ class Api extends Transport
             [$u_key, $u_val] = explode('=', $current_line, 2);
             // Replace the values
             foreach ($obj as $p_key => $p_val) {
-                $u_val = str_replace('{{ $' . $p_key . ' }}', $p_val, $u_val);
+                $u_val = str_replace('{{ $'.$p_key.' }}', $p_val, $u_val);
             }
             //store the parameter in the array for HTTP query
             $query[$u_key] = $u_val;
@@ -70,7 +71,7 @@ class Api extends Transport
 
         $client = new \GuzzleHttp\Client();
         $request_opts['proxy'] = get_guzzle_proxy();
-        if (isset($auth) && ! empty($auth[0])) {
+        if (isset($auth) && !empty($auth[0])) {
             $request_opts['auth'] = $auth;
         }
         if (count($request_heads) > 0) {
@@ -95,9 +96,9 @@ class Api extends Transport
             var_dump($query);
             var_dump('Response headers:');
             var_dump($res->getHeaders());
-            var_dump('Return: ' . $res->getReasonPhrase());
+            var_dump('Return: '.$res->getReasonPhrase());
 
-            return 'HTTP Status code ' . $code;
+            return 'HTTP Status code '.$code;
         }
 
         return true;
@@ -108,56 +109,56 @@ class Api extends Transport
         return [
             'config' => [
                 [
-                    'title' => 'API Method',
-                    'name' => 'api-method',
-                    'descr' => 'API Method: GET, POST or PUT',
-                    'type' => 'select',
+                    'title'   => 'API Method',
+                    'name'    => 'api-method',
+                    'descr'   => 'API Method: GET, POST or PUT',
+                    'type'    => 'select',
                     'options' => [
-                        'GET' => 'GET',
+                        'GET'  => 'GET',
                         'POST' => 'POST',
-                        'PUT' => 'PUT',
+                        'PUT'  => 'PUT',
                     ],
                 ],
                 [
                     'title' => 'API URL',
-                    'name' => 'api-url',
+                    'name'  => 'api-url',
                     'descr' => 'API URL',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Options',
-                    'name' => 'api-options',
+                    'name'  => 'api-options',
                     'descr' => 'Enter the options (format: option=value separated by new lines)',
-                    'type' => 'textarea',
+                    'type'  => 'textarea',
                 ],
                 [
                     'title' => 'headers',
-                    'name' => 'api-headers',
+                    'name'  => 'api-headers',
                     'descr' => 'Enter the headers (format: option=value separated by new lines)',
-                    'type' => 'textarea',
+                    'type'  => 'textarea',
                 ],
                 [
                     'title' => 'body',
-                    'name' => 'api-body',
+                    'name'  => 'api-body',
                     'descr' => 'Enter the body (only used by PUT method, discarded otherwise)',
-                    'type' => 'textarea',
+                    'type'  => 'textarea',
                 ],
                 [
                     'title' => 'Auth Username',
-                    'name' => 'api-auth-username',
+                    'name'  => 'api-auth-username',
                     'descr' => 'Auth Username',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Auth Password',
-                    'name' => 'api-auth-password',
+                    'name'  => 'api-auth-password',
                     'descr' => 'Auth Password',
-                    'type' => 'password',
+                    'type'  => 'password',
                 ],
             ],
             'validation' => [
                 'api-method' => 'in:GET,POST,PUT',
-                'api-url' => 'required|url',
+                'api-url'    => 'required|url',
             ],
         ];
     }

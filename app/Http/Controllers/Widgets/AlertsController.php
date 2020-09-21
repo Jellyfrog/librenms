@@ -1,6 +1,6 @@
 <?php
 /**
- * AlertsController.php
+ * AlertsController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -30,16 +31,16 @@ class AlertsController extends WidgetController
 {
     protected $title = 'Alerts';
     protected $defaults = [
-        'title' => null,
-        'device' => null,
-        'acknowledged' => null,
-        'fired' => null,
-        'min_severity' => null,
-        'state' => null,
-        'device_group' => null,
-        'proc' => 0,
-        'location' => 1,
-        'sort' => 1,
+        'title'          => null,
+        'device'         => null,
+        'acknowledged'   => null,
+        'fired'          => null,
+        'min_severity'   => null,
+        'state'          => null,
+        'device_group'   => null,
+        'proc'           => 0,
+        'location'       => 1,
+        'sort'           => 1,
         'hidenavigation' => 0,
     ];
 
@@ -53,20 +54,20 @@ class AlertsController extends WidgetController
         $data = $this->getSettings(true);
         $data['severities'] = [
             // alert_rules.status is enum('ok','warning','critical')
-            'ok' => 1,
-            'warning' => 2,
-            'critical' => 3,
-            'ok only' => 4,
-            'warning only' => 5,
+            'ok'            => 1,
+            'warning'       => 2,
+            'critical'      => 3,
+            'ok only'       => 4,
+            'warning only'  => 5,
             'critical only' => 6,
         ];
         $data['states'] = [
             // divined from librenms/alerts.php
-            'recovered' => '0',
-            'alerted' => '1',
+            'recovered'    => '0',
+            'alerted'      => '1',
             'acknowledged' => '2',
-            'worse' => '3',
-            'better' => '4',
+            'worse'        => '3',
+            'better'       => '4',
         ];
 
         return view('widgets.settings.alerts', $data);

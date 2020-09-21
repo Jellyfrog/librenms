@@ -1,6 +1,6 @@
 <?php
 /**
- * AdvaObjectDeletionTest.php
+ * AdvaObjectDeletionTest.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Heath Barnhart
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */

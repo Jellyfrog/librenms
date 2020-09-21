@@ -1,6 +1,6 @@
 <?php
 /**
- * RrdDefinition.php
+ * RrdDefinition.php.
  *
  * Build a RRD definition.
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -34,7 +35,7 @@ class RrdDefinition
     private $skipNameCheck = false;
 
     /**
-     * Make a new empty RrdDefinition
+     * Make a new empty RrdDefinition.
      */
     public static function make()
     {
@@ -45,11 +46,12 @@ class RrdDefinition
      * Add a dataset to this definition.
      * See https://oss.oetiker.ch/rrdtool/doc/rrdcreate.en.html for more information.
      *
-     * @param string $name Textual name for this dataset. Must be [a-zA-Z0-9_], max length 19.
-     * @param string $type GAUGE | COUNTER | DERIVE | DCOUNTER | DDERIVE | ABSOLUTE.
-     * @param int $min Minimum allowed value.  null means undefined.
-     * @param int $max Maximum allowed value.  null means undefined.
-     * @param int $heartbeat Heartbeat for this dataset. Uses the global setting if null.
+     * @param string $name      Textual name for this dataset. Must be [a-zA-Z0-9_], max length 19.
+     * @param string $type      GAUGE | COUNTER | DERIVE | DCOUNTER | DDERIVE | ABSOLUTE.
+     * @param int    $min       Minimum allowed value.  null means undefined.
+     * @param int    $max       Maximum allowed value.  null means undefined.
+     * @param int    $heartbeat Heartbeat for this dataset. Uses the global setting if null.
+     *
      * @return RrdDefinition
      */
     public function addDataset($name, $type, $min = null, $max = null, $heartbeat = null)
@@ -71,21 +73,22 @@ class RrdDefinition
     }
 
     /**
-     * Get the RRD Definition as it would be passed to rrdtool
+     * Get the RRD Definition as it would be passed to rrdtool.
      *
      * @return string
      */
     public function __toString()
     {
         return array_reduce($this->dataSets, function ($carry, $ds) {
-            return $carry . 'DS:' . implode(':', $ds) . ' ';
+            return $carry.'DS:'.implode(':', $ds).' ';
         }, '');
     }
 
     /**
-     * Check if the give dataset name is valid for this definition
+     * Check if the give dataset name is valid for this definition.
      *
      * @param $name
+     *
      * @return bool
      */
     public function isValidDataset($name)
@@ -95,7 +98,7 @@ class RrdDefinition
 
     /**
      * Disable checking if the name is valid for incoming data and just assign values
-     * based on order
+     * based on order.
      *
      * @return $this
      */
@@ -110,13 +113,16 @@ class RrdDefinition
      * Check that the data set type is valid.
      *
      * @param string $type
-     * @return mixed
+     *
      * @throws InvalidRrdTypeException
+     *
+     * @return mixed
      */
     private function checkType($type)
     {
-        if (! in_array($type, self::$types)) {
-            $msg = "$type is not valid, must be: " . implode(' | ', self::$types);
+        if (!in_array($type, self::$types)) {
+            $msg = "$type is not valid, must be: ".implode(' | ', self::$types);
+
             throw new InvalidRrdTypeException($msg);
         }
 
@@ -127,6 +133,7 @@ class RrdDefinition
      * Remove all invalid characters from the name and truncate to 19 characters.
      *
      * @param string $name
+     *
      * @return string
      */
     private function escapeName($name)

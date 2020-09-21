@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessSinrDiscovery.php
+ * WirelessSinrDiscovery.php.
  *
  * Discover wireless Signal-to-Interference-plus-Noise Ratio sensors in dB
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Jozef Rebjak
  * @author     Jozef Rebjak <jozefrebjak@icloud.com>
  */
@@ -29,7 +30,7 @@ interface WirelessSinrDiscovery
     /**
      * Discover wireless SINR.  This is in dB. Type is sinr.
      * Signal-to-Interference-plus-Noise Ratio
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

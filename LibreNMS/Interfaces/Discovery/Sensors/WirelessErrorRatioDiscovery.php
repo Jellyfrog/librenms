@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessErrorRatioDiscovery.php
+ * WirelessErrorRatioDiscovery.php.
  *
  * Discover bit/packet error ratio sensors in percent
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -28,7 +29,7 @@ interface WirelessErrorRatioDiscovery
 {
     /**
      * Discover wireless bit/packet error ratio.  This is in percent. Type is error-ratio.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

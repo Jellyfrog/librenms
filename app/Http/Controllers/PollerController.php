@@ -26,7 +26,7 @@ class PollerController extends Controller
 
         return view('poller.log', [
             'current_tab' => 'log',
-            'filter' => $request->input('filter', 'active'),
+            'filter'      => $request->input('filter', 'active'),
         ]);
     }
 
@@ -35,10 +35,10 @@ class PollerController extends Controller
         $this->authorize('manage', PollerCluster::class);
 
         return view('poller.groups', [
-            'current_tab' => 'groups',
-            'poller_groups' => PollerGroup::query()->withCount('devices')->get(),
+            'current_tab'      => 'groups',
+            'poller_groups'    => PollerGroup::query()->withCount('devices')->get(),
             'default_group_id' => Config::get('default_poller_group'),
-            'ungrouped_count' => Device::where('poller_group', 0)->count(),
+            'ungrouped_count'  => Device::where('poller_group', 0)->count(),
         ]);
     }
 
@@ -47,8 +47,8 @@ class PollerController extends Controller
         $this->authorize('viewAny', PollerCluster::class);
 
         return view('poller.poller', [
-            'current_tab' => 'poller',
-            'pollers' => $this->poller(),
+            'current_tab'    => 'poller',
+            'pollers'        => $this->poller(),
             'poller_cluster' => $this->pollerCluster(),
         ]);
     }
@@ -59,8 +59,8 @@ class PollerController extends Controller
         $pollerClusters = PollerCluster::all()->keyBy('id');
 
         return view('poller.settings', [
-            'current_tab' => 'settings',
-            'settings' => $this->pollerSettings($pollerClusters),
+            'current_tab'    => 'settings',
+            'settings'       => $this->pollerSettings($pollerClusters),
             'poller_cluster' => $pollerClusters,
         ]);
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * RipeNccApiController.php
+ * RipeNccApiController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -34,7 +35,7 @@ class RipeNccApiController extends Controller
     public function raw(Request $request, RipeApi $api)
     {
         $this->validate($request, [
-            'data_param' => 'required|in:whois,abuse-contact-finder',
+            'data_param'  => 'required|in:whois,abuse-contact-finder',
             'query_param' => 'required|ip_or_hostname',
         ]);
 
@@ -45,25 +46,25 @@ class RipeNccApiController extends Controller
             $output = $is_whois ? $api->getWhois($resource) : $api->getAbuseContact($resource);
 
             return response()->json([
-                'status' => 'ok',
+                'status'  => 'ok',
                 'message' => 'Queried',
-                'output' => $output,
+                'output'  => $output,
             ]);
         } catch (ApiException $e) {
             $response = $e->getOutput();
             $message = $e->getMessage();
 
             if (isset($response['messages'])) {
-                $message .= ': ' . collect($response['messages'])
+                $message .= ': '.collect($response['messages'])
                         ->flatten()
                         ->reject('error')
                         ->implode(', ');
             }
 
             return response()->json([
-                'status' => 'error',
+                'status'  => 'error',
                 'message' => $message,
-                'output' => $response,
+                'output'  => $response,
             ], 503);
         }
     }

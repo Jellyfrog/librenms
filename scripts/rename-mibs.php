@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 /**
- * rename-mibs.php
+ * rename-mibs.php.
  *
  * Rename mib files to the proper file name to match the mib name
  *
@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -34,7 +35,7 @@ foreach ($argv as $item) {
     if (is_dir($item)) {
         foreach (scandir($item) as $file) {
             if ($file != '.' && $file != '..') {
-                $renamed_count += (int) rename_mib_file($item . $file);
+                $renamed_count += (int) rename_mib_file($item.$file);
             }
         }
     } else {
@@ -46,7 +47,7 @@ echo "Renamed $renamed_count files.\n";
 
 function rename_mib_file($file)
 {
-    if (! is_file($file)) {
+    if (!is_file($file)) {
         echo "Not a file: $file\n";
 
         return false;
@@ -55,7 +56,7 @@ function rename_mib_file($file)
     $mib_name = extract_mib_name($file);
     $filename = basename($file);
     if ($mib_name != $filename) {
-        $new_file = dirname($file) . '/' . $mib_name;
+        $new_file = dirname($file).'/'.$mib_name;
         echo "$file -> $new_file\n";
 
         return rename($file, $new_file);

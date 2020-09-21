@@ -1,6 +1,6 @@
 <?php
 /**
- * Vrp.php
+ * Vrp.php.
  *
  * Huawei VRP
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -52,7 +53,7 @@ class Vrp extends OS implements
 
         //Huawei VRP devices are not providing the HW description in a unified way
         preg_match('/Version (\S+)/', $device->sysDescr, $matches);
-        $device->version = isset($matches[1]) ? ($matches[1] . ($device->version ? " ($device->version)" : '')) : null; // version from yaml sysDescr
+        $device->version = isset($matches[1]) ? ($matches[1].($device->version ? " ($device->version)" : '')) : null; // version from yaml sysDescr
 
         if ($device->version) {
             $patch = snmp_getnext($this->getDeviceArray(), 'HUAWEI-SYS-MAN-MIB::hwPatchVersion', '-OQv');
@@ -72,7 +73,7 @@ class Vrp extends OS implements
         $apTable = snmpwalk_group($this->getDeviceArray(), 'hwWlanApName', 'HUAWEI-WLAN-AP-MIB', 2);
 
         //Check for existence of at least 1 AP to continue the polling)
-        if (! empty($apTable)) {
+        if (!empty($apTable)) {
             $apTableOids = [
                 'hwWlanApSn',
                 'hwWlanApTypeInfo',
@@ -116,7 +117,7 @@ class Vrp extends OS implements
                 ->addDataset('NUMCLIENTS', 'GAUGE', 0, 12500000000);
 
             $fields = [
-                'NUMAPS' => $numRadios,
+                'NUMAPS'     => $numRadios,
                 'NUMCLIENTS' => $numClients,
             ];
 
@@ -129,7 +130,7 @@ class Vrp extends OS implements
                 foreach ($ap as $r_id => $radio) {
                     $channel = $radio['hwWlanRadioWorkingChannel'];
                     $mac = $radio['hwWlanRadioMac'];
-                    $name = $apTable[$ap_id]['hwWlanApName'] . ' Radio ' . $r_id;
+                    $name = $apTable[$ap_id]['hwWlanApName'].' Radio '.$r_id;
                     $radionum = $r_id;
                     $txpow = $radio['hwWlanRadioActualEIRP'];
                     $interference = $radio['hwWlanRadioChInterferenceRate'];
@@ -144,7 +145,7 @@ class Vrp extends OS implements
                             $type = '5Ghz';
                             break;
                         default:
-                            $type = 'unknown (huawei ' . $radio['hwWlanRadioFreqType'] . ')';
+                            $type = 'unknown (huawei '.$radio['hwWlanRadioFreqType'].')';
                     }
 
                     // TODO
@@ -161,7 +162,7 @@ class Vrp extends OS implements
                     d_echo("  numasoclients: $numasoclients\n");
                     d_echo("  interference: $interference\n");
 
-                    $rrd_name = ['arubaap', $name . $radionum];
+                    $rrd_name = ['arubaap', $name.$radionum];
                     $rrd_def = RrdDefinition::make()
                         ->addDataset('channel', 'GAUGE', 0, 200)
                         ->addDataset('txpow', 'GAUGE', 0, 200)
@@ -172,13 +173,13 @@ class Vrp extends OS implements
                         ->addDataset('interference', 'GAUGE', 0, 2000);
 
                     $fields = [
-                        'channel' => $channel,
-                        'txpow' => $txpow,
-                        'radioutil' => $radioutil,
+                        'channel'       => $channel,
+                        'txpow'         => $txpow,
+                        'radioutil'     => $radioutil,
                         'nummonclients' => $nummonclients,
-                        'nummonbssid' => $nummonbssid,
+                        'nummonbssid'   => $nummonbssid,
                         'numasoclients' => $numasoclients,
-                        'interference' => $interference,
+                        'interference'  => $interference,
                     ];
 
                     $tags = compact('name', 'radionum', 'rrd_name', 'rrd_def');
@@ -186,7 +187,7 @@ class Vrp extends OS implements
 
                     $foundid = 0;
 
-                    for ($z = 0; $z < sizeof($ap_db); $z++) {
+                    for ($z = 0; $z < count($ap_db); $z++) {
                         if ($ap_db[$z]['name'] == $name && $ap_db[$z]['radio_number'] == $radionum) {
                             $foundid = $ap_db[$z]['accesspoint_id'];
                             $ap_db[$z]['seen'] = 1;
@@ -197,36 +198,36 @@ class Vrp extends OS implements
                     if ($foundid == 0) {
                         $ap_id = dbInsert(
                             [
-                                'device_id' => $this->getDeviceArray()['device_id'],
-                                'name' => $name,
-                                'radio_number' => $radionum,
-                                'type' => $type,
-                                'mac_addr' => $mac,
-                                'channel' => $channel,
-                                'txpow' => $txpow,
-                                'radioutil' => $radioutil,
+                                'device_id'     => $this->getDeviceArray()['device_id'],
+                                'name'          => $name,
+                                'radio_number'  => $radionum,
+                                'type'          => $type,
+                                'mac_addr'      => $mac,
+                                'channel'       => $channel,
+                                'txpow'         => $txpow,
+                                'radioutil'     => $radioutil,
                                 'numasoclients' => $numasoclients,
                                 'nummonclients' => $nummonclients,
-                                'numactbssid' => $numactbssid,
-                                'nummonbssid' => $nummonbssid,
-                                'interference' => $interference,
+                                'numactbssid'   => $numactbssid,
+                                'nummonbssid'   => $nummonbssid,
+                                'interference'  => $interference,
                             ],
                             'access_points'
                         );
                     } else {
                         dbUpdate(
                             [
-                                'mac_addr' => $mac,
-                                'type' => $type,
-                                'deleted' => 0,
-                                'channel' => $channel,
-                                'txpow' => $txpow,
-                                'radioutil' => $radioutil,
+                                'mac_addr'      => $mac,
+                                'type'          => $type,
+                                'deleted'       => 0,
+                                'channel'       => $channel,
+                                'txpow'         => $txpow,
+                                'radioutil'     => $radioutil,
                                 'numasoclients' => $numasoclients,
                                 'nummonclients' => $nummonclients,
-                                'numactbssid' => $numactbssid,
-                                'nummonbssid' => $nummonbssid,
-                                'interference' => $interference,
+                                'numactbssid'   => $numactbssid,
+                                'nummonbssid'   => $nummonbssid,
+                                'interference'  => $interference,
                             ],
                             'access_points',
                             '`accesspoint_id` = ?',
@@ -236,8 +237,8 @@ class Vrp extends OS implements
                 }//end foreach 1
             }//end foreach 2
 
-            for ($z = 0; $z < sizeof($ap_db); $z++) {
-                if (! isset($ap_db[$z]['seen']) && $ap_db[$z]['deleted'] == 0) {
+            for ($z = 0; $z < count($ap_db); $z++) {
+                if (!isset($ap_db[$z]['seen']) && $ap_db[$z]['deleted'] == 0) {
                     dbUpdate(['deleted' => 1], 'access_points', '`accesspoint_id` = ?', [$ap_db[$z]['accesspoint_id']]);
                 }
             }
@@ -246,7 +247,7 @@ class Vrp extends OS implements
 
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
@@ -256,7 +257,7 @@ class Vrp extends OS implements
 
         $processors_data = snmpwalk_cache_multi_oid($device, 'hwEntityCpuUsage', [], 'HUAWEI-ENTITY-EXTENT-MIB', 'huawei');
 
-        if (! empty($processors_data)) {
+        if (!empty($processors_data)) {
             $processors_data = snmpwalk_cache_multi_oid($device, 'hwEntityMemSize', $processors_data, 'HUAWEI-ENTITY-EXTENT-MIB', 'huawei');
             $processors_data = snmpwalk_cache_multi_oid($device, 'hwEntityBomEnDesc', $processors_data, 'HUAWEI-ENTITY-EXTENT-MIB', 'huawei');
         }
@@ -266,9 +267,9 @@ class Vrp extends OS implements
         $processors = [];
         foreach ($processors_data as $index => $entry) {
             if ($entry['hwEntityMemSize'] != 0) {
-                d_echo($index . ' ' . $entry['hwEntityBomEnDesc'] . ' -> ' . $entry['hwEntityCpuUsage'] . ' -> ' . $entry['hwEntityMemSize'] . "\n");
+                d_echo($index.' '.$entry['hwEntityBomEnDesc'].' -> '.$entry['hwEntityCpuUsage'].' -> '.$entry['hwEntityMemSize']."\n");
 
-                $usage_oid = '.1.3.6.1.4.1.2011.5.25.31.1.1.1.1.5.' . $index;
+                $usage_oid = '.1.3.6.1.4.1.2011.5.25.31.1.1.1.1.5.'.$index;
                 $descr = $entry['hwEntityBomEnDesc'];
                 $usage = $entry['hwEntityCpuUsage'];
 
@@ -292,7 +293,7 @@ class Vrp extends OS implements
     }
 
     /**
-     * Discover the Network Access Control informations (dot1X etc etc)
+     * Discover the Network Access Control informations (dot1X etc etc).
      */
     public function pollNac()
     {
@@ -300,7 +301,7 @@ class Vrp extends OS implements
         // We collect the first table
         $portAuthSessionEntry = snmpwalk_cache_oid($this->getDeviceArray(), 'hwAccessTable', [], 'HUAWEI-AAA-MIB');
 
-        if (! empty($portAuthSessionEntry)) {
+        if (!empty($portAuthSessionEntry)) {
             // If it is not empty, lets add the Extended table
             $portAuthSessionEntry = snmpwalk_cache_oid($this->getDeviceArray(), 'hwAccessExtTable', $portAuthSessionEntry, 'HUAWEI-AAA-MIB');
             // We cache a port_ifName -> port_id map
@@ -314,20 +315,20 @@ class Vrp extends OS implements
                     continue; //this would happen for an SSH session for instance
                 }
                 $nac->put($mac_address, new PortsNac([
-                    'port_id' => $ifName_map->get($portAuthSessionEntryParameters['hwAccessInterface'], 0),
-                    'mac_address' => $mac_address,
-                    'auth_id' => $authId,
-                    'domain' => $portAuthSessionEntryParameters['hwAccessDomain'],
-                    'username' => '' . $portAuthSessionEntryParameters['hwAccessUserName'],
-                    'ip_address' => $portAuthSessionEntryParameters['hwAccessIPAddress'],
-                    'authz_by' => '' . $portAuthSessionEntryParameters['hwAccessType'],
-                    'authz_status' => '' . $portAuthSessionEntryParameters['hwAccessAuthorizetype'],
-                    'host_mode' => is_null($portAuthSessionEntryParameters['hwAccessAuthType']) ? 'default' : $portAuthSessionEntryParameters['hwAccessAuthType'],
-                    'timeout' => $portAuthSessionEntryParameters['hwAccessSessionTimeout'],
+                    'port_id'      => $ifName_map->get($portAuthSessionEntryParameters['hwAccessInterface'], 0),
+                    'mac_address'  => $mac_address,
+                    'auth_id'      => $authId,
+                    'domain'       => $portAuthSessionEntryParameters['hwAccessDomain'],
+                    'username'     => ''.$portAuthSessionEntryParameters['hwAccessUserName'],
+                    'ip_address'   => $portAuthSessionEntryParameters['hwAccessIPAddress'],
+                    'authz_by'     => ''.$portAuthSessionEntryParameters['hwAccessType'],
+                    'authz_status' => ''.$portAuthSessionEntryParameters['hwAccessAuthorizetype'],
+                    'host_mode'    => is_null($portAuthSessionEntryParameters['hwAccessAuthType']) ? 'default' : $portAuthSessionEntryParameters['hwAccessAuthType'],
+                    'timeout'      => $portAuthSessionEntryParameters['hwAccessSessionTimeout'],
                     'time_elapsed' => $portAuthSessionEntryParameters['hwAccessOnlineTime'],
                     'authc_status' => $portAuthSessionEntryParameters['hwAccessCurAuthenPlace'],
-                    'method' => '' . $portAuthSessionEntryParameters['hwAccessAuthtype'],
-                    'vlan' => $portAuthSessionEntryParameters['hwAccessVLANID'],
+                    'method'       => ''.$portAuthSessionEntryParameters['hwAccessAuthtype'],
+                    'vlan'         => $portAuthSessionEntryParameters['hwAccessVLANID'],
                 ]));
             }
         }
@@ -365,15 +366,15 @@ class Vrp extends OS implements
             $a_index_oid = implode('.', array_map('hexdec', explode(':', $a_index)));
             foreach ($ap as $r_index => $radio) {
                 foreach ($radio as $s_index => $ssid) {
-                    $oid = '.1.3.6.1.4.1.2011.6.139.17.1.1.1.9.' . $a_index_oid . '.' . $r_index . '.' . $s_index;
+                    $oid = '.1.3.6.1.4.1.2011.6.139.17.1.1.1.9.'.$a_index_oid.'.'.$r_index.'.'.$s_index;
                     $total_oids[] = $oid;
                     $sensors[] = new WirelessSensor(
                         'clients',
                         $this->getDeviceId(),
                         $oid,
                         'vrp',
-                        $a_index_oid . '.' . $r_index . '.' . $s_index,
-                        'Radio:' . $r_index . ' SSID:' . $ssid['hwWlanVapProfileName'],
+                        $a_index_oid.'.'.$r_index.'.'.$s_index,
+                        'Radio:'.$r_index.' SSID:'.$ssid['hwWlanVapProfileName'],
                         $ssid['hwWlanVapStaOnlineCnt']
                     );
                 }

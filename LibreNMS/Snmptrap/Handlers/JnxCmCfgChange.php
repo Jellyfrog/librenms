@@ -1,6 +1,6 @@
 <?php
 /**
- * jnxCmCfgChange.php
+ * jnxCmCfgChange.php.
  *
  * -Description-
  *
@@ -23,6 +23,7 @@
  * user is "root".
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -41,7 +42,8 @@ class JnxCmCfgChange implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)

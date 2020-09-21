@@ -28,12 +28,13 @@ class MplsSap extends Model implements Keyable
     // ---- Helper Functions ----
 
     /**
-     * Get a string that can identify a unique instance of this model
+     * Get a string that can identify a unique instance of this model.
+     *
      * @return string
      */
     public function getCompositeKey()
     {
-        return $this->svc_oid . '-' . $this->sapPortId . '-' . $this->sapEncapValue;
+        return $this->svc_oid.'-'.$this->sapPortId.'-'.$this->sapEncapValue;
     }
 
     // ---- Define Relationships ----

@@ -1,6 +1,6 @@
 <?php
 /**
- * GraylogController.php
+ * GraylogController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -46,16 +47,16 @@ class GraylogController extends SimpleTableController
 
     public function __invoke(Request $request, GraylogApi $api)
     {
-        if (! $api->isConfigured()) {
+        if (!$api->isConfigured()) {
             return response()->json([
                 'error' => 'Graylog is not configured',
             ], 503);
         }
 
         $this->validate($request, [
-            'stream' => 'nullable|alpha_num',
-            'device' => 'nullable|int',
-            'range' => 'nullable|int',
+            'stream'   => 'nullable|alpha_num',
+            'device'   => 'nullable|int',
+            'range'    => 'nullable|int',
             'loglevel' => 'nullable|int|min:0|max:7',
         ]);
 
@@ -68,8 +69,8 @@ class GraylogController extends SimpleTableController
         $offset = ($page - 1) * $limit;
         $loglevel = $request->get('loglevel') ?? Config::get('graylog.loglevel');
 
-        $query = $api->buildSimpleQuery($search, $device) .
-            ($loglevel !== null ? ' AND level: <=' . $loglevel : '');
+        $query = $api->buildSimpleQuery($search, $device).
+            ($loglevel !== null ? ' AND level: <='.$loglevel : '');
 
         $sort = null;
         foreach ($request->get('sort', []) as $field => $direction) {
@@ -103,7 +104,7 @@ class GraylogController extends SimpleTableController
             $graylogTime = new DateTime($message['message']['timestamp']);
             $offset = $this->timezone->getOffset($graylogTime);
 
-            $timeInterval = DateInterval::createFromDateString((string) $offset . 'seconds');
+            $timeInterval = DateInterval::createFromDateString((string) $offset.'seconds');
             $graylogTime->add($timeInterval);
             $displayTime = $graylogTime->format('Y-m-d H:i:s');
         } else {
@@ -119,8 +120,8 @@ class GraylogController extends SimpleTableController
             'timestamp' => $displayTime,
             'source'    => $device ? Url::deviceLink($device) : $message['message']['source'],
             'message'   => $message['message']['message'] ?? '',
-            'facility'  => is_numeric($facility) ? "($facility) " . __("syslog.facility.$facility") : $facility,
-            'level'     => (is_numeric($level) && $level >= 0) ? "($level) " . __("syslog.severity.$level") : $level,
+            'facility'  => is_numeric($facility) ? "($facility) ".__("syslog.facility.$facility") : $facility,
+            'level'     => (is_numeric($level) && $level >= 0) ? "($level) ".__("syslog.severity.$level") : $level,
         ];
     }
 
@@ -139,17 +140,19 @@ class GraylogController extends SimpleTableController
         ];
         $barColor = isset($map[$severity]) ? $map[$severity] : 'label-info';
 
-        return '<span class="alert-status ' . $barColor . '" style="margin-right:8px;float:left;"></span>';
+        return '<span class="alert-status '.$barColor.'" style="margin-right:8px;float:left;"></span>';
     }
 
     /**
-     * Cache device lookups so we don't lookup for every entry
+     * Cache device lookups so we don't lookup for every entry.
+     *
      * @param $source
+     *
      * @return mixed
      */
     private function deviceFromSource($source)
     {
-        if (! isset($this->deviceCache[$source])) {
+        if (!isset($this->deviceCache[$source])) {
             $this->deviceCache[$source] = Device::findByIp($source) ?: Device::findByHostname($source);
         }
 

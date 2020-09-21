@@ -16,18 +16,20 @@
  */
 
 $init_modules = ['web', 'auth'];
-require realpath(__DIR__ . '/..') . '/includes/init.php';
+require realpath(__DIR__.'/..').'/includes/init.php';
 
-if (! Auth::check()) {
+if (!Auth::check()) {
     exit('Unauthorized');
 }
 
 set_debug($_REQUEST['debug']);
 
 /**
- * Levenshtein Sort
+ * Levenshtein Sort.
+ *
  * @param string $base Comparison basis
  * @param array  $obj  Object to sort
+ *
  * @return array
  */
 function levsortos($base, $obj, $keys)
@@ -63,7 +65,7 @@ if (isset($_GET['term'])) {
         $ret[$lev] = array_intersect_key($os, ['os' => true, 'text' => true]);
     }
 }
-if (! isset($ret)) {
+if (!isset($ret)) {
     $ret = [['Error: No suggestions found.']];
 }
 

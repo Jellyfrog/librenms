@@ -1,6 +1,6 @@
 <?php
 /**
- * SyslogController.php
+ * SyslogController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -32,12 +33,12 @@ class SyslogController extends TableController
     public function rules()
     {
         return [
-            'device' => 'nullable|int',
+            'device'       => 'nullable|int',
             'device_group' => 'nullable|int',
-            'program' => 'nullable|string',
-            'priority' => 'nullable|string',
-            'to' => 'nullable|date',
-            'from' => 'nullable|date',
+            'program'      => 'nullable|string',
+            'priority'     => 'nullable|string',
+            'to'           => 'nullable|date',
+            'from'         => 'nullable|date',
         ];
     }
 
@@ -50,8 +51,8 @@ class SyslogController extends TableController
     {
         return [
             'device_id' => 'device',
-            'program' => 'program',
-            'priority' => 'priority',
+            'program'   => 'program',
+            'priority'  => 'priority',
         ];
     }
 
@@ -61,9 +62,10 @@ class SyslogController extends TableController
     }
 
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     public function baseQuery($request)
@@ -87,13 +89,13 @@ class SyslogController extends TableController
         $device = $syslog->device;
 
         return [
-            'label' => $this->setLabel($syslog),
+            'label'     => $this->setLabel($syslog),
             'timestamp' => $syslog->timestamp,
-            'level' => htmlentities($syslog->level),
+            'level'     => htmlentities($syslog->level),
             'device_id' => $device ? \LibreNMS\Util\Url::deviceLink($device, $device->shortDisplayName()) : '',
-            'program' => htmlentities($syslog->program),
-            'msg' => htmlentities($syslog->msg),
-            'priority' => htmlentities($syslog->priority),
+            'program'   => htmlentities($syslog->program),
+            'msg'       => htmlentities($syslog->msg),
+            'priority'  => htmlentities($syslog->priority),
         ];
     }
 
@@ -109,6 +111,7 @@ class SyslogController extends TableController
 
     /**
      * @param int $syslog_priority
+     *
      * @return string $syslog_priority_icon
      */
     private function priorityLabel($syslog_priority)

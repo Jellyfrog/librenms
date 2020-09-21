@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 /**
- * rrdstep.php
+ * rrdstep.php.
  *
  * LibreNMS Script to convert rrd files from default 300 step to user defined
  *
@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
@@ -26,7 +27,7 @@
 use LibreNMS\Config;
 
 $init_modules = [];
-require realpath(__DIR__ . '/..') . '/includes/init.php';
+require realpath(__DIR__.'/..').'/includes/init.php';
 
 $options = getopt('h:');
 
@@ -42,7 +43,7 @@ if (empty($hostname)) {
 }
 
 if ($hostname !== 'all') {
-    $hostname = ! ctype_digit($hostname) ? $hostname : gethostbyid($hostname);
+    $hostname = !ctype_digit($hostname) ? $hostname : gethostbyid($hostname);
 }
 
 if (empty($hostname)) {
@@ -59,14 +60,14 @@ $tmp_path = Config::get('temp_dir', '/tmp');
 if ($hostname === 'all') {
     $hostname = '*';
 }
-$files = glob(get_rrd_dir($hostname) . '/*.rrd');
+$files = glob(get_rrd_dir($hostname).'/*.rrd');
 
 $converted = 0;
 $skipped = 0;
 $failed = 0;
 
 foreach ($files as $file) {
-    $random = $tmp_path . '/' . mt_rand() . '.xml';
+    $random = $tmp_path.'/'.mt_rand().'.xml';
     $rrd_file = basename($file, '.rrd');
 
     if ($rrd_file == 'ping-perf') {
@@ -82,6 +83,7 @@ foreach ($files as $file) {
 
     if ($step_matches[1] == $step) {
         preg_match_all('/minimal_heartbeat = (\d+)/', $rrd_info, $heartbeat_matches);
+
         try {
             foreach ($heartbeat_matches[1] as $ds_heartbeat) {
                 if ($ds_heartbeat != $heartbeat) {
@@ -94,7 +96,7 @@ foreach ($files as $file) {
             $skipped++;
             continue;
         } catch (Exception $e) {
-            echo $e->getMessage() . PHP_EOL;
+            echo $e->getMessage().PHP_EOL;
         }
     }
 

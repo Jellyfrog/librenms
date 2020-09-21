@@ -17,10 +17,10 @@ class RuckuswirelessSz extends OS implements
         $device->hardware = snmp_getnext($this->getDeviceArray(), '.1.3.6.1.4.1.25053.1.8.1.1.1.1.1.1.3', '-OQv');
         $device->version = snmp_getnext($this->getDeviceArray(), '.1.3.6.1.4.1.25053.1.8.1.1.1.1.1.1.9', '-OQv');
         $device->serial = snmp_get($this->getDeviceArray(), '.1.3.6.1.4.1.25053.1.4.1.1.1.15.13.0', '-OQv');
-        $device->features = 'Licenses: ' . snmp_get($this->getDeviceArray(), '.1.3.6.1.4.1.25053.1.4.1.1.1.15.1.0', '-OQv') . '/' . snmp_getnext($this->getDeviceArray(), '.1.3.6.1.4.1.25053.1.8.1.1.1.1.1.1.10', '-OQv');
+        $device->features = 'Licenses: '.snmp_get($this->getDeviceArray(), '.1.3.6.1.4.1.25053.1.4.1.1.1.15.1.0', '-OQv').'/'.snmp_getnext($this->getDeviceArray(), '.1.3.6.1.4.1.25053.1.8.1.1.1.1.1.1.10', '-OQv');
 
         $ruckuscountry = snmp_getnext($this->getDeviceArray(), '.1.3.6.1.4.1.25053.1.8.1.1.1.1.3.1.4', '-OQv');
-        if (! empty($ruckuscountry)) {
+        if (!empty($ruckuscountry)) {
             $device->version .= " ($ruckuscountry)";
         }
     }
@@ -35,7 +35,7 @@ class RuckuswirelessSz extends OS implements
         $total_oids = [];
         $total = 0;
         foreach ($counts as $index => $count) {
-            $oid = '.1.3.6.1.4.1.25053.1.4.2.1.1.1.2.1.12.' . $index;
+            $oid = '.1.3.6.1.4.1.25053.1.4.2.1.1.1.2.1.12.'.$index;
             $total_oids[] = $oid;
             $total += $count;
 
@@ -45,7 +45,7 @@ class RuckuswirelessSz extends OS implements
                 $oid,
                 'ruckuswireless-sz',
                 $index,
-                'SSID: ' . $ssids[$index],
+                'SSID: '.$ssids[$index],
                 $count
             );
         }
@@ -67,7 +67,7 @@ class RuckuswirelessSz extends OS implements
         $apconnected = $this->getCacheByIndex('ruckusCtrlSystemNodeNumApConnected', 'RUCKUS-CTRL-MIB', '-OQUsb');
         $dbindex = 0;
         foreach ($apconnected as $index => $connect) {
-            $oid = '.1.3.6.1.4.1.25053.1.8.1.1.1.1.1.1.19.' . $index;
+            $oid = '.1.3.6.1.4.1.25053.1.8.1.1.1.1.1.1.19.'.$index;
             $apstatus[] = new WirelessSensor(
                 'ap-count',
                 $this->getDeviceId(),

@@ -1,6 +1,6 @@
 <?php
 /**
- * Availability.php
+ * Availability.php.
  *
  * Availability calculation
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Thomas Berberich
  * @author     Thomas Berberich <sourcehhdoctor@gmail.com>
  */
@@ -64,16 +65,17 @@ class Availability
     }
 
     /**
-     * addition of all recorded outages in seconds
+     * addition of all recorded outages in seconds.
      *
      * @param object $found_outages filtered database object with all recorded outages
-     * @param int $duration time period to calculate for
-     * @param int $now timestamp for 'now'
+     * @param int    $duration      time period to calculate for
+     * @param int    $now           timestamp for 'now'
+     *
      * @return sum of all matching outages in seconds
      */
     protected static function outageSummary($found_outages, $duration, $now = null)
     {
-        if (! is_numeric($now)) {
+        if (!is_numeric($now)) {
             $now = time();
         }
 
@@ -99,16 +101,17 @@ class Availability
     /**
      * Get the availability (decreasing) of this device
      * means, starting with 100% as default
-     * substracts recorded outages
+     * substracts recorded outages.
      *
-     * @param array $device device to be looked at
-     * @param int $duration time period to calculate for
-     * @param int $precision float precision for calculated availability
+     * @param array $device    device to be looked at
+     * @param int   $duration  time period to calculate for
+     * @param int   $precision float precision for calculated availability
+     *
      * @return float calculated availability
      */
     public static function availability($device, $duration, $precision = 3, $now = null)
     {
-        if (! is_numeric($now)) {
+        if (!is_numeric($now)) {
             $now = time();
         }
 
@@ -119,7 +122,7 @@ class Availability
         $found_outages = $query->get();
 
         // no recorded outages found, so use current uptime
-        if (! count($found_outages)) {
+        if (!count($found_outages)) {
             return 100 * 1;
         }
 

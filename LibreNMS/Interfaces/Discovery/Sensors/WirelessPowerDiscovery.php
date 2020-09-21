@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessPowerDiscovery.php
+ * WirelessPowerDiscovery.php.
  *
  * Discover TX or RX power sensors in dBm
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -28,7 +29,7 @@ interface WirelessPowerDiscovery
 {
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */

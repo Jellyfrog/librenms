@@ -1,6 +1,6 @@
 <?php
 /**
- * YamlTest.php
+ * YamlTest.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <librenms+n@laf.io>
  */
@@ -57,7 +58,7 @@ class YamlTest extends TestCase
 
     private function validateYamlFilesAgainstSchema($dir, $schema_file)
     {
-        foreach ($this->listFiles($dir . '/*.yaml') as $file) {
+        foreach ($this->listFiles($dir.'/*.yaml') as $file) {
             $this->validateFileAgainstSchema($file, $schema_file);
         }
     }
@@ -74,7 +75,7 @@ class YamlTest extends TestCase
 
     private function listFiles($pattern)
     {
-        $pattern = Config::get('install_dir') . $pattern;
+        $pattern = Config::get('install_dir').$pattern;
 
         return collect(glob($pattern))
             ->reduce(function ($array, $file) {
@@ -91,7 +92,7 @@ class YamlTest extends TestCase
      */
     private function validateFileAgainstSchema($filePath, $schema_file)
     {
-        $schema = (object) ['$ref' => 'file://' . Config::get('install_dir') . $schema_file];
+        $schema = (object) ['$ref' => 'file://'.Config::get('install_dir').$schema_file];
         $filename = basename($filePath);
         $filePath = Str::start($filePath, Config::get('install_dir'));
 
@@ -104,7 +105,7 @@ class YamlTest extends TestCase
         }
 
         try {
-            $validator = new \JsonSchema\Validator;
+            $validator = new \JsonSchema\Validator();
             $validator->validate(
                 $data,
                 $schema,
@@ -113,6 +114,7 @@ class YamlTest extends TestCase
         } catch (JsonDecodingException $e) {
             // Output the filename so we know what file failed
             echo "Json format invalid in $schema_file\n";
+
             throw $e;
         }
 

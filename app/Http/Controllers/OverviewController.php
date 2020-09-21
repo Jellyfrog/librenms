@@ -40,7 +40,7 @@ class OverviewController extends Controller
             return $dashboard->user_id == $user->user_id;
         });
 
-        if (! empty($request->dashboard) && isset($dashboards[$request->dashboard])) {
+        if (!empty($request->dashboard) && isset($dashboards[$request->dashboard])) {
             // specific dashboard
             $dashboard = $dashboards[$request->dashboard];
         } else {
@@ -54,24 +54,24 @@ class OverviewController extends Controller
             } elseif (isset($dashboards[$global_default])) {
                 $dashboard = $dashboards[$global_default];
             // load users first dashboard
-            } elseif (! empty($user_dashboards)) {
+            } elseif (!empty($user_dashboards)) {
                 $dashboard = $user_dashboards->first();
             }
 
             // specific dashboard was requested, but doesn't exist
-            if (isset($dashboard) && ! empty($request->dashboard)) {
+            if (isset($dashboard) && !empty($request->dashboard)) {
                 Toastr::error(
                     "Dashboard <code>#$request->dashboard</code> does not exist! Loaded <code>
-                    " . htmlentities($dashboard->dashboard_name) . '</code> instead.',
+                    ".htmlentities($dashboard->dashboard_name).'</code> instead.',
                     'Requested Dashboard Not Found!'
                 );
             }
         }
 
-        if (! isset($dashboard)) {
+        if (!isset($dashboard)) {
             $dashboard = Dashboard::create([
                 'dashboard_name' => 'Default',
-                'user_id' => $user->user_id,
+                'user_id'        => $user->user_id,
             ]);
         }
 
@@ -82,15 +82,15 @@ class OverviewController extends Controller
             ->get();
 
         if ($data->isEmpty()) {
-            $data[] = ['user_widget_id'=>'0',
-                'widget_id'=>1,
-                'title'=>'Add a widget',
-                'widget'=>'placeholder',
-                'col'=>1,
-                'row'=>1,
-                'size_x'=>6,
-                'size_y'=>2,
-                'refresh'=>60,
+            $data[] = ['user_widget_id'=> '0',
+                'widget_id'            => 1,
+                'title'                => 'Add a widget',
+                'widget'               => 'placeholder',
+                'col'                  => 1,
+                'row'                  => 1,
+                'size_x'               => 6,
+                'size_y'               => 2,
+                'refresh'              => 60,
             ];
         }
 

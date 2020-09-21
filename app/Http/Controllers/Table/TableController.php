@@ -1,6 +1,6 @@
 <?php
 /**
- * TableController.php
+ * TableController.php.
  *
  * Controller class for bootgrid ajax controllers.
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -36,7 +37,7 @@ abstract class TableController extends PaginatedAjaxController
     protected function sortFields($request)
     {
         if (isset($this->model)) {
-            $fields = \Schema::getColumnListing((new $this->model)->getTable());
+            $fields = \Schema::getColumnListing((new $this->model())->getTable());
 
             return array_combine($fields, $fields);
         }
@@ -51,6 +52,7 @@ abstract class TableController extends PaginatedAjaxController
 
     /**
      * @param Request $request
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function __invoke(Request $request)
@@ -77,15 +79,16 @@ abstract class TableController extends PaginatedAjaxController
 
     /**
      * @param LengthAwarePaginator $paginator
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     protected function formatResponse($paginator)
     {
         return response()->json([
-            'current' => $paginator->currentPage(),
+            'current'  => $paginator->currentPage(),
             'rowCount' => $paginator->count(),
-            'rows' => collect($paginator->items())->map([$this, 'formatItem']),
-            'total' => $paginator->total(),
+            'rows'     => collect($paginator->items())->map([$this, 'formatItem']),
+            'total'    => $paginator->total(),
         ]);
     }
 }

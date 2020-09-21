@@ -1,6 +1,6 @@
 <?php
 /**
- * Lcos.php
+ * Lcos.php.
  *
  * Lancom LCOS
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Vitali Kari
  * @author     Vitali Kari <vitali.kari@gmail.com>
  */
@@ -47,9 +48,10 @@ class Lcos extends OS implements
     WirelessRssiDiscovery
 {
     /**
-     * Convert String to decimal encoded string notation
+     * Convert String to decimal encoded string notation.
      *
      * @param string
+     *
      * @return string decimal encoded OID string
      */
     private function strToDecOid($index)
@@ -63,7 +65,7 @@ class Lcos extends OS implements
 
     /**
      * Discover wireless frequency.  This is in Hz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -81,7 +83,7 @@ class Lcos extends OS implements
             $sensors[$radio] = new WirelessSensor(
                 'frequency',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.57.1.3.' . '6.' . $this->strToDecOid($index),
+                '.1.3.6.1.4.1.2356.11.1.3.57.1.3.'.'6.'.$this->strToDecOid($index),
                 'lcos',
                 $radio,
                 "Frequency ($radio)",
@@ -94,9 +96,10 @@ class Lcos extends OS implements
 
     /**
      * Poll wireless frequency as MHz
-     * The returned array should be sensor_id => value pairs
+     * The returned array should be sensor_id => value pairs.
      *
      * @param array $sensors Array of sensors needed to be polled
+     *
      * @return array of polled data
      */
     public function pollWirelessFrequency(array $sensors)
@@ -106,7 +109,7 @@ class Lcos extends OS implements
 
     /**
      * Discover wireless capacity.  This is a percent. Type is capacity.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -124,7 +127,7 @@ class Lcos extends OS implements
             $sensors[$radio] = new WirelessSensor(
                 'capacity',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.57.1.6.' . '6.' . $this->strToDecOid($index),
+                '.1.3.6.1.4.1.2356.11.1.3.57.1.6.'.'6.'.$this->strToDecOid($index),
                 'lcos',
                 $radio,
                 "Modem Load ($radio)",
@@ -137,7 +140,7 @@ class Lcos extends OS implements
 
     /**
      * Discover wireless noise floor. This is in dBm/Hz. Type is noise-floor.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -155,7 +158,7 @@ class Lcos extends OS implements
             $sensors[$radio] = new WirelessSensor(
                 'noise-floor',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.57.1.5.' . '6.' . $this->strToDecOid($index),
+                '.1.3.6.1.4.1.2356.11.1.3.57.1.5.'.'6.'.$this->strToDecOid($index),
                 'lcos',
                 $radio,
                 "Noise Floor ($radio)",
@@ -168,7 +171,7 @@ class Lcos extends OS implements
 
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -187,7 +190,7 @@ class Lcos extends OS implements
             $sensors[$radio] = new WirelessSensor(
                 'power',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.57.1.7.' . '6.' . $this->strToDecOid($index),
+                '.1.3.6.1.4.1.2356.11.1.3.57.1.7.'.'6.'.$this->strToDecOid($index),
                 'lcos-tx',
                 $radio,
                 "Tx Power ($radio)",
@@ -200,7 +203,7 @@ class Lcos extends OS implements
 
     /**
      * Discover wireless client connection quality.  This is a percent. Type is ccq.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -220,10 +223,10 @@ class Lcos extends OS implements
             $sensors[$bssid] = new WirelessSensor(
                 'ccq',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.44.1.10.' . Rewrite::oidMac($bssid) . '.0',
+                '.1.3.6.1.4.1.2356.11.1.3.44.1.10.'.Rewrite::oidMac($bssid).'.0',
                 'lcos',
                 $bssid,
-                'CCQ ' . $entry['lcsStatusWlanCompetingNetworksEntryInterpointPeerName'] . " $bssid",
+                'CCQ '.$entry['lcsStatusWlanCompetingNetworksEntryInterpointPeerName']." $bssid",
                 $entry['lcsStatusWlanCompetingNetworksEntryPhySigal']
             );
         }
@@ -233,7 +236,7 @@ class Lcos extends OS implements
 
     /**
      * Discover wireless rate. This is in bps. Type is rate.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -253,10 +256,10 @@ class Lcos extends OS implements
             $sensors[$bssid] = new WirelessSensor(
                 'rate',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.44.1.35.' . Rewrite::oidMac($bssid) . '.0',
+                '.1.3.6.1.4.1.2356.11.1.3.44.1.35.'.Rewrite::oidMac($bssid).'.0',
                 'lcos-tx',
                 $bssid,
-                'TX Rate ' . $entry['lcsStatusWlanCompetingNetworksEntryInterpointPeerName'] . " $bssid",
+                'TX Rate '.$entry['lcsStatusWlanCompetingNetworksEntryInterpointPeerName']." $bssid",
                 $entry['lcsStatusWlanCompetingNetworksEntryEffRate'],
                 1000000
             );
@@ -267,7 +270,7 @@ class Lcos extends OS implements
 
     /**
      * Discover wireless RSSI (Received Signal Strength Indicator). This is in dBm. Type is rssi.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -288,10 +291,10 @@ class Lcos extends OS implements
             $sensors[$bssid] = new WirelessSensor(
                 'rssi',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2356.11.1.3.44.1.26.' . Rewrite::oidMac($bssid) . '.0',
+                '.1.3.6.1.4.1.2356.11.1.3.44.1.26.'.Rewrite::oidMac($bssid).'.0',
                 'lcos',
                 $bssid,
-                'RSSI ' . $entry['lcsStatusWlanCompetingNetworksEntryInterpointPeerName'] . " $bssid",
+                'RSSI '.$entry['lcsStatusWlanCompetingNetworksEntryInterpointPeerName']." $bssid",
                 $entry['lcsStatusWlanCompetingNetworksEntrySignalLevel']
             );
         }

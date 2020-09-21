@@ -1,6 +1,6 @@
 <?php
 /**
- * ArubaInstant.php
+ * ArubaInstant.php.
  *
  * HPE Aruba Instant
  *
@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Timothy Willey
  * @author     Timothy Willey <developer@timothywilley.net>
  */
@@ -63,7 +64,7 @@ class ArubaInstant extends OS implements
 
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
@@ -86,7 +87,7 @@ class ArubaInstant extends OS implements
 
     /**
      * Discover wireless client counts. Type is clients.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -136,7 +137,7 @@ class ArubaInstant extends OS implements
             // fetch the MAC addresses of currently connected clients, then count them to get an overall total
             $client_data = $this->getCacheTable('aiClientMACAddress', $ai_mib);
 
-            $total_clients = sizeof($client_data);
+            $total_clients = count($client_data);
 
             $combined_oid = sprintf('%s::%s', $ai_mib, 'aiClientMACAddress');
             $oid = snmp_translate($combined_oid, 'ALL', 'arubaos', '-On', null);
@@ -149,7 +150,7 @@ class ArubaInstant extends OS implements
 
     /**
      * Discover wireless AP counts. Type is ap-count.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -159,7 +160,7 @@ class ArubaInstant extends OS implements
         $ai_mib = 'AI-AP-MIB';
         $ap_data = $this->getCacheTable('aiAPSerialNum', $ai_mib);
 
-        $total_aps = sizeof($ap_data);
+        $total_aps = count($ap_data);
 
         $combined_oid = sprintf('%s::%s', $ai_mib, 'aiAPSerialNum');
         $oid = snmp_translate($combined_oid, 'ALL', 'arubaos', '-On', null);
@@ -171,7 +172,7 @@ class ArubaInstant extends OS implements
 
     /**
      * Discover wireless frequency.  This is in MHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -183,7 +184,7 @@ class ArubaInstant extends OS implements
 
     /**
      * Discover wireless noise floor. This is in dBm/Hz. Type is noise-floor.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -195,7 +196,7 @@ class ArubaInstant extends OS implements
 
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -207,7 +208,7 @@ class ArubaInstant extends OS implements
 
     /**
      * Discover wireless utilization.  This is in %. Type is utilization.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -218,7 +219,7 @@ class ArubaInstant extends OS implements
     }
 
     /**
-     * Aruba Instant Radio Discovery
+     * Aruba Instant Radio Discovery.
      *
      * @return array Sensors
      */
@@ -268,9 +269,10 @@ class ArubaInstant extends OS implements
 
     /**
      * Poll wireless frequency as MHz
-     * The returned array should be sensor_id => value pairs
+     * The returned array should be sensor_id => value pairs.
      *
      * @param array $sensors Array of sensors needed to be polled
+     *
      * @return array of polled data
      */
     public function pollWirelessFrequency(array $sensors)
@@ -280,15 +282,16 @@ class ArubaInstant extends OS implements
 
     /**
      * Poll wireless clients
-     * The returned array should be sensor_id => value pairs
+     * The returned array should be sensor_id => value pairs.
      *
      * @param array $sensors Array of sensors needed to be polled
+     *
      * @return array of polled data
      */
     public function pollWirelessClients(array $sensors)
     {
         $data = [];
-        if (! empty($sensors)) {
+        if (!empty($sensors)) {
             $device = $this->getDeviceArray();
 
             if (intval(explode('.', $device['version'])[0]) >= 8 && intval(explode('.', $device['version'])[1]) >= 4) {
@@ -306,14 +309,14 @@ class ArubaInstant extends OS implements
                 }
             } else {
                 // version is lower than 8.4.0.0
-                if (! empty($sensors) && sizeof($sensors) == 1) {
+                if (!empty($sensors) && count($sensors) == 1) {
                     $ai_mib = 'AI-AP-MIB';
                     $client_data = $this->getCacheTable('aiClientMACAddress', $ai_mib);
 
                     if (empty($client_data)) {
                         $total_clients = 0;
                     } else {
-                        $total_clients = sizeof($client_data);
+                        $total_clients = count($client_data);
                     }
 
                     $data[$sensors[0]['sensor_id']] = $total_clients;
@@ -326,22 +329,23 @@ class ArubaInstant extends OS implements
 
     /**
      * Poll AP Count
-     * The returned array should be sensor_id => value pairs
+     * The returned array should be sensor_id => value pairs.
      *
      * @param array $sensors Array of sensors needed to be polled
+     *
      * @return array of polled data
      */
     public function pollWirelessApCount(array $sensors)
     {
         $data = [];
-        if (! empty($sensors) && sizeof($sensors) == 1) {
+        if (!empty($sensors) && count($sensors) == 1) {
             $ai_mib = 'AI-AP-MIB';
             $ap_data = $this->getCacheTable('aiAPSerialNum', $ai_mib);
 
             $total_aps = 0;
 
-            if (! empty($ap_data)) {
-                $total_aps = sizeof($ap_data);
+            if (!empty($ap_data)) {
+                $total_aps = count($ap_data);
             }
 
             $data[$sensors[0]['sensor_id']] = $total_aps;

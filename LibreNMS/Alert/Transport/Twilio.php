@@ -7,7 +7,8 @@
  * the source code distribution for details.
 */
 /**
- * Twilio API Transport
+ * Twilio API Transport.
+ *
  * @author Andy Rosen <arosen@arosen.net>
  * @license GPL
  */
@@ -31,19 +32,19 @@ class Twilio extends Transport
     public static function contactTwilio($obj, $opts)
     {
         $params = [
-            'sid' => $opts['sid'],
-            'token' => $opts['token'],
-            'phone' => $opts['to'],
-            'text' => $obj['title'],
+            'sid'    => $opts['sid'],
+            'token'  => $opts['token'],
+            'phone'  => $opts['to'],
+            'text'   => $obj['title'],
             'sender' => $opts['sender'],
         ];
 
-        $url = 'https://api.twilio.com/2010-04-01/Accounts/' . $params['sid'] . '/Messages.json';
+        $url = 'https://api.twilio.com/2010-04-01/Accounts/'.$params['sid'].'/Messages.json';
 
         $data = [
             'From' => $params['sender'],
             'Body' => $params['text'],
-            'To' => $params['phone'],
+            'To'   => $params['phone'],
         ];
         $post = http_build_query($data);
 
@@ -55,7 +56,7 @@ class Twilio extends Transport
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($curl, CURLOPT_USERPWD, $params['sid'] . ':' . $params['token']);
+        curl_setopt($curl, CURLOPT_USERPWD, $params['sid'].':'.$params['token']);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
 
         curl_exec($curl);
@@ -71,34 +72,34 @@ class Twilio extends Transport
             'config' => [
                 [
                     'title' => 'SID',
-                    'name' => 'twilio-sid',
+                    'name'  => 'twilio-sid',
                     'descr' => 'Twilio SID',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Token',
-                    'name' => 'twilio-token',
+                    'name'  => 'twilio-token',
                     'descr' => 'Twilio Account Token',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Mobile Number',
-                    'name' => 'twilio-to',
+                    'name'  => 'twilio-to',
                     'descr' => 'Mobile number to SMS',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Twilio SMS Number',
-                    'name' => 'twilio-sender',
+                    'name'  => 'twilio-sender',
                     'descr' => 'Twilio sending number',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
             ],
             'validation' => [
-                'twilio-sid'    => 'required|string',
+                'twilio-sid'      => 'required|string',
                 'twilio-token'    => 'required|string',
-                'twilio-to' => 'required',
-                'twilio-sender' => 'required',
+                'twilio-to'       => 'required',
+                'twilio-sender'   => 'required',
             ],
         ];
     }

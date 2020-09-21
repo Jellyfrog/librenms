@@ -17,7 +17,7 @@ class AddIndexesToMplsLspPathsTable extends Migration
             /** add
              * vRtrMplsLspPathTunnelARHopListIndex
              * vRtrMplsLspPathTunnelCHopListIndex
-             * indexes to table
+             * indexes to table.
              */
             $table->unsignedInteger('mplsLspPathTunnelARHopListIndex')->nullable();
             $table->unsignedInteger('mplsLspPathTunnelCHopListIndex')->nullable();

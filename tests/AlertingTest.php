@@ -1,6 +1,6 @@
 <?php
 /**
- * AlertingTest.php
+ * AlertingTest.php.
  *
  * Tests for alerting functionality.
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
@@ -45,13 +46,13 @@ class AlertingTest extends TestCase
         foreach ($this->getTransportFiles() as $file => $_unused) {
             $parts = explode('/', $file);
             $transport = ucfirst(str_replace('.php', '', array_pop($parts)));
-            $class = 'LibreNMS\\Alert\\Transport\\' . $transport;
-            if (! class_exists($class)) {
+            $class = 'LibreNMS\\Alert\\Transport\\'.$transport;
+            if (!class_exists($class)) {
                 $this->assertTrue(false, "The transport $transport does not exist");
             } else {
-                $methods = ['deliverAlert', 'configTemplate', 'contact' . $transport];
+                $methods = ['deliverAlert', 'configTemplate', 'contact'.$transport];
                 foreach ($methods as $method) {
-                    if (! method_exists($class, $method)) {
+                    if (!method_exists($class, $method)) {
                         $this->assertTrue(false, "The transport $transport does not have the method $method");
                     }
                 }

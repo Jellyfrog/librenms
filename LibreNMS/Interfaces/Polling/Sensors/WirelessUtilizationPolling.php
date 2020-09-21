@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessUtilizationPolling.php
+ * WirelessUtilizationPolling.php.
  *
  * Custom polling interface for wireless utilization
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -28,9 +29,10 @@ interface WirelessUtilizationPolling
 {
     /**
      * Poll wireless utilization
-     * The returned array should be sensor_id => value pairs
+     * The returned array should be sensor_id => value pairs.
      *
      * @param array $sensors Array of sensors needed to be polled
+     *
      * @return array of polled data
      */
     public function pollWirelessUtilization(array $sensors);

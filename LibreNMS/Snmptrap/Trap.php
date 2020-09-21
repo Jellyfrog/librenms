@@ -1,6 +1,6 @@
 <?php
 /**
- * Trap.php
+ * Trap.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -41,7 +42,8 @@ class Trap
     protected $oid_data;
 
     /**
-     * Construct a trap from raw trap text
+     * Construct a trap from raw trap text.
+     *
      * @param $trap
      */
     public function __construct($trap)
@@ -70,9 +72,10 @@ class Trap
     }
 
     /**
-     * Find the first in this trap by substring
+     * Find the first in this trap by substring.
      *
      * @param $search
+     *
      * @return string
      */
     public function findOid($search)
@@ -83,8 +86,10 @@ class Trap
     }
 
     /**
-     * Find all oids that match the given string
+     * Find all oids that match the given string.
+     *
      * @param $search
+     *
      * @return array
      */
     public function findOids($search)

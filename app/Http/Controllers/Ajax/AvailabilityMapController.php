@@ -1,6 +1,6 @@
 <?php
 /**
- * AvailabilityMapController.php
+ * AvailabilityMapController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -49,7 +50,8 @@ class AvailabilityMapController extends Controller
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @param string $key
+     * @param string                   $key
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     private function setSessionValue($request, $key)

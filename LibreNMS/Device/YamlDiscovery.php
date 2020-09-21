@@ -1,6 +1,6 @@
 <?php
 /**
- * YamlDiscovery.php
+ * YamlDiscovery.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -32,9 +33,10 @@ use LibreNMS\OS;
 class YamlDiscovery
 {
     /**
-     * @param OS $os
+     * @param OS                   $os
      * @param DiscoveryItem|string $class
      * @param $yaml_data
+     *
      * @return array
      */
     public static function discover(OS $os, $class, $yaml_data)
@@ -75,7 +77,7 @@ class YamlDiscovery
                     $count++;
                     $current_data = [];
 
-                    if (! isset($data['value'])) {
+                    if (!isset($data['value'])) {
                         $data['value'] = $data['oid'];
                     }
 
@@ -123,7 +125,7 @@ class YamlDiscovery
 
             // prepare the $subindexX match variable replacement
             foreach (explode('.', $index) as $pos => $subindex) {
-                $search[] = '{{ $subindex' . $pos . ' }}';
+                $search[] = '{{ $subindex'.$pos.' }}';
                 $replace[] = $subindex;
             }
 
@@ -133,7 +135,7 @@ class YamlDiscovery
             $value = preg_replace_callback('/{{ \$([a-zA-Z0-9\-.]+) }}/', function ($matches) use ($index, $data, $pre_cache) {
                 $replace = static::getValueFromData($matches[1], $index, $data, $pre_cache, null);
                 if (is_null($replace)) {
-                    d_echo('Warning: No variable available to replace ' . $matches[1] . ".\n");
+                    d_echo('Warning: No variable available to replace '.$matches[1].".\n");
 
                     return ''; // remove the unavailable variable
                 }
@@ -146,13 +148,14 @@ class YamlDiscovery
     }
 
     /**
-     * Helper function for dynamic discovery to search for data from pre_cached snmp data
+     * Helper function for dynamic discovery to search for data from pre_cached snmp data.
      *
-     * @param string $name The name of the field from the discovery data or just an oid
-     * @param string $index The index of the current sensor
-     * @param array $discovery_data The discovery data for the current sensor
-     * @param array $pre_cache all pre-cached snmp data
-     * @param mixed $default The default value to return if data is not found
+     * @param string $name           The name of the field from the discovery data or just an oid
+     * @param string $index          The index of the current sensor
+     * @param array  $discovery_data The discovery data for the current sensor
+     * @param array  $pre_cache      all pre-cached snmp data
+     * @param mixed  $default        The default value to return if data is not found
+     *
      * @return mixed
      */
     public static function getValueFromData($name, $index, $discovery_data, $pre_cache, $default = null)
@@ -196,7 +199,7 @@ class YamlDiscovery
         $pre_cache = [];
         $device = $os->getDeviceArray();
 
-        $pre_cache_file = 'includes/discovery/sensors/pre-cache/' . $device['os'] . '.inc.php';
+        $pre_cache_file = 'includes/discovery/sensors/pre-cache/'.$device['os'].'.inc.php';
         if (is_file($pre_cache_file)) {
             echo "Pre-cache {$device['os']}: ";
             include $pre_cache_file;
@@ -209,7 +212,7 @@ class YamlDiscovery
             return $pre_cache;
         }
 
-        if (! empty($device['dynamic_discovery']['modules'])) {
+        if (!empty($device['dynamic_discovery']['modules'])) {
             echo 'Caching data: ';
             foreach ($device['dynamic_discovery']['modules'] as $module => $discovery_data) {
                 echo "$module ";
@@ -223,7 +226,7 @@ class YamlDiscovery
 
                     foreach ($data_array as $data) {
                         foreach ((array) $data['oid'] as $oid) {
-                            if (! array_key_exists($oid, $pre_cache)) {
+                            if (!array_key_exists($oid, $pre_cache)) {
                                 if (isset($data['snmp_flags'])) {
                                     $snmp_flag = Arr::wrap($data['snmp_flags']);
                                 } else {
@@ -245,12 +248,13 @@ class YamlDiscovery
     }
 
     /**
-     * Check to see if we should skip this discovery item
+     * Check to see if we should skip this discovery item.
      *
      * @param mixed $value
      * @param array $yaml_item_data The data key from this item
-     * @param array $group_options The options key from this group of items
+     * @param array $group_options  The options key from this group of items
      * @param array $item_snmp_data The pre-cache data array
+     *
      * @return bool
      */
     public static function canSkipItem($value, $index, $yaml_item_data, $group_options, $pre_cache = [])

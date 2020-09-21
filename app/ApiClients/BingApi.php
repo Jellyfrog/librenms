@@ -1,6 +1,6 @@
 <?php
 /**
- * BingApi.php
+ * BingApi.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -36,9 +37,10 @@ class BingApi extends BaseApi implements Geocoder
     protected $geocoding_uri = '/REST/v1/Locations';
 
     /**
-     * Get latitude and longitude from geocode response
+     * Get latitude and longitude from geocode response.
      *
      * @param array $data
+     *
      * @return array
      */
     protected function parseLatLng($data)
@@ -50,36 +52,39 @@ class BingApi extends BaseApi implements Geocoder
     }
 
     /**
-     * Build Guzzle request option array
+     * Build Guzzle request option array.
      *
      * @param string $address
-     * @return array
+     *
      * @throws \Exception you may throw an Exception if validation fails
+     *
+     * @return array
      */
     protected function buildGeocodingOptions($address)
     {
         $api_key = Config::get('geoloc.api_key');
-        if (! $api_key) {
+        if (!$api_key) {
             throw new Exception('Bing API key missing, set geoloc.api_key');
         }
 
         return [
             'query' => [
-                'key' => $api_key,
+                'key'         => $api_key,
                 'addressLine' => $address,
             ],
         ];
     }
 
     /**
-     * Checks if the request was a success
+     * Checks if the request was a success.
      *
      * @param \Psr\Http\Message\ResponseInterface $response
-     * @param array $data decoded response data
+     * @param array                               $data     decoded response data
+     *
      * @return bool
      */
     protected function checkResponse($response, $data)
     {
-        return $response->getStatusCode() == 200 && ! empty($data['resourceSets'][0]['resources']);
+        return $response->getStatusCode() == 200 && !empty($data['resourceSets'][0]['resources']);
     }
 }

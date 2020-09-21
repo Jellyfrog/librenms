@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessCcqDiscovery.php
+ * WirelessCcqDiscovery.php.
  *
  * Discover Client Connection Quality Sensors as a percent
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -28,7 +29,7 @@ interface WirelessCcqDiscovery
 {
     /**
      * Discover wireless client connection quality.  This is a percent. Type is ccq.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

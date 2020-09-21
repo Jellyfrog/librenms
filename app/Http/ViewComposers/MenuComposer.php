@@ -1,6 +1,6 @@
 <?php
 /**
- * Menu.php
+ * Menu.php.
  *
  * Builds data for LibreNMS menu
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -46,7 +47,8 @@ class MenuComposer
     /**
      * Bind data to the view.
      *
-     * @param  View $view
+     * @param View $view
+     *
      * @return void
      */
     public function compose(View $view)
@@ -124,7 +126,7 @@ class MenuComposer
             if ($routing_count['vrf']) {
                 $routing_menu[] = [
                     [
-                        'url' => 'vrf',
+                        'url'  => 'vrf',
                         'icon' => 'arrows',
                         'text' => 'VRFs',
                     ],
@@ -134,7 +136,7 @@ class MenuComposer
             if ($routing_count['mpls']) {
                 $routing_menu[] = [
                     [
-                        'url' => 'mpls',
+                        'url'  => 'mpls',
                         'icon' => 'tag',
                         'text' => 'MPLS',
                     ],
@@ -144,7 +146,7 @@ class MenuComposer
             if ($routing_count['ospf']) {
                 $routing_menu[] = [
                     [
-                        'url' => 'ospf',
+                        'url'  => 'ospf',
                         'icon' => 'circle-o-notch fa-rotate-180',
                         'text' => 'OSPF Devices',
                     ],
@@ -154,7 +156,7 @@ class MenuComposer
             if ($routing_count['cisco-otv']) {
                 $routing_menu[] = [
                     [
-                        'url' => 'cisco-otv',
+                        'url'  => 'cisco-otv',
                         'icon' => 'exchange',
                         'text' => 'Cisco OTV',
                     ],
@@ -166,17 +168,17 @@ class MenuComposer
                 $vars['bgp_alerts'] = BgpPeer::hasAccess($user)->inAlarm()->count();
                 $routing_menu[] = [
                     [
-                        'url' => 'bgp/type=all/graph=NULL',
+                        'url'  => 'bgp/type=all/graph=NULL',
                         'icon' => 'circle-o',
                         'text' => 'BGP All Sessions',
                     ],
                     [
-                        'url' => 'bgp/type=external/graph=NULL',
+                        'url'  => 'bgp/type=external/graph=NULL',
                         'icon' => 'external-link',
                         'text' => 'BGP External',
                     ],
                     [
-                        'url' => 'bgp/type=internal/graph=NULL',
+                        'url'  => 'bgp/type=internal/graph=NULL',
                         'icon' => 'external-link fa-rotate-180',
                         'text' => 'BGP Internal',
                     ],
@@ -189,7 +191,7 @@ class MenuComposer
             if ($routing_count['cef']) {
                 $routing_menu[] = [
                     [
-                        'url' => 'cef',
+                        'url'  => 'cef',
                         'icon' => 'exchange',
                         'text' => 'Cisco CEF',
                     ],

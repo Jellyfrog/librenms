@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessRsrqPolling.php
+ * WirelessRsrqPolling.php.
  *
  * Custom polling interface for wireless RSRQ (Quality of the received signal)
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Jozef Rebjak
  * @author     Jozef Rebjak <jozefrebjak@icloud.com>
  */
@@ -28,9 +29,10 @@ interface WirelessRsrqPolling
 {
     /**
      * Poll wireless RSRQ (Quality of the received signal) in dB
-     * The returned array should be sensor_id => value pairs
+     * The returned array should be sensor_id => value pairs.
      *
      * @param array $sensors Array of sensors needed to be polled
+     *
      * @return array of polled data
      */
     public function pollWirelessRsrq(array $sensors);

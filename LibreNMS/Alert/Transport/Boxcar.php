@@ -28,7 +28,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * Boxcar API Transport
+ * Boxcar API Transport.
+ *
  * @author trick77 <jan@trick77.com>
  * @copyright 2015 trick77, neokjames, f0o, LibreNMS
  * @license GPL
@@ -58,13 +59,13 @@ class Boxcar extends Transport
         switch ($obj['severity']) {
             case 'critical':
                 $severity = 'Critical';
-                if (! empty($api['sound_critical'])) {
+                if (!empty($api['sound_critical'])) {
                     $data['notification[sound]'] = $api['sound_critical'];
                 }
                 break;
             case 'warning':
                 $severity = 'Warning';
-                if (! empty($api['sound_warning'])) {
+                if (!empty($api['sound_warning'])) {
                     $data['notification[sound]'] = $api['sound_warning'];
                 }
                 break;
@@ -72,7 +73,7 @@ class Boxcar extends Transport
         switch ($obj['state']) {
             case AlertState::RECOVERED:
                 $title_text = 'OK';
-                if (! empty($api['sound_ok'])) {
+                if (!empty($api['sound_ok'])) {
                     $data['notification[sound]'] = $api['sound_ok'];
                 }
                 break;
@@ -83,12 +84,12 @@ class Boxcar extends Transport
                 $title_text = 'Acknowledged';
                 break;
         }
-        $data['notification[title]'] = $title_text . ' - ' . $obj['hostname'] . ' - ' . $obj['name'];
-        $message_text = 'Timestamp: ' . $obj['timestamp'];
-        if (! empty($obj['faults'])) {
+        $data['notification[title]'] = $title_text.' - '.$obj['hostname'].' - '.$obj['name'];
+        $message_text = 'Timestamp: '.$obj['timestamp'];
+        if (!empty($obj['faults'])) {
             $message_text .= "\n\nFaults:\n";
             foreach ($obj['faults'] as $k => $faults) {
-                $message_text .= '#' . $k . ' ' . $faults['string'] . "\n";
+                $message_text .= '#'.$k.' '.$faults['string']."\n";
             }
         }
         $data['notification[long_message]'] = $message_text;
@@ -115,15 +116,15 @@ class Boxcar extends Transport
             'config' => [
                 [
                     'title' => 'Access Token',
-                    'name' => 'boxcar-token',
+                    'name'  => 'boxcar-token',
                     'descr' => 'Boxcar Access Token',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Boxcar Options',
-                    'name' => 'boxcar-options',
+                    'name'  => 'boxcar-options',
                     'descr' => 'Boxcar Options',
-                    'type' => 'textarea',
+                    'type'  => 'textarea',
                 ],
             ],
             'validation' => [

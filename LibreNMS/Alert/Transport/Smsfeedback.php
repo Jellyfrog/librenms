@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * SMSEagle API Transport
+ * SMSEagle API Transport.
+ *
  * @author Barry O'Donovan <barry@lightnet.ie>
  * @copyright 2017 Barry O'Donovan, LibreNMS
  * @license GPL
@@ -39,13 +40,13 @@ class Smsfeedback extends Transport
     public static function contactsmsfeedback($obj, $opts)
     {
         $params = [
-            'login' => $opts['user'],
-            'pass' => md5($opts['token']),
-            'phone' => $opts['to'],
-            'text' => $obj['title'],
+            'login'  => $opts['user'],
+            'pass'   => md5($opts['token']),
+            'phone'  => $opts['to'],
+            'text'   => $obj['title'],
             'sender' => $opts['sender'],
         ];
-        $url = 'http://' . $opts['user'] . ':' . $opts['token'] . '@' . 'api.smsfeedback.ru/messages/v2/send/?' . http_build_query($params);
+        $url = 'http://'.$opts['user'].':'.$opts['token'].'@'.'api.smsfeedback.ru/messages/v2/send/?'.http_build_query($params);
         $curl = curl_init($url);
 
         set_curl_proxy($curl);
@@ -64,34 +65,34 @@ class Smsfeedback extends Transport
             'config' => [
                 [
                     'title' => 'User',
-                    'name' => 'smsfeedback-user',
+                    'name'  => 'smsfeedback-user',
                     'descr' => 'smsfeedback User',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Password',
-                    'name' => 'smsfeedback-pass',
+                    'name'  => 'smsfeedback-pass',
                     'descr' => 'smsfeedback Password',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Mobiles',
-                    'name' => 'smsfeedback-mobiles',
+                    'name'  => 'smsfeedback-mobiles',
                     'descr' => 'smsfeedback Mobile number',
-                    'type' => 'textarea',
+                    'type'  => 'textarea',
                 ],
                 [
                     'title' => 'Sender',
-                    'name' => 'smsfeedback-sender',
+                    'name'  => 'smsfeedback-sender',
                     'descr' => 'smsfeedback sender name',
-                    'type' => 'textarea',
+                    'type'  => 'textarea',
                 ],
             ],
             'validation' => [
                 'smsfeedback-user'    => 'required|string',
                 'smsfeedback-pass'    => 'required|string',
                 'smsfeedback-mobiles' => 'required',
-                'smsfeedback-sender' => 'required|string',
+                'smsfeedback-sender'  => 'required|string',
             ],
         ];
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * MemcacheLock.php
+ * MemcacheLock.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -39,7 +40,7 @@ class MemcacheLock implements Lock
 
     private function __construct($lock_name)
     {
-        if (! class_exists('Memcached')) {
+        if (!class_exists('Memcached')) {
             throw new LockException('Missing PHP Memcached extension, this is required for distributed polling.');
         }
 
@@ -56,8 +57,10 @@ class MemcacheLock implements Lock
     /**
      * Given a lock name, try to acquire the lock, exiting on failure.
      * On success return a Lock object.
+     *
      * @param string $lock_name Name of lock
-     * @param int $timeout Try for this many seconds to see if we can acquire the lock.  Default is no wait. A negative timeout will wait forever.
+     * @param int    $timeout   Try for this many seconds to see if we can acquire the lock.  Default is no wait. A negative timeout will wait forever.
+     *
      * @return Lock
      */
     public static function lockOrDie($lock_name, $timeout = 0)
@@ -65,7 +68,7 @@ class MemcacheLock implements Lock
         try {
             return self::lock($lock_name, $timeout);
         } catch (LockException $e) {
-            echo $e->getMessage() . PHP_EOL;
+            echo $e->getMessage().PHP_EOL;
             exit(1);
         }
     }
@@ -73,17 +76,20 @@ class MemcacheLock implements Lock
     /**
      * Given a lock name, try to acquire the lock.
      * On success return a Lock object, or on failure return false.
-     * @param string $lock_name Name of lock
-     * @param int $wait Try for this many seconds to see if we can acquire the lock.  Default is no wait. A negative timeout will wait forever.
-     * @param int $expiration number of seconds to hold lock for, default is forever
-     * @return Lock
+     *
+     * @param string $lock_name  Name of lock
+     * @param int    $wait       Try for this many seconds to see if we can acquire the lock.  Default is no wait. A negative timeout will wait forever.
+     * @param int    $expiration number of seconds to hold lock for, default is forever
+     *
      * @throws LockException
+     *
+     * @return Lock
      */
     public static function lock($lock_name, $wait = 0, $expiration = null)
     {
         $lock = new self($lock_name);
 
-        if (! $lock->isConnected()) {
+        if (!$lock->isConnected()) {
             throw new LockException("Could not connect to memcached ($lock->host:$lock->port)");
         }
 
@@ -100,6 +106,7 @@ class MemcacheLock implements Lock
             if ($owner == $lock->poller_name) {
                 throw new LockException("This poller ($owner) already owns the lock: $lock->lock_name");
             }
+
             throw new LockException("Lock $lock->lock_name already acquired by $owner");
         }
 
@@ -131,7 +138,7 @@ class MemcacheLock implements Lock
     }
 
     /**
-     * Renew an expiring lock
+     * Renew an expiring lock.
      *
      * @param int $expiration number of seconds to hold lock for (null to cancel expiration)
      */

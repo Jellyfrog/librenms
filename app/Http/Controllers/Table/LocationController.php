@@ -1,6 +1,6 @@
 <?php
 /**
- * LocationsController.php
+ * LocationsController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -30,9 +31,10 @@ use App\Models\Location;
 class LocationController extends TableController
 {
     /**
-     * Defines search fields will be searched in order
+     * Defines search fields will be searched in order.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return array
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -47,9 +49,10 @@ class LocationController extends TableController
     }
 
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     public function baseQuery($request)
@@ -71,19 +74,20 @@ class LocationController extends TableController
 
     /**
      * @param Location $location
+     *
      * @return array|\Illuminate\Database\Eloquent\Model|\Illuminate\Support\Collection
      */
     public function formatItem($location)
     {
         return [
-            'id' => $location->id,
-            'location' => $location->location,
-            'lat' => $location->lat,
-            'lng' => $location->lng,
-            'down' => $location->devices()->isDown()->count(),
-            'devices' => $location->devices()->count(),
-            'network' => $location->devices()->where('type', 'network')->count(),
-            'servers' => $location->devices()->where('type', 'server')->count(),
+            'id'        => $location->id,
+            'location'  => $location->location,
+            'lat'       => $location->lat,
+            'lng'       => $location->lng,
+            'down'      => $location->devices()->isDown()->count(),
+            'devices'   => $location->devices()->count(),
+            'network'   => $location->devices()->where('type', 'network')->count(),
+            'servers'   => $location->devices()->where('type', 'server')->count(),
             'firewalls' => $location->devices()->where('type', 'firewall')->count(),
         ];
     }
@@ -98,7 +102,7 @@ class LocationController extends TableController
             case 'down':
                 return function ($query) {
                     $query->on('devices.location_id', 'locations.id');
-                    (new Device)->scopeIsDown($query);
+                    (new Device())->scopeIsDown($query);
                 };
             case 'network':
                 return function ($query) {

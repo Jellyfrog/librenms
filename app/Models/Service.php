@@ -13,6 +13,7 @@ class Service extends DeviceRelatedModel
 
     /**
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeIsOk($query)
@@ -26,6 +27,7 @@ class Service extends DeviceRelatedModel
 
     /**
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeIsCritical($query)
@@ -39,6 +41,7 @@ class Service extends DeviceRelatedModel
 
     /**
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeIsWarning($query)
@@ -52,6 +55,7 @@ class Service extends DeviceRelatedModel
 
     /**
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeIsIgnored($query)
@@ -64,6 +68,7 @@ class Service extends DeviceRelatedModel
 
     /**
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeIsDisabled($query)

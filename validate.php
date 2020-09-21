@@ -54,7 +54,7 @@ if (isset($options['h'])) {
 }
 
 // Check autoload
-if (! file_exists('vendor/autoload.php')) {
+if (!file_exists('vendor/autoload.php')) {
     print_fail('Composer has not been run, dependencies are missing', './scripts/composer_wrapper.php install --no-dev');
     exit;
 }
@@ -70,10 +70,10 @@ $precheck_complete = false;
 register_shutdown_function(function () {
     global $precheck_complete;
 
-    if (! $precheck_complete) {
+    if (!$precheck_complete) {
         // use this in case composer autoloader isn't available
         spl_autoload_register(function ($class) {
-            @include str_replace('\\', '/', $class) . '.php';
+            @include str_replace('\\', '/', $class).'.php';
         });
         print_header(version_info());
     }
@@ -91,7 +91,7 @@ if (file_exists('config.php')) {
     }
 
     $first_line = rtrim(`head -n1 config.php`);
-    if (! strpos($first_line, '<?php') === 0) {
+    if (!strpos($first_line, '<?php') === 0) {
         print_fail("config.php doesn't start with a <?php - please fix this ($first_line)");
         $pre_checks_failed = true;
     }
@@ -116,7 +116,7 @@ $init_modules = [];
 require 'includes/init.php';
 
 // make sure install_dir is set correctly, or the next includes will fail
-if (! file_exists(Config::get('install_dir') . '/.env')) {
+if (!file_exists(Config::get('install_dir').'/.env')) {
     $suggested = realpath(__DIR__);
     print_fail('\'install_dir\' config setting is not set correctly.', "It should probably be set to: $suggested");
     exit;
@@ -140,7 +140,7 @@ if (isset($options['g'])) {
 }
 
 // run checks
-$validator->validate($modules, isset($options['s']) || ! empty($modules));
+$validator->validate($modules, isset($options['s']) || !empty($modules));
 
 function print_header($versions)
 {
@@ -169,10 +169,10 @@ function print_fail($msg, $fix = null)
 {
     c_echo("[%RFAIL%n]  $msg");
     if ($fix && strlen($msg) > 72) {
-        echo PHP_EOL . '       ';
+        echo PHP_EOL.'       ';
     }
 
-    if (! empty($fix)) {
+    if (!empty($fix)) {
         c_echo(" [%BFIX%n] %B$fix%n");
     }
     echo PHP_EOL;

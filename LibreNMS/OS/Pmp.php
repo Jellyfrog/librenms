@@ -1,6 +1,6 @@
 <?php
 /**
- * Pmp.php
+ * Pmp.php.
  *
  * Cambium
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Paul Heinrichs
  * @author     Paul Heinrichs<pdheinrichs@gmail.com>
  */
@@ -56,13 +57,13 @@ class Pmp extends OS implements
 
         $ptp = [
             'BHUL450' => 'PTP 450',
-            'BHUL' => 'PTP 230',
-            'BH20' => 'PTP 100',
+            'BHUL'    => 'PTP 230',
+            'BH20'    => 'PTP 100',
         ];
 
         foreach ($ptp as $desc => $model) {
             if (Str::contains($device->features, $desc)) {
-                $hardware = $model . ' ' . str_replace(['timing', 'timeing'], '', $data['bhTimingMode.0']);
+                $hardware = $model.' '.str_replace(['timing', 'timeing'], '', $data['bhTimingMode.0']);
                 $device->version = $data['boxDeviceTypeID.0'] ?? $device->version;
                 break;
             }
@@ -70,11 +71,11 @@ class Pmp extends OS implements
 
         $pmp = [
             'MU-MIMO OFDM' => 'PMP 450m',
-            'MIMO OFDM' => 'PMP 450',
-            'OFDM' => 'PMP 430',
+            'MIMO OFDM'    => 'PMP 450',
+            'OFDM'         => 'PMP 430',
         ];
 
-        if (! isset($hardware)) {
+        if (!isset($hardware)) {
             $hardware = 'PMP 100';
             foreach ($pmp as $desc => $model) {
                 if (Str::contains($device->features, $desc)) {
@@ -102,7 +103,7 @@ class Pmp extends OS implements
                 ->addDataset('fecOutErrorsCount', 'GAUGE', 0, 100000);
 
             $fields = [
-                'fecInErrorsCount' => $fec['fecInErrorsCount.0'],
+                'fecInErrorsCount'  => $fec['fecInErrorsCount.0'],
                 'fecOutErrorsCount' => $fec['fecOutErrorsCount.0'],
             ];
             $tags = compact('rrd_def');
@@ -144,7 +145,7 @@ class Pmp extends OS implements
                 ->addDataset('failed', 'GAUGE', 0, 15000);
             $fields = [
                 'regCount' => $registered,
-                'failed' => $failed,
+                'failed'   => $failed,
             ];
             $tags = compact('rrd_def');
             data_update($this->getDeviceArray(), 'canopy-generic-regCount', $tags, $fields);
@@ -193,7 +194,7 @@ class Pmp extends OS implements
                 ->addDataset('vertical', 'GAUGE', -100, 0);
             $fields = [
                 'horizontal' => $dbm['linkRadioDbmHorizontal.2'],
-                'vertical' => $dbm['linkRadioDbmVertical.2'],
+                'vertical'   => $dbm['linkRadioDbmVertical.2'],
             ];
             $tags = compact('rrd_def');
             data_update($this->getDeviceArray(), 'canopy-generic-450-linkRadioDbm', $tags, $fields);
@@ -220,9 +221,9 @@ class Pmp extends OS implements
                 ->addDataset('horizontal', 'GAUGE', -150, 0)
                 ->addDataset('combined', 'GAUGE', -150, 0);
             $fields = [
-                'vertical' => floatval($vertical),
+                'vertical'   => floatval($vertical),
                 'horizontal' => floatval($horizontal),
-                'combined' => $combined,
+                'combined'   => $combined,
             ];
             $tags = compact('rrd_def');
             data_update($this->getDeviceArray(), 'canopy-generic-signalHV', $tags, $fields);
@@ -239,7 +240,7 @@ class Pmp extends OS implements
 
             $fields = [
                 'horizontal' => $horizontal,
-                'vertical' => $vertical,
+                'vertical'   => $vertical,
             ];
             $tags = compact('rrd_def');
             data_update($this->getDeviceArray(), 'canopy-generic-450-slaveHV', $tags, $fields);
@@ -249,7 +250,7 @@ class Pmp extends OS implements
 
     /**
      * Discover wireless bit/packet error ratio.  This is in percent. Type is error-ratio.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -273,7 +274,7 @@ class Pmp extends OS implements
     /**
      * Discover wireless SNR.  This is in dB. Type is snr.
      * Formula: SNR = Signal or Rx Power - Noise Floor
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -311,7 +312,7 @@ class Pmp extends OS implements
 
     /**
      * Discover wireless frequency.  This is in MHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -336,7 +337,7 @@ class Pmp extends OS implements
 
     /**
      * Discover wireless utilization.  This is in %. Type is utilization.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -441,7 +442,7 @@ class Pmp extends OS implements
 
     /**
      * Discover wireless SSR.  This is in dB. Type is ssr.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -467,7 +468,7 @@ class Pmp extends OS implements
     }
 
     /**
-     * Private method to declare if device is an AP
+     * Private method to declare if device is an AP.
      *
      * @return bool
      */
@@ -483,14 +484,14 @@ class Pmp extends OS implements
      * using the following for production:
      * FSK 5.2, 5.4, 5.7 GHz: OID returns MHz
      * FSK 900 MHz, 2.4 GHz: OID returns 100's of KHz
-     * OFDM: OID returns 10's of KHz"
+     * OFDM: OID returns 10's of KHz".
      */
     private function freqDivisor()
     {
         $device = $this->getDeviceArray();
 
         $types = [
-            'OFDM' => 1000,
+            'OFDM'   => 1000,
             '5.4GHz' => 1,
             '5.2Ghz' => 1,
             '5.7Ghz' => 1,
@@ -511,7 +512,7 @@ class Pmp extends OS implements
 
     /**
      * Discover wireless client counts. Type is clients.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -534,7 +535,7 @@ class Pmp extends OS implements
 
     /**
      * Discover wireless bit errors.  This is in total bits. Type is errors.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

@@ -1,6 +1,6 @@
 <?php
 /**
- * MplsPolling.php
+ * MplsPolling.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -35,6 +36,7 @@ interface MplsPolling
 
     /**
      * @param Collection $lsps collecton of synchronized lsp objects from pollMplsLsps()
+     *
      * @return Collection MplsLspPath objects
      */
     public function pollMplsPaths($lsps);
@@ -51,6 +53,7 @@ interface MplsPolling
 
     /**
      * @param Collection $svcs collecton of synchronized service objects from pollMplsServices()
+     *
      * @return Collection MplsSap objects
      */
     public function pollMplsSaps($svcs);
@@ -58,6 +61,7 @@ interface MplsPolling
     /**
      * @param Collection $sdps collecton of synchronized sdp objects from pollMplsSdps()
      * @param Collection $svcs collecton of synchronized service objects from pollMplsServices()
+     *
      * @return Collection MplsSdpBind objects
      */
     public function pollMplsSdpBinds($sdps, $svcs);

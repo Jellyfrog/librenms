@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 /**
- * build-base.php
+ * build-base.php.
  *
  * Create database structure.
  *
@@ -19,10 +19,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-if (! isset($init_modules)) {
+if (!isset($init_modules)) {
     $opts = getopt('ldh:u:p:n:t:s:');
 
     $map = [
@@ -37,18 +38,18 @@ if (! isset($init_modules)) {
     // set env variables
     foreach ($map as $opt => $env_name) {
         if (isset($opts[$opt])) {
-            putenv("$env_name=" . $opts[$opt]);
+            putenv("$env_name=".$opts[$opt]);
         }
     }
 
     $init_modules = ['nodb', 'laravel'];
-    require __DIR__ . '/includes/init.php';
+    require __DIR__.'/includes/init.php';
 
     set_debug(isset($opts['d']));
 
     $skip_schema_lock = isset($opts['l']);
 }
 
-require __DIR__ . '/includes/sql-schema/update.php';
+require __DIR__.'/includes/sql-schema/update.php';
 
 exit($return);

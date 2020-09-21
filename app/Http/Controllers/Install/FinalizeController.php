@@ -1,6 +1,6 @@
 <?php
 /**
- * FinalizeController.php
+ * FinalizeController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -35,7 +36,7 @@ class FinalizeController extends InstallationController implements InstallerStep
 
     public function index()
     {
-        if (! $this->initInstallStep()) {
+        if (!$this->initInstallStep()) {
             return $this->redirectToIncomplete();
         }
 
@@ -65,11 +66,11 @@ class FinalizeController extends InstallationController implements InstallerStep
         }
 
         return view('install.finish', $this->formatData([
-            'success' => $success,
-            'env' => $env,
-            'config' => $config,
-            'messages' => $messages,
-            'env_message' => $env_message,
+            'success'        => $success,
+            'env'            => $env,
+            'config'         => $config,
+            'messages'       => $messages,
+            'env_message'    => $env_message,
             'config_message' => $config_message,
         ]));
     }
@@ -90,13 +91,13 @@ class FinalizeController extends InstallationController implements InstallerStep
         $port = config("database.connections.$connection.port");
 
         return [
-            'NODE_ID' => uniqid(),
-            'DB_HOST' => config("database.connections.$connection.host"),
-            'DB_PORT' => $port == 3306 ? null : $port, // don't set default port
+            'NODE_ID'     => uniqid(),
+            'DB_HOST'     => config("database.connections.$connection.host"),
+            'DB_PORT'     => $port == 3306 ? null : $port, // don't set default port
             'DB_USERNAME' => config("database.connections.$connection.username"),
             'DB_PASSWORD' => config("database.connections.$connection.password"),
             'DB_DATABASE' => config("database.connections.$connection.database"),
-            'DB_SOCKET' => config("database.connections.$connection.unix_socket"),
+            'DB_SOCKET'   => config("database.connections.$connection.unix_socket"),
         ];
     }
 
@@ -110,7 +111,7 @@ class FinalizeController extends InstallationController implements InstallerStep
             return;
         }
 
-        if (! copy(base_path('config.php.default'), $config_file)) {
+        if (!copy(base_path('config.php.default'), $config_file)) {
             throw new FileWriteFailedException($config_file);
         }
     }
@@ -133,7 +134,7 @@ class FinalizeController extends InstallationController implements InstallerStep
     {
         foreach ($this->hydrateControllers() as $step => $controller) {
             /** @var InstallerStep $controller */
-            if ($step !== 'finish' && ! $controller->complete()) {
+            if ($step !== 'finish' && !$controller->complete()) {
                 return false;
             }
         }

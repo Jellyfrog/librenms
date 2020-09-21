@@ -1,6 +1,6 @@
 <?php
 /**
- * DeviceSummaryVertController.php
+ * DeviceSummaryVertController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -31,6 +32,7 @@ class DeviceSummaryVertController extends DeviceSummaryController
 {
     /**
      * @param Request $request
+     *
      * @return View
      */
     public function getView(Request $request)

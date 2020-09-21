@@ -17,18 +17,18 @@ class User extends Authenticatable
     protected $fillable = ['realname', 'username', 'email', 'level', 'descr', 'can_modify_passwd', 'auth_type', 'auth_id', 'enabled'];
     protected $hidden = ['password', 'remember_token', 'pivot'];
     protected $attributes = [ // default values
-        'descr' => '',
+        'descr'    => '',
         'realname' => '',
-        'email' => '',
+        'email'    => '',
     ];
     protected $dispatchesEvents = [
         'created' => UserCreated::class,
     ];
 
     protected $casts = [
-        'realname' => 'string',
-        'descr' => 'string',
-        'email' => 'string',
+        'realname'          => 'string',
+        'descr'             => 'string',
+        'email'             => 'string',
         'can_modify_passwd' => 'integer',
     ];
 
@@ -67,7 +67,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Test if this user is the demo user
+     * Test if this user is the demo user.
      *
      * @return bool
      */
@@ -77,9 +77,10 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if this user has access to a device
+     * Check if this user has access to a device.
      *
      * @param Device|int $device can be a device Model or device id
+     *
      * @return bool
      */
     public function canAccessDevice($device)
@@ -88,7 +89,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Helper function to hash passwords before setting
+     * Helper function to hash passwords before setting.
      *
      * @param string $password
      */
@@ -98,9 +99,10 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if the given user can set the password for this user
+     * Check if the given user can set the password for this user.
      *
      * @param User $user
+     *
      * @return bool
      */
     public function canSetPassword($user)
@@ -120,9 +122,10 @@ class User extends Authenticatable
 
     /**
      * This restricts the query to only users that match the current auth method
-     * It is not needed when using user_id, but should be used for username and auth_id
+     * It is not needed when using user_id, but should be used for username and auth_id.
      *
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeThisAuth($query)
@@ -172,7 +175,7 @@ class User extends Authenticatable
     public function getDevicesAttribute()
     {
         // pseudo relation
-        if (! array_key_exists('devices', $this->relations)) {
+        if (!array_key_exists('devices', $this->relations)) {
             $this->setRelation('devices', $this->devices()->get());
         }
 
@@ -189,7 +192,7 @@ class User extends Authenticatable
     public function devices()
     {
         // pseudo relation
-        return Device::query()->when(! $this->hasGlobalRead(), function ($query) {
+        return Device::query()->when(!$this->hasGlobalRead(), function ($query) {
             return $query->whereIn('device_id', Permissions::devicesForUser($this));
         });
     }

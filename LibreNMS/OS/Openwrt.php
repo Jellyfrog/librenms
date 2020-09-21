@@ -1,6 +1,6 @@
 <?php
 /**
- * Openwrt.php
+ * Openwrt.php.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -41,7 +42,7 @@ class Openwrt extends OS implements
     WirelessSnrDiscovery
 {
     /**
-     * Retrieve basic information about the OS / device
+     * Retrieve basic information about the OS / device.
      */
     public function discoverOS(Device $device): void
     {
@@ -74,7 +75,7 @@ class Openwrt extends OS implements
      * query - string, query to be used at client (appends to type string, e.g. -tx, -rx)
      * system - boolean, flag to indicate that a combined ("system level") sensor (and OID) is to be added
      * stats - boolean, flag denoting that statistics are to be retrieved (min, max, avg)
-     * NOTE: system and stats are assumed to be mutually exclusive (at least for now!)
+     * NOTE: system and stats are assumed to be mutually exclusive (at least for now!).
      *
      * @return array Sensors
      */
@@ -112,7 +113,7 @@ class Openwrt extends OS implements
 
     /**
      * Discover wireless client counts. Type is clients.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -123,7 +124,7 @@ class Openwrt extends OS implements
 
     /**
      * Discover wireless frequency.  This is in MHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -134,7 +135,7 @@ class Openwrt extends OS implements
 
     /**
      * Discover wireless noise floor.  This is in dBm. Type is noise-floor.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -145,7 +146,7 @@ class Openwrt extends OS implements
 
     /**
      * Discover wireless rate. This is in bps. Type is rate.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -159,7 +160,7 @@ class Openwrt extends OS implements
 
     /**
      * Discover wireless snr. This is in dB. Type is snr.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */

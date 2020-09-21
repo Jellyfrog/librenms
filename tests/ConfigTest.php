@@ -1,6 +1,6 @@
 <?php
 /**
- * ConfigTest.php
+ * ConfigTest.php.
  *
  * Tests for LibreNMS\Config
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -39,7 +40,7 @@ class ConfigTest extends TestCase
 
     public function testGetBasic()
     {
-        $dir = realpath(__DIR__ . '/..');
+        $dir = realpath(__DIR__.'/..');
         $this->assertEquals($dir, Config::get('install_dir'));
     }
 
@@ -187,7 +188,8 @@ class ConfigTest extends TestCase
     }
 
     /**
-     * Pass an anonymous function which will be passed the config variable to modify before it is set
+     * Pass an anonymous function which will be passed the config variable to modify before it is set.
+     *
      * @param callable $function
      */
     private function setConfig($function)

@@ -1,6 +1,6 @@
 <?php
 /**
- * Database.php
+ * Database.php.
  *
  * Checks the database for errors
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -37,7 +38,7 @@ class Database extends BaseValidation
 {
     public function validate(Validator $validator)
     {
-        if (! dbIsConnected()) {
+        if (!dbIsConnected()) {
             return;
         }
 
@@ -51,7 +52,7 @@ class Database extends BaseValidation
 
         if ($current === 0 || $current === $latest) {
             // Using Laravel migrations
-            if (! Schema::isCurrent()) {
+            if (!Schema::isCurrent()) {
                 $validator->fail('Your database is out of date!', './lnms migrate');
 
                 return;
@@ -59,7 +60,7 @@ class Database extends BaseValidation
 
             $migrations = Schema::getUnexpectedMigrations();
             if ($migrations->isNotEmpty()) {
-                $validator->warn('Your database schema has extra migrations (' . $migrations->implode(', ') .
+                $validator->warn('Your database schema has extra migrations ('.$migrations->implode(', ').
                 '). If you just switched to the stable release from the daily release, your database is in between releases and this will be resolved with the next release.');
             }
         } elseif ($current < $latest) {
@@ -87,8 +88,8 @@ class Database extends BaseValidation
 
         if ($diff->compare(CarbonInterval::minute(1)) > 0) {
             $message = "Time between this server and the mysql database is off\n";
-            $message .= ' Mysql time ' . $db_time->toDateTimeString() . PHP_EOL;
-            $message .= ' PHP time ' . $php_time->toDateTimeString() . PHP_EOL;
+            $message .= ' Mysql time '.$db_time->toDateTimeString().PHP_EOL;
+            $message .= ' PHP time '.$php_time->toDateTimeString().PHP_EOL;
 
             $validator->fail($message);
         }
@@ -108,10 +109,10 @@ class Database extends BaseValidation
 
     private function checkMysqlEngine(Validator $validator)
     {
-        $db = \config('database.connections.' . \config('database.default') . '.database');
+        $db = \config('database.connections.'.\config('database.default').'.database');
         $query = "SELECT `TABLE_NAME` FROM information_schema.tables WHERE `TABLE_SCHEMA` = '$db' && `ENGINE` != 'InnoDB'";
         $tables = dbFetchRows($query);
-        if (! empty($tables)) {
+        if (!empty($tables)) {
             $validator->result(
                 ValidationResult::warn('Some tables are not using the recommended InnoDB engine, this may cause you issues.')
                     ->setList('Tables', $tables)
@@ -131,7 +132,7 @@ class Database extends BaseValidation
         $collation = dbFetchRows($db_collation_sql);
         if (empty($collation) !== true) {
             $validator->fail(
-                'MySQL Database collation is wrong: ' . implode(' ', $collation[0]),
+                'MySQL Database collation is wrong: '.implode(' ', $collation[0]),
                 'Check https://t.libren.ms/-zdwk for info on how to fix.'
             );
         }
@@ -162,9 +163,9 @@ class Database extends BaseValidation
 
     private function checkSchema(Validator $validator)
     {
-        $schema_file = Config::get('install_dir') . '/misc/db_schema.yaml';
+        $schema_file = Config::get('install_dir').'/misc/db_schema.yaml';
 
-        if (! is_file($schema_file)) {
+        if (!is_file($schema_file)) {
             $validator->warn("We haven't detected the db_schema.yaml file");
 
             return;
@@ -293,7 +294,7 @@ class Database extends BaseValidation
 
     private function addColumnSql($table, $schema, $previous_column, $primary = false)
     {
-        $sql = "ALTER TABLE `$table` ADD " . $this->columnToSql($schema);
+        $sql = "ALTER TABLE `$table` ADD ".$this->columnToSql($schema);
         if ($primary) {
             $sql .= ' PRIMARY KEY';
         }
@@ -303,12 +304,12 @@ class Database extends BaseValidation
             $sql .= " AFTER `$previous_column`";
         }
 
-        return $sql . ';';
+        return $sql.';';
     }
 
     private function updateTableSql($table, $column, $column_schema)
     {
-        return "ALTER TABLE `$table` CHANGE `$column` " . $this->columnToSql($column_schema) . ';';
+        return "ALTER TABLE `$table` CHANGE `$column` ".$this->columnToSql($column_schema).';';
     }
 
     private function dropColumnSql($table, $column)
@@ -318,12 +319,12 @@ class Database extends BaseValidation
 
     private function addIndexSql($table, $index_schema)
     {
-        return "ALTER TABLE `$table` ADD " . $this->indexToSql($index_schema) . ';';
+        return "ALTER TABLE `$table` ADD ".$this->indexToSql($index_schema).';';
     }
 
     private function updateIndexSql($table, $name, $index_schema)
     {
-        return "ALTER TABLE `$table` DROP INDEX `$name`, " . $this->indexToSql($index_schema) . ';';
+        return "ALTER TABLE `$table` DROP INDEX `$name`, ".$this->indexToSql($index_schema).';';
     }
 
     private function dropIndexSql($table, $name)
@@ -337,9 +338,10 @@ class Database extends BaseValidation
     }
 
     /**
-     * Generate an SQL segment to create the column based on data from dump_db_schema()
+     * Generate an SQL segment to create the column based on data from dump_db_schema().
      *
      * @param array $column_data The array of data for the column
+     *
      * @return string sql fragment, for example: "`ix_id` int(10) unsigned NOT NULL"
      */
     private function columnToSql($column_data)
@@ -368,9 +370,10 @@ class Database extends BaseValidation
     }
 
     /**
-     * Generate an SQL segment to create the index based on data from dump_db_schema()
+     * Generate an SQL segment to create the index based on data from dump_db_schema().
      *
      * @param array $index_data The array of data for the index
+     *
      * @return string sql fragment, for example: "PRIMARY KEY (`device_id`)"
      */
     private function indexToSql($index_data)
@@ -394,8 +397,8 @@ class Database extends BaseValidation
     {
         $sql = "ALTER TABLE `$table` ADD CONSTRAINT `{$constraint['name']}` FOREIGN KEY (`{$constraint['foreign_key']}`) ";
         $sql .= " REFERENCES `{$constraint['table']}` (`{$constraint['key']}`)";
-        if (! empty($constraint['extra'])) {
-            $sql .= ' ' . $constraint['extra'];
+        if (!empty($constraint['extra'])) {
+            $sql .= ' '.$constraint['extra'];
         }
         $sql .= ';';
 

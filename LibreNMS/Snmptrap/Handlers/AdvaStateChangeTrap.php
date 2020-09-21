@@ -1,6 +1,6 @@
 <?php
 /**
- * AdvaStateChangeTrap.php
+ * AdvaStateChangeTrap.php.
  *
  * -Description-
  *
@@ -23,6 +23,7 @@
  * on the unit that sent the trap.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Heath Barnhart
  * @author     Heath Barnhart <hbarnhart@kanren.net> & Neil Kahle <nkahle@kanren.net>
  */
@@ -41,7 +42,8 @@ class AdvaStateChangeTrap implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)

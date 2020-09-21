@@ -14,7 +14,7 @@
  */
 
 $init_modules = ['polling', 'alerts'];
-require __DIR__ . '/includes/init.php';
+require __DIR__.'/includes/init.php';
 
 $options = getopt('l:u:r::');
 
@@ -36,7 +36,7 @@ if (isset($options['l'])) {
 
         echo $tbl->getTable();
     }
-} elseif (isset($options['u']) && ! empty($options['u'])) {
+} elseif (isset($options['u']) && !empty($options['u'])) {
     if (is_numeric($options['u'])) {
         $db_column = 'id';
     } else {
@@ -44,11 +44,11 @@ if (isset($options['l'])) {
     }
 
     if (dbDelete('pollers', "`$db_column` = ?", [$options['u']]) >= 0) {
-        echo 'Poller ' . $options['u'] . " has been removed\n";
+        echo 'Poller '.$options['u']." has been removed\n";
     }
 } elseif (isset($options['r'])) {
     if (dbInsert(['poller_name' => Config::get('distributed_poller_name'), 'last_polled' => '0000-00-00 00:00:00', 'devices' => 0, 'time_taken' => 0], 'pollers') >= 0) {
-        echo 'Poller ' . Config::get('distributed_poller_name') . " has been registered\n";
+        echo 'Poller '.Config::get('distributed_poller_name')." has been registered\n";
     }
 } else {
     echo "-l pollers | groups List registered pollers or poller groups\n";

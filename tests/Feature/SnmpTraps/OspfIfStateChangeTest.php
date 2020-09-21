@@ -1,6 +1,6 @@
 <?php
 /**
- * OspfIfStateChangeTest.php
+ * OspfIfStateChangeTest.php.
  *
  * -Description-
  *
@@ -22,6 +22,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 KanREN, Inc
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */

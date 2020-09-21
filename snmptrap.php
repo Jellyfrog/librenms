@@ -2,7 +2,7 @@
 <?php
 
 /**
- * LibreNMS
+ * LibreNMS.
  *
  *   This file is part of LibreNMS.
  *
@@ -11,7 +11,7 @@
  * Adapted from old snmptrap.php handler
  */
 $init_modules = [];
-require __DIR__ . '/includes/init.php';
+require __DIR__.'/includes/init.php';
 
 $options = getopt('d::');
 

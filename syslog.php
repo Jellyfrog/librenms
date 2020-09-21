@@ -2,14 +2,14 @@
 <?php
 
 /**
- * LibreNMS
+ * LibreNMS.
  *
  *   This file is part of LibreNMS.
  *
  * @copyright  (C) 2006 - 2012 Adam Armstrong
  */
 $init_modules = [];
-require __DIR__ . '/includes/init.php';
+require __DIR__.'/includes/init.php';
 
 $i = '1';
 

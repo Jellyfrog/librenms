@@ -1,6 +1,6 @@
 <?php
 /**
- * EventlogController.php
+ * EventlogController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -35,9 +36,9 @@ class EventlogController extends TableController
     public function rules()
     {
         return [
-            'device' => 'nullable|int',
+            'device'       => 'nullable|int',
             'device_group' => 'nullable|int',
-            'eventtype' => 'nullable|string',
+            'eventtype'    => 'nullable|string',
         ];
     }
 
@@ -50,7 +51,7 @@ class EventlogController extends TableController
     {
         return [
             'device_id' => 'device',
-            'type' => 'eventtype',
+            'type'      => 'eventtype',
         ];
     }
 
@@ -60,9 +61,10 @@ class EventlogController extends TableController
     }
 
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     public function baseQuery($request)
@@ -77,11 +79,11 @@ class EventlogController extends TableController
     public function formatItem($eventlog)
     {
         return [
-            'datetime' => $this->formatDatetime($eventlog),
+            'datetime'  => $this->formatDatetime($eventlog),
             'device_id' => $eventlog->device ? Url::deviceLink($eventlog->device, $eventlog->device->shortDisplayName()) : null,
-            'type' => $this->formatType($eventlog),
-            'message' => htmlspecialchars($eventlog->message),
-            'username' => $eventlog->username ?: 'System',
+            'type'      => $this->formatType($eventlog),
+            'message'   => htmlspecialchars($eventlog->message),
+            'username'  => $eventlog->username ?: 'System',
         ];
     }
 
@@ -91,14 +93,14 @@ class EventlogController extends TableController
             if (is_numeric($eventlog->reference)) {
                 $port = $eventlog->related;
                 if (isset($port)) {
-                    return '<b>' . Url::portLink($port, $port->getShortLabel()) . '</b>';
+                    return '<b>'.Url::portLink($port, $port->getShortLabel()).'</b>';
                 }
             }
         } elseif (in_array($eventlog->type, \App\Models\Sensor::getTypes())) {
             if (is_numeric($eventlog->reference)) {
                 $sensor = $eventlog->related;
                 if (isset($sensor)) {
-                    return '<b>' . Url::sensorLink($sensor, $sensor->sensor_descr) . '</b>';
+                    return '<b>'.Url::sensorLink($sensor, $sensor->sensor_descr).'</b>';
                 }
             }
         }
@@ -119,6 +121,7 @@ class EventlogController extends TableController
 
     /**
      * @param int $eventlog_severity
+     *
      * @return string $eventlog_severity_icon
      */
     private function severityLabel($eventlog_severity)

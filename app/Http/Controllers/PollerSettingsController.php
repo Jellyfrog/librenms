@@ -1,6 +1,6 @@
 <?php
 /**
- * PollerSettingsController.php
+ * PollerSettingsController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -35,7 +36,7 @@ class PollerSettingsController extends Controller
         $this->authorize('update', $poller);
 
         $definition = collect($poller->configDefinition())->keyBy('name');
-        if (! $definition->has($setting)) {
+        if (!$definition->has($setting)) {
             return response()->json(['error' => 'Invalid setting'], 422);
         }
 
@@ -51,7 +52,7 @@ class PollerSettingsController extends Controller
         $this->authorize('delete', $poller);
 
         $definition = collect($poller->configDefinition())->keyBy('name');
-        if (! $definition->has($setting)) {
+        if (!$definition->has($setting)) {
             return response()->json(['error' => 'Invalid setting'], 422);
         }
 

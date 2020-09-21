@@ -1,6 +1,6 @@
 <?php
 /**
- * ComposerHelper.php
+ * ComposerHelper.php.
  *
  * Helper functions for composer
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2016 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -32,7 +33,7 @@ class ComposerHelper
 {
     public static function postRootPackageInstall(Event $event)
     {
-        if (! file_exists('.env')) {
+        if (!file_exists('.env')) {
             self::setPermissions();
             self::populateEnv();
         }
@@ -40,7 +41,7 @@ class ComposerHelper
 
     public static function postInstall(Event $event)
     {
-        if (! file_exists('.env')) {
+        if (!file_exists('.env')) {
             self::setPermissions();
         }
 
@@ -49,7 +50,7 @@ class ComposerHelper
 
     public static function preUpdate(Event $event)
     {
-        if (! getenv('FORCE')) {
+        if (!getenv('FORCE')) {
             echo "Running composer update is not advisable.  Please run composer install to update instead.\n";
             echo "If know what you are doing and want to write a new composer.lock file set FORCE=1.\n";
             echo "If you don't know what to do, run: composer install\n";
@@ -61,7 +62,7 @@ class ComposerHelper
     {
         $vendor_dir = $event->getComposer()->getConfig()->get('vendor-dir');
 
-        if (! is_file("$vendor_dir/autoload.php")) {
+        if (!is_file("$vendor_dir/autoload.php")) {
             // checkout vendor from 1.36
             $cmds = [
                 "git checkout 609676a9f8d72da081c61f82967e1d16defc0c4e -- $vendor_dir",
@@ -73,20 +74,20 @@ class ComposerHelper
     }
 
     /**
-     * Initially populate .env file
+     * Initially populate .env file.
      */
     private static function populateEnv()
     {
         $config = [
-            'db_host' => '',
-            'db_port' => '',
-            'db_name' => '',
-            'db_user' => '',
-            'db_pass' => '',
+            'db_host'   => '',
+            'db_port'   => '',
+            'db_name'   => '',
+            'db_user'   => '',
+            'db_pass'   => '',
             'db_socket' => '',
-            'base_url' => '',
-            'user' => '',
-            'group' => '',
+            'base_url'  => '',
+            'user'      => '',
+            'group'     => '',
         ];
 
         @include 'config.php';
@@ -94,19 +95,19 @@ class ComposerHelper
         try {
             EnvHelper::init();
             EnvHelper::writeEnv([
-                'NODE_ID' => uniqid(),
-                'DB_HOST' => $config['db_host'],
-                'DB_PORT' => $config['db_port'],
-                'DB_USERNAME' => $config['db_user'],
-                'DB_PASSWORD' => $config['db_pass'],
-                'DB_DATABASE' => $config['db_name'],
-                'DB_SOCKET' => $config['db_socket'],
-                'APP_URL' => $config['base_url'],
-                'LIBRENMS_USER' => $config['user'],
+                'NODE_ID'        => uniqid(),
+                'DB_HOST'        => $config['db_host'],
+                'DB_PORT'        => $config['db_port'],
+                'DB_USERNAME'    => $config['db_user'],
+                'DB_PASSWORD'    => $config['db_pass'],
+                'DB_DATABASE'    => $config['db_name'],
+                'DB_SOCKET'      => $config['db_socket'],
+                'APP_URL'        => $config['base_url'],
+                'LIBRENMS_USER'  => $config['user'],
                 'LIBRENMS_GROUP' => $config['group'],
             ]);
         } catch (FileWriteFailedException $exception) {
-            echo $exception->getMessage() . PHP_EOL;
+            echo $exception->getMessage().PHP_EOL;
         }
     }
 
@@ -121,13 +122,13 @@ class ComposerHelper
     }
 
     /**
-     * Run a command or array of commands and echo the command and output
+     * Run a command or array of commands and echo the command and output.
      *
      * @param string|array $cmds
      */
     private static function exec($cmds)
     {
-        $cmd = "set -v\n" . implode(PHP_EOL, (array) $cmds);
+        $cmd = "set -v\n".implode(PHP_EOL, (array) $cmds);
         passthru($cmd);
     }
 }

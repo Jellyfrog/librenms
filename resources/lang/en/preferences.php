@@ -13,6 +13,6 @@ return [
     */
 
     'title' => 'Preferences',
-    'lang' => 'English',
+    'lang'  => 'English',
 
 ];

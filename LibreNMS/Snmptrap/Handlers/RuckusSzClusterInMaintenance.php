@@ -1,6 +1,6 @@
 <?php
 /**
- * RuckusSzClusterInMaintenance.php
+ * RuckusSzClusterInMaintenance.php.
  *
  * -Description-
  *
@@ -24,6 +24,7 @@
  * Smartzone Cluster enters a maintenance state.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -42,7 +43,8 @@ class RuckusSzClusterInMaintenance implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)

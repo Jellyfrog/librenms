@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * VictorOps Generic-API Transport - Based on PagerDuty transport
+ * VictorOps Generic-API Transport - Based on PagerDuty transport.
+ *
  * @author f0o <f0o@devilcode.org>
  * @author laf <neil@librenms.org>
  * @copyright 2015 f0o, laf, LibreNMS
@@ -30,7 +31,7 @@ class Victorops extends Transport
 {
     public function deliverAlert($obj, $opts)
     {
-        if (! empty($this->config)) {
+        if (!empty($this->config)) {
             $opts['url'] = $this->config['victorops-url'];
         }
 
@@ -42,11 +43,11 @@ class Victorops extends Transport
         $url = $opts['url'];
 
         $protocol = [
-            'entity_id' => strval($obj['id'] ? $obj['id'] : $obj['uid']),
-            'state_start_time' => strtotime($obj['timestamp']),
+            'entity_id'           => strval($obj['id'] ? $obj['id'] : $obj['uid']),
+            'state_start_time'    => strtotime($obj['timestamp']),
             'entity_display_name' => $obj['title'],
-            'state_message' => $obj['msg'],
-            'monitoring_tool' => 'librenms',
+            'state_message'       => $obj['msg'],
+            'monitoring_tool'     => 'librenms',
         ];
         if ($obj['state'] == AlertState::RECOVERED) {
             $protocol['message_type'] = 'recovery';
@@ -83,9 +84,9 @@ class Victorops extends Transport
             'config' => [
                 [
                     'title' => 'Post URL',
-                    'name' => 'victorops-url',
+                    'name'  => 'victorops-url',
                     'descr' => 'Victorops Post URL',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
             ],
             'validation' => [

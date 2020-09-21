@@ -1,6 +1,6 @@
 <?php
 /**
- * BridgeTopologyChanged.php
+ * BridgeTopologyChanged.php.
  *
  * -Description-
  *
@@ -34,11 +34,12 @@ class BridgeTopologyChanged implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)
     {
-        Log::event('SNMP Trap: Topology of Spanning Tree Instance on device ' . $device->displayName() . ' was changed', $device->device_id, 'stp', 3);
+        Log::event('SNMP Trap: Topology of Spanning Tree Instance on device '.$device->displayName().' was changed', $device->device_id, 'stp', 3);
     }
 }

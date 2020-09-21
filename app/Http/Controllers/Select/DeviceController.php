@@ -1,6 +1,6 @@
 <?php
 /**
- * DeviceController.php
+ * DeviceController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -34,8 +35,8 @@ class DeviceController extends SelectController
     {
         return [
             'access' => 'nullable|in:normal,inverted',
-            'user' => 'nullable|int',
-            'id' => 'nullable|in:device_id,hostname',
+            'user'   => 'nullable|int',
+            'id'     => 'nullable|in:device_id,hostname',
         ];
     }
 
@@ -70,7 +71,7 @@ class DeviceController extends SelectController
     {
         /** @var Device $device */
         return [
-            'id' => $device->{$this->id},
+            'id'   => $device->{$this->id},
             'text' => $device->displayName(),
         ];
     }

@@ -8,7 +8,7 @@ class Canopsis extends Transport
 {
     public function deliverAlert($obj, $opts)
     {
-        if (! empty($this->config)) {
+        if (!empty($this->config)) {
             $opts['host'] = $this->config['canopsis-host'];
             $opts['port'] = $this->config['canopsis-port'];
             $opts['user'] = $this->config['canopsis-user'];
@@ -52,24 +52,24 @@ class Canopsis extends Transport
                 $state = 0;
         }
         $msg_body = [
-            'timestamp' => time(),
-            'connector' => 'librenms',
+            'timestamp'      => time(),
+            'connector'      => 'librenms',
             'connector_name' => 'LibreNMS1',
-            'event_type' => 'check',
-            'source_type' => 'resource',
-            'component' => $obj['hostname'],
-            'resource' => $obj['name'],
-            'state' => $state,
-            'output' => $obj['msg'],
-            'display_name' => 'librenms',
+            'event_type'     => 'check',
+            'source_type'    => 'resource',
+            'component'      => $obj['hostname'],
+            'resource'       => $obj['name'],
+            'state'          => $state,
+            'output'         => $obj['msg'],
+            'display_name'   => 'librenms',
         ];
         $msg_raw = json_encode($msg_body);
 
         // Build routing key
         if ($msg_body['source_type'] == 'resource') {
-            $msg_rk = $msg_rk . '.' . $msg_body['resource'];
+            $msg_rk = $msg_rk.'.'.$msg_body['resource'];
         } else {
-            $msg_rk = $msg_body['connector'] . '.' . $msg_body['connector_name'] . '.' . $msg_body['event_type'] . '.' . $msg_body['source_type'] . '.' . $msg_body['component'];
+            $msg_rk = $msg_body['connector'].'.'.$msg_body['connector_name'].'.'.$msg_body['event_type'].'.'.$msg_body['source_type'].'.'.$msg_body['component'];
         }
 
         // Publish Event
@@ -89,40 +89,40 @@ class Canopsis extends Transport
             'config' => [
                 [
                     'title' => 'Hostname',
-                    'name' => 'canopsis-host',
+                    'name'  => 'canopsis-host',
                     'descr' => 'Canopsis Hostname',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Port Number',
-                    'name' => 'canopsis-port',
+                    'name'  => 'canopsis-port',
                     'descr' => 'Canopsis Port Number',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'User',
-                    'name' => 'canopsis-user',
+                    'name'  => 'canopsis-user',
                     'descr' => 'Canopsis User',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Password',
-                    'name' => 'canopsis-pass',
+                    'name'  => 'canopsis-pass',
                     'descr' => 'Canopsis Password',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Vhost',
-                    'name' => 'canopsis-vhost',
+                    'name'  => 'canopsis-vhost',
                     'descr' => 'Canopsis Vhost',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
             ],
             'validation' => [
-                'canopsis-host' => 'required|string',
-                'canopsis-port' => 'required|numeric',
-                'canopsis-user' => 'required|string',
-                'canopsis-pass' => 'required|string',
+                'canopsis-host'  => 'required|string',
+                'canopsis-port'  => 'required|numeric',
+                'canopsis-user'  => 'required|string',
+                'canopsis-pass'  => 'required|string',
                 'canopsis-vhost' => 'required|string',
             ],
         ];

@@ -12,7 +12,8 @@ class UserPolicy
     /**
      * Determine whether the user can manage users.
      *
-     * @param  \App\Models\User  $user
+     * @param \App\Models\User $user
+     *
      * @return bool
      */
     public function manage(User $user)
@@ -23,8 +24,9 @@ class UserPolicy
     /**
      * Determine whether the user can view the user.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $target
+     * @param \App\Models\User $user
+     * @param \App\Models\User $target
+     *
      * @return bool
      */
     public function view(User $user, User $target)
@@ -35,7 +37,8 @@ class UserPolicy
     /**
      * Determine whether the user can view any user.
      *
-     * @param  \App\User $user
+     * @param \App\User $user
+     *
      * @return mixed
      */
     public function viewAny(User $user)
@@ -46,7 +49,8 @@ class UserPolicy
     /**
      * Determine whether the user can create users.
      *
-     * @param  \App\Models\User  $user
+     * @param \App\Models\User $user
+     *
      * @return bool
      */
     public function create(User $user)
@@ -57,8 +61,9 @@ class UserPolicy
     /**
      * Determine whether the user can update the user.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $target
+     * @param \App\Models\User $user
+     * @param \App\Models\User $target
+     *
      * @return bool
      */
     public function update(User $user, User $target)
@@ -69,8 +74,9 @@ class UserPolicy
     /**
      * Determine whether the user can delete the user.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $target
+     * @param \App\Models\User $user
+     * @param \App\Models\User $target
+     *
      * @return bool
      */
     public function delete(User $user, User $target)

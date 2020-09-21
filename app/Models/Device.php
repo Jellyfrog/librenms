@@ -25,7 +25,7 @@ class Device extends BaseModel
     protected $fillable = ['hostname', 'ip', 'status', 'status_reason', 'sysName', 'sysDescr', 'sysObjectID', 'hardware', 'version', 'features', 'serial', 'icon'];
     protected $casts = [
         'last_polled' => 'datetime',
-        'status' => 'boolean',
+        'status'      => 'boolean',
     ];
 
     // ---- Helper Functions ----
@@ -36,15 +36,16 @@ class Device extends BaseModel
     }
 
     /**
-     * Returns IP/Hostname where polling will be targeted to
+     * Returns IP/Hostname where polling will be targeted to.
      *
      * @param string $device hostname which will be triggered
-     *        array  $device associative array with device data
+     *                       array  $device associative array with device data
+     *
      * @return string IP/Hostname to which Device polling is targeted
      */
     public static function pollerTarget($device)
     {
-        if (! is_array($device)) {
+        if (!is_array($device)) {
             $ret = static::where('hostname', $device)->first(['hostname', 'overwrite_ip']);
             if (empty($ret)) {
                 return $device;
@@ -63,7 +64,7 @@ class Device extends BaseModel
 
     public static function findByIp($ip)
     {
-        if (! IP::isValid($ip)) {
+        if (!IP::isValid($ip)) {
             return null;
         }
 
@@ -106,7 +107,7 @@ class Device extends BaseModel
 
     /**
      * Get the display name of this device (hostname) unless force_ip_to_sysname is set
-     * and hostname is an IP and sysName is set
+     * and hostname is an IP and sysName is set.
      *
      * @return string
      */
@@ -133,7 +134,7 @@ class Device extends BaseModel
 
     public function isUnderMaintenance()
     {
-        if (! $this->device_id) {
+        if (!$this->device_id) {
             return false;
         }
 
@@ -164,6 +165,7 @@ class Device extends BaseModel
      * Length is always overridden by shorthost_target_length.
      *
      * @param int $length length to shorten to, will not break up words so may be longer
+     *
      * @return string
      */
     public function shortDisplayName($length = 12)
@@ -189,11 +191,12 @@ class Device extends BaseModel
      * Check if user can access this device.
      *
      * @param User $user
+     *
      * @return bool
      */
     public function canAccess($user)
     {
-        if (! $user) {
+        if (!$user) {
             return false;
         }
 
@@ -225,7 +228,7 @@ class Device extends BaseModel
         ];
 
         foreach ($options as $file) {
-            if (is_file(public_path() . "/$file")) {
+            if (is_file(public_path()."/$file")) {
                 return asset($file);
             }
         }
@@ -235,7 +238,7 @@ class Device extends BaseModel
 
     /**
      * Update the max_depth field based on parents
-     * Performs SQL query, so make sure all parents are saved first
+     * Performs SQL query, so make sure all parents are saved first.
      *
      * @param int $exclude exclude a device_id from being considered (used for deleting)
      */
@@ -243,7 +246,7 @@ class Device extends BaseModel
     {
         // optimize for memory instead of time
         $query = $this->parents()->getQuery();
-        if (! is_null($exclude)) {
+        if (!is_null($exclude)) {
             $query->where('device_id', '!=', $exclude);
         }
 
@@ -264,7 +267,7 @@ class Device extends BaseModel
 
     /**
      * Device dependency check to see if this node is standalone or not.
-     * Standalone is a special case where the device has no parents or children and is denoted by a max_depth of 0
+     * Standalone is a special case where the device has no parents or children and is denoted by a max_depth of 0.
      *
      * Only checks on root nodes (where max_depth is 1 or 0)
      */
@@ -290,7 +293,7 @@ class Device extends BaseModel
             return $item->attrib_type === $name;
         });
 
-        if (! $attrib) {
+        if (!$attrib) {
             $attrib = new DeviceAttrib(['attrib_type' => $name]);
             $this->attribs->push($attrib);
         }

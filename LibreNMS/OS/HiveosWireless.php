@@ -1,6 +1,6 @@
 <?php
 /**
- * HiveosWireless.php
+ * HiveosWireless.php.
  *
  * AeroHive Hiveos-Wireless
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Ryan Finney
  * @author     https://github.com/theherodied/
  */
@@ -46,7 +47,7 @@ class HiveosWireless extends OS implements
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
@@ -66,7 +67,7 @@ class HiveosWireless extends OS implements
 
     /**
      * Discover wireless client counts. Type is clients.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -81,7 +82,7 @@ class HiveosWireless extends OS implements
 
     /**
      * Discover wireless frequency.  This is in GHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -98,7 +99,7 @@ class HiveosWireless extends OS implements
             $sensors[] = new WirelessSensor(
                 'frequency',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.26928.1.1.1.2.1.5.1.1.' . $index,
+                '.1.3.6.1.4.1.26928.1.1.1.2.1.5.1.1.'.$index,
                 'hiveos-wireless',
                 $index,
                 $ahRadioName[$index],
@@ -111,7 +112,7 @@ class HiveosWireless extends OS implements
 
     /**
      * Discover wireless tx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -125,10 +126,10 @@ class HiveosWireless extends OS implements
             $sensors[] = new WirelessSensor(
                 'power',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.26928.1.1.1.2.1.5.1.2.' . $index,
+                '.1.3.6.1.4.1.26928.1.1.1.2.1.5.1.2.'.$index,
                 'hiveos-wireless',
                 $index,
-                'Tx Power: ' . $ahRadioName[$index],
+                'Tx Power: '.$ahRadioName[$index],
                 $entry['ahRadioTxPower']
             );
         }
@@ -145,10 +146,10 @@ class HiveosWireless extends OS implements
             $sensors[] = new WirelessSensor(
                 'noise-floor',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.26928.1.1.1.2.1.5.1.3.' . $index,
+                '.1.3.6.1.4.1.26928.1.1.1.2.1.5.1.3.'.$index,
                 'hiveos-wireless',
                 $index,
-                'Noise floor ' . $ahRadioName[$index],
+                'Noise floor '.$ahRadioName[$index],
                 $entry['ahRadioNoiseFloor'] - 256
             );
         }
@@ -158,9 +159,10 @@ class HiveosWireless extends OS implements
 
     /**
      * Poll wireless noise floor
-     * The returned array should be sensor_id => value pairs
+     * The returned array should be sensor_id => value pairs.
      *
      * @param array $sensors Array of sensors needed to be polled
+     *
      * @return array of polled data
      */
     public function pollWirelessNoiseFloor(array $sensors)

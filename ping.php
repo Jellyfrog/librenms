@@ -5,7 +5,7 @@ use App\Jobs\PingCheck;
 use LibreNMS\Data\Store\Datastore;
 
 $init_modules = ['alerts', 'laravel', 'nodb'];
-require __DIR__ . '/includes/init.php';
+require __DIR__.'/includes/init.php';
 
 $options = getopt('hdvrg:');
 

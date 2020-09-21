@@ -1,6 +1,6 @@
 <?php
 /**
- * JnxDomLaneAlarmSet.php
+ * JnxDomLaneAlarmSet.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -36,7 +37,8 @@ class JnxDomLaneAlarmSet implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)
@@ -47,8 +49,8 @@ class JnxDomLaneAlarmSet implements SnmptrapHandler
 
         $ifIndex = substr(strrchr($trap->findOid('IF-MIB::ifDescr'), '.'), 1);
         $port = $device->ports()->where('ifIndex', $ifIndex)->first();
-        if (! $port) {
-            Log::warning("Snmptrap JnxDomLaneAlarmSet: Could not find port at ifIndex $port->ifIndex for device: " . $device->hostname);
+        if (!$port) {
+            Log::warning("Snmptrap JnxDomLaneAlarmSet: Could not find port at ifIndex $port->ifIndex for device: ".$device->hostname);
 
             return;
         }

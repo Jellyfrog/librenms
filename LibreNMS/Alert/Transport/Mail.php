@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * Mail Transport
+ * Mail Transport.
+ *
  * @author f0o <f0o@devilcode.org>
  * @copyright 2014 f0o, LibreNMS
  * @license GPL
@@ -46,7 +47,7 @@ class Mail extends Transport
             'config' => [
                 [
                     'title' => 'Email',
-                    'name' => 'email',
+                    'name'  => 'email',
                     'descr' => 'Email address of contact',
                     'type'  => 'text',
                 ],

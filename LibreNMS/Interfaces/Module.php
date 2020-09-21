@@ -1,6 +1,6 @@
 <?php
 /**
- * Module.php
+ * Module.php.
  *
  * LibreNMS Discovery/Poller Module
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -30,7 +31,7 @@ interface Module
 {
     /**
      * Discover this module. Heavier processes can be run here
-     * Run infrequently (default 4 times a day)
+     * Run infrequently (default 4 times a day).
      *
      * @param OS $os
      */
@@ -39,7 +40,7 @@ interface Module
     /**
      * Poll data for this module and update the DB / RRD.
      * Try to keep this efficient and only run if discovery has indicated there is a reason to run.
-     * Run frequently (default every 5 minutes)
+     * Run frequently (default every 5 minutes).
      *
      * @param OS $os
      */

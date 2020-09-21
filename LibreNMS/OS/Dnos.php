@@ -1,6 +1,6 @@
 <?php
 /**
- * Dnos.php
+ * Dnos.php.
  *
  * Dell Network OS
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -33,7 +34,7 @@ class Dnos extends OS implements ProcessorDiscovery
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
@@ -59,7 +60,7 @@ class Dnos extends OS implements ProcessorDiscovery
                 'F10-C-SERIES-CHASSIS-MIB',
                 '.1.3.6.1.4.1.6027.3.8.1.3.7.1.3',
                 'Route Process Module',
-                $this->getName() . '-rpm'
+                $this->getName().'-rpm'
             );
             $this->findProcessors(
                 $processors,
@@ -92,13 +93,13 @@ class Dnos extends OS implements ProcessorDiscovery
     }
 
     /**
-     * Find processors and append them to the $processors array
+     * Find processors and append them to the $processors array.
      *
-     * @param array $processors
-     * @param string $oid Textual OIDf
-     * @param string $mib MIB
-     * @param string $num_oid Numerical OID
-     * @param string $name Name prefix to display to user
+     * @param array  $processors
+     * @param string $oid        Textual OIDf
+     * @param string $mib        MIB
+     * @param string $num_oid    Numerical OID
+     * @param string $name       Name prefix to display to user
      * @param string custom type (if there are multiple in one chassis)
      */
     private function findProcessors(&$processors, $oid, $mib, $num_oid, $name, $type = null)

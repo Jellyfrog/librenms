@@ -10,6 +10,7 @@ class DeviceObserver
      * Handle the device "updated" event.
      *
      * @param \App\Models\Device $device
+     *
      * @return void
      */
     public function updated(Device $device)
@@ -34,6 +35,7 @@ class DeviceObserver
      * Handle the device "deleting" event.
      *
      * @param \App\Models\Device $device
+     *
      * @return void
      */
     public function deleting(Device $device)
@@ -52,9 +54,10 @@ class DeviceObserver
      * Handle the device "Pivot Attached" event.
      *
      * @param \App\Models\Device $device
-     * @param string $relationName parents or children
-     * @param array $pivotIds list of pivot ids
-     * @param array $pivotIdsAttributes additional pivot attributes
+     * @param string             $relationName       parents or children
+     * @param array              $pivotIds           list of pivot ids
+     * @param array              $pivotIdsAttributes additional pivot attributes
+     *
      * @return void
      */
     public function pivotAttached(Device $device, $relationName, $pivotIds, $pivotIdsAttributes)
@@ -80,8 +83,8 @@ class DeviceObserver
 
     public static function attributeChangedMessage($attribute, $value, $previous)
     {
-        return trans("device.attributes.$attribute") . ': '
-            . (($previous && $previous != $value) ? "$previous -> " : '')
-            . $value;
+        return trans("device.attributes.$attribute").': '
+            .(($previous && $previous != $value) ? "$previous -> " : '')
+            .$value;
     }
 }

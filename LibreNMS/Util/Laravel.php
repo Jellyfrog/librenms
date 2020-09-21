@@ -1,6 +1,6 @@
 <?php
 /**
- * Laravel.php
+ * Laravel.php.
  *
  * Utility class to gather code to do
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -40,14 +41,14 @@ class Laravel
         }
 
         define('LARAVEL_START', microtime(true));
-        $install_dir = realpath(__DIR__ . '/../..');
-        $app = require_once $install_dir . '/bootstrap/app.php';
+        $install_dir = realpath(__DIR__.'/../..');
+        $app = require_once $install_dir.'/bootstrap/app.php';
         $kernel = $app->make(\Illuminate\Contracts\Console\Kernel::class);
         $kernel->bootstrap();
     }
 
     /**
-     * Boot Laravel in a non-Laravel web script
+     * Boot Laravel in a non-Laravel web script.
      *
      * @param bool $authenticate Use session+db to authenticate user (does not authorize)
      */
@@ -59,8 +60,8 @@ class Laravel
         }
 
         define('LARAVEL_START', microtime(true));
-        $install_dir = realpath(__DIR__ . '/../..');
-        $app = require_once $install_dir . '/bootstrap/app.php';
+        $install_dir = realpath(__DIR__.'/../..');
+        $app = require_once $install_dir.'/bootstrap/app.php';
         $kernel = $app->make(\Illuminate\Contracts\Http\Kernel::class);
 
         $request = \Illuminate\Http\Request::capture();
@@ -74,7 +75,7 @@ class Laravel
 
     public static function isBooted()
     {
-        return function_exists('app') && ! empty(app()->isAlias('Illuminate\Foundation\Application')) && app()->isBooted();
+        return function_exists('app') && !empty(app()->isAlias('Illuminate\Foundation\Application')) && app()->isBooted();
     }
 
     public static function enableQueryDebug()
@@ -82,7 +83,7 @@ class Laravel
         static $sql_debug_enabled;
         $db = Eloquent::DB();
 
-        if ($db && ! $sql_debug_enabled) {
+        if ($db && !$sql_debug_enabled) {
             $db->listen(function (QueryExecuted $query) {
                 // collect bindings and make them a little more readable
                 $bindings = collect($query->bindings)->map(function ($item) {
@@ -128,7 +129,7 @@ class Laravel
     }
 
     /**
-     * Add prefix and strip .php to make the url helper work in non-laravel php scripts
+     * Add prefix and strip .php to make the url helper work in non-laravel php scripts.
      *
      * @param $request
      * @param $auth

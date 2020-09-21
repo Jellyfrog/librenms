@@ -24,7 +24,7 @@ class Elasticsearch extends Transport
 {
     public function deliverAlert($obj, $opts)
     {
-        if (! empty($this->config)) {
+        if (!empty($this->config)) {
             $opts['es_host'] = $this->config['es-host'];
             $opts['es_port'] = $this->config['es-port'];
             $opts['es_index'] = $this->config['es-pattern'];
@@ -43,7 +43,7 @@ class Elasticsearch extends Transport
         $severity = $obj['severity'];
         $device = device_by_id_cache($obj['device_id']); // for event logging
 
-        if (! empty($opts['es_host'])) {
+        if (!empty($opts['es_host'])) {
             if (preg_match('/[a-zA-Z]/', $opts['es_host'])) {
                 $es_host = gethostbyname($opts['es_host']);
                 if ($es_host === $opts['es_host']) {
@@ -52,19 +52,19 @@ class Elasticsearch extends Transport
             } elseif (filter_var($opts['es_host'], FILTER_VALIDATE_IP)) {
                 $es_host = $opts['es_host'];
             } else {
-                return 'Elasticsearch host is not a valid IP: ' . $opts['es_host'];
+                return 'Elasticsearch host is not a valid IP: '.$opts['es_host'];
             }
         }
 
-        if (! empty($opts['es_port']) && preg_match("/^\d+$/", $opts['es_port'])) {
+        if (!empty($opts['es_port']) && preg_match("/^\d+$/", $opts['es_port'])) {
             $es_port = $opts['es_port'];
         }
 
-        if (! empty($opts['es_index'])) {
+        if (!empty($opts['es_index'])) {
             $index = strftime($opts['es_index']);
         }
 
-        $host = $es_host . ':' . $es_port . '/' . $index . '/' . $type;
+        $host = $es_host.':'.$es_port.'/'.$index.'/'.$type;
 
         switch ($obj['state']) {
             case AlertState::RECOVERED:
@@ -85,26 +85,26 @@ class Elasticsearch extends Transport
         }
 
         $data = [
-            '@timestamp' => date('c'),
-            'host' => gethostname(),
-            'location' => $obj['location'],
-            'title' => $obj['name'],
-            'message' => $obj['string'],
-            'device_id' => $obj['device_id'],
-            'device_name' => $obj['hostname'],
-            'device_hardware' => $obj['hardware'],
-            'device_version' => $obj['version'],
-            'state' => $state,
-            'severity' => $severity,
+            '@timestamp'       => date('c'),
+            'host'             => gethostname(),
+            'location'         => $obj['location'],
+            'title'            => $obj['name'],
+            'message'          => $obj['string'],
+            'device_id'        => $obj['device_id'],
+            'device_name'      => $obj['hostname'],
+            'device_hardware'  => $obj['hardware'],
+            'device_version'   => $obj['version'],
+            'state'            => $state,
+            'severity'         => $severity,
             'first_occurrence' => $obj['timestamp'],
-            'entity_type' => 'device',
-            'entity_tab' => 'overview',
-            'entity_id' => $obj['device_id'],
-            'entity_name' => $obj['hostname'],
-            'entity_descr' => $obj['sysDescr'],
+            'entity_type'      => 'device',
+            'entity_tab'       => 'overview',
+            'entity_id'        => $obj['device_id'],
+            'entity_name'      => $obj['hostname'],
+            'entity_descr'     => $obj['sysDescr'],
         ];
 
-        if (! empty($obj['faults'])) {
+        if (!empty($obj['faults'])) {
             foreach ($obj['faults'] as $k => $v) {
                 $curl = curl_init();
                 $data['message'] = $v['string'];
@@ -148,15 +148,15 @@ class Elasticsearch extends Transport
                         $data['entity_type'] = 'bgp';
                         $data['entity_tab'] = 'routing';
                         $data['entity_id'] = $v['bgpPeer_id'];
-                        $data['entity_name'] = 'local: ' . $v['bgpPeerLocalAddr'] . ' - AS' . $obj['bgpLocalAs'];
-                        $data['entity_descr'] = 'remote: ' . $v['bgpPeerIdentifier'] . ' - AS' . $v['bgpPeerRemoteAs'];
+                        $data['entity_name'] = 'local: '.$v['bgpPeerLocalAddr'].' - AS'.$obj['bgpLocalAs'];
+                        $data['entity_descr'] = 'remote: '.$v['bgpPeerIdentifier'].' - AS'.$v['bgpPeerRemoteAs'];
                         break;
                     case array_key_exists('tunnel_id', $v):
                         $data['entity_type'] = 'ipsec_tunnel';
                         $data['entity_tab'] = 'routing';
                         $data['entity_id'] = $v['tunnel_id'];
                         $data['entity_name'] = $v['tunnel_name'];
-                        $data['entity_descr'] = 'local: ' . $v['local_addr'] . ':' . $v['local_port'] . ', remote: ' . $v['peer_addr'] . ':' . $v['peer_port'];
+                        $data['entity_descr'] = 'local: '.$v['local_addr'].':'.$v['local_port'].', remote: '.$v['peer_addr'].':'.$v['peer_port'];
                         break;
                     default:
                         $data['entity_type'] = 'generic';
@@ -175,7 +175,7 @@ class Elasticsearch extends Transport
                 $ret = curl_exec($curl);
                 $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
                 if ($code != 200 && $code != 201) {
-                    return $host . ' returned HTTP Status code ' . $code . ' for ' . $alert_message;
+                    return $host.' returned HTTP Status code '.$code.' for '.$alert_message;
                 }
             }
         } else {
@@ -193,7 +193,7 @@ class Elasticsearch extends Transport
             $ret = curl_exec($curl);
             $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             if ($code != 200 && $code != 201) {
-                return $host . ' returned HTTP Status code ' . $code . ' for ' . $alert_message;
+                return $host.' returned HTTP Status code '.$code.' for '.$alert_message;
             }
         }
 
@@ -206,33 +206,33 @@ class Elasticsearch extends Transport
             'config' => [
                 [
                     'title' => 'Host',
-                    'name' => 'es-host',
+                    'name'  => 'es-host',
                     'descr' => 'Elasticsearch Host',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Port',
-                    'name' => 'es-port',
+                    'name'  => 'es-port',
                     'descr' => 'Elasticsearch Port',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Index Pattern',
-                    'name' => 'es-pattern',
+                    'name'  => 'es-pattern',
                     'descr' => 'Elasticsearch Index Pattern',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
-                    'title' => 'Use proxy if configured?',
-                    'name' => 'es-proxy',
-                    'descr' => 'Elasticsearch Proxy',
-                    'type' => 'checkbox',
+                    'title'   => 'Use proxy if configured?',
+                    'name'    => 'es-proxy',
+                    'descr'   => 'Elasticsearch Proxy',
+                    'type'    => 'checkbox',
                     'default' => false,
                 ],
             ],
             'validation' => [
-                'es-host' => 'required|string',
-                'es-port' => 'required|string',
+                'es-host'    => 'required|string',
+                'es-port'    => 'required|string',
                 'es-pattern' => 'required|string',
             ],
         ];

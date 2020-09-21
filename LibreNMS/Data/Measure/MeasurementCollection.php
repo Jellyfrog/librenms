@@ -1,6 +1,6 @@
 <?php
 /**
- * MeasurementCollection.php
+ * MeasurementCollection.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -57,7 +58,7 @@ class MeasurementCollection extends Collection
     {
         $type = $measurement->getType();
 
-        if (! $this->has($type)) {
+        if (!$this->has($type)) {
             $this->put($type, new MeasurementSummary($type));
         }
 

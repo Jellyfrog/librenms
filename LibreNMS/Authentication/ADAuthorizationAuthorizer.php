@@ -18,7 +18,7 @@ class ADAuthorizationAuthorizer extends MysqlAuthorizer
 
     public function __construct()
     {
-        if (! function_exists('ldap_connect')) {
+        if (!function_exists('ldap_connect')) {
             throw new LdapMissingException();
         }
 
@@ -30,8 +30,8 @@ class ADAuthorizationAuthorizer extends MysqlAuthorizer
 
         // Set up connection to LDAP server
         $this->ldap_connection = @ldap_connect(Config::get('auth_ad_url'));
-        if (! $this->ldap_connection) {
-            throw new AuthenticationException('Fatal error while connecting to AD url ' . Config::get('auth_ad_url') . ': ' . ldap_error($this->ldap_connection));
+        if (!$this->ldap_connection) {
+            throw new AuthenticationException('Fatal error while connecting to AD url '.Config::get('auth_ad_url').': '.ldap_error($this->ldap_connection));
         }
 
         // disable referrals and force ldap version to 3
@@ -41,12 +41,12 @@ class ADAuthorizationAuthorizer extends MysqlAuthorizer
         // Bind to AD
         if (Config::has('auth_ad_binduser') && Config::has('auth_ad_bindpassword')) {
             // With specified bind user
-            if (! ldap_bind($this->ldap_connection, Config::get('auth_ad_binduser') . '@' . Config::get('auth_ad_domain'), Config::get('auth_ad_bindpassword'))) {
+            if (!ldap_bind($this->ldap_connection, Config::get('auth_ad_binduser').'@'.Config::get('auth_ad_domain'), Config::get('auth_ad_bindpassword'))) {
                 echo ldap_error($this->ldap_connection);
             }
         } else {
             // Anonymous
-            if (! ldap_bind($this->ldap_connection)) {
+            if (!ldap_bind($this->ldap_connection)) {
                 echo ldap_error($this->ldap_connection);
             }
         }

@@ -1,6 +1,6 @@
 <?php
 /**
- * OS.php
+ * OS.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -39,10 +40,10 @@ class OS implements Module
             // null out values in case they aren't filled.
             $os->getDevice()->fill([
                 'hardware' => null,
-                'version' => null,
+                'version'  => null,
                 'features' => null,
-                'serial' => null,
-                'icon' => null,
+                'serial'   => null,
+                'icon'     => null,
             ]);
 
             $os->discoverOS($os->getDevice());
@@ -58,12 +59,12 @@ class OS implements Module
         } else {
             // legacy poller files
             global $graphs, $device;
-            if (is_file(base_path('/includes/polling/os/' . $device['os'] . '.inc.php'))) {
+            if (is_file(base_path('/includes/polling/os/'.$device['os'].'.inc.php'))) {
                 // OS Specific
-                include base_path('/includes/polling/os/' . $device['os'] . '.inc.php');
-            } elseif ($device['os_group'] && base_path('/includes/polling/os/' . $device['os_group'] . '.inc.php')) {
+                include base_path('/includes/polling/os/'.$device['os'].'.inc.php');
+            } elseif ($device['os_group'] && base_path('/includes/polling/os/'.$device['os_group'].'.inc.php')) {
                 // OS Group Specific
-                include base_path('/includes/polling/os/' . $device['os_group'] . '.inc.php');
+                include base_path('/includes/polling/os/'.$device['os_group'].'.inc.php');
             } else {
                 echo "Generic :(\n";
             }
@@ -73,7 +74,7 @@ class OS implements Module
             $deviceModel->hardware = ($hardware ?? $deviceModel->hardware) ?: null;
             $deviceModel->features = ($features ?? $deviceModel->features) ?: null;
             $deviceModel->serial = ($serial ?? $deviceModel->serial) ?: null;
-            if (! empty($location)) {
+            if (!empty($location)) {
                 $deviceModel->setLocation($location);
             }
         }
@@ -92,9 +93,9 @@ class OS implements Module
 
         $device->icon = basename(Url::findOsImage($device->os, $device->features, null, 'images/os/'));
 
-        echo trans('device.attributes.location') . ": $device->location\n";
+        echo trans('device.attributes.location').": $device->location\n";
         foreach (['hardware', 'version', 'features', 'serial'] as $attribute) {
-            echo \App\Observers\DeviceObserver::attributeChangedMessage($attribute, $device->$attribute, $device->getOriginal($attribute)) . PHP_EOL;
+            echo \App\Observers\DeviceObserver::attributeChangedMessage($attribute, $device->$attribute, $device->getOriginal($attribute)).PHP_EOL;
         }
 
         $device->save();
@@ -108,7 +109,7 @@ class OS implements Module
         }
 
         // make sure the location has coordinates
-        if (Config::get('geoloc.latlng', true) && $device->location && ! $device->location->hasCoordinates()) {
+        if (Config::get('geoloc.latlng', true) && $device->location && !$device->location->hasCoordinates()) {
             $device->location->lookupCoordinates();
             $device->location->save();
         }

@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * Alertmanager Transport
+ * Alertmanager Transport.
+ *
  * @copyright 2019 LibreNMS
  * @license GPL
  */
@@ -42,22 +43,22 @@ class Alertmanager extends Transport
         } else {
             $alertmanager_status = 'startsAt';
         }
-        $gen_url = (Config::get('base_url') . 'device/device=' . $obj['device_id']);
-        $host = ($api['url'] . '/api/v2/alerts');
+        $gen_url = (Config::get('base_url').'device/device='.$obj['device_id']);
+        $host = ($api['url'].'/api/v2/alerts');
         $curl = curl_init();
         $alertmanager_msg = strip_tags($obj['msg']);
         $data = [[
             $alertmanager_status => date('c'),
-            'generatorURL' => $gen_url,
-            'annotations' => [
-                'summary' => $obj['name'],
-                'title' => $obj['title'],
+            'generatorURL'       => $gen_url,
+            'annotations'        => [
+                'summary'     => $obj['name'],
+                'title'       => $obj['title'],
                 'description' => $alertmanager_msg,
             ],
             'labels' => [
                 'alertname' => $obj['name'],
-                'severity' => $obj['severity'],
-                'instance' => $obj['hostname'],
+                'severity'  => $obj['severity'],
+                'instance'  => $obj['hostname'],
             ],
         ]];
 
@@ -77,7 +78,7 @@ class Alertmanager extends Transport
         $ret = curl_exec($curl);
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         if ($code != 200) {
-            return 'HTTP Status code ' . $code;
+            return 'HTTP Status code '.$code;
         }
 
         return true;
@@ -89,15 +90,15 @@ class Alertmanager extends Transport
             'config' => [
                 [
                     'title' => 'Alertmanager URL',
-                    'name' => 'alertmanager-url',
+                    'name'  => 'alertmanager-url',
                     'descr' => 'Alertmanager Webhook URL',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Alertmanager Options',
-                    'name' => 'alertmanager-options',
+                    'name'  => 'alertmanager-options',
                     'descr' => 'Alertmanager Options',
-                    'type' => 'textarea',
+                    'type'  => 'textarea',
                 ],
             ],
             'validation' => [

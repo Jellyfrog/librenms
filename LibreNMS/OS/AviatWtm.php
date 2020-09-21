@@ -1,6 +1,6 @@
 <?php
 /**
- * AviatWtm.php
+ * AviatWtm.php.
  *
  * Aviat WTM
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Josh Baird
  * @author     Josh Baird<joshbaird@gmail.com>
  */
@@ -43,7 +44,7 @@ class AviatWtm extends OS implements
 {
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -71,7 +72,7 @@ class AviatWtm extends OS implements
 
     /**
      * Discover wireless tx or rx capacity. This is in bps. Type is rate.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -113,7 +114,7 @@ class AviatWtm extends OS implements
 
     /**
      * Discover wireless tx or rx RSL. This is in dbm. Type is rssi.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -142,7 +143,7 @@ class AviatWtm extends OS implements
 
     /**
      * Discover wireless SNR (CINR). This is in dbm. Type is snr.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -171,7 +172,7 @@ class AviatWtm extends OS implements
 
     /**
      * Discover wireless TX power. This is in dbm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */

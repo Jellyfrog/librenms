@@ -30,13 +30,13 @@ use LibreNMS\Enum\AlertState;
 /**
  * The Hue API currently is fairly limited for alerts.
  * At it's current implementation we can send ['lselect' => "15 second flash", 'select' => "1 second flash"]
- * If a colour request is sent with it it will permenantly change the colour which is less than desired
+ * If a colour request is sent with it it will permenantly change the colour which is less than desired.
  */
 class Hue extends Transport
 {
     public function deliverAlert($obj, $opts)
     {
-        if (! empty($this->config)) {
+        if (!empty($this->config)) {
             $opts['user'] = $this->config['hue-user'];
             $opts['bridge'] = $this->config['hue-host'];
             $opts['duration'] = $this->config['hue-duration'];
@@ -53,7 +53,7 @@ class Hue extends Transport
         } else {
             $device = device_by_id_cache($obj['device_id']); // for event logging
             $hue_user = $opts['user'];
-            $url = $opts['bridge'] . "/api/$hue_user/groups/0/action";
+            $url = $opts['bridge']."/api/$hue_user/groups/0/action";
             $curl = curl_init();
             $duration = $opts['duration'];
             $data = ['alert' => $duration];
@@ -73,11 +73,11 @@ class Hue extends Transport
             $ret = curl_exec($curl);
             $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
             if ($code == 200) {
-                d_echo('Sent alert to Phillips Hue Bridge ' . $opts['host'] . ' for ' . $device);
+                d_echo('Sent alert to Phillips Hue Bridge '.$opts['host'].' for '.$device);
 
                 return true;
             } else {
-                d_echo('Hue bridge connection error: ' . serialize($ret));
+                d_echo('Hue bridge connection error: '.serialize($ret));
 
                 return false;
             }
@@ -87,33 +87,33 @@ class Hue extends Transport
     public static function configTemplate()
     {
         return [
-            'config'=>[
+            'config'=> [
                 [
-                    'title'=> 'Host',
-                    'name' => 'hue-host',
+                    'title' => 'Host',
+                    'name'  => 'hue-host',
                     'descr' => 'Hue Host',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
-                    'title'=> 'Hue User',
-                    'name' => 'hue-user',
+                    'title' => 'Hue User',
+                    'name'  => 'hue-user',
                     'descr' => 'Phillips Hue Host',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
-                    'title'=> 'Duration',
-                    'name' => 'hue-duration',
-                    'descr' => 'Phillips Hue Duration',
-                    'type' => 'select',
+                    'title'   => 'Duration',
+                    'name'    => 'hue-duration',
+                    'descr'   => 'Phillips Hue Duration',
+                    'type'    => 'select',
                     'options' => [
-                        '1 Second' => 'select',
+                        '1 Second'   => 'select',
                         '15 Seconds' => 'lselect',
                     ],
                 ],
             ],
             'validation' => [
-                'hue-host' => 'required|string',
-                'hue-user' => 'required|string',
+                'hue-host'     => 'required|string',
+                'hue-user'     => 'required|string',
                 'hue-duration' => 'required|string',
             ],
         ];

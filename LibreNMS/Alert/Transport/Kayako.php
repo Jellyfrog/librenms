@@ -19,7 +19,7 @@ class Kayako extends Transport
 {
     public function deliverAlert($host, $kayako)
     {
-        if (! empty($this->config)) {
+        if (!empty($this->config)) {
             $kayako['url'] = $this->config['kayako-url'];
             $kayako['key'] = $this->config['kayako-key'];
             $kayako['secret'] = $this->config['kayako-secret'];
@@ -31,7 +31,7 @@ class Kayako extends Transport
 
     public function contactKayako($host, $kayako)
     {
-        $url = $kayako['url'] . '/Tickets/Ticket';
+        $url = $kayako['url'].'/Tickets/Ticket';
         $key = $kayako['key'];
         $secret = $kayako['secret'];
         $user = Config::get('email_from');
@@ -43,19 +43,19 @@ class Kayako extends Transport
         $signature = base64_encode(hash_hmac('sha256', $salt, $secret, true));
 
         $protocol = [
-            'subject' => ($host['name'] ? $host['name'] . ' on ' . $host['hostname'] : $host['title']),
-            'fullname' => 'LibreNMS Alert',
-            'email' => $user,
-            'contents' => strip_tags($host['msg']),
-            'departmentid' => $department,
-            'ticketstatusid' => $ticket_status,
-            'ticketpriorityid' => $ticket_prio,
-            'tickettypeid' => $ticket_type,
-            'autouserid' => 1,
+            'subject'             => ($host['name'] ? $host['name'].' on '.$host['hostname'] : $host['title']),
+            'fullname'            => 'LibreNMS Alert',
+            'email'               => $user,
+            'contents'            => strip_tags($host['msg']),
+            'departmentid'        => $department,
+            'ticketstatusid'      => $ticket_status,
+            'ticketpriorityid'    => $ticket_prio,
+            'tickettypeid'        => $ticket_type,
+            'autouserid'          => 1,
             'ignoreautoresponder' => true,
-            'apikey' => $key,
-            'salt' => $salt,
-            'signature' => $signature,
+            'apikey'              => $key,
+            'salt'                => $salt,
+            'signature'           => $signature,
         ];
         $post_data = http_build_query($protocol, '', '&');
 
@@ -82,33 +82,33 @@ class Kayako extends Transport
             'config' => [
                 [
                     'title' => 'Kayako URL',
-                    'name' => 'kayako-url',
+                    'name'  => 'kayako-url',
                     'descr' => 'ServiceDesk API URL',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Kayako API Key',
-                    'name' => 'kayako-key',
+                    'name'  => 'kayako-key',
                     'descr' => 'ServiceDesk API Key',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Kayako API Secret',
-                    'name' => 'kayako-secret',
+                    'name'  => 'kayako-secret',
                     'descr' => 'ServiceDesk API Secret Key',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Kayako Department',
-                    'name' => 'kayako-department',
+                    'name'  => 'kayako-department',
                     'descr' => 'Department to post a ticket',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
             ],
             'validation' => [
-                'kayako-url' => 'required|url',
-                'kayako-key' => 'required|string',
-                'kayako-secret' => 'required|string',
+                'kayako-url'        => 'required|url',
+                'kayako-key'        => 'required|string',
+                'kayako-secret'     => 'required|string',
                 'kayako-department' => 'required|string',
             ],
         ];

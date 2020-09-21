@@ -1,6 +1,6 @@
 <?php
 /**
- * DevCheckCommand.php
+ * DevCheckCommand.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -76,7 +77,7 @@ class DevCheckCommand extends LnmsCommand
     private function parseInput()
     {
         $check = $this->argument('check');
-        if (! in_array($check, ['all', 'lint', 'style', 'unit', 'web', 'ci'])) {
+        if (!in_array($check, ['all', 'lint', 'style', 'unit', 'web', 'ci'])) {
             $this->error("Invalid check: $check");
             exit(1);
         }

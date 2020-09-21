@@ -52,9 +52,9 @@ class Nios extends \LibreNMS\OS implements OSPolling
             ->addDataset('prereq_reject', 'DERIVE', 0);
 
         $fields = [
-            'success' => $data[0]['ibDDNSUpdateSuccess'],
-            'failure' => $data[0]['ibDDNSUpdateFailure'],
-            'reject' => $data[0]['ibDDNSUpdateReject'],
+            'success'       => $data[0]['ibDDNSUpdateSuccess'],
+            'failure'       => $data[0]['ibDDNSUpdateFailure'],
+            'reject'        => $data[0]['ibDDNSUpdateReject'],
             'prereq_reject' => $data[0]['ibDDNSUpdatePrerequisiteReject'],
         ];
 
@@ -78,7 +78,7 @@ class Nios extends \LibreNMS\OS implements OSPolling
             ->addDataset('PerfnonAA', 'GAUGE', 0);
 
         $fields = [
-            'PerfAA' => $data[0]['ibNetworkMonitorDNSAAT1AvgLatency'],
+            'PerfAA'    => $data[0]['ibNetworkMonitorDNSAAT1AvgLatency'],
             'PerfnonAA' => $data[0]['ibNetworkMonitorDNSNonAAT1AvgLatency'],
         ];
 
@@ -106,10 +106,10 @@ class Nios extends \LibreNMS\OS implements OSPolling
             ->addDataset('nxrrset', 'DERIVE', 0);
 
         $fields = [
-            'success' => $data['"summary"']['ibBindZoneSuccess'],
-            'failure' => $data['"summary"']['ibBindZoneFailure'],
+            'success'  => $data['"summary"']['ibBindZoneSuccess'],
+            'failure'  => $data['"summary"']['ibBindZoneFailure'],
             'nxdomain' => $data['"summary"']['ibBindZoneNxDomain'],
-            'nxrrset' => $data['"summary"']['ibBindZoneNxRRset'],
+            'nxrrset'  => $data['"summary"']['ibBindZoneNxRRset'],
         ];
 
         $tags = compact('rrd_def');
@@ -146,15 +146,15 @@ class Nios extends \LibreNMS\OS implements OSPolling
             ->addDataset('request', 'DERIVE', 0);
 
         $fields = [
-            'ack' => $data[0]['ibDhcpTotalNoOfAcks'],
-            'decline' => $data[0]['ibDhcpTotalNoOfDeclines'],
+            'ack'      => $data[0]['ibDhcpTotalNoOfAcks'],
+            'decline'  => $data[0]['ibDhcpTotalNoOfDeclines'],
             'discover' => $data[0]['ibDhcpTotalNoOfDiscovers'],
-            'inform' => $data[0]['ibDhcpTotalNoOfInforms'],
-            'nack' => $data[0]['ibDhcpTotalNoOfNacks'],
-            'offer' => $data[0]['ibDhcpTotalNoOfOffers'],
-            'other' => $data[0]['ibDhcpTotalNoOfOthers'],
-            'release' => $data[0]['ibDhcpTotalNoOfReleases'],
-            'request' => $data[0]['ibDhcpTotalNoOfRequests'],
+            'inform'   => $data[0]['ibDhcpTotalNoOfInforms'],
+            'nack'     => $data[0]['ibDhcpTotalNoOfNacks'],
+            'offer'    => $data[0]['ibDhcpTotalNoOfOffers'],
+            'other'    => $data[0]['ibDhcpTotalNoOfOthers'],
+            'release'  => $data[0]['ibDhcpTotalNoOfReleases'],
+            'request'  => $data[0]['ibDhcpTotalNoOfRequests'],
         ];
 
         $tags = compact('rrd_def');

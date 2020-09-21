@@ -1,6 +1,6 @@
 <?php
 /**
- * NotesController.php
+ * NotesController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -62,7 +63,8 @@ class NotesController implements DeviceTab
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param Device $device
+     * @param Device  $device
+     *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Device $device)

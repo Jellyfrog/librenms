@@ -1,6 +1,6 @@
 <?php
 /**
- * Cnpilote.php
+ * Cnpilote.php.
  *
  * Cambium
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Paul Heinrichs
  * @author     Paul Heinrichs<pdheinrichs@gmail.com>
  */
@@ -39,7 +40,7 @@ class Cnpilote extends OS implements
 {
     /**
      * Discover wireless client counts. Type is clients.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -55,7 +56,7 @@ class Cnpilote extends OS implements
     /**
      * Discover wireless SNR.  This is in dB. Type is snr.
      * Formula: SNR = Signal or Rx Power - Noise Floor
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -70,7 +71,7 @@ class Cnpilote extends OS implements
 
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -85,7 +86,7 @@ class Cnpilote extends OS implements
 
     /**
      * Discover wireless noise floor. This is in dBm/Hz. Type is noise-floor.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */

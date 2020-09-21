@@ -1,6 +1,6 @@
 <?php
 /**
- * CommonFunctionsTest.php
+ * CommonFunctionsTest.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2016 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -167,11 +168,11 @@ class CommonFunctionsTest extends TestCase
     {
         $device_dns = [
             'hostname' => 'test.librenms.org',
-            'sysName' => 'Testing DNS',
+            'sysName'  => 'Testing DNS',
         ];
         $device_ip = [
             'hostname' => '192.168.1.2',
-            'sysName' => 'Testing IP',
+            'sysName'  => 'Testing IP',
         ];
 
         // both false

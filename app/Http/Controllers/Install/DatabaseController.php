@@ -1,6 +1,6 @@
 <?php
 /**
- * DatabaseController.php
+ * DatabaseController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -39,7 +40,7 @@ class DatabaseController extends InstallationController implements InstallerStep
 
     public function index(Request $request)
     {
-        if (! $this->initInstallStep()) {
+        if (!$this->initInstallStep()) {
             return $this->redirectToIncomplete();
         }
 
@@ -67,15 +68,16 @@ class DatabaseController extends InstallationController implements InstallerStep
 
         $ok = false;
         $message = '';
+
         try {
             $conn = Eloquent::DB('setup');
-            $ok = $conn && ! is_null($conn->getPdo());
+            $ok = $conn && !is_null($conn->getPdo());
         } catch (\Exception $e) {
             $message = $e->getMessage();
         }
 
         return response()->json([
-            'result' => $ok ? 'ok' : 'fail',
+            'result'  => $ok ? 'ok' : 'fail',
             'message' => $message,
         ]);
     }
@@ -94,7 +96,7 @@ class DatabaseController extends InstallationController implements InstallerStep
                 echo "\n\nSuccess!";
                 $this->markStepComplete();
             } catch (\Exception $e) {
-                echo $e->getMessage() . "\n\nError!";
+                echo $e->getMessage()."\n\nError!";
             }
         });
 

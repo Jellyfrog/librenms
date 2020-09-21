@@ -10,7 +10,7 @@ class Processor extends DeviceRelatedModel
     // ---- Helper Functions ----
 
     /**
-     * Return Processor Description, formatted for display
+     * Return Processor Description, formatted for display.
      *
      * @return string
      */

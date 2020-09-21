@@ -11,8 +11,10 @@ interface Authorizer
      * Some Authorizer methods may only check username.
      *
      * @param array $credentials
-     * @return true throws an Exception on failure
+     *
      * @throws AuthenticationException thrown if the username or password is invalid
+     *
+     * @return true throws an Exception on failure
      */
     public function authenticate($credentials);
 
@@ -20,23 +22,26 @@ interface Authorizer
      * Check if a $username exists.
      *
      * @param string $username
-     * @param bool $throw_exception Allows for a message to be sent to callers in case the user does not exist
+     * @param bool   $throw_exception Allows for a message to be sent to callers in case the user does not exist
+     *
      * @return bool
      */
     public function userExists($username, $throw_exception = false);
 
     /**
-     * Get the userlevel of $username
+     * Get the userlevel of $username.
      *
      * @param string $username The username to check
+     *
      * @return int
      */
     public function getUserlevel($username);
 
     /**
-     * Get the user_id of $username
+     * Get the user_id of $username.
      *
      * @param string $username
+     *
      * @return int
      */
     public function getUserid($username);
@@ -54,6 +59,7 @@ interface Authorizer
      * can_modify_passwd
      *
      * @param int $user_id
+     *
      * @return array
      */
     public function getUser($user_id);
@@ -63,30 +69,33 @@ interface Authorizer
      *
      * @param string $username
      * @param string $password
-     * @param int $level
+     * @param int    $level
      * @param string $email
      * @param string $realname
-     * @param int $can_modify_passwd If this user is allowed to edit their password
+     * @param int    $can_modify_passwd If this user is allowed to edit their password
      * @param string $description
+     *
      * @return int|false Returns the added user_id or false if adding failed
      */
     public function addUser($username, $password, $level = 0, $email = '', $realname = '', $can_modify_passwd = 0, $description = '');
 
     /**
-     * Update the some of the fields of a user
+     * Update the some of the fields of a user.
      *
-     * @param int $user_id The user_id to update
+     * @param int    $user_id           The user_id to update
      * @param string $realname
-     * @param int $level
-     * @param int $can_modify_passwd
+     * @param int    $level
+     * @param int    $can_modify_passwd
      * @param string $email
+     *
      * @return bool If the update was successful
      */
     public function updateUser($user_id, $realname, $level, $can_modify_passwd, $email);
 
     /**
-     * @param string $username The $username to update
+     * @param string $username    The $username to update
      * @param string $newpassword
+     *
      * @return bool If the update was successful
      */
     public function changePassword($username, $newpassword);
@@ -95,13 +104,14 @@ interface Authorizer
      * Delete a user.
      *
      * @param int $user_id
+     *
      * @return bool If the deletion was successful
      */
     public function deleteUser($user_id);
 
     /**
      * Get a list of all users in this Authorizer
-     * !Warning! this could be very slow for some Authorizer types or configurations
+     * !Warning! this could be very slow for some Authorizer types or configurations.
      *
      * @return array
      */
@@ -127,6 +137,7 @@ interface Authorizer
      * Check if this Authorizer can set new passwords.
      *
      * @param string $username Optionally, check if $username can set their own password
+     *
      * @return bool
      */
     public function canUpdatePasswords($username = '');

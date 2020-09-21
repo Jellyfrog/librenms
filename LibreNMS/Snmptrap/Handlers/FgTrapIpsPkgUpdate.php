@@ -1,6 +1,6 @@
 <?php
 /**
- * FgTrapIpsPkgUpdate.php
+ * FgTrapIpsPkgUpdate.php.
  *
  * -Description-
  *
@@ -20,6 +20,7 @@
  * Trap sent when Fortigate IPS signature database was updated.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -38,7 +39,8 @@ class FgTrapIpsPkgUpdate implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)

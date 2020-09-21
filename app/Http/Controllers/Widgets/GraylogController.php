@@ -1,6 +1,6 @@
 <?php
 /**
- * GraylogController.php
+ * GraylogController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -32,17 +33,18 @@ class GraylogController extends WidgetController
 {
     protected $title = 'Graylog';
     protected $defaults = [
-        'title' => null,
-        'stream' => null,
-        'device' => null,
-        'range' => null,
-        'limit' => 15,
-        'loglevel' => null,
+        'title'          => null,
+        'stream'         => null,
+        'device'         => null,
+        'range'          => null,
+        'limit'          => 15,
+        'loglevel'       => null,
         'hidenavigation' => 0,
     ];
 
     /**
      * @param Request $request
+     *
      * @return View
      */
     public function getView(Request $request)

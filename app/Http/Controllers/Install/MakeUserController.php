@@ -1,6 +1,6 @@
 <?php
 /**
- * MakeUserController.php
+ * MakeUserController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -36,7 +37,7 @@ class MakeUserController extends InstallationController implements InstallerStep
 
     public function index(Request $request)
     {
-        if (! $this->initInstallStep()) {
+        if (!$this->initInstallStep()) {
             return $this->redirectToIncomplete();
         }
 
@@ -66,7 +67,7 @@ class MakeUserController extends InstallationController implements InstallerStep
 
         try {
             // only allow the first admin to be created
-            if (! $this->complete()) {
+            if (!$this->complete()) {
                 $this->configureDatabase();
                 $user = new User($request->only(['username', 'password', 'email']));
                 $user->level = 10; // admin

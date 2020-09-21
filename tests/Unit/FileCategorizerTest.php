@@ -1,6 +1,6 @@
 <?php
 /**
- * FileCategorizerTest.php
+ * FileCategorizerTest.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -123,7 +124,7 @@ class FileCategorizerTest extends TestCase
     public function testOsFiles()
     {
         $this->assertCategorized([
-            'os' => ['ftd', '3com', 'adva_fsp150', 'saf-integra-b'],
+            'os'       => ['ftd', '3com', 'adva_fsp150', 'saf-integra-b'],
             'os-files' => [
                 'tests/data/ftd.json',
                 'tests/data/3com_4200.json',
@@ -133,7 +134,7 @@ class FileCategorizerTest extends TestCase
         ]);
 
         $this->assertCategorized([
-            'os' => ['ciscowap', 'xos', 'ciscosb', 'linux'],
+            'os'       => ['ciscowap', 'xos', 'ciscosb', 'linux'],
             'os-files' => [
                 'tests/snmpsim/ciscowap.snmprec',
                 'tests/snmpsim/xos_x480.snmprec',
@@ -143,7 +144,7 @@ class FileCategorizerTest extends TestCase
         ]);
 
         $this->assertCategorized([
-            'os' => ['arris-c4', 'ios'],
+            'os'       => ['arris-c4', 'ios'],
             'os-files' => [
                 'includes/discovery/sensors/temperature/arris-c4.inc.php',
                 'includes/polling/entity-physical/ios.inc.php',
@@ -155,7 +156,7 @@ class FileCategorizerTest extends TestCase
         ]);
 
         $this->assertCategorized([
-            'os' => ['3com', 'arris-dsr4410md', 'adva_fsp3kr7', 'xirrus_aos'],
+            'os'       => ['3com', 'arris-dsr4410md', 'adva_fsp3kr7', 'xirrus_aos'],
             'os-files' => [
                 'LibreNMS/OS/ThreeCom.php',
                 'LibreNMS/OS/ArrisDsr4410md.php',
@@ -171,7 +172,7 @@ class FileCategorizerTest extends TestCase
         ]);
 
         $this->assertCategorized([
-            'os' => ['dlink', 'eltex-olt'],
+            'os'       => ['dlink', 'eltex-olt'],
             'os-files' => [
                 'includes/definitions/dlink.yaml',
                 'includes/definitions/discovery/eltex-olt.yaml',
@@ -185,7 +186,7 @@ class FileCategorizerTest extends TestCase
         $this->assertCategorized(['full-checks' => ['.travis.yml']], ['other', '.travis.yml']);
 
         $this->assertCategorized([
-            'os' => ['3com', 'calix', 'ptp650', 'dd-wrt', 'arista_eos'],
+            'os'       => ['3com', 'calix', 'ptp650', 'dd-wrt', 'arista_eos'],
             'os-files' => [
                 'tests/data/3com.json',
                 'tests/snmpsim/calix.snmprec',
@@ -217,15 +218,15 @@ class FileCategorizerTest extends TestCase
     private function getCategorySkeleton()
     {
         return [
-            'php' => [],
-            'docs' => [],
-            'python' => [],
-            'bash' => [],
-            'svg' => [],
-            'resources' => [],
+            'php'         => [],
+            'docs'        => [],
+            'python'      => [],
+            'bash'        => [],
+            'svg'         => [],
+            'resources'   => [],
             'full-checks' => [],
-            'os-files' => [],
-            'os' => [],
+            'os-files'    => [],
+            'os'          => [],
         ];
     }
 }

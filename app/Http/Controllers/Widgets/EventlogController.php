@@ -1,6 +1,6 @@
 <?php
 /**
- * EventlogController.php
+ * EventlogController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -31,10 +32,10 @@ class EventlogController extends WidgetController
 {
     protected $title = 'Eventlog';
     protected $defaults = [
-        'title' => null,
-        'device' => null,
-        'device_group' => null,
-        'eventtype' => null,
+        'title'          => null,
+        'device'         => null,
+        'device_group'   => null,
+        'eventtype'      => null,
         'hidenavigation' => 0,
     ];
 

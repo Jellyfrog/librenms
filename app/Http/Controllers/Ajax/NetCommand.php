@@ -1,6 +1,6 @@
 <?php
 /**
- * NetCommand.php
+ * NetCommand.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -36,7 +37,7 @@ class NetCommand extends Controller
     public function run(Request $request)
     {
         $this->validate($request, [
-            'cmd' => 'in:whois,ping,tracert,nmap',
+            'cmd'   => 'in:whois,ping,tracert,nmap',
             'query' => 'ip_or_hostname',
         ]);
 
@@ -53,7 +54,7 @@ class NetCommand extends Controller
                 $cmd = [Config::get('mtr', 'mtr'), '-r', '-c', '5', $request->get('query')];
                 break;
             case 'nmap':
-                if (! $request->user()->isAdmin()) {
+                if (!$request->user()->isAdmin()) {
                     return response('Insufficient privileges');
                 } else {
                     $cmd = [Config::get('nmap', 'nmap'), $request->get('query')];
@@ -87,7 +88,7 @@ class NetCommand extends Controller
             },
             200,
             [
-                'Content-Type' => 'text/plain; charset=utf-8',
+                'Content-Type'      => 'text/plain; charset=utf-8',
                 'X-Accel-Buffering' => 'no',
             ]
         ))->send();

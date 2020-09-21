@@ -1,6 +1,6 @@
 <?php
 /**
- * UserController.php
+ * UserController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -46,15 +47,16 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
         $this->authorize('manage', User::class);
 
         return view('user.index', [
-            'users' => User::orderBy('username')->get(),
+            'users'     => User::orderBy('username')->get(),
             'multiauth' => User::query()->distinct('auth_type')->count('auth_type') > 1,
         ]);
     }
@@ -62,19 +64,20 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @return \Illuminate\Http\Response
      */
     public function create()
     {
         $this->authorize('create', User::class);
 
-        $tmp_user = new User;
+        $tmp_user = new User();
         $tmp_user->can_modify_passwd = LegacyAuth::get()->canUpdatePasswords(); // default to true for new users
 
         return view('user.create', [
-            'user' => $tmp_user,
-            'dashboard' => null,
+            'user'       => $tmp_user,
+            'dashboard'  => null,
             'dashboards' => Dashboard::allAvailable($tmp_user)->get(),
         ]);
     }
@@ -83,6 +86,7 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreUserRequest $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(StoreUserRequest $request)
@@ -112,8 +116,10 @@ class UserController extends Controller
      * Display the specified resource.
      *
      * @param User $user
-     * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @return \Illuminate\Http\Response
      */
     public function show(User $user)
     {
@@ -126,16 +132,18 @@ class UserController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param User $user
-     * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @return \Illuminate\Http\Response
      */
     public function edit(User $user)
     {
         $this->authorize('update', $user);
 
         $data = [
-            'user' => $user,
-            'dashboard' => UserPref::getPref($user, 'dashboard'),
+            'user'       => $user,
+            'dashboard'  => UserPref::getPref($user, 'dashboard'),
             'dashboards' => Dashboard::allAvailable($user)->get(),
         ];
 
@@ -146,7 +154,7 @@ class UserController extends Controller
 
             // if enabled and 3 or more failures
             $last_failure = isset($twofactor['last']) ? (time() - $twofactor['last']) : 0;
-            $data['twofactor_locked'] = isset($twofactor['fails']) && $twofactor['fails'] >= 3 && (! $lockout_time || $last_failure < $lockout_time);
+            $data['twofactor_locked'] = isset($twofactor['fails']) && $twofactor['fails'] >= 3 && (!$lockout_time || $last_failure < $lockout_time);
         }
 
         return view('user.edit', $data);
@@ -156,7 +164,8 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      * @param UpdateUserRequest $request
-     * @param User $user
+     * @param User              $user
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(UpdateUserRequest $request, User $user)
@@ -188,8 +197,10 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param User $user
-     * @return \Illuminate\Http\Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @return \Illuminate\Http\Response
      */
     public function destroy(User $user)
     {
@@ -203,6 +214,7 @@ class UserController extends Controller
     /**
      * @param User $user
      * @param $dashboard
+     *
      * @return bool
      */
     protected function updateDashboard(User $user, $dashboard)

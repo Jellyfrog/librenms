@@ -1,6 +1,6 @@
 <?php
 /**
- * BasicApiTest.php
+ * BasicApiTest.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -42,9 +43,9 @@ class BasicApiTest extends DBTestCase
         $this->json('GET', '/api/v0/devices', [], ['X-Auth-Token' => $token->token_hash])
             ->assertStatus(200)
             ->assertJson([
-                'status' => 'ok',
+                'status'  => 'ok',
                 'devices' => [$device->toArray()],
-                'count'=> 1,
+                'count'   => 1,
             ]);
     }
 }

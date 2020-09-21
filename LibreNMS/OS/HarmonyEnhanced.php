@@ -19,10 +19,10 @@ class HarmonyEnhanced extends OS implements WirelessRssiDiscovery, WirelessSnrDi
             $sensors[] = new WirelessSensor(
                 'rssi',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.7262.4.5.12.203.1.1.5.' . $index,
+                '.1.3.6.1.4.1.7262.4.5.12.203.1.1.5.'.$index,
                 'harmony_enhanced',
                 $index,
-                'RSL Radio ' . $index,
+                'RSL Radio '.$index,
                 null,
                 null,
                 10
@@ -40,10 +40,10 @@ class HarmonyEnhanced extends OS implements WirelessRssiDiscovery, WirelessSnrDi
             $sensors[] = new WirelessSensor(
                 'snr',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.7262.4.5.12.203.1.1.7.' . $index,
+                '.1.3.6.1.4.1.7262.4.5.12.203.1.1.7.'.$index,
                 'harmony_enhanced',
                 $index,
-                'SNR Radio ' . $index,
+                'SNR Radio '.$index,
                 null,
                 null,
                 10
@@ -61,10 +61,10 @@ class HarmonyEnhanced extends OS implements WirelessRssiDiscovery, WirelessSnrDi
             $sensors[] = new WirelessSensor(
                 'power',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.7262.4.5.12.203.1.1.9.' . $index,
+                '.1.3.6.1.4.1.7262.4.5.12.203.1.1.9.'.$index,
                 'harmony_enhanced',
                 $index,
-                'TX Power Radio ' . $index,
+                'TX Power Radio '.$index,
                 null,
                 null,
                 10
@@ -82,10 +82,10 @@ class HarmonyEnhanced extends OS implements WirelessRssiDiscovery, WirelessSnrDi
             $sensors[] = new WirelessSensor(
                 'errors',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.7262.4.5.12.203.1.1.4.' . $index,
+                '.1.3.6.1.4.1.7262.4.5.12.203.1.1.4.'.$index,
                 'harmony_enhanced',
                 $index,
-                'RX Errors Radio ' . $index
+                'RX Errors Radio '.$index
             );
         }
 

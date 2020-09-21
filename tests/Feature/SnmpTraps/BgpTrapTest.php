@@ -1,6 +1,6 @@
 <?php
 /**
- * BgpTrapTest.php
+ * BgpTrapTest.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -44,7 +45,7 @@ SNMPv2-MIB::snmpTrapOID.0 BGP4-MIB::bgpEstablished
 BGP4-MIB::bgpPeerLastError.$bgppeer->bgpPeerIdentifier \"04 00 \"
 BGP4-MIB::bgpPeerState.$bgppeer->bgpPeerIdentifier established\n";
 
-        $message = "SNMP Trap: BGP Up $bgppeer->bgpPeerIdentifier " . get_astext($bgppeer->bgpPeerRemoteAs) . ' is now established';
+        $message = "SNMP Trap: BGP Up $bgppeer->bgpPeerIdentifier ".get_astext($bgppeer->bgpPeerRemoteAs).' is now established';
         \Log::shouldReceive('event')->once()->with($message, $device->device_id, 'bgpPeer', 1, $bgppeer->bgpPeerIdentifier);
 
         $trap = new Trap($trapText);
@@ -67,7 +68,7 @@ SNMPv2-MIB::snmpTrapOID.0 BGP4-MIB::bgpBackwardTransition
 BGP4-MIB::bgpPeerLastError.$bgppeer->bgpPeerIdentifier \"04 00 \"
 BGP4-MIB::bgpPeerState.$bgppeer->bgpPeerIdentifier idle\n";
 
-        $message = "SNMP Trap: BGP Down $bgppeer->bgpPeerIdentifier " . get_astext($bgppeer->bgpPeerRemoteAs) . ' is now idle';
+        $message = "SNMP Trap: BGP Down $bgppeer->bgpPeerIdentifier ".get_astext($bgppeer->bgpPeerRemoteAs).' is now idle';
         \Log::shouldReceive('event')->once()->with($message, $device->device_id, 'bgpPeer', 5, $bgppeer->bgpPeerIdentifier);
 
         $trap = new Trap($trapText);

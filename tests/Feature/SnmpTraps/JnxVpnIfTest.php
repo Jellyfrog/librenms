@@ -1,6 +1,6 @@
 <?php
 /**
- * JnxVpnIfTest.php
+ * JnxVpnIfTest.php.
  *
  * -Description-
  *
@@ -21,6 +21,7 @@
  * Tests JnxVpnIfDown and JnxVpnIfUp traps from Juniper devices.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 KanREN, Inc
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */

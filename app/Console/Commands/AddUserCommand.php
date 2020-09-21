@@ -1,6 +1,6 @@
 <?php
 /**
- * AddUserCommand.php
+ * AddUserCommand.php.
  *
  * CLI command to add a user to LibreNMS
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -67,29 +68,29 @@ class AddUserCommand extends LnmsCommand
         }
 
         $roles = [
-            'normal' => 1,
+            'normal'      => 1,
             'global-read' => 5,
-            'admin' => 10,
+            'admin'       => 10,
         ];
 
         $this->validate([
             'username' => ['required', Rule::unique('users', 'username')->where('auth_type', 'mysql')],
-            'email' => 'nullable|email',
-            'role' => Rule::in(array_keys($roles)),
+            'email'    => 'nullable|email',
+            'role'     => Rule::in(array_keys($roles)),
         ]);
 
         // set get password
         $password = $this->option('password');
-        if (! $password) {
+        if (!$password) {
             $password = $this->secret(__('commands.user:add.password-request'));
         }
 
         $user = new User([
-            'username' => $this->argument('username'),
-            'level' => $roles[$this->option('role')],
-            'descr' => $this->option('descr'),
-            'email' => $this->option('email'),
-            'realname' => $this->option('full-name'),
+            'username'  => $this->argument('username'),
+            'level'     => $roles[$this->option('role')],
+            'descr'     => $this->option('descr'),
+            'email'     => $this->option('email'),
+            'realname'  => $this->option('full-name'),
             'auth_type' => 'mysql',
         ]);
 

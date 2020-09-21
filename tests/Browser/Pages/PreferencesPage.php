@@ -1,6 +1,6 @@
 <?php
 /**
- * PreferencesPage.php
+ * PreferencesPage.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -41,7 +42,8 @@ class PreferencesPage extends Page
     /**
      * Assert that the browser is on the page.
      *
-     * @param  Browser $browser
+     * @param Browser $browser
+     *
      * @return void
      */
     public function assert(Browser $browser)
@@ -57,7 +59,7 @@ class PreferencesPage extends Page
     public function elements()
     {
         return [
-            '@type' => 'select[name=twofactortype]',
+            '@type'     => 'select[name=twofactortype]',
             '@generate' => '#twofactor-generate',
         ];
     }

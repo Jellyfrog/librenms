@@ -1,6 +1,6 @@
 <?php
 /**
- * LibreNMS
+ * LibreNMS.
  *
  *   This file is part of LibreNMS.
  *
@@ -12,19 +12,19 @@ use LibreNMS\Data\Store\Datastore;
 $start = microtime(true);
 
 $init_modules = ['web', 'graphs', 'auth'];
-require realpath(__DIR__ . '/..') . '/includes/init.php';
+require realpath(__DIR__.'/..').'/includes/init.php';
 
-if (! Auth::check()) {
+if (!Auth::check()) {
     // check for unauthenticated graphs and set auth
     $auth = is_client_authorized($_SERVER['REMOTE_ADDR']);
-    if (! $auth) {
+    if (!$auth) {
         exit('Unauthorized');
     }
 }
 
 set_debug(isset($_GET['debug']));
 
-require \LibreNMS\Config::get('install_dir') . '/includes/html/graphs/graph.inc.php';
+require \LibreNMS\Config::get('install_dir').'/includes/html/graphs/graph.inc.php';
 
 Datastore::terminate();
 

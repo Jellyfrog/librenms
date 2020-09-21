@@ -1,6 +1,6 @@
 <?php
 /**
- * AlertDB.php
+ * AlertDB.php.
  *
  * Extending the built in logging to add an event logger function
  *
@@ -19,12 +19,15 @@
  *
  *
  * Original code:
+ *
  * @author Daniel Preussker <f0o@devilcode.org>
  * @copyright 2014 f0o, LibreNMS
  * @license GPL
  *
  * Modified by:
+ *
  * @link       http://librenms.org
+ *
  * @copyright  2019 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -38,6 +41,7 @@ class AlertDB
     /**
      * @param $rule
      * @param $query_builder
+     *
      * @return bool|string
      */
     public static function genSQL($rule, $query_builder = false)
@@ -50,8 +54,10 @@ class AlertDB
     }
 
     /**
-     * Generate SQL from Rule
+     * Generate SQL from Rule.
+     *
      * @param string $rule Rule to generate SQL for
+     *
      * @return string|bool
      */
     public static function genSQLOld($rule)
@@ -71,7 +77,7 @@ class AlertDB
                 $tmpp = explode('.', $opt, 2);
                 $tmpp[0] = str_replace('%', '', $tmpp[0]);
                 $tables[] = mres(str_replace('(', '', $tmpp[0]));
-                $rule = str_replace($opt, $tmpp[0] . '.' . $tmpp[1], $rule);
+                $rule = str_replace($opt, $tmpp[0].'.'.$tmpp[1], $rule);
             }
         }
         $tables = array_keys(array_flip($tables));
@@ -79,7 +85,7 @@ class AlertDB
             //Our first table has no valid glue, append the 'devices' table to it!
             array_unshift($tables, 'devices');
         }
-        $x = sizeof($tables) - 1;
+        $x = count($tables) - 1;
         $i = 0;
         $join = '';
         while ($i < $x) {
@@ -94,21 +100,21 @@ class AlertDB
                 foreach ($gtmp as $glue) {
                     if (empty($last)) {
                         [$tmp,$last] = explode('.', $glue);
-                        $qry .= $glue . ' = ';
+                        $qry .= $glue.' = ';
                     } else {
                         [$tmp,$new] = explode('.', $glue);
-                        $qry .= $tmp . '.' . $last . ' && ' . $tmp . '.' . $new . ' = ';
+                        $qry .= $tmp.'.'.$last.' && '.$tmp.'.'.$new.' = ';
                         $last = $new;
                     }
-                    if (! in_array($tmp, $tables)) {
+                    if (!in_array($tmp, $tables)) {
                         $tables[] = $tmp;
                     }
                 }
-                $join .= '( ' . $qry . $tables[0] . '.device_id ) && ';
+                $join .= '( '.$qry.$tables[0].'.device_id ) && ';
             }
             $i++;
         }
-        $sql = 'SELECT * FROM ' . implode(',', $tables) . ' WHERE (' . $join . '' . str_replace('(', '', $tables[0]) . '.device_id = ?) && (' . str_replace(['%', '@', '!~', '~'], ['', '.*', 'NOT REGEXP', 'REGEXP'], $rule) . ')';
+        $sql = 'SELECT * FROM '.implode(',', $tables).' WHERE ('.$join.''.str_replace('(', '', $tables[0]).'.device_id = ?) && ('.str_replace(['%', '@', '!~', '~'], ['', '.*', 'NOT REGEXP', 'REGEXP'], $rule).')';
 
         return $sql;
     }

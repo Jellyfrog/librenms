@@ -40,9 +40,11 @@ use Log;
 class RunAlerts
 {
     /**
-     * Populate variables
-     * @param string  $txt  Text with variables
-     * @param bool $wrap Wrap variable for text-usage (default: true)
+     * Populate variables.
+     *
+     * @param string $txt  Text with variables
+     * @param bool   $wrap Wrap variable for text-usage (default: true)
+     *
      * @return string
      */
     public function populate($txt, $wrap = true)
@@ -52,31 +54,33 @@ class RunAlerts
             $orig = $tmp;
             $rep = false;
             if ($tmp == 'key' || $tmp == 'value') {
-                $rep = '$' . $tmp;
+                $rep = '$'.$tmp;
             } else {
                 if (strstr($tmp, '.')) {
                     $tmp = explode('.', $tmp, 2);
-                    $pre = '$' . $tmp[0];
+                    $pre = '$'.$tmp[0];
                     $tmp = $tmp[1];
                 } else {
                     $pre = '$obj';
                 }
 
-                $rep = $pre . "['" . str_replace('.', "']['", $tmp) . "']";
+                $rep = $pre."['".str_replace('.', "']['", $tmp)."']";
                 if ($wrap) {
-                    $rep = '{' . $rep . '}';
+                    $rep = '{'.$rep.'}';
                 }
             }
 
-            $txt = str_replace('%' . $orig, $rep, $txt);
+            $txt = str_replace('%'.$orig, $rep, $txt);
         }
 
         return $txt;
     }
 
     /**
-     * Describe Alert
+     * Describe Alert.
+     *
      * @param array $alert Alert-Result from DB
+     *
      * @return array|bool
      */
     public function describeAlert($alert)
@@ -121,11 +125,11 @@ class RunAlerts
         }
         $extra = $alert['details'];
 
-        $tpl = new Template;
+        $tpl = new Template();
         $template = $tpl->getTemplate($obj);
 
         if ($alert['state'] >= AlertState::ACTIVE) {
-            $obj['title'] = $template->title ?: 'Alert for device ' . $device['hostname'] . ' - ' . ($alert['name'] ? $alert['name'] : $alert['rule']);
+            $obj['title'] = $template->title ?: 'Alert for device '.$device['hostname'].' - '.($alert['name'] ? $alert['name'] : $alert['rule']);
             if ($alert['state'] == AlertState::ACKNOWLEDGED) {
                 $obj['title'] .= ' got acknowledged';
             } elseif ($alert['state'] == AlertState::WORSE) {
@@ -139,13 +143,13 @@ class RunAlerts
                 $obj['faults'][$i] = $incident;
                 $obj['faults'][$i]['string'] = null;
                 foreach ($incident as $k => $v) {
-                    if (! empty($v) && $k != 'device_id' && (stristr($k, 'id') || stristr($k, 'desc') || stristr($k, 'msg')) && substr_count($k, '_') <= 1) {
-                        $obj['faults'][$i]['string'] .= $k . ' = ' . $v . '; ';
+                    if (!empty($v) && $k != 'device_id' && (stristr($k, 'id') || stristr($k, 'desc') || stristr($k, 'msg')) && substr_count($k, '_') <= 1) {
+                        $obj['faults'][$i]['string'] .= $k.' = '.$v.'; ';
                     }
                 }
             }
             $obj['elapsed'] = $this->timeFormat(time() - strtotime($alert['time_logged']));
-            if (! empty($extra['diff'])) {
+            if (!empty($extra['diff'])) {
                 $obj['diff'] = $extra['diff'];
             }
         } elseif ($alert['state'] == AlertState::RECOVERED) {
@@ -156,7 +160,7 @@ class RunAlerts
             }
 
             $extra = [];
-            if (! empty($id['details'])) {
+            if (!empty($id['details'])) {
                 $extra = json_decode(gzuncompress($id['details']), true);
             }
 
@@ -164,15 +168,15 @@ class RunAlerts
             $extra['count'] = 0;
             dbUpdate(['details' => gzcompress(json_encode($id['details']), 9)], 'alert_log', 'id = ?', [$alert['id']]);
 
-            $obj['title'] = $template->title_rec ?: 'Device ' . $device['hostname'] . ' recovered from ' . ($alert['name'] ? $alert['name'] : $alert['rule']);
+            $obj['title'] = $template->title_rec ?: 'Device '.$device['hostname'].' recovered from '.($alert['name'] ? $alert['name'] : $alert['rule']);
             $obj['elapsed'] = $this->timeFormat(strtotime($alert['time_logged']) - strtotime($id['time_logged']));
             $obj['id'] = $id['id'];
             foreach ($extra['rule'] as $incident) {
                 $i++;
                 $obj['faults'][$i] = $incident;
                 foreach ($incident as $k => $v) {
-                    if (! empty($v) && $k != 'device_id' && (stristr($k, 'id') || stristr($k, 'desc') || stristr($k, 'msg')) && substr_count($k, '_') <= 1) {
-                        $obj['faults'][$i]['string'] .= $k . ' => ' . $v . '; ';
+                    if (!empty($v) && $k != 'device_id' && (stristr($k, 'id') || stristr($k, 'desc') || stristr($k, 'msg')) && substr_count($k, '_') <= 1) {
+                        $obj['faults'][$i]['string'] .= $k.' => '.$v.'; ';
                     }
                 }
             }
@@ -195,8 +199,10 @@ class RunAlerts
     }
 
     /**
-     * Format Elapsed Time
+     * Format Elapsed Time.
+     *
      * @param int $secs Seconds elapsed
+     *
      * @return string
      */
     public function timeFormat($secs)
@@ -212,7 +218,7 @@ class RunAlerts
         $ret = [];
         foreach ($bit as $k => $v) {
             if ($v > 0) {
-                $ret[] = $v . $k;
+                $ret[] = $v.$k;
             }
         }
 
@@ -220,30 +226,32 @@ class RunAlerts
             return 'none';
         }
 
-        return join(' ', $ret);
+        return implode(' ', $ret);
     }
 
     public function clearStaleAlerts()
     {
-        $sql = 'SELECT `alerts`.`id` AS `alert_id`, `devices`.`hostname` AS `hostname` FROM `alerts` LEFT JOIN `devices` ON `alerts`.`device_id`=`devices`.`device_id`  RIGHT JOIN `alert_rules` ON `alerts`.`rule_id`=`alert_rules`.`id` WHERE `alerts`.`state`!=' . AlertState::CLEAR . ' AND `devices`.`hostname` IS NULL';
+        $sql = 'SELECT `alerts`.`id` AS `alert_id`, `devices`.`hostname` AS `hostname` FROM `alerts` LEFT JOIN `devices` ON `alerts`.`device_id`=`devices`.`device_id`  RIGHT JOIN `alert_rules` ON `alerts`.`rule_id`=`alert_rules`.`id` WHERE `alerts`.`state`!='.AlertState::CLEAR.' AND `devices`.`hostname` IS NULL';
         foreach (dbFetchRows($sql) as $alert) {
             if (empty($alert['hostname']) && isset($alert['alert_id'])) {
                 dbDelete('alerts', '`id` = ?', [$alert['alert_id']]);
-                echo "Stale-alert: #{$alert['alert_id']}" . PHP_EOL;
+                echo "Stale-alert: #{$alert['alert_id']}".PHP_EOL;
             }
         }
     }
 
     /**
-     * Re-Validate Rule-Mappings
+     * Re-Validate Rule-Mappings.
+     *
      * @param int $device_id Device-ID
-     * @param int $rule   Rule-ID
+     * @param int $rule      Rule-ID
+     *
      * @return bool
      */
     public function isRuleValid($device_id, $rule)
     {
         global $rulescache;
-        if (empty($rulescache[$device_id]) || ! isset($rulescache[$device_id])) {
+        if (empty($rulescache[$device_id]) || !isset($rulescache[$device_id])) {
             foreach (AlertUtil::getRules($device_id) as $chk) {
                 $rulescache[$device_id][$chk['id']] = true;
             }
@@ -257,8 +265,10 @@ class RunAlerts
     }
 
     /**
-     * Issue Alert-Object
+     * Issue Alert-Object.
+     *
      * @param array $alert
+     *
      * @return bool
      */
     public function issueAlert($alert)
@@ -274,7 +284,7 @@ class RunAlerts
 
         $obj = $this->describeAlert($alert);
         if (is_array($obj)) {
-            echo 'Issuing Alert-UID #' . $alert['id'] . '/' . $alert['state'] . ':' . PHP_EOL;
+            echo 'Issuing Alert-UID #'.$alert['id'].'/'.$alert['state'].':'.PHP_EOL;
             $this->extTransports($obj);
 
             echo "\r\n";
@@ -284,24 +294,26 @@ class RunAlerts
     }
 
     /**
-     * Issue ACK notification
+     * Issue ACK notification.
+     *
      * @return void
      */
     public function runAcks()
     {
-        foreach ($this->loadAlerts('alerts.state = ' . AlertState::ACKNOWLEDGED . ' && alerts.open = ' . AlertState::ACTIVE) as $alert) {
+        foreach ($this->loadAlerts('alerts.state = '.AlertState::ACKNOWLEDGED.' && alerts.open = '.AlertState::ACTIVE) as $alert) {
             $this->issueAlert($alert);
             dbUpdate(['open' => AlertState::CLEAR], 'alerts', 'rule_id = ? && device_id = ?', [$alert['rule_id'], $alert['device_id']]);
         }
     }
 
     /**
-     * Run Follow-Up alerts
+     * Run Follow-Up alerts.
+     *
      * @return void
      */
     public function runFollowUp()
     {
-        foreach ($this->loadAlerts('alerts.state > ' . AlertState::CLEAR . ' && alerts.open = 0') as $alert) {
+        foreach ($this->loadAlerts('alerts.state > '.AlertState::CLEAR.' && alerts.open = 0') as $alert) {
             if ($alert['state'] != AlertState::ACKNOWLEDGED || ($alert['info']['until_clear'] === false)) {
                 $rextra = json_decode($alert['extra'], true);
                 if ($rextra['invert']) {
@@ -319,9 +331,9 @@ class RunAlerts
                         $chk[$i]['ip'] = inet6_ntop($chk[$i]['ip']);
                     }
                 }
-                $o = sizeof($alert['details']['rule']);
-                $n = sizeof($chk);
-                $ret = 'Alert #' . $alert['id'];
+                $o = count($alert['details']['rule']);
+                $n = count($chk);
+                $ret = 'Alert #'.$alert['id'];
                 $state = AlertState::CLEAR;
                 if ($n > $o) {
                     $ret .= ' Worsens';
@@ -344,7 +356,7 @@ class RunAlerts
                         dbUpdate(['state' => $state, 'open' => 1, 'alerted' => 1], 'alerts', 'rule_id = ? && device_id = ?', [$alert['rule_id'], $alert['device_id']]);
                     }
 
-                    echo $ret . ' (' . $o . '/' . $n . ")\r\n";
+                    echo $ret.' ('.$o.'/'.$n.")\r\n";
                 }
             }
         }
@@ -359,8 +371,8 @@ class RunAlerts
                 [$alert_status['device_id'], $alert_status['rule_id']]
             );
 
-            if (empty($alert['rule_id']) || ! $this->isRuleValid($alert_status['device_id'], $alert_status['rule_id'])) {
-                echo 'Stale-Rule: #' . $alert_status['rule_id'] . '/' . $alert_status['device_id'] . "\r\n";
+            if (empty($alert['rule_id']) || !$this->isRuleValid($alert_status['device_id'], $alert_status['rule_id'])) {
+                echo 'Stale-Rule: #'.$alert_status['rule_id'].'/'.$alert_status['device_id']."\r\n";
                 // Alert-Rule does not exist anymore, let's remove the alert-state.
                 dbDelete('alerts', 'rule_id = ? && device_id = ?', [$alert_status['rule_id'], $alert_status['device_id']]);
             } else {
@@ -368,7 +380,7 @@ class RunAlerts
                 $alert['state'] = $alert_status['state'];
                 $alert['alerted'] = $alert_status['alerted'];
                 $alert['note'] = $alert_status['note'];
-                if (! empty($alert['details'])) {
+                if (!empty($alert['details'])) {
                     $alert['details'] = json_decode(gzuncompress($alert['details']), true);
                 }
                 $alert['info'] = json_decode($alert_status['info'], true);
@@ -380,17 +392,18 @@ class RunAlerts
     }
 
     /**
-     * Run all alerts
+     * Run all alerts.
+     *
      * @return void
      */
     public function runAlerts()
     {
-        foreach ($this->loadAlerts('alerts.state != ' . AlertState::ACKNOWLEDGED . ' && alerts.open = 1') as $alert) {
+        foreach ($this->loadAlerts('alerts.state != '.AlertState::ACKNOWLEDGED.' && alerts.open = 1') as $alert) {
             $noiss = false;
             $noacc = false;
             $updet = false;
             $rextra = json_decode($alert['extra'], true);
-            if (! isset($rextra['recovery'])) {
+            if (!isset($rextra['recovery'])) {
                 // backwards compatibility check
                 $rextra['recovery'] = true;
             }
@@ -402,10 +415,10 @@ class RunAlerts
             }
 
             $tolerence_window = Config::get('alert.tolerance_window');
-            if (! empty($rextra['count']) && empty($rextra['interval'])) {
+            if (!empty($rextra['count']) && empty($rextra['interval'])) {
                 // This check below is for compat-reasons
-                if (! empty($rextra['delay']) && $alert['state'] != AlertState::RECOVERED) {
-                    if ((time() - strtotime($alert['time_logged']) + $tolerence_window) < $rextra['delay'] || (! empty($alert['details']['delay']) && (time() - $alert['details']['delay'] + $tolerence_window) < $rextra['delay'])) {
+                if (!empty($rextra['delay']) && $alert['state'] != AlertState::RECOVERED) {
+                    if ((time() - strtotime($alert['time_logged']) + $tolerence_window) < $rextra['delay'] || (!empty($alert['details']['delay']) && (time() - $alert['details']['delay'] + $tolerence_window) < $rextra['delay'])) {
                         continue;
                     } else {
                         $alert['details']['delay'] = time();
@@ -413,7 +426,7 @@ class RunAlerts
                     }
                 }
 
-                if ($alert['state'] == AlertState::ACTIVE && ! empty($rextra['count']) && ($rextra['count'] == -1 || $alert['details']['count']++ < $rextra['count'])) {
+                if ($alert['state'] == AlertState::ACTIVE && !empty($rextra['count']) && ($rextra['count'] == -1 || $alert['details']['count']++ < $rextra['count'])) {
                     if ($alert['details']['count'] < $rextra['count']) {
                         $noacc = true;
                     }
@@ -423,12 +436,12 @@ class RunAlerts
                 }
             } else {
                 // This is the new way
-                if (! empty($rextra['delay']) && (time() - strtotime($alert['time_logged']) + $tolerence_window) < $rextra['delay'] && $alert['state'] != AlertState::RECOVERED) {
+                if (!empty($rextra['delay']) && (time() - strtotime($alert['time_logged']) + $tolerence_window) < $rextra['delay'] && $alert['state'] != AlertState::RECOVERED) {
                     continue;
                 }
 
-                if (! empty($rextra['interval'])) {
-                    if (! empty($alert['details']['interval']) && (time() - $alert['details']['interval'] + $tolerence_window) < $rextra['interval']) {
+                if (!empty($rextra['interval'])) {
+                    if (!empty($alert['details']['interval']) && (time() - $alert['details']['interval'] + $tolerence_window) < $rextra['interval']) {
                         continue;
                     } else {
                         $alert['details']['interval'] = time();
@@ -436,7 +449,7 @@ class RunAlerts
                     }
                 }
 
-                if (in_array($alert['state'], [AlertState::ACTIVE, AlertState::WORSE, AlertState::BETTER]) && ! empty($rextra['count']) && ($rextra['count'] == -1 || $alert['details']['count']++ < $rextra['count'])) {
+                if (in_array($alert['state'], [AlertState::ACTIVE, AlertState::WORSE, AlertState::BETTER]) && !empty($rextra['count']) && ($rextra['count'] == -1 || $alert['details']['count']++ < $rextra['count'])) {
                     if ($alert['details']['count'] < $rextra['count']) {
                         $noacc = true;
                     }
@@ -460,8 +473,8 @@ class RunAlerts
                 dbUpdate(['details' => gzcompress(json_encode($alert['details']), 9)], 'alert_log', 'id = ?', [$alert['id']]);
             }
 
-            if (! empty($rextra['mute'])) {
-                echo 'Muted Alert-UID #' . $alert['id'] . "\r\n";
+            if (!empty($rextra['mute'])) {
+                echo 'Muted Alert-UID #'.$alert['id']."\r\n";
                 $noiss = true;
             }
 
@@ -475,44 +488,46 @@ class RunAlerts
                 $noiss = true;
             }
 
-            if (! $noiss) {
+            if (!$noiss) {
                 $this->issueAlert($alert);
                 dbUpdate(['alerted' => $alert['state']], 'alerts', 'rule_id = ? && device_id = ?', [$alert['rule_id'], $alert['device_id']]);
             }
 
-            if (! $noacc) {
+            if (!$noacc) {
                 dbUpdate(['open' => 0], 'alerts', 'rule_id = ? && device_id = ?', [$alert['rule_id'], $alert['device_id']]);
             }
         }
     }
 
     /**
-     * Run external transports
+     * Run external transports.
+     *
      * @param array $obj Alert-Array
+     *
      * @return void
      */
     public function extTransports($obj)
     {
-        $type = new Template;
+        $type = new Template();
 
         // If alert transport mapping exists, override the default transports
         $transport_maps = AlertUtil::getAlertTransports($obj['alert_id']);
 
-        if (! $transport_maps) {
+        if (!$transport_maps) {
             $transport_maps = AlertUtil::getDefaultAlertTransports();
         }
 
         // alerting for default contacts, etc
-        if (Config::get('alert.transports.mail') === true && ! empty($obj['contacts'])) {
+        if (Config::get('alert.transports.mail') === true && !empty($obj['contacts'])) {
             $transport_maps[] = [
-                'transport_id' => null,
+                'transport_id'   => null,
                 'transport_type' => 'mail',
-                'opts' => $obj,
+                'opts'           => $obj,
             ];
         }
 
         foreach ($transport_maps as $item) {
-            $class = 'LibreNMS\\Alert\\Transport\\' . ucfirst($item['transport_type']);
+            $class = 'LibreNMS\\Alert\\Transport\\'.ucfirst($item['transport_type']);
             if (class_exists($class)) {
                 //FIXME remove Deprecated transport
                 $transport_title = "Transport {$item['transport_type']}";
@@ -523,6 +538,7 @@ class RunAlerts
                 $obj['alert']['title'] = $obj['title'];
                 $obj['msg'] = $type->getBody($obj);
                 c_echo(" :: $transport_title => ");
+
                 try {
                     $instance = new $class($item['transport_id']);
                     $tmp = $instance->deliverAlert($obj, $item['opts']);
@@ -544,8 +560,8 @@ class RunAlerts
     public function alertLog($result, $obj, $transport)
     {
         $prefix = [
-            AlertState::RECOVERED => 'recovery',
-            AlertState::ACTIVE => $obj['severity'] . ' alert',
+            AlertState::RECOVERED    => 'recovery',
+            AlertState::ACTIVE       => $obj['severity'].' alert',
             AlertState::ACKNOWLEDGED => 'acknowledgment',
         ];
         $prefix[3] = &$prefix[0];
@@ -563,26 +579,28 @@ class RunAlerts
 
         if ($result === true) {
             echo 'OK';
-            Log::event('Issued ' . $prefix[$obj['state']] . " for rule '" . $obj['name'] . "' to transport '" . $transport . "'", $obj['device_id'], 'alert', $severity);
+            Log::event('Issued '.$prefix[$obj['state']]." for rule '".$obj['name']."' to transport '".$transport."'", $obj['device_id'], 'alert', $severity);
         } elseif ($result === false) {
             echo 'ERROR';
-            Log::event('Could not issue ' . $prefix[$obj['state']] . " for rule '" . $obj['name'] . "' to transport '" . $transport . "'", $obj['device_id'], null, Alert::ERROR);
+            Log::event('Could not issue '.$prefix[$obj['state']]." for rule '".$obj['name']."' to transport '".$transport."'", $obj['device_id'], null, Alert::ERROR);
         } else {
             echo "ERROR: $result\r\n";
-            Log::event('Could not issue ' . $prefix[$obj['state']] . " for rule '" . $obj['name'] . "' to transport '" . $transport . "' Error: " . $result, $obj['device_id'], 'error', Alert::ERROR);
+            Log::event('Could not issue '.$prefix[$obj['state']]." for rule '".$obj['name']."' to transport '".$transport."' Error: ".$result, $obj['device_id'], 'error', Alert::ERROR);
         }
     }
 
     /**
      * Check if a device's all parent are down
-     * Returns true if all parents are down
+     * Returns true if all parents are down.
+     *
      * @param int $device Device-ID
+     *
      * @return bool
      */
     public function isParentDown($device)
     {
         $parent_count = dbFetchCell('SELECT count(*) from `device_relationships` WHERE `child_device_id` = ?', [$device]);
-        if (! $parent_count) {
+        if (!$parent_count) {
             return false;
         }
 

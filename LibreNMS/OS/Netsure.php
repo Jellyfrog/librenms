@@ -1,6 +1,6 @@
 <?php
 /**
- * Netsure.php
+ * Netsure.php.
  *
  * Emerson Power Vortex Controllers
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @author     Craig Harris
  */
 

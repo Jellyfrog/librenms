@@ -1,6 +1,6 @@
 <?php
 /**
- * LegacyUserProvider.php
+ * LegacyUserProvider.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -40,7 +41,8 @@ class LegacyUserProvider implements UserProvider
     /**
      * Retrieve a user by their unique identifier.
      *
-     * @param  mixed $identifier
+     * @param mixed $identifier
+     *
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
     public function retrieveById($identifier)
@@ -51,7 +53,8 @@ class LegacyUserProvider implements UserProvider
     /**
      * Retrieve a user by their legacy auth specific identifier.
      *
-     * @param  int $identifier
+     * @param int $identifier
+     *
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
     public function retrieveByLegacyId($identifier)
@@ -66,8 +69,9 @@ class LegacyUserProvider implements UserProvider
     /**
      * Retrieve a user by their unique identifier and "remember me" token.
      *
-     * @param  mixed $identifier
-     * @param  string $token
+     * @param mixed  $identifier
+     * @param string $token
+     *
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
     public function retrieveByToken($identifier, $token)
@@ -75,7 +79,7 @@ class LegacyUserProvider implements UserProvider
         $user = new User();
         $user = $user->where($user->getAuthIdentifierName(), $identifier)->first();
 
-        if (! $user) {
+        if (!$user) {
             return null;
         }
 
@@ -92,8 +96,9 @@ class LegacyUserProvider implements UserProvider
     /**
      * Update the "remember me" token for the given user in storage.
      *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable $user
-     * @param  string $token
+     * @param \Illuminate\Contracts\Auth\Authenticatable $user
+     * @param string                                     $token
+     *
      * @return void
      */
     public function updateRememberToken(Authenticatable $user, $token)
@@ -108,8 +113,9 @@ class LegacyUserProvider implements UserProvider
     /**
      * Validate a user against the given credentials.
      *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable $user
-     * @param  array $credentials
+     * @param \Illuminate\Contracts\Auth\Authenticatable $user
+     * @param array                                      $credentials
+     *
      * @return bool
      */
     public function validateCredentials(Authenticatable $user, array $credentials)
@@ -124,7 +130,7 @@ class LegacyUserProvider implements UserProvider
                 $credentials['username'] = $authorizer->getExternalUsername();
             }
 
-            if (empty($credentials['username']) || ! $authorizer->authenticate($credentials)) {
+            if (empty($credentials['username']) || !$authorizer->authenticate($credentials)) {
                 throw new AuthenticationException('Invalid Credentials');
             }
 
@@ -134,7 +140,7 @@ class LegacyUserProvider implements UserProvider
 
             $auth_message = $ae->getMessage();
             if ($debug) {
-                $auth_message .= '<br /> ' . $ae->getFile() . ': ' . $ae->getLine();
+                $auth_message .= '<br /> '.$ae->getFile().': '.$ae->getLine();
             }
             \Toastr::error($auth_message);
 
@@ -152,7 +158,8 @@ class LegacyUserProvider implements UserProvider
     /**
      * Retrieve a user by the given credentials.
      *
-     * @param  array $credentials
+     * @param array $credentials
+     *
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
     public function retrieveByCredentials(array $credentials)
@@ -198,7 +205,7 @@ class LegacyUserProvider implements UserProvider
 
         // remove null fields
         $new_user = array_filter($new_user, function ($var) {
-            return ! is_null($var);
+            return !is_null($var);
         });
 
         // always create an entry in the users table, but separate by type

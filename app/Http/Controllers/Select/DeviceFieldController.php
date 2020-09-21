@@ -1,6 +1,6 @@
 <?php
 /**
- * DeviceFieldController.php
+ * DeviceFieldController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -30,7 +31,7 @@ use LibreNMS\Config;
 class DeviceFieldController extends SelectController
 {
     /**
-     * Defines validation rules (will override base validation rules for select2 responses too)
+     * Defines validation rules (will override base validation rules for select2 responses too).
      *
      * @return array
      */
@@ -42,9 +43,10 @@ class DeviceFieldController extends SelectController
     }
 
     /**
-     * Defines search fields will be searched in order
+     * Defines search fields will be searched in order.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return array
      */
     protected function searchFields($request)
@@ -53,9 +55,10 @@ class DeviceFieldController extends SelectController
     }
 
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     protected function baseQuery($request)
@@ -73,6 +76,7 @@ class DeviceFieldController extends SelectController
 
     /**
      * @param Device $device
+     *
      * @return array
      */
     public function formatItem($device)
@@ -87,7 +91,7 @@ class DeviceFieldController extends SelectController
         }
 
         return [
-            'id' => $device[$field],
+            'id'   => $device[$field],
             'text' => $text,
         ];
     }

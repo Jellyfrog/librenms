@@ -1,6 +1,6 @@
 <?php
 /**
- * Git.php
+ * Git.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -30,7 +31,7 @@ class Git
 {
     public static function repoPresent()
     {
-        $install_dir = Config::get('install_dir', realpath(__DIR__ . '/../..'));
+        $install_dir = Config::get('install_dir', realpath(__DIR__.'/../..'));
 
         return file_exists("$install_dir/.git");
     }

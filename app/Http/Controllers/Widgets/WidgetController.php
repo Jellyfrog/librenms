@@ -1,6 +1,6 @@
 <?php
 /**
- * WidgetController.php
+ * WidgetController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -44,12 +45,14 @@ abstract class WidgetController extends Controller
 
     /**
      * @param Request $request
+     *
      * @return View
      */
     abstract public function getView(Request $request);
 
     /**
      * @param Request $request
+     *
      * @return View
      */
     public function getSettingsView(Request $request)
@@ -67,14 +70,14 @@ abstract class WidgetController extends Controller
 
         $settings = $this->getSettings();
 
-        if (! $this->show_settings) {
-            if (! empty($settings['device_group'])) {
-                $this->title .= ' (' . DeviceGroup::find($settings['device_group'])->name . ')';
+        if (!$this->show_settings) {
+            if (!empty($settings['device_group'])) {
+                $this->title .= ' ('.DeviceGroup::find($settings['device_group'])->name.')';
             }
             $view = $this->getView($request);
         }
 
-        if (! empty($settings['title'])) {
+        if (!empty($settings['title'])) {
             $title = $settings['title'];
         } else {
             $title = __(method_exists($this, 'title') ? app()->call([$this, 'title']) : $this->title);
@@ -84,7 +87,7 @@ abstract class WidgetController extends Controller
     }
 
     /**
-     * Get the settings (with defaults applied)
+     * Get the settings (with defaults applied).
      *
      * @return array
      */
@@ -106,9 +109,10 @@ abstract class WidgetController extends Controller
 
     /**
      * @param View|string $view
-     * @param string $title
-     * @param array $settings
-     * @param string $status
+     * @param string      $title
+     * @param array       $settings
+     * @param string      $status
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     private function formatResponse($view, $title, $settings, $status = 'ok')
@@ -122,11 +126,11 @@ abstract class WidgetController extends Controller
         }
 
         return response()->json([
-            'status' => $status,
-            'title' => __($title),
-            'html' => $html,
+            'status'        => $status,
+            'title'         => __($title),
+            'html'          => $html,
             'show_settings' => $show_settings,
-            'settings' => $settings,
+            'settings'      => $settings,
         ]);
     }
 }

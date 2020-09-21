@@ -1,6 +1,6 @@
 <?php
 /**
- * AlertScheduleController.php
+ * AlertScheduleController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -47,35 +48,36 @@ class AlertScheduleController extends TableController
         return [
             'start_recurring_dt' => DB::raw('DATE(`start`)'),
             'start_recurring_ht' => DB::raw('TIME(`start`)'),
-            'end_recurring_dt' => DB::raw('DATE(`end`)'),
-            'end_recurring_ht' => DB::raw('TIME(`end`)'),
-            'title' => 'title',
-            'recurring' => 'recurring',
-            'start' => 'start',
-            'end' => 'end',
-            'status' => DB::raw("end < '" . Carbon::now('UTC') . "'"), // only partition lapsed
+            'end_recurring_dt'   => DB::raw('DATE(`end`)'),
+            'end_recurring_ht'   => DB::raw('TIME(`end`)'),
+            'title'              => 'title',
+            'recurring'          => 'recurring',
+            'start'              => 'start',
+            'end'                => 'end',
+            'status'             => DB::raw("end < '".Carbon::now('UTC')."'"), // only partition lapsed
         ];
     }
 
     /**
      * @param AlertSchedule $schedule
+     *
      * @return array
      */
     public function formatItem($schedule)
     {
         return [
-            'title' => $schedule->title,
-            'notes' => $schedule->notes,
-            'id' => $schedule->schedule_id,
-            'start' => $schedule->recurring ? '' : $schedule->start->toDateTimeString('minutes'),
-            'end' => $schedule->recurring ? '' : $schedule->end->toDateTimeString('minutes'),
+            'title'              => $schedule->title,
+            'notes'              => $schedule->notes,
+            'id'                 => $schedule->schedule_id,
+            'start'              => $schedule->recurring ? '' : $schedule->start->toDateTimeString('minutes'),
+            'end'                => $schedule->recurring ? '' : $schedule->end->toDateTimeString('minutes'),
             'start_recurring_dt' => $schedule->recurring ? $schedule->start_recurring_dt : '',
             'start_recurring_hr' => $schedule->recurring ? $schedule->start_recurring_hr : '',
-            'end_recurring_dt' => $schedule->recurring ? $schedule->end_recurring_dt : '',
-            'end_recurring_hr' => $schedule->recurring ? $schedule->end_recurring_hr : '',
-            'recurring' => $schedule->recurring ? __('Yes') : __('No'),
-            'recurring_day' => $schedule->recurring ? implode(',', $schedule->recurring_day) : '',
-            'status' => $schedule->status,
+            'end_recurring_dt'   => $schedule->recurring ? $schedule->end_recurring_dt : '',
+            'end_recurring_hr'   => $schedule->recurring ? $schedule->end_recurring_hr : '',
+            'recurring'          => $schedule->recurring ? __('Yes') : __('No'),
+            'recurring_day'      => $schedule->recurring ? implode(',', $schedule->recurring_day) : '',
+            'status'             => $schedule->status,
         ];
     }
 }

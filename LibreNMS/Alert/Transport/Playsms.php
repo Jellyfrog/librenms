@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * PlaySMS API Transport
+ * PlaySMS API Transport.
+ *
  * @author f0o <f0o@librenms.org>
  * @copyright 2015 f0o, LibreNMS
  * @license GPL
@@ -40,10 +41,10 @@ class Playsms extends Transport
     public static function contactPlaysms($obj, $opts)
     {
         $data = ['u' => $opts['user'], 'h' => $opts['token'], 'to' => implode(',', $opts['to']), 'msg' => $obj['title']];
-        if (! empty($opts['from'])) {
+        if (!empty($opts['from'])) {
             $data['from'] = $opts['from'];
         }
-        $url = $opts['url'] . '&op=pv&' . http_build_query($data);
+        $url = $opts['url'].'&op=pv&'.http_build_query($data);
         $curl = curl_init($url);
 
         set_curl_proxy($curl);
@@ -65,33 +66,33 @@ class Playsms extends Transport
             'config' => [
                 [
                     'title' => 'PlaySMS URL',
-                    'name' => 'playsms-url',
+                    'name'  => 'playsms-url',
                     'descr' => 'PlaySMS URL',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'User',
-                    'name' => 'playsms-user',
+                    'name'  => 'playsms-user',
                     'descr' => 'PlaySMS User',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Token',
-                    'name' => 'playsms-token',
+                    'name'  => 'playsms-token',
                     'descr' => 'PlaySMS Token',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'From',
-                    'name' => 'playsms-from',
+                    'name'  => 'playsms-from',
                     'descr' => 'PlaySMS From',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Mobiles',
-                    'name' => 'playsms-mobiles',
+                    'name'  => 'playsms-mobiles',
                     'descr' => 'PlaySMS Mobiles, can be new line or comma separated',
-                    'type' => 'textarea',
+                    'type'  => 'textarea',
                 ],
             ],
             'validation' => [

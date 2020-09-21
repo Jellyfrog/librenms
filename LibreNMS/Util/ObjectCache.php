@@ -1,6 +1,6 @@
 <?php
 /**
- * ObjectCache.php
+ * ObjectCache.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -45,7 +46,7 @@ class ObjectCache
 
     public static function applications()
     {
-        return Cache::remember('ObjectCache:applications_list:' . auth()->id(), self::$cache_time, function () {
+        return Cache::remember('ObjectCache:applications_list:'.auth()->id(), self::$cache_time, function () {
             return Application::hasAccess(auth()->user())
                 ->select('app_type', 'app_state', 'app_instance')
                 ->groupBy('app_type', 'app_state', 'app_instance')
@@ -57,23 +58,23 @@ class ObjectCache
 
     public static function routing()
     {
-        return Cache::remember('ObjectCache:routing_counts:' . auth()->id(), self::$cache_time, function () {
+        return Cache::remember('ObjectCache:routing_counts:'.auth()->id(), self::$cache_time, function () {
             $user = auth()->user();
 
             return [
-                'vrf' => Vrf::hasAccess($user)->count(),
-                'mpls' => Mpls::hasAccess($user)->count(),
-                'ospf' => OspfInstance::hasAccess($user)->count(),
+                'vrf'       => Vrf::hasAccess($user)->count(),
+                'mpls'      => Mpls::hasAccess($user)->count(),
+                'ospf'      => OspfInstance::hasAccess($user)->count(),
                 'cisco-otv' => Component::hasAccess($user)->where('type', 'Cisco-OTV')->count(),
-                'bgp' => BgpPeer::hasAccess($user)->count(),
-                'cef' => CefSwitching::hasAccess($user)->count(),
+                'bgp'       => BgpPeer::hasAccess($user)->count(),
+                'cef'       => CefSwitching::hasAccess($user)->count(),
             ];
         });
     }
 
     public static function sensors()
     {
-        return Cache::remember('ObjectCache:sensor_list:' . auth()->id(), self::$cache_time, function () {
+        return Cache::remember('ObjectCache:sensor_list:'.auth()->id(), self::$cache_time, function () {
             $sensor_classes = Sensor::hasAccess(auth()->user())->select('sensor_class')->groupBy('sensor_class')->orderBy('sensor_class')->get();
 
             $sensor_menu = [];
@@ -93,7 +94,7 @@ class ObjectCache
 
                 $sensor_menu[$group][] = [
                     'class' => $class,
-                    'icon' => $sensor_model->icon(),
+                    'icon'  => $sensor_model->icon(),
                     'descr' => $sensor_model->classDescr(),
                 ];
             }
@@ -102,7 +103,7 @@ class ObjectCache
                 $sensor_menu[3] = [
                     [
                         'class' => 'toner',
-                        'icon' => 'print',
+                        'icon'  => 'print',
                         'descr' => __('Toner'),
                     ],
                 ];
@@ -115,8 +116,9 @@ class ObjectCache
     }
 
     /**
-     * @param int $device_id device id of the device to get counts for, 0 means all
-     * @param array $fields array of counts to get. Valid options: total, up, down, ignored, shutdown, disabled, deleted, errored, pseudowire
+     * @param int   $device_id device id of the device to get counts for, 0 means all
+     * @param array $fields    array of counts to get. Valid options: total, up, down, ignored, shutdown, disabled, deleted, errored, pseudowire
+     *
      * @return mixed
      */
     public static function portCounts($fields = ['total'], $device_id = 0)
@@ -131,7 +133,7 @@ class ObjectCache
 
     private static function getPortCount($field, $device_id)
     {
-        return Cache::remember("ObjectCache:port_{$field}_count:$device_id:" . auth()->id(), self::$cache_time, function () use ($field, $device_id) {
+        return Cache::remember("ObjectCache:port_{$field}_count:$device_id:".auth()->id(), self::$cache_time, function () use ($field, $device_id) {
             $query = Port::hasAccess(auth()->user())->when($device_id, function ($query) use ($device_id) {
                 $query->where('device_id', $device_id);
             });
@@ -161,6 +163,7 @@ class ObjectCache
 
     /**
      * @param array $fields array of counts to get. Valid options: total, up, down, ignored, disabled
+     *
      * @return array
      */
     public static function deviceCounts($fields = ['total'])
@@ -175,7 +178,7 @@ class ObjectCache
 
     private static function getDeviceCount($field)
     {
-        return Cache::remember("ObjectCache:device_{$field}_count:" . auth()->id(), self::$cache_time, function () use ($field) {
+        return Cache::remember("ObjectCache:device_{$field}_count:".auth()->id(), self::$cache_time, function () use ($field) {
             $query = Device::hasAccess(auth()->user());
             switch ($field) {
                 case 'down':
@@ -197,6 +200,7 @@ class ObjectCache
 
     /**
      * @param array $fields array of counts to get. Valid options: total, ok, warning, critical, ignored, disabled
+     *
      * @return array
      */
     public static function serviceCounts($fields = ['total'], $device_id = 0)
@@ -211,7 +215,7 @@ class ObjectCache
 
     private static function getServiceCount($field, $device_id)
     {
-        return Cache::remember("ObjectCache:service_{$field}_count:" . auth()->id(), self::$cache_time, function () use ($field, $device_id) {
+        return Cache::remember("ObjectCache:service_{$field}_count:".auth()->id(), self::$cache_time, function () use ($field, $device_id) {
             $query = Service::hasAccess(auth()->user())->when($device_id, function ($query) use ($device_id) {
                 $query->where('device_id', $device_id);
             });

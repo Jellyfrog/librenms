@@ -1,6 +1,6 @@
 <?php
 /**
- * Routeros.php
+ * Routeros.php.
  *
  * Mikrotik RouterOS
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -57,7 +58,7 @@ class Routeros extends OS implements
     private $data;
 
     /**
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -74,10 +75,10 @@ class Routeros extends OS implements
             $sensors[] = new WirelessSensor(
                 'ccq',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.14988.1.1.1.3.1.10.' . $index,
+                '.1.3.6.1.4.1.14988.1.1.1.3.1.10.'.$index,
                 'mikrotik',
                 $index,
-                'SSID: ' . $entry['mtxrWlApSsid'],
+                'SSID: '.$entry['mtxrWlApSsid'],
                 $entry['mtxrWlApOverallTxCCQ']
             );
         }
@@ -86,7 +87,7 @@ class Routeros extends OS implements
     }
 
     /**
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -101,7 +102,7 @@ class Routeros extends OS implements
 
     /**
      * Discover wireless frequency.  This is in MHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -129,7 +130,7 @@ class Routeros extends OS implements
 
     /**
      * Discover wireless Rssi.  This is in Dbm. Type is Dbm.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -144,7 +145,7 @@ class Routeros extends OS implements
 
     /**
      * Discover wireless Quality.  This is in Dbm. Type is Dbm.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -158,7 +159,7 @@ class Routeros extends OS implements
     }
 
     /**
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -173,7 +174,7 @@ class Routeros extends OS implements
 
     /**
      * Discover wireless rate. This is in bps. Type is rate.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -185,25 +186,25 @@ class Routeros extends OS implements
             $sensors[] = new WirelessSensor(
                 'rate',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.14988.1.1.1.3.1.2.' . $index,
+                '.1.3.6.1.4.1.14988.1.1.1.3.1.2.'.$index,
                 'mikrotik-tx',
                 $index,
-                'SSID: ' . $entry['mtxrWlApSsid'] . ' Tx',
+                'SSID: '.$entry['mtxrWlApSsid'].' Tx',
                 $entry['mtxrWlApTxRate']
             );
             $sensors[] = new WirelessSensor(
                 'rate',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.14988.1.1.1.3.1.3.' . $index,
+                '.1.3.6.1.4.1.14988.1.1.1.3.1.3.'.$index,
                 'mikrotik-rx',
                 $index,
-                'SSID: ' . $entry['mtxrWlApSsid'] . ' Rx',
+                'SSID: '.$entry['mtxrWlApSsid'].' Rx',
                 $entry['mtxrWlApRxRate']
             );
             $sensors[] = new WirelessSensor(
                 'rate',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.14988.1.1.1.9.1.8.' . $index,
+                '.1.3.6.1.4.1.14988.1.1.1.9.1.8.'.$index,
                 'mikrotik-60g-tx',
                 $index,
                 'Tx Rate',
@@ -236,10 +237,10 @@ class Routeros extends OS implements
             $sensors[] = new WirelessSensor(
                 'distance',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.14988.1.1.1.8.1.13.' . $index,
+                '.1.3.6.1.4.1.14988.1.1.1.8.1.13.'.$index,
                 'mikrotik',
                 $index,
-                'SSID: ' . $entry['mtxrWl60GSsid'],
+                'SSID: '.$entry['mtxrWl60GSsid'],
                 $entry['mtxrWl60G'],
                 null,
                 100000
@@ -258,20 +259,20 @@ class Routeros extends OS implements
                 $sensors[] = new WirelessSensor(
                     $type,
                     $this->getDeviceId(),
-                    $num_oid_base . $index,
+                    $num_oid_base.$index,
                     'mikrotik',
                     $index,
-                    'SSID: ' . $entry['mtxrWlApSsid'],
+                    'SSID: '.$entry['mtxrWlApSsid'],
                     $entry[$oid]
                 );
             } else {
                 $sensors[] = new WirelessSensor(
                     $type,
                     $this->getDeviceId(),
-                    $num_oid_base . $index,
+                    $num_oid_base.$index,
                     'mikrotik',
                     $index,
-                    'SSID: ' . $entry['mtxrWl60GSsid'],
+                    'SSID: '.$entry['mtxrWl60GSsid'],
                     $entry[$oid]
                 );
             }

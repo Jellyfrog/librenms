@@ -1,6 +1,6 @@
 <?php
 /**
- * UpgradeableException.php
+ * UpgradeableException.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -31,6 +32,7 @@ interface UpgradeableException
      * It should return null if the Exception cannot be upgraded.
      *
      * @param \Exception $exception
+     *
      * @return static|null
      */
     public static function upgrade($exception);

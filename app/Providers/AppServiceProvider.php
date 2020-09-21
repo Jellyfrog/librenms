@@ -55,7 +55,7 @@ class AppServiceProvider extends ServiceProvider
             return \LibreNMS\Config::get($key);
         });
         Blade::if('notconfig', function ($key) {
-            return ! \LibreNMS\Config::get($key);
+            return !\LibreNMS\Config::get($key);
         });
         Blade::if('admin', function () {
             return auth()->check() && auth()->user()->isAdmin();
@@ -81,11 +81,11 @@ class AppServiceProvider extends ServiceProvider
             $sensor_types[$sensor_type] = \App\Models\Sensor::class;
         }
         Relation::morphMap(array_merge([
-            'interface' => \App\Models\Port::class,
-            'sensor' => \App\Models\Sensor::class,
-            'device' => \App\Models\Device::class,
+            'interface'    => \App\Models\Port::class,
+            'sensor'       => \App\Models\Sensor::class,
+            'device'       => \App\Models\Device::class,
             'device_group' => \App\Models\DeviceGroup::class,
-            'location' => \App\Models\Location::class,
+            'location'     => \App\Models\Location::class,
         ], $sensor_types));
     }
 
@@ -151,7 +151,7 @@ class AppServiceProvider extends ServiceProvider
                 return true;
             }
 
-            $validator = Validator::make([$attribute => $value], [$attribute => 'exists:' . implode(',', $parameters)]);
+            $validator = Validator::make([$attribute => $value], [$attribute => 'exists:'.implode(',', $parameters)]);
 
             return $validator->passes();
         }, __('validation.exists'));

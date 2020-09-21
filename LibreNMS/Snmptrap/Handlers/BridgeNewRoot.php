@@ -1,6 +1,6 @@
 <?php
 /**
- * BridgeNewRoot.php
+ * BridgeNewRoot.php.
  *
  * -Description-
  *
@@ -34,11 +34,12 @@ class BridgeNewRoot implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)
     {
-        Log::event('SNMP Trap: Device ' . $device->displayName() . ' was elected as new root on one of its Spanning Tree Instances', $device->device_id, 'stp', 3);
+        Log::event('SNMP Trap: Device '.$device->displayName().' was elected as new root on one of its Spanning Tree Instances', $device->device_id, 'stp', 3);
     }
 }

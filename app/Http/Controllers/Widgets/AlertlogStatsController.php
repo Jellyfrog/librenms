@@ -1,6 +1,6 @@
 <?php
 /**
- * AlertlogController.php
+ * AlertlogController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -30,10 +31,10 @@ class AlertlogStatsController extends WidgetController
 {
     protected $title = 'Alert history stats';
     protected $defaults = [
-        'title' => null,
-        'device_id' => '',
-        'min_severity' => 2,
-        'time_interval' => 7,
+        'title'          => null,
+        'device_id'      => '',
+        'min_severity'   => 2,
+        'time_interval'  => 7,
         'hidenavigation' => 0,
     ];
 
@@ -47,11 +48,11 @@ class AlertlogStatsController extends WidgetController
         $data = $this->getSettings(true);
         $data['severities'] = [
             // alert_rules.status is enum('ok','warning','critical')
-            'ok' => 1,
-            'warning' => 2,
-            'critical' => 3,
-            'ok only' => 4,
-            'warning only' => 5,
+            'ok'            => 1,
+            'warning'       => 2,
+            'critical'      => 3,
+            'ok only'       => 4,
+            'warning only'  => 5,
             'critical only' => 6,
         ];
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * DBTestCase.php
+ * DBTestCase.php.
  *
  * Base Test Case for Database tests
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -28,7 +29,7 @@ abstract class DBTestCase extends TestCase
 {
     public static function setUpBeforeClass(): void
     {
-        if (! getenv('DBTEST')) {
+        if (!getenv('DBTEST')) {
             static::markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
         }
 

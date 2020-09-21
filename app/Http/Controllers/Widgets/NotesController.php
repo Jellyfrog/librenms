@@ -1,6 +1,6 @@
 <?php
 /**
- * NotesController.php
+ * NotesController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -44,9 +45,9 @@ class NotesController extends WidgetController
         }
 
         $purifier_config = [
-            'HTML.Allowed'    => 'b,iframe[frameborder|src|width|height],i,ul,ol,li,h1,h2,h3,h4,br,p,pre',
-            'HTML.Trusted'    => true,
-            'HTML.SafeIframe' => true,
+            'HTML.Allowed'         => 'b,iframe[frameborder|src|width|height],i,ul,ol,li,h1,h2,h3,h4,br,p,pre',
+            'HTML.Trusted'         => true,
+            'HTML.SafeIframe'      => true,
             'URI.SafeIframeRegexp' => '%^(https?:)?//%',
         ];
         $output = \LibreNMS\Util\Clean::html(nl2br($settings['notes']), $purifier_config);

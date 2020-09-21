@@ -1,6 +1,6 @@
 <?php
 /**
- * RuckusSzEventTest.php
+ * RuckusSzEventTest.php.
  *
  * -Description-
  *
@@ -20,6 +20,7 @@
  * Tests Ruckus Wireless SmartZone Event trap handlers.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Heath Barnhart
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */

@@ -1,6 +1,6 @@
 <?php
 /**
- * DBSetup.php
+ * DBSetup.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <librenms+n@laf.io>
  */
@@ -41,12 +42,12 @@ class DBSetupTest extends DBTestCase
     public function testSetupDB()
     {
         $result = Artisan::call('migrate:fresh', [
-            '--seed' => true,
-            '--env' => 'testing',
+            '--seed'     => true,
+            '--env'      => 'testing',
             '--database' => $this->connection,
         ]);
 
-        $this->assertSame(0, $result, 'Errors loading DB Schema: ' . Artisan::output());
+        $this->assertSame(0, $result, 'Errors loading DB Schema: '.Artisan::output());
     }
 
     public function testSchemaFiles()
@@ -80,7 +81,7 @@ class DBSetupTest extends DBTestCase
         } else {
             $error = '';
         }
-        $this->assertEmpty($collation, 'Wrong Database Collation or Character set: ' . $error);
+        $this->assertEmpty($collation, 'Wrong Database Collation or Character set: '.$error);
     }
 
     public function testCheckTableCollation()
@@ -88,9 +89,9 @@ class DBSetupTest extends DBTestCase
         $collation = DB::connection($this->connection)->select(DB::raw("SELECT T.TABLE_NAME, C.CHARACTER_SET_NAME, C.COLLATION_NAME FROM information_schema.TABLES AS T, information_schema.COLLATION_CHARACTER_SET_APPLICABILITY AS C WHERE C.collation_name = T.table_collation AND T.table_schema = '$this->db_name' AND  ( C.CHARACTER_SET_NAME != 'utf8' OR C.COLLATION_NAME != 'utf8_unicode_ci' );"));
         $error = '';
         foreach ($collation as $id => $data) {
-            $error .= implode(' ', $data) . PHP_EOL;
+            $error .= implode(' ', $data).PHP_EOL;
         }
-        $this->assertEmpty($collation, 'Wrong Table Collation or Character set: ' . $error);
+        $this->assertEmpty($collation, 'Wrong Table Collation or Character set: '.$error);
     }
 
     public function testCheckColumnCollation()
@@ -98,9 +99,9 @@ class DBSetupTest extends DBTestCase
         $collation = DB::connection($this->connection)->select(DB::raw("SELECT TABLE_NAME, COLUMN_NAME, CHARACTER_SET_NAME, COLLATION_NAME FROM information_schema.COLUMNS  WHERE TABLE_SCHEMA = '$this->db_name'  AND  ( CHARACTER_SET_NAME != 'utf8' OR COLLATION_NAME != 'utf8_unicode_ci' );"));
         $error = '';
         foreach ($collation as $id => $data) {
-            $error .= implode(' ', $data) . PHP_EOL;
+            $error .= implode(' ', $data).PHP_EOL;
         }
-        $this->assertEmpty($collation, 'Wrong Column Collation or Character set: ' . $error);
+        $this->assertEmpty($collation, 'Wrong Column Collation or Character set: '.$error);
     }
 
     public function testSqlMode()

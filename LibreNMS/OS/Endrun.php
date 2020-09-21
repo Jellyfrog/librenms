@@ -1,6 +1,6 @@
 <?php
 /**
- * EndRun.php
+ * EndRun.php.
  *
  * EndRun Tempus LX NTP devices
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Hans Erasmus
  * @author     Hans Erasmus <erasmushans27@gmail.com>
  */

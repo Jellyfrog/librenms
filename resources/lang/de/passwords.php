@@ -14,9 +14,9 @@ return [
     */
 
     'password' => 'Das Passwort muss aus mindestens acht Zeichen bestehen',
-    'reset' => 'Ihr Passwort wurde zurückgesetzt!',
-    'sent' => 'Sie haben via E-Mail einen Link bekommen um das Passwort zurückzusetzen!',
-    'token' => 'Das Passwort Token zum zurücksetzen ist fehlerhaft.',
-    'user' => 'Es konnte kein Benutzer mit der angegebenen E-Mailadresse gefunden werden',
+    'reset'    => 'Ihr Passwort wurde zurückgesetzt!',
+    'sent'     => 'Sie haben via E-Mail einen Link bekommen um das Passwort zurückzusetzen!',
+    'token'    => 'Das Passwort Token zum zurücksetzen ist fehlerhaft.',
+    'user'     => 'Es konnte kein Benutzer mit der angegebenen E-Mailadresse gefunden werden',
 
 ];

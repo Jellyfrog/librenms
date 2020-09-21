@@ -1,6 +1,6 @@
 <?php
 /**
- * CheckInstalled.php
+ * CheckInstalled.php.
  *
  * Check if LibreNMS install has been completed (config.php exists) and redirect to install.php as needed.
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -33,13 +34,14 @@ class CheckInstalled
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure                 $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-        $installed = ! config('librenms.install') && file_exists(base_path('.env'));
+        $installed = !config('librenms.install') && file_exists(base_path('.env'));
         $is_install_route = $request->is('install*');
 
         // further middleware will fail without an app key, init one
@@ -47,7 +49,7 @@ class CheckInstalled
             config(['app.key' => EnvHelper::init()]);
         }
 
-        if (! $installed && ! $is_install_route) {
+        if (!$installed && !$is_install_route) {
             // redirect to install if not installed
             return redirect()->route('install');
         } elseif ($installed && $is_install_route) {
@@ -55,6 +57,7 @@ class CheckInstalled
             if ($request->routeIs('install.finish')) {
                 return redirect()->route('home');
             }
+
             throw new AuthorizationException('This should only be called during install');
         }
 

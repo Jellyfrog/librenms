@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessNoiseFloorDiscovery.php
+ * WirelessNoiseFloorDiscovery.php.
  *
  * Discover Noise Floor sensors in dBm/Hz
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -28,7 +29,7 @@ interface WirelessNoiseFloorDiscovery
 {
     /**
      * Discover wireless noise floor. This is in dBm/Hz. Type is noise-floor.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */

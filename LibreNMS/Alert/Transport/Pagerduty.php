@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * PagerDuty Generic-API Transport
+ * PagerDuty Generic-API Transport.
+ *
  * @author f0o <f0o@devilcode.org>
  * @copyright 2015 f0o, LibreNMS
  * @license GPL
@@ -50,6 +51,7 @@ class Pagerduty extends Transport
     /**
      * @param $obj
      * @param $config
+     *
      * @return bool|string
      */
     public function contactPagerduty($obj, $config)
@@ -58,12 +60,12 @@ class Pagerduty extends Transport
             'routing_key'  => $config['service_key'],
             'event_action' => $obj['event_type'],
             'dedup_key'    => (string) $obj['alert_id'],
-            'payload'    => [
+            'payload'      => [
                 'custom_details'  => strip_tags($obj['msg']) ?: 'Test',
                 'device_groups'   => \DeviceCache::get($obj['device_id'])->groups->pluck('name'),
-                'source'   => $obj['hostname'],
-                'severity' => $obj['severity'],
-                'summary'  => ($obj['name'] ? $obj['name'] . ' on ' . $obj['hostname'] : $obj['title']),
+                'source'          => $obj['hostname'],
+                'severity'        => $obj['severity'],
+                'summary'         => ($obj['name'] ? $obj['name'].' on '.$obj['hostname'] : $obj['title']),
             ],
         ];
 
@@ -79,7 +81,7 @@ class Pagerduty extends Transport
 
             return $result->getReasonPhrase();
         } catch (GuzzleException $e) {
-            return 'Request to PagerDuty API failed. ' . $e->getMessage();
+            return 'Request to PagerDuty API failed. '.$e->getMessage();
         }
     }
 
@@ -93,7 +95,7 @@ class Pagerduty extends Transport
                     'type'  => 'oauth',
                     'icon'  => 'pagerduty-white.svg',
                     'class' => 'btn-success',
-                    'url'   => 'https://connect.pagerduty.com/connect?vendor=' . self::$integrationKey . '&callback=',
+                    'url'   => 'https://connect.pagerduty.com/connect?vendor='.self::$integrationKey.'&callback=',
                 ],
                 [
                     'title' => 'Account',
@@ -118,8 +120,8 @@ class Pagerduty extends Transport
     public function handleOauth(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'account' => 'alpha_dash',
-            'service_key' => 'regex:/^[a-fA-F0-9]+$/',
+            'account'      => 'alpha_dash',
+            'service_key'  => 'regex:/^[a-fA-F0-9]+$/',
             'service_name' => 'string',
         ]);
 
@@ -135,9 +137,9 @@ class Pagerduty extends Transport
             return (bool) dbUpdate(['transport_config' => $config], 'alert_transports', 'transport_id=?', [$id]);
         } else {
             return (bool) dbInsert([
-                'transport_name' => $request->get('service_name', 'PagerDuty'),
-                'transport_type' => 'pagerduty',
-                'is_default' => 0,
+                'transport_name'   => $request->get('service_name', 'PagerDuty'),
+                'transport_type'   => 'pagerduty',
+                'is_default'       => 0,
                 'transport_config' => $config,
             ], 'alert_transports');
         }

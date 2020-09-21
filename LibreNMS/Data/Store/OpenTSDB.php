@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenTSDB.php
+ * OpenTSDB.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @copyright  2017 Yacine Benamsili <https://github.com/yac01/librenms.git>
  * @author     Tony Murray <murraytony@gmail.com>
@@ -40,10 +41,11 @@ class OpenTSDB extends BaseDatastore
         parent::__construct();
         $host = Config::get('opentsdb.host');
         $port = Config::get('opentsdb.port', 2181);
+
         try {
             $this->connection = $socketFactory->createClient("$host:$port");
         } catch (\Socket\Raw\Exception $e) {
-            Log::debug('OpenTSDB Error: ' . $e->getMessage());
+            Log::debug('OpenTSDB Error: '.$e->getMessage());
         }
 
         if ($this->connection) {
@@ -67,15 +69,15 @@ class OpenTSDB extends BaseDatastore
      *   rrd_oldname array|string: old rrd filename to rename, will be processed with rrd_name()
      *   rrd_step             int: rrd step, defaults to 300
      *
-     * @param array $device
-     * @param string $measurement Name of this measurement
-     * @param array $tags tags for the data (or to control rrdtool)
-     * @param array|mixed $fields The data to update in an associative array, the order must be consistent with rrd_def,
-     *                            single values are allowed and will be paired with $measurement
+     * @param array       $device
+     * @param string      $measurement Name of this measurement
+     * @param array       $tags        tags for the data (or to control rrdtool)
+     * @param array|mixed $fields      The data to update in an associative array, the order must be consistent with rrd_def,
+     *                                 single values are allowed and will be paired with $measurement
      */
     public function put($device, $measurement, $tags, $fields)
     {
-        if (! $this->connection) {
+        if (!$this->connection) {
             Log::error("OpenTSDB Error: not connected\n");
 
             return;
@@ -83,12 +85,12 @@ class OpenTSDB extends BaseDatastore
 
         $flag = Config::get('opentsdb.co');
         $timestamp = Carbon::now()->timestamp;
-        $tmp_tags = 'hostname=' . $device['hostname'];
+        $tmp_tags = 'hostname='.$device['hostname'];
 
         foreach ($tags as $k => $v) {
             $v = str_replace([' ', ',', '='], '_', $v);
-            if (! empty($v)) {
-                $tmp_tags = $tmp_tags . ' ' . $k . '=' . $v;
+            if (!empty($v)) {
+                $tmp_tags = $tmp_tags.' '.$k.'='.$v;
             }
         }
 
@@ -96,18 +98,18 @@ class OpenTSDB extends BaseDatastore
             foreach ($fields as $k => $v) {
                 $measurement = $k;
                 if ($flag == true) {
-                    $measurement = $measurement . '.' . $device['co'];
+                    $measurement = $measurement.'.'.$device['co'];
                 }
 
-                $this->putData('port.' . $measurement, $timestamp, $v, $tmp_tags);
+                $this->putData('port.'.$measurement, $timestamp, $v, $tmp_tags);
             }
         } else {
             if ($flag == true) {
-                $measurement = $measurement . '.' . $device['co'];
+                $measurement = $measurement.'.'.$device['co'];
             }
 
             foreach ($fields as $k => $v) {
-                $tmp_tags_key = $tmp_tags . ' ' . 'key' . '=' . $k;
+                $tmp_tags_key = $tmp_tags.' '.'key'.'='.$k;
                 $this->putData($measurement, $timestamp, $v, $tmp_tags_key);
             }
         }
@@ -124,7 +126,7 @@ class OpenTSDB extends BaseDatastore
 
             $this->recordStatistic($stat->end());
         } catch (\Socket\Raw\Exception $e) {
-            Log::error('OpenTSDB Error: ' . $e->getMessage());
+            Log::error('OpenTSDB Error: '.$e->getMessage());
         }
     }
 
@@ -134,7 +136,7 @@ class OpenTSDB extends BaseDatastore
     }
 
     /**
-     * Checks if the datastore wants rrdtags to be sent when issuing put()
+     * Checks if the datastore wants rrdtags to be sent when issuing put().
      *
      * @return bool
      */

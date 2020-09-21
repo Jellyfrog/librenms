@@ -18,7 +18,7 @@ class Msteams extends Transport
 {
     public function deliverAlert($obj, $opts)
     {
-        if (! empty($this->config)) {
+        if (!empty($this->config)) {
             $opts['url'] = $this->config['msteam-url'];
         }
 
@@ -29,9 +29,9 @@ class Msteams extends Transport
     {
         $url = $opts['url'];
         $data = [
-            'title' => $obj['title'],
+            'title'      => $obj['title'],
             'themeColor' => self::getColorForState($obj['state']),
-            'text' => strip_tags($obj['msg'], '<strong><em><h1><h2><h3><strike><ul><ol><li><pre><blockquote><a><img><p>'),
+            'text'       => strip_tags($obj['msg'], '<strong><em><h1><h2><h3><strike><ul><ol><li><pre><blockquote><a><img><p>'),
         ];
         $curl = curl_init();
         set_curl_proxy($curl);
@@ -62,15 +62,15 @@ class Msteams extends Transport
             'config' => [
                 [
                     'title' => 'Webhook URL',
-                    'name' => 'msteam-url',
+                    'name'  => 'msteam-url',
                     'descr' => 'Microsoft Teams Webhook URL',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
-                    'title' => 'Use JSON?',
-                    'name' => 'use-json',
-                    'descr' => 'Compose MessageCard with JSON rather than Markdown',
-                    'type' => 'checkbox',
+                    'title'   => 'Use JSON?',
+                    'name'    => 'use-json',
+                    'descr'   => 'Compose MessageCard with JSON rather than Markdown',
+                    'type'    => 'checkbox',
                     'default' => false,
                 ],
             ],

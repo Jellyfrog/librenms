@@ -1,6 +1,6 @@
 <?php
 /**
- * Aprisa.php
+ * Aprisa.php.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Maikel de Boer and Janno Schouwenburg
  * @author     Maikel de Boer <mdb@tampnet.com>, Janno Schouwenburg <js@tampnet.com>
  */
@@ -39,7 +40,7 @@ class Aprisa extends OS implements
 {
     /**
      * Discover wireless tx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -54,7 +55,7 @@ class Aprisa extends OS implements
 
     /**
      * Discover wireless rx rssi. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -69,7 +70,7 @@ class Aprisa extends OS implements
 
     /**
      * Discover wireless SNR.  This is in dB. Type is snr.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -84,7 +85,7 @@ class Aprisa extends OS implements
 
     /**
      * Discover wireless bit errors.  This is in total bits. Type is errors.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -101,7 +102,7 @@ class Aprisa extends OS implements
 
     /**
      * Discover wireless frequency.  This is in MHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

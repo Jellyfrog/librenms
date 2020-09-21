@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugins.php
+ * Plugins.php.
  *
  * -Description-
  *
@@ -18,7 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  *
  * @author     LibreNMS Group
+ *
  * @link       http://librenms.org
+ *
  * @copyright  2016
  */
 
@@ -28,10 +30,12 @@ use App\Models\Plugin;
 use Log;
 
 /**
- * Handles loading of plugins
+ * Handles loading of plugins.
  *
  * @author     LibreNMS Group
+ *
  * @link       http://librenms.org
+ *
  * @copyright  2016
  *
  * Supported hooks
@@ -44,40 +48,40 @@ use Log;
 class Plugins
 {
     /**
-     * Array of plugin hooks
+     * Array of plugin hooks.
      *
      * @var array
      */
     private static $plugins = null;
 
     /**
-     * Start loading active plugins
+     * Start loading active plugins.
      *
      * @return bool
      */
     public static function start()
     {
-        if (! is_null(self::$plugins)) {
+        if (!is_null(self::$plugins)) {
             return false;
         }
 
         self::$plugins = [];
         $plugin_dir = Config::get('plugin_dir');
 
-        if (! file_exists($plugin_dir)) {
+        if (!file_exists($plugin_dir)) {
             return false;
         }
 
         $plugin_files = Plugin::isActive()->get()->toArray();
         foreach ($plugin_files as $plugins) {
-            $plugin_file = $plugin_dir . '/' . $plugins['plugin_name'] . '/' . $plugins['plugin_name'] . '.php';
+            $plugin_file = $plugin_dir.'/'.$plugins['plugin_name'].'/'.$plugins['plugin_name'].'.php';
             $plugin_info = pathinfo($plugin_file);
 
             if ($plugin_info['extension'] !== 'php') {
                 continue;
             }
 
-            if (! is_file($plugin_file)) {
+            if (!is_file($plugin_file)) {
                 continue;
             }
 
@@ -88,18 +92,19 @@ class Plugins
     }
 
     /**
-     * Load plugin
+     * Load plugin.
      *
-     * @param  string $file       Full path and filename of plugin
-     * @param  string $pluginName Plugin name without any namespace
+     * @param string $file       Full path and filename of plugin
+     * @param string $pluginName Plugin name without any namespace
+     *
      * @return object|null
      */
     public static function load($file, $pluginName)
     {
-        chdir(Config::get('install_dir') . '/html');
+        chdir(Config::get('install_dir').'/html');
         $plugin = self::getInstance($file, $pluginName);
 
-        if (! is_null($plugin)) {
+        if (!is_null($plugin)) {
             $class = get_class($plugin);
             $hooks = get_class_methods($class);
 
@@ -121,28 +126,29 @@ class Plugins
      *
      * @param string $file
      * @param string $pluginName
+     *
      * @return object|null
      */
     private static function getInstance($file, $pluginName)
     {
         $ns_prefix = 'LibreNMS\\Plugins\\';
-        $ns_psr4 = $ns_prefix . $pluginName . '\\' . $pluginName;
-        $ns_plugin = $ns_prefix . $pluginName;
+        $ns_psr4 = $ns_prefix.$pluginName.'\\'.$pluginName;
+        $ns_plugin = $ns_prefix.$pluginName;
         $ns_global = $pluginName;
 
         if (class_exists($ns_psr4)) {
-            return new $ns_psr4;
+            return new $ns_psr4();
         }
 
         if (class_exists($ns_plugin)) {
-            return new $ns_plugin;
+            return new $ns_plugin();
         }
 
         // Include file because it's not psr4 (may have been included by previous class_exists calls
         include_once $file;
 
         if (class_exists($ns_global)) {
-            return new $ns_global;
+            return new $ns_global();
         }
 
         return null;
@@ -151,14 +157,15 @@ class Plugins
     /**
      * Get all plugins implementing a specific hook.
      *
-     * @param  string $hook Name of the hook to get count for
+     * @param string $hook Name of the hook to get count for
+     *
      * @return int|bool
      */
     public static function countHooks($hook)
     {
         // count all plugins implementing a specific hook
         self::start();
-        if (! empty(self::$plugins[$hook])) {
+        if (!empty(self::$plugins[$hook])) {
             return count(self::$plugins[$hook]);
         } else {
             return false;
@@ -168,20 +175,21 @@ class Plugins
     /**
      * Call hook for plugin.
      *
-     * @param string $hook Name of hook to call
+     * @param string      $hook   Name of hook to call
      * @param array|false $params Optional array of parameters for hook
+     *
      * @return string
      */
     public static function call($hook, $params = false)
     {
-        chdir(Config::get('install_dir') . '/html');
+        chdir(Config::get('install_dir').'/html');
         self::start();
 
         ob_start();
-        if (! empty(self::$plugins[$hook])) {
+        if (!empty(self::$plugins[$hook])) {
             foreach (self::$plugins[$hook] as $name) {
                 try {
-                    if (! is_array($params)) {
+                    if (!is_array($params)) {
                         @call_user_func([$name, $hook]);
                     } else {
                         @call_user_func_array([$name, $hook], $params);

@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * Mattermost API Transport
+ * Mattermost API Transport.
+ *
  * @author George Pantazis <gpant@eservices-greece.com>
  * @copyright 2019 George Pantazis, LibreNMS
  * @license GPL
@@ -29,10 +30,10 @@ class Mattermost extends Transport
     public function deliverAlert($obj, $opts)
     {
         $mattermost_opts = [
-            'url' => $this->config['mattermost-url'],
-            'username' => $this->config['mattermost-username'],
-            'icon' => $this->config['mattermost-icon'],
-            'channel' => $this->config['mattermost-channel'],
+            'url'         => $this->config['mattermost-url'],
+            'username'    => $this->config['mattermost-username'],
+            'icon'        => $this->config['mattermost-icon'],
+            'channel'     => $this->config['mattermost-channel'],
             'author_name' => $this->config['mattermost-author_name'],
         ];
 
@@ -48,15 +49,15 @@ class Mattermost extends Transport
         $data = [
             'attachments' => [
                 0 => [
-                    'fallback' => $mattermost_msg,
-                    'color' => $color,
-                    'title' => $obj['title'],
-                    'text' => $obj['msg'],
-                    'mrkdwn_in' => ['text', 'fallback'],
+                    'fallback'    => $mattermost_msg,
+                    'color'       => $color,
+                    'title'       => $obj['title'],
+                    'text'        => $obj['msg'],
+                    'mrkdwn_in'   => ['text', 'fallback'],
                     'author_name' => $api['author_name'],
                 ],
             ],
-            'channel' => $api['channel'],
+            'channel'  => $api['channel'],
             'username' => $api['username'],
             'icon_url' => $api['icon'],
         ];
@@ -77,11 +78,11 @@ class Mattermost extends Transport
         $ret = curl_exec($curl);
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         if ($code != 200) {
-            d_echo('Mattermost Connection Error: ' . $ret);
+            d_echo('Mattermost Connection Error: '.$ret);
 
-            return 'HTTP Status code ' . $code;
+            return 'HTTP Status code '.$code;
         } else {
-            d_echo('Mattermost message sent for ' . $device);
+            d_echo('Mattermost message sent for '.$device);
 
             return true;
         }
@@ -93,37 +94,37 @@ class Mattermost extends Transport
             'config' => [
                 [
                     'title' => 'Webhook URL',
-                    'name' => 'mattermost-url',
+                    'name'  => 'mattermost-url',
                     'descr' => 'Mattermost Webhook URL',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Channel',
-                    'name' => 'mattermost-channel',
+                    'name'  => 'mattermost-channel',
                     'descr' => 'Mattermost Channel',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Username',
-                    'name' => 'mattermost-username',
+                    'name'  => 'mattermost-username',
                     'descr' => 'Mattermost Username',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Icon',
-                    'name' => 'mattermost-icon',
+                    'name'  => 'mattermost-icon',
                     'descr' => 'Icon URL',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Author_name',
-                    'name' => 'mattermost-author_name',
+                    'name'  => 'mattermost-author_name',
                     'descr' => 'Optional name used to identify the author',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
             ],
             'validation' => [
-                'mattermost-url' => 'required|url',
+                'mattermost-url'  => 'required|url',
                 'mattermost-icon' => 'url',
             ],
         ];

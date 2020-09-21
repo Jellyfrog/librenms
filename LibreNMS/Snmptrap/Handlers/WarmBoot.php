@@ -1,6 +1,6 @@
 <?php
 /**
- * WarmBoot.php
+ * WarmBoot.php.
  *
  * -Description-
  *
@@ -34,11 +34,12 @@ class WarmBoot implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)
     {
-        Log::event('SNMP Trap: Device ' . $device->displayName() . ' warm booted', $device->device_id, 'reboot', 4);
+        Log::event('SNMP Trap: Device '.$device->displayName().' warm booted', $device->device_id, 'reboot', 4);
     }
 }

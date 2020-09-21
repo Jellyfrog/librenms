@@ -1,6 +1,6 @@
 <?php
 /**
- * Python.php
+ * Python.php.
  *
  * Check that various Python modules and functions exist.
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Thomas Berberich
  * @author     Thomas Berberich <sourcehhdoctor@gmail.com>
  */
@@ -35,7 +36,7 @@ class Python extends BaseValidation
 
     /**
      * Validate this module.
-     * To return ValidationResults, call ok, warn, fail, or result methods on the $validator
+     * To return ValidationResults, call ok, warn, fail, or result methods on the $validator.
      *
      * @param Validator $validator
      */
@@ -57,7 +58,7 @@ class Python extends BaseValidation
     private function checkVersion(Validator $validator, $version)
     {
         if (version_compare($version, self::PYTHON_MIN_VERSION, '<')) {
-            $validator->warn("Python version $version too old.", 'Python version ' . self::PYTHON_MIN_VERSION . ' is the minimum supported version. We recommend you update Python to a supported version.');
+            $validator->warn("Python version $version too old.", 'Python version '.self::PYTHON_MIN_VERSION.' is the minimum supported version. We recommend you update Python to a supported version.');
         }
     }
 
@@ -74,7 +75,7 @@ class Python extends BaseValidation
     private function checkExtensions(Validator $validator)
     {
         $pythonExtensions = '/scripts/check_requirements.py';
-        $process = new Process([Config::get('install_dir') . $pythonExtensions, '-v']);
+        $process = new Process([Config::get('install_dir').$pythonExtensions, '-v']);
         $process->run();
 
         if ($process->getExitCode() !== 0) {
@@ -84,7 +85,7 @@ class Python extends BaseValidation
             if ($user_mismatch) {
                 $validator->warn("Could not check Python dependencies because this script is not running as $user");
             } else {
-                $validator->fail("Python3 module issue found: '" . $process->getOutput() . "'", 'pip3 install -r ' . Config::get('install_dir') . '/requirements.txt');
+                $validator->fail("Python3 module issue found: '".$process->getOutput()."'", 'pip3 install -r '.Config::get('install_dir').'/requirements.txt');
             }
         }
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * MaximumExecutionTimeExceeded.php
+ * MaximumExecutionTimeExceeded.php.
  *
  * Show nice explanation if the user hits their configured PHP max_execution_time
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -31,9 +32,10 @@ use Symfony\Component\Debug\Exception\FatalErrorException;
 class MaximumExecutionTimeExceeded extends \Exception implements UpgradeableException
 {
     /**
-     * Try to convert the given Exception to a FilePermissionsException
+     * Try to convert the given Exception to a FilePermissionsException.
      *
      * @param \Exception $exception
+     *
      * @return static
      */
     public static function upgrade($exception)
@@ -51,6 +53,7 @@ class MaximumExecutionTimeExceeded extends \Exception implements UpgradeableExce
      * Render the exception into an HTTP or JSON response.
      *
      * @param  \Illuminate\Http\Request
+     *
      * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
      */
     public function render(\Illuminate\Http\Request $request)
@@ -62,10 +65,10 @@ class MaximumExecutionTimeExceeded extends \Exception implements UpgradeableExce
         $message = trans('exceptions.maximum_execution_time_exceeded.message');
 
         return $request->wantsJson() ? response()->json([
-            'status' => 'error',
+            'status'  => 'error',
             'message' => "$title: $message",
         ]) : response()->view('errors.generic', [
-            'title' => $title,
+            'title'   => $title,
             'content' => $message,
         ]);
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * VxworksProcessorUsage.php
+ * VxworksProcessorUsage.php.
  *
  * Several devices use the janky output of this oid
  * Requires both ProcessorDiscovery and ProcessorPolling
@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -31,9 +32,10 @@ trait VxworksProcessorUsage
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @param string $oid Custom OID to fetch from
+     *
      * @return array Processors
      */
     public function discoverProcessors($oid = '.1.3.6.1.4.1.4413.1.1.1.1.4.9.0')
@@ -60,6 +62,7 @@ trait VxworksProcessorUsage
      * Poll processor data.  This can be implemented if custom polling is needed.
      *
      * @param array $processors Array of processor entries from the database that need to be polled
+     *
      * @return array of polled data
      */
     public function pollProcessors(array $processors)
@@ -77,9 +80,10 @@ trait VxworksProcessorUsage
 
     /**
      * Parse the silly cpu usage string
-     * "    5 Secs ( 96.4918%)   60 Secs ( 54.2271%)  300 Secs ( 38.2591%)"
+     * "    5 Secs ( 96.4918%)   60 Secs ( 54.2271%)  300 Secs ( 38.2591%)".
      *
      * @param $data
+     *
      * @return mixed
      */
     private function parseCpuUsage($data)

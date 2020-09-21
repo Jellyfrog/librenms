@@ -1,6 +1,6 @@
 <?php
 /**
- * FilePermissionsException.php
+ * FilePermissionsException.php.
  *
  * Required folders/files aren't writable
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -32,9 +33,10 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 class FilePermissionsException extends \Exception implements UpgradeableException
 {
     /**
-     * Try to convert the given Exception to a FilePermissionsException
+     * Try to convert the given Exception to a FilePermissionsException.
      *
      * @param \Exception $exception
+     *
      * @return static
      */
     public static function upgrade($exception)
@@ -63,6 +65,7 @@ class FilePermissionsException extends \Exception implements UpgradeableExceptio
      * Render the exception into an HTTP or JSON response.
      *
      * @param  \Illuminate\Http\Request
+     *
      * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
      */
     public function render(\Illuminate\Http\Request $request)
@@ -72,7 +75,7 @@ class FilePermissionsException extends \Exception implements UpgradeableExceptio
 
         // use pre-compiled template because we probably can't compile it.
         $template = file_get_contents(base_path('resources/views/errors/static/file_permissions.html'));
-        $content = str_replace('!!!!CONTENT!!!!', '<p>' . implode('</p><p>', $commands) . '</p>', $template);
+        $content = str_replace('!!!!CONTENT!!!!', '<p>'.implode('</p><p>', $commands).'</p>', $template);
         $content = str_replace('!!!!LOG_FILE!!!!', $log_file, $content);
 
         return SymfonyResponse::create($content);
@@ -82,6 +85,7 @@ class FilePermissionsException extends \Exception implements UpgradeableExceptio
      * @param \Illuminate\Config\Repository $user
      * @param \Illuminate\Config\Repository $group
      * @param $log_file
+     *
      * @return array
      */
     private function generateCommands($log_file): array
@@ -108,32 +112,32 @@ class FilePermissionsException extends \Exception implements UpgradeableExceptio
         ];
 
         $mk_dirs = array_filter($mkdirs, function ($file) {
-            return ! file_exists($file);
+            return !file_exists($file);
         });
 
-        if (! empty($mk_dirs)) {
-            $commands[] = 'sudo mkdir -p ' . implode(' ', $mk_dirs);
+        if (!empty($mk_dirs)) {
+            $commands[] = 'sudo mkdir -p '.implode(' ', $mk_dirs);
         }
 
         // always print chwon/setfacl/chmod commands
         $commands[] = "sudo chown -R $user:$group $install_dir";
-        $commands[] = 'sudo setfacl -d -m g::rwx ' . implode(' ', $dirs);
-        $commands[] = 'sudo chmod -R ug=rwX ' . implode(' ', $dirs);
+        $commands[] = 'sudo setfacl -d -m g::rwx '.implode(' ', $dirs);
+        $commands[] = 'sudo chmod -R ug=rwX '.implode(' ', $dirs);
 
         // check if webserver is in the librenms group
         $current_groups = explode(' ', trim(exec('groups')));
-        if (! in_array($group, $current_groups)) {
+        if (!in_array($group, $current_groups)) {
             $current_user = trim(exec('whoami'));
             $commands[] = "usermod -a -G $group $current_user";
         }
 
         // check for invalid log setting
-        if (! is_file($log_file) || ! is_writable($log_file)) {
+        if (!is_file($log_file) || !is_writable($log_file)) {
             // override for proper error output
             $dirs = [$log_file];
             $install_dir = $log_file;
             $commands = [
-                '<h3>Cannot write to log file: &quot;' . $log_file . '&quot;</h3>',
+                '<h3>Cannot write to log file: &quot;'.$log_file.'&quot;</h3>',
                 'Make sure it exists and is writable, or change your LOG_DIR setting.',
             ];
         }

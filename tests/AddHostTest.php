@@ -1,6 +1,6 @@
 <?php
 /**
- * addhostTest.php
+ * addhostTest.php.
  *
  * Tests for addhost funcion
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link http://librenms.org
+ *
  * @copyright  2020 Lars Elgtvedt Susaas
  * @author     Lars Elgtvedt Susaas
  */

@@ -1,6 +1,6 @@
 <?php
 /**
- * ApcPduOutletTest.php
+ * ApcPduOutletTest.php.
  *
  * -Description-
  *

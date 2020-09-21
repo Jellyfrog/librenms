@@ -1,6 +1,6 @@
 <?php
 /**
- * Rutos2xx.php
+ * Rutos2xx.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Jozef Rebjak
  * @author     Jozef Rebjak <jozefrebjak@icloud.com>
  */
@@ -53,7 +54,7 @@ class Rutos2xx extends OS implements
                 ->addDataset('usage_received', 'GAUGE', 0);
 
             $fields = [
-                'usage_sent' => $usage_sent,
+                'usage_sent'     => $usage_sent,
                 'usage_received' => $usage_received,
             ];
 

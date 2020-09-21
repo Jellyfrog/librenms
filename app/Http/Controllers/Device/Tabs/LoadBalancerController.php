@@ -1,6 +1,6 @@
 <?php
 /**
- * LoadBalancerController.php
+ * LoadBalancerController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -74,7 +75,7 @@ class LoadBalancerController implements DeviceTab
 
     public function visible(Device $device): bool
     {
-        return ! empty($this->tabs);
+        return !empty($this->tabs);
     }
 
     public function slug(): string

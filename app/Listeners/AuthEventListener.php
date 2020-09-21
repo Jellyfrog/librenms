@@ -25,6 +25,7 @@ class AuthEventListener
      * Handle the login event.
      *
      * @param Login $event
+     *
      * @return void
      */
     public function login(Login $event)
@@ -34,13 +35,14 @@ class AuthEventListener
 
         DB::table('authlog')->insert(['user' => $user->username ?: '', 'address' => Request::ip(), 'result' => 'Logged In']);
 
-        Toastr::info('Welcome ' . ($user->realname ?: $user->username));
+        Toastr::info('Welcome '.($user->realname ?: $user->username));
     }
 
     /**
      * Handle the logout event.
      *
      * @param Logout $event
+     *
      * @return void
      */
     public function logout(Logout $event)

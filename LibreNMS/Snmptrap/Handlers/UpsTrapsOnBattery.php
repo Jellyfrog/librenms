@@ -1,6 +1,6 @@
 <?php
 /**
- * UpsTrapsOnBattery.php
+ * UpsTrapsOnBattery.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @author     TheGreatDoc
  */
 
@@ -36,7 +37,8 @@ class UpsTrapsOnBattery implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)
@@ -45,8 +47,8 @@ class UpsTrapsOnBattery implements SnmptrapHandler
         $sec_time = Str::before($trap->getOidData($trap->findOid('UPS-MIB::upsSecondsOnBattery.0')), ' ');
         Log::event("UPS running on battery for $sec_time seconds. Estimated $min_remaining minutes remaining", $device->device_id, 'trap', 5);
         $sensor_remaining = $device->sensors()->where('sensor_index', '200')->where('sensor_type', 'rfc1628')->first();
-        if (! $sensor_remaining) {
-            Log::warning("Snmptrap UpsTraps: Could not find matching sensor \'Estimated battery time remaining\' for device: " . $device->hostname);
+        if (!$sensor_remaining) {
+            Log::warning("Snmptrap UpsTraps: Could not find matching sensor \'Estimated battery time remaining\' for device: ".$device->hostname);
 
             return;
         }
@@ -54,8 +56,8 @@ class UpsTrapsOnBattery implements SnmptrapHandler
         $sensor_remaining->save();
 
         $sensor_time = $device->sensors()->where('sensor_index', '100')->where('sensor_type', 'rfc1628')->first();
-        if (! $sensor_time) {
-            Log::warning("Snmptrap UpsTraps: Could not find matching sensor \'Time on battery\' for device: " . $device->hostname);
+        if (!$sensor_time) {
+            Log::warning("Snmptrap UpsTraps: Could not find matching sensor \'Time on battery\' for device: ".$device->hostname);
 
             return;
         }
@@ -63,8 +65,8 @@ class UpsTrapsOnBattery implements SnmptrapHandler
         $sensor_time->save();
 
         $sensor_output = $device->sensors()->where('sensor_type', 'upsOutputSourceState')->first();
-        if (! $sensor_output) {
-            Log::warning("Snmptrap UpsTraps: Could not find matching sensor \'upsOutputSourceState\' for device: " . $device->hostname);
+        if (!$sensor_output) {
+            Log::warning("Snmptrap UpsTraps: Could not find matching sensor \'upsOutputSourceState\' for device: ".$device->hostname);
 
             return;
         }

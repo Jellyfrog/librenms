@@ -1,6 +1,6 @@
 <?php
 /**
- * Location.php
+ * Location.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -38,13 +39,13 @@ class Location extends Model
     private $location_regex = '/\[\s*(?<lat>[-+]?(?:[1-8]?\d(?:\.\d+)?|90(?:\.0+)?))\s*,\s*(?<lng>[-+]?(?:180(?:\.0+)?|(?:(?:1[0-7]\d)|(?:[1-9]?\d))(?:\.\d+)?))\s*\]/';
 
     /**
-     * Set up listeners for this Model
+     * Set up listeners for this Model.
      */
     public static function boot()
     {
         parent::boot();
 
-        static::creating(function (Location $location) {
+        static::creating(function (self $location) {
             // parse coordinates for new locations
             $location->lookupCoordinates();
         });
@@ -59,12 +60,12 @@ class Location extends Model
      */
     public function hasCoordinates()
     {
-        return ! (is_null($this->lat) || is_null($this->lng));
+        return !(is_null($this->lat) || is_null($this->lng));
     }
 
     /**
      * Check if the coordinates are valid
-     * Even though 0,0 is a valid coordinate, we consider it invalid for ease
+     * Even though 0,0 is a valid coordinate, we consider it invalid for ease.
      */
     public function coordinatesValid()
     {
@@ -78,12 +79,12 @@ class Location extends Model
      */
     public function lookupCoordinates()
     {
-        if (! $this->hasCoordinates() && $this->location) {
+        if (!$this->hasCoordinates() && $this->location) {
             $this->parseCoordinates();
 
-            if (! $this->hasCoordinates() &&
+            if (!$this->hasCoordinates() &&
                 \LibreNMS\Config::get('geoloc.latlng', true) &&
-                (! $this->id || $this->timestamp && $this->timestamp->diffInDays() > 2)
+                (!$this->id || $this->timestamp && $this->timestamp->diffInDays() > 2)
             ) {
                 $this->fetchCoordinates();
                 $this->updateTimestamps();
@@ -92,7 +93,7 @@ class Location extends Model
     }
 
     /**
-     * Remove encoded GPS for nicer display
+     * Remove encoded GPS for nicer display.
      *
      * @return string
      */
@@ -123,7 +124,8 @@ class Location extends Model
 
     /**
      * @param Builder $query
-     * @param User $user
+     * @param User    $user
+     *
      * @return Builder
      */
     public function scopeHasAccess($query, $user)

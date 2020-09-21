@@ -1,6 +1,6 @@
 <?php
 /**
- * MplsDiscovery.php
+ * MplsDiscovery.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -35,6 +36,7 @@ interface MplsDiscovery
 
     /**
      * @param Collection $lsps collecton of synchronized lsp objects from discoverMplsLsps()
+     *
      * @return Collection MplsLspPath objects
      */
     public function discoverMplsPaths($lsps);
@@ -51,6 +53,7 @@ interface MplsDiscovery
 
     /**
      * @param Collection $svcs collecton of synchronized lsp objects from discoverMplsServices()
+     *
      * @return Collection MplsSap objects
      */
     public function discoverMplsSaps($svcs);
@@ -58,6 +61,7 @@ interface MplsDiscovery
     /**
      * @param Collection $sdps collecton of synchronized sdp objects from discoverMplsSdps()
      * @param Collection $svcs collecton of synchronized service objects from discoverMplsServices()
+     *
      * @return Collection MplsSdpBind objects
      */
     public function discoverMplsSdpBinds($sdps, $svcs);

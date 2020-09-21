@@ -1,6 +1,6 @@
 <?php
 /**
- * Rewrite.php
+ * Rewrite.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -112,9 +113,10 @@ class Rewrite
     }
 
     /**
-     * Reformat a mac stored in the DB (only hex) to a nice readable format
+     * Reformat a mac stored in the DB (only hex) to a nice readable format.
      *
      * @param $mac
+     *
      * @return string
      */
     public static function readableMac($mac)
@@ -123,7 +125,7 @@ class Rewrite
     }
 
     /**
-     * Reformat hex MAC as oid MAC (dotted-decimal)
+     * Reformat hex MAC as oid MAC (dotted-decimal).
      *
      * 00:12:34:AB:CD:EF becomes 0.18.52.171.205.239
      * 0:12:34:AB:CD:EF  becomes 0.18.52.171.205.239
@@ -131,6 +133,7 @@ class Rewrite
      * 0:2:4:B:D:F       becomes 0.2.4.11.13.15
      *
      * @param string $mac
+     *
      * @return string oid representation of a MAC address
      */
     public static function oidMac($mac)
@@ -139,7 +142,7 @@ class Rewrite
     }
 
     /**
-     * Reformat Hex MAC with delimiters to Hex String without delimiters
+     * Reformat Hex MAC with delimiters to Hex String without delimiters.
      *
      * Assumes the MAC address is well-formed and in a common format.
      * 00:12:34:ab:cd:ef becomes 001234abcdef
@@ -152,6 +155,7 @@ class Rewrite
      * 0:2:4:B:D:F       becomes 0002040B0D0F
      *
      * @param string $mac hexadecimal MAC address with or without common delimiters
+     *
      * @return string undelimited hexadecimal MAC address
      */
     public static function macToHex($mac)
@@ -163,10 +167,11 @@ class Rewrite
     }
 
     /**
-     * Make Cisco hardware human readable
+     * Make Cisco hardware human readable.
      *
      * @param Device $device
-     * @param bool $short
+     * @param bool   $short
+     *
      * @return string
      */
     public static function ciscoHardware(&$device, $short = false)
@@ -174,32 +179,32 @@ class Rewrite
         if ($device['os'] == 'ios') {
             if ($device['hardware']) {
                 if (preg_match('/^WS-C([A-Za-z0-9]+)/', $device['hardware'], $matches)) {
-                    if (! $short) {
-                        $device['hardware'] = 'Catalyst ' . $matches[1] . ' (' . $device['hardware'] . ')';
+                    if (!$short) {
+                        $device['hardware'] = 'Catalyst '.$matches[1].' ('.$device['hardware'].')';
                     } else {
-                        $device['hardware'] = 'Catalyst ' . $matches[1];
+                        $device['hardware'] = 'Catalyst '.$matches[1];
                     }
                 } elseif (preg_match('/^CISCO([0-9]+)(.*)/', $device['hardware'], $matches)) {
-                    if (! $short && $matches[2]) {
-                        $device['hardware'] = 'Cisco ' . $matches[1] . ' (' . $device['hardware'] . ')';
+                    if (!$short && $matches[2]) {
+                        $device['hardware'] = 'Cisco '.$matches[1].' ('.$device['hardware'].')';
                     } else {
-                        $device['hardware'] = 'Cisco ' . $matches[1];
+                        $device['hardware'] = 'Cisco '.$matches[1];
                     }
                 }
             } elseif (preg_match('/Cisco IOS Software, C([A-Za-z0-9]+) Software.*/', $device['sysDescr'], $matches)) {
-                $device['hardware'] = 'Catalyst ' . $matches[1];
+                $device['hardware'] = 'Catalyst '.$matches[1];
             } elseif (preg_match('/Cisco IOS Software, ([0-9]+) Software.*/', $device['sysDescr'], $matches)) {
-                $device['hardware'] = 'Cisco ' . $matches[1];
+                $device['hardware'] = 'Cisco '.$matches[1];
             }
         }
 
         if ($device['os'] == 'iosxe') {
             if ($device['hardware']) {
                 if (preg_match('/CAT9K/', $device['sysDescr'], $matches) && preg_match('/^C(9[A-Za-z0-9]+)/', $device['hardware'], $matches2)) {
-                    if (! $short) {
-                        $device['hardware'] = 'Catalyst ' . $matches2[1] . ' (' . $device['hardware'] . ')';
+                    if (!$short) {
+                        $device['hardware'] = 'Catalyst '.$matches2[1].' ('.$device['hardware'].')';
                     } else {
-                        $device['hardware'] = 'Catalyst ' . $matches2[1];
+                        $device['hardware'] = 'Catalyst '.$matches2[1];
                     }
                 }
             }

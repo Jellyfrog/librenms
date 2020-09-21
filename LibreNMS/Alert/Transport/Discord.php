@@ -1,6 +1,6 @@
 <?php
 /**
- * Discord.php
+ * Discord.php.
  *
  * LibreNMS Discord API Tranport
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Ryan Finney
  * @author     https://github.com/theherodied/
  * @contributer f0o, sdef2
@@ -33,16 +34,16 @@ class Discord extends Transport
 {
     const ALERT_FIELDS_TO_DISCORD_FIELDS = [
         'timestamp' => 'Timestamp',
-        'severity' => 'Severity',
-        'hostname' => 'Hostname',
-        'name' => 'Rule Name',
-        'rule' => 'Rule',
+        'severity'  => 'Severity',
+        'hostname'  => 'Hostname',
+        'name'      => 'Rule Name',
+        'rule'      => 'Rule',
     ];
 
     public function deliverAlert($obj, $opts)
     {
         $discord_opts = [
-            'url' => $this->config['url'],
+            'url'     => $this->config['url'],
             'options' => $this->parseUserOptions($this->config['options']),
         ];
 
@@ -53,27 +54,27 @@ class Discord extends Transport
     {
         $host = $discord_opts['url'];
         $curl = curl_init();
-        $discord_title = '#' . $obj['uid'] . ' ' . $obj['title'];
+        $discord_title = '#'.$obj['uid'].' '.$obj['title'];
         $discord_msg = strip_tags($obj['msg']);
         $color = self::getColorForState($obj['state']);
 
         // Special handling for the elapsed text in the footer if the elapsed is not set.
-        $footer_text = $obj['elapsed'] ? 'alert took ' . $obj['elapsed'] : '';
+        $footer_text = $obj['elapsed'] ? 'alert took '.$obj['elapsed'] : '';
 
         $data = [
             'embeds' => [
                 [
-                    'title' => $discord_title,
-                    'color' => hexdec($color),
+                    'title'       => $discord_title,
+                    'color'       => hexdec($color),
                     'description' => $discord_msg,
-                    'fields' => $this->createDiscordFields($obj, $discord_opts),
-                    'footer' => [
+                    'fields'      => $this->createDiscordFields($obj, $discord_opts),
+                    'footer'      => [
                         'text' => $footer_text,
                     ],
                 ],
             ],
         ];
-        if (! empty($discord_opts['options'])) {
+        if (!empty($discord_opts['options'])) {
             $data = array_merge($data, $discord_opts['options']);
         }
 
@@ -89,10 +90,10 @@ class Discord extends Transport
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         if ($code != 204) {
             var_dump("API '$host' returned Error"); //FIXME: propper debuging
-            var_dump('Params: ' . $alert_message); //FIXME: propper debuging
-            var_dump('Return: ' . $ret); //FIXME: propper debuging
+            var_dump('Params: '.$alert_message); //FIXME: propper debuging
+            var_dump('Return: '.$ret); //FIXME: propper debuging
 
-            return 'HTTP Status code ' . $code;
+            return 'HTTP Status code '.$code;
         }
 
         return true;
@@ -104,12 +105,12 @@ class Discord extends Transport
 
         foreach (self::ALERT_FIELDS_TO_DISCORD_FIELDS as $objKey => $discordKey) {
             // Skip over keys that do not exist so Discord does not give us a 400.
-            if (! $obj[$objKey]) {
+            if (!$obj[$objKey]) {
                 continue;
             }
 
             array_push($result, [
-                'name' => $discordKey,
+                'name'  => $discordKey,
                 'value' => $obj[$objKey],
             ]);
         }
@@ -123,15 +124,15 @@ class Discord extends Transport
             'config' => [
                 [
                     'title' => 'Discord URL',
-                    'name' => 'url',
+                    'name'  => 'url',
                     'descr' => 'Discord URL',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Options',
-                    'name' => 'options',
+                    'name'  => 'options',
                     'descr' => 'Enter the config options (format: option=value separated by new lines)',
-                    'type' => 'textarea',
+                    'type'  => 'textarea',
                 ],
             ],
             'validation' => [

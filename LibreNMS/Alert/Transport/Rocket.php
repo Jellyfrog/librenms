@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * API Transport
+ * API Transport.
+ *
  * @author ToeiRei <vbauer@stargazer.at>
  * @copyright 2017 ToeiRei, LibreNMS work based on the work of f0o. It's his work.
  * @license GPL
@@ -44,14 +45,14 @@ class Rocket extends Transport
             'attachments' => [
                 0 => [
                     'fallback' => $rocket_msg,
-                    'color' => $color,
-                    'title' => $obj['title'],
-                    'text' => $rocket_msg,
+                    'color'    => $color,
+                    'title'    => $obj['title'],
+                    'text'     => $rocket_msg,
                 ],
             ],
-            'channel' => $api['channel'],
-            'username' => $api['username'],
-            'icon_url' => $api['icon_url'],
+            'channel'    => $api['channel'],
+            'username'   => $api['username'],
+            'icon_url'   => $api['icon_url'],
             'icon_emoji' => $api['icon_emoji'],
         ];
         $alert_message = json_encode($data);
@@ -66,10 +67,10 @@ class Rocket extends Transport
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         if ($code != 200) {
             var_dump("API '$host' returned Error"); //FIXME: propper debuging
-            var_dump('Params: ' . $alert_message); //FIXME: propper debuging
-            var_dump('Return: ' . $ret); //FIXME: propper debuging
+            var_dump('Params: '.$alert_message); //FIXME: propper debuging
+            var_dump('Return: '.$ret); //FIXME: propper debuging
 
-            return 'HTTP Status code ' . $code;
+            return 'HTTP Status code '.$code;
         }
 
         return true;
@@ -81,15 +82,15 @@ class Rocket extends Transport
             'config' => [
                 [
                     'title' => 'Webhook URL',
-                    'name' => 'rocket-url',
+                    'name'  => 'rocket-url',
                     'descr' => 'Rocket.chat Webhook URL',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Rocket.chat Options',
-                    'name' => 'rocket-options',
+                    'name'  => 'rocket-options',
                     'descr' => 'Rocket.chat Options',
-                    'type' => 'textarea',
+                    'type'  => 'textarea',
                 ],
             ],
             'validation' => [

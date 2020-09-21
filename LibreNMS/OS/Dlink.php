@@ -1,6 +1,6 @@
 <?php
 /**
- * Dlink.php
+ * Dlink.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -32,8 +33,8 @@ class Dlink extends \LibreNMS\OS
     {
         parent::discoverOS($device); // yaml
 
-        if (! empty($device->hardware) && $rev = snmp_get($this->getDeviceArray(), '.1.3.6.1.2.1.16.19.3.0', '-Oqv')) {
-            $device->hardware .= ' Rev. ' . $rev;
+        if (!empty($device->hardware) && $rev = snmp_get($this->getDeviceArray(), '.1.3.6.1.2.1.16.19.3.0', '-Oqv')) {
+            $device->hardware .= ' Rev. '.$rev;
         }
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * DuskUnsafeException.php
+ * DuskUnsafeException.php.
  *
  * Dusk is installed and the application is in production
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -29,9 +30,10 @@ use LibreNMS\Interfaces\Exceptions\UpgradeableException;
 class DuskUnsafeException extends \Exception implements UpgradeableException
 {
     /**
-     * Try to convert the given Exception to this exception
+     * Try to convert the given Exception to this exception.
      *
      * @param \Exception $exception
+     *
      * @return static
      */
     public static function upgrade($exception)
@@ -45,6 +47,7 @@ class DuskUnsafeException extends \Exception implements UpgradeableException
      * Render the exception into an HTTP or JSON response.
      *
      * @param  \Illuminate\Http\Request
+     *
      * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
      */
     public function render(\Illuminate\Http\Request $request)
@@ -53,10 +56,10 @@ class DuskUnsafeException extends \Exception implements UpgradeableException
         $message = trans('exceptions.dusk_unsafe.message', ['command' => './scripts/composer_wrapper.php install --no-dev']);
 
         return $request->wantsJson() ? response()->json([
-            'status' => 'error',
+            'status'  => 'error',
             'message' => "$title: $message",
         ]) : response()->view('errors.generic', [
-            'title' => $title,
+            'title'   => $title,
             'content' => $message,
         ]);
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * OspfIfStateChange.php
+ * OspfIfStateChange.php.
  *
  * -Description-
  * Handles the ospfIfStateChange SNMP trap signaling an interface
@@ -21,6 +21,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 KanREN Inc
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -39,7 +40,8 @@ class OspfIfStateChange implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)
@@ -49,8 +51,8 @@ class OspfIfStateChange implements SnmptrapHandler
 
         $port = $device->ports()->where('port_id', $ospfPort->port_id)->first();
 
-        if (! $port) {
-            Log::warning("Snmptrap ospfIfStateChange: Could not find port at port_id $ospfPort->port_id for device: " . $device->hostname);
+        if (!$port) {
+            Log::warning("Snmptrap ospfIfStateChange: Could not find port at port_id $ospfPort->port_id for device: ".$device->hostname);
 
             return;
         }

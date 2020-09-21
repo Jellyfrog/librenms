@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * Pushbullet API Transport
+ * Pushbullet API Transport.
+ *
  * @author f0o <f0o@librenms.org>
  * @copyright 2015 f0o, LibreNMS
  * @license GPL
@@ -28,7 +29,7 @@ class Pushbullet extends Transport
 {
     public function deliverAlert($obj, $opts)
     {
-        if (! empty($this->config)) {
+        if (!empty($this->config)) {
             $opts = $this->config['pushbullet-token'];
         }
 
@@ -49,8 +50,8 @@ class Pushbullet extends Transport
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json',
-            'Content-Length: ' . strlen($data),
-            'Authorization: Bearer ' . $opts,
+            'Content-Length: '.strlen($data),
+            'Authorization: Bearer '.$opts,
         ]);
 
         $ret = curl_exec($curl);
@@ -60,7 +61,7 @@ class Pushbullet extends Transport
                 var_dump($ret);
             }
 
-            return 'HTTP Status code ' . $code;
+            return 'HTTP Status code '.$code;
         }
 
         return true;
@@ -72,9 +73,9 @@ class Pushbullet extends Transport
             'config' => [
                 [
                     'title' => 'Access Token',
-                    'name' => 'pushbullet-token',
+                    'name'  => 'pushbullet-token',
                     'descr' => 'Pushbullet Access Token',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
             ],
             'validation' => [

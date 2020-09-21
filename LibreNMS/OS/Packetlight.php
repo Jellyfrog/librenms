@@ -1,6 +1,6 @@
 <?php
 /**
- * Packetlight.php
+ * Packetlight.php.
  *
  * Packetlight
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 PipoCanaja
  * @author     PipoCanaja
  */
@@ -29,7 +30,7 @@ use LibreNMS\OS;
 class Packetlight extends OS
 {
     /**
-     * Subtract 30 (for yaml user_func)
+     * Subtract 30 (for yaml user_func).
      */
     public static function offsetSfpDbm($value)
     {
@@ -37,7 +38,7 @@ class Packetlight extends OS
     }
 
     /**
-     * Subtract 128 (for yaml user_func)
+     * Subtract 128 (for yaml user_func).
      */
     public static function offsetSfpTemperature($value)
     {
@@ -45,7 +46,7 @@ class Packetlight extends OS
     }
 
     /**
-     * Convert Watts 10e-7 to Dbm
+     * Convert Watts 10e-7 to Dbm.
      */
     public static function convertWattToDbm($value)
     {

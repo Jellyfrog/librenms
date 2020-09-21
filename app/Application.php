@@ -1,6 +1,6 @@
 <?php
 /**
- * Application.php
+ * Application.php.
  *
  * Extension of base application class
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -29,6 +30,6 @@ class Application extends \Illuminate\Foundation\Application
     public function publicPath()
     {
         // override the public path
-        return $this->basePath . DIRECTORY_SEPARATOR . 'html';
+        return $this->basePath.DIRECTORY_SEPARATOR.'html';
     }
 }

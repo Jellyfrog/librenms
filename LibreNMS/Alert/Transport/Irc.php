@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * IRC Transport
+ * IRC Transport.
+ *
  * @author f0o <f0o@devilcode.org>
  * @copyright 2014 f0o, LibreNMS
  * @license GPL
@@ -34,10 +35,10 @@ class Irc extends Transport
 
     public function contactIrc($obj, $opts)
     {
-        $f = Config::get('install_dir') . '/.ircbot.alert';
+        $f = Config::get('install_dir').'/.ircbot.alert';
         if (file_exists($f) && filetype($f) == 'fifo') {
             $f = fopen($f, 'w+');
-            $r = fwrite($f, json_encode($obj) . "\n");
+            $r = fwrite($f, json_encode($obj)."\n");
             $f = fclose($f);
             if ($r === false) {
                 return false;
@@ -54,10 +55,10 @@ class Irc extends Transport
         return [
             'config' => [
                 [
-                    'title' => 'IRC',
-                    'name' => 'irc',
-                    'descr' => 'Enable IRC alerts',
-                    'type'  => 'checkbox',
+                    'title'   => 'IRC',
+                    'name'    => 'irc',
+                    'descr'   => 'Enable IRC alerts',
+                    'type'    => 'checkbox',
                     'default' => true,
                 ],
             ],

@@ -1,6 +1,6 @@
 <?php
 /**
- * RRDRecursiveFilterIterator.php
+ * RRDRecursiveFilterIterator.php.
  *
  * Reursive Filter Iterator to iterate directories and locate .rrd files.
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2016
  * @author
  */

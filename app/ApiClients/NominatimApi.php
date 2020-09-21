@@ -1,6 +1,6 @@
 <?php
 /**
- * NominatimApi.php
+ * NominatimApi.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -34,9 +35,10 @@ class NominatimApi extends BaseApi implements Geocoder
     protected $geocoding_uri = '/search';
 
     /**
-     * Get latitude and longitude from geocode response
+     * Get latitude and longitude from geocode response.
      *
      * @param array $data
+     *
      * @return array
      */
     protected function parseLatLng($data)
@@ -48,19 +50,21 @@ class NominatimApi extends BaseApi implements Geocoder
     }
 
     /**
-     * Build Guzzle request option array
+     * Build Guzzle request option array.
      *
      * @param string $address
-     * @return array
+     *
      * @throws \Exception you may throw an Exception if validation fails
+     *
+     * @return array
      */
     protected function buildGeocodingOptions($address)
     {
         return [
             'query' => [
-                'q' => $address,
+                'q'      => $address,
                 'format' => 'json',
-                'limit' => 1,
+                'limit'  => 1,
             ],
             'headers' => [
                 'User-Agent' => 'LibreNMS',

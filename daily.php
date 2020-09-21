@@ -16,8 +16,8 @@ use LibreNMS\Util\MemcacheLock;
 use LibreNMS\Validations\Php;
 
 $init_modules = ['alerts'];
-require __DIR__ . '/includes/init.php';
-include_once __DIR__ . '/includes/notifications.php';
+require __DIR__.'/includes/init.php';
+include_once __DIR__.'/includes/notifications.php';
 
 $options = getopt('df:o:t:r:');
 
@@ -27,7 +27,7 @@ if (isset($options['d'])) {
 }
 
 if ($options['f'] === 'update') {
-    if (! Config::get('update')) {
+    if (!Config::get('update')) {
         exit(0);
     }
 
@@ -51,13 +51,13 @@ if ($options['f'] === 'rrd_purge') {
         if (is_numeric($rrd_purge) && $rrd_purge > 0) {
             $cmd = "find $rrd_dir -type f -mtime +$rrd_purge -print -exec rm -f {} +";
             $purge = `$cmd`;
-            if (! empty($purge)) {
+            if (!empty($purge)) {
                 echo "Purged the following RRD files due to old age (over $rrd_purge days old):\n";
                 echo $purge;
             }
         }
     } catch (LockException $e) {
-        echo $e->getMessage() . PHP_EOL;
+        echo $e->getMessage().PHP_EOL;
         exit(-1);
     }
 }
@@ -91,7 +91,7 @@ if ($options['f'] === 'syslog') {
             echo "Syslog cleared for entries over $syslog_purge days (about $final_rows rows)\n";
         }
     } catch (LockException $e) {
-        echo $e->getMessage() . PHP_EOL;
+        echo $e->getMessage().PHP_EOL;
         exit(-1);
     }
 }
@@ -146,7 +146,7 @@ if ($options['f'] === 'ports_purge') {
             echo "All deleted ports now purged\n";
         }
     } catch (LockException $e) {
-        echo $e->getMessage() . PHP_EOL;
+        echo $e->getMessage().PHP_EOL;
         exit(-1);
     }
 }
@@ -164,8 +164,8 @@ if ($options['f'] === 'handle_notifiable') {
             new_notification(
                 $title,
                 "The daily update script (daily.sh) has failed on $poller_name."
-                . 'Please check output by hand. If you need assistance, '
-                . 'visit the <a href="https://www.librenms.org/#support">LibreNMS Website</a> to find out how.',
+                .'Please check output by hand. If you need assistance, '
+                .'visit the <a href="https://www.librenms.org/#support">LibreNMS Website</a> to find out how.',
                 2,
                 'daily.sh'
             );
@@ -185,7 +185,7 @@ if ($options['f'] === 'handle_notifiable') {
             if (isset($phpver)) {
                 new_notification(
                     $error_title,
-                    "PHP version $phpver is the minimum supported version as of $eol_date.  We recommend you update to PHP a supported version of PHP (" . Php::PHP_RECOMMENDED_VERSION . ' suggested) to continue to receive updates.  If you do not update PHP, LibreNMS will continue to function but stop receiving bug fixes and updates.',
+                    "PHP version $phpver is the minimum supported version as of $eol_date.  We recommend you update to PHP a supported version of PHP (".Php::PHP_RECOMMENDED_VERSION.' suggested) to continue to receive updates.  If you do not update PHP, LibreNMS will continue to function but stop receiving bug fixes and updates.',
                     2,
                     'daily.sh'
                 );
@@ -232,7 +232,7 @@ if ($options['f'] === 'notifications') {
 
         post_notifications();
     } catch (LockException $e) {
-        echo $e->getMessage() . PHP_EOL;
+        echo $e->getMessage().PHP_EOL;
         exit(-1);
     }
 }
@@ -289,7 +289,7 @@ if ($options['f'] === 'alert_log') {
                     )
                 ';
     $purge_duration = Config::get('alert_log_purge');
-    if (! (is_numeric($purge_duration) && $purge_duration > 0)) {
+    if (!(is_numeric($purge_duration) && $purge_duration > 0)) {
         return -2;
     }
     $sql = str_replace('?', strval($purge_duration), $sql);
@@ -314,12 +314,12 @@ if ($options['f'] === 'purgeusers') {
                 $users[] = $user['user'];
             }
 
-            if (dbDelete('users', 'username NOT IN ' . dbGenPlaceholders(count($users)), $users)) {
+            if (dbDelete('users', 'username NOT IN '.dbGenPlaceholders(count($users)), $users)) {
                 echo "Removed users that haven't logged in for $purge days";
             }
         }
     } catch (LockException $e) {
-        echo $e->getMessage() . PHP_EOL;
+        echo $e->getMessage().PHP_EOL;
         exit(-1);
     }
 }
@@ -330,20 +330,20 @@ if ($options['f'] === 'refresh_alert_rules') {
             MemcacheLock::lock('refresh_alert_rules', 0, 86000);
         }
 
-        echo 'Refreshing alert rules queries' . PHP_EOL;
+        echo 'Refreshing alert rules queries'.PHP_EOL;
         $rules = dbFetchRows('SELECT `id`, `rule`, `builder`, `extra` FROM `alert_rules`');
         foreach ($rules as $rule) {
             $rule_options = json_decode($rule['extra'], true);
             if ($rule_options['options']['override_query'] !== 'on') {
                 $data['query'] = AlertDB::genSQL($rule['rule'], $rule['builder']);
-                if (! empty($data['query'])) {
+                if (!empty($data['query'])) {
                     dbUpdate($data, 'alert_rules', 'id=?', [$rule['id']]);
                     unset($data);
                 }
             }
         }
     } catch (LockException $e) {
-        echo $e->getMessage() . PHP_EOL;
+        echo $e->getMessage().PHP_EOL;
         exit(-1);
     }
 }
@@ -354,7 +354,7 @@ if ($options['f'] === 'refresh_device_groups') {
             MemcacheLock::lock('refresh_device_groups', 0, 86000);
         }
 
-        echo 'Refreshing device group table relationships' . PHP_EOL;
+        echo 'Refreshing device group table relationships'.PHP_EOL;
         DeviceGroup::all()->each(function ($deviceGroup) {
             if ($deviceGroup->type == 'dynamic') {
                 /** @var DeviceGroup $deviceGroup */
@@ -363,7 +363,7 @@ if ($options['f'] === 'refresh_device_groups') {
             }
         });
     } catch (LockException $e) {
-        echo $e->getMessage() . PHP_EOL;
+        echo $e->getMessage().PHP_EOL;
         exit(-1);
     }
 }
@@ -372,8 +372,8 @@ if ($options['f'] === 'notify') {
     if (\LibreNMS\Config::has('alert.default_mail')) {
         send_mail(
             \LibreNMS\Config::get('alert.default_mail'),
-            '[LibreNMS] Auto update has failed for ' . Config::get('distributed_poller_name'),
-            "We just attempted to update your install but failed. The information below should help you fix this.\r\n\r\n" . $options['o']
+            '[LibreNMS] Auto update has failed for '.Config::get('distributed_poller_name'),
+            "We just attempted to update your install but failed. The information below should help you fix this.\r\n\r\n".$options['o']
         );
     }
 }
@@ -385,14 +385,14 @@ if ($options['f'] === 'peeringdb') {
         }
         cache_peeringdb();
     } catch (LockException $e) {
-        echo $e->getMessage() . PHP_EOL;
+        echo $e->getMessage().PHP_EOL;
         exit(-1);
     }
 }
 
 if ($options['f'] === 'refresh_os_cache') {
-    echo 'Clearing OS cache' . PHP_EOL;
-    unlink(Config::get('install_dir') . '/cache/os_defs.cache');
+    echo 'Clearing OS cache'.PHP_EOL;
+    unlink(Config::get('install_dir').'/cache/os_defs.cache');
 }
 
 if ($options['f'] === 'recalculate_device_dependencies') {
@@ -416,7 +416,7 @@ if ($options['f'] === 'recalculate_device_dependencies') {
             $devices->each($recurse);
         });
     } catch (LockException $e) {
-        echo $e->getMessage() . PHP_EOL;
+        echo $e->getMessage().PHP_EOL;
         exit(-1);
     }
 }

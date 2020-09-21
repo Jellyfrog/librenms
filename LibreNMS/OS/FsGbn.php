@@ -1,6 +1,6 @@
 <?php
 /**
- * Fs.php
+ * Fs.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 PipoCanaja
  * @author     PipoCanaja <pipocanaja@gmail.com>
  */
@@ -32,7 +33,7 @@ class FsGbn extends OS implements ProcessorDiscovery
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
@@ -47,7 +48,7 @@ class FsGbn extends OS implements ProcessorDiscovery
             $processors[] = Processor::discover(
                 $this->getName(),
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.13464.1.2.1.1.2.11.' . $index, //GBNPlatformOAM-MIB::cpuIdle.0 = INTEGER: 95
+                '.1.3.6.1.4.1.13464.1.2.1.1.2.11.'.$index, //GBNPlatformOAM-MIB::cpuIdle.0 = INTEGER: 95
                 $index,
                 $entry['cpuDescription'],
                 -1,

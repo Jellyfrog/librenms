@@ -1,6 +1,6 @@
 <?php
 /**
- * ifotec.inc.php
+ * ifotec.inc.php.
  *
  * LibreNMS os poller module for Ifotec devices
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  LibreNMS contributors
  * @author     Cedric MARMONIER
  */
@@ -38,13 +39,13 @@ class Ifotec extends OS implements OSDiscovery
 
             if ($ifoSysProductIndex !== null) {
                 $oids = [
-                    'ifoSysSerialNumber.' . $ifoSysProductIndex,
-                    'ifoSysFirmware.' . $ifoSysProductIndex,
-                    'ifoSysBootloader.' . $ifoSysProductIndex,
+                    'ifoSysSerialNumber.'.$ifoSysProductIndex,
+                    'ifoSysFirmware.'.$ifoSysProductIndex,
+                    'ifoSysBootloader.'.$ifoSysProductIndex,
                 ];
                 $data = snmp_get_multi($this->getDeviceArray(), $oids, ['-OQUs'], 'IFOTEC-SMI');
 
-                $device->version = $data[1]['ifoSysFirmware'] . ' (Bootloader ' . $data[1]['ifoSysBootloader'] . ')';
+                $device->version = $data[1]['ifoSysFirmware'].' (Bootloader '.$data[1]['ifoSysBootloader'].')';
                 $device->serial = $data[1]['ifoSysSerialNumber'];
             }
         }

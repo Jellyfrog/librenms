@@ -10,8 +10,9 @@ class LoadUserPreferences
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure                 $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -32,14 +33,14 @@ class LoadUserPreferences
 
     /**
      * Fetch preferences from the database
-     * Load all preferences at once if we need to query the database
+     * Load all preferences at once if we need to query the database.
      *
      * @param \Illuminate\Http\Request $request
-     * @param array $preferences
+     * @param array                    $preferences
      */
     private function loadPreferences($request, $preferences)
     {
-        if (! $request->session()->has('preferences') && ! is_null($request->user())) {
+        if (!$request->session()->has('preferences') && !is_null($request->user())) {
             $loaded = $request->user()->preferences()->whereIn('pref', $preferences)->pluck('value', 'pref');
             $request->session()->put('preferences', $loaded);
         }
@@ -47,8 +48,8 @@ class LoadUserPreferences
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @param string $pref
-     * @param callable $callable
+     * @param string                   $pref
+     * @param callable                 $callable
      */
     private function setPreference($request, $pref, $callable)
     {

@@ -2,7 +2,7 @@
 /**
  * ApexPlus.php
  * Trango Systems Apex Plus Wireless Sensors for LibreNMS
- * Author: Cory Hill (cory@metavrs.com)
+ * Author: Cory Hill (cory@metavrs.com).
  */
 
 namespace LibreNMS\OS;

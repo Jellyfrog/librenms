@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessRsrpDiscovery.php
+ * WirelessRsrpDiscovery.php.
  *
  * Discover wireless RSRP (Reference Signal Received Power) sensors in dBm
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Jozef Rebjak
  * @author     Jozef Rebjak <jozefrebjak@icloud.com>
  */
@@ -28,7 +29,7 @@ interface WirelessRsrpDiscovery
 {
     /**
      * Discover wireless RSRP (Reference Signal Received Power). This is in dBm. Type is rsrp.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */

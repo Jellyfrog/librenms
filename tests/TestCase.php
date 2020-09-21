@@ -31,7 +31,7 @@ abstract class TestCase extends BaseTestCase
             try {
                 \LibreNMS\DB\Eloquent::DB()->rollBack();
             } catch (\Exception $e) {
-                $this->fail("Exception when rolling back transaction.\n" . $e->getTraceAsString());
+                $this->fail("Exception when rolling back transaction.\n".$e->getTraceAsString());
             }
         }
     }

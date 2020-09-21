@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * Matrix Transport
+ * Matrix Transport.
+ *
  * @author Raphael Dannecker (github.com/raphael247)
  * @copyright 2020 , LibreNMS
  * @license GPL
@@ -40,17 +41,17 @@ class Matrix extends Transport
     {
         $request_opts = [];
         $request_heads = [];
-        $txnid = rand(1111, 9999) . time();
+        $txnid = rand(1111, 9999).time();
 
         $server = preg_replace('/\/$/', '', $server);
-        $host = $server . '/_matrix/client/r0/rooms/' . urlencode($room) . '/send/m.room.message/' . $txnid;
+        $host = $server.'/_matrix/client/r0/rooms/'.urlencode($room).'/send/m.room.message/'.$txnid;
 
         $request_heads['Authorization'] = "Bearer $authtoken";
         $request_heads['Content-Type'] = 'application/json';
         $request_heads['Accept'] = 'application/json';
 
         foreach ($obj as $p_key => $p_val) {
-            $message = str_replace('{{ $' . $p_key . ' }}', $p_val, $message);
+            $message = str_replace('{{ $'.$p_key.' }}', $p_val, $message);
         }
 
         $body = ['body'=>$message, 'msgtype'=>'m.text'];
@@ -67,9 +68,9 @@ class Matrix extends Transport
             var_dump('Params:');
             var_dump('Response headers:');
             var_dump($res->getHeaders());
-            var_dump('Return: ' . $res->getReasonPhrase());
+            var_dump('Return: '.$res->getReasonPhrase());
 
-            return 'HTTP Status code ' . $code;
+            return 'HTTP Status code '.$code;
         }
 
         return true;
@@ -81,32 +82,32 @@ class Matrix extends Transport
             'config' => [
                 [
                     'title' => 'Matrix-Server URL',
-                    'name' => 'matrix-server',
+                    'name'  => 'matrix-server',
                     'descr' => 'Matrix server URL up to the matrix api-part (for example: https://matrix.example.com/)',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Room',
-                    'name' => 'matrix-room',
+                    'name'  => 'matrix-room',
                     'descr' => 'Enter the room',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Auth_token',
-                    'name' => 'matrix-authtoken',
+                    'name'  => 'matrix-authtoken',
                     'descr' => 'Enter the auth_token',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Message',
-                    'name' => 'matrix-message',
+                    'name'  => 'matrix-message',
                     'descr' => 'Enter the message',
-                    'type' => 'textarea',
+                    'type'  => 'textarea',
                 ],
             ],
             'validation' => [
-                'matrix-server' => 'required',
-                'matrix-room' => 'required',
+                'matrix-server'    => 'required',
+                'matrix-room'      => 'required',
                 'matrix-authtoken' => 'required',
             ],
         ];

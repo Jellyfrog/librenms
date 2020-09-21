@@ -1,6 +1,6 @@
 <?php
 /**
- * InfluxDB.php
+ * InfluxDB.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @copyright  2014 Neil Lathwood <https://github.com/laf/ http://www.lathwood.co.uk/fa>
  * @author     Tony Murray <murraytony@gmail.com>
@@ -43,7 +44,7 @@ class InfluxDB extends BaseDatastore
 
         // if the database doesn't exist, create it.
         try {
-            if (! $influx->exists()) {
+            if (!$influx->exists()) {
                 $influx->create();
             }
         } catch (\Exception $e) {
@@ -70,11 +71,11 @@ class InfluxDB extends BaseDatastore
      *   rrd_oldname array|string: old rrd filename to rename, will be processed with rrd_name()
      *   rrd_step             int: rrd step, defaults to 300
      *
-     * @param array $device
-     * @param string $measurement Name of this measurement
-     * @param array $tags tags for the data (or to control rrdtool)
-     * @param array|mixed $fields The data to update in an associative array, the order must be consistent with rrd_def,
-     *                            single values are allowed and will be paired with $measurement
+     * @param array       $device
+     * @param string      $measurement Name of this measurement
+     * @param array       $tags        tags for the data (or to control rrdtool)
+     * @param array|mixed $fields      The data to update in an associative array, the order must be consistent with rrd_def,
+     *                                 single values are allowed and will be paired with $measurement
      */
     public function put($device, $measurement, $tags, $fields)
     {
@@ -105,8 +106,8 @@ class InfluxDB extends BaseDatastore
 
         Log::debug('InfluxDB data: ', [
             'measurement' => $measurement,
-            'tags' => $tmp_tags,
-            'fields' => $tmp_fields,
+            'tags'        => $tmp_tags,
+            'fields'      => $tmp_fields,
         ]);
 
         try {
@@ -122,13 +123,13 @@ class InfluxDB extends BaseDatastore
             $this->connection->writePoints($points);
             $this->recordStatistic($stat->end());
         } catch (\Exception $e) {
-            Log::error('InfluxDB exception: ' . $e->getMessage());
+            Log::error('InfluxDB exception: '.$e->getMessage());
             Log::debug($e->getTraceAsString());
         }
     }
 
     /**
-     * Create a new client and select the database
+     * Create a new client and select the database.
      *
      * @return \InfluxDB\Database
      */
@@ -177,7 +178,7 @@ class InfluxDB extends BaseDatastore
     }
 
     /**
-     * Checks if the datastore wants rrdtags to be sent when issuing put()
+     * Checks if the datastore wants rrdtags to be sent when issuing put().
      *
      * @return bool
      */

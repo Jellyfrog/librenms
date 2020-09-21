@@ -1,6 +1,6 @@
 <?php
 /**
- * Foundry.php
+ * Foundry.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -32,7 +33,7 @@ class Foundry extends OS implements ProcessorDiscovery
 {
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
@@ -49,11 +50,11 @@ class Foundry extends OS implements ProcessorDiscovery
             }
 
             if (is_numeric($entry['snAgentCpuUtil100thPercent'])) {
-                $usage_oid = '.1.3.6.1.4.1.1991.1.1.2.11.1.1.6.' . $index;
+                $usage_oid = '.1.3.6.1.4.1.1991.1.1.2.11.1.1.6.'.$index;
                 $precision = 100;
                 $usage = $entry['snAgentCpuUtil100thPercent'] / $precision;
             } elseif (is_numeric($entry['snAgentCpuUtilValue'])) {
-                $usage_oid = '.1.3.6.1.4.1.1991.1.1.2.11.1.1.4.' . $index;
+                $usage_oid = '.1.3.6.1.4.1.1991.1.1.2.11.1.1.4.'.$index;
                 $precision = 1;
                 $usage = $entry['snAgentCpuUtilValue'] / $precision;
             } else {

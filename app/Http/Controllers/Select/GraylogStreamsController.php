@@ -1,6 +1,6 @@
 <?php
 /**
- * GraylogStreamsController.php
+ * GraylogStreamsController.php.
  *
  * Select for the available streams from the graylog server.
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -33,24 +34,26 @@ use Log;
 class GraylogStreamsController extends Controller
 {
     /**
-     * The default method called by the route handler
+     * The default method called by the route handler.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function __invoke(Request $request, GraylogApi $api)
     {
         $this->validate($request, [
             'limit' => 'int',
-            'page' => 'int',
-            'term' => 'nullable|string',
+            'page'  => 'int',
+            'term'  => 'nullable|string',
         ]);
         $search = strtolower($request->get('term'));
 
         $streams = [];
+
         try {
             $streams = collect($api->getStreams()['streams'])->filter(function ($stream) use ($search) {
-                return ! $search || Str::contains(strtolower($stream['title']), $search) || Str::contains(strtolower($stream['description']), $search);
+                return !$search || Str::contains(strtolower($stream['title']), $search) || Str::contains(strtolower($stream['description']), $search);
             })->map(function ($stream) {
                 $text = $stream['title'];
                 if ($stream['description']) {
@@ -64,7 +67,7 @@ class GraylogStreamsController extends Controller
         }
 
         return response()->json([
-            'results' => $streams,
+            'results'    => $streams,
             'pagination' => ['more' => false],
         ]);
     }

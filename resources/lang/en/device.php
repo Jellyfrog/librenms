@@ -4,11 +4,11 @@ return [
     'attributes' => [
         'features' => 'OS Features',
         'hardware' => 'Hardware',
-        'icon' => 'Icon',
+        'icon'     => 'Icon',
         'location' => 'Location',
-        'os' => 'Device OS',
-        'serial' => 'Serial',
-        'sysName' => 'sysName',
-        'version' => 'OS Version',
+        'os'       => 'Device OS',
+        'serial'   => 'Serial',
+        'sysName'  => 'sysName',
+        'version'  => 'OS Version',
     ],
 ];

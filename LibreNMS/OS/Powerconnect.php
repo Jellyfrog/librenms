@@ -1,6 +1,6 @@
 <?php
 /**
- * Powerconnect.php
+ * Powerconnect.php.
  *
  * Dell PowerConnect
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -41,7 +42,7 @@ class Powerconnect extends OS implements ProcessorDiscovery, ProcessorPolling
 
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
@@ -94,6 +95,7 @@ class Powerconnect extends OS implements ProcessorDiscovery, ProcessorPolling
      * Poll processor data.  This can be implemented if custom polling is needed.
      *
      * @param array $processors Array of processor entries from the database that need to be polled
+     *
      * @return array of polled data
      */
     public function pollProcessors(array $processors)

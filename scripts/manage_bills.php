@@ -2,7 +2,7 @@
 <?php
 
 $init_modules = [];
-require realpath(__DIR__ . '/..') . '/includes/init.php';
+require realpath(__DIR__.'/..').'/includes/init.php';
 
 /** Bill management tool
  * Todo:
@@ -19,7 +19,7 @@ function list_bills($bill_name)
     $bill = dbFetchRows('SELECT `bill_id`,`bill_name` FROM `bills` WHERE `bill_name` LIKE ?', ["$bill_name"]);
     if (count($bill) != 1) {
         echo "Did not find exactly 1 bill, exiting\n";
-        echo 'Query:' . $bill . "\n";
+        echo 'Query:'.$bill."\n";
         exit(1);
     } else {
         echo "Found bill {$bill[0]['bill_name']} ({$bill[0]['bill_id']})\n";
@@ -38,15 +38,15 @@ function create_bill($bill_name, $bill_type, $bill_cdr, $bill_day)
      * - bill_cdr:  if bill_type is cdr, then this is in bits, if bill_type is quota, then it's in bytes (!!)
      * - bill_day:  day of month billing starts.
      **/
-    echo 'Creating bill with name : ' . $bill_name . ' (Type: ' . $bill_type . ', Quota: ' . $bill_cdr . ")\n";
+    echo 'Creating bill with name : '.$bill_name.' (Type: '.$bill_type.', Quota: '.$bill_cdr.")\n";
     $insert = [
         'bill_name' => $bill_name,
         'bill_type' => $bill_type,
-        'bill_cdr' =>  $bill_cdr,
-        'bill_day' => '1',
+        'bill_cdr'  => $bill_cdr,
+        'bill_day'  => '1',
     ];
     $create_bill = dbInsert($insert, 'bills');
-    echo 'Created bill ID ' . $create_bill . "\n";
+    echo 'Created bill ID '.$create_bill."\n";
 
     return $create_bill;
 }
@@ -54,7 +54,7 @@ function create_bill($bill_name, $bill_type, $bill_cdr, $bill_day)
 // This will get an array of devices we are interested in from the CLI glob
 function get_devices($host_glob, $nameType)
 {
-    return dbFetchRows('SELECT `device_id`,`hostname`,`sysName` FROM `devices` WHERE `' . $nameType . '` LIKE ?', ["%$host_glob%"]);
+    return dbFetchRows('SELECT `device_id`,`hostname`,`sysName` FROM `devices` WHERE `'.$nameType.'` LIKE ?', ["%$host_glob%"]);
 }
 
 // This will flush bill ports if -r is set on cli
@@ -84,8 +84,8 @@ function add_ports_to_bill($devs, $intf_glob, $id)
     foreach (dbFetchRows($query) as $ports) {
         echo "Inserting {$ports['ifName']} ({$ports['ifAlias']}) into bill $id\n";
         $insert = [
-            'bill_id' => $id,
-            'port_id' => $ports['port_id'],
+            'bill_id'             => $id,
+            'port_id'             => $ports['port_id'],
             'bill_port_autoadded' => '1',
         ];
         dbInsert($insert, 'bill_ports');
@@ -123,25 +123,25 @@ function print_help()
  * f - flush - boolean
  * n - new - create new bill
  * t - type - bill type
- * q - quota - bill quota
+ * q - quota - bill quota.
  **/
 $options = getopt('b:s:h:i:f:np:t:q:');
 
-if (! empty($options['s'])) {
+if (!empty($options['s'])) {
     $host_glob = str_replace('*', '%', mres($options['s']));
     $nameType = 'sysName';
 }
-if (! empty($options['h'])) {
+if (!empty($options['h'])) {
     $host_glob = str_replace('*', '%', mres($options['h']));
     $nameType = 'hostname';
 }
 if (array_key_exists('n', $options)) {
     $create_bill = true;
 }
-if (! empty($options['t'])) {
+if (!empty($options['t'])) {
     $bill_type = mres($options['t']);
 }
-if (! empty($options['q'])) {
+if (!empty($options['q'])) {
     $bill_cdr = mres($options['q']);
 }
 
@@ -161,7 +161,7 @@ if ($create_bill) {
 if (empty($options['s']) && empty($options['h'])) {
     echo "Please set -s (sysName) or -h (hosthame)\n";
     print_help();
-} elseif (! empty($options['s']) && ! empty($options['h'])) {
+} elseif (!empty($options['s']) && !empty($options['h'])) {
     echo "Please set either -s or -h, not both\n";
     print_help();
 }

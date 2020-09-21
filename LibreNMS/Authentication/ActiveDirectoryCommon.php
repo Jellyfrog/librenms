@@ -1,6 +1,6 @@
 <?php
 /**
- * ActiveDirectoryCommonirectoryCommon.php
+ * ActiveDirectoryCommonirectoryCommon.php.
  *
  * Common code from AD auth modules
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -48,7 +49,7 @@ trait ActiveDirectoryCommon
         $revLevel = hexdec(substr($sidHex, 0, 2));
         $authIdent = hexdec(substr($sidHex, 4, 12));
 
-        return 'S-' . $revLevel . '-' . $authIdent . '-' . implode('-', $subAuths);
+        return 'S-'.$revLevel.'-'.$authIdent.'-'.implode('-', $subAuths);
     }
 
     protected function getCn($dn)
@@ -136,7 +137,7 @@ trait ActiveDirectoryCommon
             }
         }
 
-        if (! Config::has('auth_ad_groups') && ! Config::has('auth_ad_group')) {
+        if (!Config::has('auth_ad_groups') && !Config::has('auth_ad_group')) {
             $ldap_groups[] = $this->getDn($default_group);
         }
 
@@ -157,7 +158,7 @@ trait ActiveDirectoryCommon
         foreach ($ldap_groups as $ldap_group) {
             $search_filter = "(&(memberOf:1.2.840.113556.1.4.1941:=$ldap_group)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))";
             if (Config::get('auth_ad_user_filter')) {
-                $search_filter = '(&' . Config::get('auth_ad_user_filter') . $search_filter . ')';
+                $search_filter = '(&'.Config::get('auth_ad_user_filter').$search_filter.')';
             }
             $attributes = ['samaccountname', 'displayname', 'objectsid', 'mail'];
             $search = ldap_search($connection, Config::get('auth_ad_base_dn'), $search_filter, $attributes);
@@ -175,21 +176,23 @@ trait ActiveDirectoryCommon
 
     /**
      * Generate a user array from an AD LDAP entry
-     * Must have the attributes: objectsid, samaccountname, displayname, mail
+     * Must have the attributes: objectsid, samaccountname, displayname, mail.
+     *
      * @internal
      *
      * @param $entry
+     *
      * @return array
      */
     protected function userFromAd($entry)
     {
         return [
-            'user_id' => $this->getUseridFromSid($this->sidFromLdap($entry['objectsid'][0])),
-            'username' => $entry['samaccountname'][0],
-            'realname' => $entry['displayname'][0],
-            'email' => isset($entry['mail'][0]) ? $entry['mail'][0] : null,
-            'descr' => '',
-            'level' => $this->getUserlevel($entry['samaccountname'][0]),
+            'user_id'           => $this->getUseridFromSid($this->sidFromLdap($entry['objectsid'][0])),
+            'username'          => $entry['samaccountname'][0],
+            'realname'          => $entry['displayname'][0],
+            'email'             => isset($entry['mail'][0]) ? $entry['mail'][0] : null,
+            'descr'             => '',
+            'level'             => $this->getUserlevel($entry['samaccountname'][0]),
             'can_modify_passwd' => 0,
         ];
     }
@@ -230,7 +233,7 @@ trait ActiveDirectoryCommon
     }
 
     /**
-     * Provide a connected and bound ldap connection resource
+     * Provide a connected and bound ldap connection resource.
      *
      * @return resource
      */

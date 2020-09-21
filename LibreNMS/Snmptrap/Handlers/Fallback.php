@@ -1,6 +1,6 @@
 <?php
 /**
- * Fallback.php
+ * Fallback.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -36,14 +37,15 @@ class Fallback implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)
     {
         Log::info('Unhandled trap snmptrap', [
             'device' => $device->hostname,
-            'oid' => $trap->getTrapOid(),
+            'oid'    => $trap->getTrapOid(),
         ]);
     }
 }

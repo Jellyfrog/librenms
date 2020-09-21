@@ -1,6 +1,6 @@
 <?php
 /**
- * TopInterfacesController.php
+ * TopInterfacesController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -33,14 +34,15 @@ class TopInterfacesController extends WidgetController
 {
     protected $title = 'Top Interfaces';
     protected $defaults = [
-        'interface_count' => 5,
-        'time_interval' => 15,
+        'interface_count'  => 5,
+        'time_interval'    => 15,
         'interface_filter' => null,
-        'device_group' => null,
+        'device_group'     => null,
     ];
 
     /**
      * @param Request $request
+     *
      * @return View
      */
     public function getView(Request $request)

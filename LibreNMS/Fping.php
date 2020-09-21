@@ -1,6 +1,6 @@
 <?php
 /**
- * Fping.php
+ * Fping.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -33,10 +34,11 @@ class Fping
      * Run fping against a hostname/ip in count mode and collect stats.
      *
      * @param string $host
-     * @param int $count (min 1)
-     * @param int $interval (min 20)
-     * @param int $timeout (not more than $interval)
+     * @param int    $count          (min 1)
+     * @param int    $interval       (min 20)
+     * @param int    $timeout        (not more than $interval)
      * @param string $address_family ipv4 or ipv6
+     *
      * @return array
      */
     public function ping($host, $count = 3, $interval = 1000, $timeout = 500, $address_family = 'ipv4')
@@ -64,7 +66,7 @@ class Fping
         ]);
 
         $process = app()->make(Process::class, ['command' => $cmd]);
-        Log::debug('[FPING] ' . $process->getCommandLine() . PHP_EOL);
+        Log::debug('[FPING] '.$process->getCommandLine().PHP_EOL);
         $process->run();
         $output = $process->getErrorOutput();
 
@@ -78,13 +80,13 @@ class Fping
         }
 
         $response = [
-            'xmt'  => (int) $xmt,
-            'rcv'  => (int) $rcv,
-            'loss' => (int) $loss,
-            'min'  => (float) $min,
-            'max'  => (float) $max,
-            'avg'  => (float) $avg,
-            'dup'  => substr_count($output, 'duplicate'),
+            'xmt'      => (int) $xmt,
+            'rcv'      => (int) $rcv,
+            'loss'     => (int) $loss,
+            'min'      => (float) $min,
+            'max'      => (float) $max,
+            'avg'      => (float) $avg,
+            'dup'      => substr_count($output, 'duplicate'),
             'exitcode' => $process->getExitCode(),
         ];
         Log::debug('response: ', $response);

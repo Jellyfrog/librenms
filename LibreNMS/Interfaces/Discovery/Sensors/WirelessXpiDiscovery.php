@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessXpiDiscovery.php
+ * WirelessXpiDiscovery.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -28,7 +29,7 @@ interface WirelessXpiDiscovery
 {
     /**
      * Discover wireless Cross Polar Interference.  Measured in dB. Type is xpi.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

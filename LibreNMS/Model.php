@@ -25,11 +25,11 @@ abstract class Model
     /**
      * Save Models and remove invalid Models
      * This the sensors array should contain all the sensors of a specific class
-     * It may contain sensors from multiple tables and devices, but that isn't the primary use
+     * It may contain sensors from multiple tables and devices, but that isn't the primary use.
      *
-     * @param int $device_id
+     * @param int   $device_id
      * @param array $models
-     * @param array $unique_fields fields to search for an existing entry
+     * @param array $unique_fields         fields to search for an existing entry
      * @param array $ignored_update_fields Don't compare these field when updating
      */
     final public static function sync($device_id, array $models, $unique_fields = [], $ignored_update_fields = [])
@@ -48,9 +48,9 @@ abstract class Model
     }
 
     /**
-     * Remove invalid Models.  Passing an empty array will remove all models related to $device_id
+     * Remove invalid Models.  Passing an empty array will remove all models related to $device_id.
      *
-     * @param int $device_id
+     * @param int   $device_id
      * @param array $model_ids valid Model ids
      */
     protected static function clean($device_id, $model_ids)
@@ -61,8 +61,8 @@ abstract class Model
         $params = [$device_id];
         $where = '`device_id`=?';
 
-        if (! empty($model_ids)) {
-            $where .= " AND `$key` NOT IN " . dbGenPlaceholders(count($model_ids));
+        if (!empty($model_ids)) {
+            $where .= " AND `$key` NOT IN ".dbGenPlaceholders(count($model_ids));
             $params = array_merge($params, $model_ids);
         }
 
@@ -70,7 +70,7 @@ abstract class Model
         foreach ($rows as $row) {
             static::onDelete(static::create($row));
         }
-        if (! empty($rows)) {
+        if (!empty($rows)) {
             dbDelete($table, $where, $params);
         }
     }
@@ -78,8 +78,9 @@ abstract class Model
     /**
      * Save this Model to the database.
      *
-     * @param array $unique_fields fields to search for an existing entry
+     * @param array $unique_fields         fields to search for an existing entry
      * @param array $ignored_update_fields Don't compare these field when updating
+     *
      * @return int the id of this model in the database
      */
     final public function save($unique_fields = [], $ignored_update_fields = [])
@@ -113,6 +114,7 @@ abstract class Model
      * If it doesn't exist, returns null.
      *
      * @param array $unique_fields fields to search for an existing entry
+     *
      * @return array|null
      */
     protected function fetch($unique_fields = [])
@@ -141,7 +143,7 @@ abstract class Model
         }
 
         $row = dbFetchRow(
-            "SELECT * FROM `$table` WHERE " . implode(' AND', $where),
+            "SELECT * FROM `$table` WHERE ".implode(' AND', $where),
             $params
         );
 
@@ -151,15 +153,16 @@ abstract class Model
     }
 
     /**
-     * Convert this Model to an array with fields that match the database
+     * Convert this Model to an array with fields that match the database.
      *
      * @param array $exclude Exclude the listed fields
+     *
      * @return array
      */
     abstract public function toArray($exclude = []);
 
     /**
-     * Returns if this model passes validation and should be saved to the database
+     * Returns if this model passes validation and should be saved to the database.
      *
      * @return bool
      */

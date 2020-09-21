@@ -1,6 +1,6 @@
 <?php
 /**
- * DynamicConfig.php
+ * DynamicConfig.php.
  *
  * Class used by the webui to collect config definitions to create a dynamic config ui
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -46,9 +47,10 @@ class DynamicConfig
     }
 
     /**
-     * Check if a setting is valid
+     * Check if a setting is valid.
      *
      * @param string $name
+     *
      * @return bool
      */
     public function isValidSetting($name)
@@ -57,9 +59,10 @@ class DynamicConfig
     }
 
     /**
-     * Get config item by name
+     * Get config item by name.
      *
      * @param string $name
+     *
      * @return DynamicConfigItem|null
      */
     public function get($name)
@@ -68,7 +71,7 @@ class DynamicConfig
     }
 
     /**
-     * Get all groups defined
+     * Get all groups defined.
      *
      * @return \Illuminate\Support\Collection
      */
@@ -126,7 +129,7 @@ class DynamicConfig
     }
 
     /**
-     * Get all config items keyed by name
+     * Get all config items keyed by name.
      *
      * @return Collection
      */

@@ -15,6 +15,7 @@ abstract class DuskTestCase extends BaseTestCase
      * Prepare for Dusk test execution.
      *
      * @beforeClass
+     *
      * @return void
      */
     public static function prepare()
@@ -39,7 +40,7 @@ abstract class DuskTestCase extends BaseTestCase
 
         return RemoteWebDriver::create('http://localhost:9515', DesiredCapabilities::chrome()->setCapability(
             ChromeOptions::CAPABILITY,
-            (new ChromeOptions)->addArguments($arguments)
+            (new ChromeOptions())->addArguments($arguments)
         ));
     }
 }

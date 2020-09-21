@@ -13,7 +13,8 @@ class PollerClusterPolicy
     /**
      * Determine whether the user can view any poller clusters.
      *
-     * @param  \App\Models\User  $user
+     * @param \App\Models\User $user
+     *
      * @return mixed
      */
     public function viewAny(User $user)
@@ -24,8 +25,9 @@ class PollerClusterPolicy
     /**
      * Determine whether the user can view the poller cluster.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\PollerCluster  $pollerCluster
+     * @param \App\Models\User          $user
+     * @param \App\Models\PollerCluster $pollerCluster
+     *
      * @return mixed
      */
     public function view(User $user, PollerCluster $pollerCluster)
@@ -36,7 +38,8 @@ class PollerClusterPolicy
     /**
      * Determine whether the user can create poller clusters.
      *
-     * @param  \App\Models\User  $user
+     * @param \App\Models\User $user
+     *
      * @return mixed
      */
     public function create(User $user)
@@ -47,8 +50,9 @@ class PollerClusterPolicy
     /**
      * Determine whether the user can update the poller cluster.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\PollerCluster  $pollerCluster
+     * @param \App\Models\User          $user
+     * @param \App\Models\PollerCluster $pollerCluster
+     *
      * @return mixed
      */
     public function update(User $user, PollerCluster $pollerCluster)
@@ -59,8 +63,9 @@ class PollerClusterPolicy
     /**
      * Determine whether the user can delete the poller cluster.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\PollerCluster  $pollerCluster
+     * @param \App\Models\User          $user
+     * @param \App\Models\PollerCluster $pollerCluster
+     *
      * @return mixed
      */
     public function delete(User $user, PollerCluster $pollerCluster)
@@ -71,8 +76,9 @@ class PollerClusterPolicy
     /**
      * Determine whether the user can restore the poller cluster.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\PollerCluster  $pollerCluster
+     * @param \App\Models\User          $user
+     * @param \App\Models\PollerCluster $pollerCluster
+     *
      * @return mixed
      */
     public function restore(User $user, PollerCluster $pollerCluster)
@@ -83,8 +89,9 @@ class PollerClusterPolicy
     /**
      * Determine whether the user can permanently delete the poller cluster.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\PollerCluster  $pollerCluster
+     * @param \App\Models\User          $user
+     * @param \App\Models\PollerCluster $pollerCluster
+     *
      * @return mixed
      */
     public function forceDelete(User $user, PollerCluster $pollerCluster)
@@ -95,8 +102,9 @@ class PollerClusterPolicy
     /**
      * Determine whether the user can manage the poller cluster.
      *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\PollerCluster  $pollerCluster
+     * @param \App\Models\User          $user
+     * @param \App\Models\PollerCluster $pollerCluster
+     *
      * @return mixed
      */
     public function manage(User $user)

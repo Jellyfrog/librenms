@@ -1,6 +1,6 @@
 <?php
 /**
- * FileWriteFailedException.php
+ * FileWriteFailedException.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -40,6 +41,7 @@ class FileWriteFailedException extends \Exception
      * Render the exception into an HTTP or JSON response.
      *
      * @param  \Illuminate\Http\Request
+     *
      * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     public function render(\Illuminate\Http\Request $request)
@@ -48,10 +50,10 @@ class FileWriteFailedException extends \Exception
         $message = trans('exceptions.file_write_failed.message', ['file' => $this->file]);
 
         return $request->wantsJson() ? response()->json([
-            'status' => 'error',
+            'status'  => 'error',
             'message' => "$title: $message",
         ]) : response()->view('errors.generic', [
-            'title' => $title,
+            'title'   => $title,
             'content' => $message,
         ]);
     }

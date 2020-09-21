@@ -1,6 +1,6 @@
 <?php
 /**
- * Smokeping.php
+ * Smokeping.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -77,9 +78,9 @@ class Smokeping
     public function generateFileName($file = '')
     {
         if (Config::get('smokeping.integration') === true) {
-            return Config::get('smokeping.dir') . '/' . $this->device->type . '/' . $file;
+            return Config::get('smokeping.dir').'/'.$this->device->type.'/'.$file;
         } else {
-            return Config::get('smokeping.dir') . '/' . $file;
+            return Config::get('smokeping.dir').'/'.$file;
         }
     }
 
@@ -97,10 +98,10 @@ class Smokeping
 
                 $data[] = [
                     'device' => $device,
-                    'graph' => [
-                        'type' => 'smokeping_' . $direction,
+                    'graph'  => [
+                        'type'   => 'smokeping_'.$direction,
                         'device' => $this->device->device_id,
-                        $remote => $device->device_id,
+                        $remote  => $device->device_id,
                     ],
                 ];
             }
@@ -116,12 +117,12 @@ class Smokeping
 
     public function hasInGraph()
     {
-        return ! empty($this->getFiles()['in'][$this->device->hostname]);
+        return !empty($this->getFiles()['in'][$this->device->hostname]);
     }
 
     public function hasOutGraph()
     {
-        return ! empty($this->getFiles()['out'][$this->device->hostname]);
+        return !empty($this->getFiles()['out'][$this->device->hostname]);
     }
 
     private function filenameToHostname($name)

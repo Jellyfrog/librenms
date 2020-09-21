@@ -1,6 +1,6 @@
 <?php
 /**
- * GraphAggregateController.php
+ * GraphAggregateController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -33,8 +34,8 @@ class GraphAggregateController extends Controller
 {
     private $rules = [
         'limit' => 'int',
-        'page' => 'int',
-        'term' => 'nullable|string',
+        'page'  => 'int',
+        'term'  => 'nullable|string',
     ];
 
     public function __invoke(Request $request)
@@ -56,7 +57,7 @@ class GraphAggregateController extends Controller
         // handle search
         if ($search = strtolower($request->get('term'))) {
             $types = array_filter($types, function ($type) use ($search) {
-                return ! Str::contains(strtolower($type), $search);
+                return !Str::contains(strtolower($type), $search);
             });
         }
 
@@ -64,7 +65,7 @@ class GraphAggregateController extends Controller
         return response()->json([
             'results' => array_map(function ($type) {
                 return [
-                    'id' => $type,
+                    'id'   => $type,
                     'text' => ucwords($type),
                 ];
             }, $types),

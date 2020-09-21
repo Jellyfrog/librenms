@@ -1,6 +1,6 @@
 <?php
 /**
- * JnxBgpM2BackwardTransition.php
+ * JnxBgpM2BackwardTransition.php.
  *
  * -Description-
  *
@@ -22,6 +22,7 @@
  * state to a lower numbered state.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -41,7 +42,8 @@ class JnxBgpM2BackwardTransition implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)
@@ -51,8 +53,8 @@ class JnxBgpM2BackwardTransition implements SnmptrapHandler
 
         $bgpPeer = $device->bgppeers()->where('bgpPeerIdentifier', $peerAddr)->first();
 
-        if (! $bgpPeer) {
-            Log::error('Unknown bgp peer handling bgpEstablished trap: ' . $peerAddr);
+        if (!$bgpPeer) {
+            Log::error('Unknown bgp peer handling bgpEstablished trap: '.$peerAddr);
 
             return;
         }

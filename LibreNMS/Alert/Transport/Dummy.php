@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * Dummy Transport
+ * Dummy Transport.
+ *
  * @author f0o <f0o@devilcode.org>
  * @copyright 2014 f0o, LibreNMS
  * @license GPL
@@ -42,7 +43,7 @@ class Dummy extends Transport
     {
         return [
             'validation' => [],
-            'config' => [],
+            'config'     => [],
         ];
     }
 }

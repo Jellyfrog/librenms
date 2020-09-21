@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessErrorsDiscovery.php
+ * WirelessErrorsDiscovery.php.
  *
  * Discover bit error sensors in total bits
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -28,7 +29,7 @@ interface WirelessErrorsDiscovery
 {
     /**
      * Discover wireless bit errors.  This is in total bits. Type is errors.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */

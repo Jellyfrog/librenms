@@ -1,6 +1,6 @@
 <?php
 /**
- * LatencyController.php
+ * LatencyController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -76,11 +77,11 @@ class LatencyController implements DeviceTab
         }
 
         return [
-            'dtpickerfrom' => $from,
-            'dtpickerto' => $to,
-            'duration' => $duration,
-            'perfdata' => $this->formatPerfData($perf),
-            'smokeping' => $smokeping,
+            'dtpickerfrom'   => $from,
+            'dtpickerto'     => $to,
+            'duration'       => $duration,
+            'perfdata'       => $this->formatPerfData($perf),
+            'smokeping'      => $smokeping,
             'smokeping_tabs' => $smokeping_tabs,
         ];
     }
@@ -95,8 +96,10 @@ class LatencyController implements DeviceTab
     }
 
     /**
-     * Data ready for json export
+     * Data ready for json export.
+     *
      * @param \Illuminate\Support\Collection $data
+     *
      * @return array
      */
     private function formatPerfData($data)

@@ -1,6 +1,6 @@
 <?php
 /**
- * AirosAf.php
+ * AirosAf.php.
  *
  * Ubiquiti AirFiber
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -41,7 +42,7 @@ class AirosAf extends OS implements
 {
     /**
      * Discover wireless distance.  This is in Kilometers. Type is distance.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -56,7 +57,7 @@ class AirosAf extends OS implements
 
     /**
      * Discover wireless frequency.  This is in GHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -87,7 +88,7 @@ class AirosAf extends OS implements
 
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -106,7 +107,7 @@ class AirosAf extends OS implements
 
     /**
      * Discover wireless rate. This is in Mbps. Type is rate.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */

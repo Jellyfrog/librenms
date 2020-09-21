@@ -13,20 +13,22 @@ abstract class Transport implements TransportInterface
 
     /**
      * Transport constructor.
+     *
      * @param null $transport_id
      */
     public function __construct($transport_id = null)
     {
-        if (! empty($transport_id)) {
+        if (!empty($transport_id)) {
             $sql = 'SELECT `transport_config` FROM `alert_transports` WHERE `transport_id`=?';
             $this->config = json_decode(dbFetchCell($sql, [$transport_id]), true);
         }
     }
 
     /**
-     * Helper function to parse free form text box defined in ini style to key value pairs
+     * Helper function to parse free form text box defined in ini style to key value pairs.
      *
      * @param string $input
+     *
      * @return array
      */
     protected function parseUserOptions($input)
@@ -43,8 +45,10 @@ abstract class Transport implements TransportInterface
     }
 
     /**
-     * Get the hex color string for a particular state
+     * Get the hex color string for a particular state.
+     *
      * @param int $state State code from alert
+     *
      * @return string Hex color, default to #337AB7 blue if state unrecognised
      */
     public static function getColorForState($state)

@@ -1,6 +1,6 @@
 <?php
 /**
- * FgTrapIpsSignature.php
+ * FgTrapIpsSignature.php.
  *
  * -Description-
  *
@@ -20,6 +20,7 @@
  * Traffic pattern matches Fortigate IPS signature.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Heath Barnhart
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -38,7 +39,8 @@ class FgTrapIpsSignature implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)

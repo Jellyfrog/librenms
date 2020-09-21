@@ -1,6 +1,6 @@
 <?php
 /**
- * AuthenticationFailure.php
+ * AuthenticationFailure.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -36,11 +37,12 @@ class AuthenticationFailure implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)
     {
-        Log::event('SNMP Trap: Authentication Failure: ' . $device->displayName(), $device->device_id, 'auth', 3);
+        Log::event('SNMP Trap: Authentication Failure: '.$device->displayName(), $device->device_id, 'auth', 3);
     }
 }

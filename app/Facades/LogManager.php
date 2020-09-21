@@ -1,6 +1,6 @@
 <?php
 /**
- * Log.php
+ * Log.php.
  *
  * Extending the built in logging to add an event logger function
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -30,24 +31,24 @@ use LibreNMS\Enum\Alert;
 class LogManager extends \Illuminate\Log\LogManager
 {
     /**
-     * Log events to the event table
+     * Log events to the event table.
      *
-     * @param string $text message describing the event
-     * @param \App\Models\Device|int $device device array or device_id
-     * @param string $type brief category for this event. Examples: sensor, state, stp, system, temperature, interface
-     * @param int $severity 1: ok, 2: info, 3: notice, 4: warning, 5: critical, 0: unknown
-     * @param int $reference the id of the referenced entity.  Supported types: interface
+     * @param string                 $text      message describing the event
+     * @param \App\Models\Device|int $device    device array or device_id
+     * @param string                 $type      brief category for this event. Examples: sensor, state, stp, system, temperature, interface
+     * @param int                    $severity  1: ok, 2: info, 3: notice, 4: warning, 5: critical, 0: unknown
+     * @param int                    $reference the id of the referenced entity.  Supported types: interface
      */
     public function event($text, $device = null, $type = null, $severity = Alert::INFO, $reference = null)
     {
         (new \App\Models\Eventlog([
             'device_id' => $device instanceof \App\Models\Device ? $device->device_id : $device,
             'reference' => $reference,
-            'type' => $type,
-            'datetime' => \Carbon\Carbon::now(),
-            'severity' => $severity,
-            'message' => $text,
-            'username' => Auth::user() ? Auth::user()->username : '',
+            'type'      => $type,
+            'datetime'  => \Carbon\Carbon::now(),
+            'severity'  => $severity,
+            'message'   => $text,
+            'username'  => Auth::user() ? Auth::user()->username : '',
         ]))->save();
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Ceraos.php
+ * Ceraos.php.
  *
  * Ceragon CeraOS
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -49,7 +50,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
         $device->version = $data[1]['MWRM-UNIT-MIB::genEquipMngSwIDUVersionsRunningVersion'] ?? null;
 
         // update location lat/lng
-        if ($device->location && (! empty($multi_get_array[0]['MWRM-UNIT-MIB::genEquipUnitLatitude']) || ! empty($multi_get_array[0]['MWRM-UNIT-MIB::genEquipUnitLongitude']))) {
+        if ($device->location && (!empty($multi_get_array[0]['MWRM-UNIT-MIB::genEquipUnitLatitude']) || !empty($multi_get_array[0]['MWRM-UNIT-MIB::genEquipUnitLongitude']))) {
             $device->location->lat = $multi_get_array[0]['MWRM-UNIT-MIB::genEquipUnitLatitude'] ?? $device->location->lat;
             $device->location->lng = $multi_get_array[0]['MWRM-UNIT-MIB::genEquipUnitLongitude'] ?? $device->location->lng;
             $device->location->save();
@@ -62,7 +63,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
             }
         }
 
-        $device->features = $num_radios . ' radios in unit';
+        $device->features = $num_radios.' radios in unit';
     }
 
     public function discoverWirelessXpi()
@@ -77,7 +78,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
             $sensors[] = new WirelessSensor(
                 'xpi',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2281.10.7.1.1.5.' . $index,
+                '.1.3.6.1.4.1.2281.10.7.1.1.5.'.$index,
                 'ceraos',
                 $index,
                 $ifNames[$index],
@@ -101,10 +102,10 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
             $sensors[] = new WirelessSensor(
                 'frequency',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2281.10.5.2.1.3.' . $index,
-                'Ceraos-tx-radio ' . $TxRadio,
+                '.1.3.6.1.4.1.2281.10.5.2.1.3.'.$index,
+                'Ceraos-tx-radio '.$TxRadio,
                 1,
-                'Tx Frequency Radio ' . $TxRadio,
+                'Tx Frequency Radio '.$TxRadio,
                 null,
                 1,
                 1000
@@ -118,10 +119,10 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
             $sensors[] = new WirelessSensor(
                 'frequency',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2281.10.5.2.1.4.' . $index,
-                'Ceraos-rx-radio ' . $RxRadio,
+                '.1.3.6.1.4.1.2281.10.5.2.1.4.'.$index,
+                'Ceraos-rx-radio '.$RxRadio,
                 1,
-                'Rx Frequency Radio ' . $RxRadio,
+                'Rx Frequency Radio '.$RxRadio,
                 null,
                 1,
                 1000
@@ -133,7 +134,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
 
     /**
      * Discover wireless rate. This is in bps. Type is rate.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -148,10 +149,10 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
             $sensors[] = new WirelessSensor(
                 'rate',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2281.10.7.4.1.1.7.' . $index,
+                '.1.3.6.1.4.1.2281.10.7.4.1.1.7.'.$index,
                 'ceraos-tx',
                 $index,
-                $ifNames[$index] . ' TX Bitrate',
+                $ifNames[$index].' TX Bitrate',
                 $data['genEquipRadioMRMCCurrTxBitrate'],
                 1000
             );
@@ -162,10 +163,10 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
             $sensors[] = new WirelessSensor(
                 'rate',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2281.10.7.4.1.1.11.' . $index,
+                '.1.3.6.1.4.1.2281.10.7.4.1.1.11.'.$index,
                 'ceraos-rx',
                 $index,
-                $ifNames[$index] . ' RX Bitrate',
+                $ifNames[$index].' RX Bitrate',
                 $data['genEquipRadioMRMCCurrRxBitrate'],
                 1000
             );
@@ -176,7 +177,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
 
     /**
      * Discover wireless bit errors.  This is in total bits. Type is errors.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -191,10 +192,10 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
             $sensors[] = new WirelessSensor(
                 'errors',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2281.10.7.1.1.3.' . $index,
+                '.1.3.6.1.4.1.2281.10.7.1.1.3.'.$index,
                 'ceraos',
                 $index,
-                $ifNames[$index] . ' Defected Blocks',
+                $ifNames[$index].' Defected Blocks',
                 $data['genEquipRadioStatusDefectedBlocks']
             );
         }
@@ -204,7 +205,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
 
     /**
      * Discover wireless MSE. Mean square error value in dB. Type is mse.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -220,7 +221,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
             $sensors[] = new WirelessSensor(
                 'mse',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2281.10.7.1.1.2.' . $index,
+                '.1.3.6.1.4.1.2281.10.7.1.1.2.'.$index,
                 'ceraos',
                 $index,
                 $ifNames[$index],
@@ -235,7 +236,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
 
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -250,10 +251,10 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
             $sensors[] = new WirelessSensor(
                 'power',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2281.10.5.1.1.3.' . $index,
+                '.1.3.6.1.4.1.2281.10.5.1.1.3.'.$index,
                 'ceraos-tx',
                 $index,
-                $ifNames[$index] . ' TX Level',
+                $ifNames[$index].' TX Level',
                 $data['genEquipRfuStatusTxLevel']
             );
         }
@@ -263,10 +264,10 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
             $sensors[] = new WirelessSensor(
                 'power',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.2281.10.5.1.1.2.' . $index,
+                '.1.3.6.1.4.1.2281.10.5.1.1.2.'.$index,
                 'ceraos-rx',
                 $index,
-                $ifNames[$index] . ' RX Level',
+                $ifNames[$index].' RX Level',
                 $data['genEquipRfuStatusRxLevel']
             );
         }

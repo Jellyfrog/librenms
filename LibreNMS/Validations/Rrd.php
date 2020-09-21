@@ -1,6 +1,6 @@
 <?php
 /**
- * Rrd.php
+ * Rrd.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -31,7 +32,7 @@ class Rrd extends BaseValidation
 {
     /**
      * Validate this module.
-     * To return ValidationResults, call ok, warn, fail, or result methods on the $validator
+     * To return ValidationResults, call ok, warn, fail, or result methods on the $validator.
      *
      * @param Validator $validator
      */
@@ -45,8 +46,8 @@ class Rrd extends BaseValidation
         ) {
             $validator->fail(
                 'The rrdtool version you have specified is newer than what is installed.',
-                "Either comment out \$config['rrdtool_version'] = '" .
-                Config::get('rrdtool_version') . "'; or set \$config['rrdtool_version'] = '{$versions['rrdtool_ver']}';"
+                "Either comment out \$config['rrdtool_version'] = '".
+                Config::get('rrdtool_version')."'; or set \$config['rrdtool_version'] = '{$versions['rrdtool_ver']}';"
             );
         }
 
@@ -71,7 +72,7 @@ class Rrd extends BaseValidation
         [$host,$port] = explode(':', Config::get('rrdcached'));
         if ($host == 'unix') {
             // Using socket, check that file exists
-            if (! file_exists($port)) {
+            if (!file_exists($port)) {
                 $validator->fail("$port doesn't appear to exist, rrdcached test failed");
             }
         } else {

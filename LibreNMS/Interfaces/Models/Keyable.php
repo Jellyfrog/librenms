@@ -1,6 +1,6 @@
 <?php
 /**
- * Keyable.php
+ * Keyable.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -27,7 +28,8 @@ namespace LibreNMS\Interfaces\Models;
 interface Keyable
 {
     /**
-     * Get a string that can identify a unique instance of this model
+     * Get a string that can identify a unique instance of this model.
+     *
      * @return string
      */
     public function getCompositeKey();

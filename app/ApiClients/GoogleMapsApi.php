@@ -1,6 +1,6 @@
 <?php
 /**
- * GoogleGeocodeApi.php
+ * GoogleGeocodeApi.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -36,9 +37,10 @@ class GoogleMapsApi extends BaseApi implements Geocoder
     protected $geocoding_uri = '/maps/api/geocode/json';
 
     /**
-     * Get latitude and longitude from geocode response
+     * Get latitude and longitude from geocode response.
      *
      * @param array $data
+     *
      * @return array
      */
     private function parseLatLng($data)
@@ -53,45 +55,50 @@ class GoogleMapsApi extends BaseApi implements Geocoder
      * Get messages from response.
      *
      * @param array $data
+     *
      * @return array
      */
     protected function parseMessages($data)
     {
         return [
-            'error' => isset($data['error_message']) ? $data['error_message'] : '',
+            'error'    => isset($data['error_message']) ? $data['error_message'] : '',
             'response' => $data,
         ];
     }
 
     /**
-     * Build Guzzle request option array
+     * Build Guzzle request option array.
      *
      * @param string $address
-     * @return array
+     *
      * @throws \Exception you may throw an Exception if validation fails
+     *
+     * @return array
      */
     protected function buildGeocodingOptions($address)
     {
         $api_key = Config::get('geoloc.api_key');
-        if (! $api_key) {
+        if (!$api_key) {
             throw new Exception('Google Maps API key missing, set geoloc.api_key');
         }
 
         return [
             'query' => [
-                'key' => $api_key,
+                'key'     => $api_key,
                 'address' => $address,
             ],
         ];
     }
 
     /**
-     * Checks if the request was a success
+     * Checks if the request was a success.
      *
      * @param \Psr\Http\Message\ResponseInterface $response
-     * @param array $data decoded response data
-     * @return bool
+     * @param array                               $data     decoded response data
+     *
      * @throws Exception you may throw an Exception if validation fails
+     *
+     * @return bool
      */
     protected function checkResponse($response, $data)
     {

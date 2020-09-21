@@ -1,7 +1,7 @@
 <?php
 /**
  * JnxBgpM2Test.php
- * -Description-
+ * -Description-.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
  * jnxBgpM2BackwardTransition
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 KanREN, Inc
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */

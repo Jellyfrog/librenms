@@ -63,7 +63,7 @@ class Ciscospark extends Transport
         curl_setopt($curl, CURLOPT_HTTPHEADER, [
             'Content-type' => 'application/json',
             'Expect:',
-            'Authorization: Bearer ' . $token,
+            'Authorization: Bearer '.$token,
         ]);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
         $ret = curl_exec($curl);
@@ -84,27 +84,27 @@ class Ciscospark extends Transport
             'config' => [
                 [
                     'title' => 'API Token',
-                    'name' => 'api-token',
+                    'name'  => 'api-token',
                     'descr' => 'CiscoSpark API Token',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'RoomID',
-                    'name' => 'room-id',
+                    'name'  => 'room-id',
                     'descr' => 'CiscoSpark Room ID',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
-                    'title' => 'Use Markdown?',
-                    'name' => 'use-markdown',
-                    'descr' => 'Use Markdown when sending the alert',
-                    'type' => 'checkbox',
+                    'title'   => 'Use Markdown?',
+                    'name'    => 'use-markdown',
+                    'descr'   => 'Use Markdown when sending the alert',
+                    'type'    => 'checkbox',
                     'default' => false,
                 ],
             ],
             'validation' => [
                 'api-token' => 'required|string',
-                'room-id' => 'required|string',
+                'room-id'   => 'required|string',
             ],
         ];
     }

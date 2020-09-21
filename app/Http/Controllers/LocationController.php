@@ -13,18 +13,18 @@ class LocationController extends Controller
     {
         $maps_api = Config::get('geoloc.api_key');
         $data = [
-            'maps_api' => $maps_api,
+            'maps_api'    => $maps_api,
             'maps_engine' => $maps_api ? Config::get('geoloc.engine') : '',
         ];
 
         $data['graph_template'] = '';
         Config::set('enable_lazy_load', false);
         $graph_array = [
-            'type' => 'location_bits',
+            'type'   => 'location_bits',
             'height' => '100',
-            'width' => '220',
+            'width'  => '220',
             'legend' => 'no',
-            'id' => '{{id}}',
+            'id'     => '{{id}}',
         ];
         foreach (Html::graphRow($graph_array) as $graph) {
             $data['graph_template'] .= "<div class='col-md-3'>";
@@ -39,9 +39,11 @@ class LocationController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param Location $location
-     * @return \Illuminate\Http\Response
+     * @param Location                 $location
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Location $location)
     {
@@ -61,9 +63,11 @@ class LocationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  Location $location
-     * @return \Illuminate\Http\Response
+     * @param Location $location
+     *
      * @throws \Exception
+     *
+     * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, Location $location)
     {

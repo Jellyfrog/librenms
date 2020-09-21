@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'failed' => "Échec d'authentification",
+    'failed'   => "Échec d'authentification",
     'throttle' => 'Trop de tentatives. Essaie dans quelques secondes.',
 
 ];

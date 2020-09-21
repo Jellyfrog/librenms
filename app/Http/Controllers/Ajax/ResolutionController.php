@@ -1,6 +1,6 @@
 <?php
 /**
- * ResolutionController.php
+ * ResolutionController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -32,16 +33,16 @@ class ResolutionController extends Controller
     public function set(Request $request)
     {
         $this->validate($request, [
-            'width' => 'required|numeric',
+            'width'  => 'required|numeric',
             'height' => 'required|numeric',
         ]);
 
         // laravel session
         session([
-            'screen_width' => $request->width,
+            'screen_width'  => $request->width,
             'screen_height' => $request->height,
         ]);
 
-        return $request->width . 'x' . $request->height;
+        return $request->width.'x'.$request->height;
     }
 }

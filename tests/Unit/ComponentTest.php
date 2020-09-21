@@ -1,6 +1,6 @@
 <?php
 /**
- * ComponentTest.php
+ * ComponentTest.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -85,8 +86,8 @@ class ComponentTest extends DBTestCase
 
         $options = [
             'filter' => ['label' => ['like', 'Search Phrase']],
-            'sort' => 'id desc',
-            'limit' => [1, 2],
+            'sort'   => 'id desc',
+            'limit'  => [1, 2],
         ];
         $actual = $component->getComponents(null, $options);
 

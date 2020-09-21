@@ -1,6 +1,6 @@
 <?php
 /**
- * RipeWhoisApi.php
+ * RipeWhoisApi.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -35,11 +36,13 @@ class RipeApi extends BaseApi
     protected $abuse_uri = '/data/abuse-contact-finder/data.json';
 
     /**
-     * Get whois info
+     * Get whois info.
      *
      * @param string $resource ASN/IPv4/IPv6
-     * @return array
+     *
      * @throws ApiException
+     *
+     * @return array
      */
     public function getWhois($resource)
     {
@@ -51,11 +54,13 @@ class RipeApi extends BaseApi
     }
 
     /**
-     * Get Abuse contact
+     * Get Abuse contact.
      *
      * @param string $resource prefix, single IP address or ASN
-     * @return array|mixed
+     *
      * @throws ApiException
+     *
+     * @return array|mixed
      */
     public function getAbuseContact($resource)
     {
@@ -69,8 +74,10 @@ class RipeApi extends BaseApi
     /**
      * @param $uri
      * @param $options
-     * @return array|mixed
+     *
      * @throws ApiException
+     *
+     * @return array|mixed
      */
     private function makeApiCall($uri, $options)
     {
@@ -83,8 +90,8 @@ class RipeApi extends BaseApi
                 throw new ApiException('RIPE API call failed', $response_data);
             }
         } catch (RequestException $e) {
-            $message = 'RIPE API call to ' . $e->getRequest()->getUri() . ' failed: ';
-            $message .= $e->getResponse()->getReasonPhrase() . ' ' . $e->getResponse()->getStatusCode();
+            $message = 'RIPE API call to '.$e->getRequest()->getUri().' failed: ';
+            $message .= $e->getResponse()->getReasonPhrase().' '.$e->getResponse()->getStatusCode();
 
             throw new ApiException(
                 $message,

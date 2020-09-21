@@ -14,13 +14,13 @@ class Port extends DeviceRelatedModel
     protected $primaryKey = 'port_id';
 
     /**
-     * Initialize this class
+     * Initialize this class.
      */
     public static function boot()
     {
         parent::boot();
 
-        static::deleting(function (Port $port) {
+        static::deleting(function (self $port) {
             // delete related data
             $port->adsl()->delete();
             $port->fdbEntries()->delete();
@@ -49,7 +49,7 @@ class Port extends DeviceRelatedModel
     // ---- Helper Functions ----
 
     /**
-     * Returns a human readable label for this port
+     * Returns a human readable label for this port.
      *
      * @return string
      */
@@ -78,7 +78,7 @@ class Port extends DeviceRelatedModel
         }
 
         foreach ((array) \LibreNMS\Config::get('rewrite_if_regexp', []) as $reg => $val) {
-            $label = preg_replace($reg . 'i', $val, $label);
+            $label = preg_replace($reg.'i', $val, $label);
         }
 
         return $label;
@@ -98,11 +98,12 @@ class Port extends DeviceRelatedModel
      * Check if user can access this port.
      *
      * @param User|int $user
+     *
      * @return bool
      */
     public function canAccess($user)
     {
-        if (! $user) {
+        if (!$user) {
             return false;
         }
 
@@ -117,7 +118,7 @@ class Port extends DeviceRelatedModel
 
     public function getIfPhysAddressAttribute($mac)
     {
-        if (! empty($mac)) {
+        if (!empty($mac)) {
             return preg_replace('/(..)(..)(..)(..)(..)(..)/', '\\1:\\2:\\3:\\4:\\5:\\6', $mac);
         }
 
@@ -128,6 +129,7 @@ class Port extends DeviceRelatedModel
 
     /**
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeIsDeleted($query)
@@ -139,6 +141,7 @@ class Port extends DeviceRelatedModel
 
     /**
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeIsNotDeleted($query)
@@ -150,6 +153,7 @@ class Port extends DeviceRelatedModel
 
     /**
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeIsUp($query)
@@ -164,6 +168,7 @@ class Port extends DeviceRelatedModel
 
     /**
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeIsDown($query)
@@ -179,6 +184,7 @@ class Port extends DeviceRelatedModel
 
     /**
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeIsShutdown($query)
@@ -193,6 +199,7 @@ class Port extends DeviceRelatedModel
 
     /**
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeIsIgnored($query)
@@ -205,6 +212,7 @@ class Port extends DeviceRelatedModel
 
     /**
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeIsDisabled($query)
@@ -217,6 +225,7 @@ class Port extends DeviceRelatedModel
 
     /**
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeHasErrors($query)
@@ -234,6 +243,7 @@ class Port extends DeviceRelatedModel
 
     /**
      * @param Builder $query
+     *
      * @return Builder
      */
     public function scopeIsValid($query)

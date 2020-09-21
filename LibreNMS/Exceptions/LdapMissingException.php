@@ -1,6 +1,6 @@
 <?php
 /**
- * LdapMissingException.php
+ * LdapMissingException.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -40,6 +41,7 @@ class LdapMissingException extends AuthenticationException
      * Render the exception into an HTTP or JSON response.
      *
      * @param  \Illuminate\Http\Request
+     *
      * @return \Illuminate\Http\Response
      */
     public function render(\Illuminate\Http\Request $request)
@@ -48,10 +50,10 @@ class LdapMissingException extends AuthenticationException
         $message = ($this->message == self::DEFAULT_MESSAGE) ? trans('exceptions.ldap_missing.message') : $this->getMessage();
 
         return $request->wantsJson() ? response()->json([
-            'status' => 'error',
+            'status'  => 'error',
             'message' => "$title: $message",
         ]) : response()->view('errors.generic', [
-            'title' => $title,
+            'title'   => $title,
             'content' => $message,
         ]);
     }

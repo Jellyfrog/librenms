@@ -23,6 +23,7 @@ class MarkNotificationsRead
      * Handle the event.
      *
      * @param UserCreated $event
+     *
      * @return void
      */
     public function handle(UserCreated $event)
@@ -37,12 +38,12 @@ class MarkNotificationsRead
         })->get()->map(function ($notif) use ($user) {
             return [
                 'notifications_id' => $notif->notifications_id,
-                'user_id' => $user->user_id,
-                'key' => 'read',
-                'value' => 1,
+                'user_id'          => $user->user_id,
+                'key'              => 'read',
+                'value'            => 1,
             ];
         })->toArray());
 
-        \Log::info('Marked all notifications as read for user ' . $user->username);
+        \Log::info('Marked all notifications as read for user '.$user->username);
     }
 }

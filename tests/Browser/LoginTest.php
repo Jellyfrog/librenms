@@ -12,7 +12,8 @@ use LibreNMS\Tests\Browser\Pages\TwoFactorPage;
 use LibreNMS\Tests\DuskTestCase;
 
 /**
- * Class LoginTest
+ * Class LoginTest.
+ *
  * @group browser
  */
 class LoginTest extends DuskTestCase
@@ -57,9 +58,9 @@ class LoginTest extends DuskTestCase
             ]);
             Config::persist('twofactor', true); // set to db
             UserPref::setPref($user, 'twofactor', [
-                'key' => '5P3FLXBX7NU3ZBFOTWZL2GL5MKFEWBOA', // known key: 634456, 613687, 064292
-                'fails' => 0,
-                'last' => 0,
+                'key'     => '5P3FLXBX7NU3ZBFOTWZL2GL5MKFEWBOA', // known key: 634456, 613687, 064292
+                'fails'   => 0,
+                'last'    => 0,
                 'counter' => 1,
             ]);
 

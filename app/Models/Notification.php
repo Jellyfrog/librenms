@@ -30,9 +30,10 @@ class Notification extends Model
     // ---- Helper Functions ----
 
     /**
-     * Mark this notification as read or unread
+     * Mark this notification as read or unread.
      *
      * @param bool $enabled
+     *
      * @return bool
      */
     public function markRead($enabled = true)
@@ -41,9 +42,10 @@ class Notification extends Model
     }
 
     /**
-     * Mark this notification as sticky or unsticky
+     * Mark this notification as sticky or unsticky.
      *
      * @var bool
+     *
      * @return bool
      */
     public function markSticky($enabled = true)
@@ -54,12 +56,13 @@ class Notification extends Model
     /**
      * @param $name
      * @param $enabled
+     *
      * @return bool
      */
     private function setAttrib($name, $enabled)
     {
         if ($enabled === true) {
-            $read = new NotificationAttrib;
+            $read = new NotificationAttrib();
             $read->user_id = \Auth::user()->user_id;
             $read->key = $name;
             $read->value = 1;
@@ -75,6 +78,7 @@ class Notification extends Model
 
     /**
      * @param Builder $query
+     *
      * @return mixed
      */
     public function scopeIsUnread(Builder $query, User $user)
@@ -88,7 +92,7 @@ class Notification extends Model
     }
 
     /**
-     * Get all sticky notifications
+     * Get all sticky notifications.
      *
      * @param Builder $query
      */
@@ -100,7 +104,8 @@ class Notification extends Model
 
     /**
      * @param Builder $query
-     * @param User $user
+     * @param User    $user
+     *
      * @return mixed
      */
     public function scopeIsArchived(Builder $query, User $user)
@@ -114,6 +119,7 @@ class Notification extends Model
 
     /**
      * @param Builder $query
+     *
      * @return $this
      */
     public function scopeLimit(Builder $query)
@@ -123,6 +129,7 @@ class Notification extends Model
 
     /**
      * @param Builder $query
+     *
      * @return Builder|static
      */
     public function scopeSource(Builder $query)

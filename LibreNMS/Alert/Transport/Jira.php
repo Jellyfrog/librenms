@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * Jira API Transport
+ * Jira API Transport.
+ *
  * @author  Aldemir Akpinar <aldemir.akpinar@gmail.com>
  * @copyright 2017 Aldemir Akpinar, LibreNMS
  * @license GPL
@@ -28,7 +29,7 @@ class Jira extends Transport
 {
     public function deliverAlert($obj, $opts)
     {
-        if (! empty($this->config)) {
+        if (!empty($this->config)) {
             $opts['username'] = $this->config['jira-username'];
             $opts['password'] = $this->config['jira-password'];
             $opts['prjkey'] = $this->config['jira-key'];
@@ -52,15 +53,15 @@ class Jira extends Transport
         $password = $opts['password'];
         $prjkey = $opts['prjkey'];
         $issuetype = $opts['issuetype'];
-        $details = 'Librenms alert for: ' . $obj['hostname'];
+        $details = 'Librenms alert for: '.$obj['hostname'];
         $description = $obj['msg'];
-        $url = $opts['url'] . '/rest/api/latest/issue';
+        $url = $opts['url'].'/rest/api/latest/issue';
         $curl = curl_init();
 
         $data = ['project' => ['key' => $prjkey],
-            'summary' => $details,
-            'description' => $description,
-            'issuetype' => ['name' => $issuetype], ];
+            'summary'      => $details,
+            'description'  => $description,
+            'issuetype'    => ['name' => $issuetype], ];
         $postdata = ['fields' => $data];
         $datastring = json_encode($postdata);
 
@@ -80,11 +81,11 @@ class Jira extends Transport
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         if ($code == 200) {
             $jiraout = json_decode($ret, true);
-            d_echo('Created jira issue ' . $jiraout['key'] . ' for ' . $device);
+            d_echo('Created jira issue '.$jiraout['key'].' for '.$device);
 
             return true;
         } else {
-            d_echo('Jira connection error: ' . serialize($ret));
+            d_echo('Jira connection error: '.serialize($ret));
 
             return false;
         }
@@ -96,39 +97,39 @@ class Jira extends Transport
             'config' => [
                 [
                     'title' => 'URL',
-                    'name' => 'jira-url',
+                    'name'  => 'jira-url',
                     'descr' => 'Jira URL',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Project Key',
-                    'name' => 'jira-key',
+                    'name'  => 'jira-key',
                     'descr' => 'Jira Project Key',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Issue Type',
-                    'name' => 'jira-type',
+                    'name'  => 'jira-type',
                     'descr' => 'Jira Issue Type',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Jira Username',
-                    'name' => 'jira-username',
+                    'name'  => 'jira-username',
                     'descr' => 'Jira Username',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Jira Password',
-                    'name' => 'jira-password',
+                    'name'  => 'jira-password',
                     'descr' => 'Jira Password',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
             ],
             'validation' => [
-                'jira-key' => 'required|string',
-                'jira-url' => 'required|string',
-                'jira-type' => 'required|string',
+                'jira-key'      => 'required|string',
+                'jira-url'      => 'required|string',
+                'jira-type'     => 'required|string',
                 'jira-username' => 'required|string',
                 'jira-password' => 'required|string',
             ],

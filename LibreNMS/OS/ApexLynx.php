@@ -2,7 +2,7 @@
 /**
  * ApexLynx.php
  * Trango Systems Apex Lynx Wireless Sensors for LibreNMS
- * Author: Cory Hill (cory@metavrs.com)
+ * Author: Cory Hill (cory@metavrs.com).
  */
 
 namespace LibreNMS\OS;

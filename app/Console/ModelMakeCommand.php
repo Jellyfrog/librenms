@@ -1,6 +1,6 @@
 <?php
 /**
- * ModelMakeCommand.php
+ * ModelMakeCommand.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -31,11 +32,12 @@ class ModelMakeCommand extends LaravelModelMakeCommand
     /**
      * Get the default namespace for the class.
      *
-     * @param  string  $rootNamespace
+     * @param string $rootNamespace
+     *
      * @return string
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace . '\Models';
+        return $rootNamespace.'\Models';
     }
 }

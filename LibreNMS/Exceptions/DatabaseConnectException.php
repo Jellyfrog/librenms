@@ -1,6 +1,6 @@
 <?php
 /**
- * DatabaseConnectException.php
+ * DatabaseConnectException.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -30,9 +31,10 @@ use LibreNMS\Interfaces\Exceptions\UpgradeableException;
 class DatabaseConnectException extends \Exception implements UpgradeableException
 {
     /**
-     * Try to convert the given Exception to a DatabaseConnectException
+     * Try to convert the given Exception to a DatabaseConnectException.
      *
      * @param \Exception $exception
+     *
      * @return static|null
      */
     public static function upgrade($exception)
@@ -51,6 +53,7 @@ class DatabaseConnectException extends \Exception implements UpgradeableExceptio
      * Render the exception into an HTTP or JSON response.
      *
      * @param  \Illuminate\Http\Request
+     *
      * @return \Illuminate\Http\Response
      */
     public function render(\Illuminate\Http\Request $request)
@@ -58,10 +61,10 @@ class DatabaseConnectException extends \Exception implements UpgradeableExceptio
         $title = trans('exceptions.database_connect.title');
 
         return $request->wantsJson() ? response()->json([
-            'status' => 'error',
-            'message' => "$title: " . $this->getMessage(),
+            'status'  => 'error',
+            'message' => "$title: ".$this->getMessage(),
         ]) : response()->view('errors.generic', [
-            'title' => $title,
+            'title'   => $title,
             'content' => $this->getMessage(),
         ]);
     }

@@ -15,6 +15,7 @@ class Dashboard extends Model
 
     /**
      * @param User $user
+     *
      * @return bool
      */
     public function canRead($user)
@@ -24,6 +25,7 @@ class Dashboard extends Model
 
     /**
      * @param User $user
+     *
      * @return bool
      */
     public function canWrite($user)
@@ -35,7 +37,8 @@ class Dashboard extends Model
 
     /**
      * @param Builder $query
-     * @param User $user
+     * @param User    $user
+     *
      * @return Builder|static
      */
     public function scopeAllAvailable(Builder $query, $user)

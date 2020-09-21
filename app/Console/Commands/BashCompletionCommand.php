@@ -50,6 +50,7 @@ class BashCompletionCommand extends Command
                 $command = $commands[$command_name];
                 $command_def = $command->getDefinition();
                 $input = new StringInput(implode(' ', array_slice($words, 2)));
+
                 try {
                     $input->bind($command_def);
                 } catch (\RuntimeException $e) {
@@ -61,7 +62,7 @@ class BashCompletionCommand extends Command
                     foreach ($input->getArguments() as $name => $value) {
                         if ($current == $value) {
                             $values = $command->completeArgument($name, $value);
-                            if (! empty($values)) {
+                            if (!empty($values)) {
                                 echo implode(PHP_EOL, $values);
 
                                 return 0;
@@ -75,7 +76,7 @@ class BashCompletionCommand extends Command
                     $completions = $this->completeOptionValue($option, $current);
                 } else {
                     $completions = collect();
-                    if (! Str::startsWith($previous, '-')) {
+                    if (!Str::startsWith($previous, '-')) {
                         $completions = $this->completeArguments($command_name, $current, end($words));
                     }
                     $completions = $completions->merge($this->completeOption($command_def, $current, $this->getPreviousOptions($words)));
@@ -91,9 +92,10 @@ class BashCompletionCommand extends Command
     }
 
     /**
-     * @param string $current
-     * @param string $previous
+     * @param string          $current
+     * @param string          $previous
      * @param InputDefinition $command_def
+     *
      * @return false|InputOption
      */
     private function optionExpectsValue($current, $previous, $command_def)
@@ -122,20 +124,21 @@ class BashCompletionCommand extends Command
         $opts = [];
 
         if ($shortcut = $def->getShortcut()) {
-            $opts[] = '-' . $shortcut;
+            $opts[] = '-'.$shortcut;
         }
 
         if ($name = $def->getName()) {
-            $opts[] = '--' . $name;
+            $opts[] = '--'.$name;
         }
 
         return $opts;
     }
 
     /**
-     * Complete a command
+     * Complete a command.
      *
      * @param string $partial
+     *
      * @return \Illuminate\Support\Collection
      */
     private function completeCommand($partial)
@@ -159,11 +162,12 @@ class BashCompletionCommand extends Command
     }
 
     /**
-     * Complete options for the given command
+     * Complete options for the given command.
      *
      * @param InputDefinition $command
-     * @param string $partial
-     * @param array $prev_options Previous words in the command
+     * @param string          $partial
+     * @param array           $prev_options Previous words in the command
+     *
      * @return \Illuminate\Support\Collection
      */
     private function completeOption($command, $partial, $prev_options)
@@ -215,10 +219,11 @@ class BashCompletionCommand extends Command
     }
 
     /**
-     * Complete options with values (if a list is enumerate in the description)
+     * Complete options with values (if a list is enumerate in the description).
      *
      * @param InputOption $option
-     * @param string $partial
+     * @param string      $partial
+     *
      * @return \Illuminate\Support\Collection
      */
     private function completeOptionValue($option, $partial)
@@ -237,11 +242,12 @@ class BashCompletionCommand extends Command
     }
 
     /**
-     * Complete commands with arguments
+     * Complete commands with arguments.
      *
-     * @param string $command Name of the current command
+     * @param string $command      Name of the current command
      * @param string $partial
      * @param string $current_word
+     *
      * @return \Illuminate\Support\Collection
      */
     private function completeArguments($command, $partial, $current_word)
@@ -252,7 +258,7 @@ class BashCompletionCommand extends Command
             case 'device:rename':
                 $device_query = Device::select('hostname')->limit(5)->orderBy('hostname');
                 if ($partial) {
-                    $device_query->where('hostname', 'like', $partial . '%');
+                    $device_query->where('hostname', 'like', $partial.'%');
                 }
 
                 return $device_query->pluck('hostname');

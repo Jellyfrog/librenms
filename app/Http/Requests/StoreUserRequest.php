@@ -34,12 +34,12 @@ class StoreUserRequest extends FormRequest
                 'max:255',
                 Rule::unique('users', 'username')->where('auth_type', LegacyAuth::getType()),
             ],
-            'realname' => 'nullable|max:64|alpha_space',
-            'email' => 'nullable|email|max:64',
-            'descr' => 'nullable|max:30|alpha_space',
-            'level' => 'int',
-            'new_password' => 'required|confirmed|min:' . Config::get('password.min_length', 8),
-            'dashboard' => 'int',
+            'realname'     => 'nullable|max:64|alpha_space',
+            'email'        => 'nullable|email|max:64',
+            'descr'        => 'nullable|max:30|alpha_space',
+            'level'        => 'int',
+            'new_password' => 'required|confirmed|min:'.Config::get('password.min_length', 8),
+            'dashboard'    => 'int',
         ];
     }
 }

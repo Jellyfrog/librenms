@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * Nagios Transport
+ * Nagios Transport.
+ *
  * @author f0o <f0o@devilcode.org>
  * @copyright 2014 f0o, LibreNMS
  * @license GPL
@@ -50,13 +51,13 @@ class Nagios extends Transport
 
         $format = '';
         $format .= "[HOSTPERFDATA]\t";
-        $format .= strtotime($obj['timestamp']) . "\t";
-        $format .= $obj['hostname'] . "\t";
-        $format .= md5($obj['rule']) . "\t"; //FIXME: Better entity
-        $format .= ($obj['state'] ? $obj['severity'] : 'ok') . "\t";
+        $format .= strtotime($obj['timestamp'])."\t";
+        $format .= $obj['hostname']."\t";
+        $format .= md5($obj['rule'])."\t"; //FIXME: Better entity
+        $format .= ($obj['state'] ? $obj['severity'] : 'ok')."\t";
         $format .= "0\t";
         $format .= "0\t";
-        $format .= str_replace("\n", '', nl2br($obj['msg'])) . "\t";
+        $format .= str_replace("\n", '', nl2br($obj['msg']))."\t";
         $format .= 'NULL'; //FIXME: What's the HOSTPERFDATA equivalent for LibreNMS? Oo
         $format .= "\n";
 
@@ -69,9 +70,9 @@ class Nagios extends Transport
             'config' => [
                 [
                     'title' => 'Nagios FIFO',
-                    'name' => 'nagios-fifo',
+                    'name'  => 'nagios-fifo',
                     'descr' => 'Nagios compatible FIFO',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
             ],
             'validation' => [

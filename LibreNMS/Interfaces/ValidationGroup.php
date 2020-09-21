@@ -1,6 +1,6 @@
 <?php
 /**
- * ValidationGroup.php
+ * ValidationGroup.php.
  *
  * An interface for validation groups, this will be run by Validator.
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -30,7 +31,7 @@ interface ValidationGroup
 {
     /**
      * Validate this module.
-     * To return ValidationResults, call ok, warn, fail, or result methods on the $validator
+     * To return ValidationResults, call ok, warn, fail, or result methods on the $validator.
      *
      * @param Validator $validator
      */
@@ -44,14 +45,14 @@ interface ValidationGroup
     public function isDefault();
 
     /**
-     * Returns true if this group has been run
+     * Returns true if this group has been run.
      *
      * @return bool
      */
     public function isCompleted();
 
     /**
-     * Mark this group as completed
+     * Mark this group as completed.
      *
      * @return void
      */

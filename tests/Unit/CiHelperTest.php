@@ -1,6 +1,6 @@
 <?php
 /**
- * CiHelperTest.php
+ * CiHelperTest.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -66,13 +67,13 @@ class CiHelperTest extends TestCase
         $helper = new CiHelper();
         $helper->detectChangedFiles();
         $this->assertFlagsSet($helper, [
-            'lint_skip' => true,
-            'style_skip' => true,
-            'unit_skip' => true,
-            'web_skip' => true,
-            'lint_skip_php' => true,
+            'lint_skip'        => true,
+            'style_skip'       => true,
+            'unit_skip'        => true,
+            'web_skip'         => true,
+            'lint_skip_php'    => true,
             'lint_skip_python' => true,
-            'lint_skip_bash' => true,
+            'lint_skip_bash'   => true,
         ]);
     }
 
@@ -89,26 +90,26 @@ class CiHelperTest extends TestCase
         $helper->setOS(['netonix']);
         $helper->detectChangedFiles();
         $this->assertFlagsSet($helper, [
-            'lint_skip' => true,
-            'style_skip' => true,
-            'web_skip' => true,
-            'unit_os' => true,
-            'lint_skip_php' => true,
+            'lint_skip'        => true,
+            'style_skip'       => true,
+            'web_skip'         => true,
+            'unit_os'          => true,
+            'lint_skip_php'    => true,
             'lint_skip_python' => true,
-            'lint_skip_bash' => true,
+            'lint_skip_bash'   => true,
         ]);
 
         putenv('FILES=includes/definitions/ios.yaml tests/data/fxos.json');
         $helper = new CiHelper();
         $helper->detectChangedFiles();
         $this->assertFlagsSet($helper, [
-            'lint_skip' => true,
-            'style_skip' => true,
-            'web_skip' => true,
-            'unit_os' => true,
-            'lint_skip_php' => true,
+            'lint_skip'        => true,
+            'style_skip'       => true,
+            'web_skip'         => true,
+            'unit_os'          => true,
+            'lint_skip_php'    => true,
             'lint_skip_python' => true,
-            'lint_skip_bash' => true,
+            'lint_skip_bash'   => true,
         ]);
     }
 
@@ -125,13 +126,13 @@ class CiHelperTest extends TestCase
         $helper->setModules(['os']);
         $helper->detectChangedFiles();
         $this->assertFlagsSet($helper, [
-            'lint_skip' => true,
-            'style_skip' => true,
-            'web_skip' => true,
-            'unit_modules' => true,
-            'lint_skip_php' => true,
+            'lint_skip'        => true,
+            'style_skip'       => true,
+            'web_skip'         => true,
+            'unit_modules'     => true,
+            'lint_skip_php'    => true,
             'lint_skip_python' => true,
-            'lint_skip_bash' => true,
+            'lint_skip_bash'   => true,
         ]);
 
         putenv('FILES=none');
@@ -140,40 +141,40 @@ class CiHelperTest extends TestCase
         $helper->setModules(['os']);
         $helper->detectChangedFiles();
         $this->assertFlagsSet($helper, [
-            'lint_skip' => true,
-            'style_skip' => true,
-            'web_skip' => true,
-            'unit_os' => true,
-            'unit_modules' => true,
-            'lint_skip_php' => true,
+            'lint_skip'        => true,
+            'style_skip'       => true,
+            'web_skip'         => true,
+            'unit_os'          => true,
+            'unit_modules'     => true,
+            'lint_skip_php'    => true,
             'lint_skip_python' => true,
-            'lint_skip_bash' => true,
+            'lint_skip_bash'   => true,
         ]);
 
         putenv('FILES=includes/definitions/ios.yaml tests/data/fxos.json');
         $helper = new CiHelper();
         $helper->detectChangedFiles();
         $this->assertFlagsSet($helper, [
-            'lint_skip' => true,
-            'style_skip' => true,
-            'web_skip' => true,
-            'unit_os' => true,
-            'lint_skip_php' => true,
+            'lint_skip'        => true,
+            'style_skip'       => true,
+            'web_skip'         => true,
+            'unit_os'          => true,
+            'lint_skip_php'    => true,
             'lint_skip_python' => true,
-            'lint_skip_bash' => true,
+            'lint_skip_bash'   => true,
         ]);
 
         putenv('FILES=includes/definitions/ios.yaml tests/data/fxos.json');
         $helper = new CiHelper();
         $helper->detectChangedFiles();
         $this->assertFlagsSet($helper, [
-            'lint_skip' => true,
-            'style_skip' => true,
-            'web_skip' => true,
-            'unit_os' => true,
-            'lint_skip_php' => true,
+            'lint_skip'        => true,
+            'style_skip'       => true,
+            'web_skip'         => true,
+            'unit_os'          => true,
+            'lint_skip_php'    => true,
             'lint_skip_python' => true,
-            'lint_skip_bash' => true,
+            'lint_skip_bash'   => true,
         ]);
     }
 
@@ -184,7 +185,7 @@ class CiHelperTest extends TestCase
         $helper->detectChangedFiles();
         $this->assertFlagsSet($helper, [
             'lint_skip_python' => true,
-            'lint_skip_bash' => true,
+            'lint_skip_bash'   => true,
         ]);
 
         putenv('FILES=/daily.sh includes/services.inc.php');
@@ -199,9 +200,9 @@ class CiHelperTest extends TestCase
         $helper = new CiHelper();
         $helper->detectChangedFiles();
         $this->assertFlagsSet($helper, [
-            'style_skip' => true,
-            'unit_skip' => true,
-            'web_skip' => true,
+            'style_skip'    => true,
+            'unit_skip'     => true,
+            'web_skip'      => true,
             'lint_skip_php' => true,
         ]);
 
@@ -210,34 +211,34 @@ class CiHelperTest extends TestCase
         $helper->detectChangedFiles();
         $this->assertFlagsSet($helper, [
             'lint_skip_python' => true,
-            'lint_skip_bash' => true,
-            'unit_os' => true,
+            'lint_skip_bash'   => true,
+            'unit_os'          => true,
         ]);
 
         putenv('FILES=html/images/os/ios.svg');
         $helper = new CiHelper();
         $helper->detectChangedFiles();
         $this->assertFlagsSet($helper, [
-            'lint_skip' => true,
-            'style_skip' => true,
-            'web_skip' => true,
-            'lint_skip_php' => true,
+            'lint_skip'        => true,
+            'style_skip'       => true,
+            'web_skip'         => true,
+            'lint_skip_php'    => true,
             'lint_skip_python' => true,
-            'lint_skip_bash' => true,
-            'unit_svg' => true,
+            'lint_skip_bash'   => true,
+            'unit_svg'         => true,
         ]);
 
         putenv('FILES=html/images/os/ios.svg');
         $helper = new CiHelper();
         $helper->detectChangedFiles();
         $this->assertFlagsSet($helper, [
-            'lint_skip' => true,
-            'style_skip' => true,
-            'web_skip' => true,
-            'lint_skip_php' => true,
+            'lint_skip'        => true,
+            'style_skip'       => true,
+            'web_skip'         => true,
+            'lint_skip_php'    => true,
             'lint_skip_python' => true,
-            'lint_skip_bash' => true,
-            'unit_svg' => true,
+            'lint_skip_bash'   => true,
+            'unit_svg'         => true,
         ]);
 
         putenv('FILES=.travis.yml');
@@ -262,27 +263,27 @@ class CiHelperTest extends TestCase
     private function getDefaultFlags()
     {
         return [
-            'lint_enable' => true,
-            'style_enable' => true,
-            'unit_enable' => true,
-            'web_enable' => false,
-            'lint_skip' => false,
-            'style_skip' => false,
-            'unit_skip' => false,
-            'web_skip' => false,
-            'lint_skip_php' => false,
+            'lint_enable'      => true,
+            'style_enable'     => true,
+            'unit_enable'      => true,
+            'web_enable'       => false,
+            'lint_skip'        => false,
+            'style_skip'       => false,
+            'unit_skip'        => false,
+            'web_skip'         => false,
+            'lint_skip_php'    => false,
             'lint_skip_python' => false,
-            'lint_skip_bash' => false,
-            'unit_os' => false,
-            'unit_docs' => false,
-            'unit_svg' => false,
-            'unit_modules' => false,
-            'docs_changed' => false,
-            'ci' => false,
-            'commands' => false,
-            'fail-fast' => false,
-            'full' => false,
-            'quiet' => false,
+            'lint_skip_bash'   => false,
+            'unit_os'          => false,
+            'unit_docs'        => false,
+            'unit_svg'         => false,
+            'unit_modules'     => false,
+            'docs_changed'     => false,
+            'ci'               => false,
+            'commands'         => false,
+            'fail-fast'        => false,
+            'full'             => false,
+            'quiet'            => false,
         ];
     }
 }

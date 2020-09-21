@@ -1,6 +1,6 @@
 <?php
 /**
- * CyberPowerUtil.php
+ * CyberPowerUtil.php.
  *
  * -Description-
  *
@@ -20,6 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 KanREN Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -29,9 +30,10 @@ namespace LibreNMS\Snmptrap\Handlers;
 class CyberPowerUtil
 {
     /**
-     * Get the trap message
+     * Get the trap message.
      *
      * @param Trap $trap
+     *
      * @return string
      */
     public static function getMessage($trap)

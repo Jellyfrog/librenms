@@ -1,6 +1,6 @@
 <?php
 /**
- * WirelessMsePolling.php
+ * WirelessMsePolling.php.
  *
  * Poll wireless MSE. Mean square error value in dB.
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -28,9 +29,10 @@ interface WirelessMsePolling
 {
     /**
      * Poll wireless MSE in dB
-     * The returned array should be sensor_id => value pairs
+     * The returned array should be sensor_id => value pairs.
      *
      * @param array $sensors Array of sensors needed to be polled
+     *
      * @return array of polled data
      */
     public function pollWirelessMse(array $sensors);

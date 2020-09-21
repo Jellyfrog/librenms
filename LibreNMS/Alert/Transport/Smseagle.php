@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * SMSEagle API Transport
+ * SMSEagle API Transport.
+ *
  * @author Barry O'Donovan <barry@lightnet.ie>
  * @copyright 2017 Barry O'Donovan, LibreNMS
  * @license GPL
@@ -40,13 +41,13 @@ class Smseagle extends Transport
     public static function contactSmseagle($obj, $opts)
     {
         $params = [
-            'login' => $opts['user'],
-            'pass' => $opts['token'],
-            'to' => implode(',', $opts['to']),
+            'login'   => $opts['user'],
+            'pass'    => $opts['token'],
+            'to'      => implode(',', $opts['to']),
             'message' => $obj['title'],
         ];
         $url = Str::startsWith($opts['url'], 'http') ? '' : 'http://';
-        $url .= $opts['url'] . '/index.php/http_api/send_sms?' . http_build_query($params);
+        $url .= $opts['url'].'/index.php/http_api/send_sms?'.http_build_query($params);
         $curl = curl_init($url);
 
         set_curl_proxy($curl);
@@ -67,27 +68,27 @@ class Smseagle extends Transport
             'config' => [
                 [
                     'title' => 'SMSEagle Base URL',
-                    'name' => 'smseagle-url',
+                    'name'  => 'smseagle-url',
                     'descr' => 'SMSEagle Host',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'User',
-                    'name' => 'smseagle-user',
+                    'name'  => 'smseagle-user',
                     'descr' => 'SMSEagle User',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Password',
-                    'name' => 'smseagle-pass',
+                    'name'  => 'smseagle-pass',
                     'descr' => 'SMSEagle Password',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Mobiles',
-                    'name' => 'smseagle-mobiles',
+                    'name'  => 'smseagle-mobiles',
                     'descr' => 'SMSEagle Mobiles, can be new line or comma separated',
-                    'type' => 'textarea',
+                    'type'  => 'textarea',
                 ],
             ],
             'validation' => [

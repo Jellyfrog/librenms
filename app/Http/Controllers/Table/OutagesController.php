@@ -1,6 +1,6 @@
 <?php
 /**
- * OutagesController.php
+ * OutagesController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Thomas Berberich
  * @author     Thomas Berberich <sourcehhdoctor@gmail.com>
  */
@@ -35,8 +36,8 @@ class OutagesController extends TableController
     {
         return [
             'device' => 'nullable|int',
-            'to' => 'nullable|date',
-            'from' => 'nullable|date',
+            'to'     => 'nullable|date',
+            'from'   => 'nullable|date',
         ];
     }
 
@@ -53,9 +54,10 @@ class OutagesController extends TableController
     }
 
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     public function baseQuery($request)
@@ -77,11 +79,11 @@ class OutagesController extends TableController
         $duration = ($outage->up_again ?: time()) - $outage->going_down;
 
         return [
-            'status' => $this->statusLabel($outage),
+            'status'     => $this->statusLabel($outage),
             'going_down' => $start,
-            'up_again' => $end,
-            'device_id' => $outage->device ? Url::deviceLink($outage->device, $outage->device->shortDisplayName()) : null,
-            'duration' => $this->formatTime($duration),
+            'up_again'   => $end,
+            'device_id'  => $outage->device ? Url::deviceLink($outage->device, $outage->device->shortDisplayName()) : null,
+            'duration'   => $this->formatTime($duration),
         ];
     }
 
@@ -94,7 +96,7 @@ class OutagesController extends TableController
 
         $output = "<span style='display:inline;'>";
         if ($duration_days) {
-            $output .= $duration_days . 'd ';
+            $output .= $duration_days.'d ';
         }
         $output .= (new Carbon($duration))->format(Config::get('dateformat.time'));
         $output .= '</span>';
@@ -104,7 +106,7 @@ class OutagesController extends TableController
 
     private function formatDatetime($timestamp)
     {
-        if (! $timestamp) {
+        if (!$timestamp) {
             $timestamp = 0;
         }
 
@@ -123,7 +125,7 @@ class OutagesController extends TableController
             $label = 'label-success';
         }
 
-        $output = "<span class='alert-status " . $label . "'></span>";
+        $output = "<span class='alert-status ".$label."'></span>";
 
         return $output;
     }

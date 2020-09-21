@@ -1,6 +1,6 @@
 <?php
 /**
- * Airos.php
+ * Airos.php.
  *
  * Ubiquiti AirOS
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -69,7 +70,7 @@ class Airos extends OS implements
 
     /**
      * Discover wireless frequency.  This is in Hz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -84,7 +85,7 @@ class Airos extends OS implements
 
     /**
      * Discover wireless capacity.  This is a percent. Type is capacity.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -99,7 +100,7 @@ class Airos extends OS implements
 
     /**
      * Discover wireless client connection quality.  This is a percent. Type is ccq.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -114,7 +115,7 @@ class Airos extends OS implements
 
     /**
      * Discover wireless client counts. Type is clients.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -129,7 +130,7 @@ class Airos extends OS implements
 
     /**
      * Discover wireless distance.  This is in kilometers. Type is distance.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -144,7 +145,7 @@ class Airos extends OS implements
 
     /**
      * Discover wireless noise floor. This is in dBm/Hz. Type is noise-floor.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -159,7 +160,7 @@ class Airos extends OS implements
 
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -176,7 +177,7 @@ class Airos extends OS implements
 
     /**
      * Discover wireless quality.  This is a percent. Type is quality.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -191,7 +192,7 @@ class Airos extends OS implements
 
     /**
      * Discover wireless rate. This is in bps. Type is rate.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -208,7 +209,7 @@ class Airos extends OS implements
 
     /**
      * Discover wireless RSSI (Received Signal Strength Indicator). This is in dBm. Type is rssi.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -224,10 +225,10 @@ class Airos extends OS implements
             $sensors[] = new WirelessSensor(
                 'rssi',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.41112.1.4.2.1.2.' . $index,
+                '.1.3.6.1.4.1.41112.1.4.2.1.2.'.$index,
                 'airos',
                 $index,
-                'RSSI: Chain ' . str_replace('1.', '', $index),
+                'RSSI: Chain '.str_replace('1.', '', $index),
                 $entry['ubntRadioRssi.1']
             );
         }

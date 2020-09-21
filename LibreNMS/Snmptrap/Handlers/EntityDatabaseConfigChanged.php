@@ -1,6 +1,6 @@
 <?php
 /**
- * EntityDatabaseConfigChanged.php
+ * EntityDatabaseConfigChanged.php.
  *
  * -Description-
  *
@@ -34,11 +34,12 @@ class EntityDatabaseConfigChanged implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)
     {
-        Log::event('SNMP Trap: Configuration of Entity Database on device ' . $device->displayName() . ' was changed', $device->device_id, 'system', 3);
+        Log::event('SNMP Trap: Configuration of Entity Database on device '.$device->displayName().' was changed', $device->device_id, 'system', 3);
     }
 }

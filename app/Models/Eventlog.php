@@ -1,6 +1,6 @@
 <?php
 /**
- * Eventlog.php
+ * Eventlog.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -37,22 +38,22 @@ class Eventlog extends DeviceRelatedModel
     // ---- Helper Functions ----
 
     /**
-     * Log events to the event table
+     * Log events to the event table.
      *
-     * @param string $text message describing the event
-     * @param Device $device related device
-     * @param string $type brief category for this event. Examples: sensor, state, stp, system, temperature, interface
-     * @param int $severity 1: ok, 2: info, 3: notice, 4: warning, 5: critical, 0: unknown
-     * @param int $reference the id of the referenced entity.  Supported types: interface
+     * @param string $text      message describing the event
+     * @param Device $device    related device
+     * @param string $type      brief category for this event. Examples: sensor, state, stp, system, temperature, interface
+     * @param int    $severity  1: ok, 2: info, 3: notice, 4: warning, 5: critical, 0: unknown
+     * @param int    $reference the id of the referenced entity.  Supported types: interface
      */
     public static function log($text, $device = null, $type = null, $severity = Alert::INFO, $reference = null)
     {
         $log = new static([
             'reference' => $reference,
-            'type' => $type,
-            'datetime' => Carbon::now(),
-            'severity' => $severity,
-            'message' => $text,
+            'type'      => $type,
+            'datetime'  => Carbon::now(),
+            'severity'  => $severity,
+            'message'   => $text,
             'username'  => (class_exists('\Auth') && \Auth::check()) ? \Auth::user()->username : '',
         ]);
 

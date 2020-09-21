@@ -14,9 +14,9 @@
  */
 
 $init_modules = ['web', 'auth'];
-require realpath(__DIR__ . '/..') . '/includes/init.php';
+require realpath(__DIR__.'/..').'/includes/init.php';
 
-if (! Auth::check()) {
+if (!Auth::check()) {
     exit('Unauthorized');
 }
 
@@ -30,7 +30,7 @@ if ($type && file_exists("includes/html/list/$type.inc.php")) {
     [$results, $more] = include "includes/html/list/$type.inc.php";
 
     exit(json_encode([
-        'results' => $results,
+        'results'    => $results,
         'pagination' => ['more' => $more],
     ]));
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * SchemaTest.php
+ * SchemaTest.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -128,15 +129,15 @@ class SchemaTest extends TestCase
         $schema = $this->getSchemaMock();
 
         $expected = [
-            'bills' => [],
-            'bill_ports' => ['bills', 'ports'],
-            'devices' => ['locations'],
-            'locations' => [],
-            'ports' => ['devices'],
-            'sensors' => ['devices'],
+            'bills'                    => [],
+            'bill_ports'               => ['bills', 'ports'],
+            'devices'                  => ['locations'],
+            'locations'                => [],
+            'ports'                    => ['devices'],
+            'sensors'                  => ['devices'],
             'sensors_to_state_indexes' => ['sensors', 'state_indexes'],
-            'state_indexes' => [],
-            'state_translations' => ['state_indexes'],
+            'state_indexes'            => [],
+            'state_translations'       => ['state_indexes'],
         ];
 
         $this->assertEquals($expected, $schema->getTableRelationships());

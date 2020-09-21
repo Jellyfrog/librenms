@@ -1,6 +1,6 @@
 <?php
 /**
- * Mimosa.php
+ * Mimosa.php.
  *
  * Mimosa Networks
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -51,7 +52,7 @@ class Mimosa extends OS implements
 
     /**
      * Discover wireless bit/packet error ratio.  This is in percent. Type is error-ratio.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -88,7 +89,7 @@ class Mimosa extends OS implements
 
     /**
      * Discover wireless frequency.  This is in GHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -111,7 +112,7 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'frequency',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.6.' . $index,
+                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.6.'.$index,
                 'mimosa-ptp',
                 $index,
                 sprintf($descr, $this->getPolarization($polar[$index])),
@@ -127,7 +128,7 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'frequency',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.9.3.3.1.7.' . $index,
+                '.1.3.6.1.4.1.43356.2.1.2.9.3.3.1.7.'.$index,
                 'mimosa',
                 $index,
                 $ptmpRadioName[$index],
@@ -145,7 +146,7 @@ class Mimosa extends OS implements
 
     /**
      * Discover wireless noise floor.  This is in dBm. Type is noise-floor.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -160,7 +161,7 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'noise-floor',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.4.' . $index,
+                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.4.'.$index,
                 'mimosa',
                 $index,
                 sprintf('Rx Noise: %s Chain', $this->getPolarization($polar[$index])),
@@ -175,7 +176,7 @@ class Mimosa extends OS implements
 
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -192,7 +193,7 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'power',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.2.' . $index,
+                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.2.'.$index,
                 'mimosa-ptp-tx',
                 $index,
                 sprintf('Tx Power: %s Chain', $this->getPolarization($polar[$index])),
@@ -203,7 +204,7 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'power',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.3.' . $index,
+                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.3.'.$index,
                 'mimosa-ptp-rx',
                 $index,
                 sprintf('Rx Power: %s Chain', $this->getPolarization($polar[$index])),
@@ -221,10 +222,10 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'power',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.9.3.3.1.10.' . $index,
+                '.1.3.6.1.4.1.43356.2.1.2.9.3.3.1.10.'.$index,
                 'mimosa-tx',
                 $index,
-                'Tx Power: ' . $ptmpRadioName[$index],
+                'Tx Power: '.$ptmpRadioName[$index],
                 $entry['mimosaPtmpChPwrTxPowerCur']
             );
         }
@@ -235,10 +236,10 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'power',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.9.3.3.1.12.' . $index,
+                '.1.3.6.1.4.1.43356.2.1.2.9.3.3.1.12.'.$index,
                 'mimosa-rx',
                 $index,
-                'Min Rx Power: ' . $ptmpRadioName[$index],
+                'Min Rx Power: '.$ptmpRadioName[$index],
                 $entry['mimosaPtmpChPwrMinRxPower']
             );
         }
@@ -248,7 +249,7 @@ class Mimosa extends OS implements
 
     /**
      * Discover wireless rate. This is in bps. Type is rate.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -262,7 +263,7 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'rate',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.6.2.1.2.' . $index,
+                '.1.3.6.1.4.1.43356.2.1.2.6.2.1.2.'.$index,
                 'mimosa-tx',
                 $index,
                 "Stream $index Tx Rate",
@@ -272,7 +273,7 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'rate',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.6.2.1.5.' . $index,
+                '.1.3.6.1.4.1.43356.2.1.2.6.2.1.5.'.$index,
                 'mimosa-rx',
                 $index,
                 "Stream $index Rx Rate",
@@ -286,7 +287,7 @@ class Mimosa extends OS implements
 
     /**
      * Discover wireless SNR.  This is in dB. Type is snr.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -300,7 +301,7 @@ class Mimosa extends OS implements
             $sensors[] = new WirelessSensor(
                 'snr',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.5.' . $index,
+                '.1.3.6.1.4.1.43356.2.1.2.6.1.1.5.'.$index,
                 'mimosa',
                 $index,
                 sprintf('SNR: %s Chain', $this->getPolarization($polar[$index])),

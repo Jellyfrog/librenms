@@ -1,6 +1,6 @@
 <?php
 /**
- * GlobeController.php
+ * GlobeController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -37,10 +38,10 @@ class GlobeController extends WidgetController
     {
         // init defaults we need to check config, so do it in construct
         $this->defaults = [
-            'title' => null,
-            'markers' => Config::get('frontpage_globe.markers', 'devices'),
-            'region' => Config::get('frontpage_globe.region', 'world'),
-            'resolution' => Config::get('frontpage_globe.resolution', 'countries'),
+            'title'        => null,
+            'markers'      => Config::get('frontpage_globe.markers', 'devices'),
+            'region'       => Config::get('frontpage_globe.region', 'world'),
+            'resolution'   => Config::get('frontpage_globe.resolution', 'countries'),
             'device_group' => null,
         ];
     }
@@ -52,6 +53,7 @@ class GlobeController extends WidgetController
 
     /**
      * @param Request $request
+     *
      * @return View
      */
     public function getView(Request $request)
@@ -79,7 +81,7 @@ class GlobeController extends WidgetController
                 });
                 $up = $devices_up->count();
                 $down_items = $devices_down->map(function ($device) {
-                    return $device->displayName() . ' DOWN';
+                    return $device->displayName().' DOWN';
                 });
             } elseif ($data['markers'] == 'ports') {
                 foreach ($location->devices as $device) {
@@ -89,13 +91,13 @@ class GlobeController extends WidgetController
                     $count += $device->ports->count();
                     $up += $ports_up->count();
                     $down_items = $ports_down->map(function ($port) use ($device) {
-                        return $device->displayName() . '/' . $port->getShortLabel() . ' DOWN';
+                        return $device->displayName().'/'.$port->getShortLabel().' DOWN';
                     });
                 }
             }
 
             // indicate the number of up items before the itemized down
-            $down_items->prepend($up . '&nbsp;' . ucfirst($data['markers']) . '&nbsp;OK');
+            $down_items->prepend($up.'&nbsp;'.ucfirst($data['markers']).'&nbsp;OK');
 
             if ($count > 0) {
                 $locations->push([

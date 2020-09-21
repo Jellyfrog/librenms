@@ -1,6 +1,6 @@
 <?php
 /**
- * ComponentStatusController.php
+ * ComponentStatusController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -38,6 +39,7 @@ class ComponentStatusController extends WidgetController
 
     /**
      * @param Request $request
+     *
      * @return View
      */
     public function getView(Request $request)
@@ -46,15 +48,15 @@ class ComponentStatusController extends WidgetController
         $status = [
             [
                 'color' => 'text-success',
-                'text' => __('Ok'),
+                'text'  => __('Ok'),
             ],
             [
                 'color' => 'grey',
-                'text' => __('Warning'),
+                'text'  => __('Warning'),
             ],
             [
                 'color' => 'text-danger',
-                'text' => __('Critical'),
+                'text'  => __('Critical'),
             ],
         ];
 

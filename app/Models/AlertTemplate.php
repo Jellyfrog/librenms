@@ -1,6 +1,6 @@
 <?php
 /**
- * app/Models/AlertTemplate.php
+ * app/Models/AlertTemplate.php.
  *
  * Model for access to alert_templates table data
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Neil Lathwood
  * @author     Neil Lathwood <gh+n@laf.io>
  */

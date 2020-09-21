@@ -1,6 +1,6 @@
 <?php
 /**
- * Pepwave.php
+ * Pepwave.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Jozef Rebjak
  * @author     Jozef Rebjak <jozefrebjak@icloud.com>
  */
@@ -56,7 +57,7 @@ class Pepwave extends OS implements
         $sensors = [];
         foreach ($data as $index => $rssi_value) {
             if ($rssi_value['cellularSignalRssi'] != '-9999') {
-                $sensors[] = new WirelessSensor('rssi', $this->getDeviceId(), '.1.3.6.1.4.1.23695.200.1.12.1.1.1.3.' . $index, 'pepwave', 'cellularSignalRssi' . $index, 'Celullar ' . ($index + 1), $rssi_value['cellularSignalRssi'], 1, 1);
+                $sensors[] = new WirelessSensor('rssi', $this->getDeviceId(), '.1.3.6.1.4.1.23695.200.1.12.1.1.1.3.'.$index, 'pepwave', 'cellularSignalRssi'.$index, 'Celullar '.($index + 1), $rssi_value['cellularSignalRssi'], 1, 1);
             }
         }
 
@@ -69,7 +70,7 @@ class Pepwave extends OS implements
         $sensors = [];
         foreach ($data as $index => $snr_value) {
             if ($snr_value['cellularSignalSnr'] != '-9999') {
-                $sensors[] = new WirelessSensor('snr', $this->getDeviceId(), '.1.3.6.1.4.1.23695.200.1.12.1.1.1.4.' . $index, 'pepwave', 'cellularSignalSnr' . $index, 'Celullar ' . ($index + 1), $snr_value['cellularSignalSnr'], 1, 1);
+                $sensors[] = new WirelessSensor('snr', $this->getDeviceId(), '.1.3.6.1.4.1.23695.200.1.12.1.1.1.4.'.$index, 'pepwave', 'cellularSignalSnr'.$index, 'Celullar '.($index + 1), $snr_value['cellularSignalSnr'], 1, 1);
             }
         }
 
@@ -82,7 +83,7 @@ class Pepwave extends OS implements
         $sensors = [];
         foreach ($data as $index => $sinr_value) {
             if ($sinr_value['cellularSignalSinr'] != '-9999') {
-                $sensors[] = new WirelessSensor('sinr', $this->getDeviceId(), '.1.3.6.1.4.1.23695.200.1.12.1.1.1.5.' . $index, 'pepwave', 'cellularSignalSinr' . $index, 'Celullar ' . ($index + 1), $sinr_value['cellularSignalSinr'], 1, 1);
+                $sensors[] = new WirelessSensor('sinr', $this->getDeviceId(), '.1.3.6.1.4.1.23695.200.1.12.1.1.1.5.'.$index, 'pepwave', 'cellularSignalSinr'.$index, 'Celullar '.($index + 1), $sinr_value['cellularSignalSinr'], 1, 1);
             }
         }
 
@@ -95,7 +96,7 @@ class Pepwave extends OS implements
         $sensors = [];
         foreach ($data as $index => $rsrp_value) {
             if ($rsrp_value['cellularSignalRsrp'] != '-9999') {
-                $sensors[] = new WirelessSensor('rsrp', $this->getDeviceId(), '.1.3.6.1.4.1.23695.200.1.12.1.1.1.7.' . $index, 'pepwave', 'cellularSignalRsrp' . $index, 'Celullar ' . ($index + 1), $rsrp_value['cellularSignalRsrp'], 1, 1);
+                $sensors[] = new WirelessSensor('rsrp', $this->getDeviceId(), '.1.3.6.1.4.1.23695.200.1.12.1.1.1.7.'.$index, 'pepwave', 'cellularSignalRsrp'.$index, 'Celullar '.($index + 1), $rsrp_value['cellularSignalRsrp'], 1, 1);
             }
         }
 
@@ -108,7 +109,7 @@ class Pepwave extends OS implements
         $sensors = [];
         foreach ($data as $index => $rsrq_value) {
             if ($rsrq_value['cellularSignalRsrq'] != '-9999') {
-                $sensors[] = new WirelessSensor('rsrq', $this->getDeviceId(), '.1.3.6.1.4.1.23695.200.1.12.1.1.1.8.' . $index, 'pepwave', 'cellularSignalRsrq' . $index, 'Celullar ' . ($index + 1), $rsrq_value['cellularSignalRsrq'], 1, 1);
+                $sensors[] = new WirelessSensor('rsrq', $this->getDeviceId(), '.1.3.6.1.4.1.23695.200.1.12.1.1.1.8.'.$index, 'pepwave', 'cellularSignalRsrq'.$index, 'Celullar '.($index + 1), $rsrq_value['cellularSignalRsrq'], 1, 1);
             }
         }
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * GraphController.php
+ * GraphController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -35,9 +36,9 @@ use LibreNMS\Util\StringHelpers;
 class GraphController extends Controller
 {
     private $rules = [
-        'limit' => 'int',
-        'page' => 'int',
-        'term' => 'nullable|string',
+        'limit'  => 'int',
+        'page'   => 'int',
+        'term'   => 'nullable|string',
         'device' => 'nullable|int',
     ];
 
@@ -55,7 +56,7 @@ class GraphController extends Controller
 
             if ($graphs->isNotEmpty()) {
                 $data[] = [
-                    'text' => StringHelpers::niceCase($type),
+                    'text'     => StringHelpers::niceCase($type),
                     'children' => $graphs->map(function ($graph) use ($type) {
                         return $this->formatGraph($type, $graph);
                     })->values(),
@@ -66,13 +67,13 @@ class GraphController extends Controller
         $aggregators = $this->filterTypeGraphs(collect([
             'transit' => 'Transit',
             'peering' => 'Peering',
-            'core' => 'Core',
-            'custom' => 'Custom',
-            'ports' => 'Manual Ports',
+            'core'    => 'Core',
+            'custom'  => 'Custom',
+            'ports'   => 'Manual Ports',
         ]), 'aggregators', $search);
         if ($aggregators->isNotEmpty()) {
             $data[] = [
-                'text' => 'Aggregators',
+                'text'     => 'Aggregators',
                 'children' => $aggregators->map(function ($text, $id) {
                     return compact('id', 'text');
                 })->values(),
@@ -84,7 +85,7 @@ class GraphController extends Controller
         ]), 'bill', $search);
         if ($billing->isNotEmpty()) {
             $data[] = [
-                'text' => 'Bill',
+                'text'     => 'Bill',
                 'children' => $billing->map(function ($text, $id) {
                     return compact('id', 'text');
                 })->values(),
@@ -92,7 +93,7 @@ class GraphController extends Controller
         }
 
         return response()->json([
-            'results' => $data,
+            'results'    => $data,
             'pagination' => ['more' => false],
         ]);
     }
@@ -107,20 +108,21 @@ class GraphController extends Controller
             $subtype = '';
         }
 
-        if (! Graph::isMibGraph($type, $subtype)) {
-            $text = ucwords($top . ' ' . str_replace(['_', '-'], ' ', $text));
+        if (!Graph::isMibGraph($type, $subtype)) {
+            $text = ucwords($top.' '.str_replace(['_', '-'], ' ', $text));
         }
 
         return [
-            'id' => $top . '_' . $graph,
+            'id'   => $top.'_'.$graph,
             'text' => $text,
         ];
     }
 
     /**
      * @param Collection $graphs
-     * @param string $type
-     * @param string $search
+     * @param string     $type
+     * @param string     $search
+     *
      * @return Collection
      */
     private function filterTypeGraphs($graphs, $type, $search)
@@ -133,7 +135,7 @@ class GraphController extends Controller
 
             if (Str::contains($type, $first)) {
                 // search matches type, show all unless there are more terms.
-                if (! empty($terms)) {
+                if (!empty($terms)) {
                     $sub_search = array_shift($terms);
                     $graphs = $graphs->filter(function ($graph) use ($sub_search) {
                         return Str::contains(strtolower($graph), $sub_search);

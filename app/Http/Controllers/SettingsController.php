@@ -12,16 +12,17 @@ class SettingsController extends Controller
      * Display a listing of the resource.
      *
      * @param DynamicConfig $dynamicConfig
-     * @param string $tab
-     * @param string $section
+     * @param string        $tab
+     * @param string        $section
+     *
      * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
     public function index(DynamicConfig $dynamicConfig, $tab = 'global', $section = '')
     {
         $data = [
-            'active_tab' => $tab,
+            'active_tab'     => $tab,
             'active_section' => $section,
-            'groups' => $dynamicConfig->getGroups()->reject(function ($group) {
+            'groups'         => $dynamicConfig->getGroups()->reject(function ($group) {
                 return $group == 'global';
             })->values(),
         ];
@@ -32,23 +33,24 @@ class SettingsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param DynamicConfig $config
-     * @param  \Illuminate\Http\Request $request
-     * @param  string $id
+     * @param DynamicConfig            $config
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $id
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(DynamicConfig $config, Request $request, $id)
     {
         $value = $request->get('value');
 
-        if (! $config->isValidSetting($id)) {
+        if (!$config->isValidSetting($id)) {
             return $this->jsonResponse($id, ':id is not a valid setting', null, 400);
         }
 
         $current = \LibreNMS\Config::get($id);
         $config_item = $config->get($id);
 
-        if (! $config_item->checkValue($value)) {
+        if (!$config_item->checkValue($value)) {
             return $this->jsonResponse($id, $config_item->getValidationMessage($value), $current, 400);
         }
 
@@ -63,12 +65,13 @@ class SettingsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param DynamicConfig $config
-     * @param  string $id
+     * @param string        $id
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(DynamicConfig $config, $id)
     {
-        if (! $config->isValidSetting($id)) {
+        if (!$config->isValidSetting($id)) {
             return $this->jsonResponse($id, ':id is not a valid setting', null, 400);
         }
 
@@ -83,9 +86,10 @@ class SettingsController extends Controller
     }
 
     /**
-     * List all settings (excluding hidden ones and ones that don't have metadata)
+     * List all settings (excluding hidden ones and ones that don't have metadata).
      *
      * @param DynamicConfig $config
+     *
      * @return JsonResponse
      */
     public function listAll(DynamicConfig $config)
@@ -96,15 +100,16 @@ class SettingsController extends Controller
     /**
      * @param string $id
      * @param string $message
-     * @param mixed $value
-     * @param int $status
+     * @param mixed  $value
+     * @param int    $status
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     protected function jsonResponse($id, $message, $value = null, $status = 200)
     {
         return new JsonResponse([
             'message' => __($message, ['id' => $id]),
-            'value' => $value,
+            'value'   => $value,
         ], $status);
     }
 }

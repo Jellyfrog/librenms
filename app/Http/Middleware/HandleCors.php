@@ -1,6 +1,6 @@
 <?php
 /**
- * HandleCors.php
+ * HandleCors.php.
  *
  * Check and load cors settings from db config at runtime
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -31,9 +32,9 @@ use Illuminate\Support\Arr;
 class HandleCors extends \Fruitcake\Cors\HandleCors
 {
     private $map = [
-        'allowmethods' => 'allowed_methods',
-        'origin' => 'allowed_origins',
-        'allowheaders' => 'allowed_headers',
+        'allowmethods'  => 'allowed_methods',
+        'origin'        => 'allowed_origins',
+        'allowheaders'  => 'allowed_headers',
         'exposeheaders' => 'exposed_headers',
     ];
 

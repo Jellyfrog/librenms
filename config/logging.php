@@ -44,42 +44,42 @@ return [
 
     'channels' => [
         'stack' => [
-            'driver' => 'stack',
-            'channels' => ['single'],
+            'driver'            => 'stack',
+            'channels'          => ['single'],
             'ignore_exceptions' => false,
         ],
 
         'console' => [
-            'driver' => 'stack',
-            'channels' => ['single', 'stderr'],
+            'driver'            => 'stack',
+            'channels'          => ['single', 'stderr'],
             'ignore_exceptions' => false,
         ],
 
         'single' => [
             'driver' => 'single',
-            'path' => env('APP_LOG', \LibreNMS\Config::get('log_file', base_path('logs/librenms.log'))),
-            'level' => 'error',
+            'path'   => env('APP_LOG', \LibreNMS\Config::get('log_file', base_path('logs/librenms.log'))),
+            'level'  => 'error',
         ],
 
         'daily' => [
             'driver' => 'daily',
-            'path' => env('APP_LOG', \LibreNMS\Config::get('log_file', base_path('logs/librenms.log'))),
-            'level' => 'error',
-            'days' => 14,
+            'path'   => env('APP_LOG', \LibreNMS\Config::get('log_file', base_path('logs/librenms.log'))),
+            'level'  => 'error',
+            'days'   => 14,
         ],
 
         'slack' => [
-            'driver' => 'slack',
-            'url' => env('LOG_SLACK_WEBHOOK_URL'),
+            'driver'   => 'slack',
+            'url'      => env('LOG_SLACK_WEBHOOK_URL'),
             'username' => 'Laravel Log',
-            'emoji' => ':boom:',
-            'level' => 'critical',
+            'emoji'    => ':boom:',
+            'level'    => 'critical',
         ],
 
         'papertrail' => [
-            'driver' => 'monolog',
-            'level' => 'debug',
-            'handler' => SyslogUdpHandler::class,
+            'driver'       => 'monolog',
+            'level'        => 'debug',
+            'handler'      => SyslogUdpHandler::class,
             'handler_with' => [
                 'host' => env('PAPERTRAIL_URL'),
                 'port' => env('PAPERTRAIL_PORT'),
@@ -87,10 +87,10 @@ return [
         ],
 
         'stderr' => [
-            'driver' => 'monolog',
-            'handler' => StreamHandler::class,
+            'driver'    => 'monolog',
+            'handler'   => StreamHandler::class,
             'formatter' => \LibreNMS\Util\CliColorFormatter::class,
-            'with' => [
+            'with'      => [
                 'stream' => 'php://stderr',
             ],
             'level' => 'debug',
@@ -98,16 +98,16 @@ return [
 
         'syslog' => [
             'driver' => 'syslog',
-            'level' => 'debug',
+            'level'  => 'debug',
         ],
 
         'errorlog' => [
             'driver' => 'errorlog',
-            'level' => 'debug',
+            'level'  => 'debug',
         ],
 
         'null' => [
-            'driver' => 'monolog',
+            'driver'  => 'monolog',
             'handler' => NullHandler::class,
         ],
 

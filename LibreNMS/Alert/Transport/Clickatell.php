@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 /**
- * Clickatell REST-API Transport
+ * Clickatell REST-API Transport.
+ *
  * @author f0o <f0o@librenms.org>
  * @copyright 2015 f0o, LibreNMS
  * @license GPL
@@ -36,7 +37,7 @@ class Clickatell extends Transport
 
     public static function contactClickatell($obj, $opts)
     {
-        $url = 'https://platform.clickatell.com/messages/http/send?apiKey=' . $opts['token'] . '&to=' . implode(',', $opts['to']) . '&content=' . urlencode($obj['title']);
+        $url = 'https://platform.clickatell.com/messages/http/send?apiKey='.$opts['token'].'&to='.implode(',', $opts['to']).'&content='.urlencode($obj['title']);
 
         $curl = curl_init($url);
         set_curl_proxy($curl);

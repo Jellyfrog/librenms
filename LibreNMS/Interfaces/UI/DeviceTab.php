@@ -1,6 +1,6 @@
 <?php
 /**
- * DeviceTab.php
+ * DeviceTab.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -29,33 +30,40 @@ use App\Models\Device;
 interface DeviceTab
 {
     /**
-     * Check if the tab is visible
+     * Check if the tab is visible.
+     *
      * @param Device $device
+     *
      * @return bool
      */
     public function visible(Device $device): bool;
 
     /**
-     * The url slug for this tab
+     * The url slug for this tab.
+     *
      * @return string
      */
     public function slug(): string;
 
     /**
-     * The icon to display for this tab
+     * The icon to display for this tab.
+     *
      * @return string
      */
     public function icon(): string;
 
     /**
-     * Name to display for this tab
+     * Name to display for this tab.
+     *
      * @return string
      */
     public function name(): string;
 
     /**
-     * Collect data to send to the view
+     * Collect data to send to the view.
+     *
      * @param Device $device
+     *
      * @return array
      */
     public function data(Device $device): array;

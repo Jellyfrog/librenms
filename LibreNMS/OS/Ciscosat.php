@@ -18,10 +18,10 @@ class Ciscosat extends OS implements WirelessErrorsDiscovery, WirelessRssiDiscov
             $sensors[] = new WirelessSensor(
                 'errors',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.1429.2.2.5.5.3.1.1.12.' . $index,
+                '.1.3.6.1.4.1.1429.2.2.5.5.3.1.1.12.'.$index,
                 'ciscosat',
                 $index,
-                'Uncorrected Errors ' . $index
+                'Uncorrected Errors '.$index
             );
         }
 
@@ -36,10 +36,10 @@ class Ciscosat extends OS implements WirelessErrorsDiscovery, WirelessRssiDiscov
             $sensors[] = new WirelessSensor(
                 'rssi',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.1429.2.2.5.5.3.1.1.7.' . $index,
+                '.1.3.6.1.4.1.1429.2.2.5.5.3.1.1.7.'.$index,
                 'ciscosat',
                 $index,
-                'Receive Signal Level ' . $index
+                'Receive Signal Level '.$index
             );
         }
 
@@ -56,10 +56,10 @@ class Ciscosat extends OS implements WirelessErrorsDiscovery, WirelessRssiDiscov
             $sensors[] = new WirelessSensor(
                 'snr',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.1429.2.2.5.5.3.1.1.6.' . $index,
+                '.1.3.6.1.4.1.1429.2.2.5.5.3.1.1.6.'.$index,
                 'ciscosat-cn-margin',
                 $index,
-                'C/N Link Margin  ' . $index,
+                'C/N Link Margin  '.$index,
                 $entry
             );
         }
@@ -70,10 +70,10 @@ class Ciscosat extends OS implements WirelessErrorsDiscovery, WirelessRssiDiscov
             $sensors[] = new WirelessSensor(
                 'snr',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.1429.2.2.5.5.3.1.1.5.' . $index,
+                '.1.3.6.1.4.1.1429.2.2.5.5.3.1.1.5.'.$index,
                 'ciscosat-cn-ratio',
                 $index,
-                'C/N Ratio ' . $index,
+                'C/N Ratio '.$index,
                 $entry
             );
         }

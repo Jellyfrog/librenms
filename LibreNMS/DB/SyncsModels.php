@@ -1,6 +1,6 @@
 <?php
 /**
- * SyncsModels.php
+ * SyncsModels.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -28,11 +29,12 @@ trait SyncsModels
 {
     /**
      * Sync several models for a device's relationship
-     * Model must implement \LibreNMS\Interfaces\Models\Keyable interface
+     * Model must implement \LibreNMS\Interfaces\Models\Keyable interface.
      *
-     * @param \App\Models\Device $device
-     * @param string $relationship
+     * @param \App\Models\Device             $device
+     * @param string                         $relationship
      * @param \Illuminate\Support\Collection $models
+     *
      * @return \Illuminate\Support\Collection
      */
     protected function syncModels($device, $relationship, $models)

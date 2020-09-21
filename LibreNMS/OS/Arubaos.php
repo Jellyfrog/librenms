@@ -1,6 +1,6 @@
 <?php
 /**
- * Arubaos.php
+ * Arubaos.php.
  *
  * HPE ArubaOS
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -61,7 +62,7 @@ class Arubaos extends OS implements
 
     /**
      * Discover wireless client counts. Type is clients.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -76,7 +77,7 @@ class Arubaos extends OS implements
 
     /**
      * Discover wireless AP counts. Type is ap-count.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -87,7 +88,7 @@ class Arubaos extends OS implements
         $sensors = [];
 
         foreach ($data as $key => $value) {
-            $oid = snmp_translate($mib . '::' . $key, 'ALL', 'arubaos', '-On', null);
+            $oid = snmp_translate($mib.'::'.$key, 'ALL', 'arubaos', '-On', null);
             $value = intval($value);
 
             $low_warn_const = 1; // Default warning threshold = 1 down AP
@@ -124,7 +125,7 @@ class Arubaos extends OS implements
 
     /**
      * Discover wireless frequency.  This is in MHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -136,7 +137,7 @@ class Arubaos extends OS implements
 
     /**
      * Discover wireless noise floor. This is in dBm/Hz. Type is noise-floor.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -148,7 +149,7 @@ class Arubaos extends OS implements
 
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -192,7 +193,7 @@ class Arubaos extends OS implements
 
     /**
      * Discover wireless utilization.  This is in %. Type is utilization.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -204,9 +205,10 @@ class Arubaos extends OS implements
 
     /**
      * Poll wireless frequency as MHz
-     * The returned array should be sensor_id => value pairs
+     * The returned array should be sensor_id => value pairs.
      *
      * @param array $sensors Array of sensors needed to be polled
+     *
      * @return array of polled data
      */
     public function pollWirelessFrequency(array $sensors)

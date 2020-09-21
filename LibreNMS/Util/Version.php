@@ -1,6 +1,6 @@
 <?php
 /**
- * Version.php
+ * Version.php.
  *
  * Get version info about LibreNMS and various components/dependencies
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -41,7 +42,7 @@ class Version
 
     public static function get()
     {
-        return new static;
+        return new static();
     }
 
     public function local()
@@ -60,7 +61,7 @@ class Version
                 $query = Eloquent::DB()->table('migrations');
 
                 return [
-                    'last' => $query->orderBy('id', 'desc')->value('migration'),
+                    'last'  => $query->orderBy('id', 'desc')->value('migration'),
                     'total' => $query->count(),
                 ];
             } catch (\Exception $e) {

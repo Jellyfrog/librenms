@@ -1,6 +1,6 @@
 <?php
 /**
- * OS.php
+ * OS.php.
  *
  * OS related functions (may belong in LibreNMS/OS, but here for now)
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -33,12 +34,13 @@ use Symfony\Component\Yaml\Yaml;
 class OS
 {
     /**
-     * Load os from yaml into config if not already loaded, preserving user os config
+     * Load os from yaml into config if not already loaded, preserving user os config.
+     *
      * @param string $os
      */
     public static function loadDefinition($os)
     {
-        if (! Config::get("os.$os.definition_loaded")) {
+        if (!Config::get("os.$os.definition_loaded")) {
             $yaml_file = base_path("/includes/definitions/$os.yaml");
             if (file_exists($yaml_file)) {
                 $os_def = Yaml::parse(file_get_contents($yaml_file));
@@ -54,12 +56,12 @@ class OS
      * Default cache time is 1 day. Controlled by os_def_cache_time.
      *
      * @param bool $existing Only load OS that have existing OS in the database
-     * @param bool $cached Load os definitions from the cache file
+     * @param bool $cached   Load os definitions from the cache file
      */
     public static function loadAllDefinitions($existing = false, $cached = true)
     {
         $install_dir = \LibreNMS\Config::get('install_dir');
-        $cache_file = $install_dir . '/cache/os_defs.cache';
+        $cache_file = $install_dir.'/cache/os_defs.cache';
         if ($cached && is_file($cache_file) && (time() - filemtime($cache_file) < \LibreNMS\Config::get('os_def_cache_time'))) {
             // Cached
             $os_defs = unserialize(file_get_contents($cache_file));
@@ -74,7 +76,7 @@ class OS
             if ($existing && Eloquent::isConnected()) {
                 $os_list = Device::query()->distinct()->pluck('os');
             } else {
-                $os_list = glob($install_dir . '/includes/definitions/*.yaml');
+                $os_list = glob($install_dir.'/includes/definitions/*.yaml');
             }
             foreach ($os_list as $file) {
                 $os = basename($file, '.yaml');
@@ -84,8 +86,10 @@ class OS
     }
 
     /**
-     * Update the OS cache file cache/os_defs.cache
+     * Update the OS cache file cache/os_defs.cache.
+     *
      * @param bool $force
+     *
      * @return bool true if the cache was updated
      */
     public static function updateCache($force = false)
@@ -94,7 +98,7 @@ class OS
         $cache_file = "$install_dir/cache/os_defs.cache";
         $cache_keep_time = Config::get('os_def_cache_time', 86400) - 7200; // 2hr buffer
 
-        if ($force === true || ! is_file($cache_file) || time() - filemtime($cache_file) > $cache_keep_time) {
+        if ($force === true || !is_file($cache_file) || time() - filemtime($cache_file) > $cache_keep_time) {
             Log::debug('Updating os_def.cache');
 
             // remove previously cached os settings and replace with user settings

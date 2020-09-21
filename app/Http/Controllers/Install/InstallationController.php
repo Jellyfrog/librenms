@@ -1,6 +1,6 @@
 <?php
 /**
- * InstallationController.php
+ * InstallationController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -33,10 +34,10 @@ class InstallationController extends Controller
     protected $connection = 'setup';
     protected $step;
     protected $steps = [
-        'checks' => \App\Http\Controllers\Install\ChecksController::class,
+        'checks'   => \App\Http\Controllers\Install\ChecksController::class,
         'database' => \App\Http\Controllers\Install\DatabaseController::class,
-        'user' => \App\Http\Controllers\Install\MakeUserController::class,
-        'finish' => \App\Http\Controllers\Install\FinalizeController::class,
+        'user'     => \App\Http\Controllers\Install\MakeUserController::class,
+        'finish'   => \App\Http\Controllers\Install\FinalizeController::class,
     ];
 
     public function redirectToFirst()
@@ -50,7 +51,7 @@ class InstallationController extends Controller
     {
         foreach ($this->filterActiveSteps() as $step => $controller) {
             /** @var InstallerStep $controller */
-            if (! $controller->complete()) {
+            if (!$controller->complete()) {
                 return redirect()->route("install.$step");
             }
         }
@@ -83,7 +84,7 @@ class InstallationController extends Controller
                 return true;
             }
 
-            if (! $status['complete']) {
+            if (!$status['complete']) {
                 return false;
             }
         }
@@ -93,7 +94,7 @@ class InstallationController extends Controller
 
     final protected function markStepComplete()
     {
-        if (! $this->stepCompleted($this->step)) {
+        if (!$this->stepCompleted($this->step)) {
             session(["install.$this->step" => true]);
             session()->save();
         }
@@ -115,7 +116,7 @@ class InstallationController extends Controller
     protected function configureDatabase()
     {
         $db = session('db');
-        if (! empty($db)) {
+        if (!empty($db)) {
             Eloquent::setConnection(
                 $this->connection,
                 $db['host'] ?? 'localhost',
@@ -153,7 +154,7 @@ class InstallationController extends Controller
 
         return array_map(function (InstallerStep $controller) {
             return [
-                'enabled' => $controller->enabled(),
+                'enabled'  => $controller->enabled(),
                 'complete' => $controller->complete(),
             ];
         }, $this->steps);

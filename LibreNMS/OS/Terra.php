@@ -1,6 +1,6 @@
 <?php
 /**
- * Terra.php
+ * Terra.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -42,17 +43,17 @@ class Terra extends OS implements ProcessorDiscovery, OSDiscovery
             'sdi410C' => '8',
             'sti410C' => '9',
             'sai410C' => '10',
-            'ttd440' => '14',
+            'ttd440'  => '14',
             'ttx410C' => '15',
             'tdx410C' => '16',
-            'sdi480' => '17',
-            'sti440' => '18',
+            'sdi480'  => '17',
+            'sti440'  => '18',
         ];
 
         foreach ($models as $model => $index) {
             if (Str::contains($device->sysDescr, $model)) {
                 $oid_terra = '.1.3.6.1.4.1.30631.1.';
-                $oid = [$oid_terra . $index . '.4.1.0', $oid_terra . $index . '.4.2.0'];
+                $oid = [$oid_terra.$index.'.4.1.0', $oid_terra.$index.'.4.2.0'];
 
                 $data = snmp_get_multi_oid($device, $oid);
                 $device->hardware = $model;
@@ -65,7 +66,7 @@ class Terra extends OS implements ProcessorDiscovery, OSDiscovery
 
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */
@@ -75,7 +76,7 @@ class Terra extends OS implements ProcessorDiscovery, OSDiscovery
 
         $query = [
             'sti410C' => '.1.3.6.1.4.1.30631.1.9.1.1.3.0',
-            'sti440' => '.1.3.6.1.4.1.30631.1.18.1.326.3.0',
+            'sti440'  => '.1.3.6.1.4.1.30631.1.18.1.326.3.0',
         ];
 
         foreach ($query as $decr => $oid) {

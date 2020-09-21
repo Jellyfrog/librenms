@@ -1,6 +1,6 @@
 <?php
 /**
- * transport-telegram.inc.php
+ * transport-telegram.inc.php.
  *
  * LibreNMS Telegram alerting transport
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
@@ -44,7 +45,7 @@ class Telegram extends Transport
         $text = urlencode($obj['msg']);
         $format = '';
         if ($data['format']) {
-            $format = '&parse_mode=' . $data['format'];
+            $format = '&parse_mode='.$data['format'];
             if ($data['format'] == 'Markdown') {
                 $text = urlencode(preg_replace('/([a-z0-9]+)_([a-z0-9]+)/', "$1\_$2", $obj['msg']));
             }
@@ -55,10 +56,10 @@ class Telegram extends Transport
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         if ($code != 200) {
             var_dump("API '$host' returned Error"); //FIXME: propper debuging
-            var_dump('Params: ' . $api); //FIXME: propper debuging
-            var_dump('Return: ' . $ret); //FIXME: propper debuging
+            var_dump('Params: '.$api); //FIXME: propper debuging
+            var_dump('Return: '.$ret); //FIXME: propper debuging
 
-            return 'HTTP Status code ' . $code;
+            return 'HTTP Status code '.$code;
         }
 
         return true;
@@ -70,32 +71,32 @@ class Telegram extends Transport
             'config' => [
                 [
                     'title' => 'Chat ID',
-                    'name' => 'telegram-chat-id',
+                    'name'  => 'telegram-chat-id',
                     'descr' => 'Telegram Chat ID',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
                     'title' => 'Token',
-                    'name' => 'telegram-token',
+                    'name'  => 'telegram-token',
                     'descr' => 'Telegram Token',
-                    'type' => 'text',
+                    'type'  => 'text',
                 ],
                 [
-                    'title' => 'Format',
-                    'name' => 'telegram-format',
-                    'descr' => 'Telegram format',
-                    'type' => 'select',
+                    'title'   => 'Format',
+                    'name'    => 'telegram-format',
+                    'descr'   => 'Telegram format',
+                    'type'    => 'select',
                     'options' => [
-                        '' => '',
+                        ''         => '',
                         'Markdown' => 'Markdown',
-                        'HTML' => 'HTML',
+                        'HTML'     => 'HTML',
                     ],
                 ],
             ],
             'validation' => [
                 'telegram-chat-id' => 'required|string',
-                'telegram-token' => 'required|string',
-                'telegram-format' => 'string',
+                'telegram-token'   => 'required|string',
+                'telegram-format'  => 'string',
             ],
         ];
     }

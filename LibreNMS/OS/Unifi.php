@@ -1,6 +1,6 @@
 <?php
 /**
- * Unifi.php
+ * Unifi.php.
  *
  * Ubiquiti Unifi
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -50,7 +51,7 @@ class Unifi extends OS implements
     private $ccqDivisor = 10;
 
     /**
-     * Returns an array of LibreNMS\Device\Sensor objects
+     * Returns an array of LibreNMS\Device\Sensor objects.
      *
      * @return array Sensors
      */
@@ -66,7 +67,7 @@ class Unifi extends OS implements
         $radios = [];
         foreach ($client_oids as $index => $entry) {
             $radio_name = $vap_radios[$index];
-            $radios[$radio_name]['oids'][] = '.1.3.6.1.4.1.41112.1.6.1.2.1.8.' . $index;
+            $radios[$radio_name]['oids'][] = '.1.3.6.1.4.1.41112.1.6.1.2.1.8.'.$index;
             if (isset($radios[$radio_name]['count'])) {
                 $radios[$radio_name]['count'] += $entry['unifiVapNumStations'];
             } else {
@@ -100,13 +101,13 @@ class Unifi extends OS implements
         $ssids = [];
         foreach ($client_oids as $index => $entry) {
             $ssid = $ssid_ids[$index];
-            if (! empty($ssid)) {
+            if (!empty($ssid)) {
                 if (isset($ssids[$ssid])) {
-                    $ssids[$ssid]['oids'][] = '.1.3.6.1.4.1.41112.1.6.1.2.1.8.' . $index;
+                    $ssids[$ssid]['oids'][] = '.1.3.6.1.4.1.41112.1.6.1.2.1.8.'.$index;
                     $ssids[$ssid]['count'] += $entry['unifiVapNumStations'];
                 } else {
                     $ssids[$ssid] = [
-                        'oids' => ['.1.3.6.1.4.1.41112.1.6.1.2.1.8.' . $index],
+                        'oids'  => ['.1.3.6.1.4.1.41112.1.6.1.2.1.8.'.$index],
                         'count' => $entry['unifiVapNumStations'],
                     ];
                 }
@@ -120,7 +121,7 @@ class Unifi extends OS implements
                 $data['oids'],
                 'unifi',
                 $ssid,
-                'SSID: ' . $ssid,
+                'SSID: '.$ssid,
                 $data['count']
             );
         }
@@ -129,7 +130,7 @@ class Unifi extends OS implements
     }
 
     /**
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -148,7 +149,7 @@ class Unifi extends OS implements
                 $sensors[] = new WirelessSensor(
                     'ccq',
                     $this->getDeviceId(),
-                    '.1.3.6.1.4.1.41112.1.6.1.2.1.3.' . $index,
+                    '.1.3.6.1.4.1.41112.1.6.1.2.1.3.'.$index,
                     'unifi',
                     $index,
                     "SSID: {$ssids[$index]} ({$vap_radios[$index]})",
@@ -164,9 +165,10 @@ class Unifi extends OS implements
 
     /**
      * Poll wireless client connection quality
-     * The returned array should be sensor_id => value pairs
+     * The returned array should be sensor_id => value pairs.
      *
      * @param array $sensors Array of sensors needed to be polled
+     *
      * @return array of polled data
      */
     public function pollWirelessCcq(array $sensors)
@@ -188,7 +190,7 @@ class Unifi extends OS implements
 
     /**
      * Discover wireless frequency.  This is in MHz. Type is frequency.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -206,7 +208,7 @@ class Unifi extends OS implements
             $sensors[$radio] = new WirelessSensor(
                 'frequency',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.41112.1.6.1.2.1.4.' . $index,
+                '.1.3.6.1.4.1.41112.1.6.1.2.1.4.'.$index,
                 'unifi',
                 $radio,
                 "Frequency ($radio)",
@@ -219,9 +221,10 @@ class Unifi extends OS implements
 
     /**
      * Poll wireless frequency as MHz
-     * The returned array should be sensor_id => value pairs
+     * The returned array should be sensor_id => value pairs.
      *
      * @param array $sensors Array of sensors needed to be polled
+     *
      * @return array of polled data
      */
     public function pollWirelessFrequency(array $sensors)
@@ -231,7 +234,7 @@ class Unifi extends OS implements
 
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array
      */
@@ -247,11 +250,11 @@ class Unifi extends OS implements
         $sensors = [];
         foreach ($power_oids as $index => $entry) {
             $radio_name = $vap_radios[$index];
-            if (! isset($sensors[$radio_name])) {
+            if (!isset($sensors[$radio_name])) {
                 $sensors[$radio_name] = new WirelessSensor(
                     'power',
                     $this->getDeviceId(),
-                    '.1.3.6.1.4.1.41112.1.6.1.2.1.21.' . $index,
+                    '.1.3.6.1.4.1.41112.1.6.1.2.1.21.'.$index,
                     'unifi-tx',
                     $radio_name,
                     "Tx Power ($radio_name)",
@@ -265,7 +268,7 @@ class Unifi extends OS implements
 
     /**
      * Discover wireless utilization.  This is in %. Type is utilization.
-     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
      * @return array Sensors
      */
@@ -285,7 +288,7 @@ class Unifi extends OS implements
             $sensors[] = new WirelessSensor(
                 'utilization',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.41112.1.6.1.1.1.6.' . $index,
+                '.1.3.6.1.4.1.41112.1.6.1.1.1.6.'.$index,
                 'unifi-total',
                 $index,
                 "Total Util ($name)",
@@ -294,7 +297,7 @@ class Unifi extends OS implements
             $sensors[] = new WirelessSensor(
                 'utilization',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.41112.1.6.1.1.1.7.' . $index,
+                '.1.3.6.1.4.1.41112.1.6.1.1.1.7.'.$index,
                 'unifi-rx',
                 $index,
                 "Self Rx Util ($name)",
@@ -303,7 +306,7 @@ class Unifi extends OS implements
             $sensors[] = new WirelessSensor(
                 'utilization',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.41112.1.6.1.1.1.8.' . $index,
+                '.1.3.6.1.4.1.41112.1.6.1.1.1.8.'.$index,
                 'unifi-tx',
                 $index,
                 "Self Tx Util ($name)",
@@ -312,7 +315,7 @@ class Unifi extends OS implements
             $sensors[] = new WirelessSensor(
                 'utilization',
                 $this->getDeviceId(),
-                '.1.3.6.1.4.1.41112.1.6.1.1.1.9.' . $index,
+                '.1.3.6.1.4.1.41112.1.6.1.1.1.9.'.$index,
                 'unifi-other',
                 $index,
                 "Other BSS Util ($name)",

@@ -1,6 +1,6 @@
 <?php
 /**
- * ApcPduOutletOff.php
+ * ApcPduOutletOff.php.
  *
  * -Description-
  *
@@ -34,7 +34,8 @@ class ApcPduOutletOff implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)

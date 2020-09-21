@@ -1,6 +1,6 @@
 <?php
 /**
- * QueryBuilderFluentParser.php
+ * QueryBuilderFluentParser.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -32,13 +33,13 @@ use Log;
 class QueryBuilderFluentParser extends QueryBuilderParser
 {
     /**
-     * Convert the query builder rules to a Laravel Fluent builder
+     * Convert the query builder rules to a Laravel Fluent builder.
      *
      * @return Builder
      */
     public function toQuery()
     {
-        if (empty($this->builder) || ! array_key_exists('condition', $this->builder)) {
+        if (empty($this->builder) || !array_key_exists('condition', $this->builder)) {
             return null;
         }
 
@@ -53,8 +54,9 @@ class QueryBuilderFluentParser extends QueryBuilderParser
 
     /**
      * @param Builder $query
-     * @param array $rule
-     * @param string $parent_condition AND or OR  (for root, this should be null)
+     * @param array   $rule
+     * @param string  $parent_condition AND or OR  (for root, this should be null)
+     *
      * @return Builder
      */
     protected function parseGroupToQuery($query, $rule, $parent_condition = null)
@@ -72,8 +74,9 @@ class QueryBuilderFluentParser extends QueryBuilderParser
 
     /**
      * @param Builder $query
-     * @param array $rule
-     * @param string $condition AND or OR
+     * @param array   $rule
+     * @param string  $condition AND or OR
+     *
      * @return Builder
      */
     protected function parseRuleToQuery($query, $rule, $condition)
@@ -117,16 +120,17 @@ class QueryBuilderFluentParser extends QueryBuilderParser
                 Log::error('Could not parse in values, use comma or space delimiters');
                 break;
             default:
-                Log::error('Unhandled QueryBuilderFluentParser operation: ' . $op);
+                Log::error('Unhandled QueryBuilderFluentParser operation: '.$op);
         }
 
         return $query;
     }
 
     /**
-     * Extract field, operator and value from the rule and expand macros and raw values
+     * Extract field, operator and value from the rule and expand macros and raw values.
      *
      * @param array $rule
+     *
      * @return array [field, operator, value]
      */
     protected function expandRule($rule)
@@ -139,7 +143,7 @@ class QueryBuilderFluentParser extends QueryBuilderParser
         $op = $rule['operator'];
 
         $value = $rule['value'];
-        if (! is_array($value) && Str::startsWith($value, '`') && Str::endsWith($value, '`')) {
+        if (!is_array($value) && Str::startsWith($value, '`') && Str::endsWith($value, '`')) {
             $value = DB::raw($this->expandMacro(trim($value, '`')));
         }
 
@@ -148,11 +152,12 @@ class QueryBuilderFluentParser extends QueryBuilderParser
 
     /**
      * @param Builder $query
+     *
      * @return Builder
      */
     protected function joinTables($query)
     {
-        if (! isset($this->builder['joins'])) {
+        if (!isset($this->builder['joins'])) {
             $this->generateJoins();
         }
 

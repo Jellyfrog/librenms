@@ -1,6 +1,6 @@
 <?php
 /**
- * Snmpsim.php
+ * Snmpsim.php.
  *
  * Light wrapper around Snmpsim
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -41,12 +42,12 @@ class Snmpsim
         $this->ip = $ip;
         $this->port = $port;
         $this->log = $log;
-        $this->snmprec_dir = Config::get('install_dir') . '/tests/snmpsim/';
+        $this->snmprec_dir = Config::get('install_dir').'/tests/snmpsim/';
     }
 
     /**
      * Run snmpsimd and fork it into the background
-     * Captures all output to the log
+     * Captures all output to the log.
      *
      * @param int $wait Wait for x seconds after starting before returning
      */
@@ -71,11 +72,11 @@ class Snmpsim
             sleep($wait);
         }
 
-        if (isCli() && ! $this->proc->isRunning()) {
+        if (isCli() && !$this->proc->isRunning()) {
             // if starting failed, run snmpsim again and output to the console and validate the data
-            passthru($this->getCmd(false) . ' --validate-data');
+            passthru($this->getCmd(false).' --validate-data');
 
-            if (! is_executable($this->findSnmpsimd())) {
+            if (!is_executable($this->findSnmpsimd())) {
                 echo "\nCould not find snmpsim, you can install it with 'pip install snmpsim'.  If it is already installed, make sure snmpsimd or snmpsimd.py is in PATH\n";
             } else {
                 echo "\nFailed to start Snmpsim. Scroll up for error.\n";
@@ -85,7 +86,7 @@ class Snmpsim
     }
 
     /**
-     * Stop and start the running snmpsim process
+     * Stop and start the running snmpsim process.
      */
     public function restart()
     {
@@ -105,7 +106,7 @@ class Snmpsim
 
     /**
      * Run snmpsimd but keep it in the foreground
-     * Outputs to stdout
+     * Outputs to stdout.
      */
     public function run()
     {
@@ -147,9 +148,10 @@ class Snmpsim
     }
 
     /**
-     * Generate the command for snmpsimd
+     * Generate the command for snmpsimd.
      *
      * @param bool $with_log
+     *
      * @return string
      */
     private function getCmd($with_log = true)
@@ -176,7 +178,7 @@ class Snmpsim
     private function findSnmpsimd()
     {
         $cmd = Config::locateBinary('snmpsimd');
-        if (! is_executable($cmd)) {
+        if (!is_executable($cmd)) {
             $cmd = Config::locateBinary('snmpsimd.py');
         }
 

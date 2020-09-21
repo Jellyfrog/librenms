@@ -1,6 +1,6 @@
 <?php
 /**
- * RuckusSzApMiscEvent.php
+ * RuckusSzApMiscEvent.php.
  *
  * -Description-
  *
@@ -21,6 +21,7 @@
  * an event from a connected access point.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 KanREN, Inc.
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
@@ -39,7 +40,8 @@ class RuckusSzApMiscEvent implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)

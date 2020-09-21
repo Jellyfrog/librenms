@@ -1,6 +1,6 @@
 <?php
 /**
- * BaseDatastore.php
+ * BaseDatastore.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2020 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -38,7 +39,7 @@ abstract class BaseDatastore implements DatastoreContract
     }
 
     /**
-     * Checks if the datastore wants rrdtags to be sent when issuing put()
+     * Checks if the datastore wants rrdtags to be sent when issuing put().
      *
      * @return bool
      */
@@ -48,7 +49,8 @@ abstract class BaseDatastore implements DatastoreContract
     }
 
     /**
-     * Record statistics for operation
+     * Record statistics for operation.
+     *
      * @param Measurement $stat
      */
     protected function recordStatistic(Measurement $stat)

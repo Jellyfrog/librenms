@@ -1,6 +1,6 @@
 <?php
 /**
- * FailedUserLogin.php
+ * FailedUserLogin.php.
  *
  * -Description-
  *
@@ -34,11 +34,12 @@ class FailedUserLogin implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)
     {
-        Log::event('SNMP Trap: Failed User Login: ' . $device->displayName(), $device->device_id, 'auth', 4);
+        Log::event('SNMP Trap: Failed User Login: '.$device->displayName(), $device->device_id, 'auth', 4);
     }
 }

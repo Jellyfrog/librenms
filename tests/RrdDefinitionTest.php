@@ -1,6 +1,6 @@
 <?php
 /**
- * RrdDefinitonTest.php
+ * RrdDefinitonTest.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -57,7 +58,7 @@ class RrdDefinitionTest extends TestCase
     {
         Config::set('rrd.step', 300);
         Config::set('rrd.heartbeat', 600);
-        $expected = 'DS:pos:COUNTER:600:0:125000000000 ' .
+        $expected = 'DS:pos:COUNTER:600:0:125000000000 '.
             'DS:unbound:DERIVE:600:U:U ';
 
         $def = new RrdDefinition();

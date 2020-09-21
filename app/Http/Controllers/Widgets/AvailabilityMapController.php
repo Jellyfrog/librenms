@@ -1,6 +1,6 @@
 <?php
 /**
- * AvailabilityMapController.php
+ * AvailabilityMapController.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -37,14 +38,14 @@ class AvailabilityMapController extends WidgetController
     public function __construct()
     {
         $this->defaults = [
-            'title' => null,
-            'type' => (int) Config::get('webui.availability_map_compact', 0),
-            'tile_size' => 12,
-            'color_only_select' => 0,
+            'title'                     => null,
+            'type'                      => (int) Config::get('webui.availability_map_compact', 0),
+            'tile_size'                 => 12,
+            'color_only_select'         => 0,
             'show_disabled_and_ignored' => 0,
-            'mode_select' => 0,
-            'order_by' => Config::get('webui.availability_map_sort_status') ? 'status' : 'hostname',
-            'device_group' => null,
+            'mode_select'               => 0,
+            'order_by'                  => Config::get('webui.availability_map_sort_status') ? 'status' : 'hostname',
+            'device_group'              => null,
         ];
     }
 
@@ -82,6 +83,7 @@ class AvailabilityMapController extends WidgetController
 
     /**
      * @param Request $request
+     *
      * @return array
      */
     private function getDevices(Request $request)
@@ -95,7 +97,7 @@ class AvailabilityMapController extends WidgetController
             $device_query = Device::hasAccess($request->user());
         }
 
-        if (! $settings['show_disabled_and_ignored']) {
+        if (!$settings['show_disabled_and_ignored']) {
             $device_query->isNotDisabled();
         }
         $device_query->orderBy($settings['order_by']);

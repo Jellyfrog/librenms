@@ -1,6 +1,6 @@
 <?php
 /**
- * FunctionsTest.php
+ * FunctionsTest.php.
  *
  * tests functions in includes/functions.php
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -84,8 +85,8 @@ sdfsd <a href="ftp://192.168.1.1/help/me/now.php">ftp://192.168.1.1/help/me/now.
                 0 => ['first' => 5, 'second' => 6],
                 1 => ['first' => 7, 'second' => 8],
             ],
-            'single' => ['something' => 9],
-            'oneoff' => 10,
+            'single'      => ['something' => 9],
+            'oneoff'      => 10,
             'singletable' => [
                 11 => ['singletable' => 'Pickle'],
             ],

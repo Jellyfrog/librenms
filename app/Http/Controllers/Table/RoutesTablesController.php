@@ -1,6 +1,6 @@
 <?php
 /**
- * RoutesTablesController.php
+ * RoutesTablesController.php.
  *
  * Route tables data for bootgrid display
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 PipoCanaja
  * @author     PipoCanaja
  */
@@ -39,14 +40,14 @@ class RoutesTablesController extends TableController
     {
         return [
             'device_id' => 'nullable|integer',
-            'searchby' => 'in:inetCidrRouteNextHop,inetCidrRouteDest',
+            'searchby'  => 'in:inetCidrRouteNextHop,inetCidrRouteDest',
         ];
     }
 
     protected function filterFields($request)
     {
         return [
-            'route.context_name' => 'context_name',
+            'route.context_name'       => 'context_name',
             'route.inetCidrRouteProto' => 'proto',
         ];
     }
@@ -69,9 +70,10 @@ class RoutesTablesController extends TableController
     }
 
     /**
-     * Defines the base query for this resource
+     * Defines the base query for this resource.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     protected function baseQuery($request)
@@ -112,15 +114,16 @@ class RoutesTablesController extends TableController
     }
 
     /**
-     * @param string $search
+     * @param string  $search
      * @param Builder $query
-     * @param array $fields
+     * @param array   $fields
+     *
      * @return Builder|\Illuminate\Database\Query\Builder
      */
     protected function search($search, $query, $fields = [])
     {
         if ($search = trim(\Request::get('searchPhrase'))) {
-            $searchLike = '%' . $search . '%';
+            $searchLike = '%'.$search.'%';
 
             return $query->where(function ($query) use ($searchLike) {
                 return $query->where('route.inetCidrRouteNextHop', 'like', $searchLike)
@@ -134,6 +137,7 @@ class RoutesTablesController extends TableController
     /**
      * @param Request $request
      * @param Builder $query
+     *
      * @return Builder
      */
     public function sort($request, $query)
@@ -193,7 +197,7 @@ class RoutesTablesController extends TableController
                 $item['inetCidrRouteDest'] = $route_entry->inetCidrRouteDest;
             }
         }
-        $item['inetCidrRouteIfIndex'] = 'ifIndex ' . $item['inetCidrRouteIfIndex'];
+        $item['inetCidrRouteIfIndex'] = 'ifIndex '.$item['inetCidrRouteIfIndex'];
         if ($port = $route_entry->port()->first()) {
             $item['inetCidrRouteIfIndex'] = Url::portLink($port, htmlspecialchars($port->getShortLabel()));
         }
@@ -202,7 +206,7 @@ class RoutesTablesController extends TableController
             if ($device->device_id == $route_entry->device_id || in_array($route_entry->inetCidrRouteNextHop, ['127.0.0.1', '::1'])) {
                 $item['inetCidrRouteNextHop'] = Url::deviceLink($device, 'localhost');
             } else {
-                $item['inetCidrRouteNextHop'] = $item['inetCidrRouteNextHop'] . '<br>(' . Url::deviceLink($device) . ')';
+                $item['inetCidrRouteNextHop'] = $item['inetCidrRouteNextHop'].'<br>('.Url::deviceLink($device).')';
             }
         }
         if ($route_entry->inetCidrRouteProto && $route_entry::$translateProto[$route_entry->inetCidrRouteProto]) {
@@ -213,7 +217,7 @@ class RoutesTablesController extends TableController
         }
         $item['context_name'] = '[global]';
         if ($route_entry->context_name != '') {
-            $item['context_name'] = '<a href="' . Url::generate(['page' => 'routing', 'protocol' => 'vrf', 'vrf' => $route_entry->context_name]) . '">' . htmlspecialchars($route_entry->context_name) . '</a>';
+            $item['context_name'] = '<a href="'.Url::generate(['page' => 'routing', 'protocol' => 'vrf', 'vrf' => $route_entry->context_name]).'">'.htmlspecialchars($route_entry->context_name).'</a>';
         }
 
         return $item;

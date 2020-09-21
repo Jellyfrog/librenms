@@ -1,6 +1,6 @@
 <?php
 /**
- * NetworkElementAlmTrap.php
+ * NetworkElementAlmTrap.php.
  *
  * -Description-
  *
@@ -21,6 +21,7 @@
  * and severity assigned by the Adva.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 KanREN, Inc
  * @author     Heath Barnhart <hbarnhart@kanren.net> & Neil Kahle <nkahle@kanren.net>
  */
@@ -39,7 +40,8 @@ class AdvaNetworkElementAlmTrap implements SnmptrapHandler
      * Data is pre-parsed and delivered as a Trap.
      *
      * @param Device $device
-     * @param Trap $trap
+     * @param Trap   $trap
+     *
      * @return void
      */
     public function handle(Device $device, Trap $trap)

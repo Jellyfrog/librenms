@@ -1,6 +1,6 @@
 <?php
 /**
- * JnxDomAlarmId.php
+ * JnxDomAlarmId.php.
  *
  * -Description-
  *
@@ -22,6 +22,7 @@
  * descriptive string.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2019 KanREN, Inc
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */

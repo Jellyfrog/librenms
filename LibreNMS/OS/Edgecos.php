@@ -1,6 +1,6 @@
 <?php
 /**
- * Edgecos.php
+ * Edgecos.php.
  *
  * -Description-
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -58,14 +59,14 @@ class Edgecos extends OS implements ProcessorDiscovery
 
         $data = snmp_get_multi($this->getDeviceArray(), ['swOpCodeVer.1', 'swProdName.0', 'swSerialNumber.1', 'swHardwareVer.1'], '-OQUs', $tmp_mib);
 
-        $device->version = trim($data[1]['swHardwareVer'] . ' ' . $data[1]['swOpCodeVer']) ?: null;
+        $device->version = trim($data[1]['swHardwareVer'].' '.$data[1]['swOpCodeVer']) ?: null;
         $device->hardware = $data[0]['swProdName'] ?? null;
         $device->serial = $data[1]['swSerialNumber'] ?? null;
     }
 
     /**
      * Discover processors.
-     * Returns an array of LibreNMS\Device\Processor objects that have been discovered
+     * Returns an array of LibreNMS\Device\Processor objects that have been discovered.
      *
      * @return array Processors
      */

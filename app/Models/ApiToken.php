@@ -1,6 +1,6 @@
 <?php
 /**
- * ApiToken.php
+ * ApiToken.php.
  *
  * api_tokens simple tokens for api
  *
@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * @link       http://librenms.org
+ *
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
@@ -32,16 +33,17 @@ class ApiToken extends BaseModel
     // ---- Helper Functions ----
 
     /**
-     * Check if the given token is valid
+     * Check if the given token is valid.
      *
      * @param string $token
+     *
      * @return bool
      */
     public static function isValid($token, $user_id = null)
     {
         $query = self::query()->isEnabled()->where('token_hash', $token);
 
-        if (! is_null($user_id)) {
+        if (!is_null($user_id)) {
             $query->where('user_id', $user_id);
         }
 
@@ -49,9 +51,10 @@ class ApiToken extends BaseModel
     }
 
     /**
-     * Get User model based on the given API token (or null if invalid)
+     * Get User model based on the given API token (or null if invalid).
      *
      * @param string $token
+     *
      * @return User|null
      */
     public static function userFromToken($token)
@@ -61,7 +64,7 @@ class ApiToken extends BaseModel
 
     public static function generateToken(User $user, $description = '')
     {
-        $token = new static;
+        $token = new static();
         $token->user_id = $user->user_id;
         $token->token_hash = $bytes = bin2hex(random_bytes(16));
         $token->description = $description;
@@ -75,6 +78,7 @@ class ApiToken extends BaseModel
      * Get the user_id for the given token.
      *
      * @param string $token
+     *
      * @return int
      */
     public static function idFromToken($token)

@@ -14,9 +14,9 @@ return [
     */
 
     'password' => 'Le mot de passe doit comporter au moins six caractères et doit être le même que la confirmation.',
-    'reset' => 'Votre mot de passe a été réinitialisé !',
-    'sent' => 'Nous vous avons envoyé un lien pour mettre à jour votre mot de passe',
-    'token' => 'Le jeton de mise à jour du mot de passe est valide.',
-    'user' => "Nous ne trouvons pas d'utilisateur avec cette adresse e-mail.",
+    'reset'    => 'Votre mot de passe a été réinitialisé !',
+    'sent'     => 'Nous vous avons envoyé un lien pour mettre à jour votre mot de passe',
+    'token'    => 'Le jeton de mise à jour du mot de passe est valide.',
+    'user'     => "Nous ne trouvons pas d'utilisateur avec cette adresse e-mail.",
 
 ];

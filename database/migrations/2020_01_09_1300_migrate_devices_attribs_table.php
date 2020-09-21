@@ -32,8 +32,8 @@ class MigrateDevicesAttribsTable extends Migration
         // revert migrate disable_notify data into devices table
         $attribs = DB::table('devices')->where('disable_notify', 1)->pluck('device_id')->map(function ($device_id) {
             return [
-                'device_id' => $device_id,
-                'attrib_type' => 'disable_notify',
+                'device_id'    => $device_id,
+                'attrib_type'  => 'disable_notify',
                 'attrib_value' => 1,
             ];
         });
