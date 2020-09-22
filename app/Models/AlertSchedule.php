@@ -31,6 +31,40 @@ use DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+/**
+ * App\Models\AlertSchedule
+ *
+ * @property int $schedule_id
+ * @property int $recurring
+ * @property string $start
+ * @property string $end
+ * @property string|null $recurring_day
+ * @property string $title
+ * @property string $notes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\DeviceGroup[] $deviceGroups
+ * @property-read int|null $device_groups_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Device[] $devices
+ * @property-read int|null $devices_count
+ * @property mixed $end_recurring_dt
+ * @property mixed $end_recurring_hr
+ * @property mixed $start_recurring_dt
+ * @property mixed $start_recurring_hr
+ * @property-read int $status
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Location[] $locations
+ * @property-read int|null $locations_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertSchedule isActive()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertSchedule newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertSchedule newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertSchedule query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertSchedule whereEnd($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertSchedule whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertSchedule whereRecurring($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertSchedule whereRecurringDay($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertSchedule whereScheduleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertSchedule whereStart($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertSchedule whereTitle($value)
+ * @mixin \Eloquent
+ */
 class AlertSchedule extends Model
 {
     const SCHEDULE_SET = 0;

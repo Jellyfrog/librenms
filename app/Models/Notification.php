@@ -6,6 +6,35 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * App\Models\Notification
+ *
+ * @property int $notifications_id
+ * @property string $title
+ * @property string $body
+ * @property int|null $severity 0=ok,1=warning,2=critical
+ * @property string $source
+ * @property string $checksum
+ * @property string $datetime
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\NotificationAttrib[] $attribs
+ * @property-read int|null $attribs_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Notification isArchived(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Notification isSticky()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Notification isUnread(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Notification limit()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Notification newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Notification newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Notification query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Notification source()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Notification whereBody($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Notification whereChecksum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Notification whereDatetime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Notification whereNotificationsId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Notification whereSeverity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Notification whereSource($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Notification whereTitle($value)
+ * @mixin \Eloquent
+ */
 class Notification extends Model
 {
     /**

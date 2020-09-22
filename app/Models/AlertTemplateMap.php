@@ -24,6 +24,21 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\AlertTemplateMap
+ *
+ * @property int $id
+ * @property int $alert_templates_id
+ * @property int $alert_rule_id
+ * @property-read \App\Models\AlertTemplate $template
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertTemplateMap newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertTemplateMap newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertTemplateMap query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertTemplateMap whereAlertRuleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertTemplateMap whereAlertTemplatesId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertTemplateMap whereId($value)
+ * @mixin \Eloquent
+ */
 class AlertTemplateMap extends BaseModel
 {
     protected $table = 'alert_template_map';

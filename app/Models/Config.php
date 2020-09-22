@@ -24,6 +24,21 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\Config
+ *
+ * @property int $config_id
+ * @property string $config_name
+ * @property string $config_value
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Config newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Config newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Config query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Config whereConfigId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Config whereConfigName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Config whereConfigValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Config withChildren($name)
+ * @mixin \Eloquent
+ */
 class Config extends BaseModel
 {
     public $timestamps = false;

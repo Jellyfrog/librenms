@@ -26,6 +26,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Widget
+ *
+ * @property int $widget_id
+ * @property string $widget_title
+ * @property string $widget
+ * @property string $base_dimensions
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Widget newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Widget newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Widget query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Widget whereBaseDimensions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Widget whereWidget($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Widget whereWidgetId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Widget whereWidgetTitle($value)
+ * @mixin \Eloquent
+ */
 class Widget extends Model
 {
     public $timestamps = false;

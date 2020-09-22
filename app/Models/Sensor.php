@@ -2,6 +2,66 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\Sensor
+ *
+ * @property int $sensor_id
+ * @property int $sensor_deleted
+ * @property string $sensor_class
+ * @property int $device_id
+ * @property string $poller_type
+ * @property string $sensor_oid
+ * @property string|null $sensor_index
+ * @property string $sensor_type
+ * @property string|null $sensor_descr
+ * @property string|null $group
+ * @property int $sensor_divisor
+ * @property int $sensor_multiplier
+ * @property float|null $sensor_current
+ * @property float|null $sensor_limit
+ * @property float|null $sensor_limit_warn
+ * @property float|null $sensor_limit_low
+ * @property float|null $sensor_limit_low_warn
+ * @property int $sensor_alert
+ * @property string $sensor_custom
+ * @property string|null $entPhysicalIndex
+ * @property string|null $entPhysicalIndex_measured
+ * @property string $lastupdate
+ * @property float|null $sensor_prev
+ * @property string|null $user_func
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Eventlog[] $events
+ * @property-read int|null $events_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel inDeviceGroup($deviceGroup)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereEntPhysicalIndex($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereEntPhysicalIndexMeasured($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereGroup($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereLastupdate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor wherePollerType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereSensorAlert($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereSensorClass($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereSensorCurrent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereSensorCustom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereSensorDeleted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereSensorDescr($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereSensorDivisor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereSensorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereSensorIndex($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereSensorLimit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereSensorLimitLow($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereSensorLimitLowWarn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereSensorLimitWarn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereSensorMultiplier($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereSensorOid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereSensorPrev($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereSensorType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Sensor whereUserFunc($value)
+ * @mixin \Eloquent
+ */
 class Sensor extends DeviceRelatedModel
 {
     public $timestamps = false;

@@ -27,6 +27,41 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use LibreNMS\Enum\AlertState;
 
+/**
+ * App\Models\AlertRule
+ *
+ * @property int $id
+ * @property string $rule
+ * @property string $severity
+ * @property string $extra
+ * @property int $disabled
+ * @property string $name
+ * @property string $query
+ * @property string $builder
+ * @property string|null $proc
+ * @property int $invert_map
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Alert[] $alerts
+ * @property-read int|null $alerts_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Device[] $devices
+ * @property-read int|null $devices_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertRule enabled()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertRule hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertRule isActive()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertRule newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertRule newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertRule query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertRule whereBuilder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertRule whereDisabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertRule whereExtra($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertRule whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertRule whereInvertMap($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertRule whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertRule whereProc($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertRule whereQuery($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertRule whereRule($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertRule whereSeverity($value)
+ * @mixin \Eloquent
+ */
 class AlertRule extends BaseModel
 {
     public $timestamps = false;

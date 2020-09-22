@@ -24,6 +24,34 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\Syslog
+ *
+ * @property int|null $device_id
+ * @property string|null $facility
+ * @property string|null $priority
+ * @property string|null $level
+ * @property string|null $tag
+ * @property string $timestamp
+ * @property string|null $program
+ * @property string|null $msg
+ * @property int $seq
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel inDeviceGroup($deviceGroup)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Syslog newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Syslog newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Syslog query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Syslog whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Syslog whereFacility($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Syslog whereLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Syslog whereMsg($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Syslog wherePriority($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Syslog whereProgram($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Syslog whereSeq($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Syslog whereTag($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Syslog whereTimestamp($value)
+ * @mixin \Eloquent
+ */
 class Syslog extends DeviceRelatedModel
 {
     protected $table = 'syslog';

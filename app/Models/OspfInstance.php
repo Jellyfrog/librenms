@@ -24,6 +24,52 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\OspfInstance
+ *
+ * @property int $id
+ * @property int $device_id
+ * @property int $ospf_instance_id
+ * @property string $ospfRouterId
+ * @property string $ospfAdminStat
+ * @property string $ospfVersionNumber
+ * @property string $ospfAreaBdrRtrStatus
+ * @property string $ospfASBdrRtrStatus
+ * @property int $ospfExternLsaCount
+ * @property int $ospfExternLsaCksumSum
+ * @property string $ospfTOSSupport
+ * @property int $ospfOriginateNewLsas
+ * @property int $ospfRxNewLsas
+ * @property int|null $ospfExtLsdbLimit
+ * @property int|null $ospfMulticastExtensions
+ * @property int|null $ospfExitOverflowInterval
+ * @property string|null $ospfDemandExtensions
+ * @property string|null $context_name
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel inDeviceGroup($deviceGroup)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereContextName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereOspfASBdrRtrStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereOspfAdminStat($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereOspfAreaBdrRtrStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereOspfDemandExtensions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereOspfExitOverflowInterval($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereOspfExtLsdbLimit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereOspfExternLsaCksumSum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereOspfExternLsaCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereOspfInstanceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereOspfMulticastExtensions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereOspfOriginateNewLsas($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereOspfRouterId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereOspfRxNewLsas($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereOspfTOSSupport($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfInstance whereOspfVersionNumber($value)
+ * @mixin \Eloquent
+ */
 class OspfInstance extends DeviceRelatedModel
 {
     public $timestamps = false;

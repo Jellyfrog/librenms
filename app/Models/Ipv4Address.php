@@ -24,6 +24,28 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\Ipv4Address
+ *
+ * @property int $ipv4_address_id
+ * @property string $ipv4_address
+ * @property int $ipv4_prefixlen
+ * @property string $ipv4_network_id
+ * @property int $port_id
+ * @property string|null $context_name
+ * @property-read \App\Models\Port $port
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv4Address newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv4Address newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv4Address query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv4Address whereContextName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv4Address whereIpv4Address($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv4Address whereIpv4AddressId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv4Address whereIpv4NetworkId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv4Address whereIpv4Prefixlen($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv4Address wherePortId($value)
+ * @mixin \Eloquent
+ */
 class Ipv4Address extends PortRelatedModel
 {
     public $timestamps = false;

@@ -26,6 +26,59 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Bill
+ *
+ * @property int $bill_id
+ * @property string $bill_name
+ * @property string $bill_type
+ * @property int|null $bill_cdr
+ * @property int $bill_day
+ * @property int|null $bill_quota
+ * @property int $rate_95th_in
+ * @property int $rate_95th_out
+ * @property int $rate_95th
+ * @property string $dir_95th
+ * @property int $total_data
+ * @property int $total_data_in
+ * @property int $total_data_out
+ * @property int $rate_average_in
+ * @property int $rate_average_out
+ * @property int $rate_average
+ * @property string $bill_last_calc
+ * @property string $bill_custid
+ * @property string $bill_ref
+ * @property string $bill_notes
+ * @property int $bill_autoadded
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Port[] $ports
+ * @property-read int|null $ports_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereBillAutoadded($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereBillCdr($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereBillCustid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereBillDay($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereBillId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereBillLastCalc($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereBillName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereBillNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereBillQuota($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereBillRef($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereBillType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereDir95th($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereRate95th($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereRate95thIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereRate95thOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereRateAverage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereRateAverageIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereRateAverageOut($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereTotalData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereTotalDataIn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Bill whereTotalDataOut($value)
+ * @mixin \Eloquent
+ */
 class Bill extends Model
 {
     public $timestamps = false;

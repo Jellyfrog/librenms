@@ -26,6 +26,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Ipv4Network
+ *
+ * @property int $ipv4_network_id
+ * @property string $ipv4_network
+ * @property string|null $context_name
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Ipv4Address[] $ipv4
+ * @property-read int|null $ipv4_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv4Network newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv4Network newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv4Network query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv4Network whereContextName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv4Network whereIpv4Network($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv4Network whereIpv4NetworkId($value)
+ * @mixin \Eloquent
+ */
 class Ipv4Network extends Model
 {
     public $timestamps = false;

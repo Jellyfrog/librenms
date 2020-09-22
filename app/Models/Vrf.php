@@ -24,6 +24,30 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\Vrf
+ *
+ * @property int $vrf_id
+ * @property string $vrf_oid
+ * @property string|null $vrf_name
+ * @property int|null $bgpLocalAs
+ * @property string|null $mplsVpnVrfRouteDistinguisher
+ * @property string $mplsVpnVrfDescription
+ * @property int $device_id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel inDeviceGroup($deviceGroup)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vrf newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vrf newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vrf query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vrf whereBgpLocalAs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vrf whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vrf whereMplsVpnVrfDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vrf whereMplsVpnVrfRouteDistinguisher($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vrf whereVrfId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vrf whereVrfName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Vrf whereVrfOid($value)
+ * @mixin \Eloquent
+ */
 class Vrf extends DeviceRelatedModel
 {
     public $timestamps = false;

@@ -24,6 +24,34 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\Package
+ *
+ * @property int $pkg_id
+ * @property int $device_id
+ * @property string $name
+ * @property string $manager
+ * @property int $status
+ * @property string $version
+ * @property string $build
+ * @property string $arch
+ * @property int|null $size
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel inDeviceGroup($deviceGroup)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Package newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Package newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Package query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Package whereArch($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Package whereBuild($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Package whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Package whereManager($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Package whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Package wherePkgId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Package whereSize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Package whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Package whereVersion($value)
+ * @mixin \Eloquent
+ */
 class Package extends DeviceRelatedModel
 {
     public $timestamps = false;

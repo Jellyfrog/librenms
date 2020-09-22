@@ -26,6 +26,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\PollerGroup
+ *
+ * @property int $id
+ * @property string $group_name
+ * @property string $descr
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Device[] $devices
+ * @property-read int|null $devices_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerGroup newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerGroup newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerGroup query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerGroup whereDescr($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerGroup whereGroupName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerGroup whereId($value)
+ * @mixin \Eloquent
+ */
 class PollerGroup extends Model
 {
     public $timestamps = false;

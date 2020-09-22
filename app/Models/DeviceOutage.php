@@ -26,7 +26,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-// class DeviceOutage extends Model
+// /**
+ * App\Models\DeviceOutage
+ *
+ * @property int $device_id
+ * @property int $going_down
+ * @property int|null $up_again
+ * @property-read \App\Models\Device $device
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel inDeviceGroup($deviceGroup)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceOutage newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceOutage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceOutage query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceOutage whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceOutage whereGoingDown($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceOutage whereUpAgain($value)
+ * @mixin \Eloquent
+ */
+class DeviceOutage extends Model
 class DeviceOutage extends DeviceRelatedModel
 {
     public $timestamps = false;

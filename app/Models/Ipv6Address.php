@@ -24,6 +24,32 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\Ipv6Address
+ *
+ * @property int $ipv6_address_id
+ * @property string $ipv6_address
+ * @property string $ipv6_compressed
+ * @property int $ipv6_prefixlen
+ * @property string $ipv6_origin
+ * @property string $ipv6_network_id
+ * @property int $port_id
+ * @property string|null $context_name
+ * @property-read \App\Models\Port $port
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv6Address newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv6Address newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv6Address query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv6Address whereContextName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv6Address whereIpv6Address($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv6Address whereIpv6AddressId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv6Address whereIpv6Compressed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv6Address whereIpv6NetworkId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv6Address whereIpv6Origin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv6Address whereIpv6Prefixlen($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv6Address wherePortId($value)
+ * @mixin \Eloquent
+ */
 class Ipv6Address extends PortRelatedModel
 {
     public $timestamps = false;

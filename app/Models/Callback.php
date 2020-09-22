@@ -26,6 +26,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Callback
+ *
+ * @property int $callback_id
+ * @property string $name
+ * @property string $value
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Callback newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Callback newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Callback query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Callback whereCallbackId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Callback whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Callback whereValue($value)
+ * @mixin \Eloquent
+ */
 class Callback extends Model
 {
     public $timestamps = false;

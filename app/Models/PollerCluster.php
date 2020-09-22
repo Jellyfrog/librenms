@@ -26,6 +26,74 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\PollerCluster
+ *
+ * @property int $id
+ * @property string $node_id
+ * @property string $poller_name
+ * @property string $poller_version
+ * @property string $poller_groups
+ * @property string $last_report
+ * @property int $master
+ * @property int|null $poller_enabled
+ * @property int|null $poller_frequency
+ * @property int|null $poller_workers
+ * @property int|null $poller_down_retry
+ * @property int|null $discovery_enabled
+ * @property int|null $discovery_frequency
+ * @property int|null $discovery_workers
+ * @property int|null $services_enabled
+ * @property int|null $services_frequency
+ * @property int|null $services_workers
+ * @property int|null $billing_enabled
+ * @property int|null $billing_frequency
+ * @property int|null $billing_calculate_frequency
+ * @property int|null $alerting_enabled
+ * @property int|null $alerting_frequency
+ * @property int|null $ping_enabled
+ * @property int|null $ping_frequency
+ * @property int|null $update_enabled
+ * @property int|null $update_frequency
+ * @property string|null $loglevel
+ * @property int|null $watchdog_enabled
+ * @property string|null $watchdog_log
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PollerClusterStat[] $stats
+ * @property-read int|null $stats_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereAlertingEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereAlertingFrequency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereBillingCalculateFrequency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereBillingEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereBillingFrequency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereDiscoveryEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereDiscoveryFrequency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereDiscoveryWorkers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereLastReport($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereLoglevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereMaster($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereNodeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster wherePingEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster wherePingFrequency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster wherePollerDownRetry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster wherePollerEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster wherePollerFrequency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster wherePollerGroups($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster wherePollerName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster wherePollerVersion($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster wherePollerWorkers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereServicesEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereServicesFrequency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereServicesWorkers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereUpdateEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereUpdateFrequency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereWatchdogEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerCluster whereWatchdogLog($value)
+ * @mixin \Eloquent
+ */
 class PollerCluster extends Model
 {
     public $timestamps = false;

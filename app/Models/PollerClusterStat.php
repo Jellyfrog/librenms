@@ -26,6 +26,30 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\PollerClusterStat
+ *
+ * @property int $id
+ * @property int $parent_poller
+ * @property string $poller_type
+ * @property int $depth
+ * @property int $devices
+ * @property float $worker_seconds
+ * @property int $workers
+ * @property int $frequency
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerClusterStat newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerClusterStat newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerClusterStat query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerClusterStat whereDepth($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerClusterStat whereDevices($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerClusterStat whereFrequency($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerClusterStat whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerClusterStat whereParentPoller($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerClusterStat wherePollerType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerClusterStat whereWorkerSeconds($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PollerClusterStat whereWorkers($value)
+ * @mixin \Eloquent
+ */
 class PollerClusterStat extends Model
 {
     public $timestamps = false;

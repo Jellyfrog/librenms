@@ -28,6 +28,33 @@ use LibreNMS\Alerting\QueryBuilderFluentParser;
 use Log;
 use Permissions;
 
+/**
+ * App\Models\DeviceGroup
+ *
+ * @property int $id
+ * @property string $name
+ * @property string|null $desc
+ * @property string $type
+ * @property array|null $rules
+ * @property string|null $pattern
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Device[] $devices
+ * @property-read int|null $devices_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Service[] $services
+ * @property-read int|null $services_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read int|null $users_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceGroup hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceGroup newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceGroup newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceGroup query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceGroup whereDesc($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceGroup whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceGroup whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceGroup wherePattern($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceGroup whereRules($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceGroup whereType($value)
+ * @mixin \Eloquent
+ */
 class DeviceGroup extends BaseModel
 {
     public $timestamps = false;

@@ -26,6 +26,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * App\Models\UserPref
+ *
+ * @property int $user_id
+ * @property string $pref
+ * @property string $value
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserPref newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserPref newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserPref pref($pref)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserPref query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserPref wherePref($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserPref whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\UserPref whereValue($value)
+ * @mixin \Eloquent
+ */
 class UserPref extends BaseModel
 {
     public $timestamps = false;

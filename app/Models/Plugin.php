@@ -26,6 +26,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * App\Models\Plugin
+ *
+ * @property int $plugin_id
+ * @property string $plugin_name
+ * @property int $plugin_active
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Plugin isActive()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Plugin newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Plugin newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Plugin query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Plugin wherePluginActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Plugin wherePluginId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Plugin wherePluginName($value)
+ * @mixin \Eloquent
+ */
 class Plugin extends BaseModel
 {
     public $timestamps = false;

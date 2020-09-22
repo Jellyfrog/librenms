@@ -26,6 +26,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\AuthLog
+ *
+ * @property int $id
+ * @property \Illuminate\Support\Carbon $datetime
+ * @property string $user
+ * @property string $address
+ * @property string $result
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AuthLog newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AuthLog newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AuthLog query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AuthLog whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AuthLog whereDatetime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AuthLog whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AuthLog whereResult($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AuthLog whereUser($value)
+ * @mixin \Eloquent
+ */
 class AuthLog extends Model
 {
     public $timestamps = false;

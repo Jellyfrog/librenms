@@ -28,6 +28,38 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use LibreNMS\Enum\AlertState;
 
+/**
+ * App\Models\Alert
+ *
+ * @property int $id
+ * @property int $device_id
+ * @property int $rule_id
+ * @property int $state
+ * @property int $alerted
+ * @property int $open
+ * @property string|null $note
+ * @property string $timestamp
+ * @property string $info
+ * @property-read \App\Models\Device $device
+ * @property-read \App\Models\AlertRule $rule
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\User[] $users
+ * @property-read int|null $users_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Alert acknowledged()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Alert active()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Alert newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Alert newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Alert query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Alert whereAlerted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Alert whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Alert whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Alert whereInfo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Alert whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Alert whereOpen($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Alert whereRuleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Alert whereState($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Alert whereTimestamp($value)
+ * @mixin \Eloquent
+ */
 class Alert extends Model
 {
     public $timestamps = false;

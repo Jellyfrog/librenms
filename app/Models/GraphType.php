@@ -24,6 +24,24 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\GraphType
+ *
+ * @property string $graph_type
+ * @property string $graph_subtype
+ * @property string $graph_section
+ * @property string|null $graph_descr
+ * @property int $graph_order
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphType query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphType whereGraphDescr($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphType whereGraphOrder($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphType whereGraphSection($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphType whereGraphSubtype($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\GraphType whereGraphType($value)
+ * @mixin \Eloquent
+ */
 class GraphType extends BaseModel
 {
     public $timestamps = false;

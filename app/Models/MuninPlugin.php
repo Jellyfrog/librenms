@@ -24,6 +24,38 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\MuninPlugin
+ *
+ * @property int $mplug_id
+ * @property int $device_id
+ * @property string $mplug_type
+ * @property string|null $mplug_instance
+ * @property string|null $mplug_category
+ * @property string|null $mplug_title
+ * @property string|null $mplug_info
+ * @property string|null $mplug_vlabel
+ * @property string|null $mplug_args
+ * @property int $mplug_total
+ * @property int $mplug_graph
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel inDeviceGroup($deviceGroup)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MuninPlugin newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MuninPlugin newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MuninPlugin query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MuninPlugin whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MuninPlugin whereMplugArgs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MuninPlugin whereMplugCategory($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MuninPlugin whereMplugGraph($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MuninPlugin whereMplugId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MuninPlugin whereMplugInfo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MuninPlugin whereMplugInstance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MuninPlugin whereMplugTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MuninPlugin whereMplugTotal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MuninPlugin whereMplugType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\MuninPlugin whereMplugVlabel($value)
+ * @mixin \Eloquent
+ */
 class MuninPlugin extends DeviceRelatedModel
 {
     public $timestamps = false;

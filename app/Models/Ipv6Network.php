@@ -26,6 +26,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Ipv6Network
+ *
+ * @property int $ipv6_network_id
+ * @property string $ipv6_network
+ * @property string|null $context_name
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Ipv6Address[] $ipv6
+ * @property-read int|null $ipv6_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv6Network newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv6Network newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv6Network query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv6Network whereContextName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv6Network whereIpv6Network($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Ipv6Network whereIpv6NetworkId($value)
+ * @mixin \Eloquent
+ */
 class Ipv6Network extends Model
 {
     public $timestamps = false;

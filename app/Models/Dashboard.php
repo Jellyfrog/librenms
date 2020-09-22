@@ -5,6 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Dashboard
+ *
+ * @property int $dashboard_id
+ * @property int $user_id
+ * @property string $dashboard_name
+ * @property int $access
+ * @property-read \App\Models\User $user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\UserWidget[] $widgets
+ * @property-read int|null $widgets_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dashboard allAvailable($user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dashboard newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dashboard newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dashboard query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dashboard whereAccess($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dashboard whereDashboardId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dashboard whereDashboardName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Dashboard whereUserId($value)
+ * @mixin \Eloquent
+ */
 class Dashboard extends Model
 {
     public $timestamps = false;

@@ -27,6 +27,33 @@ namespace App\Models;
 use Carbon\Carbon;
 use LibreNMS\Enum\Alert;
 
+/**
+ * App\Models\Eventlog
+ *
+ * @property int $event_id
+ * @property int|null $device_id
+ * @property string $datetime
+ * @property string|null $message
+ * @property string|null $type
+ * @property string|null $reference
+ * @property string|null $username
+ * @property int $severity
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $related
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel inDeviceGroup($deviceGroup)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Eventlog newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Eventlog newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Eventlog query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Eventlog whereDatetime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Eventlog whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Eventlog whereEventId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Eventlog whereMessage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Eventlog whereReference($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Eventlog whereSeverity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Eventlog whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Eventlog whereUsername($value)
+ * @mixin \Eloquent
+ */
 class Eventlog extends DeviceRelatedModel
 {
     protected $table = 'eventlog';

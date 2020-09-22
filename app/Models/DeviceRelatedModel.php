@@ -24,6 +24,17 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\DeviceRelatedModel
+ *
+ * @property-read \App\Models\Device $device
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel inDeviceGroup($deviceGroup)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel query()
+ * @mixin \Eloquent
+ */
 class DeviceRelatedModel extends BaseModel
 {
     // ---- Query Scopes ----

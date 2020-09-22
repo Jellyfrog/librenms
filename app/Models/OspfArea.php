@@ -24,6 +24,42 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\OspfArea
+ *
+ * @property int $id
+ * @property int $device_id
+ * @property string $ospfAreaId
+ * @property string $ospfAuthType
+ * @property string $ospfImportAsExtern
+ * @property int $ospfSpfRuns
+ * @property int $ospfAreaBdrRtrCount
+ * @property int $ospfAsBdrRtrCount
+ * @property int $ospfAreaLsaCount
+ * @property int $ospfAreaLsaCksumSum
+ * @property string $ospfAreaSummary
+ * @property string $ospfAreaStatus
+ * @property string|null $context_name
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel inDeviceGroup($deviceGroup)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfArea newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfArea newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfArea query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfArea whereContextName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfArea whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfArea whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfArea whereOspfAreaBdrRtrCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfArea whereOspfAreaId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfArea whereOspfAreaLsaCksumSum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfArea whereOspfAreaLsaCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfArea whereOspfAreaStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfArea whereOspfAreaSummary($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfArea whereOspfAsBdrRtrCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfArea whereOspfAuthType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfArea whereOspfImportAsExtern($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\OspfArea whereOspfSpfRuns($value)
+ * @mixin \Eloquent
+ */
 class OspfArea extends DeviceRelatedModel
 {
     public $timestamps = false;

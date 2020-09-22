@@ -26,6 +26,36 @@ namespace App\Models;
 
 use LibreNMS\Util\StringHelpers;
 
+/**
+ * App\Models\Application
+ *
+ * @property int $app_id
+ * @property int $device_id
+ * @property string $app_type
+ * @property string $app_state
+ * @property int $discovered
+ * @property string|null $app_state_prev
+ * @property string $app_status
+ * @property string $timestamp
+ * @property string $app_instance
+ * @property-read \App\Models\Device $device
+ * @property-read mixed $show_name
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel inDeviceGroup($deviceGroup)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereAppInstance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereAppState($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereAppStatePrev($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereAppStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereAppType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereDiscovered($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Application whereTimestamp($value)
+ * @mixin \Eloquent
+ */
 class Application extends DeviceRelatedModel
 {
     /**

@@ -26,6 +26,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Poller
+ *
+ * @property int $id
+ * @property string $poller_name
+ * @property string $last_polled
+ * @property int $devices
+ * @property float $time_taken
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Poller newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Poller newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Poller query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Poller whereDevices($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Poller whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Poller whereLastPolled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Poller wherePollerName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Poller whereTimeTaken($value)
+ * @mixin \Eloquent
+ */
 class Poller extends Model
 {
     public $timestamps = false;

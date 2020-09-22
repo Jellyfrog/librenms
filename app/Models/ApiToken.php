@@ -24,6 +24,26 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\ApiToken
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string|null $token_hash
+ * @property string $description
+ * @property int $disabled
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApiToken isEnabled()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApiToken newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApiToken newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApiToken query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApiToken whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApiToken whereDisabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApiToken whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApiToken whereTokenHash($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\ApiToken whereUserId($value)
+ * @mixin \Eloquent
+ */
 class ApiToken extends BaseModel
 {
     public $timestamps = false;

@@ -28,6 +28,28 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Location
+ *
+ * @property int $id
+ * @property string $location
+ * @property float|null $lat
+ * @property float|null $lng
+ * @property \Illuminate\Support\Carbon $timestamp
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Device[] $devices
+ * @property-read int|null $devices_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Location hasAccess($user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Location inDeviceGroup($deviceGroup)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Location newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Location newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Location query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Location whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Location whereLat($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Location whereLng($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Location whereLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Location whereTimestamp($value)
+ * @mixin \Eloquent
+ */
 class Location extends Model
 {
     public $fillable = ['location', 'lat', 'lng'];

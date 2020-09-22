@@ -26,6 +26,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\Availability
+ *
+ * @property int $availability_id
+ * @property int $device_id
+ * @property int $duration
+ * @property float $availability_perc
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Availability newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Availability newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Availability query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Availability whereAvailabilityId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Availability whereAvailabilityPerc($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Availability whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Availability whereDuration($value)
+ * @mixin \Eloquent
+ */
 class Availability extends Model
 {
     public $timestamps = false;

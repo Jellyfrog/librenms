@@ -24,6 +24,45 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\CefSwitching
+ *
+ * @property int $cef_switching_id
+ * @property int $device_id
+ * @property int $entPhysicalIndex
+ * @property string $afi
+ * @property int $cef_index
+ * @property string $cef_path
+ * @property int $drop
+ * @property int $punt
+ * @property int $punt2host
+ * @property int $drop_prev
+ * @property int $punt_prev
+ * @property int $punt2host_prev
+ * @property int $updated
+ * @property int $updated_prev
+ * @property-read \App\Models\Device $device
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel inDeviceGroup($deviceGroup)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CefSwitching newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CefSwitching newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CefSwitching query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CefSwitching whereAfi($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CefSwitching whereCefIndex($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CefSwitching whereCefPath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CefSwitching whereCefSwitchingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CefSwitching whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CefSwitching whereDrop($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CefSwitching whereDropPrev($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CefSwitching whereEntPhysicalIndex($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CefSwitching wherePunt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CefSwitching wherePunt2host($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CefSwitching wherePunt2hostPrev($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CefSwitching wherePuntPrev($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CefSwitching whereUpdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\CefSwitching whereUpdatedPrev($value)
+ * @mixin \Eloquent
+ */
 class CefSwitching extends DeviceRelatedModel
 {
     public $timestamps = false;

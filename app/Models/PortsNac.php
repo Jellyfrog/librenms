@@ -24,6 +24,51 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\PortsNac
+ *
+ * @property int $ports_nac_id
+ * @property string $auth_id
+ * @property int $device_id
+ * @property int $port_id
+ * @property string $domain
+ * @property string $username
+ * @property string $mac_address
+ * @property string $ip_address
+ * @property string $host_mode
+ * @property string $authz_status
+ * @property string $authz_by
+ * @property string $authc_status
+ * @property string $method
+ * @property string $timeout
+ * @property string|null $time_left
+ * @property int|null $vlan
+ * @property string|null $time_elapsed
+ * @property-read \App\Models\Device $device
+ * @property-read \App\Models\Port $port
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac whereAuthId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac whereAuthcStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac whereAuthzBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac whereAuthzStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac whereDomain($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac whereHostMode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac whereIpAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac whereMacAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac whereMethod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac wherePortId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac wherePortsNacId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac whereTimeElapsed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac whereTimeLeft($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac whereTimeout($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac whereUsername($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\PortsNac whereVlan($value)
+ * @mixin \Eloquent
+ */
 class PortsNac extends PortRelatedModel
 {
     protected $table = 'ports_nac';

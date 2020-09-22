@@ -24,6 +24,27 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\DeviceAttrib
+ *
+ * @property int $attrib_id
+ * @property int $device_id
+ * @property string $attrib_type
+ * @property string $attrib_value
+ * @property string $updated
+ * @property-read \App\Models\Device $device
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel inDeviceGroup($deviceGroup)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceAttrib newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceAttrib newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceAttrib query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceAttrib whereAttribId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceAttrib whereAttribType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceAttrib whereAttribValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceAttrib whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceAttrib whereUpdated($value)
+ * @mixin \Eloquent
+ */
 class DeviceAttrib extends DeviceRelatedModel
 {
     protected $table = 'devices_attribs';

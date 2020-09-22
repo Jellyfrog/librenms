@@ -24,6 +24,37 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\Component
+ *
+ * @property int $id ID for each component, unique index
+ * @property int $device_id device_id from the devices table
+ * @property string $type name from the component_type table
+ * @property string|null $label Display label for the component
+ * @property int $status The status of the component, retreived from the device
+ * @property int $disabled Should this component be polled
+ * @property int $ignore Should this component be alerted on
+ * @property string|null $error Error message if in Alert state
+ * @property-read \App\Models\Device $device
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ComponentStatusLog[] $logs
+ * @property-read int|null $logs_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ComponentPref[] $prefs
+ * @property-read int|null $prefs_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel inDeviceGroup($deviceGroup)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereDisabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereError($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereIgnore($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereLabel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\Component whereType($value)
+ * @mixin \Eloquent
+ */
 class Component extends DeviceRelatedModel
 {
     public $timestamps = false;

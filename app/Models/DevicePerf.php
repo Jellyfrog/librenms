@@ -24,6 +24,37 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\DevicePerf
+ *
+ * @property int $id
+ * @property int $device_id
+ * @property string $timestamp
+ * @property int $xmt
+ * @property int $rcv
+ * @property int $loss
+ * @property float $min
+ * @property float $max
+ * @property float $avg
+ * @property string|null $debug
+ * @property-read \App\Models\Device $device
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel hasAccess(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceRelatedModel inDeviceGroup($deviceGroup)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevicePerf newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevicePerf newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevicePerf query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevicePerf whereAvg($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevicePerf whereDebug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevicePerf whereDeviceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevicePerf whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevicePerf whereLoss($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevicePerf whereMax($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevicePerf whereMin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevicePerf whereRcv($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevicePerf whereTimestamp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DevicePerf whereXmt($value)
+ * @mixin \Eloquent
+ */
 class DevicePerf extends DeviceRelatedModel
 {
     protected $table = 'device_perf';

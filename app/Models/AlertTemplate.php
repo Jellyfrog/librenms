@@ -24,6 +24,26 @@
 
 namespace App\Models;
 
+/**
+ * App\Models\AlertTemplate
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $template
+ * @property string|null $title
+ * @property string|null $title_rec
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AlertTemplateMap[] $map
+ * @property-read int|null $map_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertTemplate newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertTemplate newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertTemplate query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertTemplate whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertTemplate whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertTemplate whereTemplate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertTemplate whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\AlertTemplate whereTitleRec($value)
+ * @mixin \Eloquent
+ */
 class AlertTemplate extends BaseModel
 {
     public $timestamps = false;
