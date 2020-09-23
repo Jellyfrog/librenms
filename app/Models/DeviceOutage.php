@@ -26,7 +26,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-// /**
+/**
  * App\Models\DeviceOutage
  *
  * @property int $device_id
@@ -43,7 +43,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Models\DeviceOutage whereUpAgain($value)
  * @mixin \Eloquent
  */
-class DeviceOutage extends Model
+
 class DeviceOutage extends DeviceRelatedModel
 {
     public $timestamps = false;
