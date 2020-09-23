@@ -60,7 +60,6 @@ class EventlogController extends SelectController
      */
     protected function baseQuery($request)
     {
-        /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Eventlog::hasAccess($request->user())
             ->select($request->get('field'))->distinct();
 
