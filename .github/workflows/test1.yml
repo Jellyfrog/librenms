@@ -66,6 +66,27 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      -
+         name: git branch
+         run: |
+           git branch -v -a
+           
+           
+      -
+         name: set FILES
+         run: |
+           FILES=$(git diff --diff-filter=d --name-only master | tr '\n' ' '|sed 's/,*$//g'")
+           echo $FILES
+           echo "::set-env name=FILES::$FILES"     
+      
+      -
+         name: show FILES
+         run: |           
+           echo $FILES
+      
       -
         name: Set up PHP
         uses: shivammathur/setup-php@v2
