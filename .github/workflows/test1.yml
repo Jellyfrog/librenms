@@ -90,7 +90,7 @@ jobs:
          run: |           
            echo $FILES
            
-     -
+      -
         name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
