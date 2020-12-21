@@ -387,6 +387,7 @@ class CiHelper
                 echo $proc->getErrorOutput() . PHP_EOL;
             }
         } elseif (! $silence) {
+            echo $proc->getOutput() . PHP_EOL;
             echo "success ($duration)\n";
         }
 
