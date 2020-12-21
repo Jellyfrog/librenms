@@ -78,7 +78,7 @@ jobs:
       -
          name: set FILES
          run: |
-           FILES=$(git diff --diff-filter=d --name-only master | tr '\n' ' '|sed 's/,*$//g')
+           FILES=$(git diff --diff-filter=d --name-only origin/master | tr '\n' ' '|sed 's/,*$//g')
            echo $FILES
            
            echo 'FILES<<EOF' >> $GITHUB_ENV
