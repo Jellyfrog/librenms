@@ -1,0 +1,185 @@
+name: test1
+
+on:
+  push:
+    branches:
+      - 'master'
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/doc.yml'
+      - 'doc/**'
+      - 'mkdocs.yml'
+  pull_request:
+    branches:
+      - 'master'
+    paths-ignore:
+      - '**.md'
+      - '.github/workflows/doc.yml'
+      - 'doc/**'
+      - 'mkdocs.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          -
+            php-version: 7.4
+            skip-style-check: 1
+            skip-web-check: 1
+          -
+            php-version: 7.4
+            skip-unit-check: 1
+          -
+            php-version: 7.4
+            skip-style-check: 1
+            skip-web-check: 1
+          -
+            php-version: 7.3
+            skip-style-check: 1
+            skip-web-check: 1
+          -
+            php-version: 7.3
+            skip-unit-check: 1
+          -
+            php-version: 7.3
+            skip-style-check: 1
+            skip-web-check: 1
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: librenms
+          MYSQL_USER: librenms
+          MYSQL_PASSWORD: librenms
+        ports:
+          - 3306
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: composer,php-cs-fixer
+      -
+        name: Get composer cache directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+      -
+        name: Cache composer
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+      -
+        name: Cache pip
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      -
+        name: Install packages
+        run: |
+          sudo apt-get -qq update
+          sudo apt-get install -y fping python3-pip python3-setuptools snmp
+      -
+        name: Pip install
+        run: |
+          pip3 install --upgrade pip
+          pip3 install --user snmpsim pylint python-memcached mysqlclient --upgrade
+      -
+        name: Composer validate
+        run: |
+          composer validate
+      -
+        name: Init env
+        run: |
+          cat > .env <<EOL
+          APP_KEY=base64:vHI+YHgkyCDad31iPEErGSNEOWO21wNzV+zyENKQv04=
+          APP_URL=http://127.0.0.1:8000
+          APP_ENV=testing
+          DB_DRIVER=mysql
+          DB_HOST=127.0.0.1
+          DB_PORT=${{ job.services.mysql.ports[3306] }}
+          DB_DATABASE=librenms
+          DB_USERNAME=librenms
+          DB_PASSWORD=librenms
+          DB_TEST_DRIVER=mysql
+          DB_TEST_HOST=127.0.0.1
+          DB_TEST_PORT=${{ job.services.mysql.ports[3306] }}
+          DB_TEST_DB_DATABASE=librenms
+          DB_TEST_DB_USERNAME=librenms
+          DB_TEST_DB_PASSWORD=librenms
+          EOL
+      -
+        name: Composer install
+        run: |
+          composer install --prefer-dist --no-interaction --no-progress --no-suggest
+      -
+        name: Artisan dusk:update
+        if: matrix.skip-web-check != '1'
+        run: |
+          php artisan dusk:update --detect
+      -
+        name: Artisan serve
+        if: matrix.skip-web-check != '1'
+        run: |
+          php artisan serve --env=dusk.testing >/tmp/artisan-serve.log 2>&1 &
+          sleep 5
+      -
+        name: Start SNMP
+        if: matrix.skip-unit-check != '1'
+        run: |
+          ~/.local/bin/snmpsimd.py --data-dir=tests/snmpsim --agent-udpv4-endpoint=127.1.6.2:1162 --logging-method=file:/tmp/snmpsimd.log &
+
+      -
+        name: test
+        run: |
+          vendor/bin/parallel-lint --exclude vendor/ ./
+          /home/vagrant/.local/bin/pylint -E -j 0 ./LibreNMS/__init__.py
+          scripts/bash_lint.sh ./contrib/convert-mib-graphs.sh
+          vendor/bin/php-cs-fixer --config=.php_cs fix -v
+          vendor/bin/phpunit --colors=always
+
+      -
+        name: Artisan dev:check ci
+        run: |
+          php artisan dev:check ci
+        env:
+          SKIP_STYLE_CHECK: ${{ matrix.skip-style-check }}
+          SKIP_UNIT_CHECK: ${{ matrix.skip-unit-check }}
+          SKIP_WEB_CHECK: ${{ matrix.skip-web-check }}
+      -
+        name: Dump docker logs on failure
+        if: failure()
+        uses: jwalton/gh-docker-logs@v2
+      -
+        name: Dump serve logs
+        if: always() && matrix.skip-web-check != '1'
+        run: |
+          cat /tmp/artisan-serve.log
+      -
+        name: Dump snmp logs
+        if: always() && matrix.skip-unit-check != '1'
+        run: |
+          cat /tmp/snmpsimd.log
+      -
+        name: Dump context
+        if: always()
+        uses: crazy-max/ghaction-dump-context@v1
