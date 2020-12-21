@@ -152,7 +152,7 @@ jobs:
         name: test
         run: |
           vendor/bin/parallel-lint --exclude vendor/ ./
-          /home/vagrant/.local/bin/pylint -E -j 0 ./LibreNMS/__init__.py
+          ~/.local/bin/pylint -E -j 0 ./LibreNMS/__init__.py
           scripts/bash_lint.sh ./contrib/convert-mib-graphs.sh
           vendor/bin/php-cs-fixer --config=.php_cs fix -v
           vendor/bin/phpunit --colors=always
