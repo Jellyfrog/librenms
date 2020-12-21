@@ -80,7 +80,10 @@ jobs:
          run: |
            FILES=$(git diff --diff-filter=d --name-only master | tr '\n' ' '|sed 's/,*$//g')
            echo $FILES
-           echo "::set-env name=FILES::$FILES"     
+           
+           echo 'FILES<<EOF' >> $GITHUB_ENV
+           echo $FILES >> $GITHUB_ENV
+           echo 'EOF' >> $GITHUB_ENV  
       
       -
          name: show FILES
