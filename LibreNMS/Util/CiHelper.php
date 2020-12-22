@@ -381,14 +381,16 @@ class CiHelper
         if ($proc->getExitCode() > 0) {
             if (! $silence) {
                 echo "failed ($duration)\n";
+                echo $proc->getOutput() . PHP_EOL;
+                echo $proc->getErrorOutput() . PHP_EOL;                
             }
             if ($quiet || $silence) {
                 echo $proc->getOutput() . PHP_EOL;
                 echo $proc->getErrorOutput() . PHP_EOL;
             }
         } elseif (! $silence) {
-            echo $proc->getOutput() . PHP_EOL;
             echo "success ($duration)\n";
+            echo $proc->getOutput() . PHP_EOL;
         }
 
         return $proc->getExitCode();
