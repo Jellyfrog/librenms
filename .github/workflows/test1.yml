@@ -172,6 +172,7 @@ jobs:
       -
         name: Artisan dev:check ci
         run: |
+          whereis -b snmpsimd -l
           php artisan dev:check ci
         env:
           SKIP_STYLE_CHECK: ${{ matrix.skip-style-check }}
