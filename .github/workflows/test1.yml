@@ -93,7 +93,7 @@ jobs:
       -
          name: set path
          run: |
-           echo "~/.local/bin/" >> $GITHUB_PATH
+           echo "/home/runner/.local/bin/" >> $GITHUB_PATH
            
       -
         name: Set up PHP
@@ -168,16 +168,7 @@ jobs:
         name: Start SNMP
         if: matrix.skip-unit-check != '1'
         run: |
-          ~/.local/bin/snmpsimd.py --data-dir=tests/snmpsim --agent-udpv4-endpoint=127.1.6.2:1162 --logging-method=file:/tmp/snmpsimd.log &
-
-      -
-        name: test
-        run: |
-          vendor/bin/parallel-lint --exclude vendor/ ./ || true
-          ~/.local/bin/pylint -E -j 0 ./LibreNMS/__init__.py || true
-          scripts/bash_lint.sh ./contrib/convert-mib-graphs.sh || true
-          vendor/bin/php-cs-fixer --config=.php_cs fix -v || true
-          vendor/bin/phpunit --colors=always || true
+          ~/.local/bin/snmpsimd.py --data-dir=tests/snmpsim --agent-udpv4-endpoint=127.1.6.2:1162 --logging-method=file:/tmp/snmpsimd.log
 
       -
         name: Artisan dev:check ci
