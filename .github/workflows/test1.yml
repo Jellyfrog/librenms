@@ -143,11 +143,18 @@ jobs:
           APP_KEY=base64:vHI+YHgkyCDad31iPEErGSNEOWO21wNzV+zyENKQv04=
           APP_URL=http://127.0.0.1:8000
           APP_ENV=testing
+          DB_DRIVER=mysql
           DB_HOST=127.0.0.1
           DB_PORT=${{ job.services.mysql.ports[3306] }}
           DB_DATABASE=librenms_phpunit_78hunjuybybh
           DB_USERNAME=librenms
           DB_PASSWORD=librenms
+          DB_TEST_DRIVER=mysql
+          DB_TEST_HOST=127.0.0.1
+          DB_TEST_PORT=${{ job.services.mysql.ports[3306] }}
+          DB_TEST_DB_DATABASE=librenms_phpunit_78hunjuybybh
+          DB_TEST_DB_USERNAME=librenms
+          DB_TEST_DB_PASSWORD=librenms
           EOL
       -
         name: Composer install
@@ -172,7 +179,6 @@ jobs:
       -
         name: Artisan dev:check ci
         run: |
-          whereis -b snmpsimd -l
           php artisan dev:check ci
         env:
           SKIP_STYLE_CHECK: ${{ matrix.skip-style-check }}
