@@ -91,6 +91,11 @@ jobs:
            echo $FILES
            
       -
+         name: set path
+         run: |
+           echo "~/.local/bin/" >> $GITHUB_PATH
+           
+      -
         name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
