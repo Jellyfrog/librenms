@@ -76,6 +76,7 @@ class DBSetupTest extends DBTestCase
     public function testCheckDBCollation()
     {
         $collation = DB::connection($this->connection)->select(DB::raw("SELECT DEFAULT_CHARACTER_SET_NAME, DEFAULT_COLLATION_NAME FROM information_schema.SCHEMATA S WHERE schema_name = '$this->db_name' AND  ( DEFAULT_CHARACTER_SET_NAME != 'utf8' OR DEFAULT_COLLATION_NAME != 'utf8_unicode_ci')"));
+        dump($collation);
         if (isset($collation[0])) {
             $error = implode(' ', $collation[0]);
         } else {
