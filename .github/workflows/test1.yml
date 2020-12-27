@@ -95,6 +95,14 @@ jobs:
          run: |
            echo "/home/runner/.local/bin/" >> $GITHUB_PATH
            
+
+      - name: fix mysql db
+        env:
+          PORT: ${{ job.services.mysql.ports[3306] }}
+        run: | 
+          mysql -h"127.0.0.1" -P"$PORT" --user=librenms --password=librenms -e 'ALTER DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
+         
+        
       -
         name: Set up PHP
         uses: shivammathur/setup-php@v2
