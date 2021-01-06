@@ -49,4 +49,4 @@ jobs:
           keep_history: true
           build_dir: out
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_PAT: ${{ secrets.DOCS_TOKEN }}
