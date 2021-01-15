@@ -537,6 +537,13 @@ class Device extends BaseModel
         );
     }
 
+    public function scopePoller($query)
+    {
+        return $query->where('disabled', 0)
+            ->orderBy('last_polled_timetaken', 'DESC');
+
+    }
+
     // ---- Define Relationships ----
 
     public function accessPoints(): HasMany
