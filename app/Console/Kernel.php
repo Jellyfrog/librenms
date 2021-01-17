@@ -5,6 +5,8 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use LibreNMS\Util\Version;
+use App\Console\Commands\DevicePollerSchedulerCommand;
+use LibreNMS\Config;
 
 class Kernel extends ConsoleKernel
 {
@@ -25,8 +27,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        //TODO: Will fail if rrd.step is not even minutes
+        $device_poller_interval = Config::get('rrd.step') / 60;
+
+        $schedule
+        ->command(DevicePollerSchedulerCommand::class)
+        ->cron("*/{$device_poller_interval} * * * *");
     }
 
     /**
