@@ -4,13 +4,12 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\Device;
+use App\Models\Poller;
 use App\Jobs\PollDevice;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
 use Throwable;
 use LibreNMS\Config;
-use LibreNMS\Util\OS;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
 class DevicePollerSchedulerCommand extends Command
@@ -83,7 +82,7 @@ class DevicePollerSchedulerCommand extends Command
     {
         dump("batch catch()");
 
-        //TODO: Log
+        //TODO: Log?
         if($e instanceof \Illuminate\Queue\MaxAttemptsExceededException) {
             dump("Timeout reached!");
             // didnt make it in 5min time
@@ -98,11 +97,40 @@ class DevicePollerSchedulerCommand extends Command
         dump("batch finally()");
         dump("Started: $batch->createdAt");
         dump("Finished: $batch->finishedAt");
-        dump("Seconds: ". $batch->createdAt->diffInSeconds($batch->finishedAt));
-    //    dump($batch);
 
-        $devices_polled = $batch->totalJobs - $batch->failedJobs;
+        $total_time = $batch->createdAt->diffInSeconds($batch->finishedAt);
 
+        dump(sprintf("INFO: polled %s devices in %s seconds", $batch->totalJobs, $total_time));
+
+        $poller_id = str_replace("poller_", null, $batch->options["queue"]);
+
+        Poller::updateOrCreate(
+            ['id' => $poller_id],
+            [
+                'last_polled' => DB::raw('now()'),
+                'devices' => $batch->totalJobs,
+                'time_taken' => $total_time,
+            ]
+        );
+
+        /*
+        if total_time > step:
+        print(
+            "WARNING: the process took more than %s seconds to finish, you need faster hardware or more threads" % step)
+        print("INFO: in sequential style polling the elapsed time would have been: %s seconds" % real_duration)
+        for device in per_device_duration:
+            if per_device_duration[device] > step:
+                print("WARNING: device %s is taking too long: %s seconds" % (device, per_device_duration[device]))
+                show_stopper = True
+        if show_stopper:
+            print(
+                "ERROR: Some devices are taking more than %s seconds, the script cannot recommend you what to do." % step)
+        else:
+            recommend = int(total_time / step * amount_of_workers + 1)
+            print(
+                "WARNING: Consider setting a minimum of %d threads. (This does not constitute professional advice!)" % recommend)
+
+        */
 
     }
 
