@@ -30,5 +30,5 @@ class Poller extends Model
 {
     public $timestamps = false;
     protected $primaryKey = 'id';
-    protected $fillable = ['poller_name'];
+    protected $fillable = ['poller_name', 'last_polled', 'devices', 'time_taken'];
 }
