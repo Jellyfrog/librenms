@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Device;
 use App\Models\Poller;
+use App\Models\PollerGroup;
 use App\Jobs\PollDevice;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
@@ -63,75 +64,53 @@ class DevicePollerSchedulerCommand extends Command
            $poller_devices->map(function ($device) {
                 return new PollDevice($device, $this->option('debug'));
             })
-        )->then(function (Batch $batch) {
-            dump("batch then()");
-
-        })->catch(function (Batch $batch, Throwable $e) {
+        )
+        ->catch(function (Batch $batch, ?Throwable $e) {
             self::handleCatch($batch, $e);
-        })->finally(function (Batch $batch) {
+        })
+        ->finally(function (Batch $batch) {
             self::handleFinally($batch);
         })
         ->allowFailures()
         ->onQueue('poller_' . $poller_group)
         ->dispatch();
 
-        return $batch;
+        echo("INFO: starting the poller at $batch->createdAt");
     }
 
     private static function handleCatch($batch, $e)
     {
-        dump("batch catch()");
-
         //TODO: Log?
-        if($e instanceof \Illuminate\Queue\MaxAttemptsExceededException) {
-            dump("Timeout reached!");
-            // didnt make it in 5min time
-        } else {
-            // other errors
-            dump($e);
-        }
     }
 
     private static function handleFinally($batch)
     {
-        dump("batch finally()");
-        dump("Started: $batch->createdAt");
-        dump("Finished: $batch->finishedAt");
+        $time_total = $batch->createdAt->diffInSeconds($batch->finishedAt);
+        $devices_polled = $batch->totalJobs - $batch->failedJobs;
 
-        $total_time = $batch->createdAt->diffInSeconds($batch->finishedAt);
+        printf("INFO: polled %s devices in %s seconds", $devices_polled, $time_total);
 
-        dump(sprintf("INFO: polled %s devices in %s seconds", $batch->totalJobs, $total_time));
-
+        $group_name = 'Default';
         $poller_id = str_replace("poller_", null, $batch->options["queue"]);
 
+        if($poller_id > 0) {
+            $group_name = PollerGroup::find(
+                $poller_id,
+                ['group_name']
+            )->group_name;
+        }
+
         Poller::updateOrCreate(
-            ['id' => $poller_id],
+            ['poller_name' => $group_name],
             [
                 'last_polled' => DB::raw('now()'),
                 'devices' => $batch->totalJobs,
-                'time_taken' => $total_time,
+                'time_taken' => $time_total,
             ]
         );
 
-        /*
-        if total_time > step:
-        print(
-            "WARNING: the process took more than %s seconds to finish, you need faster hardware or more threads" % step)
-        print("INFO: in sequential style polling the elapsed time would have been: %s seconds" % real_duration)
-        for device in per_device_duration:
-            if per_device_duration[device] > step:
-                print("WARNING: device %s is taking too long: %s seconds" % (device, per_device_duration[device]))
-                show_stopper = True
-        if show_stopper:
-            print(
-                "ERROR: Some devices are taking more than %s seconds, the script cannot recommend you what to do." % step)
-        else:
-            recommend = int(total_time / step * amount_of_workers + 1)
-            print(
-                "WARNING: Consider setting a minimum of %d threads. (This does not constitute professional advice!)" % recommend)
-
-        */
-
+        if ($time_total > Config::get('rrd.step')) {
+            printf("WARNING: the process took more than %s seconds to finish, you need more workers!", $time_total);
+        }
     }
-
 }

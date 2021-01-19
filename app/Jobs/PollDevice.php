@@ -28,32 +28,11 @@ class PollDevice implements ShouldQueue
     public $tries = 1;
 
     /**
-     * The number of seconds the job can run before timing out.
-     *
-     * @var int
-     */
-    // TODO: should we set this? might be good for stuck jobs?
-    // needs to be set to whatever polling frequency we have, or slightly less?
-    public $timeout;
-
-    /**
      * Delete the job if its models no longer exist.
      *
      * @var bool
      */
     public $deleteWhenMissingModels = true;
-
-    /**
-     * Determine the time at which the job should timeout.
-     *
-     * @return \DateTime
-     */
-    public function retryUntil()
-    {
-        // TODO: This cannot be used alone, because it will override $this->tries,
-        // so it will just re-run the job as many times as it can if it fails.
-     //   return now()->addSeconds(300);
-    }
 
     /**
      * Create a new job instance.
@@ -64,8 +43,6 @@ class PollDevice implements ShouldQueue
     {
         $this->device = $device;
         $this->debug = $debug;
-        // Make job timeout 1 second before next one should run
-        $this->timeout = Config::get('rrd.step') - 1;
     }
 
     public function getCommand(): array
@@ -104,7 +81,6 @@ class PollDevice implements ShouldQueue
         }
 
         $proc = new Process($this->getCommand());
-        $proc->setTimeout($this->timeout);
         $proc->disableOutput();
         $proc->run();
 
