@@ -107,7 +107,7 @@ jobs:
       -
         name: Pip install
         run: |
-          python3 -m pip --upgrade --user snmpsim pylint python-memcached mysqlclient
+          python3 -m pip install --upgrade --user snmpsim pylint python-memcached mysqlclient
       -
         name: Composer validate
         run: |
