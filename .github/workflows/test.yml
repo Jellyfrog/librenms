@@ -20,7 +20,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
@@ -30,19 +30,23 @@ jobs:
             name: Unit
             skip-style-check: 1
             skip-web-check: 1
+            os: ubuntu-20.04
           -
             php-version: 7.4
             name: Style and Web
             skip-unit-check: 1
+            os: ubuntu-18.04
           -
             php-version: 7.3
             name: Unit
             skip-style-check: 1
             skip-web-check: 1
+            os: ubuntu-18.04
           -
             php-version: 7.3
             name: Style and Web
             skip-unit-check: 1
+            os: ubuntu-20.04
     services:
       mysql:
         image: mysql:5.7
@@ -78,6 +82,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           tools: composer,php-cs-fixer
+          extensions: curl, gd, json, mbstring, pcre, pdo, pdo_mysql, session, xml, zip
       -
         name: Get composer cache directory
         id: composer-cache
