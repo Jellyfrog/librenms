@@ -12,6 +12,9 @@ use Illuminate\Queue\SerializesModels;
 use App\Models\Device;
 use LibreNMS\Config;
 use Symfony\Component\Process\Process;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
+use App\Jobs\Middleware\MaxTries;
+
 
 class PollDevice implements ShouldQueue
 {
@@ -28,11 +31,32 @@ class PollDevice implements ShouldQueue
     public $tries = 1;
 
     /**
+     * The maximum number of unhandled exceptions to allow before failing.
+     *
+     * @var int
+     */
+    public $maxExceptions = 1;
+
+    /**
      * Delete the job if its models no longer exist.
      *
      * @var bool
      */
     public $deleteWhenMissingModels = true;
+
+    /**
+     * Get the middleware the job should pass through.
+     *
+     * @return array
+     */
+    public function middleware()
+    {
+        return [
+            (new WithoutOverlapping($this->device->device_id))
+                ->dontRelease()     // TODO: COMMENT
+                ->expireAfter(180), // TODO: Fix
+        ];
+    }
 
     /**
      * Create a new job instance.
@@ -45,13 +69,18 @@ class PollDevice implements ShouldQueue
         $this->debug = $debug;
     }
 
+    /**
+     *  Build command array
+     *
+     */
     public function getCommand(): array
     {
+        dump($this->debug);
         $output = $this->debug ?
             [
                 "-d",
                 ">>",
-                Config::get('log_dir') . "/poll_device_{$this->device->device_id}.log",
+                Config::get('log_dir') . "/poll_device_{$this->device->device_id}.log", // TODO: Replace with Log()... ?
             ]
             :
             [">> /dev/null"];
@@ -76,10 +105,12 @@ class PollDevice implements ShouldQueue
      */
     public function handle()
     {
-        if ($this->batch()->cancelled()) {
+        // Determine if the batch has been cancelled
+        if (optional($this->batch())->cancelled()) {
             return;
         }
 
+        // TODO: set timeout to X
         $proc = new Process($this->getCommand());
         $proc->disableOutput();
         $proc->run();
