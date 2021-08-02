@@ -15,6 +15,7 @@ use Symfony\Component\Process\Process;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use App\Jobs\Middleware\MaxTries;
 
+use Log;
 
 class PollDevice implements ShouldQueue
 {
@@ -52,6 +53,7 @@ class PollDevice implements ShouldQueue
     public function middleware()
     {
         return [
+            new MaxTries,
             (new WithoutOverlapping($this->device->device_id))
                 ->dontRelease()     // TODO: COMMENT
                 ->expireAfter(180), // TODO: Fix
@@ -75,7 +77,6 @@ class PollDevice implements ShouldQueue
      */
     public function getCommand(): array
     {
-        dump($this->debug);
         $output = $this->debug ?
             [
                 "-d",
@@ -109,6 +110,15 @@ class PollDevice implements ShouldQueue
         if (optional($this->batch())->cancelled()) {
             return;
         }
+
+        Log::error("running");
+
+        if($this->device->device_id == 1) {
+            sleep(10);
+        }
+
+        sleep(1);
+        return;
 
         // TODO: set timeout to X
         $proc = new Process($this->getCommand());

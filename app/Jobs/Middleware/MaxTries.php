@@ -2,8 +2,6 @@
 
 namespace App\Jobs\Middleware;
 
-use Illuminate\Support\Facades\Redis;
-
 class MaxTries
 {
     /**
@@ -18,12 +16,11 @@ class MaxTries
      */
     public function handle($job, $next)
     {
-	dump("maxtries");
-	if($job->tries > 0 && $job->attempts() >= $job->tries) {
-		dump("middlewere: should fail here");
-		$job->fail();
-		return;
-	}
-       $next($job);
+        dump("[MaxTries]");
+        if ($job->tries > 0 && $job->attempts() > $job->tries) {
+            $job->fail();
+            return;
+        }
+        $next($job);
     }
 }

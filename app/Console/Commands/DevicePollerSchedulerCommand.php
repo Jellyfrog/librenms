@@ -46,6 +46,7 @@ class DevicePollerSchedulerCommand extends Command
      */
     public function handle()
     {
+        // TODO: Do it lazy way; https://freek.dev/1734-how-to-group-queued-jobs-using-laravel-8s-new-batch-class
         Device::select(['device_id', 'poller_group'])
             ->where('disabled', 0)
             ->orderByDesc('last_polled_timetaken')
@@ -75,20 +76,33 @@ class DevicePollerSchedulerCommand extends Command
         ->onQueue('poller_' . $poller_group)
         ->dispatch();
 
+        dump($batch);
+
         echo("INFO: starting the poller at $batch->createdAt");
     }
 
-    private static function handleCatch($batch, $e)
+    private static function handleCatch(Batch $batch, $e)
     {
         //TODO: Log?
     }
 
-    private static function handleFinally($batch)
+    private static function handleFinally(Batch $batch)
     {
         $time_total = $batch->createdAt->diffInSeconds($batch->finishedAt);
         $devices_polled = $batch->totalJobs - $batch->failedJobs;
 
-        printf("INFO: polled %s devices in %s seconds", $devices_polled, $time_total);
+        printf("INFO: polled %s devices in %s seconds\n", $devices_polled, $time_total);
+        dump($batch->id);
+
+dump($batch->toArray());
+dump($batch->name);
+dump($batch->totalJobs);
+dump($batch->pendingJobs);
+dump($batch->failedJobs);
+dump($batch->processedJobs());
+dump($batch->progress());
+dump($batch->finished());
+dump($batch->cancelled());
 
         $group_name = 'Default';
         $poller_id = str_replace("poller_", null, $batch->options["queue"]);
