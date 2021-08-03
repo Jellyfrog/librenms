@@ -28,13 +28,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //TODO: Will fail if rrd.step is not even minutes
-        $device_poller_interval = Config::get('rrd.step') / 60;
-
-        $schedule
-        ->command(DevicePollerSchedulerCommand::class)
-        ->cron("*/{$device_poller_interval} * * * *");
-
+        $this->schedulePolling($schedule);
 
         $schedule->command('queue:prune-batches')->daily();
     }
@@ -79,5 +73,22 @@ class Kernel extends ConsoleKernel
         }
 
         return parent::handle($input, $output);
+    }
+
+    /**
+     * Handle the scheduling of discover + polling
+     */
+    private function schedulePolling($schedule) {
+
+        //TODO: Will fail if rrd.step is not even minutes
+        //TODO: replace with other config value? polling.interval, discovery.interval ?
+        $device_poller_interval = Config::get('rrd.step') / 60;
+
+        // Polling
+        $schedule
+        ->command(DevicePollerSchedulerCommand::class)
+        ->cron("*/{$device_poller_interval} * * * *");
+
+        // Discovery
     }
 }
