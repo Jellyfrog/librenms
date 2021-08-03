@@ -16,8 +16,6 @@ use Illuminate\Queue\Middleware\WithoutOverlapping;
 use App\Jobs\Middleware\MaxTries;
 use Illuminate\Support\Facades\Cache;
 
-use Log;
-
 class PollDevice implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -48,7 +46,7 @@ class PollDevice implements ShouldQueue
      */
     public function retryUntil()
     {
-        return now()->addSeconds(5);
+        return now()->addMinutes(Config::get('schedule.polling'));
     }
 
     /**
@@ -68,8 +66,8 @@ class PollDevice implements ShouldQueue
         return [
             new MaxTries,
             (new WithoutOverlapping($this->device->device_id))
-                ->dontRelease()                          // Delete the overlapping job
-                ->expireAfter(PHP_PROCESS_TIMEOUT + 10), // TTL of the lock
+                ->dontRelease()                                // Delete the overlapping job
+                ->expireAfter(self::PHP_PROCESS_TIMEOUT + 10), // TTL of the lock
         ];
     }
 
@@ -98,7 +96,7 @@ class PollDevice implements ShouldQueue
         }
 
         $process = new Process($this->getCommand());
-        $process->setTimeout(PHP_PROCESS_TIMEOUT); // TODO: 1 hour timeout for now
+        $process->setTimeout(self::PHP_PROCESS_TIMEOUT);
         $process->disableOutput();
         $process->run();
 

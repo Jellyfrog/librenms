@@ -65,6 +65,7 @@ return [
             'snmp' => 'SNMP',
             'poller_modules' => 'Poller Modules',
             'interface_types' => 'Interface Type by RFC 7224',
+            'schedule' => 'Scheduling',
         ],
         'system' => [
             'cleanup' => 'Cleanup',
@@ -1223,6 +1224,20 @@ return [
         'rrdtool_tune' => [
             'description' => 'Tune all rrd port files to use max values',
             'help' => 'Auto tune maximum value for rrd port files',
+        ],
+        'schedule' => [
+            'discovery' => [
+                'description' => 'Discovery interval (Hours)',
+                'help' => 'Discovery interval in hours',
+            ],
+            'discovery_new' => [
+                'description' => 'New device discovery interval (Minutes)',
+                'help' => 'New device discovery interval in minutes',
+            ],
+            'polling' => [
+                'description' => 'Polling interval (Minutes)',
+                'help' => 'Polling interval in minutes. If you change this, please set rrd.step to the same value but in seconds, 5 minutes = 300 seconds.',
+            ],
         ],
         'sfdp' => [
             'description' => 'Path to sfdp',

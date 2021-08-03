@@ -78,16 +78,16 @@ class Kernel extends ConsoleKernel
     /**
      * Handle the scheduling of discover + polling
      */
-    private function schedulePolling($schedule) {
+    private function schedulePolling(Schedule $schedule): void {
 
-        //TODO: Will fail if rrd.step is not even minutes
-        //TODO: replace with other config value? polling.interval, discovery.interval ?
-        $device_poller_interval = Config::get('rrd.step') / 60;
+        $poller_interval        = Config::get('schedule.polling');
+        $discovery_interval     = Config::get('schedule.discovery');
+        $discovery_new_interval = Config::get('schedule.discovery_new');
 
         // Polling
         $schedule
         ->command(DevicePollerSchedulerCommand::class)
-        ->cron("*/{$device_poller_interval} * * * *");
+        ->cron("*/{$poller_interval} * * * *");
 
         // Discovery
     }

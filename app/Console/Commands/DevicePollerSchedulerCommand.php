@@ -5,15 +5,12 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Models\Device;
 use App\Models\Poller;
-use App\Models\PollerGroup;
 use App\Jobs\PollDevice;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
 use Throwable;
 use LibreNMS\Config;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
-
 
 class DevicePollerSchedulerCommand extends Command
 {
@@ -85,7 +82,7 @@ class DevicePollerSchedulerCommand extends Command
         ->dispatch();
 
         // Setup key for counting successful jobb with a long enough TTL
-        Cache::put("librenms-poller:" . $batch->id, 0, Config::get('rrd.step') * 10);
+        Cache::put("librenms-poller:" . $batch->id, 0, now()->addMinutes(Config::get('schedule.polling') * 10));
 
         dump($batch);
 
@@ -140,7 +137,7 @@ class DevicePollerSchedulerCommand extends Command
 
         }
 
-        if ($time_total > Config::get('rrd.step')) {
+        if ($time_total > Config::get('schedule.polling')) {
             printf("WARNING: the process took more than %s seconds to finish, you need more workers!", $time_total);
         }
     }

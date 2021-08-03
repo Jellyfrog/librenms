@@ -4787,6 +4787,36 @@
             "order": 1,
             "type": "boolean"
         },
+        "schedule.discovery": {
+            "default": 6,
+            "group": "poller",
+            "section": "schedule",
+            "order": 1,
+            "type": "integer",
+            "validate": {
+                "value": "integer|min:1"
+            }
+        },
+        "schedule.discovery_new": {
+            "default": 5,
+            "group": "poller",
+            "section": "schedule",
+            "order": 2,
+            "type": "integer",
+            "validate": {
+                "value": "integer|min:1"
+            }
+        },
+        "schedule.polling": {
+            "default": 5,
+            "group": "poller",
+            "section": "schedule",
+            "order": 0,
+            "type": "integer",
+            "validate": {
+                "value": "integer|min:1"
+            }
+        },
         "sensors.guess_limits": {
             "default": true,
             "type": "boolean"
