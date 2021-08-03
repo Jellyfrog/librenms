@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Bus;
 use Throwable;
 use LibreNMS\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+
 
 class DevicePollerSchedulerCommand extends Command
 {
@@ -46,10 +48,10 @@ class DevicePollerSchedulerCommand extends Command
      */
     public function handle()
     {
-        // TODO: Do it lazy way; https://freek.dev/1734-how-to-group-queued-jobs-using-laravel-8s-new-batch-class
         Device::select(['device_id', 'poller_group'])
-            ->where('disabled', 0)
+            ->shouldBePolled()
             ->orderByDesc('last_polled_timetaken')
+            ->with('pollerGroup')
             ->get()
             ->groupBy('poller_group')
             ->each(function ($poller_devices, $poller_group) {
@@ -59,8 +61,12 @@ class DevicePollerSchedulerCommand extends Command
         return 0;
     }
 
-    private function dispatchJobs($poller_group, $poller_devices)
+    private function dispatchJobs($poller_group_id, $poller_devices)
     {
+        $poller_group_name =
+            optional($poller_devices[0]->pollerGroup)->group_name
+            ?? 'Default';
+
         $batch = Bus::batch(
            $poller_devices->map(function ($device) {
                 return new PollDevice($device, $this->option('debug'));
@@ -73,51 +79,51 @@ class DevicePollerSchedulerCommand extends Command
             self::handleFinally($batch);
         })
         ->allowFailures()
-        ->onQueue('poller_' . $poller_group)
+        ->onConnection('polling')
+        ->onQueue('poller_' . $poller_group_id)
+        ->name($poller_group_name)
         ->dispatch();
+
+        // Setup key for counting successful jobb with a long enough TTL
+        Cache::put("librenms-poller:" . $batch->id, 0, Config::get('rrd.step') * 10);
 
         dump($batch);
 
-        echo("INFO: starting the poller at $batch->createdAt");
+        dump("INFO: Starting the poller for $batch->name at $batch->createdAt");
     }
 
     private static function handleCatch(Batch $batch, $e)
     {
         //TODO: Log?
+
+        dump("------------------HANDLE CATCH----------------");
+        dump($e->getMessage());
+        dump("------------------!HANDLE CATCH----------------");
     }
 
     private static function handleFinally(Batch $batch)
     {
         $time_total = $batch->createdAt->diffInSeconds($batch->finishedAt);
-        $devices_polled = $batch->totalJobs - $batch->failedJobs;
+        $devices_polled = Cache::get("librenms-poller:" . $batch->id);
+        //$devices_polled = $batch->totalJobs - $batch->failedJobs;
 
-        printf("INFO: polled %s devices in %s seconds\n", $devices_polled, $time_total);
-        dump($batch->id);
 
-dump($batch->toArray());
-dump($batch->name);
-dump($batch->totalJobs);
-dump($batch->pendingJobs);
-dump($batch->failedJobs);
-dump($batch->processedJobs());
-dump($batch->progress());
-dump($batch->finished());
-dump($batch->cancelled());
+        printf("INFO: polled %d/%d devices in %s seconds\n", $devices_polled, $batch->totalJobs, $time_total);
 
-        $group_name = 'Default';
-        $poller_id = str_replace("poller_", null, $batch->options["queue"]);
-
+        /*
+        $poller_id = (int) str_replace("poller_", null, $batch->options["queue"]);
         if($poller_id > 0) {
             $group_name = PollerGroup::find(
                 $poller_id,
                 ['group_name']
             )->group_name;
         }
+        */
 
         Poller::updateOrCreate(
-            ['poller_name' => $group_name],
+            ['poller_name' => $batch->name],
             [
-                'last_polled' => DB::raw('now()'),
+                'last_polled' => now(),
                 'devices' => $batch->totalJobs,
                 'time_taken' => $time_total,
             ]

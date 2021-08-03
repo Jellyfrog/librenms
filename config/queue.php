@@ -70,10 +70,18 @@ return [
         'redis' => [
             'driver' => 'redis',
             'connection' => 'default',
-            'queue' => env('REDIS_QUEUE', 'default,poller_0'),
+            'queue' => env('REDIS_QUEUE', 'default'),
             'retry_after' => 90,
             'block_for' => null,
         ],
+
+        'polling' => [
+            'driver' => env('POLLING_DRIVER','redis'),
+            'connection' => env('POLLING_CONNECTION', 'polling'),
+            'queue' => env('POLLING_QUEUES', 'poller_0'),
+            'retry_after' => 90,
+            'block_for' => null,
+        ],        
 
     ],
 

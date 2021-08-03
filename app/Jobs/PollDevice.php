@@ -14,12 +14,15 @@ use LibreNMS\Config;
 use Symfony\Component\Process\Process;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use App\Jobs\Middleware\MaxTries;
+use Illuminate\Support\Facades\Cache;
 
 use Log;
 
 class PollDevice implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    const PHP_PROCESS_TIMEOUT = 3600;
 
     private $device;
     private $debug;
@@ -39,6 +42,16 @@ class PollDevice implements ShouldQueue
     public $maxExceptions = 1;
 
     /**
+     * Determine the time at which the job should timeout.
+     *
+     * @return \DateTime
+     */
+    public function retryUntil()
+    {
+        return now()->addSeconds(5);
+    }
+
+    /**
      * Delete the job if its models no longer exist.
      *
      * @var bool
@@ -55,8 +68,8 @@ class PollDevice implements ShouldQueue
         return [
             new MaxTries,
             (new WithoutOverlapping($this->device->device_id))
-                ->dontRelease()     // TODO: COMMENT
-                ->expireAfter(180), // TODO: Fix
+                ->dontRelease()                          // Delete the overlapping job
+                ->expireAfter(PHP_PROCESS_TIMEOUT + 10), // TTL of the lock
         ];
     }
 
@@ -69,34 +82,7 @@ class PollDevice implements ShouldQueue
     {
         $this->device = $device;
         $this->debug = $debug;
-    }
 
-    /**
-     *  Build command array
-     *
-     */
-    public function getCommand(): array
-    {
-        $output = $this->debug ?
-            [
-                "-d",
-                ">>",
-                Config::get('log_dir') . "/poll_device_{$this->device->device_id}.log", // TODO: Replace with Log()... ?
-            ]
-            :
-            [">> /dev/null"];
-
-        $command = [
-            '/usr/bin/env',
-            'php',
-            Config::get('install_dir') . '/poller.php',
-            '-h',
-            $this->device->device_id,
-        ];
-        $command = array_merge($command, $output);
-        $command[] = "2>&1";
-
-        return $command;
     }
 
     /**
@@ -111,22 +97,50 @@ class PollDevice implements ShouldQueue
             return;
         }
 
-        Log::error("running");
+        $process = new Process($this->getCommand());
+        $process->setTimeout(PHP_PROCESS_TIMEOUT); // TODO: 1 hour timeout for now
+        $process->disableOutput();
+        $process->run();
 
-        if($this->device->device_id == 1) {
-            sleep(10);
+        if ($process->getExitCode() > 0) {
+            return $this->job->fail();
         }
 
-        sleep(1);
-        return;
+        /**
+         * Record devices actually polled
+         *
+         * This is needed due to not possible to distinguish between
+         * jobs filtered by middleware and actual succesful jobs
+         */
+        Cache::increment("librenms-poller:" . $this->batch()->id);
+    }
 
-        // TODO: set timeout to X
-        $proc = new Process($this->getCommand());
-        $proc->disableOutput();
-        $proc->run();
+    /**
+     *  Build command array
+     *
+     */
+    private function getCommand(): array
+    {
+        $command = [
+            '/usr/bin/env',
+            'php',
+            Config::get('install_dir') . '/poller.php',
+            '-h',
+            $this->device->device_id,
+        ];
 
-        if ($proc->getExitCode() > 0) {
-            $this->job->fail();
-        }
+        $output = $this->debug ?
+            [
+                "-d",
+                ">>",
+                Config::get('log_dir') . "/poll_device_{$this->device->device_id}.log", // TODO: Replace with Log()... ?
+            ]
+            :
+            [">> /dev/null"];
+
+        $command = array_merge($command, $output);
+        $command[] = "2>&1";
+
+        return $command;
     }
 }

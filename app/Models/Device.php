@@ -399,6 +399,16 @@ class Device extends BaseModel
 
     // ---- Query scopes ----
 
+    /**
+     * Devices that should be included in the polling task
+     */
+    public function scopeShouldBePolled($query)
+    {
+        return $query->where([
+            ['disabled', '=', 0],
+        ]);
+    }    
+
     public function scopeIsUp($query)
     {
         return $query->where([
@@ -839,4 +849,9 @@ class Device extends BaseModel
     {
         return $this->hasMany(\App\Models\WirelessSensor::class, 'device_id');
     }
+
+    public function pollerGroup(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\PollerGroup::class, 'poller_group', 'id');
+    }    
 }

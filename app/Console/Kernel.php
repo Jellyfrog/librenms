@@ -34,6 +34,9 @@ class Kernel extends ConsoleKernel
         $schedule
         ->command(DevicePollerSchedulerCommand::class)
         ->cron("*/{$device_poller_interval} * * * *");
+
+
+        $schedule->command('queue:prune-batches')->daily();
     }
 
     /**
