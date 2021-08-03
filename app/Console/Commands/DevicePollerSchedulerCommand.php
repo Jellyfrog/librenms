@@ -129,6 +129,17 @@ class DevicePollerSchedulerCommand extends Command
             ]
         );
 
+
+        // TODO: FIX ME
+        if($batch->failedJobs > 0) {
+
+        }
+
+        // TODO: FIX ME
+        if ($devices_polled < $batch->totalJobs) {
+
+        }
+
         if ($time_total > Config::get('rrd.step')) {
             printf("WARNING: the process took more than %s seconds to finish, you need more workers!", $time_total);
         }
