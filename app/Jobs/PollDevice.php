@@ -103,7 +103,8 @@ class PollDevice implements ShouldQueue
         $process->run();
 
         if ($process->getExitCode() > 0) {
-            return $this->job->fail();
+            $this->job->fail();
+            return;
         }
 
         /**
