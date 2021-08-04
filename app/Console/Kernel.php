@@ -81,12 +81,12 @@ class Kernel extends ConsoleKernel
     private function schedulePolling(Schedule $schedule): void {
 
         // Nothing to do if Laravel based polling isn't enabled
-        if (!self::get('polling.laravel')) {
-            return;
+        if (!Config::get('polling.laravel')) {
+           // return;
         }
 
-        $poller_interval    = Config::get('schedule.polling');
-        $discovery_interval = Config::get('schedule.discovery');
+        $poller_interval    = Config::get('schedule.polling', 5);
+        $discovery_interval = Config::get('schedule.discovery', 1);
 
         // Polling
         $schedule

@@ -4592,6 +4592,13 @@
             "default": true,
             "type": "boolean"
         },
+        "polling.laravel": {
+            "order": 0,
+            "group": "poller",
+            "section": "laravel",
+            "default": false,
+            "type": "boolean"
+        },
         "port_descr_parser": {
             "default": "includes/port-descr-parser.inc.php",
             "type": "text"
@@ -4790,8 +4797,8 @@
         "schedule.discovery": {
             "default": 6,
             "group": "poller",
-            "section": "schedule",
-            "order": 1,
+            "section": "laravel",
+            "order": 2,
             "type": "integer",
             "validate": {
                 "value": "integer|min:1"
@@ -4800,8 +4807,8 @@
         "schedule.discovery_new": {
             "default": 5,
             "group": "poller",
-            "section": "schedule",
-            "order": 2,
+            "section": "laravel",
+            "order": 3,
             "type": "integer",
             "validate": {
                 "value": "integer|min:1"
@@ -4810,8 +4817,8 @@
         "schedule.polling": {
             "default": 5,
             "group": "poller",
-            "section": "schedule",
-            "order": 0,
+            "section": "laravel",
+            "order": 1,
             "type": "integer",
             "validate": {
                 "value": "integer|min:1"

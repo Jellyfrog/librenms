@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Bus;
 use Throwable;
 use LibreNMS\Config;
 use Illuminate\Support\Facades\Cache;
+use Log;
 
 class ScheduleDeviceDiscoveryCommand extends Command
 {
@@ -127,9 +128,7 @@ class ScheduleDeviceDiscoveryCommand extends Command
         $devices_polled = Cache::get("librenms-poller:" . $batch->id);
         //$devices_polled = $batch->totalJobs - $batch->failedJobs;
 
-
-        printf("INFO DISCOVERY: Discovered %d/%d devices in %s seconds\n", $devices_polled, $batch->totalJobs, $time_total);
-
+        Log::info("Discovered {$devices_polled}/{$batch->totalJobs} devices in {$time_totaly} seconds");
 
         // TODO: FIX ME
         if($batch->failedJobs > 0) {
@@ -142,7 +141,7 @@ class ScheduleDeviceDiscoveryCommand extends Command
         }
 
         if ($time_total > Config::get('schedule.polling')) {
-            printf("WARNING: the process took more than %s seconds to finish, you need more workers!", $time_total);
+            Log::error("WARNING: the process took more than {$time_total} seconds to finish, you need more workers!");
         }
     }
 }

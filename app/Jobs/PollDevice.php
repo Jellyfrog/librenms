@@ -21,8 +21,8 @@ class PollDevice implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    const PHP_PROCESS_TIMEOUT = 3600;
-
+    private $php_process_timeout;
+    private $time_start;
     private $device;
     private $debug;
 
@@ -47,7 +47,7 @@ class PollDevice implements ShouldQueue
      */
     public function retryUntil()
     {
-        //return $this->time_start->addMinutes(Config::get('schedule.polling'));
+        return $this->time_start->addSeconds(Config::getPollingInterval());
     }
 
     /**
@@ -67,8 +67,8 @@ class PollDevice implements ShouldQueue
         return [
             new MaxTries,
             (new WithoutOverlapping($this->device->device_id))
-                ->dontRelease()                                // Delete the overlapping job
-                ->expireAfter(self::PHP_PROCESS_TIMEOUT + 10), // TTL of the lock
+                ->dontRelease()                            // Delete the overlapping job
+                ->expireAfter($this->php_process_timeout), // TTL of the lock
         ];
     }
 
@@ -80,9 +80,12 @@ class PollDevice implements ShouldQueue
     public function __construct(Device $device, Carbon $time_start, bool $debug = false)
     {
         $this->device = $device;
-        $this->time_start = $time_start;
         $this->debug = $debug;
+        $this->time_start = $time_start;
 
+        // When poller.php process should timeout
+        // 3 times the polling interval seems like a sane value
+        $this->php_process_timeout = Config::getPollingInterval() * 3;
     }
 
     /**
@@ -97,9 +100,8 @@ class PollDevice implements ShouldQueue
             return;
         }
 
-
         $process = new Process($this->getCommand());
-        $process->setTimeout(self::PHP_PROCESS_TIMEOUT);
+        $process->setTimeout($this->php_process_timeout);
         $process->disableOutput();
         $process->run();
 
@@ -117,7 +119,9 @@ class PollDevice implements ShouldQueue
          * This is needed due to not possible to distinguish between
          * jobs filtered by middleware and actual succesful jobs
          */
-        Cache::increment("librenms-poller:" . $this->batch()->id);
+        if ($this->batch()) {
+            Cache::increment("librenms-poller:" . $this->batch()->id);
+        }
     }
 
     /**
