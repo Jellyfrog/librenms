@@ -55,7 +55,7 @@ return [
         ],
         'poller' => [
             'availability' => 'Device Availability',
-            'distributed' => 'Distributed Poller',
+            'distributed' => 'Distributed Poller (Python based)',
             'graphite' => 'Datastore: Graphite',
             'influxdb' => 'Datastore: InfluxDB',
             'opentsdb' => 'Datastore: OpenTSDB',
@@ -65,7 +65,7 @@ return [
             'snmp' => 'SNMP',
             'poller_modules' => 'Poller Modules',
             'interface_types' => 'Interface Type by RFC 7224',
-            'schedule' => 'Scheduling',
+            'laravel' => 'NextGen Poller (Laravel based)',
         ],
         'system' => [
             'cleanup' => 'Cleanup',
@@ -1144,6 +1144,12 @@ return [
             ],
             'mpls' => [
                 'description' => 'MPLS',
+            ],
+        ],
+        'polling' => [
+            'laravel' => [
+                'description' => 'Enable',
+                'help' => 'You must setup your workers! See https://docs.librenms.org/TODO',
             ],
         ],
         'ports_fdb_purge' => [
