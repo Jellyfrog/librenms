@@ -27,7 +27,7 @@ if (isset($searchPhrase) && ! empty($searchPhrase)) {
 }
 
 if ($vars['type'] == 'unpolled') {
-    $overdue = (int) (Config::get('rrd.step', 300) * 1.2);
+    $overdue = (int) (Config::getPollingInterval() * 1.2);
     $sql .= " AND `last_polled` <= DATE_ADD(NOW(), INTERVAL - $overdue SECOND)";
 }
 

@@ -6,7 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use LibreNMS\Util\Debug;
 use LibreNMS\Util\Version;
-use App\Console\Commands\DevicePollerSchedulerCommand;
+use App\Console\Commands\ScheduleDevicePollerCommand;
 use LibreNMS\Config;
 
 class Kernel extends ConsoleKernel
@@ -80,15 +80,20 @@ class Kernel extends ConsoleKernel
      */
     private function schedulePolling(Schedule $schedule): void {
 
-        $poller_interval        = Config::get('schedule.polling');
-        $discovery_interval     = Config::get('schedule.discovery');
-        $discovery_new_interval = Config::get('schedule.discovery_new');
+        // Nothing to do if Laravel based polling isn't enabled
+        if (!self::get('polling.laravel')) {
+            return;
+        }
+
+        $poller_interval    = Config::get('schedule.polling');
+        $discovery_interval = Config::get('schedule.discovery');
 
         // Polling
         $schedule
-        ->command(DevicePollerSchedulerCommand::class)
+        ->command(ScheduleDevicePollerCommand::class)
         ->cron("*/{$poller_interval} * * * *");
 
         // Discovery
+        // TODO :)
     }
 }

@@ -13,11 +13,11 @@ use LibreNMS\Config;
 
 class PollerController extends Controller
 {
-    public $rrdstep;
+    public $polling_interval;
 
     public function __construct()
     {
-        $this->rrdstep = Config::get('rrd.step');
+        $this->polling_interval = Config::getPollingInterval();
     }
 
     public function logTab(Request $request)
@@ -77,7 +77,7 @@ class PollerController extends Controller
         $since_last_poll = Carbon::parse($last)->diffInSeconds();
 
         $poller->row_class = $this->checkTimeSinceLastPoll($since_last_poll);
-        $poller->long_not_polled = (\Auth::user()->hasGlobalAdmin() && ($since_last_poll > ($this->rrdstep * 2)));
+        $poller->long_not_polled = (\Auth::user()->hasGlobalAdmin() && ($since_last_poll > ($this->polling_interval * 2)));
 
         return $poller;
     }
@@ -98,9 +98,9 @@ class PollerController extends Controller
 
     private function checkTimeSinceLastPoll($seconds)
     {
-        if ($seconds >= $this->rrdstep) {
+        if ($seconds >= $this->polling_interval) {
             return 'danger';
-        } elseif ($seconds >= ($this->rrdstep * 0.95)) {
+        } elseif ($seconds >= ($this->polling_interval * 0.95)) {
             return 'warning';
         }
 

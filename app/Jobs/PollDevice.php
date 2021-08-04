@@ -15,6 +15,7 @@ use Symfony\Component\Process\Process;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use App\Jobs\Middleware\MaxTries;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Carbon;
 
 class PollDevice implements ShouldQueue
 {
@@ -46,7 +47,7 @@ class PollDevice implements ShouldQueue
      */
     public function retryUntil()
     {
-        return now()->addMinutes(Config::get('schedule.polling'));
+        //return $this->time_start->addMinutes(Config::get('schedule.polling'));
     }
 
     /**
@@ -61,7 +62,7 @@ class PollDevice implements ShouldQueue
      *
      * @return array
      */
-    public function middleware()
+    public function middleware(): array
     {
         return [
             new MaxTries,
@@ -76,9 +77,10 @@ class PollDevice implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Device $device, bool $debug = false)
+    public function __construct(Device $device, Carbon $time_start, bool $debug = false)
     {
         $this->device = $device;
+        $this->time_start = $time_start;
         $this->debug = $debug;
 
     }
@@ -88,19 +90,23 @@ class PollDevice implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         // Determine if the batch has been cancelled
         if (optional($this->batch())->cancelled()) {
             return;
         }
 
+
         $process = new Process($this->getCommand());
         $process->setTimeout(self::PHP_PROCESS_TIMEOUT);
         $process->disableOutput();
         $process->run();
 
+        // TODO: exit code 6 means "unrechable device"
+
         if ($process->getExitCode() > 0) {
+            dump("exit code:" . $process->getExitCode());
             $this->job->fail();
             return;
         }

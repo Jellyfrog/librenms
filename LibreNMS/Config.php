@@ -548,4 +548,8 @@ class Config
         self::set('db_port', config("database.connections.$db.port", 3306));
         self::set('db_socket', config("database.connections.$db.unix_socket"));
     }
+
+    public static function getPollingInterval(): int {
+        return self::get('polling.laravel') ? (self::get('schedule.polling', 5) * 60) : self::get('rrd.step', 300);
+    }
 }

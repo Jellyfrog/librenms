@@ -412,8 +412,8 @@ function poll_device($device, $force_module = false)
         echo "\nPolled in $device_time seconds\n";
 
         // check if the poll took to long and log an event
-        if ($device_time > Config::get('rrd.step')) {
-            log_event('Polling took longer than ' . round(Config::get('rrd.step') / 60, 2) .
+        if ($device_time > Config::getPollingInterval()) {
+            log_event('Polling took longer than ' . round(Config::getPollingInterval() / 60, 2) .
                 ' minutes!  This will cause gaps in graphs.', $device, 'system', 5);
         }
 

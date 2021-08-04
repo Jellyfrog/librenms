@@ -12,14 +12,16 @@ use Throwable;
 use LibreNMS\Config;
 use Illuminate\Support\Facades\Cache;
 
-class DevicePollerSchedulerCommand extends Command
+class ScheduleDeviceDiscoveryCommand extends Command
 {
+    protected $time_start;
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'poller:devices:schedule {--debug}';
+    protected $signature = 'schedule:device:discovery {--debug}';
 
     /**
      * The console command description.
@@ -35,6 +37,9 @@ class DevicePollerSchedulerCommand extends Command
      */
     public function __construct()
     {
+        // Save what interval this job belongs to
+        $this->time_start = now()->startOfMinute();
+
         parent::__construct();
     }
 
@@ -45,10 +50,7 @@ class DevicePollerSchedulerCommand extends Command
      */
     public function handle()
     {
-        Device::select(['device_id', 'poller_group'])
-            ->shouldBePolled()
-            ->orderByDesc('last_polled_timetaken')
-            ->with('pollerGroup')
+        static::getDeviceQuery()
             ->get()
             ->groupBy('poller_group')
             ->each(function ($poller_devices, $poller_group) {
@@ -58,7 +60,14 @@ class DevicePollerSchedulerCommand extends Command
         return 0;
     }
 
-    private function dispatchJobs($poller_group_id, $poller_devices)
+    public static function getDeviceQuery() {
+        return Device::select(['device_id', 'poller_group'])
+            ->shouldBeDiscovered()
+            ->orderByDesc('last_polled_timetaken')
+            ->with('pollerGroup');
+    }
+
+    public function dispatchJobs($poller_group_id, $poller_devices)
     {
         $poller_group_name =
             optional($poller_devices[0]->pollerGroup)->group_name
@@ -66,19 +75,15 @@ class DevicePollerSchedulerCommand extends Command
 
         $batch = Bus::batch(
            $poller_devices->map(function ($device) {
-                return new PollDevice($device, $this->option('debug'));
+                return $this->getJob($device, $this->time_start, $this->option('debug'));
             })
         )
-        ->catch(function (Batch $batch, ?Throwable $e) {
-            self::handleCatch($batch, $e);
-        })
-        ->finally(function (Batch $batch) {
-            self::handleFinally($batch);
-        })
         ->allowFailures()
         ->onConnection('polling')
         ->onQueue('poller_' . $poller_group_id)
         ->name($poller_group_name)
+        ->catch(static::getCatchHandler())
+        ->finally(static::getFinallyHandler())
         ->dispatch();
 
         // Setup key for counting successful jobb with a long enough TTL
@@ -89,42 +94,41 @@ class DevicePollerSchedulerCommand extends Command
         dump("INFO: Starting the poller for $batch->name at $batch->createdAt");
     }
 
-    private static function handleCatch(Batch $batch, $e)
-    {
-        //TODO: Log?
-
-        dump("------------------HANDLE CATCH----------------");
-        dump($e->getMessage());
-        dump("------------------!HANDLE CATCH----------------");
+    /**
+     * Set the exception catch handler
+     */
+    public static function getCatchHandler() {
+        return function (Batch $batch, ?Throwable $e) {
+            static::handleCatch($batch, $e);
+        };
     }
 
-    private static function handleFinally(Batch $batch)
+    /**
+     * Set the finally handler
+     */
+    public static function getFinallyHandler() {
+        return function (Batch $batch, ?Throwable $e) {
+            static::handleFinally($batch, $e);
+        };
+    }
+
+    public function getJob(...$args) {
+        return new DiscoverDevice(...$args);
+    }
+
+    public static function handleCatch(Batch $batch, $e)
+    {
+        Log::error($e);
+    }
+
+    public static function handleFinally(Batch $batch)
     {
         $time_total = $batch->createdAt->diffInSeconds($batch->finishedAt);
         $devices_polled = Cache::get("librenms-poller:" . $batch->id);
         //$devices_polled = $batch->totalJobs - $batch->failedJobs;
 
 
-        printf("INFO: polled %d/%d devices in %s seconds\n", $devices_polled, $batch->totalJobs, $time_total);
-
-        /*
-        $poller_id = (int) str_replace("poller_", null, $batch->options["queue"]);
-        if($poller_id > 0) {
-            $group_name = PollerGroup::find(
-                $poller_id,
-                ['group_name']
-            )->group_name;
-        }
-        */
-
-        Poller::updateOrCreate(
-            ['poller_name' => $batch->name],
-            [
-                'last_polled' => now(),
-                'devices' => $batch->totalJobs,
-                'time_taken' => $time_total,
-            ]
-        );
+        printf("INFO DISCOVERY: Discovered %d/%d devices in %s seconds\n", $devices_polled, $batch->totalJobs, $time_total);
 
 
         // TODO: FIX ME

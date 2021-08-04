@@ -400,14 +400,22 @@ class Device extends BaseModel
     // ---- Query scopes ----
 
     /**
-     * Devices that should be included in the polling task
+     * Devices that should be included in the discovery task
      */
-    public function scopeShouldBePolled($query)
+    public function scopeShouldBeDiscovered($query)
     {
         return $query->where([
             ['disabled', '=', 0],
         ]);
-    }    
+    }
+
+    /**
+     * Devices that should be included in the polling task
+     */
+    public function scopeShouldBePolled($query)
+    {
+        return $this->scopeShouldBeDiscovered($query);
+    }
 
     public function scopeIsUp($query)
     {
@@ -853,5 +861,5 @@ class Device extends BaseModel
     public function pollerGroup(): BelongsTo
     {
         return $this->belongsTo(\App\Models\PollerGroup::class, 'poller_group', 'id');
-    }    
+    }
 }
