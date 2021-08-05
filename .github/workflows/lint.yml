@@ -42,7 +42,11 @@ jobs:
       -
         name: Determine added files
         run: |
+<<<<<<< HEAD
           ADDED_FILES=$(git diff --name-only --diff-filter="A" origin/master | tr '\n' ' '|sed 's/,*$//g')
+=======
+          ADDED_FILES=$(git diff --name-only --diff-filter="A" origin/master -- app/ config/ database/ LibreNMS/ resources/ tests/ | tr '\n' ' '|sed 's/,*$//g')
+>>>>>>> misc/phpstan-added-files
           echo $ADDED_FILES
 
           echo 'ADDED_FILES<<EOF' >> $GITHUB_ENV
@@ -88,6 +92,4 @@ jobs:
       -
         name: Run PHPStan (New files)
         run: ./vendor/bin/phpstan analyze --no-interaction --no-progress --error-format=github --memory-limit=4G --level=6 -- $ADDED_FILES
-
-
-
+        if: ${{ env.ADDED_FILES }}
