@@ -114,7 +114,7 @@ class ScheduleDeviceDiscoveryCommand extends Command
     }
 
     public function getJob(...$args) {
-        return new DiscoverDevice(...$args);
+        //return new DiscoverDevice(...$args);
     }
 
     public static function handleCatch(Batch $batch, $e)
