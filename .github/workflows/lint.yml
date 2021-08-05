@@ -42,8 +42,11 @@ jobs:
       -
         name: Determine added files
         run: |
+          ADDED_FILES=$(git diff --name-only --diff-filter="A" origin/master | tr '\n' ' '|sed 's/,*$//g')
+          echo $ADDED_FILES
+
           echo 'ADDED_FILES<<EOF' >> $GITHUB_ENV
-          git diff --name-only --diff-filter="A" ${{ github.event.before }}..${{ github.event.after }} -- app/ config/ database/ LibreNMS/ resources/ tests/ >> $GITHUB_ENV
+          echo $ADDED_FILES >> $GITHUB_ENV
           echo 'EOF' >> $GITHUB_ENV
 
       -
