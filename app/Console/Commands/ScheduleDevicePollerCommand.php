@@ -31,8 +31,8 @@ class ScheduleDevicePollerCommand extends ScheduleDeviceDiscoveryCommand
      * Set the finally handler
      */
     public static function getFinallyHandler() {
-        return function (Batch $batch, ?Throwable $e) {
-            static::handleFinally($batch, $e);
+        return function (Batch $batch) {
+            static::handleFinally($batch);
         };
     }
 

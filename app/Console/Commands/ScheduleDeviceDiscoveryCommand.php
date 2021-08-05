@@ -108,8 +108,8 @@ class ScheduleDeviceDiscoveryCommand extends Command
      * Set the finally handler
      */
     public static function getFinallyHandler() {
-        return function (Batch $batch, ?Throwable $e) {
-            static::handleFinally($batch, $e);
+        return function (Batch $batch) {
+            static::handleFinally($batch);
         };
     }
 
@@ -128,7 +128,7 @@ class ScheduleDeviceDiscoveryCommand extends Command
         $devices_polled = Cache::get("librenms-poller:" . $batch->id);
         //$devices_polled = $batch->totalJobs - $batch->failedJobs;
 
-        Log::info("Discovered {$devices_polled}/{$batch->totalJobs} devices in {$time_totaly} seconds");
+        Log::info("Discovered {$devices_polled}/{$batch->totalJobs} devices in {$time_total} seconds");
 
         // TODO: FIX ME
         if($batch->failedJobs > 0) {
