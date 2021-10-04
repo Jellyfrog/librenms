@@ -60,6 +60,7 @@ class AboutController extends Controller
 {
     public function index(Request $request)
     {
+        dbFetchCell("abc");
         $callback_status = Callback::get('enabled') === '1';
         $version = Version::get();
 
