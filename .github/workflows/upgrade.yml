@@ -31,6 +31,11 @@ jobs:
             php-version: 8.0
             database: mariadb:10.5
           -
+            os: ubuntu-22.04
+            librenms-version: "1.64"
+            php-version: 7.4
+            database: mariadb:10.5
+          -
             os: ubuntu-20.04
             librenms-version: "1.64"
             php-version: 7.4
