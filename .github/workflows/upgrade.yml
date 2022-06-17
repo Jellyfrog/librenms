@@ -29,6 +29,16 @@ jobs:
             os: ubuntu-22.04
             librenms-version: "21.2.0"
             php-version: 8.0
+            database: mariadb:10.7
+          -
+            os: ubuntu-22.04
+            librenms-version: "21.2.0"
+            php-version: 8.0
+            database: mariadb:10.6
+          -
+            os: ubuntu-22.04
+            librenms-version: "21.2.0"
+            php-version: 8.0
             database: mariadb:10.5
           -
             os: ubuntu-22.04
@@ -65,11 +75,7 @@ jobs:
             librenms-version: "1.64"
             php-version: 7.4
             database: mariadb:5.5
-          -
-            os: ubuntu-22.04
-            librenms-version: "1.64"
-            php-version: 7.4
-            database: mariadb:5.3
+
 
 
           -
