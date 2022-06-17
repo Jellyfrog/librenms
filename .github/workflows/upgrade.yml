@@ -64,6 +64,12 @@ jobs:
             os: ubuntu-22.04
             librenms-version: "1.64"
             php-version: 7.4
+            database: mariadb:5.5
+
+          -
+            os: ubuntu-22.04
+            librenms-version: "1.64"
+            php-version: 7.4
             database: mysql:8.0
 
           -
@@ -178,6 +184,7 @@ jobs:
           \$config['db_pass'] = 'librenms';
           \$config['db_name'] = 'librenms_phpunit_78hunjuybybh';
           \$config['db_port'] = ${{ job.services.database.ports[3306] }};
+          \$config['user'] = 'runner';
           EOL
 
       -
