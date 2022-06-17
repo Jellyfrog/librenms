@@ -392,6 +392,7 @@ class Schema
             $create = DB::connection($connection)->select(DB::raw("SHOW CREATE TABLE `$table`"))[0];
 
             if (isset($create->{'Create Table'})) {
+                dump($create->{'Create Table'});
                 $constraint_regex = '/CONSTRAINT `(?<name>[A-Za-z_0-9]+)` FOREIGN KEY \(`(?<foreign_key>[A-Za-z_0-9]+)`\) REFERENCES `(?<table>[A-Za-z_0-9]+)` \(`(?<key>[A-Za-z_0-9]+)`\) ?(?<extra>[ A-Z]+)?/';
                 $constraint_count = preg_match_all($constraint_regex, $create->{'Create Table'}, $constraints);
                 for ($i = 0; $i < $constraint_count; $i++) {
