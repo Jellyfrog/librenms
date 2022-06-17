@@ -66,6 +66,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           tools: composer,php-cs-fixer
+          coverage: none
       -
         name: Get composer cache directory
         id: composer-cache
@@ -135,21 +136,18 @@ jobs:
         name: Ensure MySQL is up
         env:
           PORT: ${{ job.services.database.ports[3306] }}
-        run: |
-          mysqladmin -h"127.0.0.1" -P"$PORT" --user=librenms --password=librenms ping --wait=5
+        run: mysqladmin -h"127.0.0.1" -P"$PORT" --user=librenms --password=librenms ping --wait=5
       -
         name: Set MySQL authentication plugin
         if: matrix.database == 'mysql:8.0'
         env:
           PORT: ${{ job.services.database.ports[3306] }}
-        run: |
-          mysql -h"127.0.0.1" -P"$PORT" --user=root -e "ALTER USER 'librenms'@'%' IDENTIFIED WITH mysql_native_password BY 'librenms'"
+        run: mysql -h"127.0.0.1" -P"$PORT" --user=root -e "ALTER USER 'librenms'@'%' IDENTIFIED WITH mysql_native_password BY 'librenms'"
       -
         name: Set MySQL collate
         env:
           PORT: ${{ job.services.database.ports[3306] }}
-        run: |
-          mysql -h"127.0.0.1" -P"$PORT" --user=librenms --password=librenms -e 'ALTER DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'
+        run: mysql -h"127.0.0.1" -P"$PORT" --user=librenms --password=librenms -e 'ALTER DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'
 
       -
         name: Setup LibreNMS (${{ matrix.librenms-version }})
@@ -160,13 +158,23 @@ jobs:
 
       -
         name: Composer install (${{ matrix.librenms-version }})
-        run: |
-          composer install --prefer-dist --no-interaction --no-progress --no-dev
+        run: composer install --prefer-dist --no-interaction --no-progress --no-dev
+
+      -
+        name: Run update.php (${{ matrix.librenms-version }}) REMOVE ME
+        run: php includes/sql-schema/update.php
 
       -
         name: Run daily.sh (${{ matrix.librenms-version }})
+        run: ./daily.sh post-pull 0 ${{ matrix.librenms-version }}
+
+      -
+        name: Validate (${{ matrix.librenms-version }})
+        continue-on-error: true
         run: |
-          ./daily.sh post-pull 0 ${{ matrix.librenms-version }}
+          VALIDATE=$(./validate.php)
+          echo "$VALIDATE"
+          echo $VALIDATE | grep --quiet --invert-match FAIL
 
       -
         name: Checkout (master)
@@ -182,14 +190,16 @@ jobs:
           rm config.php
 
       -
+        name: Run update.php (master) REMOVE ME
+        run: php includes/sql-schema/update.php
+
+      -
         name: Run daily.sh (master)
-        run: |
-          ./daily.sh post-pull ${{ matrix.librenms-version }} master
+        run: ./daily.sh post-pull ${{ matrix.librenms-version }} master
 
       -
         name: Migration status (master)
-        run: |
-          lnms migrate:status
+        run: lnms migrate:status
 
       -
         name: Validate (master)
@@ -206,14 +216,16 @@ jobs:
           clean: false
 
       -
+        name: Run update.php (PR) REMOVE ME
+        run: php includes/sql-schema/update.php
+
+      -
         name: Run daily.sh (PR)
-        run: |
-          ./daily.sh post-pull master pr
+        run: ./daily.sh post-pull master pr
 
       -
         name: Migration status (PR)
-        run: |
-          lnms migrate:status
+        run: lnms migrate:status
 
       -
         name: Validate (PR)
@@ -224,8 +236,7 @@ jobs:
 
       -
         name: Rollback database (PR)
-        run: |
-          lnms migrate:rollback --no-interaction --force
+        run: lnms migrate:rollback --no-interaction --force
 
       -
         name: Checkout (master)
@@ -236,13 +247,11 @@ jobs:
 
       -
         name: Run daily.sh (master)
-        run: |
-          ./daily.sh post-pull pr master
+        run: ./daily.sh post-pull pr master
 
       -
         name: Migration status (master)
-        run: |
-          lnms migrate:status
+        run: lnms migrate:status
 
       -
         name: Validate (master)
