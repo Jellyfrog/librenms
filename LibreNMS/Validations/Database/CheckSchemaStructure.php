@@ -169,6 +169,7 @@ class CheckSchemaStructure implements Validation, ValidationFixer
                             $this->descriptions[] = "Database: missing constraint ($table/$name)";
                             $constraint_changes[] = $this->addConstraintSql($table, $constraint);
                         } elseif ($constraint != $current_schema[$table]['Constraints'][$name]) {
+                            dump($constraint);
                             $this->descriptions[] = "Database: incorrect constraint ($table/$name)";
                             $constraint_changes[] = $this->dropConstraintSql($table, $name);
                             $constraint_changes[] = $this->addConstraintSql($table, $constraint);
