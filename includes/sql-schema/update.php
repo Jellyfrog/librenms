@@ -101,3 +101,5 @@ if (! empty($skip_schema_lock) || $schemaLock->get()) {
 
     $schemaLock->release();
 }
+
+exit($return);
