@@ -224,14 +224,14 @@ jobs:
         run: mysql -h"127.0.0.1" -P"$PORT" --user=root -e "ALTER USER 'librenms'@'%' IDENTIFIED WITH mysql_native_password BY 'librenms'"
       -
         name: Set MySQL collate
-        if: matrix.librenms-version < '21.4.0'
+        if: matrix.librenms-version < '21.4'
         env:
           PORT: ${{ job.services.database.ports[3306] }}
         run: mysql -h"127.0.0.1" -P"$PORT" --user=librenms --password=librenms -e 'ALTER DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8 COLLATE utf8_unicode_ci;'
 
       -
         name: Set MySQL collate
-        if: matrix.librenms-version >= '21.4.0'
+        if: matrix.librenms-version >= '21.4'
         env:
           PORT: ${{ job.services.database.ports[3306] }}
         run: mysql -h"127.0.0.1" -P"$PORT" --user=librenms --password=librenms -e 'ALTER DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'
@@ -277,7 +277,7 @@ jobs:
           rm config.php
 
       -
-        name: Composer install (${{ matrix.librenms-version }})
+        name: Composer install (master)
         run: composer install --prefer-dist --no-interaction --no-progress --no-dev
 
       -
@@ -307,7 +307,7 @@ jobs:
           clean: false
 
       -
-        name: Composer install (${{ matrix.librenms-version }})
+        name: Composer install (PR)
         run: composer install --prefer-dist --no-interaction --no-progress --no-dev
 
 
