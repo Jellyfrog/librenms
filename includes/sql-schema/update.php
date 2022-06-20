@@ -37,9 +37,10 @@ if (config('cache.default') == 'database' && ! \Schema::hasTable('cache_locks'))
     $skip_schema_lock = true;
 }
 
-$schemaLock = Cache::lock('schema', 86000);
-if (! empty($skip_schema_lock) || $schemaLock->get()) {
-    try {
+try {
+    $schemaLock = Cache::lock('schema1', 86000);
+    if (! empty($skip_schema_lock) || $schemaLock->get()) {
+
         $db_rev = \LibreNMS\DB\Schema::getLegacySchema();
 
         $migrate_opts = ['--force' => true, '--ansi' => true];
@@ -99,12 +100,14 @@ if (! empty($skip_schema_lock) || $schemaLock->get()) {
             $return = Artisan::call('migrate', $migrate_opts);
             echo Artisan::output();
         }
-    } catch (\Exception $e) {
-        $return = 2;
-        echo $e->getMessage();
-    } finally {
-        optional($schemaLock)->release();
     }
+
+} catch (\Exception $e) {
+    $return = 2;
+    echo $e->getMessage();
+    //var_dump($e);
+} finally {
+    optional($schemaLock)->release();
 }
 
 exit($return);
