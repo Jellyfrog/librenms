@@ -16,6 +16,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Psalm – Security Scanner for PHP
+        uses: psalm/psalm-github-security-scan@1.2.1
+   
+   
       -
         name: Lint Code Base
         uses: docker://ghcr.io/github/super-linter:slim-v4
