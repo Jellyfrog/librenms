@@ -56,11 +56,10 @@ if (php_sapi_name() == 'cli' && isset($_SERVER['TERM'])) {
 if (is_file($install_dir . '/composer.phar')) {
     $exec = PHP_BINARY . " '" . $install_dir . "/composer.phar'";
 
-    // If older than 1 week, try update
-    if (time() - filemtime($install_dir . '/composer.phar') > 60 * 60 * 24 * 7) {
+    // If version is to old, try update
+    if (! composer_version_ok($exec)) {
         // self-update
         passthru("$exec self-update --quiet --2" . $extra_args);
-        touch($install_dir . '/composer.phar');
     }
 } else {
     $sig_url = ($use_https ? 'https' : 'http') . '://composer.github.io/installer.sig';
@@ -92,7 +91,7 @@ if (is_file($install_dir . '/composer.phar')) {
 // if nothing else, use system supplied composer
 if (! $exec) {
     $path_exec = trim(shell_exec('which composer 2> /dev/null'));
-    if ($path_exec) {
+    if (is_executable($path_exec) && composer_version_ok($path_exec)) {
         $exec = $path_exec;
     }
 }
@@ -132,4 +131,16 @@ function curl_fetch($url, $proxy, $use_https, $output = false)
     }
 
     return $ret;
+}
+
+function composer_version_ok($exec)
+{
+    $output = exec($exec . " --version");
+    if (preg_match("/Composer version ([^ ]+)/", $output, $matches) === 1) {
+        if (version_compare($matches[1], '2.4.0') >= 0) {
+            return true;
+        }
+    }
+
+    return false;
 }

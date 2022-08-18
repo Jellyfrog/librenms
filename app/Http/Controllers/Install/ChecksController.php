@@ -27,10 +27,11 @@ namespace App\Http\Controllers\Install;
 
 use LibreNMS\Interfaces\InstallerStep;
 use LibreNMS\Validations\Php;
+use Symfony\Component\Process\Process;
 
 class ChecksController extends InstallationController implements InstallerStep
 {
-    const MODULES = ['pdo_mysql', 'mysqlnd', 'gd'];
+    const MODULES_IGNORE = ['php'];
     protected $step = 'checks';
 
     public function index()
@@ -56,11 +57,31 @@ class ChecksController extends InstallationController implements InstallerStep
     {
         $results = [];
 
-        foreach (self::MODULES as $module) {
-            $status = extension_loaded($module);
+        try {
+            $proc = new Process(["../scripts/composer_wrapper.php1", "check-platform-reqs", "--no-dev", "--format=json"]);
+            $proc->run();
+
+            if ($proc->isSuccessful()) {
+                $data = $proc->getOutput();
+                $data = explode("\n", $data, 2);
+                $data = json_decode($data[1]);
+            }
+
+        } catch( \Exception $e) {
+
+        }
+
+
+        foreach($data ?? [] as $d) {
+            if (in_array($d->name, self::MODULES_IGNORE)) {
+                continue;
+            }
+
+            $module = preg_replace("/^ext-/", "", $d->name);
+
             $results[] = [
                 'name' => str_replace('install.checks.php_module.', '', trans('install.checks.php_module.' . $module)),
-                'status' => $status,
+                'status' => extension_loaded($module),
             ];
         }
 
