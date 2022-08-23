@@ -28,6 +28,7 @@
         "ext-zlib": "*",
         "amenadiel/jpgraph": "^4",
         "clue/socket-raw": "^1.4",
+        "composer/semver": "^3.3",
         "dapphp/radius": "^2.0",
         "doctrine/dbal": "^2.11",
         "easybook/geshi": "^1.0.8",

@@ -10,7 +10,7 @@
                             PHP <small>({{ __('install.checks.php_required', ['version' => $php_required]) }})</small>
                         </div>
                         <div class="col-5 text-right text-nowrap @if($php_ok) text-success @else text-danger @endif">
-                            {{ $php_version }}
+                            {{ $modules["php"]["version"] }}
                             @if($php_ok)
                                 <i class="fa-solid fa-lg fa-square-check text-success align-middle"></i>
                             @else

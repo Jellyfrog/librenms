@@ -46,9 +46,6 @@ class ChecksController extends InstallationController implements InstallerStep
         $version = $matches[0] ?? PHP_VERSION;
 
         return view('install.checks', $this->formatData([
-            'php_version' => $version,
-            'php_required' => Php::PHP_MIN_VERSION,
-            'php_ok' => $this->checkPhpVersion(),
             'modules' => $this->moduleResults(),
         ]));
     }
@@ -58,7 +55,7 @@ class ChecksController extends InstallationController implements InstallerStep
         $results = [];
 
         try {
-            $proc = new Process(["../scripts/composer_wrapper.php1", "check-platform-reqs", "--no-dev", "--format=json"]);
+            $proc = new Process(["../scripts/composer_wrapper.php", "check-platform-reqs", "--no-dev", "--format=json"]);
             $proc->run();
 
             if ($proc->isSuccessful()) {
@@ -74,13 +71,14 @@ class ChecksController extends InstallationController implements InstallerStep
 
         foreach($data ?? [] as $d) {
             if (in_array($d->name, self::MODULES_IGNORE)) {
-                continue;
+            //    continue;
             }
 
             $module = preg_replace("/^ext-/", "", $d->name);
 
-            $results[] = [
+            $results[$module] = [
                 'name' => str_replace('install.checks.php_module.', '', trans('install.checks.php_module.' . $module)),
+                'version' => $d->version,
                 'status' => extension_loaded($module),
             ];
         }
@@ -102,13 +100,13 @@ class ChecksController extends InstallationController implements InstallerStep
         if (! $this->checkPhpVersion()) {
             return false;
         }
-
+/*
         foreach (self::MODULES as $module) {
             if (! extension_loaded($module)) {
                 return false;
             }
         }
-
+*/
         return true;
     }
 
