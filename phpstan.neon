@@ -23,6 +23,7 @@ parameters:
 
     checkMissingIterableValueType: false
     treatPhpDocTypesAsCertain: false
+    checkModelProperties: true
 
     ignoreErrors:
         - '#Unsafe usage of new static#'
