@@ -24,6 +24,13 @@ parameters:
     checkMissingIterableValueType: false
     treatPhpDocTypesAsCertain: false
     checkModelProperties: true
+    checkAlwaysTrueCheckTypeFunctionCall: true
+    checkAlwaysTrueInstanceof: true
+    checkAlwaysTrueStrictComparison: true
+    checkFunctionNameCase: true
+    checkInternalClassCaseSensitivity: true
+    
+    
 
     ignoreErrors:
         - '#Unsafe usage of new static#'
