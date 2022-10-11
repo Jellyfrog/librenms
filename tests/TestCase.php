@@ -13,7 +13,7 @@ abstract class TestCase extends BaseTestCase
     {
         parent::__construct($name, $data, $dataName);
         // grab global $snmpsim from bootstrap and make it accessible
-        $this->getSnmpsim();
+        //$this->getSnmpsim();
     }
 
     public function dbSetUp()

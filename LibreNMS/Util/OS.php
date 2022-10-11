@@ -61,7 +61,7 @@ class OS
     public static function loadAllDefinitions($existing = false, $cached = true)
     {
         $install_dir = \LibreNMS\Config::get('install_dir');
-        $cache_file = $install_dir . '/cache/os_defs.cache';
+        $cache_file = $install_dir . '/cache/os_defs.cache'.getenv('TEST_TOKEN');
         if ($cached && is_file($cache_file) && (time() - filemtime($cache_file) < \LibreNMS\Config::get('os_def_cache_time'))) {
             // Cached
             $os_defs = unserialize(file_get_contents($cache_file));
@@ -94,7 +94,7 @@ class OS
     public static function updateCache($force = false)
     {
         $install_dir = Config::get('install_dir');
-        $cache_file = "$install_dir/cache/os_defs.cache";
+        $cache_file = "$install_dir/cache/os_defs.cache".getenv('TEST_TOKEN');
         $cache_keep_time = Config::get('os_def_cache_time', 86400) - 7200; // 2hr buffer
 
         if ($force === true || ! is_file($cache_file) || time() - filemtime($cache_file) > $cache_keep_time) {

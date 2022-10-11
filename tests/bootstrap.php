@@ -36,16 +36,18 @@ chdir($install_dir);
 ini_set('display_errors', '1');
 //error_reporting(E_ALL & ~E_WARNING);
 
+dump("bootstrap");
+/*
 $snmpsim = new Snmpsim('127.1.6.2', 1162, null);
 if (getenv('SNMPSIM')) {
-    $snmpsim->fork(6);
+    //$snmpsim->fork(6);
 
     // make PHP hold on a reference to $snmpsim so it doesn't get destructed
     register_shutdown_function(function (Snmpsim $ss) {
         $ss->stop();
     }, $snmpsim);
 }
-
+*/
 if (getenv('DBTEST')) {
     global $migrate_result, $migrate_output;
 

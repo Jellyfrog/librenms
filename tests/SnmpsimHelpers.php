@@ -30,7 +30,7 @@ use LibreNMS\Util\Snmpsim;
 trait SnmpsimHelpers
 {
     /** @var Snmpsim snmpsim instance */
-    protected $snmpsim = null;
+    protected $snmpsim = [];
 
     public function requireSnmpsim()
     {
@@ -39,13 +39,12 @@ trait SnmpsimHelpers
         }
     }
 
-    public function getSnmpsim()
+    public function getSnmpsim($test_token = 0)
     {
-        if (! $this->snmpsim) {
-            global $snmpsim;
-            $this->snmpsim = $snmpsim;
+        if (! $this->snmpsim[$test_token]) {
+            $this->snmpsim[$test_token] = new Snmpsim('127.1.6.2', 1160 + (int) $test_token, null);
         }
 
-        return $this->snmpsim;
+        return $this->snmpsim[$test_token];
     }
 }
