@@ -25,8 +25,8 @@
 
 namespace App\Http\Controllers\Select;
 
-use Illuminate\Http\Request;
 use App\Models\Bill;
+use Illuminate\Http\Request;
 
 class BillController extends SelectController
 {

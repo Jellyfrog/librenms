@@ -66,7 +66,6 @@ class ValidateDeviceAndCreate
     }
 
     /**
-     *
      * @throws \LibreNMS\Exceptions\HostExistsException
      * @throws \LibreNMS\Exceptions\HostUnreachablePingException
      * @throws \LibreNMS\Exceptions\HostUnreachableException

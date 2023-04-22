@@ -25,9 +25,9 @@
 
 namespace App\Http\Controllers\Widgets;
 
-use Illuminate\View\View;
 use App\Models\Device;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class EventlogController extends WidgetController
 {

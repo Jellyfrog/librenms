@@ -25,9 +25,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\AuthLog;
@@ -36,7 +33,10 @@ use App\Models\User;
 use App\Models\UserPref;
 use Auth;
 use Flasher\Prime\FlasherInterface;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 use LibreNMS\Authentication\LegacyAuth;
 use LibreNMS\Config;
 use URL;

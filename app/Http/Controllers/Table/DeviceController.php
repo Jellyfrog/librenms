@@ -25,10 +25,10 @@
 
 namespace App\Http\Controllers\Table;
 
-use Illuminate\Http\Request;
 use App\Models\Device;
 use App\Models\Location;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;

@@ -25,9 +25,9 @@
 
 namespace App\Http\Controllers\Install;
 
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use LibreNMS\DB\Eloquent;
 use LibreNMS\Interfaces\InstallerStep;
 

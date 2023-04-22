@@ -25,8 +25,8 @@
 
 namespace App\Http\Controllers\Select;
 
-use Illuminate\Http\Request;
 use App\Models\Service;
+use Illuminate\Http\Request;
 
 class ServiceController extends SelectController
 {

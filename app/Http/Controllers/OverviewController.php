@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Contracts\View\View;
 use App\Models\BgpPeer;
 use App\Models\Device;
 use App\Models\Port;
 use App\Models\Service;
 use App\Models\Syslog;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use LibreNMS\Config;

@@ -25,8 +25,8 @@
 
 namespace App\Http\Controllers\Select;
 
-use Illuminate\Http\Request;
 use App\Models\Port;
+use Illuminate\Http\Request;
 
 class PortController extends SelectController
 {

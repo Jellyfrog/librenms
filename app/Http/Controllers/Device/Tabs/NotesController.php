@@ -25,9 +25,9 @@
 
 namespace App\Http\Controllers\Device\Tabs;
 
-use Illuminate\Http\RedirectResponse;
 use App\Models\Device;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use LibreNMS\Interfaces\UI\DeviceTab;
 

@@ -25,8 +25,8 @@
 
 namespace App\Http\Controllers\Select;
 
-use Illuminate\Http\Request;
 use App\Models\Dashboard;
+use Illuminate\Http\Request;
 
 class DashboardController extends SelectController
 {

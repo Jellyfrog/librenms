@@ -25,9 +25,9 @@
 
 namespace App\Http\Controllers\Install;
 
-use Illuminate\Http\RedirectResponse;
 use App\Models\User;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use LibreNMS\Interfaces\InstallerStep;

@@ -25,8 +25,8 @@
 
 namespace App\Http\Controllers\Widgets;
 
-use Illuminate\View\View;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use LibreNMS\Config;
 use LibreNMS\Util\ObjectCache;
 

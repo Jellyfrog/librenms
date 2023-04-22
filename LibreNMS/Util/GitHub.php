@@ -336,7 +336,6 @@ GRAPHQL;
     }
 
     /**
-     *
      * @throws Exception
      */
     public function createRelease(): bool
