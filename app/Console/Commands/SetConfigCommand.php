@@ -40,7 +40,7 @@ class SetConfigCommand extends LnmsCommand
      *
      * @return mixed
      */
-    public function handle(DynamicConfig $definition)
+    public function handle(DynamicConfig $definition): void
     {
         $setting = $this->argument('setting');
         $value = $this->argument('value');

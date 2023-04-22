@@ -59,7 +59,7 @@ class DevCheckCommand extends LnmsCommand
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $this->helper = new CiHelper();
         $this->parseInput();

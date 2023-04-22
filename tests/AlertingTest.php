@@ -32,7 +32,7 @@ use RegexIterator;
 
 class AlertingTest extends TestCase
 {
-    public function testJsonAlertCollection()
+    public function testJsonAlertCollection(): void
     {
         $rules = get_rules_from_json();
         $this->assertIsArray($rules);
@@ -41,7 +41,7 @@ class AlertingTest extends TestCase
         }
     }
 
-    public function testTransports()
+    public function testTransports(): void
     {
         foreach ($this->getTransportFiles() as $file => $_unused) {
             $parts = explode('/', $file);

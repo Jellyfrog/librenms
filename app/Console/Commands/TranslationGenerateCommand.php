@@ -37,7 +37,7 @@ class TranslationGenerateCommand extends LnmsCommand
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         \Artisan::call('vue-i18n:generate', ['--multi-locales' => 'true', '--format' => 'umd']);
 

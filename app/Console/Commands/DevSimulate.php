@@ -45,7 +45,7 @@ class DevSimulate extends LnmsCommand
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $this->snmpsim = new Snmpsim();
         $snmprec_dir = $this->snmpsim->getDir();

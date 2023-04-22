@@ -61,7 +61,7 @@ class AddUserCommand extends LnmsCommand
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         if (Config::get('auth_mechanism') != 'mysql') {
             $this->warn(__('commands.user:add.wrong-auth'));

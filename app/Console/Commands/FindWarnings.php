@@ -43,7 +43,7 @@ class FindWarnings extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         // TODO DELETE ME
 
