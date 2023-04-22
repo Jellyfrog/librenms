@@ -45,7 +45,7 @@ class TopInterfacesController extends WidgetController
      * @param  Request  $request
      * @return View
      */
-    public function getView(Request $request)
+    public function getView(Request $request): View
     {
         $data = $this->getSettings();
 
@@ -77,7 +77,7 @@ class TopInterfacesController extends WidgetController
         return view('widgets.top-interfaces', $data);
     }
 
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         return view('widgets.settings.top-interfaces', $this->getSettings(true));
     }

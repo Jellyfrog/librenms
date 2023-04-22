@@ -41,7 +41,7 @@ class ComponentStatusController extends WidgetController
      * @param  Request  $request
      * @return View
      */
-    public function getView(Request $request)
+    public function getView(Request $request): View
     {
         $data = $this->getSettings();
         $status = [
@@ -75,7 +75,7 @@ class ComponentStatusController extends WidgetController
         return view('widgets.component-status', compact('status'));
     }
 
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         return view('widgets.settings.component-status', $this->getSettings(true));
     }

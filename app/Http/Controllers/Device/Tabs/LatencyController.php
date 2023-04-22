@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Device\Tabs;
 
+use Illuminate\Support\Collection;
 use App\Models\Device;
 use Carbon\Carbon;
 use DB;
@@ -101,7 +102,7 @@ class LatencyController implements DeviceTab
      * @param  \Illuminate\Support\Collection  $data
      * @return array
      */
-    private function formatPerfData($data)
+    private function formatPerfData(Collection $data): array
     {
         return $data->reduce(function ($data, $entry) {
             $data[] = ['x' => $entry->date, 'y' => $entry->loss, 'group' => 0];

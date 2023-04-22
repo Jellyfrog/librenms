@@ -25,6 +25,7 @@
 
 namespace LibreNMS\Util;
 
+use App\Models\Sensor;
 use App\Models\Device;
 use App\Models\Port;
 use Carbon\Carbon;
@@ -48,7 +49,7 @@ class Url
      * @param  int  $overlib
      * @return string
      */
-    public static function deviceLink($device, $text = null, $vars = [], $start = 0, $end = 0, $escape_text = 1, $overlib = 1)
+    public static function deviceLink(Device $device, string $text = null, array $vars = [], int $start = 0, int $end = 0, int $escape_text = 1, int $overlib = 1): string
     {
         if (! $device instanceof Device || ! $device->hostname) {
             return '';
@@ -130,7 +131,7 @@ class Url
      * @param  bool  $single_graph
      * @return mixed|string
      */
-    public static function portLink($port, $text = null, $type = null, $overlib = true, $single_graph = false)
+    public static function portLink(Port $port, string $text = null, string $type = null, bool $overlib = true, bool $single_graph = false)
     {
         if ($port === null) {
             return $text;
@@ -186,7 +187,7 @@ class Url
      * @param  bool  $single_graph
      * @return mixed|string
      */
-    public static function sensorLink($sensor, $text = null, $type = null, $overlib = true, $single_graph = false)
+    public static function sensorLink(Sensor $sensor, string $text = null, string $type = null, bool $overlib = true, bool $single_graph = false)
     {
         $label = $sensor->sensor_descr;
         if (! $text) {
@@ -230,7 +231,7 @@ class Url
      * @param  array  $vars
      * @return string
      */
-    public static function deviceUrl($device, $vars = [])
+    public static function deviceUrl($device, array $vars = []): string
     {
         $routeParams = [($device instanceof Device) ? $device->device_id : (int) $device];
         if (isset($vars['tab'])) {
@@ -255,7 +256,7 @@ class Url
      * @param  Port  $port
      * @return string
      */
-    public static function portThumbnail($port)
+    public static function portThumbnail(Port $port): string
     {
         $graph_array = [
             'port_id' => $port->port_id,
@@ -273,7 +274,7 @@ class Url
      * @param  Port  $port
      * @return string
      */
-    public static function portErrorsThumbnail($port)
+    public static function portErrorsThumbnail(Port $port): string
     {
         $graph_array = [
             'port_id' => $port->port_id,
@@ -314,7 +315,7 @@ class Url
      * @param  string  $prefix
      * @return string
      */
-    private static function urlParams($vars, $prefix = '/')
+    private static function urlParams(array $vars, string $prefix = '/'): string
     {
         $url = empty($vars) ? '' : $prefix;
         foreach ($vars as $var => $value) {
@@ -344,7 +345,7 @@ class Url
      * @param  array  $args
      * @return string
      */
-    public static function graphTag($args)
+    public static function graphTag(array $args): string
     {
         $urlargs = [];
         foreach ($args as $key => $arg) {
@@ -453,7 +454,7 @@ class Url
      * @param  int  $absolute_size
      * @return string
      */
-    public static function minigraphImage($device, $start, $end, $type, $legend = 'no', $width = 275, $height = 100, $sep = '&amp;', $class = 'minigraph-image', $absolute_size = 0)
+    public static function minigraphImage(Device $device, int $start, int $end, string $type, string $legend = 'no', int $width = 275, int $height = 100, string $sep = '&amp;', string $class = 'minigraph-image', int $absolute_size = 0): string
     {
         $vars = ['device=' . $device->device_id, "from=$start", "to=$end", "width=$width", "height=$height", "type=$type", "legend=$legend", "absolute=$absolute_size"];
 
@@ -464,7 +465,7 @@ class Url
      * @param  Device  $device
      * @return string
      */
-    private static function deviceLinkDisplayClass($device)
+    private static function deviceLinkDisplayClass(Device $device): string
     {
         if ($device->disabled) {
             return 'list-device-disabled';
@@ -483,7 +484,7 @@ class Url
      * @param  Port  $port
      * @return string
      */
-    public static function portLinkDisplayClass($port)
+    public static function portLinkDisplayClass(Port $port): string
     {
         if ($port->ifAdminStatus == 'down') {
             return 'interface-admindown';
@@ -502,7 +503,7 @@ class Url
      * @param  \App\Models\Sensor  $sensor
      * @return string
      */
-    public static function sensorLinkDisplayClass($sensor)
+    public static function sensorLinkDisplayClass(Sensor $sensor): string
     {
         if ($sensor->sensor_current > $sensor->sensor_limit) {
             return 'sensor-high';
@@ -522,7 +523,7 @@ class Url
      * @param  string  $dir  directory to search in (images/os/ or images/logos)
      * @return string
      */
-    public static function findOsImage($os, $feature, $icon = null, $dir = 'images/os/')
+    public static function findOsImage(string $os, ?string $feature, string $icon = null, string $dir = 'images/os/'): string
     {
         $possibilities = [$icon];
 
@@ -562,7 +563,7 @@ class Url
      * @param  string  $path
      * @return ParameterBag
      */
-    public static function parseLegacyPath($path)
+    public static function parseLegacyPath(string $path): ParameterBag
     {
         $parts = array_filter(explode('/', $path), function ($part) {
             return Str::contains($part, '=');

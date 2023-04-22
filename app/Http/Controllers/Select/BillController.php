@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Select;
 
+use Illuminate\Http\Request;
 use App\Models\Bill;
 
 class BillController extends SelectController
@@ -40,7 +41,7 @@ class BillController extends SelectController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    protected function baseQuery($request)
+    protected function baseQuery(Request $request)
     {
         return Bill::hasAccess($request->user())
             ->select('bill_id', 'bill_name');

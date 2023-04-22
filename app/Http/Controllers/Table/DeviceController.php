@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Table;
 
+use Illuminate\Http\Request;
 use App\Models\Device;
 use App\Models\Location;
 use Illuminate\Database\Eloquent\Builder;
@@ -90,7 +91,7 @@ class DeviceController extends TableController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    protected function baseQuery($request)
+    protected function baseQuery(Request $request)
     {
         /** @var Builder $query */
         $query = Device::hasAccess($request->user())->with('location')->withCount(['ports', 'sensors', 'wirelessSensors']);
@@ -144,7 +145,7 @@ class DeviceController extends TableController
      * @param  Device  $device
      * @return array|\Illuminate\Database\Eloquent\Model|\Illuminate\Support\Collection
      */
-    public function formatItem($device)
+    public function formatItem(Device $device)
     {
         return [
             'extra' => $this->getLabel($device),
@@ -168,7 +169,7 @@ class DeviceController extends TableController
      * @param  Device  $device
      * @return string
      */
-    private function getStatus($device)
+    private function getStatus(Device $device): string
     {
         if ($device->disabled == 1) {
             return 'disabled';
@@ -185,7 +186,7 @@ class DeviceController extends TableController
      * @param  Device  $device
      * @return string
      */
-    private function getLabel($device)
+    private function getLabel(Device $device): string
     {
         if ($device->disabled == 1) {
             return 'blackbg';
@@ -209,7 +210,7 @@ class DeviceController extends TableController
      * @param  Device  $device
      * @return string
      */
-    private function getHostname($device)
+    private function getHostname(Device $device): string
     {
         return (string) view('device.list.hostname', [
             'device' => $device,
@@ -221,7 +222,7 @@ class DeviceController extends TableController
      * @param  Device  $device
      * @return string
      */
-    private function getOsText($device)
+    private function getOsText(Device $device): string
     {
         $os_text = Config::getOsSetting($device->os, 'text');
 
@@ -236,7 +237,7 @@ class DeviceController extends TableController
      * @param  Device  $device
      * @return string
      */
-    private function getMetrics($device)
+    private function getMetrics(Device $device): string
     {
         $port_count = $device->ports_count;
         $sensor_count = $device->sensors_count;
@@ -268,7 +269,7 @@ class DeviceController extends TableController
      * @param  mixed  $icon
      * @return string
      */
-    private function formatMetric($device, $count, $tab, $icon)
+    private function formatMetric($device, $count, $tab, $icon): string
     {
         $html = '<a href="' . Url::deviceUrl($device, ['tab' => $tab]) . '">';
         $html .= '<span><i title="' . $tab . '" class="fa ' . $icon . ' fa-lg icon-theme"></i> ' . $count;
@@ -281,7 +282,7 @@ class DeviceController extends TableController
      * @param  Device  $device
      * @return string
      */
-    private function getLocation($device)
+    private function getLocation(Device $device): string
     {
         $location = $device->location ?? '';
 

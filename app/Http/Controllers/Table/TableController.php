@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Table;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\PaginatedAjaxController;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -54,7 +55,7 @@ abstract class TableController extends PaginatedAjaxController
      * @param  Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): JsonResponse
     {
         $this->validate($request, $this->rules());
 

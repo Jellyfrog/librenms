@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Table;
 
+use Illuminate\Http\Request;
 use App\Models\Eventlog;
 use Carbon\Carbon;
 use LibreNMS\Config;
@@ -66,7 +67,7 @@ class EventlogController extends TableController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    public function baseQuery($request)
+    public function baseQuery(Request $request)
     {
         return Eventlog::hasAccess($request->user())
             ->with('device')
@@ -78,7 +79,7 @@ class EventlogController extends TableController
     /**
      * @param  Eventlog  $eventlog
      */
-    public function formatItem($eventlog)
+    public function formatItem(Eventlog $eventlog)
     {
         return [
             'datetime' => $this->formatDatetime($eventlog),
@@ -127,7 +128,7 @@ class EventlogController extends TableController
      * @param  int  $eventlog_severity
      * @return string $eventlog_severity_icon
      */
-    private function severityLabel($eventlog_severity)
+    private function severityLabel(int $eventlog_severity): string
     {
         switch ($eventlog_severity) {
             case Alert::OK:

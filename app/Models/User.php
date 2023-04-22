@@ -53,7 +53,7 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function hasGlobalRead()
+    public function hasGlobalRead(): bool
     {
         return $this->hasGlobalAdmin() || $this->level == 5;
     }
@@ -64,7 +64,7 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function hasGlobalAdmin()
+    public function hasGlobalAdmin(): bool
     {
         return $this->level >= 10;
     }
@@ -74,7 +74,7 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return $this->level == 10;
     }
@@ -84,7 +84,7 @@ class User extends Authenticatable
      *
      * @return bool
      */
-    public function isDemo()
+    public function isDemo(): bool
     {
         return $this->level == 11;
     }
@@ -95,7 +95,7 @@ class User extends Authenticatable
      * @param  Device|int  $device  can be a device Model or device id
      * @return bool
      */
-    public function canAccessDevice($device)
+    public function canAccessDevice($device): bool
     {
         return $this->hasGlobalRead() || Permissions::canAccessDevice($device, $this->user_id);
     }
@@ -105,7 +105,7 @@ class User extends Authenticatable
      *
      * @param  string  $password
      */
-    public function setPassword($password)
+    public function setPassword(string $password)
     {
         $this->attributes['password'] = $password ? Hash::make($password) : null;
     }
@@ -116,7 +116,7 @@ class User extends Authenticatable
      * @param  User  $user
      * @return bool
      */
-    public function canSetPassword($user)
+    public function canSetPassword(User $user): bool
     {
         if ($user && LegacyAuth::get()->canUpdatePasswords()) {
             if ($user->isAdmin()) {
@@ -153,7 +153,7 @@ class User extends Authenticatable
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeThisAuth($query)
+    public function scopeThisAuth(Builder $query): Builder
     {
         // find user including ones where we might not know the auth type
         $type = LegacyAuth::getType();

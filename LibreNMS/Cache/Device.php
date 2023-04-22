@@ -87,7 +87,7 @@ class Device
      * @param  string|null  $hostname
      * @return \App\Models\Device
      */
-    public function getByHostname($hostname): \App\Models\Device
+    public function getByHostname(?string $hostname): \App\Models\Device
     {
         $device_id = array_column($this->devices, 'device_id', 'hostname')[$hostname] ?? 0;
 

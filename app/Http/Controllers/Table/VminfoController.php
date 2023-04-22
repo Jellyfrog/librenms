@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Table;
 
+use Illuminate\Http\Request;
 use App\Models\Device;
 use App\Models\Vminfo;
 use LibreNMS\Util\Url;
@@ -47,7 +48,7 @@ class VminfoController extends TableController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    public function baseQuery($request)
+    public function baseQuery(Request $request)
     {
         return Vminfo::hasAccess($request->user())
             ->select('vminfo.*')
@@ -61,7 +62,7 @@ class VminfoController extends TableController
     /**
      * @param  Vminfo  $vm
      */
-    public function formatItem($vm)
+    public function formatItem(Vminfo $vm)
     {
         return [
             'vmwVmState' => '<span class="label ' . $vm->stateLabel[1] . '">' . $vm->stateLabel[0] . '</span>',

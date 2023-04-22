@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
 use App\Models\BgpPeer;
 use App\Models\Device;
 use App\Models\Port;
@@ -17,7 +18,7 @@ class OverviewController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\View\View
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $view = Config::get('front_page');
 
@@ -35,7 +36,7 @@ class OverviewController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\View\View
      */
-    public function simple(Request $request)
+    public function simple(Request $request): View
     {
         //TODO: All below missing D.ignore = '0' check
         $ports_down = [];

@@ -91,7 +91,7 @@ class GitHub
      *
      * @return array
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         $headers = [
             'Content-Type' => 'application/json',
@@ -110,7 +110,7 @@ class GitHub
      * @param  string  $tag
      * @return mixed
      */
-    public function getRelease($tag)
+    public function getRelease(string $tag)
     {
         $release = Http::withHeaders($this->getHeaders())->get($this->github . "/releases/tags/$tag");
 
@@ -132,7 +132,7 @@ class GitHub
      * @param  string  $date
      * @param  string  $after
      */
-    public function getPullRequests($date, $after = null)
+    public function getPullRequests(string $date, string $after = null)
     {
         if ($after) {
             $after = ", after: \"$after\"";
@@ -204,7 +204,7 @@ GRAPHQL;
      * @param  array  $labels
      * @return array
      */
-    private function parseLabels($labels)
+    private function parseLabels(array $labels): array
     {
         return array_map(function ($label) {
             $name = preg_replace('/ :[\S]+:/', '', strtolower($label['name']));
@@ -263,7 +263,7 @@ GRAPHQL;
      * @param  array  $user
      * @param  string  $type
      */
-    private function recordUserInfo($user, $type = 'changelog_users')
+    private function recordUserInfo(array $user, string $type = 'changelog_users')
     {
         $user_count = &$this->$type;
 
@@ -312,7 +312,7 @@ GRAPHQL;
      * @param  array  $users
      * @return string
      */
-    private function formatUserList($users)
+    private function formatUserList(array $users): string
     {
         $output = '';
         arsort($users);
@@ -355,7 +355,7 @@ GRAPHQL;
      *
      * @throws Exception
      */
-    public function createRelease()
+    public function createRelease(): bool
     {
         // push the changelog and version bump
         $this->pushFileContents($this->file, file_get_contents($this->file), "Changelog for $this->tag");
@@ -383,7 +383,7 @@ GRAPHQL;
      *
      * @throws Exception
      */
-    public function createChangelog($write = true)
+    public function createChangelog(bool $write = true)
     {
         $previous_release = $this->getRelease($this->from);
         if (! is_null($this->pr)) {
@@ -420,7 +420,7 @@ GRAPHQL;
      * @param  string  $contents  new file contents
      * @param  string  $message  The commit message
      */
-    private function pushFileContents($file, $contents, $message): string
+    private function pushFileContents(string $file, string $contents, string $message): string
     {
         $existing = Http::withHeaders($this->getHeaders())->get($this->github . '/contents/' . $file);
         $existing_sha = $existing->json()['sha'];

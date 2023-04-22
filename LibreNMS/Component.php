@@ -284,7 +284,7 @@ class Component
      * @param  int  $device_id
      * @return int the component id
      */
-    public function getFirstComponentID($component_array, $device_id = null)
+    public function getFirstComponentID(array $component_array, int $device_id = null): int
     {
         if (! is_null($device_id) && isset($component_array[$device_id])) {
             $component_array = $component_array[$device_id];

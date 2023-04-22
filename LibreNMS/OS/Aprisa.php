@@ -44,7 +44,7 @@ class Aprisa extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessPower()
+    public function discoverWirelessPower(): array
     {
         $oid = '.1.3.6.1.4.1.14817.7.3.1.2.36.8.0';
 
@@ -59,7 +59,7 @@ class Aprisa extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessRssi()
+    public function discoverWirelessRssi(): array
     {
         $oid = '.1.3.6.1.4.1.14817.7.3.1.2.51.6.0';
 
@@ -74,7 +74,7 @@ class Aprisa extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessSnr()
+    public function discoverWirelessSnr(): array
     {
         $oid = '.1.3.6.1.4.1.14817.7.3.1.2.6.3.0';
 
@@ -89,7 +89,7 @@ class Aprisa extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessErrors()
+    public function discoverWirelessErrors(): array
     {
         $oidcorrectable = '.1.3.6.1.4.1.14817.7.3.1.2.6.1.0';
         $oiduncorrectable = '.1.3.6.1.4.1.14817.7.3.1.2.6.2.0';
@@ -106,7 +106,7 @@ class Aprisa extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessFrequency()
+    public function discoverWirelessFrequency(): array
     {
         $oidrx = '.1.3.6.1.4.1.14817.7.3.1.2.51.5.0';
         $oidtx = '.1.3.6.1.4.1.14817.7.3.1.2.36.7.0';

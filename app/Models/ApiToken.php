@@ -40,7 +40,7 @@ class ApiToken extends BaseModel
      * @param  string  $token
      * @return bool
      */
-    public static function isValid($token, $user_id = null)
+    public static function isValid(string $token, $user_id = null): bool
     {
         $query = self::query()->isEnabled()->where('token_hash', $token);
 
@@ -57,7 +57,7 @@ class ApiToken extends BaseModel
      * @param  string  $token
      * @return User|null
      */
-    public static function userFromToken($token)
+    public static function userFromToken(string $token): ?User
     {
         return User::find(self::idFromToken($token));
     }
@@ -80,7 +80,7 @@ class ApiToken extends BaseModel
      * @param  string  $token
      * @return int
      */
-    public static function idFromToken($token)
+    public static function idFromToken(string $token): int
     {
         return self::query()->isEnabled()->where('token_hash', $token)->value('user_id');
     }

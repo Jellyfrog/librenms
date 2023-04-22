@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Install;
 
+use Illuminate\View\View;
 use LibreNMS\Interfaces\InstallerStep;
 use LibreNMS\Validations\Php;
 
@@ -33,7 +34,7 @@ class ChecksController extends InstallationController implements InstallerStep
     const MODULES = ['pdo_mysql', 'mysqlnd', 'gd'];
     protected $step = 'checks';
 
-    public function index()
+    public function index(): View
     {
         $this->initInstallStep();
 

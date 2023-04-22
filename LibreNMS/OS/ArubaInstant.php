@@ -69,7 +69,7 @@ class ArubaInstant extends OS implements
      *
      * @return array Processors
      */
-    public function discoverProcessors()
+    public function discoverProcessors(): array
     {
         $processors = [];
         $ai_mib = 'AI-AP-MIB';
@@ -92,7 +92,7 @@ class ArubaInstant extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessClients()
+    public function discoverWirelessClients(): array
     {
         $sensors = [];
         $device = $this->getDeviceArray();
@@ -155,7 +155,7 @@ class ArubaInstant extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessApCount()
+    public function discoverWirelessApCount(): array
     {
         $sensors = [];
         $ai_mib = 'AI-AP-MIB';
@@ -177,7 +177,7 @@ class ArubaInstant extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessFrequency()
+    public function discoverWirelessFrequency(): array
     {
         // instant
         return $this->discoverInstantRadio('frequency', 'aiRadioChannel');
@@ -189,7 +189,7 @@ class ArubaInstant extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessNoiseFloor()
+    public function discoverWirelessNoiseFloor(): array
     {
         // instant
         return $this->discoverInstantRadio('noise-floor', 'aiRadioNoiseFloor');
@@ -201,7 +201,7 @@ class ArubaInstant extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessPower()
+    public function discoverWirelessPower(): array
     {
         // instant
         return $this->discoverInstantRadio('power', 'aiRadioTransmitPower', '%s Radio %s: Tx Power');
@@ -213,7 +213,7 @@ class ArubaInstant extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessUtilization()
+    public function discoverWirelessUtilization(): array
     {
         // instant
         return $this->discoverInstantRadio('utilization', 'aiRadioUtilization64');
@@ -224,7 +224,7 @@ class ArubaInstant extends OS implements
      *
      * @return array Sensors
      */
-    private function discoverInstantRadio($type, $mib, $desc = '%s Radio %s')
+    private function discoverInstantRadio($type, $mib, $desc = '%s Radio %s'): array
     {
         $ai_mib = 'AI-AP-MIB';
         $ai_sg_data = array_merge_recursive(
@@ -278,7 +278,7 @@ class ArubaInstant extends OS implements
      * @param  array  $sensors  Array of sensors needed to be polled
      * @return array of polled data
      */
-    public function pollWirelessFrequency(array $sensors)
+    public function pollWirelessFrequency(array $sensors): array
     {
         return $this->pollWirelessChannelAsFrequency($sensors, [$this, 'decodeChannel']);
     }
@@ -290,7 +290,7 @@ class ArubaInstant extends OS implements
      * @param  array  $sensors  Array of sensors needed to be polled
      * @return array of polled data
      */
-    public function pollWirelessClients(array $sensors)
+    public function pollWirelessClients(array $sensors): array
     {
         $data = [];
         if (! empty($sensors)) {
@@ -336,7 +336,7 @@ class ArubaInstant extends OS implements
      * @param  array  $sensors  Array of sensors needed to be polled
      * @return array of polled data
      */
-    public function pollWirelessApCount(array $sensors)
+    public function pollWirelessApCount(array $sensors): array
     {
         $data = [];
         if (! empty($sensors) && count($sensors) == 1) {

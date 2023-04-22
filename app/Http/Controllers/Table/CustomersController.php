@@ -25,6 +25,8 @@
 
 namespace App\Http\Controllers\Table;
 
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Models\Port;
 use Illuminate\Support\Arr;
 use LibreNMS\Config;
@@ -49,7 +51,7 @@ class CustomersController extends TableController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    public function baseQuery($request)
+    public function baseQuery(Request $request)
     {
         // selecting just the customer name, will fetch port data later
         return Port::hasAccess($request->user())
@@ -64,7 +66,7 @@ class CustomersController extends TableController
      * @param  \Illuminate\Contracts\Pagination\LengthAwarePaginator&\Countable  $paginator
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function formatResponse($paginator)
+    protected function formatResponse(\Illuminate\Contracts\Pagination\LengthAwarePaginator&\Countable $paginator): JsonResponse
     {
         $customers = collect($paginator->items())->pluck('port_descr_descr');
         // fetch all ports
@@ -100,7 +102,7 @@ class CustomersController extends TableController
      * @param  Port  $port
      * @return array|\Illuminate\Database\Eloquent\Model|\Illuminate\Support\Collection
      */
-    public function formatItem($port)
+    public function formatItem(Port $port)
     {
         return [
             'port_descr_descr'   => $port->port_descr_descr,

@@ -16,7 +16,7 @@ class SettingsController extends Controller
      * @param  string  $section
      * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function index(DynamicConfig $dynamicConfig, $tab = 'global', $section = '')
+    public function index(DynamicConfig $dynamicConfig, string $tab = 'global', string $section = '')
     {
         $data = [
             'active_tab' => $tab,
@@ -37,7 +37,7 @@ class SettingsController extends Controller
      * @param  string  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(DynamicConfig $config, Request $request, $id)
+    public function update(DynamicConfig $config, Request $request, string $id): JsonResponse
     {
         $value = $request->get('value');
 
@@ -66,7 +66,7 @@ class SettingsController extends Controller
      * @param  string  $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(DynamicConfig $config, $id)
+    public function destroy(DynamicConfig $config, string $id): JsonResponse
     {
         if (! $config->isValidSetting($id)) {
             return $this->jsonResponse($id, ':id is not a valid setting', null, 400);
@@ -88,7 +88,7 @@ class SettingsController extends Controller
      * @param  DynamicConfig  $config
      * @return JsonResponse
      */
-    public function listAll(DynamicConfig $config)
+    public function listAll(DynamicConfig $config): JsonResponse
     {
         return response()->json($config->all()->filter->isValid());
     }
@@ -100,7 +100,7 @@ class SettingsController extends Controller
      * @param  int  $status
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function jsonResponse($id, $message, $value = null, $status = 200)
+    protected function jsonResponse(string $id, string $message, $value = null, int $status = 200): JsonResponse
     {
         return new JsonResponse([
             'message' => __($message, ['id' => $id]),

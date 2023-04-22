@@ -60,7 +60,7 @@ class Port extends DeviceRelatedModel
      *
      * @return string
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         $os = $this->device?->os;
 
@@ -96,7 +96,7 @@ class Port extends DeviceRelatedModel
      *
      * @return string
      */
-    public function getShortLabel()
+    public function getShortLabel(): string
     {
         return Rewrite::shortenIfName(Rewrite::normalizeIfName($this->ifName ?: $this->ifDescr));
     }
@@ -115,7 +115,7 @@ class Port extends DeviceRelatedModel
      * @param  User|int  $user
      * @return bool
      */
-    public function canAccess($user)
+    public function canAccess($user): bool
     {
         if (! $user) {
             return false;
@@ -145,7 +145,7 @@ class Port extends DeviceRelatedModel
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeIsDeleted($query)
+    public function scopeIsDeleted(Builder $query): Builder
     {
         return $query->where([
             ['deleted', 1],
@@ -156,7 +156,7 @@ class Port extends DeviceRelatedModel
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeIsNotDeleted($query)
+    public function scopeIsNotDeleted(Builder $query): Builder
     {
         return $query->where([
             ['deleted', 0],
@@ -167,7 +167,7 @@ class Port extends DeviceRelatedModel
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeIsUp($query)
+    public function scopeIsUp(Builder $query): Builder
     {
         return $query->where([
             ['deleted', '=', 0],
@@ -181,7 +181,7 @@ class Port extends DeviceRelatedModel
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeIsDown($query)
+    public function scopeIsDown(Builder $query): Builder
     {
         return $query->where([
             ['deleted', '=', 0],
@@ -196,7 +196,7 @@ class Port extends DeviceRelatedModel
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeIsShutdown($query)
+    public function scopeIsShutdown(Builder $query): Builder
     {
         return $query->where([
             ['deleted', '=', 0],
@@ -210,7 +210,7 @@ class Port extends DeviceRelatedModel
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeIsIgnored($query)
+    public function scopeIsIgnored(Builder $query): Builder
     {
         return $query->where([
             ['deleted', '=', 0],
@@ -222,7 +222,7 @@ class Port extends DeviceRelatedModel
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeIsDisabled($query)
+    public function scopeIsDisabled(Builder $query): Builder
     {
         return $query->where([
             ['deleted', '=', 0],
@@ -234,7 +234,7 @@ class Port extends DeviceRelatedModel
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeHasErrors($query)
+    public function scopeHasErrors(Builder $query): Builder
     {
         return $query->where([
             ['deleted', '=', 0],
@@ -251,7 +251,7 @@ class Port extends DeviceRelatedModel
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeIsValid($query)
+    public function scopeIsValid(Builder $query): Builder
     {
         return $query->where([
             ['deleted', '=', 0],

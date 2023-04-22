@@ -82,23 +82,23 @@ class Sensor implements DiscoveryModule, PollerModule
      * @param  string  $rrd_type  the type of RRD file to use (GAUGE, COUNTER, DCOUNTER, DERIVE, DDERIVE, ABSOLUTE), default to GAUGE
      */
     public function __construct(
-        $type,
-        $device_id,
+        string $type,
+        int $device_id,
         $oids,
-        $subtype,
+        string $subtype,
         $index,
-        $description,
+        string $description,
         $current = null,
-        $multiplier = 1,
-        $divisor = 1,
-        $aggregator = 'sum',
+        int $multiplier = 1,
+        int $divisor = 1,
+        string $aggregator = 'sum',
         $high_limit = null,
         $low_limit = null,
         $high_warn = null,
         $low_warn = null,
         $entPhysicalIndex = null,
         $entPhysicalMeasured = null,
-        $rrd_type = 'GAUGE'
+        string $rrd_type = 'GAUGE'
     ) {
         $this->type = $type;
         $this->device_id = $device_id;
@@ -144,7 +144,7 @@ class Sensor implements DiscoveryModule, PollerModule
      *
      * @return int the sensor_id of this sensor in the database
      */
-    final public function save()
+    final public function save(): int
     {
         $db_sensor = $this->fetch();
 
@@ -185,7 +185,7 @@ class Sensor implements DiscoveryModule, PollerModule
      *
      * @return array|null
      */
-    private function fetch()
+    private function fetch(): ?array
     {
         $table = $this->getTable();
         if (isset($this->sensor_id)) {
@@ -210,7 +210,7 @@ class Sensor implements DiscoveryModule, PollerModule
      *
      * @return string
      */
-    public function getTable()
+    public function getTable(): string
     {
         return static::$table;
     }
@@ -221,7 +221,7 @@ class Sensor implements DiscoveryModule, PollerModule
      *
      * @return array
      */
-    protected function toArray()
+    protected function toArray(): array
     {
         return [
             'sensor_class' => $this->type,
@@ -251,7 +251,7 @@ class Sensor implements DiscoveryModule, PollerModule
      * @param  array  $array
      * @return array
      */
-    private function escapeNull($array)
+    private function escapeNull(array $array): array
     {
         return array_map(function ($value) {
             return is_null($value) ? ['NULL'] : $value;
@@ -330,7 +330,7 @@ class Sensor implements DiscoveryModule, PollerModule
      * @param  array  $sensors
      * @param  array  $prefetch
      */
-    protected static function pollSensorType($os, $type, $sensors, $prefetch = [])
+    protected static function pollSensorType(OS $os, string $type, array $sensors, array $prefetch = [])
     {
         echo "$type:\n";
 
@@ -357,7 +357,7 @@ class Sensor implements DiscoveryModule, PollerModule
      * @param  array  $sensors
      * @return array
      */
-    private static function fetchSnmpData($device, $sensors)
+    private static function fetchSnmpData(array $device, array $sensors): array
     {
         $oids = self::getOidsFromSensors($sensors, get_device_oid_limit($device));
 
@@ -390,7 +390,7 @@ class Sensor implements DiscoveryModule, PollerModule
      *
      * @internal param $device
      */
-    protected static function processSensorData($sensors, $prefetch)
+    protected static function processSensorData(array $sensors, array $prefetch): array
     {
         $sensor_data = [];
         foreach ($sensors as $sensor) {
@@ -437,7 +437,7 @@ class Sensor implements DiscoveryModule, PollerModule
      * @param  int  $chunk  How many oids per chunk.  Default 10.
      * @return array
      */
-    private static function getOidsFromSensors($sensors, $chunk = 10)
+    private static function getOidsFromSensors(array $sensors, int $chunk = 10): array
     {
         // Sort the incoming oids and sensors
         $oids = array_reduce($sensors, function ($carry, $sensor) {
@@ -503,7 +503,7 @@ class Sensor implements DiscoveryModule, PollerModule
      *
      * @return string
      */
-    private function getUniqueId()
+    private function getUniqueId(): string
     {
         return $this->type . '-' . $this->subtype . '-' . $this->index;
     }
@@ -534,7 +534,7 @@ class Sensor implements DiscoveryModule, PollerModule
      *
      * @return bool
      */
-    public function isValid()
+    public function isValid(): bool
     {
         return $this->valid;
     }
@@ -548,7 +548,7 @@ class Sensor implements DiscoveryModule, PollerModule
      * @param  string  $type
      * @param  array  $sensors
      */
-    final public static function sync($device_id, $type, array $sensors)
+    final public static function sync(int $device_id, string $type, array $sensors)
     {
         // save and collect valid ids
         $valid_sensor_ids = [];
@@ -570,7 +570,7 @@ class Sensor implements DiscoveryModule, PollerModule
      * @param  string  $type
      * @param  array  $sensor_ids  valid sensor ids
      */
-    private static function clean($device_id, $type, $sensor_ids)
+    private static function clean(int $device_id, string $type, array $sensor_ids)
     {
         $table = static::$table;
         $params = [$device_id, $type];
@@ -607,7 +607,7 @@ class Sensor implements DiscoveryModule, PollerModule
      * @param  int  $device_id  when filtering, only return types valid for this device_id
      * @return array
      */
-    public static function getTypes($valid = false, $device_id = null)
+    public static function getTypes(bool $valid = false, int $device_id = null): array
     {
         return [];
     }
@@ -619,7 +619,7 @@ class Sensor implements DiscoveryModule, PollerModule
      * @param  array  $sensors
      * @param  array  $data
      */
-    protected static function recordSensorData(OS $os, $sensors, $data)
+    protected static function recordSensorData(OS $os, array $sensors, array $data)
     {
         $types = static::getTypes();
 

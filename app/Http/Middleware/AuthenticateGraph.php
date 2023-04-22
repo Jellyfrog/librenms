@@ -53,7 +53,7 @@ class AuthenticateGraph
      *
      * @throws \Illuminate\Auth\AuthenticationException
      */
-    public function handle(Request $request, Closure $next, $relative = null): Response
+    public function handle(Request $request, Closure $next, ?string $relative = null): Response
     {
         // if user is logged in, allow
         if (\Auth::check()) {

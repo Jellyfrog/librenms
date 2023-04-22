@@ -51,7 +51,7 @@ class HiveosWireless extends OS implements
      *
      * @return array Processors
      */
-    public function discoverProcessors()
+    public function discoverProcessors(): array
     {
         $device = $this->getDeviceArray();
 
@@ -71,7 +71,7 @@ class HiveosWireless extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessClients()
+    public function discoverWirelessClients(): array
     {
         $oid = '.1.3.6.1.4.1.26928.1.2.9.0'; // AH-SYSTEM-MIB::ahClientCount
 
@@ -86,7 +86,7 @@ class HiveosWireless extends OS implements
      *
      * @return array Sensors
      */
-    public function pollWirelessFrequency(array $sensors)
+    public function pollWirelessFrequency(array $sensors): array
     {
         return $this->pollWirelessChannelAsFrequency($sensors);
     }
@@ -117,7 +117,7 @@ class HiveosWireless extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessPower()
+    public function discoverWirelessPower(): array
     {
         $sensors = [];
 
@@ -165,7 +165,7 @@ class HiveosWireless extends OS implements
      * @param  array  $sensors  Array of sensors needed to be polled
      * @return array of polled data
      */
-    public function pollWirelessNoiseFloor(array $sensors)
+    public function pollWirelessNoiseFloor(array $sensors): array
     {
         $data = [];
         $ahRadioNoiseFloor = snmpwalk_group($this->getDeviceArray(), 'ahRadioNoiseFloor', 'AH-INTERFACE-MIB');

@@ -47,7 +47,7 @@ class RrdGraphException extends Exception
      * @param  int  $exit_code
      * @param  string  $image_output
      */
-    public function __construct($error, $short_text = null, $width = null, $height = null, $exit_code = 0, $image_output = '')
+    public function __construct(string $error, ?string $short_text = null, $width = null, $height = null, int $exit_code = 0, string $image_output = '')
     {
         parent::__construct($error, $exit_code);
         $this->short_text = $short_text;

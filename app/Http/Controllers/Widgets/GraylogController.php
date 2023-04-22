@@ -46,12 +46,12 @@ class GraylogController extends WidgetController
      * @param  Request  $request
      * @return View
      */
-    public function getView(Request $request)
+    public function getView(Request $request): View
     {
         return view('widgets.graylog', $this->getSettings());
     }
 
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         $data = $this->getSettings(true);
 

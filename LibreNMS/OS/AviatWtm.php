@@ -48,7 +48,7 @@ class AviatWtm extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessFrequency()
+    public function discoverWirelessFrequency(): array
     {
         $sensors = [];
         $name = $this->getCacheByIndex('entPhysicalName', 'ENTITY-MIB');
@@ -76,7 +76,7 @@ class AviatWtm extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessRate()
+    public function discoverWirelessRate(): array
     {
         $sensors = [];
         $name = $this->getCacheByIndex('entPhysicalName', 'ENTITY-MIB');
@@ -118,7 +118,7 @@ class AviatWtm extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessRssi()
+    public function discoverWirelessRssi(): array
     {
         $sensors = [];
         $name = $this->getCacheByIndex('entPhysicalName', 'ENTITY-MIB');
@@ -147,7 +147,7 @@ class AviatWtm extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessSnr()
+    public function discoverWirelessSnr(): array
     {
         $sensors = [];
         $name = $this->getCacheByIndex('entPhysicalName', 'ENTITY-MIB');
@@ -176,7 +176,7 @@ class AviatWtm extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessPower()
+    public function discoverWirelessPower(): array
     {
         $sensors = [];
         $name = $this->getCacheByIndex('entPhysicalName', 'ENTITY-MIB');

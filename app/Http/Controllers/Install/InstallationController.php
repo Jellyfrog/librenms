@@ -25,6 +25,8 @@
 
 namespace App\Http\Controllers\Install;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use LibreNMS\DB\Eloquent;
 use LibreNMS\Interfaces\InstallerStep;
@@ -40,14 +42,14 @@ class InstallationController extends Controller
         'finish' => \App\Http\Controllers\Install\FinalizeController::class,
     ];
 
-    public function redirectToFirst()
+    public function redirectToFirst(): RedirectResponse
     {
         $step = collect($this->filterActiveSteps())->keys()->first(null, 'checks');
 
         return redirect()->route("install.$step");
     }
 
-    public function redirectToIncomplete()
+    public function redirectToIncomplete(): RedirectResponse
     {
         foreach ($this->filterActiveSteps() as $step => $controller) {
             /** @var InstallerStep $controller */
@@ -64,7 +66,7 @@ class InstallationController extends Controller
         abort(404);
     }
 
-    public function stepsCompleted()
+    public function stepsCompleted(): JsonResponse
     {
         return response()->json($this->stepStatus());
     }
@@ -74,7 +76,7 @@ class InstallationController extends Controller
      *
      * @return bool if all previous steps have been completed
      */
-    final protected function initInstallStep()
+    final protected function initInstallStep(): bool
     {
         $this->filterActiveSteps();
         $this->configureDatabase();

@@ -118,7 +118,7 @@ class Mempools implements Module
      * @param  \Illuminate\Support\Collection  $mempools
      * @return \Illuminate\Support\Collection
      */
-    private function defaultPolling($os, $mempools)
+    private function defaultPolling(OS $os, Collection $mempools): Collection
     {
         // fetch all data
         $oids = $mempools->map->only(['mempool_perc_oid', 'mempool_used_oid', 'mempool_free_oid', 'mempool_total_oid'])
@@ -159,7 +159,7 @@ class Mempools implements Module
      * @param  \Illuminate\Support\Collection  $mempools
      * @return \Illuminate\Support\Collection
      */
-    private function calculateAvailable(Collection $mempools)
+    private function calculateAvailable(Collection $mempools): Collection
     {
         if ($mempools->count() > 2) { // optimization
             $system = null;

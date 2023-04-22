@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Select;
 
+use Illuminate\Http\Request;
 use App\Models\Dashboard;
 
 class DashboardController extends SelectController
@@ -40,7 +41,7 @@ class DashboardController extends SelectController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    protected function baseQuery($request)
+    protected function baseQuery(Request $request)
     {
         return Dashboard::query()
             ->where('access', '>', 0)
@@ -54,7 +55,7 @@ class DashboardController extends SelectController
      * @param  object  $dashboard
      * @return array
      */
-    public function formatItem($dashboard): array
+    public function formatItem(object $dashboard): array
     {
         return [
             'id' => $dashboard->dashboard_id,

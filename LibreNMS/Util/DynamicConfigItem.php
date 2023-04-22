@@ -211,7 +211,7 @@ class DynamicConfigItem implements \ArrayAccess
      * @param  mixed  $value  The value that was validated
      * @return string
      */
-    public function getValidationMessage($value)
+    public function getValidationMessage($value): string
     {
         return $this->validate
             ? implode(" \n", $this->buildValidator($value)->messages()->all())

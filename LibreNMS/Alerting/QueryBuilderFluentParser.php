@@ -37,7 +37,7 @@ class QueryBuilderFluentParser extends QueryBuilderParser
      *
      * @return Builder|null
      */
-    public function toQuery()
+    public function toQuery(): ?Builder
     {
         if (empty($this->builder) || ! array_key_exists('condition', $this->builder)) {
             return null;
@@ -58,7 +58,7 @@ class QueryBuilderFluentParser extends QueryBuilderParser
      * @param  string  $parent_condition  AND or OR  (for root, this should be null)
      * @return Builder
      */
-    protected function parseGroupToQuery($query, $rule, $parent_condition = null)
+    protected function parseGroupToQuery(Builder $query, array $rule, string $parent_condition = null): Builder
     {
         return $query->where(function ($query) use ($rule) {
             foreach ($rule['rules'] as $group_rule) {
@@ -77,7 +77,7 @@ class QueryBuilderFluentParser extends QueryBuilderParser
      * @param  string  $condition  AND or OR
      * @return Builder
      */
-    protected function parseRuleToQuery($query, $rule, $condition)
+    protected function parseRuleToQuery(Builder $query, array $rule, string $condition): Builder
     {
         [$field, $op, $value] = $this->expandRule($rule);
 
@@ -130,7 +130,7 @@ class QueryBuilderFluentParser extends QueryBuilderParser
      * @param  array  $rule
      * @return array [field, operator, value]
      */
-    protected function expandRule($rule)
+    protected function expandRule(array $rule): array
     {
         $field = $rule['field'];
         if (Str::startsWith($field, 'macros.')) {
@@ -151,7 +151,7 @@ class QueryBuilderFluentParser extends QueryBuilderParser
      * @param  Builder  $query
      * @return Builder
      */
-    protected function joinTables($query)
+    protected function joinTables(Builder $query): Builder
     {
         if (! isset($this->builder['joins'])) {
             $this->generateJoins();
@@ -171,7 +171,7 @@ class QueryBuilderFluentParser extends QueryBuilderParser
      *
      * @return $this
      */
-    public function generateJoins()
+    public function generateJoins(): static
     {
         $joins = [];
         foreach ($this->generateGlue() as $glue) {

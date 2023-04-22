@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Device\Tabs;
 
+use Illuminate\Http\RedirectResponse;
 use App\Models\Device;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -66,7 +67,7 @@ class NotesController implements DeviceTab
      * @param  Device  $device
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Device $device)
+    public function update(Request $request, Device $device): RedirectResponse
     {
         $this->authorize('update-notes', $device);
 

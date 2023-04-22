@@ -124,7 +124,7 @@ class GraphController extends Controller
      * @param  string  $search
      * @return Collection
      */
-    private function filterTypeGraphs($graphs, $type, $search)
+    private function filterTypeGraphs(Collection $graphs, string $type, string $search): Collection
     {
         $search = strtolower($search);
 

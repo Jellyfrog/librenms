@@ -37,7 +37,7 @@ class CyberPowerUtil
      * @param  Trap  $trap
      * @return string
      */
-    public static function getMessage($trap)
+    public static function getMessage(Trap $trap): string
     {
         return $trap->getOidData($trap->findOid('CPS-MIB::mtrapinfoString'));
     }

@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TwoFactorManagementRequest;
 use App\Models\User;
@@ -32,7 +33,7 @@ use App\Models\UserPref;
 
 class TwoFactorManagementController extends Controller
 {
-    public function unlock(TwoFactorManagementRequest $request, User $user)
+    public function unlock(TwoFactorManagementRequest $request, User $user): JsonResponse
     {
         $twofactor = UserPref::getPref($user, 'twofactor');
         $twofactor['fails'] = 0;
@@ -44,7 +45,7 @@ class TwoFactorManagementController extends Controller
         return response()->json(['error' => __('Failed to unlock Two-Factor.')]);
     }
 
-    public function destroy(TwoFactorManagementRequest $request, User $user)
+    public function destroy(TwoFactorManagementRequest $request, User $user): JsonResponse
     {
         if (UserPref::forgetPref($user, 'twofactor')) {
             return response()->json(['msg' => __('Two-Factor removed.')]);

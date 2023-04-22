@@ -185,7 +185,7 @@ class DeviceObserver
      * @param  array  $pivotIdsAttributes  additional pivot attributes
      * @return void
      */
-    public function pivotAttached(Device $device, $relationName, $pivotIds, $pivotIdsAttributes)
+    public function pivotAttached(Device $device, string $relationName, array $pivotIds, array $pivotIdsAttributes): void
     {
         if ($relationName == 'parents') {
             // a parent attached to this device

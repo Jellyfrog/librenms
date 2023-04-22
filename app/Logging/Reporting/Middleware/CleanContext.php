@@ -36,7 +36,7 @@ class CleanContext implements \Spatie\FlareClient\FlareMiddleware\FlareMiddlewar
      * @param  callable  $next
      * @return mixed
      */
-    public function handle(Report $report, $next)
+    public function handle(Report $report, callable $next)
     {
         try {
             $report->setApplicationPath('');

@@ -40,7 +40,7 @@ class AlertRule extends BaseModel
      * @param  Builder<AlertRule>  $query
      * @return Builder
      */
-    public function scopeEnabled($query)
+    public function scopeEnabled(Builder $query): Builder
     {
         return $query->where('alert_rules.disabled', 0);
     }
@@ -51,7 +51,7 @@ class AlertRule extends BaseModel
      * @param  Builder<AlertRule>  $query
      * @return Builder
      */
-    public function scopeIsActive($query)
+    public function scopeIsActive(Builder $query): Builder
     {
         return $query->enabled()
             ->join('alerts', 'alerts.rule_id', 'alert_rules.id')
@@ -66,7 +66,7 @@ class AlertRule extends BaseModel
      * @param  User  $user
      * @return mixed
      */
-    public function scopeHasAccess($query, User $user)
+    public function scopeHasAccess(Builder $query, User $user)
     {
         if ($user->hasGlobalRead()) {
             return $query;

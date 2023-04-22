@@ -26,7 +26,7 @@ class AuthEventListener
      * @param  Login  $event
      * @return void
      */
-    public function login(Login $event)
+    public function login(Login $event): void
     {
         /** @var User $user */
         $user = $event->user ?: (object) ['username' => 'Not found'];
@@ -42,7 +42,7 @@ class AuthEventListener
      * @param  Logout  $event
      * @return void
      */
-    public function logout(Logout $event)
+    public function logout(Logout $event): void
     {
         /** @var User $user */
         $user = $event->user ?: (object) ['username' => 'Not found'];

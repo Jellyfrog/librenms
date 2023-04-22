@@ -169,7 +169,7 @@ class FileCategorizer extends Categorizer
      * @param  string  $class
      * @return string|null
      */
-    private function osFromClass($class)
+    private function osFromClass(string $class): ?string
     {
         preg_match_all('/[A-Z][a-z0-9]*/', $class, $segments);
         $osname = implode('-', array_map('strtolower', $segments[0]));

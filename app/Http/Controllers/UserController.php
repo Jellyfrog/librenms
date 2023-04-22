@@ -25,6 +25,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\View\View;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\AuthLog;
@@ -52,7 +55,7 @@ class UserController extends Controller
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index()
+    public function index(): View
     {
         $this->authorize('manage', User::class);
 
@@ -69,7 +72,7 @@ class UserController extends Controller
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function create()
+    public function create(): View
     {
         $this->authorize('create', User::class);
 
@@ -89,7 +92,7 @@ class UserController extends Controller
      * @param  StoreUserRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(StoreUserRequest $request, FlasherInterface $flasher)
+    public function store(StoreUserRequest $request, FlasherInterface $flasher): RedirectResponse
     {
         $user = $request->only(['username', 'realname', 'email', 'descr', 'level', 'can_modify_passwd']);
         $user['auth_type'] = LegacyAuth::getType();
@@ -135,7 +138,7 @@ class UserController extends Controller
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit(User $user)
+    public function edit(User $user): View
     {
         $this->authorize('update', $user);
 
@@ -165,7 +168,7 @@ class UserController extends Controller
      * @param  User  $user
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(UpdateUserRequest $request, User $user, FlasherInterface $flasher)
+    public function update(UpdateUserRequest $request, User $user, FlasherInterface $flasher): RedirectResponse
     {
         if ($request->get('new_password') && $user->canSetPassword($request->user())) {
             $user->setPassword($request->new_password);
@@ -205,7 +208,7 @@ class UserController extends Controller
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy(User $user)
+    public function destroy(User $user): JsonResponse
     {
         $this->authorize('delete', $user);
 
@@ -219,7 +222,7 @@ class UserController extends Controller
      * @param  mixed  $dashboard
      * @return bool
      */
-    protected function updateDashboard(User $user, $dashboard)
+    protected function updateDashboard(User $user, $dashboard): bool
     {
         if ($dashboard) {
             $existing = UserPref::getPref($user, 'dashboard');
@@ -233,7 +236,7 @@ class UserController extends Controller
         return false;
     }
 
-    public function authlog()
+    public function authlog(): View
     {
         $this->authorize('manage', User::class);
 

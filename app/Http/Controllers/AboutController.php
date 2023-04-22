@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
 use App;
 use App\Models\Application;
 use App\Models\Callback;
@@ -58,7 +59,7 @@ use LibreNMS\Util\Version;
 
 class AboutController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $version = Version::get();
 

@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Select;
 
+use Illuminate\Http\Request;
 use App\Models\Service;
 
 class ServiceController extends SelectController
@@ -35,7 +36,7 @@ class ServiceController extends SelectController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    protected function baseQuery($request)
+    protected function baseQuery(Request $request)
     {
         return Service::hasAccess($request->user())
             ->with(['device' => function ($query) {
@@ -47,7 +48,7 @@ class ServiceController extends SelectController
     /**
      * @param  Service  $service
      */
-    public function formatItem($service)
+    public function formatItem(Service $service)
     {
         return [
             'id' => $service->service_id,

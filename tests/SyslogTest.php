@@ -56,7 +56,7 @@ class SyslogTest extends TestCase
      * @param  string  $inputline  The line from the syslog daemon including the ||'s
      * @param  array  $modified  of the modified fields, most likely containging the keys program and msg
      */
-    private function checkSyslog($inputline, $modified)
+    private function checkSyslog(string $inputline, array $modified)
     {
         $data = $this->createData($inputline, $modified);
         $res = process_syslog($data['input'], 0);

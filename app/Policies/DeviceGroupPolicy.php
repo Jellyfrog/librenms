@@ -23,7 +23,7 @@ class DeviceGroupPolicy
      * @param  \App\Models\User  $user
      * @return bool
      */
-    public function manage(User $user)
+    public function manage(User $user): bool
     {
         return false;
     }

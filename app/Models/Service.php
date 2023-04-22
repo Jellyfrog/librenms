@@ -31,7 +31,7 @@ class Service extends DeviceRelatedModel
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeIsOk($query)
+    public function scopeIsOk(Builder $query): Builder
     {
         return $query->where([
             ['service_ignore', '=', 0],
@@ -44,7 +44,7 @@ class Service extends DeviceRelatedModel
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeIsCritical($query)
+    public function scopeIsCritical(Builder $query): Builder
     {
         return $query->where([
             ['service_ignore', '=', 0],
@@ -57,7 +57,7 @@ class Service extends DeviceRelatedModel
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeIsWarning($query)
+    public function scopeIsWarning(Builder $query): Builder
     {
         return $query->where([
             ['service_ignore', '=', 0],
@@ -70,7 +70,7 @@ class Service extends DeviceRelatedModel
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeIsIgnored($query)
+    public function scopeIsIgnored(Builder $query): Builder
     {
         return $query->where([
             ['service_ignore', '=', 1],
@@ -82,7 +82,7 @@ class Service extends DeviceRelatedModel
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeIsDisabled($query)
+    public function scopeIsDisabled(Builder $query): Builder
     {
         return $query->where('service_disabled', 1);
     }

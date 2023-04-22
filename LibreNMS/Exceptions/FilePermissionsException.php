@@ -38,7 +38,7 @@ class FilePermissionsException extends \Exception implements UpgradeableExceptio
      * @param  \Exception  $exception
      * @return static|null
      */
-    public static function upgrade($exception)
+    public static function upgrade(Exception $exception): ?static
     {
         // cannot write to storage directory
         if ($exception instanceof \ErrorException &&
@@ -82,7 +82,7 @@ class FilePermissionsException extends \Exception implements UpgradeableExceptio
      * @param  string  $log_file
      * @return array
      */
-    private function generateCommands($log_file): array
+    private function generateCommands(string $log_file): array
     {
         $user = config('librenms.user');
         $group = config('librenms.group');

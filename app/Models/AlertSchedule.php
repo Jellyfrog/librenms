@@ -142,7 +142,7 @@ class AlertSchedule extends Model
     /**
      * @return int \LibreNMS\Enum\AlertScheduleStatus
      */
-    public function getStatusAttribute()
+    public function getStatusAttribute(): int
     {
         $now = Carbon::now();
 

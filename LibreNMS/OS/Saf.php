@@ -44,7 +44,7 @@ class Saf extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessFrequency()
+    public function discoverWirelessFrequency(): array
     {
         return [
             // SAF-IPRADIO::radioTxFrequency.local
@@ -80,7 +80,7 @@ class Saf extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessMse()
+    public function discoverWirelessMse(): array
     {
         return [
             // SAF-IPRADIO::modemRadialMSE.local
@@ -104,7 +104,7 @@ class Saf extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessPower()
+    public function discoverWirelessPower(): array
     {
         return [
             // SAF-IPRADIO::radioRxLevel.local
@@ -134,7 +134,7 @@ class Saf extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessRate()
+    public function discoverWirelessRate(): array
     {
         return [
             // SAF-IPRADIO::modemACMtotalCapacity.local

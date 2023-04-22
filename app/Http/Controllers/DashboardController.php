@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\View\View;
 use App\Models\Dashboard;
 use App\Models\User;
 use App\Models\UserPref;
@@ -73,7 +74,7 @@ class DashboardController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Contracts\View\View
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $request->validate([
             'dashboard' => 'integer',
@@ -120,7 +121,7 @@ class DashboardController extends Controller
      * @param  \App\Models\Dashboard  $dashboard
      * @return \Illuminate\Contracts\View\View
      */
-    public function show(Request $request, Dashboard $dashboard)
+    public function show(Request $request, Dashboard $dashboard): View
     {
         $request->validate([
             'bare' => 'nullable|in:yes',

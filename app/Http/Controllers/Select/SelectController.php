@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Select;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\PaginatedAjaxController;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
@@ -49,7 +50,7 @@ abstract class SelectController extends PaginatedAjaxController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): JsonResponse
     {
         $this->validate($request, $this->rules());
         $limit = $request->get('limit', 50);

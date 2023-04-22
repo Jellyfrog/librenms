@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use App\Models\PortGroup;
 use Flasher\Prime\FlasherInterface;
 use Illuminate\Http\Request;
@@ -14,7 +17,7 @@ class PortGroupController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(): View
     {
         return view('port-group.index', [
             'port_groups' => PortGroup::orderBy('name')->withCount('ports')->get(),
@@ -26,7 +29,7 @@ class PortGroupController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(): View
     {
         return view('port-group.create', [
             'port_group' => new PortGroup(),
@@ -39,7 +42,7 @@ class PortGroupController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request, FlasherInterface $flasher)
+    public function store(Request $request, FlasherInterface $flasher): RedirectResponse
     {
         $this->validate($request, [
             'name' => 'required|string|unique:port_groups',
@@ -59,7 +62,7 @@ class PortGroupController extends Controller
      * @param  \App\Models\PortGroup  $portGroup
      * @return \Illuminate\View\View
      */
-    public function edit(PortGroup $portGroup)
+    public function edit(PortGroup $portGroup): View
     {
         return view('port-group.edit', [
             'port_group' => $portGroup,
@@ -73,7 +76,7 @@ class PortGroupController extends Controller
      * @param  \App\Models\PortGroup  $portGroup
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, PortGroup $portGroup, FlasherInterface $flasher)
+    public function update(Request $request, PortGroup $portGroup, FlasherInterface $flasher): RedirectResponse
     {
         $this->validate($request, [
             'name' => [
@@ -106,7 +109,7 @@ class PortGroupController extends Controller
      * @param  \App\Models\PortGroup  $portGroup
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PortGroup $portGroup)
+    public function destroy(PortGroup $portGroup): Response
     {
         $portGroup->delete();
 

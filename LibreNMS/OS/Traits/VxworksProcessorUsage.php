@@ -37,7 +37,7 @@ trait VxworksProcessorUsage
      * @param  string  $oid  Custom OID to fetch from
      * @return array Processors
      */
-    public function discoverProcessors($oid = '.1.3.6.1.4.1.4413.1.1.1.1.4.9.0')
+    public function discoverProcessors(string $oid = '.1.3.6.1.4.1.4413.1.1.1.1.4.9.0'): array
     {
         $usage = $this->parseCpuUsage(snmp_get($this->getDeviceArray(), $oid, '-Ovq'));
         if (is_numeric($usage)) {
@@ -63,7 +63,7 @@ trait VxworksProcessorUsage
      * @param  array  $processors  Array of processor entries from the database that need to be polled
      * @return array of polled data
      */
-    public function pollProcessors(array $processors)
+    public function pollProcessors(array $processors): array
     {
         $data = [];
 
@@ -83,7 +83,7 @@ trait VxworksProcessorUsage
      * @param  string  $data
      * @return mixed
      */
-    private function parseCpuUsage($data)
+    private function parseCpuUsage(string $data)
     {
         preg_match('/([0-9]+.[0-9]+)%/', $data, $matches);
 

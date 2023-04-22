@@ -62,15 +62,15 @@ class Proc
      * @throws Exception the command was unable to execute
      */
     public function __construct(
-        $cmd,
-        $descriptorspec = [
+        string $cmd,
+        array $descriptorspec = [
             0 => ['pipe', 'r'],
             1 => ['pipe', 'w'],
             2 => ['pipe', 'w'],
         ],
         $cwd = null,
-        $env = null,
-        $blocking = false
+        ?array $env = null,
+        bool $blocking = false
     ) {
         $this->_process = proc_open($cmd, $descriptorspec, $this->_pipes, $cwd, $env);
         if (! is_resource($this->_process)) {
@@ -101,7 +101,7 @@ class Proc
      * @param  int  $nr  pipe number (0-2)
      * @return resource the pipe handle
      */
-    public function pipe($nr)
+    public function pipe(int $nr)
     {
         return $this->_pipes[$nr];
     }
@@ -115,7 +115,7 @@ class Proc
      * @param  string  $command
      * @return array
      */
-    public function sendCommand($command)
+    public function sendCommand(string $command): array
     {
         $this->sendInput($this->checkAddEOL($command));
 
@@ -127,7 +127,7 @@ class Proc
      *
      * @param  string  $data  the string to send
      */
-    public function sendInput($data)
+    public function sendInput(string $data)
     {
         fwrite($this->_pipes[0], $data);
     }
@@ -139,7 +139,7 @@ class Proc
      * @param  int  $timeout  time to wait for output, only applies if this process is synchronous
      * @return array [stdout, stderr]
      */
-    public function getOutput($timeout = 15)
+    public function getOutput(int $timeout = 15): array
     {
         if ($this->_synchronous) {
             $pipes = [$this->_pipes[1], $this->_pipes[2]];
@@ -175,7 +175,7 @@ class Proc
      * @param  string  $command  the final command to send (appends newline if one is ommited)
      * @return int the exit status of this process (-1 means error)
      */
-    public function close($command = null)
+    public function close(string $command = null): int
     {
         if (isset($command)) {
             try {
@@ -202,7 +202,7 @@ class Proc
      *
      * @throws Exception
      */
-    public function terminate($timeout = 3000, $signal = 15)
+    public function terminate(int $timeout = 3000, int $signal = 15)
     {
         $status = $this->getStatus();
 
@@ -242,7 +242,7 @@ class Proc
      *
      * @return array status array
      */
-    public function getStatus()
+    public function getStatus(): array
     {
         $status = proc_get_status($this->_process);
 
@@ -258,7 +258,7 @@ class Proc
      *
      * @return bool
      */
-    public function isRunning()
+    public function isRunning(): bool
     {
         /* @phpstan-ignore-next-line */
         if (! is_resource($this->_process)) {
@@ -275,7 +275,7 @@ class Proc
      *
      * @return int|null
      */
-    public function getExitCode()
+    public function getExitCode(): ?int
     {
         return $this->_exitcode;
     }
@@ -285,7 +285,7 @@ class Proc
      *
      * @return bool
      */
-    public function isSynchronous()
+    public function isSynchronous(): bool
     {
         return $this->_synchronous;
     }
@@ -297,7 +297,7 @@ class Proc
      *
      * @param  bool  $synchronous
      */
-    public function setSynchronous($synchronous)
+    public function setSynchronous(bool $synchronous)
     {
         $this->_synchronous = $synchronous;
     }
@@ -309,7 +309,7 @@ class Proc
      * @param  string  $string
      * @return string
      */
-    private function checkAddEOL($string)
+    private function checkAddEOL(string $string): string
     {
         if (! Str::endsWith($string, PHP_EOL)) {
             $string .= PHP_EOL;

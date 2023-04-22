@@ -25,13 +25,14 @@
 
 namespace App\Http\Controllers\Widgets;
 
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 
 class PlaceholderController extends WidgetController
 {
     protected $title = 'Placeholder';
 
-    public function getView(Request $request)
+    public function getView(Request $request): View
     {
         return view('widgets.placeholder');
     }

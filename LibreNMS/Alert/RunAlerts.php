@@ -48,7 +48,7 @@ class RunAlerts
      * @param  bool  $wrap  Wrap variable for text-usage (default: true)
      * @return string
      */
-    public function populate($txt, $wrap = true)
+    public function populate(string $txt, bool $wrap = true): string
     {
         preg_match_all('/%([\w\.]+)/', $txt, $m);
         foreach ($m[1] as $tmp) {
@@ -83,7 +83,7 @@ class RunAlerts
      * @param  array  $alert  Alert-Result from DB
      * @return array|bool|string
      */
-    public function describeAlert($alert)
+    public function describeAlert(array $alert)
     {
         $obj = [];
         $i = 0;
@@ -217,7 +217,7 @@ class RunAlerts
      * @param  int  $rule  Rule-ID
      * @return bool
      */
-    public function isRuleValid($device_id, $rule)
+    public function isRuleValid(int $device_id, int $rule): bool
     {
         global $rulescache;
         if (empty($rulescache[$device_id]) || ! isset($rulescache[$device_id])) {
@@ -239,7 +239,7 @@ class RunAlerts
      * @param  array  $alert
      * @return bool
      */
-    public function issueAlert($alert)
+    public function issueAlert(array $alert): bool
     {
         if (Config::get('alert.fixed-contacts') == false) {
             if (empty($alert['query'])) {
@@ -266,7 +266,7 @@ class RunAlerts
      *
      * @return void
      */
-    public function runAcks()
+    public function runAcks(): void
     {
         foreach ($this->loadAlerts('alerts.state = ' . AlertState::ACKNOWLEDGED . ' && alerts.open = ' . AlertState::ACTIVE) as $alert) {
             $this->issueAlert($alert);
@@ -279,7 +279,7 @@ class RunAlerts
      *
      * @return void
      */
-    public function runFollowUp()
+    public function runFollowUp(): void
     {
         foreach ($this->loadAlerts('alerts.state > ' . AlertState::CLEAR . ' && alerts.open = 0') as $alert) {
             if ($alert['state'] != AlertState::ACKNOWLEDGED || ($alert['info']['until_clear'] === false)) {
@@ -364,7 +364,7 @@ class RunAlerts
      *
      * @return void
      */
-    public function runAlerts()
+    public function runAlerts(): void
     {
         foreach ($this->loadAlerts('alerts.state != ' . AlertState::ACKNOWLEDGED . ' && alerts.open = 1') as $alert) {
             $noiss = false;
@@ -473,7 +473,7 @@ class RunAlerts
      * @param  array  $obj  Alert-Array
      * @return void
      */
-    public function extTransports($obj)
+    public function extTransports(array $obj): void
     {
         $type = new Template;
 
@@ -565,7 +565,7 @@ class RunAlerts
      * @param  int  $device  Device-ID
      * @return bool
      */
-    public function isParentDown($device)
+    public function isParentDown(int $device): bool
     {
         $parent_count = dbFetchCell('SELECT count(*) from `device_relationships` WHERE `child_device_id` = ?', [$device]);
         if (! $parent_count) {

@@ -62,7 +62,7 @@ class AlertScheduleController extends TableController
      * @param  AlertSchedule  $schedule
      * @return array
      */
-    public function formatItem($schedule)
+    public function formatItem(AlertSchedule $schedule)
     {
         return [
             'title' => htmlentities($schedule->title),

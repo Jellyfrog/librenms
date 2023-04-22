@@ -84,7 +84,7 @@ class Config
      *
      * @return array
      */
-    public static function getDefinitions()
+    public static function getDefinitions(): array
     {
         return json_decode(file_get_contents(base_path('misc/config_definitions.json')), true)['config'];
     }
@@ -112,7 +112,7 @@ class Config
      *
      * @param  array  $config  (this should be self::$config)
      */
-    private static function loadUserConfigFile(&$config)
+    private static function loadUserConfigFile(array &$config)
     {
         // Load user config file
         if (is_file(base_path('config.php'))) {
@@ -127,7 +127,7 @@ class Config
      * @param  mixed  $default  optional value to return if the setting is not set
      * @return mixed
      */
-    public static function get($key, $default = null)
+    public static function get(string $key, $default = null)
     {
         if (isset(self::$config[$key])) {
             return self::$config[$key];
@@ -162,7 +162,7 @@ class Config
      * @param  mixed  $default  will be returned if the setting is not set on the device or globally
      * @return mixed
      */
-    public static function getDeviceSetting($device, $key, $global_prefix = null, $default = null)
+    public static function getDeviceSetting(array $device, string $key, string $global_prefix = null, $default = null)
     {
         if (isset($device[$key])) {
             return $device[$key];
@@ -183,7 +183,7 @@ class Config
      * @param  mixed  $default  optional value to return if the setting is not set
      * @return mixed
      */
-    public static function getOsSetting($os, $key, $default = null)
+    public static function getOsSetting(string $os, string $key, $default = null)
     {
         if ($os) {
             \LibreNMS\Util\OS::loadDefinition($os);
@@ -253,7 +253,7 @@ class Config
      * @param  mixed  $value
      * @return bool if the save was successful
      */
-    public static function persist($key, $value)
+    public static function persist($key, $value): bool
     {
         try {
             Arr::set(self::$config, $key, $value);
@@ -285,7 +285,7 @@ class Config
      * @param  string  $key
      * @return int|false
      */
-    public static function erase($key)
+    public static function erase(string $key)
     {
         self::forget($key);
         try {
@@ -301,7 +301,7 @@ class Config
      * @param  string  $key  period separated config variable name
      * @return bool
      */
-    public static function has($key)
+    public static function has(string $key): bool
     {
         if (isset(self::$config[$key])) {
             return true;
@@ -319,7 +319,7 @@ class Config
      *
      * @return string
      */
-    public static function toJson()
+    public static function toJson(): string
     {
         return json_encode(self::$config);
     }
@@ -329,7 +329,7 @@ class Config
      *
      * @return array
      */
-    public static function getAll()
+    public static function getAll(): array
     {
         return self::$config;
     }
@@ -490,7 +490,7 @@ class Config
      * @param  string  $value  value to set to key or vsprintf() format string for values below
      * @param  array  $format_values  array of keys to send to vsprintf()
      */
-    private static function setDefault($key, $value, $format_values = [])
+    private static function setDefault(string $key, string $value, array $format_values = [])
     {
         if (! self::has($key)) {
             if (is_string($value)) {
@@ -508,7 +508,7 @@ class Config
      * @param  string  $old
      * @param  string  $new
      */
-    private static function deprecatedVariable($old, $new)
+    private static function deprecatedVariable(string $old, string $new)
     {
         if (self::has($old)) {
             if (Debug::isEnabled()) {
@@ -524,7 +524,7 @@ class Config
      * @param  string  $binary
      * @return mixed
      */
-    public static function locateBinary($binary)
+    public static function locateBinary(string $binary)
     {
         if (! Str::contains($binary, '/')) {
             $output = `whereis -b $binary`;

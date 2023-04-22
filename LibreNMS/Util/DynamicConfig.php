@@ -52,7 +52,7 @@ class DynamicConfig
      * @param  string  $name
      * @return bool
      */
-    public function isValidSetting($name)
+    public function isValidSetting(string $name): bool
     {
         return $this->definitions->has($name) && $this->definitions->get($name)->isValid();
     }
@@ -63,7 +63,7 @@ class DynamicConfig
      * @param  string  $name
      * @return DynamicConfigItem|null
      */
-    public function get($name)
+    public function get(string $name): ?DynamicConfigItem
     {
         return $this->definitions->get($name);
     }
@@ -73,7 +73,7 @@ class DynamicConfig
      *
      * @return \Illuminate\Support\Collection
      */
-    public function getGroups()
+    public function getGroups(): Collection
     {
         return $this->definitions->pluck('group')->unique()->filter()->prepend('global');
     }
@@ -96,7 +96,7 @@ class DynamicConfig
      *
      * @return Collection
      */
-    public function getGrouped()
+    public function getGrouped(): Collection
     {
         /** @var Collection $grouped */
         $grouped = $this->definitions->filter->isValid()->sortBy('group')->groupBy('group')->map(function ($group) {
@@ -131,7 +131,7 @@ class DynamicConfig
      *
      * @return Collection
      */
-    public function all()
+    public function all(): Collection
     {
         return $this->definitions;
     }

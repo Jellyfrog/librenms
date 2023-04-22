@@ -195,7 +195,7 @@ class Graph
      * @param  Device  $device
      * @return array
      */
-    public static function getSubtypes($type, $device = null): array
+    public static function getSubtypes(string $type, Device $device = null): array
     {
         $types = [];
 
@@ -232,7 +232,7 @@ class Graph
      * @param  string  $subtype
      * @return bool
      */
-    public static function isMibGraph($type, $subtype): bool
+    public static function isMibGraph(string $type, string $subtype): bool
     {
         return Config::get("graph_types.$type.$subtype.section") == 'mib';
     }

@@ -34,7 +34,7 @@ class StringHelpers
      * @param  int  $max
      * @return string
      */
-    public static function shortenText($string, $max = 30)
+    public static function shortenText(string $string, int $max = 30): string
     {
         if (strlen($string) > 50) {
             return substr($string, 0, $max) . '...';
@@ -92,7 +92,7 @@ class StringHelpers
      * @param  string  $string
      * @return string
      */
-    public static function camelToTitle($string)
+    public static function camelToTitle(string $string): string
     {
         return ucwords(implode(' ', preg_split('/(?=[A-Z])/', $string)));
     }

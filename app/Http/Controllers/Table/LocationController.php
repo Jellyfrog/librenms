@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Table;
 
+use Illuminate\Http\Request;
 use App\Models\Device;
 use App\Models\Location;
 
@@ -38,7 +39,7 @@ class LocationController extends TableController
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function searchFields($request)
+    public function searchFields(Request $request)
     {
         return ['location'];
     }
@@ -54,7 +55,7 @@ class LocationController extends TableController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    public function baseQuery($request)
+    public function baseQuery(Request $request)
     {
         // joins are needed for device count sorts
         $sort = $request->get('sort');
@@ -75,7 +76,7 @@ class LocationController extends TableController
      * @param  Location  $location
      * @return array|\Illuminate\Database\Eloquent\Model|\Illuminate\Support\Collection
      */
-    public function formatItem($location)
+    public function formatItem(Location $location)
     {
         return [
             'id' => $location->id,

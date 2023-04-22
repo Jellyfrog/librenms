@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Response;
 use App\Checks;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ use LibreNMS\Util\Debug;
 
 class LegacyController extends Controller
 {
-    public function index(Request $request, Session $session)
+    public function index(Request $request, Session $session): Response
     {
         Checks::postAuth();
 

@@ -39,7 +39,7 @@ class ObjectCache implements ArrayAccess
      *
      * @param  string  $obj  Name of Object
      */
-    public function __construct($obj)
+    public function __construct(string $obj)
     {
         $this->obj = $obj;
         if (isset($GLOBALS['_ObjCache'][$obj])) {

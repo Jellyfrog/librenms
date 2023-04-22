@@ -64,7 +64,7 @@ class Stellar extends OS implements
      * @param  array  $sensors  Array of sensors needed to be polled
      * @return array of polled data
      */
-    public function pollWirelessClients(array $sensors)
+    public function pollWirelessClients(array $sensors): array
     {
         $data = [];
         if (! empty($sensors)) {

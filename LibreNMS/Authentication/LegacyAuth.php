@@ -25,7 +25,7 @@ class LegacyAuth
      *
      * @return Authorizer
      */
-    public static function get()
+    public static function get(): Authorizer
     {
         if (! static::$_instance) {
             $class = self::getClass();
@@ -51,7 +51,7 @@ class LegacyAuth
      * @param  string  $type
      * @return string
      */
-    public static function getClass($type = null)
+    public static function getClass(string $type = null): string
     {
         if (is_null($type)) {
             $type = self::getType();
@@ -69,7 +69,7 @@ class LegacyAuth
      *
      * @return Authorizer
      */
-    public static function reset()
+    public static function reset(): Authorizer
     {
         static::$_instance = null;
 

@@ -67,7 +67,7 @@ class PingCheck implements ShouldQueue
      *
      * @param  array  $groups  List of distributed poller groups to check
      */
-    public function __construct($groups = [])
+    public function __construct(array $groups = [])
     {
         if (is_array($groups)) {
             $this->groups = $groups;
@@ -283,7 +283,7 @@ class PingCheck implements ShouldQueue
      *
      * @param  string  $hostname
      */
-    private function complete($hostname)
+    private function complete(string $hostname)
     {
         $this->current->offsetUnset($hostname);
         $this->deferred->each->offsetUnset($hostname);

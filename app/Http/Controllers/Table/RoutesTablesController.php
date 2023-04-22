@@ -75,7 +75,7 @@ class RoutesTablesController extends TableController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    protected function baseQuery($request)
+    protected function baseQuery(Request $request)
     {
         $join = function ($query) {
             $query->on('ports.port_id', 'route.port_id');
@@ -118,7 +118,7 @@ class RoutesTablesController extends TableController
      * @param  array  $fields
      * @return Builder|\Illuminate\Database\Query\Builder
      */
-    protected function search($search, $query, $fields = [])
+    protected function search(string $search, Builder $query, array $fields = [])
     {
         if ($search = trim(\Request::get('searchPhrase'))) {
             $searchLike = '%' . $search . '%';
@@ -137,7 +137,7 @@ class RoutesTablesController extends TableController
      * @param  Builder  $query
      * @return Builder
      */
-    public function sort($request, $query)
+    public function sort(Request $request, Builder $query): Builder
     {
         $sort = $request->get('sort');
         if (isset($sort['inetCidrRouteIfIndex'])) {
@@ -168,7 +168,7 @@ class RoutesTablesController extends TableController
     /**
      * @param  Route  $route_entry
      */
-    public function formatItem($route_entry)
+    public function formatItem(Route $route_entry)
     {
         $item['updated_at'] = $route_entry->updated_at ? $route_entry->updated_at->diffForHumans() : $route_entry->updated_at;
         $item['created_at'] = $route_entry->created_at ? $route_entry->created_at->toDateTimeString() : $route_entry->created_at;

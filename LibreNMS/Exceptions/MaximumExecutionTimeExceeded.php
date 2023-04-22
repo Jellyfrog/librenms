@@ -37,7 +37,7 @@ class MaximumExecutionTimeExceeded extends \Exception implements UpgradeableExce
      * @param  \Exception  $exception
      * @return static|null
      */
-    public static function upgrade($exception)
+    public static function upgrade(Exception $exception): ?static
     {
         // cannot write to storage directory
         if ($exception instanceof FatalError &&

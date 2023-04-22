@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Mempool;
 use Illuminate\Support\Str;
 use LibreNMS\Interfaces\Models\Keyable;
 use LibreNMS\Util\Number;
@@ -100,7 +101,7 @@ class Mempool extends DeviceRelatedModel implements Keyable
      * @param  string  $default
      * @return \App\Models\Mempool
      */
-    public function setClass($class = null, $default = 'system')
+    public function setClass(string $class = null, string $default = 'system'): Mempool
     {
         if ($class) {
             $this->mempool_class = $class;

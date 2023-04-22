@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
 use App\Models\Location;
 use Illuminate\Http\Request;
 use LibreNMS\Config;
@@ -9,7 +11,7 @@ use LibreNMS\Util\Html;
 
 class LocationController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $maps_api = Config::get('geoloc.api_key');
         $data = [
@@ -44,7 +46,7 @@ class LocationController extends Controller
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(Request $request, Location $location)
+    public function update(Request $request, Location $location): JsonResponse
     {
         $this->authorize('admin', $request->user());
 
@@ -68,7 +70,7 @@ class LocationController extends Controller
      *
      * @throws \Exception
      */
-    public function destroy(Request $request, Location $location)
+    public function destroy(Request $request, Location $location): JsonResponse
     {
         $this->authorize('admin', $request->user());
 

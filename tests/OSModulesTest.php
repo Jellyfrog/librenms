@@ -88,7 +88,7 @@ class OSModulesTest extends DBTestCase
      * @param  string  $variant  optional variant
      * @param  array  $modules  modules to test for this os
      */
-    public function testOS($os, $variant, $modules): void
+    public function testOS(string $os, string $variant, array $modules): void
     {
         // Lock testing time
         $this->travelTo(new \DateTime('2022-01-01 00:00:00'));
@@ -152,7 +152,7 @@ class OSModulesTest extends DBTestCase
         $this->travelBack();
     }
 
-    public function dumpedDataProvider()
+    public function dumpedDataProvider(): array
     {
         $modules = [];
 

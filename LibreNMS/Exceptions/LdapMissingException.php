@@ -25,6 +25,8 @@
 
 namespace LibreNMS\Exceptions;
 
+use Illuminate\Http\Response;
+
 class LdapMissingException extends AuthenticationException
 {
     private const DEFAULT_MESSAGE = 'PHP does not support LDAP, please install or enable the PHP LDAP extension';
@@ -42,7 +44,7 @@ class LdapMissingException extends AuthenticationException
      *
      * @return \Illuminate\Http\Response
      */
-    public function render(\Illuminate\Http\Request $request)
+    public function render(\Illuminate\Http\Request $request): Response
     {
         $title = trans('exceptions.ldap_missing.title');
         $message = ($this->message == self::DEFAULT_MESSAGE) ? trans('exceptions.ldap_missing.message') : $this->getMessage();

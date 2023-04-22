@@ -41,7 +41,7 @@ class CpRtnDischarge implements SnmptrapHandler
      * @param  Trap  $trap
      * @return void
      */
-    public function handle(Device $device, Trap $trap)
+    public function handle(Device $device, Trap $trap): void
     {
         $returnInfo = CyberPowerUtil::getMessage($trap);
         $trap->log("$returnInfo", 1);

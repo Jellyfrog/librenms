@@ -99,7 +99,7 @@ class Device extends BaseModel
      *                                array  $device associative array with device data
      * @return string IP/Hostname to which Device polling is targeted
      */
-    public static function pollerTarget($device)
+    public static function pollerTarget($device): string
     {
         if (! is_array($device)) {
             $ret = static::where('hostname', $device)->first(['hostname', 'overwrite_ip']);
@@ -239,7 +239,7 @@ class Device extends BaseModel
      * @param  int  $length  length to shorten to, will not break up words so may be longer
      * @return string
      */
-    public function shortDisplayName($length = 12)
+    public function shortDisplayName(int $length = 12): string
     {
         $name = $this->displayName();
 
@@ -264,7 +264,7 @@ class Device extends BaseModel
      * @param  User  $user
      * @return bool
      */
-    public function canAccess($user)
+    public function canAccess(User $user): bool
     {
         if (! $user) {
             return false;
@@ -287,7 +287,7 @@ class Device extends BaseModel
     /**
      * @return string
      */
-    public function logo()
+    public function logo(): string
     {
         $base_name = pathinfo($this->icon, PATHINFO_FILENAME);
         $options = [
@@ -312,7 +312,7 @@ class Device extends BaseModel
      *
      * @param  int  $exclude  exclude a device_id from being considered (used for deleting)
      */
-    public function updateMaxDepth($exclude = null)
+    public function updateMaxDepth(int $exclude = null)
     {
         // optimize for memory instead of time
         $query = $this->parents()->getQuery();

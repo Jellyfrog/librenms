@@ -64,7 +64,7 @@ class TopDevicesController extends WidgetController
      * @param  Request  $request
      * @return View
      */
-    public function getView(Request $request)
+    public function getView(Request $request): View
     {
         $settings = $this->getSettings();
         $sort = $settings['sort_order'];
@@ -101,7 +101,7 @@ class TopDevicesController extends WidgetController
         return view('widgets.top-devices', $data);
     }
 
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         return view('widgets.settings.top-devices', $this->getSettings(true));
     }
@@ -111,7 +111,7 @@ class TopDevicesController extends WidgetController
      * @param  Collection  $rows
      * @return array
      */
-    private function formatData($headers, $rows)
+    private function formatData($headers, Collection $rows): array
     {
         return [
             'headers' => (array) $headers,
@@ -124,7 +124,7 @@ class TopDevicesController extends WidgetController
      * @param  string  $left_table
      * @return Builder
      */
-    private function withDeviceQuery(Builder $query, $left_table)
+    private function withDeviceQuery(Builder $query, string $left_table): Builder
     {
         $settings = $this->getSettings();
 
@@ -147,7 +147,7 @@ class TopDevicesController extends WidgetController
     /**
      * @return Builder
      */
-    private function deviceQuery()
+    private function deviceQuery(): Builder
     {
         $settings = $this->getSettings();
 
@@ -165,7 +165,7 @@ class TopDevicesController extends WidgetController
      * @param  array  $graph_params
      * @return array
      */
-    private function standardRow($device, $graph_type, $graph_params = [])
+    private function standardRow(Device $device, string $graph_type, array $graph_params = []): array
     {
         return [
             Url::deviceLink($device, $device->shortDisplayName()),

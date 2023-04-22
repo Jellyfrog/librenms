@@ -38,7 +38,7 @@ class OS
      *
      * @param  string  $os
      */
-    public static function loadDefinition($os)
+    public static function loadDefinition(string $os)
     {
         if (! Config::get("os.$os.definition_loaded")) {
             $yaml_file = base_path("/includes/definitions/$os.yaml");
@@ -58,7 +58,7 @@ class OS
      * @param  bool  $existing  Only load OS that have existing OS in the database
      * @param  bool  $cached  Load os definitions from the cache file
      */
-    public static function loadAllDefinitions($existing = false, $cached = true)
+    public static function loadAllDefinitions(bool $existing = false, bool $cached = true)
     {
         $install_dir = \LibreNMS\Config::get('install_dir');
         $cache_file = $install_dir . '/cache/os_defs.cache';
@@ -91,7 +91,7 @@ class OS
      * @param  bool  $force
      * @return bool true if the cache was updated
      */
-    public static function updateCache($force = false)
+    public static function updateCache(bool $force = false): bool
     {
         $install_dir = Config::get('install_dir');
         $cache_file = "$install_dir/cache/os_defs.cache";

@@ -87,7 +87,7 @@ class Airos extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessFrequency()
+    public function discoverWirelessFrequency(): array
     {
         $oid = '.1.3.6.1.4.1.41112.1.4.1.1.4.1'; //UBNT-AirMAX-MIB::ubntRadioFreq.1
 
@@ -102,7 +102,7 @@ class Airos extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessCapacity()
+    public function discoverWirelessCapacity(): array
     {
         $oid = '.1.3.6.1.4.1.41112.1.4.6.1.4.1'; //UBNT-AirMAX-MIB::ubntAirMaxCapacity.1
 
@@ -117,7 +117,7 @@ class Airos extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessCcq()
+    public function discoverWirelessCcq(): array
     {
         $oid = '.1.3.6.1.4.1.41112.1.4.5.1.7.1'; //UBNT-AirMAX-MIB::ubntWlStatCcq.1
 
@@ -132,7 +132,7 @@ class Airos extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessClients()
+    public function discoverWirelessClients(): array
     {
         $oid = '.1.3.6.1.4.1.41112.1.4.5.1.15.1'; //UBNT-AirMAX-MIB::ubntWlStatStaCount.1
 
@@ -147,7 +147,7 @@ class Airos extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessDistance()
+    public function discoverWirelessDistance(): array
     {
         $oid = '.1.3.6.1.4.1.41112.1.4.1.1.7.1'; //UBNT-AirMAX-MIB::ubntRadioDistance.1
 
@@ -162,7 +162,7 @@ class Airos extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessNoiseFloor()
+    public function discoverWirelessNoiseFloor(): array
     {
         $oid = '.1.3.6.1.4.1.41112.1.4.5.1.8.1'; //UBNT-AirMAX-MIB::ubntWlStatNoiseFloor.1
 
@@ -177,7 +177,7 @@ class Airos extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessPower()
+    public function discoverWirelessPower(): array
     {
         $tx_oid = '.1.3.6.1.4.1.41112.1.4.1.1.6.1'; //UBNT-AirMAX-MIB::ubntRadioTxPower.1
         $rx_oid = '.1.3.6.1.4.1.41112.1.4.5.1.5.1'; //UBNT-AirMAX-MIB::ubntWlStatSignal.1
@@ -194,7 +194,7 @@ class Airos extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessQuality()
+    public function discoverWirelessQuality(): array
     {
         $oidAirMax = '.1.3.6.1.4.1.41112.1.4.6.1.3.1'; //OLD UBNT-AirMAX-MIB::ubntAirMaxQuality.1
 
@@ -209,7 +209,7 @@ class Airos extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessRate()
+    public function discoverWirelessRate(): array
     {
         $tx_oid = '.1.3.6.1.4.1.41112.1.4.5.1.9.1'; //UBNT-AirMAX-MIB::ubntWlStatTxRate.1
         $rx_oid = '.1.3.6.1.4.1.41112.1.4.5.1.10.1'; //UBNT-AirMAX-MIB::ubntWlStatRxRate.1
@@ -226,7 +226,7 @@ class Airos extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessRssi()
+    public function discoverWirelessRssi(): array
     {
         $oid = '.1.3.6.1.4.1.41112.1.4.5.1.6.1'; //UBNT-AirMAX-MIB::ubntWlStatRssi.1
         $sensors = [

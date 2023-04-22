@@ -55,7 +55,7 @@ class PortSearchController extends SearchController
      * @param  \App\Models\Port  $port
      * @return array
      */
-    public function formatItem($port): array
+    public function formatItem(Port $port): array
     {
         $description = $port->getDescription();
         $label = $port->getLabel();

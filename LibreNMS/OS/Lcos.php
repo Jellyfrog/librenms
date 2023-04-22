@@ -53,7 +53,7 @@ class Lcos extends OS implements
      * @param  string  $index
      * @return string decimal encoded OID string
      */
-    private function strToDecOid($index)
+    private function strToDecOid(string $index): string
     {
         $dec_index = [];
         for ($i = 0, $j = strlen($index); $i < $j; $i++) {
@@ -69,7 +69,7 @@ class Lcos extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessFrequency()
+    public function discoverWirelessFrequency(): array
     {
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanRadiosEntryRadioChannel', [], 'LCOS-MIB');
         $radios = $this->getCacheByIndex('lcsStatusWlanRadiosEntryIfc', 'LCOS-MIB');
@@ -101,7 +101,7 @@ class Lcos extends OS implements
      * @param  array  $sensors  Array of sensors needed to be polled
      * @return array of polled data
      */
-    public function pollWirelessFrequency(array $sensors)
+    public function pollWirelessFrequency(array $sensors): array
     {
         return  $this->pollWirelessChannelAsFrequency($sensors);
     }
@@ -112,7 +112,7 @@ class Lcos extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessCapacity()
+    public function discoverWirelessCapacity(): array
     {
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanRadiosEntryModemLoad', [], 'LCOS-MIB');
         $radios = $this->getCacheByIndex('lcsStatusWlanRadiosEntryIfc', 'LCOS-MIB');
@@ -143,7 +143,7 @@ class Lcos extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessNoiseFloor()
+    public function discoverWirelessNoiseFloor(): array
     {
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanRadiosEntryNoiseLevel', [], 'LCOS-MIB');
         $radios = $this->getCacheByIndex('lcsStatusWlanRadiosEntryIfc', 'LCOS-MIB');
@@ -174,7 +174,7 @@ class Lcos extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessPower()
+    public function discoverWirelessPower(): array
     {
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanRadiosEntryTransmitPower', [], 'LCOS-MIB');
         $radios = $this->getCacheByIndex('lcsStatusWlanRadiosEntryIfc', 'LCOS-MIB');
@@ -206,7 +206,7 @@ class Lcos extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessCcq()
+    public function discoverWirelessCcq(): array
     {
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanCompetingNetworksEntryPhySignal', [], 'LCOS-MIB');
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanCompetingNetworksEntryInterpointPeerName', $data, 'LCOS-MIB');
@@ -239,7 +239,7 @@ class Lcos extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessRate()
+    public function discoverWirelessRate(): array
     {
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanCompetingNetworksEntryEffRate', [], 'LCOS-MIB');
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanCompetingNetworksEntryInterpointPeerName', $data, 'LCOS-MIB');
@@ -273,7 +273,7 @@ class Lcos extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessRssi()
+    public function discoverWirelessRssi(): array
     {
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanCompetingNetworksEntrySignalLevel', [], 'LCOS-MIB');
         $data = snmpwalk_cache_oid($this->getDeviceArray(), 'lcsStatusWlanCompetingNetworksEntryInterpointPeerName', $data, 'LCOS-MIB');

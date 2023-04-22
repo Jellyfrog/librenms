@@ -25,6 +25,7 @@
 
 namespace LibreNMS\Util;
 
+use Illuminate\Http\Request;
 use App;
 use Symfony\Component\HttpFoundation\HeaderBag;
 
@@ -49,7 +50,7 @@ class Laravel
      *
      * @param  bool  $authenticate  Use session+db to authenticate user (does not authorize)
      */
-    public static function bootWeb($authenticate = false)
+    public static function bootWeb(bool $authenticate = false)
     {
         // this is not a substitute for the normal Laravel boot, just a way to make auth work for external php
         if (self::isBooted()) {
@@ -94,7 +95,7 @@ class Laravel
      * @param  \Illuminate\Http\Request  $request
      * @param  bool  $auth
      */
-    private static function rewriteDummyHeaders($request, $auth)
+    private static function rewriteDummyHeaders(Request $request, bool $auth)
     {
         // set dummy path allows url helper to work and prevents full init again
         $new_uri = ($auth ? '/dummy_legacy_auth' : '/dummy_legacy_unauth');

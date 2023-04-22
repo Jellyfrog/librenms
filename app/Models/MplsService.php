@@ -39,7 +39,7 @@ class MplsService extends DeviceRelatedModel implements Keyable
      *
      * @return int
      */
-    public function getCompositeKey()
+    public function getCompositeKey(): int
     {
         return $this->svc_oid;
     }

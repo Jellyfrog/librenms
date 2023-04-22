@@ -47,7 +47,7 @@ class Pbn extends OS implements ProcessorDiscovery
      *
      * @return array Processors
      */
-    public function discoverProcessors()
+    public function discoverProcessors(): array
     {
         return [
             Processor::discover(

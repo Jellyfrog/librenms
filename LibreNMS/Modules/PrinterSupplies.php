@@ -258,7 +258,7 @@ class PrinterSupplies implements Module
      * @param  int  $capacity  the normalized capacity
      * @return int|float|bool the toner level as a percentage
      */
-    private static function getTonerLevel($device, $raw_value, $capacity)
+    private static function getTonerLevel(array $device, $raw_value, int $capacity)
     {
         // -3 means some toner is left
         if ($raw_value == '-3') {
@@ -302,7 +302,7 @@ class PrinterSupplies implements Module
      * @param  int  $raw_capacity  The value return from snmp
      * @return int normalized capacity value
      */
-    private static function getTonerCapacity($raw_capacity)
+    private static function getTonerCapacity(int $raw_capacity): int
     {
         // unknown or unrestricted capacity, assume 100
         if (empty($raw_capacity) || $raw_capacity < 0) {

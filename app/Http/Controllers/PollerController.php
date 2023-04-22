@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
 use App\Models\Device;
 use App\Models\Poller;
 use App\Models\PollerCluster;
@@ -20,7 +21,7 @@ class PollerController extends Controller
         $this->rrdstep = Config::get('rrd.step');
     }
 
-    public function logTab(Request $request)
+    public function logTab(Request $request): View
     {
         $this->authorize('viewAny', PollerCluster::class);
 
@@ -30,7 +31,7 @@ class PollerController extends Controller
         ]);
     }
 
-    public function groupsTab()
+    public function groupsTab(): View
     {
         $this->authorize('manage', PollerCluster::class);
 
@@ -42,7 +43,7 @@ class PollerController extends Controller
         ]);
     }
 
-    public function pollerTab()
+    public function pollerTab(): View
     {
         $this->authorize('viewAny', PollerCluster::class);
 
@@ -53,7 +54,7 @@ class PollerController extends Controller
         ]);
     }
 
-    public function settingsTab()
+    public function settingsTab(): View
     {
         $this->authorize('manage', PollerCluster::class);
         $pollerClusters = PollerCluster::all()->keyBy('id');
@@ -65,7 +66,7 @@ class PollerController extends Controller
         ]);
     }
 
-    public function performanceTab()
+    public function performanceTab(): View
     {
         $this->authorize('viewAny', PollerCluster::class);
 

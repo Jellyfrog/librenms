@@ -84,7 +84,7 @@ class Rrd extends BaseDatastore
      * @param  bool  $dual_process  start an additional process that's output should be read after every command
      * @return bool the process(s) have been successfully started
      */
-    public function init($dual_process = true)
+    public function init(bool $dual_process = true): bool
     {
         $command = Config::get('rrdtool', 'rrdtool') . ' -';
 
@@ -146,7 +146,7 @@ class Rrd extends BaseDatastore
      * @param  array  $tags  tags to pass additional info to rrdtool
      * @param  array  $fields  data values to update
      */
-    public function put($device, $measurement, $tags, $fields)
+    public function put(array $device, string $measurement, array $tags, array $fields)
     {
         $rrd_name = isset($tags['rrd_name']) ? $tags['rrd_name'] : $measurement;
         $step = isset($tags['rrd_step']) ? $tags['rrd_step'] : $this->step;
@@ -193,7 +193,7 @@ class Rrd extends BaseDatastore
      * @param  array  $data
      * @return array|string
      */
-    public function update($filename, $data)
+    public function update(string $filename, array $data)
     {
         $values = [];
         // Do some sanitation on the data if passed as an array.
@@ -226,7 +226,7 @@ class Rrd extends BaseDatastore
      * @param  int  $max  the new max value
      * @return bool
      */
-    public function tune($type, $filename, $max)
+    public function tune(string $type, string $filename, int $max): bool
     {
         $fields = [];
         if ($type === 'port') {
@@ -270,7 +270,7 @@ class Rrd extends BaseDatastore
      * @param  string  $vmport
      * @return string full path to the rrd.
      */
-    public function proxmoxName($pmxcluster, $vmid, $vmport)
+    public function proxmoxName(string $pmxcluster, string $vmid, string $vmport): string
     {
         $pmxcdir = implode('/', [$this->rrd_dir, 'proxmox', self::safeName($pmxcluster)]);
         // this is not needed for remote rrdcached
@@ -288,7 +288,7 @@ class Rrd extends BaseDatastore
      * @param  string  $suffix
      * @return string
      */
-    public function portName($port_id, $suffix = null)
+    public function portName(int $port_id, string $suffix = null): string
     {
         return "port-id$port_id" . (empty($suffix) ? '' : '-' . $suffix);
     }
@@ -301,7 +301,7 @@ class Rrd extends BaseDatastore
      * @param  string|array  $newname  RRD name array as used with rrd_name()
      * @return bool indicating rename success or failure
      */
-    public function renameFile($device, $oldname, $newname)
+    public function renameFile(array $device, $oldname, $newname): bool
     {
         $oldrrd = self::name($device['hostname'], $oldname);
         $newrrd = self::name($device['hostname'], $newname);
@@ -329,7 +329,7 @@ class Rrd extends BaseDatastore
      * @param  string  $extension  File extension (default is .rrd)
      * @return string the name of the rrd file for $host's $extra component
      */
-    public function name($host, $extra, $extension = '.rrd')
+    public function name(string $host, $extra, string $extension = '.rrd'): string
     {
         $filename = self::safeName(is_array($extra) ? implode('-', $extra) : $extra);
 
@@ -342,7 +342,7 @@ class Rrd extends BaseDatastore
      * @param  string  $host  Host name
      * @return string the name of the rrd directory for $host
      */
-    public function dirFromHost($host)
+    public function dirFromHost(string $host): string
     {
         $host = str_replace(':', '_', trim($host, '[]'));
 
@@ -361,7 +361,7 @@ class Rrd extends BaseDatastore
      *
      * @throws \Exception thrown when the rrdtool process(s) cannot be started
      */
-    private function command($command, $filename, $options)
+    private function command(string $command, string $filename, string $options): array
     {
         $stat = Measurement::start($this->coalesceStatisticType($command));
         $output = null;
@@ -422,7 +422,7 @@ class Rrd extends BaseDatastore
      *
      * @throws FileExistsException if rrdtool <1.4.3 and the rrd file exists locally
      */
-    public function buildCommand($command, $filename, $options)
+    public function buildCommand(string $command, string $filename, string $options): string
     {
         if ($command == 'create') {
             // <1.4.3 doesn't support -O, so make sure the file doesn't exist
@@ -457,7 +457,7 @@ class Rrd extends BaseDatastore
      * @param  array  $device  device for which we get the rrd's
      * @return array array of rrd files for this host
      */
-    public function getRrdFiles($device)
+    public function getRrdFiles(array $device): array
     {
         if ($this->rrdcached) {
             $filename = sprintf('/%s', self::safeName($device['hostname']));
@@ -486,7 +486,7 @@ class Rrd extends BaseDatastore
      * @param  string  $category  which category of graphs are searched
      * @return array array of rrd files for this host
      */
-    public function getRrdApplicationArrays($device, $app_id, $app_name, $category = null)
+    public function getRrdApplicationArrays(array $device, int $app_id, string $app_name, string $category = null): array
     {
         $entries = [];
         $separator = '-';
@@ -521,7 +521,7 @@ class Rrd extends BaseDatastore
      * @param  string  $filename  full path to the rrd file
      * @return bool whether or not the passed rrd file exists
      */
-    public function checkRrdExists($filename)
+    public function checkRrdExists(string $filename): bool
     {
         if ($this->rrdcached && version_compare($this->version, '1.5', '>=')) {
             $chk = $this->command('last', $filename, '');
@@ -539,7 +539,7 @@ class Rrd extends BaseDatastore
      * @param  string  $hostname  rrd subfolder (hostname)
      * @param  string  $prefix  start of rrd file name all files matching will be deleted
      */
-    public function purge($hostname, $prefix)
+    public function purge(string $hostname, string $prefix)
     {
         if (empty($hostname)) {
             Log::error("Could not purge rrd $prefix, empty hostname");
@@ -621,7 +621,7 @@ class Rrd extends BaseDatastore
      * @param  string  $name
      * @return string
      */
-    public static function safeName($name)
+    public static function safeName(string $name): string
     {
         return (string) preg_replace('/[^a-zA-Z0-9,._\-]/', '_', $name);
     }
@@ -632,7 +632,7 @@ class Rrd extends BaseDatastore
      * @param  string  $descr
      * @return string
      */
-    public static function safeDescr($descr)
+    public static function safeDescr(string $descr): string
     {
         return (string) preg_replace('/[^a-zA-Z0-9,._\-\/\ ]/', ' ', $descr);
     }
@@ -644,7 +644,7 @@ class Rrd extends BaseDatastore
      * @param  int  $length  if passed, string will be padded and trimmed to exactly this length (after rrdtool unescapes it)
      * @return string
      */
-    public static function fixedSafeDescr($descr, $length)
+    public static function fixedSafeDescr(string $descr, int $length): string
     {
         $result = Rewrite::shortenIfType($descr);
         $result = str_replace("'", '', $result);            // remove quotes
@@ -687,7 +687,7 @@ class Rrd extends BaseDatastore
      * @param  string  $type
      * @return string
      */
-    private function coalesceStatisticType($type)
+    private function coalesceStatisticType(string $type): string
     {
         return ($type == 'update' || $type == 'create') ? $type : 'other';
     }

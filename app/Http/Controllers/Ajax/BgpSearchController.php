@@ -52,7 +52,7 @@ class BgpSearchController extends SearchController
      * @param  \App\Models\BgpPeer  $peer
      * @return array
      */
-    public function formatItem($peer): array
+    public function formatItem(BgpPeer $peer): array
     {
         $bgp_image = $peer->bgpPeerRemoteAs == $peer->device->bgpLocalAs
             ? 'fa fa-square fa-lg icon-theme'

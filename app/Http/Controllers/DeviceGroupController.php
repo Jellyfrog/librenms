@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use App\Models\DeviceGroup;
 use Flasher\Prime\FlasherInterface;
 use Illuminate\Http\Request;
@@ -21,7 +24,7 @@ class DeviceGroupController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(): View
     {
         $this->authorize('manage', DeviceGroup::class);
 
@@ -35,7 +38,7 @@ class DeviceGroupController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(): View
     {
         return view('device-group.create', [
             'device_group' => new DeviceGroup(),
@@ -49,7 +52,7 @@ class DeviceGroupController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request, FlasherInterface $flasher)
+    public function store(Request $request, FlasherInterface $flasher): RedirectResponse
     {
         $this->validate($request, [
             'name' => 'required|string|unique:device_groups',
@@ -78,7 +81,7 @@ class DeviceGroupController extends Controller
      * @param  \App\Models\DeviceGroup  $deviceGroup
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function show(DeviceGroup $deviceGroup)
+    public function show(DeviceGroup $deviceGroup): RedirectResponse
     {
         return redirect(url('/devices/group=' . $deviceGroup->id));
     }
@@ -89,7 +92,7 @@ class DeviceGroupController extends Controller
      * @param  \App\Models\DeviceGroup  $deviceGroup
      * @return \Illuminate\View\View
      */
-    public function edit(DeviceGroup $deviceGroup)
+    public function edit(DeviceGroup $deviceGroup): View
     {
         // convert old rules on edit
         if (is_null($deviceGroup->rules)) {
@@ -110,7 +113,7 @@ class DeviceGroupController extends Controller
      * @param  \App\Models\DeviceGroup  $deviceGroup
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, DeviceGroup $deviceGroup, FlasherInterface $flasher)
+    public function update(Request $request, DeviceGroup $deviceGroup, FlasherInterface $flasher): RedirectResponse
     {
         $this->validate($request, [
             'name' => [
@@ -167,7 +170,7 @@ class DeviceGroupController extends Controller
      * @param  \App\Models\DeviceGroup  $deviceGroup
      * @return \Illuminate\Http\Response
      */
-    public function destroy(DeviceGroup $deviceGroup)
+    public function destroy(DeviceGroup $deviceGroup): Response
     {
         if ($deviceGroup->serviceTemplates()->exists()) {
             $msg = __('Device Group :name still has Service Templates associated with it. Please remove or update the Service Template accordingly', ['name' => $deviceGroup->name]);

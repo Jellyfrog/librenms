@@ -142,7 +142,7 @@ class Rewrite
      * @param  string  $mac
      * @return string
      */
-    public static function readableMac($mac)
+    public static function readableMac(string $mac): string
     {
         return rtrim(chunk_split($mac, 2, ':'), ':');
     }
@@ -153,7 +153,7 @@ class Rewrite
      * @param  string  $mac
      * @return string
      */
-    public static function readableOUI($mac)
+    public static function readableOUI(string $mac): string
     {
         $cached = Cache::get('OUIDB-' . substr($mac, 0, 6), '');
         if ($cached == 'IEEE Registration Authority') {
@@ -175,7 +175,7 @@ class Rewrite
      * @param  string  $mac
      * @return string oid representation of a MAC address
      */
-    public static function oidMac($mac)
+    public static function oidMac(string $mac): string
     {
         return implode('.', array_map('hexdec', explode(':', $mac)));
     }
@@ -214,7 +214,7 @@ class Rewrite
      * @param  bool  $short
      * @return string
      */
-    public static function ciscoHardware(&$device, $short = false)
+    public static function ciscoHardware(Device &$device, bool $short = false): string
     {
         if ($device['os'] == 'ios') {
             if ($device['hardware']) {
@@ -462,7 +462,7 @@ class Rewrite
      * @param  string  $ip
      * @return string|null
      */
-    public static function addIpv6Brackets($ip): ?string
+    public static function addIpv6Brackets(string $ip): ?string
     {
         return IPv6::isValid($ip) ? "[$ip]" : $ip;
     }

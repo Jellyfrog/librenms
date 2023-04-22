@@ -44,7 +44,7 @@ class LegacyUserProvider implements UserProvider
      * @param  mixed  $identifier
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
-    public function retrieveById($identifier)
+    public function retrieveById($identifier): ?Authenticatable
     {
         return User::find($identifier);
     }
@@ -55,7 +55,7 @@ class LegacyUserProvider implements UserProvider
      * @param  int  $identifier
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
-    public function retrieveByLegacyId($identifier)
+    public function retrieveByLegacyId(int $identifier): ?Authenticatable
     {
         error_reporting(0);
         $legacy_user = LegacyAuth::get()->getUser($identifier);
@@ -71,7 +71,7 @@ class LegacyUserProvider implements UserProvider
      * @param  string  $token
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
-    public function retrieveByToken($identifier, $token)
+    public function retrieveByToken($identifier, string $token): ?Authenticatable
     {
         $user = new User();
         $user = $user->where($user->getAuthIdentifierName(), $identifier)->first();
@@ -97,7 +97,7 @@ class LegacyUserProvider implements UserProvider
      * @param  string  $token
      * @return void
      */
-    public function updateRememberToken(Authenticatable $user, $token)
+    public function updateRememberToken(Authenticatable $user, string $token): void
     {
         /** @var User $user */
         $user->setRememberToken($token);
@@ -114,7 +114,7 @@ class LegacyUserProvider implements UserProvider
      * @param  array  $credentials
      * @return bool
      */
-    public function validateCredentials(Authenticatable $user, array $credentials)
+    public function validateCredentials(Authenticatable $user, array $credentials): bool
     {
         error_reporting(0);
 
@@ -154,7 +154,7 @@ class LegacyUserProvider implements UserProvider
      * @param  array  $credentials
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
-    public function retrieveByCredentials(array $credentials)
+    public function retrieveByCredentials(array $credentials): ?Authenticatable
     {
         error_reporting(0);
 

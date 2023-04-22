@@ -40,7 +40,7 @@ class Plugin extends BaseModel
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeIsActive($query)
+    public function scopeIsActive(Builder $query): Builder
     {
         return $query->where('plugin_active', 1);
     }

@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Widgets;
 
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 
 class NotesController extends WidgetController
@@ -54,7 +55,7 @@ class NotesController extends WidgetController
         return $output;
     }
 
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         return view('widgets.settings.notes', $this->getSettings(true));
     }

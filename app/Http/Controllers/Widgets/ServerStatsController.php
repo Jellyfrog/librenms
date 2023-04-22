@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Widgets;
 
+use Illuminate\View\View;
 use App\Models\Device;
 use Illuminate\Http\Request;
 
@@ -73,7 +74,7 @@ class ServerStatsController extends WidgetController
         return view('widgets.server-stats', $data);
     }
 
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         $settings = $this->getSettings(true);
         $settings['device'] = Device::hasAccess($request->user())->find($settings['device']) ?: null;

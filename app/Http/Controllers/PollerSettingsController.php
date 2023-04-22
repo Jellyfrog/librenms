@@ -25,12 +25,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use App\Models\PollerCluster;
 use Illuminate\Http\Request;
 
 class PollerSettingsController extends Controller
 {
-    public function update(Request $request, $id, $setting)
+    public function update(Request $request, $id, $setting): JsonResponse
     {
         $poller = PollerCluster::findOrFail($id);
         $this->authorize('update', $poller);
@@ -46,7 +47,7 @@ class PollerSettingsController extends Controller
         return response()->json(['value' => $poller->$setting]);
     }
 
-    public function destroy($id, $setting)
+    public function destroy($id, $setting): JsonResponse
     {
         $poller = PollerCluster::findOrFail($id);
         $this->authorize('delete', $poller);

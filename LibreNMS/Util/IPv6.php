@@ -36,7 +36,7 @@ class IPv6 extends IP
      *
      * @throws InvalidIpException
      */
-    public function __construct($ipv6)
+    public function __construct(string $ipv6)
     {
         $this->host_bits = 128;
         [$this->ip, $this->cidr] = $this->extractCidr($ipv6);
@@ -55,7 +55,7 @@ class IPv6 extends IP
      * @return string Empty if not valid.
      */
     // Fuction is from https://php.net/manual/en/function.inet-ntop.php
-    public static function ntop($ip)
+    public static function ntop(string $ip): string
     {
         $len = strlen($ip);
         if ($len == 16) {
@@ -72,7 +72,7 @@ class IPv6 extends IP
      * @param  bool  $exclude_reserved  Exclude reserved IP ranges.
      * @return bool
      */
-    public static function isValid($ipv6, $exclude_reserved = false)
+    public static function isValid(string $ipv6, bool $exclude_reserved = false): bool
     {
         $filter = FILTER_FLAG_IPV6;
         if ($exclude_reserved) {
@@ -98,7 +98,7 @@ class IPv6 extends IP
      * @param  int  $cidr  If not given will use the cidr stored with this IP
      * @return string
      */
-    public function getNetworkAddress($cidr = null)
+    public function getNetworkAddress(int $cidr = null): string
     {
         $cidr = (int) ($cidr ?? $this->cidr);
 
@@ -124,7 +124,7 @@ class IPv6 extends IP
      * @param  string  $network  should be in cidr format.
      * @return mixed
      */
-    public function inNetwork($network)
+    public function inNetwork(string $network)
     {
         [$net, $cidr] = $this->extractCidr($network);
 
@@ -159,7 +159,7 @@ class IPv6 extends IP
      *
      * @return string
      */
-    public function uncompressed()
+    public function uncompressed(): string
     {
         // remove ::
         $replacement = ':' . str_repeat('0000:', 8 - substr_count($this->ip, ':'));
@@ -178,7 +178,7 @@ class IPv6 extends IP
      *
      * @return string
      */
-    public function toSnmpIndex()
+    public function toSnmpIndex(): string
     {
         $ipv6_split = str_split(str_replace(':', '', $this->uncompressed()), 2);
 

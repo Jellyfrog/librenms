@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Widgets;
 
+use Illuminate\View\View;
 use App\Models\Device;
 use Illuminate\Http\Request;
 
@@ -39,7 +40,7 @@ class SyslogController extends WidgetController
         'level' => null,
     ];
 
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         $data = $this->getSettings(true);
 
@@ -50,7 +51,7 @@ class SyslogController extends WidgetController
         return view('widgets.settings.syslog', $data);
     }
 
-    public function getView(Request $request)
+    public function getView(Request $request): View
     {
         return view('widgets.syslog', $this->getSettings());
     }

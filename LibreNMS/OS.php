@@ -97,7 +97,7 @@ class OS implements
      *
      * @param  array  $device
      */
-    protected function __construct(&$device)
+    protected function __construct(array &$device)
     {
         $this->device = &$device;
         $this->graphs = [];
@@ -118,7 +118,7 @@ class OS implements
      *
      * @return int
      */
-    public function getDeviceId()
+    public function getDeviceId(): int
     {
         return (int) $this->device['device_id'];
     }
@@ -128,7 +128,7 @@ class OS implements
      *
      * @return Device
      */
-    public function getDevice()
+    public function getDevice(): Device
     {
         return DeviceCache::get($this->getDeviceId());
     }
@@ -138,7 +138,7 @@ class OS implements
      *
      * @param  string  $name
      */
-    public function enableGraph($name)
+    public function enableGraph(string $name)
     {
         $this->graphs[$name] = true;
     }
@@ -175,7 +175,7 @@ class OS implements
      * @param  string  $snmpflags  snmpflags for this oid
      * @return array|null array indexed by the snmp index with the value as the data returned by snmp
      */
-    public function getCacheByIndex($oid, $mib = null, $snmpflags = '-OQUs')
+    public function getCacheByIndex(string $oid, string $mib = null, string $snmpflags = '-OQUs'): ?array
     {
         if (Str::contains($oid, '.')) {
             echo "Error: don't use this with numeric oids!\n";
@@ -201,7 +201,7 @@ class OS implements
      * @param  int  $depth  depth for snmpwalk_group (optional)
      * @return array|null array indexed by the snmp index with the value as the data returned by snmp
      */
-    public function getCacheTable($oid, $mib = null, $depth = 1)
+    public function getCacheTable(string $oid, string $mib = null, int $depth = 1): ?array
     {
         if (Str::contains($oid, '.')) {
             echo "Error: don't use this with numeric oids!\n";
@@ -222,7 +222,7 @@ class OS implements
      * @param  string  $oid
      * @return bool
      */
-    public function isCached($oid)
+    public function isCached(string $oid): bool
     {
         return isset($this->cache['cache_oid'][$oid]);
     }
@@ -235,7 +235,7 @@ class OS implements
      * @param  array  $device  device array, must have os set
      * @return OS
      */
-    public static function make(&$device)
+    public static function make(array &$device): OS
     {
         if (isset($device['os'])) {
             // load os definition and populate os_group
@@ -287,7 +287,7 @@ class OS implements
      * @param  callable  $callback  Function to modify the value before converting it to a frequency
      * @return array
      */
-    protected function pollWirelessChannelAsFrequency($sensors, $callback = null)
+    protected function pollWirelessChannelAsFrequency(array $sensors, callable $callback = null): array
     {
         if (empty($sensors)) {
             return [];
@@ -320,7 +320,7 @@ class OS implements
      *
      * @return array Processors
      */
-    public function discoverProcessors()
+    public function discoverProcessors(): array
     {
         $processors = $this->discoverHrProcessors();
 

@@ -204,7 +204,7 @@ class ConfigTest extends TestCase
      *
      * @param  callable  $function
      */
-    private function setConfig($function)
+    private function setConfig(callable $function)
     {
         $config = $this->config->getValue();
         $function($config);

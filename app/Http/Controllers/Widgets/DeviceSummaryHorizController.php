@@ -34,7 +34,7 @@ class DeviceSummaryHorizController extends DeviceSummaryController
      * @param  Request  $request
      * @return View
      */
-    public function getView(Request $request)
+    public function getView(Request $request): View
     {
         return view('widgets.device-summary-horiz', $this->getData($request));
     }

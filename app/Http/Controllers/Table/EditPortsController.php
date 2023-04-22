@@ -25,6 +25,8 @@
 
 namespace App\Http\Controllers\Table;
 
+use App\Models\Port;
+
 class EditPortsController extends TableController
 {
     public function rules()
@@ -56,7 +58,7 @@ class EditPortsController extends TableController
      * @param  \App\Models\Port  $port
      * @return array
      */
-    public function formatItem($port)
+    public function formatItem(Port $port)
     {
         $is_port_bad = $port->ifAdminStatus != 'down' && $port->ifOperStatus != 'up';
         $do_we_care = ($port->ignore || $port->disabled) ? false : $is_port_bad;

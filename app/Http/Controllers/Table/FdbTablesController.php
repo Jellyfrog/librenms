@@ -64,7 +64,7 @@ class FdbTablesController extends TableController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    protected function baseQuery($request)
+    protected function baseQuery(Request $request)
     {
         return PortsFdb::hasAccess($request->user())->with(['device', 'port', 'vlan'])->select('ports_fdb.*');
     }
@@ -75,7 +75,7 @@ class FdbTablesController extends TableController
      * @param  array  $fields
      * @return Builder|\Illuminate\Database\Query\Builder
      */
-    protected function search($search, $query, $fields = [])
+    protected function search(string $search, Builder $query, array $fields = [])
     {
         if ($search = trim(\Request::get('searchPhrase') ?? '')) {
             $mac_search = '%' . str_replace([':', ' ', '-', '.', '0x'], '', $search) . '%';
@@ -109,7 +109,7 @@ class FdbTablesController extends TableController
      * @param  Builder  $query
      * @return Builder
      */
-    public function sort($request, $query)
+    public function sort(Request $request, Builder $query): Builder
     {
         $sort = $request->get('sort');
 
@@ -151,7 +151,7 @@ class FdbTablesController extends TableController
     /**
      * @param  PortsFdb  $fdb_entry
      */
-    public function formatItem($fdb_entry)
+    public function formatItem(PortsFdb $fdb_entry)
     {
         $ip_info = $this->findIps($fdb_entry->mac_address);
 
@@ -195,7 +195,7 @@ class FdbTablesController extends TableController
      * @param  string  $ip
      * @return \Illuminate\Support\Collection
      */
-    protected function findMacs($ip): \Illuminate\Support\Collection
+    protected function findMacs(string $ip): \Illuminate\Support\Collection
     {
         $port_id = \Request::get('port_id');
         $device_id = \Request::get('device_id');
@@ -214,7 +214,7 @@ class FdbTablesController extends TableController
      * @param  string  $vlan
      * @return \Illuminate\Support\Collection
      */
-    protected function findVlans($vlan): \Illuminate\Support\Collection
+    protected function findVlans(string $vlan): \Illuminate\Support\Collection
     {
         $port_id = \Request::get('port_id');
         $device_id = \Request::get('device_id');
@@ -235,7 +235,7 @@ class FdbTablesController extends TableController
      * @param  string  $ifAlias
      * @return \Illuminate\Support\Collection
      */
-    protected function findPorts($ifAlias): \Illuminate\Support\Collection
+    protected function findPorts(string $ifAlias): \Illuminate\Support\Collection
     {
         $port_id = \Request::get('port_id');
         $device_id = \Request::get('device_id');
@@ -254,7 +254,7 @@ class FdbTablesController extends TableController
      * @param  string  $mac_address
      * @return array
      */
-    protected function findIps($mac_address): array
+    protected function findIps(string $mac_address): array
     {
         if (! isset($this->ipCache[$mac_address])) {
             $ips = Ipv4Mac::where('mac_address', $mac_address)
@@ -288,7 +288,7 @@ class FdbTablesController extends TableController
      * @param  Port  $port
      * @return int
      */
-    protected function getMacCount($port)
+    protected function getMacCount(Port $port): int
     {
         if (! isset($this->macCountCache[$port->port_id])) {
             $this->macCountCache[$port->port_id] = $port->fdbEntries()->count();

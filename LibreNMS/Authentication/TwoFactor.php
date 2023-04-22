@@ -96,7 +96,7 @@ class TwoFactor
      *
      * @return string
      */
-    public static function genKey()
+    public static function genKey(): string
     {
         // RFC 4226 recommends 160bits Secret Keys, that's 20 Bytes for the lazy ones.
         $crypto = false;
@@ -130,7 +130,7 @@ class TwoFactor
      * @param  int|bool  $counter  Counter, if false timestamp is used
      * @return bool|int
      */
-    public static function verifyHOTP($key, $otp, $counter = false)
+    public static function verifyHOTP(string $key, int $otp, $counter = false)
     {
         if (self::oathHOTP($key, $counter) == $otp) {
             return true;
@@ -168,7 +168,7 @@ class TwoFactor
      * @param  int|bool  $counter  Optional Counter, Defaults to Timestamp
      * @return string
      */
-    private static function oathHOTP($key, $counter = false)
+    private static function oathHOTP(string $key, $counter = false): string
     {
         if ($counter === false) {
             $counter = floor(microtime(true) / self::KEY_INTERVAL);
@@ -205,7 +205,7 @@ class TwoFactor
      * @param  bool  $counter  if type is counter (false for time based)
      * @return string
      */
-    public static function generateUri($username, $key, $counter = false)
+    public static function generateUri(string $username, string $key, bool $counter = false): string
     {
         $title = 'LibreNMS:' . urlencode($username);
 

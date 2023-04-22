@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Widgets;
 
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -61,7 +62,7 @@ class ImageController extends WidgetController
         return view('widgets.image', $data);
     }
 
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         return view('widgets.settings.image', $this->getSettings(true));
     }

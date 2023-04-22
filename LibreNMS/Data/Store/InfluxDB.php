@@ -26,6 +26,7 @@
 
 namespace LibreNMS\Data\Store;
 
+use InfluxDB\Database;
 use App\Polling\Measure\Measurement;
 use InfluxDB\Client;
 use InfluxDB\Driver\UDP;
@@ -77,7 +78,7 @@ class InfluxDB extends BaseDatastore
      * @param  array|mixed  $fields  The data to update in an associative array, the order must be consistent with rrd_def,
      *                               single values are allowed and will be paired with $measurement
      */
-    public function put($device, $measurement, $tags, $fields)
+    public function put(array $device, string $measurement, array $tags, $fields)
     {
         $stat = Measurement::start('write');
         $tmp_fields = [];
@@ -133,7 +134,7 @@ class InfluxDB extends BaseDatastore
      *
      * @return \InfluxDB\Database
      */
-    public static function createFromConfig()
+    public static function createFromConfig(): Database
     {
         $host = Config::get('influxdb.host', 'localhost');
         $transport = Config::get('influxdb.transport', 'http');
@@ -174,7 +175,7 @@ class InfluxDB extends BaseDatastore
      *
      * @return bool
      */
-    public function wantsRrdTags()
+    public function wantsRrdTags(): bool
     {
         return false;
     }

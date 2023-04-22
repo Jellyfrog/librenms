@@ -99,7 +99,7 @@ class Eloquent
      * @param  string  $db_socket
      * @return void
      */
-    public static function setConnection($name, $db_host = null, $db_user = '', $db_pass = '', $db_name = '', $db_port = null, $db_socket = null): void
+    public static function setConnection(string $name, string $db_host = null, string $db_user = '', string $db_pass = '', string $db_name = '', $db_port = null, string $db_socket = null): void
     {
         \Config::set("database.connections.$name", [
             'driver' => 'mysql',

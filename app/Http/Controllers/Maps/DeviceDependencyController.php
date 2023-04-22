@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Maps;
 
+use Illuminate\View\View;
 use App\Models\Device;
 use App\Models\DeviceGroup;
 use Illuminate\Http\Request;
@@ -92,7 +93,7 @@ class DeviceDependencyController extends MapController
     }
 
     // Device Dependency Map
-    public function dependencyMap(Request $request)
+    public function dependencyMap(Request $request): View
     {
         $group_id = $request->get('group');
         $highlight_node = $request->get('highlight_node');

@@ -99,7 +99,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      *
      * @return bool
      */
-    public function disableDNSLookup()
+    public function disableDNSLookup(): bool
     {
         return $this->dnsLookup = false;
     }
@@ -109,7 +109,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      *
      * @return int
      */
-    public function buildProbesConfiguration()
+    public function buildProbesConfiguration(): int
     {
         $probes = $this->assembleProbes(Config::get('smokeping.probes'));
         $header = $this->buildHeader($this->option('no-header'), $this->option('compat'));
@@ -122,7 +122,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      *
      * @return int
      */
-    public function buildTargetsConfiguration($devices)
+    public function buildTargetsConfiguration($devices): int
     {
         // Take the devices array and build it into a hierarchical list
         $smokelist = [];
@@ -141,7 +141,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      *
      * @return void
      */
-    public function setWarning($warning)
+    public function setWarning($warning): void
     {
         $this->warnings[] = sprintf('# %s', $warning);
     }
@@ -152,7 +152,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      * @param  int  $probeCount  Number of processes to create
      * @return array
      */
-    public function assembleProbes($probeCount)
+    public function assembleProbes(int $probeCount): array
     {
         if ($probeCount < 1) {
             return [];
@@ -174,7 +174,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      * @param  int  $probeCount  Number of processes to create
      * @return array
      */
-    public function buildProbes($module, $defaultProbe, $probe, $binary, $probeCount)
+    public function buildProbes(string $module, string $defaultProbe, string $probe, string $binary, int $probeCount): array
     {
         $lines = [];
 
@@ -197,7 +197,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      *
      * @return array
      */
-    public function buildHeader($noHeader, $compat)
+    public function buildHeader($noHeader, $compat): array
     {
         $lines = [];
 
@@ -225,7 +225,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      * @param  array  $smokelist  A list of devices to create a a config block for
      * @return array
      */
-    public function buildTargets($smokelist, $probeCount, $singleProcess)
+    public function buildTargets(array $smokelist, $probeCount, $singleProcess): array
     {
         $lines = [];
 
@@ -251,7 +251,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      *
      * @return bool
      */
-    private function validateOptions()
+    private function validateOptions(): bool
     {
         if (! Config::has('smokeping.probes') ||
             ! Config::has('fping') ||
@@ -293,7 +293,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      * @param  array  ...$blocks  Blocks of smokeping configuration arranged in arrays of strings
      * @return int
      */
-    private function render(...$blocks)
+    private function render(array ...$blocks): int
     {
         foreach (array_merge(...$blocks) as $line) {
             $this->line($line);
@@ -308,7 +308,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      * @param  array  $devices  A list of devices to create a a config block for
      * @return array
      */
-    private function buildDevices($devices, $probeCount, $singleProcess)
+    private function buildDevices(array $devices, $probeCount, $singleProcess): array
     {
         $lines = [];
 
@@ -336,7 +336,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      * @param  string  $hostname  Hostname to be checked
      * @return bool
      */
-    private function deviceIsResolvable($hostname)
+    private function deviceIsResolvable(string $hostname): bool
     {
         // First we check for IP literals, then for a dns entry, finally for a hosts entry due to a PHP/libc limitation
         // We look for the hosts entry last (and separately) as this only works for v4 - v6 host entries won't be found
@@ -355,7 +355,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      * @param  string  $entry  The LibreNMS device hostname to rewrite
      * @return string
      */
-    private function buildMenuEntry($entry)
+    private function buildMenuEntry(string $entry): string
     {
         return str_replace(['.', ' '], '_', $entry);
     }
@@ -366,7 +366,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      * @param  string  $transport  The transport (udp or udp6) as per the device database entry
      * @return string
      */
-    private function balanceProbes($transport, $probeCount)
+    private function balanceProbes(string $transport, $probeCount): string
     {
         if ($transport === 'udp') {
             if ($probeCount === $this->ip4count) {

@@ -46,7 +46,7 @@ class SafIntegraB extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessFrequency()
+    public function discoverWirelessFrequency(): array
     {
         return [
             // SAF-INTEGRAB-MIB::integraBradioTxFrequency
@@ -82,7 +82,7 @@ class SafIntegraB extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessMse()
+    public function discoverWirelessMse(): array
     {
         return [
             // SAF-INTEGRAB-MIB::integraBmodemMse
@@ -106,7 +106,7 @@ class SafIntegraB extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessPower()
+    public function discoverWirelessPower(): array
     {
         return [
             // SAF-INTEGRAB-MIB::integraBradioTxPower
@@ -136,7 +136,7 @@ class SafIntegraB extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessRate()
+    public function discoverWirelessRate(): array
     {
         return [
             // SAF-INTEGRAB-MIB::integraBmodemRxCapacity
@@ -170,7 +170,7 @@ class SafIntegraB extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessQuality()
+    public function discoverWirelessQuality(): array
     {
         return [
             // SAF-INTEGRAB-MIB::integraBmodemSignalQuality

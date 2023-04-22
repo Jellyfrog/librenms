@@ -43,7 +43,7 @@ class EnvHelper
      *
      * @throws \LibreNMS\Exceptions\FileWriteFailedException
      */
-    public static function writeEnv($settings, $unset = [], $file = '.env')
+    public static function writeEnv(array $settings, array $unset = [], string $file = '.env'): string
     {
         try {
             $original_content = file_get_contents($file);
@@ -72,7 +72,7 @@ class EnvHelper
      * @param  array  $unset  Remove the given KEYS from the config
      * @return string
      */
-    public static function setEnv($content, $settings, $unset = [])
+    public static function setEnv(string $content, array $settings, array $unset = []): string
     {
         // ensure trailing line return
         if (substr($content, -1) !== PHP_EOL) {
@@ -157,7 +157,7 @@ class EnvHelper
      * @param  string  $dotenv
      * @return string
      */
-    private static function fixComments($dotenv)
+    private static function fixComments(string $dotenv): string
     {
         return implode(PHP_EOL, array_map(function ($line) {
             $parts = explode('=', $line, 2);
@@ -178,7 +178,7 @@ class EnvHelper
      * @param  string  $value
      * @return string
      */
-    private static function escapeValue($value)
+    private static function escapeValue(string $value): string
     {
         if (strpos($value, ' ') !== false) {
             return "\"$value\"";
@@ -195,7 +195,7 @@ class EnvHelper
      * @param  array  $except  Ignore these values and return the unexploded string
      * @return array|mixed
      */
-    public static function parseArray($env_name, $default = null, $except = [''])
+    public static function parseArray(string $env_name, $default = null, array $except = [''])
     {
         $value = getenv($env_name);
         if ($value === false) {
@@ -214,7 +214,7 @@ class EnvHelper
      *
      * @return bool
      */
-    public static function librenmsDocker()
+    public static function librenmsDocker(): bool
     {
         return getenv('LIBRENMS_DOCKER') === '1';
     }

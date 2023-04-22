@@ -150,7 +150,7 @@ class PortsController extends TableController
      * @param  \App\Models\Port  $port
      * @return array
      */
-    public function formatItem($port)
+    public function formatItem(Port $port)
     {
         $status = $port->ifOperStatus == 'down'
             ? ($port->ifAdminStatus == 'up' ? 'label-danger' : 'label-warning')

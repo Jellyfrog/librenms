@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Select;
 
+use Illuminate\Http\Request;
 use App\Models\Eventlog;
 
 class EventlogController extends SelectController
@@ -36,7 +37,7 @@ class EventlogController extends SelectController
      *
      * @return array
      */
-    protected function rules()
+    protected function rules(): array
     {
         return [
             'field' => 'required|in:type',
@@ -52,7 +53,7 @@ class EventlogController extends SelectController
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    protected function sortFields($request)
+    protected function sortFields(Request $request): array
     {
         return ['type'];
     }
@@ -63,7 +64,7 @@ class EventlogController extends SelectController
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    protected function searchFields($request)
+    protected function searchFields(Request $request): array
     {
         return [$request->get('field')];
     }
@@ -74,7 +75,7 @@ class EventlogController extends SelectController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    protected function baseQuery($request)
+    protected function baseQuery(Request $request)
     {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Eventlog::hasAccess($request->user())

@@ -46,7 +46,7 @@ class Ray3 extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessFrequency()
+    public function discoverWirelessFrequency(): array
     {
         return [
             // RAY3-MIB::txFreq.0
@@ -62,7 +62,7 @@ class Ray3 extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessPower()
+    public function discoverWirelessPower(): array
     {
         return [
             // RAY3-MIB::rfPowerCurrent.0
@@ -78,7 +78,7 @@ class Ray3 extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessRssi()
+    public function discoverWirelessRssi(): array
     {
         $oid = '.1.3.6.1.4.1.33555.4.3.2.1.0'; // RAY3-MIB::rss.0
 
@@ -93,7 +93,7 @@ class Ray3 extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessSnr()
+    public function discoverWirelessSnr(): array
     {
         $oid = '.1.3.6.1.4.1.33555.4.3.2.2.0'; // RAY3-MIB::snr.0
 
@@ -108,7 +108,7 @@ class Ray3 extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessRate()
+    public function discoverWirelessRate(): array
     {
         $oid_bitrate = '.1.3.6.1.4.1.33555.4.2.1.13.0'; // RAY3-MIB::netBitrate.0
         $oid_maxbitrate = '.1.3.6.1.4.1.33555.4.2.1.14.0'; // RAY3-MIB::maxNetBitrate.0

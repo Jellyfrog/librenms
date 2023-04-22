@@ -54,7 +54,7 @@ class Location extends Model
      *
      * @return bool
      */
-    public function hasCoordinates()
+    public function hasCoordinates(): bool
     {
         return ! (is_null($this->lat) || is_null($this->lng));
     }
@@ -77,7 +77,7 @@ class Location extends Model
      * @param  string  $hostname
      * @return bool
      */
-    public function lookupCoordinates($hostname = null)
+    public function lookupCoordinates(string $hostname = null): bool
     {
         if ($this->location && $this->parseCoordinates()) {
             return true;
@@ -106,7 +106,7 @@ class Location extends Model
      * @param  bool  $withCoords
      * @return string
      */
-    public function display($withCoords = false)
+    public function display(bool $withCoords = false): string
     {
         return (trim(preg_replace($this->location_regex, '', $this->location)) ?: $this->location)
             . ($withCoords && $this->coordinatesValid() ? " [$this->lat,$this->lng]" : '');
@@ -147,7 +147,7 @@ class Location extends Model
      * @param  User  $user
      * @return Builder
      */
-    public function scopeHasAccess($query, $user)
+    public function scopeHasAccess(Builder $query, User $user): Builder
     {
         if ($user->hasGlobalRead()) {
             return $query;

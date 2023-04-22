@@ -25,6 +25,7 @@
 
 namespace LibreNMS\Exceptions;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 class ApiException extends \Exception
@@ -34,7 +35,7 @@ class ApiException extends \Exception
      * @param  int  $code
      * @param  \Throwable|null  $previous
      */
-    public function __construct($message = '', $code = 400, $previous = null)
+    public function __construct(string $message = '', int $code = 400, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }
@@ -44,7 +45,7 @@ class ApiException extends \Exception
      *
      * @param  \Illuminate\Http\Request  $request
      */
-    public function render($request): JsonResponse
+    public function render(Request $request): JsonResponse
     {
         return response()->json([
             'status'  => 'error',

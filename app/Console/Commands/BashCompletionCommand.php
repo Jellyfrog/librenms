@@ -97,7 +97,7 @@ class BashCompletionCommand extends Command
      * @param  InputDefinition  $command_def
      * @return false|InputOption
      */
-    private function optionExpectsValue($current, $previous, $command_def)
+    private function optionExpectsValue(string $current, string $previous, InputDefinition $command_def)
     {
         // handle long option =
         if (Str::startsWith($current, '--') && Str::contains($current, '=')) {
@@ -139,7 +139,7 @@ class BashCompletionCommand extends Command
      * @param  string  $partial
      * @return \Illuminate\Support\Collection
      */
-    private function completeCommand($partial)
+    private function completeCommand(string $partial): Collection
     {
         $all_commands = collect(\Artisan::all())->keys()->filter(function ($cmd) {
             return $cmd != 'list:bash-completion';
@@ -167,7 +167,7 @@ class BashCompletionCommand extends Command
      * @param  array  $prev_options  Previous words in the command
      * @return \Illuminate\Support\Collection
      */
-    private function completeOption($command, $partial, $prev_options)
+    private function completeOption(InputDefinition $command, string $partial, array $prev_options): Collection
     {
         // default options
         $options = collect([
@@ -222,7 +222,7 @@ class BashCompletionCommand extends Command
      * @param  string  $partial
      * @return \Illuminate\Support\Collection
      */
-    private function completeOptionValue($option, $partial)
+    private function completeOptionValue(InputOption $option, string $partial): Collection
     {
         if ($option && preg_match('/\[(.+)\]/', $option->getDescription(), $values)) {
             return collect(explode(',', $values[1]))
@@ -245,7 +245,7 @@ class BashCompletionCommand extends Command
      * @param  string  $current_word
      * @return \Illuminate\Support\Collection
      */
-    private function completeArguments($command, $partial, $current_word)
+    private function completeArguments(string $command, string $partial, string $current_word): Collection
     {
         switch ($command) {
             case 'device:remove':

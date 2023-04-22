@@ -46,7 +46,7 @@ class UnserializableRouteCache extends \Exception implements UpgradeableExceptio
      * @param  \Exception  $exception
      * @return static|null
      */
-    public static function upgrade($exception)
+    public static function upgrade(Exception $exception): ?static
     {
         $errorMessage = "Erroneous data format for unserializing 'Symfony\Component\Routing\CompiledRoute'";
         if ($exception instanceof \ErrorException && $exception->message == $errorMessage) {

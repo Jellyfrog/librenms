@@ -40,7 +40,7 @@ class Compare
      * @param  string  $comparison  =, !=, ==, !== >=, <=, >, <, contains, starts, ends, regex
      * @return bool
      */
-    public static function values($a, $b, $comparison = '=')
+    public static function values($a, $b, string $comparison = '='): bool
     {
         // handle PHP8 change to implicit casting
         if (is_numeric($a) || is_numeric($b)) {

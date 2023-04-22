@@ -34,7 +34,7 @@ class MplsSdp extends Model implements Keyable
      *
      * @return int
      */
-    public function getCompositeKey()
+    public function getCompositeKey(): int
     {
         return $this->sdp_oid;
     }

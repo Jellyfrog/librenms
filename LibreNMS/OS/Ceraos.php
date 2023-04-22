@@ -138,7 +138,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
      *
      * @return array
      */
-    public function discoverWirelessRate()
+    public function discoverWirelessRate(): array
     {
         $ifNames = $this->getCacheByIndex('ifName', 'IF-MIB');
 
@@ -181,7 +181,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
      *
      * @return array Sensors
      */
-    public function discoverWirelessErrors()
+    public function discoverWirelessErrors(): array
     {
         $ifNames = $this->getCacheByIndex('ifName', 'IF-MIB');
 
@@ -209,7 +209,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
      *
      * @return array Sensors
      */
-    public function discoverWirelessMse()
+    public function discoverWirelessMse(): array
     {
         $ifNames = $this->getCacheByIndex('ifName', 'IF-MIB');
 
@@ -240,7 +240,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
      *
      * @return array
      */
-    public function discoverWirelessPower()
+    public function discoverWirelessPower(): array
     {
         $ifNames = $this->getCacheByIndex('ifName', 'IF-MIB');
 

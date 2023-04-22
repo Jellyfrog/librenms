@@ -36,7 +36,7 @@ class Html
      * @param  string  $app_state
      * @return array
      */
-    public static function appStateIcon($app_state)
+    public static function appStateIcon(string $app_state): array
     {
         switch ($app_state) {
             case 'OK':
@@ -76,7 +76,7 @@ class Html
      * @param  bool  $print
      * @return array
      */
-    public static function graphRow($graph_array, $print = false)
+    public static function graphRow(array $graph_array, bool $print = false): array
     {
         if (session('widescreen')) {
             if (! array_key_exists('height', $graph_array)) {

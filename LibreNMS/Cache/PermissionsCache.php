@@ -24,6 +24,8 @@
 
 namespace LibreNMS\Cache;
 
+use Illuminate\Support\Collection;
+use Illuminate\Database\Query\Builder;
 use App\Models\Bill;
 use App\Models\Device;
 use App\Models\Port;
@@ -47,7 +49,7 @@ class PermissionsCache
      * @param  \App\Models\User|int  $user
      * @return bool
      */
-    public function canAccessDevice($device, $user = null)
+    public function canAccessDevice($device, $user = null): bool
     {
         return $this->getDevicePermissions($user)
             ->contains('device_id', $this->getDeviceId($device));
@@ -61,7 +63,7 @@ class PermissionsCache
      * @param  \App\Models\User|int  $user
      * @return bool
      */
-    public function canAccessPort($port, $user = null)
+    public function canAccessPort($port, $user = null): bool
     {
         return $this->getPortPermissions()
             ->where('user_id', $this->getUserId($user))
@@ -77,7 +79,7 @@ class PermissionsCache
      * @param  \App\Models\User|int  $user
      * @return bool
      */
-    public function canAccessBill($bill, $user = null)
+    public function canAccessBill($bill, $user = null): bool
     {
         return $this->getBillPermissions()
             ->where('user_id', $this->getUserId($user))
@@ -106,7 +108,7 @@ class PermissionsCache
      * @param  \App\Models\Port|int  $port
      * @return \Illuminate\Support\Collection
      */
-    public function usersForPort($port)
+    public function usersForPort($port): Collection
     {
         return $this->getPortPermissions()
             ->where('port_id', $this->getPortId($port))
@@ -119,7 +121,7 @@ class PermissionsCache
      * @param  \App\Models\Bill|int  $bill
      * @return \Illuminate\Support\Collection
      */
-    public function usersForBill($bill)
+    public function usersForBill($bill): Collection
     {
         return $this->getBillPermissions()
             ->where('bill_id', $this->getBillId($bill))
@@ -132,7 +134,7 @@ class PermissionsCache
      * @param  \App\Models\User|int  $user
      * @return \Illuminate\Support\Collection
      */
-    public function devicesForUser($user = null)
+    public function devicesForUser($user = null): Collection
     {
         return $this->getDevicePermissions($user)
             ->pluck('device_id');
@@ -144,7 +146,7 @@ class PermissionsCache
      * @param  \App\Models\User|int  $user
      * @return \Illuminate\Support\Collection
      */
-    public function portsForUser($user = null)
+    public function portsForUser($user = null): Collection
     {
         return $this->getPortPermissions()
             ->where('user_id', $this->getUserId($user))
@@ -157,7 +159,7 @@ class PermissionsCache
      * @param  \App\Models\User|int  $user
      * @return \Illuminate\Support\Collection
      */
-    public function billsForUser($user = null)
+    public function billsForUser($user = null): Collection
     {
         return $this->getBillPermissions()
             ->where('user_id', $this->getUserId($user))
@@ -170,7 +172,7 @@ class PermissionsCache
      * @param  \App\Models\User|int  $user
      * @return \Illuminate\Support\Collection
      */
-    public function deviceGroupsForUser($user = null)
+    public function deviceGroupsForUser($user = null): Collection
     {
         $user_id = $this->getUserId($user);
 
@@ -191,7 +193,7 @@ class PermissionsCache
      * @param  \App\Models\User|int  $user
      * @return \Illuminate\Support\Collection
      */
-    public function getDevicePermissions($user = null)
+    public function getDevicePermissions($user = null): Collection
     {
         $user_id = $this->getUserId($user);
 
@@ -211,7 +213,7 @@ class PermissionsCache
      *
      * @return \Illuminate\Support\Collection
      */
-    public function getPortPermissions()
+    public function getPortPermissions(): Collection
     {
         if (is_null($this->portPermissions)) {
             $this->portPermissions = DB::table('ports_perms')
@@ -227,7 +229,7 @@ class PermissionsCache
      *
      * @return \Illuminate\Support\Collection
      */
-    public function getBillPermissions()
+    public function getBillPermissions(): Collection
     {
         if (is_null($this->billPermissions)) {
             $this->billPermissions = DB::table('bill_perms')
@@ -241,7 +243,7 @@ class PermissionsCache
      * @param  mixed  $user
      * @return int|null
      */
-    private function getUserId($user)
+    private function getUserId($user): ?int
     {
         return $user instanceof User ? $user->user_id : (is_numeric($user) ? (int) $user : Auth::id());
     }
@@ -250,7 +252,7 @@ class PermissionsCache
      * @param  mixed  $device
      * @return int
      */
-    private function getDeviceId($device)
+    private function getDeviceId($device): int
     {
         return $device instanceof Device ? $device->device_id : (is_numeric($device) ? (int) $device : 0);
     }
@@ -259,7 +261,7 @@ class PermissionsCache
      * @param  mixed  $port
      * @return int
      */
-    private function getPortId($port)
+    private function getPortId($port): int
     {
         return $port instanceof Port ? $port->port_id : (is_numeric($port) ? (int) $port : 0);
     }
@@ -268,7 +270,7 @@ class PermissionsCache
      * @param  mixed  $bill
      * @return int
      */
-    private function getBillId($bill)
+    private function getBillId($bill): int
     {
         return $bill instanceof Bill ? $bill->bill_id : (is_numeric($bill) ? (int) $bill : 0);
     }
@@ -276,7 +278,7 @@ class PermissionsCache
     /**
      * @return \Illuminate\Database\Query\Builder
      */
-    public function getDeviceGroupPermissionsQuery()
+    public function getDeviceGroupPermissionsQuery(): Builder
     {
         return DB::table('devices_group_perms')
         ->select('devices_group_perms.user_id', 'device_group_device.device_id')

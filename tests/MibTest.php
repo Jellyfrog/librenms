@@ -46,7 +46,7 @@ class MibTest extends TestCase
      *
      * @param  string  $dir
      */
-    public function testMibDirectory($dir): void
+    public function testMibDirectory(string $dir): void
     {
         $output = shell_exec('snmptranslate -M +' . Config::get('mib_dir') . ":$dir -m +ALL SNMPv2-MIB::system 2>&1");
         $errors = str_replace("SNMPv2-MIB::system\n", '', $output);
@@ -65,7 +65,7 @@ class MibTest extends TestCase
      * @param  string  $file
      * @param  string  $mib_name
      */
-    public function testDuplicateMibs($path, $file, $mib_name): void
+    public function testDuplicateMibs(string $path, string $file, string $mib_name): void
     {
         global $console_color;
 
@@ -97,7 +97,7 @@ class MibTest extends TestCase
      * @param  string  $file
      * @param  string  $mib_name
      */
-    public function testMibNameMatches($path, $file, $mib_name): void
+    public function testMibNameMatches(string $path, string $file, string $mib_name): void
     {
         global $console_color;
 
@@ -117,7 +117,7 @@ class MibTest extends TestCase
      * @param  string  $file
      * @param  string  $mib_name
      */
-    public function testMibContents($path, $file, $mib_name): void
+    public function testMibContents(string $path, string $file, string $mib_name): void
     {
         global $console_color;
         $file_path = "$path/$file";
@@ -135,7 +135,7 @@ class MibTest extends TestCase
      *
      * @return array path, filename, mib_name
      */
-    public function mibFiles()
+    public function mibFiles(): array
     {
         $file_list = [];
         foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator(Config::get('mib_dir'))) as $file) {
@@ -159,7 +159,7 @@ class MibTest extends TestCase
      *
      * @return array
      */
-    public function mibDirs()
+    public function mibDirs(): array
     {
         $dirs = glob(Config::get('mib_dir') . '/*', GLOB_ONLYDIR);
         array_unshift($dirs, Config::get('mib_dir'));
@@ -181,7 +181,7 @@ class MibTest extends TestCase
      *
      * @throws Exception
      */
-    private function extractMibName($file)
+    private function extractMibName(string $file)
     {
         // extract the mib name (tried regex, but was too complex and I had to read the whole file)
         $mib_name = null;

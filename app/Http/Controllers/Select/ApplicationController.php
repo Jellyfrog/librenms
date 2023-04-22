@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Select;
 
+use Illuminate\Http\Request;
 use App\Models\Application;
 
 class ApplicationController extends SelectController
@@ -42,7 +43,7 @@ class ApplicationController extends SelectController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    protected function baseQuery($request)
+    protected function baseQuery(Request $request)
     {
         $query = Application::hasAccess($request->user())->with(['device' => function ($query) {
             $query->select('device_id', 'hostname', 'sysName');
@@ -58,7 +59,7 @@ class ApplicationController extends SelectController
     /**
      * @param  Application  $app
      */
-    public function formatItem($app)
+    public function formatItem(Application $app)
     {
         return [
             'id' => $app->app_id,

@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Ajax;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -53,7 +54,7 @@ class AvailabilityMapController extends Controller
      * @param  string  $key
      * @return \Illuminate\Http\JsonResponse
      */
-    private function setSessionValue($request, $key)
+    private function setSessionValue(Request $request, string $key): JsonResponse
     {
         $value = $request->get($key);
         $request->session()->put($key, $value);

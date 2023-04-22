@@ -76,7 +76,7 @@ class OpenTSDB extends BaseDatastore
      * @param  array|mixed  $fields  The data to update in an associative array, the order must be consistent with rrd_def,
      *                               single values are allowed and will be paired with $measurement
      */
-    public function put($device, $measurement, $tags, $fields)
+    public function put(array $device, string $measurement, array $tags, $fields)
     {
         if (! $this->connection) {
             Log::error("OpenTSDB Error: not connected\n");
@@ -141,7 +141,7 @@ class OpenTSDB extends BaseDatastore
      *
      * @return bool
      */
-    public function wantsRrdTags()
+    public function wantsRrdTags(): bool
     {
         return false;
     }

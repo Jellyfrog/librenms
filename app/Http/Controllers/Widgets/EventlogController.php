@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Widgets;
 
+use Illuminate\View\View;
 use App\Models\Device;
 use Illuminate\Http\Request;
 
@@ -39,7 +40,7 @@ class EventlogController extends WidgetController
         'hidenavigation' => 0,
     ];
 
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         $data = $this->getSettings(true);
 
@@ -48,7 +49,7 @@ class EventlogController extends WidgetController
         return view('widgets.settings.eventlog', $data);
     }
 
-    public function getView(Request $request)
+    public function getView(Request $request): View
     {
         return view('widgets.eventlog', $this->getSettings());
     }

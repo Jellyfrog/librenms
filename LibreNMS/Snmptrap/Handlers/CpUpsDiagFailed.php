@@ -41,7 +41,7 @@ class CpUpsDiagFailed implements SnmptrapHandler
      * @param  Trap  $trap
      * @return void
      */
-    public function handle(Device $device, Trap $trap)
+    public function handle(Device $device, Trap $trap): void
     {
         $diagInfo = CyberPowerUtil::getMessage($trap);
         $trap->log("$diagInfo", 5);

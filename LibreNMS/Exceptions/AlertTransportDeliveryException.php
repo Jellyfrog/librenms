@@ -41,7 +41,7 @@ class AlertTransportDeliveryException extends \Exception
      * @param  string  $message
      * @param  array  $params
      */
-    public function __construct($data, $code = 0, $response = '', $message = '', $params = [])
+    public function __construct(array $data, int $code = 0, string $response = '', string $message = '', array $params = [])
     {
         $this->params = $params;
         $this->template = $message;

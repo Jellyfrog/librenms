@@ -183,7 +183,7 @@ trait ActiveDirectoryCommon
      * @param  array  $entry
      * @return array
      */
-    protected function userFromAd($entry)
+    protected function userFromAd(array $entry): array
     {
         return [
             'user_id' => $this->getUseridFromSid($this->sidFromLdap($entry['objectsid'][0])),

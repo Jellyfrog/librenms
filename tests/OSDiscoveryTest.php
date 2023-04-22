@@ -68,7 +68,7 @@ class OSDiscoveryTest extends TestCase
      *
      * @param  string  $os_name
      */
-    public function testOSDetection($os_name): void
+    public function testOSDetection(string $os_name): void
     {
         if (! getenv('SNMPSIM')) {
             $this->app->bind(NetSnmpQuery::class, SnmpQueryMock::class);
@@ -116,7 +116,7 @@ class OSDiscoveryTest extends TestCase
      * @param  string  $expected_os  The os we should get back from getHostOS()
      * @param  string  $filename  the name of the snmprec file to use
      */
-    private function checkOS($expected_os, $filename = null)
+    private function checkOS(string $expected_os, string $filename = null)
     {
         $start = microtime(true);
 
@@ -140,7 +140,7 @@ class OSDiscoveryTest extends TestCase
      * @param  string  $community  The snmp community to set
      * @return Device resulting device array
      */
-    private function genDevice($community): Device
+    private function genDevice(string $community): Device
     {
         return new Device([
             'hostname' => $this->getSnmpsim()->getIP(),
@@ -159,7 +159,7 @@ class OSDiscoveryTest extends TestCase
      *
      * @return array
      */
-    public function osProvider()
+    public function osProvider(): array
     {
         // make sure all OS are loaded
         $config_os = array_keys(Config::get('os'));

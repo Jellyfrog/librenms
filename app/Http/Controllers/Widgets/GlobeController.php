@@ -48,7 +48,7 @@ class GlobeController extends WidgetController
         ];
     }
 
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         return view('widgets.settings.globe', $this->getSettings(true));
     }
@@ -57,7 +57,7 @@ class GlobeController extends WidgetController
      * @param  Request  $request
      * @return View
      */
-    public function getView(Request $request)
+    public function getView(Request $request): View
     {
         $data = $this->getSettings();
         $locations = new Collection();

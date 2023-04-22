@@ -47,7 +47,7 @@ class TopErrorsController extends WidgetController
      * @param  Request  $request
      * @return View
      */
-    public function getView(Request $request)
+    public function getView(Request $request): View
     {
         $data = $this->getSettings();
 
@@ -84,7 +84,7 @@ class TopErrorsController extends WidgetController
         return view('widgets.top-errors', $data);
     }
 
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         return view('widgets.settings.top-errors', $this->getSettings(true));
     }

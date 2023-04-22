@@ -34,7 +34,7 @@ class TwoFactorPage extends Page
      *
      * @return string
      */
-    public function url()
+    public function url(): string
     {
         return '/2fa';
     }
@@ -45,7 +45,7 @@ class TwoFactorPage extends Page
      * @param  Browser  $browser
      * @return void
      */
-    public function assert(Browser $browser)
+    public function assert(Browser $browser): void
     {
         $browser->assertPathIs($this->url());
     }
@@ -55,7 +55,7 @@ class TwoFactorPage extends Page
      *
      * @return array
      */
-    public function elements()
+    public function elements(): array
     {
         return [
             '@input' => '#twofactor',

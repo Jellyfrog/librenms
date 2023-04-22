@@ -85,7 +85,7 @@ class Proxy
      *
      * @param  \CurlHandle  $curl
      */
-    public static function applyToCurl($curl): void
+    public static function applyToCurl(CurlHandle $curl): void
     {
         $proxy = self::forCurl();
         if (! empty($proxy)) {

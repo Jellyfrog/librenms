@@ -48,7 +48,7 @@ class Mimosa extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessErrorRatio()
+    public function discoverWirelessErrorRatio(): array
     {
         $tx_oid = '.1.3.6.1.4.1.43356.2.1.2.7.3.0'; // MIMOSA-NETWORKS-BFIVE-MIB::mimosaPerTxRate
         $rx_oid = '.1.3.6.1.4.1.43356.2.1.2.7.4.0'; // MIMOSA-NETWORKS-BFIVE-MIB::mimosaPerRxRate
@@ -85,7 +85,7 @@ class Mimosa extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessFrequency()
+    public function discoverWirelessFrequency(): array
     {
         $sensors = [];
 
@@ -142,7 +142,7 @@ class Mimosa extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessNoiseFloor()
+    public function discoverWirelessNoiseFloor(): array
     {
         // FIXME: is Noise different from Noise Floor?
         $polar = $this->getCacheByIndex('mimosaPolarization', 'MIMOSA-NETWORKS-BFIVE-MIB');
@@ -172,7 +172,7 @@ class Mimosa extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessPower()
+    public function discoverWirelessPower(): array
     {
         $sensors = [];
 
@@ -245,7 +245,7 @@ class Mimosa extends OS implements
      *
      * @return array
      */
-    public function discoverWirelessRate()
+    public function discoverWirelessRate(): array
     {
         $oids = snmpwalk_cache_oid($this->getDeviceArray(), 'mimosaTxPhy', [], 'MIMOSA-NETWORKS-BFIVE-MIB');
         $oids = snmpwalk_cache_oid($this->getDeviceArray(), 'mimosaRxPhy', $oids, 'MIMOSA-NETWORKS-BFIVE-MIB');
@@ -283,7 +283,7 @@ class Mimosa extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessSnr()
+    public function discoverWirelessSnr(): array
     {
         $polar = $this->getCacheByIndex('mimosaPolarization', 'MIMOSA-NETWORKS-BFIVE-MIB');
         $oids = snmpwalk_cache_oid($this->getDeviceArray(), 'mimosaSNR', [], 'MIMOSA-NETWORKS-BFIVE-MIB');

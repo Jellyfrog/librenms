@@ -25,13 +25,14 @@
 
 namespace App\Observers;
 
+use App\Models\Mempool;
 use Log;
 use Rrd;
 
 class MempoolObserver extends ModuleModelObserver
 {
     /** @param \App\Models\Mempool $model  */
-    public function updated($model): void
+    public function updated(Mempool $model): void
     {
         parent::updated($model);
 

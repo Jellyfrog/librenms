@@ -42,7 +42,7 @@ class PortGroupController extends SelectController
     /**
      * @param  PortGroup  $port_group
      */
-    public function formatItem($port_group)
+    public function formatItem(PortGroup $port_group)
     {
         return [
             'id' => $port_group->id,

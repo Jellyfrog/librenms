@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Select;
 
+use Illuminate\Http\Request;
 use App\Models\Device;
 use LibreNMS\Config;
 
@@ -35,7 +36,7 @@ class DeviceFieldController extends SelectController
      *
      * @return array
      */
-    protected function rules()
+    protected function rules(): array
     {
         return [
             'field' => 'required|in:features,hardware,os,type,version',
@@ -48,7 +49,7 @@ class DeviceFieldController extends SelectController
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    protected function searchFields($request)
+    protected function searchFields(Request $request): array
     {
         return [$request->get('field')];
     }
@@ -59,7 +60,7 @@ class DeviceFieldController extends SelectController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    protected function baseQuery($request)
+    protected function baseQuery(Request $request)
     {
         $field = $request->get('field');
         $query = Device::hasAccess($request->user())
@@ -76,7 +77,7 @@ class DeviceFieldController extends SelectController
      * @param  Device  $device
      * @return array
      */
-    public function formatItem($device)
+    public function formatItem(Device $device)
     {
         $field = \Request::get('field');
 

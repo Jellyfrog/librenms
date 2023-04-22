@@ -38,7 +38,7 @@ class Clean
      * @param  string  $file
      * @return string|string[]|null
      */
-    public static function fileName($file)
+    public static function fileName(string $file)
     {
         return preg_replace('/[^a-zA-Z0-9\-._]/', '', $file);
     }
@@ -49,7 +49,7 @@ class Clean
      * @param  string  $string
      * @return string
      */
-    public static function alphaDash($string)
+    public static function alphaDash(string $string): string
     {
         return preg_replace('/[^a-zA-Z0-9\-_]/', '', $string);
     }
@@ -62,7 +62,7 @@ class Clean
      * @param  array  $purifier_config  (key, value pair)
      * @return string
      */
-    public static function html($value, $purifier_config = [])
+    public static function html(string $value, array $purifier_config = []): string
     {
         static $purifier;
 

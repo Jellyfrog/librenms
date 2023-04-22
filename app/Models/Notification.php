@@ -73,7 +73,7 @@ class Notification extends Model
      * @param  bool  $enabled
      * @return bool
      */
-    private function setAttrib($name, bool $enabled): bool
+    private function setAttrib(string $name, bool $enabled): bool
     {
         if ($enabled === true) {
             $read = new NotificationAttrib;
@@ -120,7 +120,7 @@ class Notification extends Model
      * @param  Builder<Notification>  $query
      * @return Builder<Notification>
      */
-    public function scopeLimit(Builder $query)
+    public function scopeLimit(Builder $query): Builder
     {
         return $query->select('notifications.*', 'key', 'users.username');
     }

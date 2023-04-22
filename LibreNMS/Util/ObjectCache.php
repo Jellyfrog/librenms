@@ -127,7 +127,7 @@ class ObjectCache
      * @param  array  $fields  array of counts to get. Valid options: total, up, down, ignored, shutdown, disabled, deleted, errored, pseudowire
      * @return mixed
      */
-    public static function portCounts($fields = ['total'], $device_id = 0)
+    public static function portCounts(array $fields = ['total'], int $device_id = 0)
     {
         $result = [];
         foreach ($fields as $field) {
@@ -171,7 +171,7 @@ class ObjectCache
      * @param  array  $fields  array of counts to get. Valid options: total, up, down, ignored, disabled
      * @return array
      */
-    public static function deviceCounts($fields = ['total'])
+    public static function deviceCounts(array $fields = ['total']): array
     {
         $result = [];
         foreach ($fields as $field) {
@@ -207,7 +207,7 @@ class ObjectCache
      * @param  array  $fields  array of counts to get. Valid options: total, ok, warning, critical, ignored, disabled
      * @return array
      */
-    public static function serviceCounts($fields = ['total'], $device_id = 0)
+    public static function serviceCounts(array $fields = ['total'], $device_id = 0): array
     {
         $result = [];
         foreach ($fields as $field) {

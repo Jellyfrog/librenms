@@ -52,7 +52,7 @@ class Snmpsim
      *
      * @param  int  $wait  Wait for x seconds after starting before returning
      */
-    public function fork($wait = 2)
+    public function fork(int $wait = 2)
     {
         if ($this->isRunning()) {
             echo "Snmpsim is already running!\n";
@@ -127,7 +127,7 @@ class Snmpsim
     /**
      * @return string
      */
-    public function getDir()
+    public function getDir(): string
     {
         return $this->snmprec_dir;
     }
@@ -135,7 +135,7 @@ class Snmpsim
     /**
      * @return string
      */
-    public function getIp()
+    public function getIp(): string
     {
         return $this->ip;
     }
@@ -143,7 +143,7 @@ class Snmpsim
     /**
      * @return int
      */
-    public function getPort()
+    public function getPort(): int
     {
         return $this->port;
     }
@@ -154,7 +154,7 @@ class Snmpsim
      * @param  bool  $with_log
      * @return string
      */
-    private function getCmd($with_log = true)
+    private function getCmd(bool $with_log = true): string
     {
         $cmd = $this->findSnmpsimd();
 

@@ -61,7 +61,7 @@ class Submenu extends Component
      * @param  string  $url
      * @return bool
      */
-    public function isSelected($url)
+    public function isSelected(string $url): bool
     {
         return $url === $this->selected;
     }

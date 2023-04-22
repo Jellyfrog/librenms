@@ -39,7 +39,7 @@ class Datastore
      * @param  array  $options
      * @return Datastore
      */
-    public static function init($options = [])
+    public static function init(array $options = []): Datastore
     {
         $opts = [
             'r' => 'rrd.enable',
@@ -66,7 +66,7 @@ class Datastore
      *
      * @param  array  $datastores  Implement DatastoreInterface
      */
-    public function __construct($datastores)
+    public function __construct(array $datastores)
     {
         $this->stores = $datastores;
     }
@@ -76,7 +76,7 @@ class Datastore
      *
      * @param  string  $name
      */
-    public function disable($name)
+    public function disable(string $name)
     {
         $store = app("LibreNMS\\Data\\Store\\$name");
         $position = array_search($store, $this->stores);
@@ -103,7 +103,7 @@ class Datastore
      * @param  array|mixed  $fields  The data to update in an associative array, the order must be consistent with rrd_def,
      *                               single values are allowed and will be paired with $measurement
      */
-    public function put($device, $measurement, $tags, $fields)
+    public function put(array $device, string $measurement, array $tags, $fields)
     {
         // convenience conversion to allow calling with a single value, so, e.g., these are equivalent:
         // data_update($device, 'mymeasurement', $tags, 1234);
@@ -129,7 +129,7 @@ class Datastore
      * @param  array  $arr  input array
      * @return array Copy of $arr with all keys beginning with 'rrd_' removed.
      */
-    private function rrdTagFilter($arr)
+    private function rrdTagFilter(array $arr): array
     {
         $result = [];
         foreach ($arr as $k => $v) {
@@ -147,7 +147,7 @@ class Datastore
      *
      * @return array
      */
-    public function getStores()
+    public function getStores(): array
     {
         return $this->stores;
     }

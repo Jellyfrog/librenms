@@ -312,7 +312,7 @@ class SnmpQueryMock implements SnmpQueryInterface
      *
      * @throws Exception Could not translate the oid
      */
-    private function translateNumber($oid, $mib = null)
+    private function translateNumber(string $oid, string $mib = null): string
     {
         // optimizations (35s -> 1.6s on my laptop)
         switch ($oid) {

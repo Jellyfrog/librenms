@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Table;
 
+use Illuminate\Http\Request;
 use App\Models\Syslog;
 use LibreNMS\Enum\SyslogSeverity;
 
@@ -68,7 +69,7 @@ class SyslogController extends TableController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    public function baseQuery($request)
+    public function baseQuery(Request $request)
     {
         return Syslog::hasAccess($request->user())
             ->with('device')
@@ -94,7 +95,7 @@ class SyslogController extends TableController
     /**
      * @param  Syslog  $syslog
      */
-    public function formatItem($syslog)
+    public function formatItem(Syslog $syslog)
     {
         $device = $syslog->device;
 
@@ -123,7 +124,7 @@ class SyslogController extends TableController
      * @param  int  $syslog_priority
      * @return string
      */
-    private function priorityLabel($syslog_priority)
+    private function priorityLabel(int $syslog_priority): string
     {
         switch ($syslog_priority) {
             case 'debug':

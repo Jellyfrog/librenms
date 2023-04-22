@@ -42,7 +42,7 @@ class YamlDiscovery
      * @param  array  $yaml_data
      * @return array
      */
-    public static function discover(OS $os, $class, $yaml_data)
+    public static function discover(OS $os, $class, array $yaml_data): array
     {
         $pre_cache = $os->preCache();
         $device = $os->getDeviceArray();
@@ -160,7 +160,7 @@ class YamlDiscovery
      * @param  array  $pre_cache  snmp data fetched from device
      * @return mixed|string|string[]|null
      */
-    public static function replaceValues($name, $index, $count, $def, $pre_cache)
+    public static function replaceValues(string $name, string $index, int $count, array $def, array $pre_cache)
     {
         $value = static::getValueFromData($name, $index, $def, $pre_cache);
 
@@ -203,7 +203,7 @@ class YamlDiscovery
      * @param  mixed  $default  The default value to return if data is not found
      * @return mixed
      */
-    public static function getValueFromData($name, $index, $discovery_data, $pre_cache, $default = null)
+    public static function getValueFromData(string $name, $index, array $discovery_data, array $pre_cache, $default = null)
     {
         if (isset($discovery_data[$name])) {
             $name = $discovery_data[$name];

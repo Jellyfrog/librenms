@@ -37,7 +37,7 @@ class Foundry extends OS implements ProcessorDiscovery
      *
      * @return array Processors
      */
-    public function discoverProcessors()
+    public function discoverProcessors(): array
     {
         $processors_data = snmpwalk_cache_triple_oid($this->getDeviceArray(), 'snAgentCpuUtilTable', [], 'FOUNDRY-SN-AGENT-MIB');
         $module_descriptions = $this->getCacheByIndex('snAgentConfigModuleDescription', 'FOUNDRY-SN-AGENT-MIB');

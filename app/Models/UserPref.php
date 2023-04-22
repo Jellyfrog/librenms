@@ -25,6 +25,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class UserPref extends BaseModel
 {
     public $timestamps = false;
@@ -95,7 +97,7 @@ class UserPref extends BaseModel
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    protected function setKeysForSaveQuery($query)
+    protected function setKeysForSaveQuery(Builder $query): Builder
     {
         /** @var array */
         $keys = $this->getKeyName();

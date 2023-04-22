@@ -65,7 +65,7 @@ class ModuleTestHelper
      *
      * @throws InvalidModuleException
      */
-    public function __construct($modules, $os, $variant = '')
+    public function __construct($modules, string $os, string $variant = '')
     {
         $this->modules = self::resolveModuleDependencies((array) $modules);
         $this->variant = strtolower($variant);
@@ -239,7 +239,7 @@ class ModuleTestHelper
      *
      * @throws InvalidModuleException
      */
-    public static function findOsWithData($modules = [], string $os_filter = null)
+    public static function findOsWithData(array $modules = [], string $os_filter = null): array
     {
         $os_list = [];
 
@@ -291,7 +291,7 @@ class ModuleTestHelper
      * @param  string  $os_file  Either a filename or the basename
      * @return array [$os, $variant]
      */
-    public static function extractVariant($os_file)
+    public static function extractVariant(string $os_file): array
     {
         $full_name = basename($os_file, '.json');
 
@@ -524,7 +524,7 @@ class ModuleTestHelper
      *
      * @throws FileNotFoundException
      */
-    public function generateTestData(Snmpsim $snmpsim, $no_save = false)
+    public function generateTestData(Snmpsim $snmpsim, bool $no_save = false): ?array
     {
         global $device;
         Config::set('rrd.enable', false); // disable rrd
@@ -672,7 +672,7 @@ class ModuleTestHelper
      * @param  string  $type  poller|disco identified by "#### Load disco module" string
      * @return array
      */
-    private function extractModuleOutput($output, $type)
+    private function extractModuleOutput(string $output, string $type): array
     {
         $module_output = [];
         $module_start = "#### Load $type module ";
@@ -705,7 +705,7 @@ class ModuleTestHelper
      * @param  string  $type  a key to store the data under the module key (usually discovery or poller)
      * @return array The dumped data keyed by module -> table
      */
-    public function dumpDb($device_id, $modules, $type)
+    public function dumpDb(int $device_id, array $modules, string $type): array
     {
         $data = [];
 

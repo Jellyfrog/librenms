@@ -104,7 +104,7 @@ class GraphController extends WidgetController
         return $this->title;
     }
 
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         $data = $this->getSettings(true);
 
@@ -162,7 +162,7 @@ class GraphController extends WidgetController
      * @param  Request  $request
      * @return View
      */
-    public function getView(Request $request)
+    public function getView(Request $request): View
     {
         $settings = $this->getSettings();
 

@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Table;
 
+use Illuminate\Http\Request;
 use App\Models\PortsNac;
 use LibreNMS\Util\Rewrite;
 use LibreNMS\Util\Url;
@@ -70,7 +71,7 @@ class PortNacController extends TableController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    public function baseQuery($request)
+    public function baseQuery(Request $request)
     {
         return PortsNac::select('port_id', 'mac_address', 'ip_address', 'vlan', 'domain', 'host_mode', 'username', 'authz_by', 'timeout', 'time_elapsed', 'time_left', 'authc_status', 'authz_status', 'method')
             ->where('device_id', $request->device_id)
@@ -81,7 +82,7 @@ class PortNacController extends TableController
     /**
      * @param  PortsNac  $nac
      */
-    public function formatItem($nac)
+    public function formatItem(PortsNac $nac)
     {
         $item = $nac->toArray();
         $item['port_id'] = Url::portLink($nac->port, $nac->port->getShortLabel());

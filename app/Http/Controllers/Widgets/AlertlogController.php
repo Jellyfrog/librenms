@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Widgets;
 
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 
 class AlertlogController extends WidgetController
@@ -39,12 +40,12 @@ class AlertlogController extends WidgetController
         'hidenavigation' => 0,
     ];
 
-    public function getView(Request $request)
+    public function getView(Request $request): View
     {
         return view('widgets.alertlog', $this->getSettings());
     }
 
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         $data = $this->getSettings(true);
         $data['severities'] = [

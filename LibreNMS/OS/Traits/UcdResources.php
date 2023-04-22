@@ -37,7 +37,7 @@ trait UcdResources
      *
      * @return array Processors
      */
-    public function discoverProcessors()
+    public function discoverProcessors(): array
     {
         echo 'UCD Resources: ';
 

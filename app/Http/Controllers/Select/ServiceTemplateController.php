@@ -42,7 +42,7 @@ class ServiceTemplateController extends SelectController
     /**
      * @param  ServiceTemplate  $template
      */
-    public function formatItem($template)
+    public function formatItem(ServiceTemplate $template)
     {
         return [
             'id' => $template->id,

@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Install;
 
+use Illuminate\Http\JsonResponse;
 use App\StreamedOutput;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -54,7 +55,7 @@ class DatabaseController extends InstallationController implements InstallerStep
         return view('install.database', $this->formatData($data));
     }
 
-    public function test(Request $request)
+    public function test(Request $request): JsonResponse
     {
         Eloquent::setConnection(
             'setup',

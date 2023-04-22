@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Table;
 
+use Illuminate\Http\Request;
 use App\Models\DeviceOutage;
 use Carbon\Carbon;
 use LibreNMS\Config;
@@ -59,7 +60,7 @@ class OutagesController extends TableController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    public function baseQuery($request)
+    public function baseQuery(Request $request)
     {
         return DeviceOutage::hasAccess($request->user())
             ->with('device')
@@ -74,7 +75,7 @@ class OutagesController extends TableController
     /**
      * @param  DeviceOutage  $outage
      */
-    public function formatItem($outage)
+    public function formatItem(DeviceOutage $outage)
     {
         $start = $this->formatDatetime($outage->going_down);
         $end = $outage->up_again ? $this->formatDatetime($outage->up_again) : '-';

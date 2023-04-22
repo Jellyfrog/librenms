@@ -41,7 +41,7 @@ trait GeocodingHelper
      * @param  string  $address
      * @return array ['lat' => 0, 'lng' => 0]
      */
-    public function getCoordinates($address)
+    public function getCoordinates(string $address): array
     {
         if (! Config::get('geoloc.latlng', true)) {
             Log::debug('Geocoding disabled');

@@ -25,6 +25,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
 use App\Models\Dashboard;
 use App\Models\Device;
 use App\Models\UserPref;
@@ -52,7 +54,7 @@ class UserPreferencesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $user = $request->user();
 
@@ -97,7 +99,7 @@ class UserPreferencesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $valid_prefs = [
             'dashboard' => 'required|integer',

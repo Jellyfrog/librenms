@@ -53,7 +53,7 @@ class RrdDefinition
      * @param  int  $heartbeat  Heartbeat for this dataset. Uses the global setting if null.
      * @return RrdDefinition
      */
-    public function addDataset($name, $type, $min = null, $max = null, $heartbeat = null)
+    public function addDataset(string $name, string $type, int $min = null, int $max = null, int $heartbeat = null): RrdDefinition
     {
         if (empty($name)) {
             d_echo('DS must be set to a non-empty string.');
@@ -76,7 +76,7 @@ class RrdDefinition
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return array_reduce($this->dataSets, function ($carry, $ds) {
             return $carry . 'DS:' . implode(':', $ds) . ' ';
@@ -89,7 +89,7 @@ class RrdDefinition
      * @param  string  $name
      * @return bool
      */
-    public function isValidDataset($name)
+    public function isValidDataset(string $name): bool
     {
         return $this->skipNameCheck || isset($this->dataSets[$this->escapeName($name)]);
     }
@@ -100,7 +100,7 @@ class RrdDefinition
      *
      * @return $this
      */
-    public function disableNameChecking()
+    public function disableNameChecking(): static
     {
         $this->skipNameCheck = true;
 
@@ -115,7 +115,7 @@ class RrdDefinition
      *
      * @throws InvalidRrdTypeException
      */
-    private function checkType($type)
+    private function checkType(string $type)
     {
         if (! in_array($type, self::$types)) {
             $msg = "$type is not valid, must be: " . implode(' | ', self::$types);
@@ -131,7 +131,7 @@ class RrdDefinition
      * @param  string  $name
      * @return string
      */
-    private function escapeName($name)
+    private function escapeName(string $name): string
     {
         $name = preg_replace('/[^a-zA-Z0-9_\-]/', '', $name);
 

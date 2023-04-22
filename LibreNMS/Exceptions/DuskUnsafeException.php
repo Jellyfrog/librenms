@@ -35,7 +35,7 @@ class DuskUnsafeException extends \Exception implements UpgradeableException
      * @param  \Exception  $exception
      * @return static
      */
-    public static function upgrade($exception)
+    public static function upgrade(Exception $exception): static
     {
         return $exception->getMessage() == 'It is unsafe to run Dusk in production.' ?
             new static($exception->getMessage(), $exception->getCode(), $exception) :

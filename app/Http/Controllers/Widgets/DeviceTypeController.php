@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Widgets;
 
+use Illuminate\View\View;
 use App\Models\Device;
 use Illuminate\Http\Request;
 use LibreNMS\Config;
@@ -43,7 +44,7 @@ class DeviceTypeController extends WidgetController
         ];
     }
 
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         return view('widgets.settings.device-types', $this->getSettings(true));
     }
@@ -90,7 +91,7 @@ class DeviceTypeController extends WidgetController
      * @param  Request  $request
      * @return \Illuminate\View\View
      */
-    public function getView(Request $request)
+    public function getView(Request $request): View
     {
         return view('widgets.device-types', $this->getData($request));
     }

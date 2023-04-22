@@ -102,7 +102,7 @@ class ServiceTemplate extends BaseModel
      * @param  Device|int  $device
      * @return array
      */
-    public static function updateServiceTemplatesForDevice($device)
+    public static function updateServiceTemplatesForDevice($device): array
     {
         $device = ($device instanceof Device ? $device : Device::find($device));
         if (! $device instanceof Device) {
@@ -149,7 +149,7 @@ class ServiceTemplate extends BaseModel
      * @param  DeviceGroup|int  $deviceGroup
      * @return array
      */
-    public static function updateServiceTemplatesForDeviceGroup($deviceGroup)
+    public static function updateServiceTemplatesForDeviceGroup($deviceGroup): array
     {
         $deviceGroup = ($deviceGroup instanceof DeviceGroup ? $deviceGroup : DeviceGroup::find($deviceGroup));
         if (! $deviceGroup instanceof DeviceGroup) {
@@ -181,7 +181,7 @@ class ServiceTemplate extends BaseModel
      *
      * @return QueryBuilderFluentParser
      */
-    public function getDeviceParser()
+    public function getDeviceParser(): QueryBuilderFluentParser
     {
         return QueryBuilderFluentParser::fromJson($this->rules);
     }
@@ -192,7 +192,7 @@ class ServiceTemplate extends BaseModel
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeIsDisabled($query)
+    public function scopeIsDisabled(Builder $query): Builder
     {
         return $query->where('disabled', 1);
     }

@@ -119,7 +119,7 @@ class Xdsl implements Module
      * @param  \LibreNMS\OS  $os
      * @param  bool  $store
      */
-    private function pollAdsl(OS $os, $store = true): Collection
+    private function pollAdsl(OS $os, bool $store = true): Collection
     {
         $adsl = \SnmpQuery::hideMib()->walk('ADSL-LINE-MIB::adslMibObjects')->table(1);
         $adslPorts = new Collection;
@@ -162,7 +162,7 @@ class Xdsl implements Module
      * @param  \LibreNMS\OS  $os
      * @param  bool  $store
      */
-    private function pollVdsl(OS $os, $store = true): Collection
+    private function pollVdsl(OS $os, bool $store = true): Collection
     {
         $vdsl = \SnmpQuery::hideMib()->walk(['VDSL2-LINE-MIB::xdsl2ChannelStatusTable', 'VDSL2-LINE-MIB::xdsl2LineTable'])->table(1);
         $vdslPorts = new Collection;

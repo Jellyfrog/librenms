@@ -2,6 +2,7 @@
 
 namespace LibreNMS\Authentication;
 
+use LDAP\Connection;
 use ErrorException;
 use LibreNMS\Config;
 use LibreNMS\Exceptions\AuthenticationException;
@@ -290,7 +291,7 @@ class LdapAuthorizer extends AuthorizerBase
      *
      * @return string
      */
-    protected function getFullDn($username)
+    protected function getFullDn($username): string
     {
         return Config::get('auth_ldap_prefix', '') . $username . Config::get('auth_ldap_suffix', '');
     }
@@ -334,7 +335,7 @@ class LdapAuthorizer extends AuthorizerBase
      *
      * @throws AuthenticationException
      */
-    protected function getLdapConnection($skip_bind = false)
+    protected function getLdapConnection(bool $skip_bind = false): Connection
     {
         if ($this->ldap_connection) {
             return $this->ldap_connection; // bind already attempted
@@ -353,7 +354,7 @@ class LdapAuthorizer extends AuthorizerBase
      * @param  array  $entry  ldap entry array
      * @return array
      */
-    private function ldapToUser($entry)
+    private function ldapToUser(array $entry): array
     {
         $uid_attr = strtolower(Config::get('auth_ldap_uid_attribute', 'uidnumber'));
 

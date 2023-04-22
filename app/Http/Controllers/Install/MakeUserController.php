@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Install;
 
+use Illuminate\Http\RedirectResponse;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -58,7 +59,7 @@ class MakeUserController extends InstallationController implements InstallerStep
         ]));
     }
 
-    public function create(Request $request)
+    public function create(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'username' => 'required',

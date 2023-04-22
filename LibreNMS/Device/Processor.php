@@ -69,17 +69,17 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
      * @return static
      */
     public static function discover(
-        $type,
-        $device_id,
-        $oid,
+        string $type,
+        int $device_id,
+        string $oid,
         $index,
-        $description = 'Processor',
-        $precision = 1,
-        $current_usage = null,
-        $warn_percent = 75,
-        $entPhysicalIndex = null,
-        $hrDeviceIndex = null
-    ) {
+        string $description = 'Processor',
+        int $precision = 1,
+        int $current_usage = null,
+        int $warn_percent = 75,
+        int $entPhysicalIndex = null,
+        int $hrDeviceIndex = null
+    ): static {
         $proc = new static();
         $proc->processor_type = $type;
         $proc->device_id = $device_id;
@@ -267,7 +267,7 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
      *
      * @return bool
      */
-    public function isValid()
+    public function isValid(): bool
     {
         return $this->valid;
     }
@@ -278,7 +278,7 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
      * @param  array  $exclude  exclude columns
      * @return array
      */
-    public function toArray($exclude = [])
+    public function toArray(array $exclude = []): array
     {
         $array = [
             'processor_id' => $this->processor_id,
@@ -300,7 +300,7 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
     /**
      * @param  Processor  $processor
      */
-    public static function onCreate($processor)
+    public static function onCreate(Processor $processor)
     {
         $message = "Processor Discovered: {$processor->processor_type} {$processor->processor_index} {$processor->processor_descr}";
         log_event($message, $processor->device_id, static::$table, 3, $processor->processor_id);
@@ -311,7 +311,7 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
     /**
      * @param  Processor  $processor
      */
-    public static function onDelete($processor)
+    public static function onDelete(Processor $processor)
     {
         $message = "Processor Removed: {$processor->processor_type} {$processor->processor_index} {$processor->processor_descr}";
         log_event($message, $processor->device_id, static::$table, 3, $processor->processor_id);

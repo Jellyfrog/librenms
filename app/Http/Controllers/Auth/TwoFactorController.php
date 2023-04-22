@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserPref;
@@ -37,7 +38,7 @@ use Session;
 
 class TwoFactorController extends Controller
 {
-    public function verifyTwoFactor(Request $request)
+    public function verifyTwoFactor(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'twofactor' => 'required|numeric',
@@ -98,7 +99,7 @@ class TwoFactorController extends Controller
      * @param  Request  $request
      * @return \Illuminate\Http\RedirectResponse.
      */
-    public function create(Request $request)
+    public function create(Request $request): RedirectResponse
     {
         $this->validate($request, [
             'twofactor' => Rule::in('time', 'counter'),
@@ -125,7 +126,7 @@ class TwoFactorController extends Controller
      * @param  Request  $request
      * @return \Illuminate\Http\RedirectResponse.
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request): RedirectResponse
     {
         $request->session()->put('twofactorremove', true);
         $request->session()->forget('twofactor');
@@ -139,7 +140,7 @@ class TwoFactorController extends Controller
      * @param  Request  $request
      * @return \Illuminate\Http\RedirectResponse.
      */
-    public function cancelAdd(Request $request)
+    public function cancelAdd(Request $request): RedirectResponse
     {
         $request->session()->forget('twofactoradd');
 
@@ -153,7 +154,7 @@ class TwoFactorController extends Controller
      *
      * @throws AuthenticationException
      */
-    private function checkToken($user, $token)
+    private function checkToken(User $user, int $token): bool
     {
         if (! $token) {
             throw new AuthenticationException(__('No Two-Factor Token entered.'));

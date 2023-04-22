@@ -44,7 +44,7 @@ class Debug
      * @param  bool  $silence  Silence error output or output all errors except notices
      * @return bool returns $debug
      */
-    public static function set($debug = true, bool $silence = false): bool
+    public static function set(bool $debug = true, bool $silence = false): bool
     {
         self::$debug = (bool) $debug;
 

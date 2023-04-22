@@ -143,7 +143,7 @@ class CiHelper
      *
      * @return bool
      */
-    public function allChecksComplete()
+    public function allChecksComplete(): bool
     {
         return array_reduce($this->completedChecks, function ($result, $check) {
             return $result && $check;
@@ -156,7 +156,7 @@ class CiHelper
      * @param  string  $name
      * @return bool
      */
-    public function getFlag($name)
+    public function getFlag(string $name): bool
     {
         return $this->flags[$name] ?? null;
     }
@@ -166,7 +166,7 @@ class CiHelper
      *
      * @return bool[]
      */
-    public function getFlags()
+    public function getFlags(): array
     {
         return $this->flags;
     }
@@ -176,7 +176,7 @@ class CiHelper
      *
      * @return int the return value from phpunit (0 = success)
      */
-    public function checkUnit()
+    public function checkUnit(): int
     {
         $phpunit_cmd = [$this->checkPhpExec('phpunit'), '--colors=always', '--debug'];
 
@@ -215,7 +215,7 @@ class CiHelper
      *
      * @return int the return value from phpcs (0 = success)
      */
-    public function checkStyle()
+    public function checkStyle(): int
     {
         $cs_cmd = [
             $this->checkPhpExec('php-cs-fixer'),
@@ -270,7 +270,7 @@ class CiHelper
      *
      * @return int the return value from running php -l (0 = success)
      */
-    public function checkLint()
+    public function checkLint(): int
     {
         $return = 0;
         if (! $this->flags['lint_skip_php']) {
@@ -321,7 +321,7 @@ class CiHelper
      * @param  string  $type  type of check lint, style, or unit
      * @return int the return value from the check (0 = success)
      */
-    private function runCheck($type)
+    private function runCheck(string $type): int
     {
         if ($method = $this->canCheck($type)) {
             $ret = $this->$method();
@@ -341,7 +341,7 @@ class CiHelper
      * @param  string  $type
      * @return false|string the method name to run
      */
-    private function canCheck($type)
+    private function canCheck(string $type)
     {
         if ($this->flags["{$type}_skip"] || $this->completedChecks[$type]) {
             return false;
@@ -364,7 +364,7 @@ class CiHelper
      * @param  array  $env  environment to set
      * @return int
      */
-    private function execute(string $name, $command, $silence = false, $env = null): int
+    private function execute(string $name, array $command, bool $silence = false, array $env = null): int
     {
         $start = microtime(true);
         $proc = new Process($command, null, $env);
@@ -474,7 +474,7 @@ class CiHelper
      * @param  string  $exec  the name of the executable to check
      * @return string path to the executable
      */
-    private function checkPhpExec($exec)
+    private function checkPhpExec(string $exec): string
     {
         $path = "vendor/bin/$exec";
 
@@ -502,7 +502,7 @@ class CiHelper
      * @param  string  $exec  the name of the executable to check
      * @return string path to the executable
      */
-    private function checkPythonExec($exec)
+    private function checkPythonExec(string $exec): string
     {
         $home = getenv('HOME');
         $path = "$home/.local/bin/$exec";

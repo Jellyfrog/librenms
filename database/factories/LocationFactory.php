@@ -28,7 +28,7 @@ class LocationFactory extends Factory
      *
      * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
-    public function withCoordinates()
+    public function withCoordinates(): Factory
     {
         return $this->state(function (array $attributes) {
             return [

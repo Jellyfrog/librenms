@@ -161,7 +161,7 @@ class ErrorReportingProvider extends \Spatie\LaravelIgnition\IgnitionServiceProv
      *
      * @throws \ErrorException
      */
-    public function handleError($level, $message, $file = '', $line = 0, $context = []): bool
+    public function handleError(int $level, string $message, string $file = '', int $line = 0, array $context = []): bool
     {
         // report errors if they are allowed
         if ($this->errorReportingLevel & $level) {

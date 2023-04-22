@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Widgets;
 
+use Illuminate\View\View;
 use App\Models\Device;
 use Illuminate\Http\Request;
 use LibreNMS\Config;
@@ -95,7 +96,7 @@ class WorldMapController extends WidgetController
         return view('widgets.worldmap', $settings);
     }
 
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         return view('widgets.settings.worldmap', $this->getSettings(true));
     }

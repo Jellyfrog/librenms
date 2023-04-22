@@ -90,7 +90,7 @@ class RrdCheck extends BaseValidation
      * @return int exit code
      *
      **/
-    private function test($path, &$stdOutput, &$stdError)
+    private function test(string $path, string &$stdOutput, string &$stdError): int
     {
         //rrdtool info <escaped rrd path>
         $command = Config::get('rrdtool') . ' info ' . escapeshellarg($path);

@@ -25,7 +25,7 @@ class AirosAf60 extends OS implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessFrequency()
+    public function discoverWirelessFrequency(): array
     {
         $oid = '.1.3.6.1.4.1.41112.1.11.1.1.2.1'; // UI-AF60-MIB::af60Frequency.1
 

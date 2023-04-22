@@ -68,7 +68,7 @@ class HimoinsaGensets extends OS
     /**
      * @param  int  $value
      */
-    public static function motorStatus($value): int
+    public static function motorStatus(int $value): int
     {
         return ($value & 1) | ($value & 2);
     }
@@ -76,7 +76,7 @@ class HimoinsaGensets extends OS
     /**
      * @param  int  $value
      */
-    public static function modeStatus($value): int
+    public static function modeStatus(int $value): int
     {
         return ($value & 4) | ($value & 8) | ($value & 16) | ($value & 32);
     }
@@ -84,7 +84,7 @@ class HimoinsaGensets extends OS
     /**
      * @param  int  $value
      */
-    public static function alarmStatus($value): int
+    public static function alarmStatus(int $value): int
     {
         return $value & 128;
     }
@@ -92,7 +92,7 @@ class HimoinsaGensets extends OS
     /**
      * @param  int  $value
      */
-    public static function transferPumpStatus($value): int
+    public static function transferPumpStatus(int $value): int
     {
         return $value & 64;
     }
@@ -100,7 +100,7 @@ class HimoinsaGensets extends OS
     /**
      * @param  int  $value
      */
-    public static function commStatus($value): int
+    public static function commStatus(int $value): int
     {
         return ($value & 512) | ($value & 256);
     }
@@ -108,7 +108,7 @@ class HimoinsaGensets extends OS
     /**
      * @param  int  $value
      */
-    public static function cec7CommStatus($value): int
+    public static function cec7CommStatus(int $value): int
     {
         return ($value & 32) | ($value & 64);
     }
@@ -116,7 +116,7 @@ class HimoinsaGensets extends OS
     /**
      * @param  int  $value
      */
-    public static function cec7CommAlarmStatus($value): int
+    public static function cec7CommAlarmStatus(int $value): int
     {
         return $value & 1;
     }
@@ -124,7 +124,7 @@ class HimoinsaGensets extends OS
     /**
      * @param  int  $value
      */
-    public static function cec7ModeStatus($value): int
+    public static function cec7ModeStatus(int $value): int
     {
         return ($value & 2) | ($value & 4) | ($value & 8) | ($value & 16);
     }

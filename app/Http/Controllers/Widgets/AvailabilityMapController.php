@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Widgets;
 
+use Illuminate\View\View;
 use App\Models\AlertSchedule;
 use App\Models\Device;
 use App\Models\DeviceGroup;
@@ -52,7 +53,7 @@ class AvailabilityMapController extends WidgetController
         ];
     }
 
-    public function getView(Request $request)
+    public function getView(Request $request): View
     {
         $data = $this->getSettings();
 
@@ -67,7 +68,7 @@ class AvailabilityMapController extends WidgetController
         return view('widgets.availability-map', $data);
     }
 
-    public function getSettingsView(Request $request)
+    public function getSettingsView(Request $request): View
     {
         return view('widgets.settings.availability-map', $this->getSettings(true));
     }

@@ -25,6 +25,7 @@
 
 namespace LibreNMS\DB;
 
+use App\Models\Device;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Collection;
 
@@ -39,7 +40,7 @@ trait SyncsModels
      * @param  \Illuminate\Support\Collection  $models  \LibreNMS\Interfaces\Models\Keyable
      * @return \Illuminate\Support\Collection
      */
-    protected function syncModels($device, $relationship, $models): Collection
+    protected function syncModels(Device $device, string $relationship, Collection $models): Collection
     {
         $models = $models->keyBy->getCompositeKey();
         $existing = $device->$relationship->groupBy->getCompositeKey();

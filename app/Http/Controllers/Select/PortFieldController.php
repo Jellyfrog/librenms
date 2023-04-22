@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Select;
 
+use Illuminate\Http\Request;
 use App\Models\Port;
 
 class PortFieldController extends SelectController
@@ -34,7 +35,7 @@ class PortFieldController extends SelectController
      *
      * @return array
      */
-    protected function rules()
+    protected function rules(): array
     {
         return [
             'field' => 'required|in:ifType',
@@ -48,7 +49,7 @@ class PortFieldController extends SelectController
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    protected function searchFields($request)
+    protected function searchFields(Request $request): array
     {
         return [$request->get('field')];
     }
@@ -59,7 +60,7 @@ class PortFieldController extends SelectController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    protected function baseQuery($request)
+    protected function baseQuery(Request $request)
     {
         /** @var \Illuminate\Database\Eloquent\Builder $query */
         $query = Port::hasAccess($request->user())

@@ -64,7 +64,7 @@ class HostUnreachableException extends \Exception
      *
      * @return array
      */
-    public function getReasons()
+    public function getReasons(): array
     {
         return $this->reasons;
     }

@@ -38,7 +38,7 @@ class LayoutComposer
      * @param  View  $view
      * @return void
      */
-    public function compose(View $view)
+    public function compose(View $view): void
     {
         // build page title
         if ($view->getFactory()->hasSection('title')) {

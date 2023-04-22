@@ -25,6 +25,7 @@
 
 namespace App\Http\Controllers\Select;
 
+use Illuminate\Http\Request;
 use App\Models\MuninPlugin;
 
 class MuninPluginController extends SelectController
@@ -35,7 +36,7 @@ class MuninPluginController extends SelectController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
-    protected function baseQuery($request)
+    protected function baseQuery(Request $request)
     {
         return MuninPlugin::hasAccess($request->user())
             ->with(['device' => function ($query) {
@@ -47,7 +48,7 @@ class MuninPluginController extends SelectController
     /**
      * @param  MuninPlugin  $munin_plugin
      */
-    public function formatItem($munin_plugin)
+    public function formatItem(MuninPlugin $munin_plugin)
     {
         return [
             'id' => $munin_plugin->mplug_id,

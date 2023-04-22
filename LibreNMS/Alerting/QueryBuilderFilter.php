@@ -45,7 +45,7 @@ class QueryBuilderFilter implements \JsonSerializable
      *
      * @param  string  $type  alert|group
      */
-    public function __construct($type = 'alert')
+    public function __construct(string $type = 'alert')
     {
         $this->schema = new Schema();
 
@@ -185,7 +185,7 @@ class QueryBuilderFilter implements \JsonSerializable
      * @param  string  $id
      * @return array|null
      */
-    public function getFilter($id)
+    public function getFilter(string $id): ?array
     {
         if (array_key_exists($id, $this->filter)) {
             return $this->filter[$id];

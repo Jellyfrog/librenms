@@ -50,7 +50,7 @@ class Ekinops extends OS implements OSDiscovery
      * @param  string  $ekiInfo
      * @return array $inv
      */
-    public static function ekinopsInfo($ekiInfo)
+    public static function ekinopsInfo(string $ekiInfo): array
     {
         $info = explode("\n", $ekiInfo);
         unset($info[0]);

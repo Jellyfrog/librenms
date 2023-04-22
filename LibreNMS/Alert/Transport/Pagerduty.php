@@ -51,7 +51,7 @@ class Pagerduty extends Transport
      * @param  array  $config
      * @return bool|string
      */
-    public function contactPagerduty($obj, $config)
+    public function contactPagerduty(array $obj, array $config)
     {
         $safe_message = strip_tags($obj['msg']) ?: 'Test';
         $custom_details = ['message' => array_filter(explode("\n", $safe_message), 'strlen')];

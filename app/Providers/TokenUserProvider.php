@@ -38,7 +38,7 @@ class TokenUserProvider extends LegacyUserProvider implements UserProvider
      * @param  string  $token
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
-    public function retrieveByToken($identifier, $token)
+    public function retrieveByToken($identifier, string $token): ?Authenticatable
     {
         return null;
     }
@@ -50,7 +50,7 @@ class TokenUserProvider extends LegacyUserProvider implements UserProvider
      * @param  string  $token
      * @return void
      */
-    public function updateRememberToken(Authenticatable $user, $token)
+    public function updateRememberToken(Authenticatable $user, string $token): void
     {
     }
 
@@ -60,7 +60,7 @@ class TokenUserProvider extends LegacyUserProvider implements UserProvider
      * @param  array  $credentials
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
-    public function retrieveByCredentials(array $credentials)
+    public function retrieveByCredentials(array $credentials): ?Authenticatable
     {
         if (! ApiToken::isValid($credentials['api_token'])) {
             return null;
@@ -92,7 +92,7 @@ class TokenUserProvider extends LegacyUserProvider implements UserProvider
      * @param  array  $credentials
      * @return bool
      */
-    public function validateCredentials(Authenticatable $user, array $credentials)
+    public function validateCredentials(Authenticatable $user, array $credentials): bool
     {
         /** @var \App\Models\User $user */
         return ApiToken::isValid($credentials['api_token'], $user->user_id);

@@ -109,7 +109,7 @@ class SchemaTest extends TestCase
     /**
      * @return Schema
      */
-    private function getSchemaMock()
+    private function getSchemaMock(): Schema
     {
         // use a Mock so we don't have to rely on the schema being stable.
 

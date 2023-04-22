@@ -25,6 +25,7 @@
 
 namespace LibreNMS\DB;
 
+use Illuminate\Support\Collection;
 use DB;
 use Illuminate\Support\Str;
 use LibreNMS\Config;
@@ -49,7 +50,7 @@ class Schema
      *
      * @return bool
      */
-    public static function isCurrent()
+    public static function isCurrent(): bool
     {
         if (LaravelSchema::hasTable('migrations')) {
             return self::getMigrationFiles()->diff(self::getAppliedMigrations())->isEmpty();
@@ -63,7 +64,7 @@ class Schema
      *
      * @return \Illuminate\Support\Collection
      */
-    public static function getUnexpectedMigrations()
+    public static function getUnexpectedMigrations(): Collection
     {
         return self::getAppliedMigrations()->diff(self::getMigrationFiles());
     }
@@ -71,7 +72,7 @@ class Schema
     /**
      * @return \Illuminate\Support\Collection
      */
-    private static function getMigrationFiles()
+    private static function getMigrationFiles(): Collection
     {
         $migrations = collect(glob(base_path('database/migrations/') . '*.php'))
             ->map(function ($migration_file) {
@@ -84,7 +85,7 @@ class Schema
     /**
      * @return \Illuminate\Support\Collection
      */
-    private static function getAppliedMigrations()
+    private static function getAppliedMigrations(): Collection
     {
         return Eloquent::DB()->table('migrations')->pluck('migration');
     }
@@ -95,7 +96,7 @@ class Schema
      * @param  string  $table
      * @return string if a single column just the name is returned, otherwise the first column listed will be returned
      */
-    public function getPrimaryKey($table)
+    public function getPrimaryKey(string $table): string
     {
         $schema = $this->getSchema();
         $columns = $schema[$table]['Indexes']['PRIMARY']['Columns'];
@@ -137,7 +138,7 @@ class Schema
      *
      * @return array
      */
-    public function getTables()
+    public function getTables(): array
     {
         return array_keys($this->getSchema());
     }
@@ -148,7 +149,7 @@ class Schema
      * @param  string  $table
      * @return array
      */
-    public function getColumns($table)
+    public function getColumns(string $table): array
     {
         $schema = $this->getSchema();
 
@@ -162,7 +163,7 @@ class Schema
      * @param  string  $base
      * @return mixed
      */
-    public function getAllRelationshipPaths($base = 'devices')
+    public function getAllRelationshipPaths(string $base = 'devices')
     {
         $update_cache = true;
         $cache = [];
@@ -207,7 +208,7 @@ class Schema
      * @param  string  $start  Default: devices
      * @return array|false list of tables in path order, or false if no path is found
      */
-    public function findRelationshipPath($target, $start = 'devices')
+    public function findRelationshipPath(string $target, string $start = 'devices')
     {
         d_echo("Searching for target: $start, starting with $target\n");
 
@@ -342,7 +343,7 @@ class Schema
      * @param  string  $connection  use a specific connection
      * @return array
      */
-    public static function dump($connection = null)
+    public static function dump(string $connection = null): array
     {
         $output = [];
         $db_name = DB::connection($connection)->getDatabaseName();

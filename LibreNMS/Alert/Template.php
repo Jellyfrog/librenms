@@ -39,7 +39,7 @@ class Template
      * @param  array|null  $obj
      * @return mixed
      */
-    public function getTemplate($obj = null)
+    public function getTemplate(?array $obj = null)
     {
         if ($this->template) {
             // Return the cached template information.
@@ -71,7 +71,7 @@ class Template
      * @param  array  $data
      * @return string
      */
-    public function bladeBody($data)
+    public function bladeBody(array $data): string
     {
         $alert['alert'] = new AlertData($data['alert']);
         try {
@@ -87,7 +87,7 @@ class Template
      * @param  array  $data
      * @return string
      */
-    public function bladeTitle($data)
+    public function bladeTitle(array $data): string
     {
         $alert['alert'] = new AlertData($data['alert']);
         try {
@@ -102,7 +102,7 @@ class Template
      *
      * @return string
      */
-    public function getDefaultTemplate()
+    public function getDefaultTemplate(): string
     {
         return '{{ $alert->title }}' . PHP_EOL .
             'Severity: {{ $alert->severity }}' . PHP_EOL .

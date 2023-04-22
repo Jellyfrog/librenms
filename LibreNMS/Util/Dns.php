@@ -59,7 +59,7 @@ class Dns implements Geocoder
      * @param  string  $record  DNS Record which should be searched
      * @return array List of matching records
      */
-    public function getRecord($domain, $record = 'A')
+    public function getRecord(string $domain, string $record = 'A'): array
     {
         try {
             $ret = $this->resolver->query($domain, $record);

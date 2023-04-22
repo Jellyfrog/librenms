@@ -38,7 +38,7 @@ class Mail
      * @param  string  $emails
      * @return array|false
      */
-    public static function parseEmails($emails)
+    public static function parseEmails(string $emails)
     {
         $result = [];
         $regex = '/^[\"\']?([^\"\']+)[\"\']?\s{0,}<([^@]+@[^>]+)>$/';
@@ -71,7 +71,7 @@ class Mail
      * @param  bool  $html
      * @return bool|string
      */
-    public static function send($emails, $subject, $message, bool $html = false, ?bool $embedGraphs = null)
+    public static function send(string $emails, string $subject, string $message, bool $html = false, ?bool $embedGraphs = null)
     {
         if (is_array($emails) || ($emails = self::parseEmails($emails))) {
             d_echo("Attempting to email $subject to: " . implode('; ', array_keys($emails)) . PHP_EOL);

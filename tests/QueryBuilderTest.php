@@ -49,7 +49,7 @@ class QueryBuilderTest extends TestCase
      * @param  string  $display
      * @param  string  $sql
      */
-    public function testQueryConversion($legacy, $builder, $display, $sql, $query): void
+    public function testQueryConversion(string $legacy, array $builder, string $display, string $sql, $query): void
     {
         if (! empty($legacy)) {
             // some rules don't have a legacy representation
@@ -64,7 +64,7 @@ class QueryBuilderTest extends TestCase
         $this->assertEquals($query[1], $qbq->getBindings(), 'Fluent bindings do not match');
     }
 
-    public function loadQueryData()
+    public function loadQueryData(): array
     {
         $base = Config::get('install_dir');
         $data = file_get_contents("$base/$this->data_file");

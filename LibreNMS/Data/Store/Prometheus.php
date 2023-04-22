@@ -135,7 +135,7 @@ class Prometheus extends BaseDatastore
      *
      * @return bool
      */
-    public function wantsRrdTags()
+    public function wantsRrdTags(): bool
     {
         return false;
     }

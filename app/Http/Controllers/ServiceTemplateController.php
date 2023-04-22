@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+use Illuminate\Http\Response;
 use App\Models\Device;
 use App\Models\DeviceGroup;
 use App\Models\Service;
@@ -24,7 +27,7 @@ class ServiceTemplateController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function index()
+    public function index(): View
     {
         //$this->authorize('manage', ServiceTemplate::class);
 
@@ -42,7 +45,7 @@ class ServiceTemplateController extends Controller
      *
      * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function create()
+    public function create(): View
     {
         return view(
             'service-template.create', [
@@ -60,7 +63,7 @@ class ServiceTemplateController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function store(Request $request, FlasherInterface $flasher)
+    public function store(Request $request, FlasherInterface $flasher): RedirectResponse
     {
         $this->validate(
             $request, [
@@ -116,7 +119,7 @@ class ServiceTemplateController extends Controller
      * @param  \App\Models\ServiceTemplate  $template
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function show(ServiceTemplate $template)
+    public function show(ServiceTemplate $template): RedirectResponse
     {
         return redirect(url('/services/templates/' . $template->id));
     }
@@ -127,7 +130,7 @@ class ServiceTemplateController extends Controller
      * @param  \App\Models\ServiceTemplate  $template
      * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function edit(ServiceTemplate $template)
+    public function edit(ServiceTemplate $template): View
     {
         return view(
             'service-template.edit', [
@@ -238,7 +241,7 @@ class ServiceTemplateController extends Controller
      * @param  \App\Models\ServiceTemplate  $template
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function applyDeviceGroups(ServiceTemplate $template)
+    public function applyDeviceGroups(ServiceTemplate $template): Response
     {
         foreach (DeviceGroup::inServiceTemplate($template->id)->get() as $device_group) {
             foreach (Device::inDeviceGroup($device_group->id)->get() as $device) {
@@ -270,7 +273,7 @@ class ServiceTemplateController extends Controller
      * @param  \App\Models\ServiceTemplate  $template
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function applyDevices(ServiceTemplate $template)
+    public function applyDevices(ServiceTemplate $template): Response
     {
         foreach (Device::inServiceTemplate($template->id)->get() as $device) {
             $device->services()->updateOrCreate(
@@ -299,7 +302,7 @@ class ServiceTemplateController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function applyAll()
+    public function applyAll(): Response
     {
         foreach (ServiceTemplate::all() as $template) {
             $this->apply($template);
@@ -315,7 +318,7 @@ class ServiceTemplateController extends Controller
      * @param  \App\Models\ServiceTemplate  $template
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function apply(ServiceTemplate $template)
+    public function apply(ServiceTemplate $template): Response
     {
         ServiceTemplateController::applyDevices($template);
         ServiceTemplateController::applyDeviceGroups($template);
@@ -335,7 +338,7 @@ class ServiceTemplateController extends Controller
      * @param  \App\Models\ServiceTemplate  $template
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function remove(ServiceTemplate $template)
+    public function remove(ServiceTemplate $template): Response
     {
         Service::where('service_template_id', $template->id)->delete();
 
@@ -350,7 +353,7 @@ class ServiceTemplateController extends Controller
      * @param  \App\Models\ServiceTemplate  $template
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\View\View
      */
-    public function destroy(ServiceTemplate $template)
+    public function destroy(ServiceTemplate $template): Response
     {
         Service::where('service_template_id', $template->id)->delete();
         $template->delete();

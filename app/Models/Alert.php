@@ -46,7 +46,7 @@ class Alert extends Model
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeActive($query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('state', '=', AlertState::ACTIVE);
     }
@@ -57,7 +57,7 @@ class Alert extends Model
      * @param  Builder  $query
      * @return Builder
      */
-    public function scopeAcknowledged($query)
+    public function scopeAcknowledged(Builder $query): Builder
     {
         return $query->where('state', '=', AlertState::ACKNOWLEDGED);
     }

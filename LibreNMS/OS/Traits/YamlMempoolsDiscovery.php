@@ -125,7 +125,7 @@ trait YamlMempoolsDiscovery
      *
      * @throws \LibreNMS\Exceptions\InvalidOidException
      */
-    private function fetchData($yaml, $mib)
+    private function fetchData(array $yaml, string $mib)
     {
         $this->mempoolsOids = [];
         $this->mempoolsData = []; // clear data from previous mempools

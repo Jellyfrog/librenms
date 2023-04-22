@@ -140,7 +140,7 @@ class Ciscowlc extends Cisco implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessClients()
+    public function discoverWirelessClients(): array
     {
         $ssids = $this->getCacheByIndex('bsnDot11EssSsid', 'AIRESPACE-WIRELESS-MIB');
         $counts = $this->getCacheByIndex('bsnDot11EssNumberOfMobileStations', 'AIRESPACE-WIRELESS-MIB');
@@ -185,7 +185,7 @@ class Ciscowlc extends Cisco implements
      *
      * @return array Sensors
      */
-    public function discoverWirelessApCount()
+    public function discoverWirelessApCount(): array
     {
         $oids = [
             'CISCO-LWAPP-SYS-MIB::clsSysApConnectCount.0',

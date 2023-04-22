@@ -111,7 +111,7 @@ class OpenTSDBStoreTest extends TestCase
      * @param  mixed  $mockSocket
      * @return OpenTSDB
      */
-    private function mockOpenTSDB($mockSocket)
+    private function mockOpenTSDB($mockSocket): OpenTSDB
     {
         $mockFactory = \Mockery::mock(\Socket\Raw\Factory::class);
 

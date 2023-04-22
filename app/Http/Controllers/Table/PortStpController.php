@@ -83,7 +83,7 @@ class PortStpController extends TableController
     /**
      * @param  PortStp  $stpPort
      */
-    public function formatItem($stpPort)
+    public function formatItem(PortStp $stpPort)
     {
         return [
             'port_id' => Url::portLink($stpPort->port, $stpPort->port->getShortLabel()) . '<br />' . $stpPort->port->getDescription(),

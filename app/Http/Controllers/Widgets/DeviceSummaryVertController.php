@@ -34,7 +34,7 @@ class DeviceSummaryVertController extends DeviceSummaryController
      * @param  Request  $request
      * @return View
      */
-    public function getView(Request $request)
+    public function getView(Request $request): View
     {
         return view('widgets.device-summary-vert', $this->getData($request));
     }

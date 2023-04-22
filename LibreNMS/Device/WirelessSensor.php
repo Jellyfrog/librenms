@@ -59,17 +59,17 @@ class WirelessSensor extends Sensor
      * @param  int|float  $entPhysicalMeasured  the table to look for the entPhysicalIndex, for example 'ports' (maybe unused)
      */
     public function __construct(
-        $type,
-        $device_id,
+        string $type,
+        int $device_id,
         $oids,
-        $subtype,
+        string $subtype,
         $index,
-        $description,
+        string $description,
         $current = null,
-        $multiplier = 1,
-        $divisor = 1,
-        $aggregator = 'sum',
-        $access_point_id = null,
+        int $multiplier = 1,
+        int $divisor = 1,
+        string $aggregator = 'sum',
+        int $access_point_id = null,
         $high_limit = null,
         $low_limit = null,
         $high_warn = null,
@@ -130,7 +130,7 @@ class WirelessSensor extends Sensor
      * @param  int  $device_id  when filtering, only return types valid for this device_id
      * @return array
      */
-    public static function getTypes($valid = false, $device_id = null)
+    public static function getTypes(bool $valid = false, int $device_id = null): array
     {
         // Add new types here translations/descriptions/units in lang/<lang>/wireless.php
         // FIXME I'm really bad with icons, someone please help!
@@ -253,7 +253,7 @@ class WirelessSensor extends Sensor
      * @param  int  $channel
      * @return int
      */
-    public static function channelToFrequency($channel): int
+    public static function channelToFrequency(int $channel): int
     {
         $channels = [
             1 => 2412,
