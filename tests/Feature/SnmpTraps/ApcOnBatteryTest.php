@@ -28,8 +28,6 @@ class ApcOnBatteryTest extends SnmpTrapTestCase
 {
     /**
      * Test ApcOnBattery handle
-     *
-     * @return void
      */
     public function testApcOnBattery(): void
     {

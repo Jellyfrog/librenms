@@ -95,7 +95,6 @@ class Dnos extends OS implements ProcessorDiscovery
     /**
      * Find processors and append them to the $processors array
      *
-     * @param  array  $processors
      * @param  string  $oid  Textual OIDf
      * @param  string  $mib  MIB
      * @param  string  $num_oid  Numerical OID

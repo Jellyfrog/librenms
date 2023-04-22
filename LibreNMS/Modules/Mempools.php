@@ -113,11 +113,6 @@ class Mempools implements Module
         });
     }
 
-    /**
-     * @param  \LibreNMS\OS  $os
-     * @param  \Illuminate\Support\Collection  $mempools
-     * @return \Illuminate\Support\Collection
-     */
     private function defaultPolling(OS $os, Collection $mempools): Collection
     {
         // fetch all data
@@ -155,9 +150,6 @@ class Mempools implements Module
 
     /**
      * Calculate available memory.  This is free + buffers + cached.
-     *
-     * @param  \Illuminate\Support\Collection  $mempools
-     * @return \Illuminate\Support\Collection
      */
     private function calculateAvailable(Collection $mempools): Collection
     {

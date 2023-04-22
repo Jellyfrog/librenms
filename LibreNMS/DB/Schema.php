@@ -47,8 +47,6 @@ class Schema
 
     /**
      * Check the database to see if the migrations have all been run
-     *
-     * @return bool
      */
     public static function isCurrent(): bool
     {
@@ -61,17 +59,12 @@ class Schema
 
     /**
      * Check for extra migrations and return them
-     *
-     * @return \Illuminate\Support\Collection
      */
     public static function getUnexpectedMigrations(): Collection
     {
         return self::getAppliedMigrations()->diff(self::getMigrationFiles());
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
     private static function getMigrationFiles(): Collection
     {
         $migrations = collect(glob(base_path('database/migrations/') . '*.php'))
@@ -82,9 +75,6 @@ class Schema
         return $migrations;
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
     private static function getAppliedMigrations(): Collection
     {
         return Eloquent::DB()->table('migrations')->pluck('migration');
@@ -93,7 +83,6 @@ class Schema
     /**
      * Get the primary key column(s) for a table
      *
-     * @param  string  $table
      * @return string if a single column just the name is returned, otherwise the first column listed will be returned
      */
     public function getPrimaryKey(string $table): string
@@ -135,8 +124,6 @@ class Schema
 
     /**
      * Get a list of all tables.
-     *
-     * @return array
      */
     public function getTables(): array
     {
@@ -145,9 +132,6 @@ class Schema
 
     /**
      * Return all columns for the given table
-     *
-     * @param  string  $table
-     * @return array
      */
     public function getColumns(string $table): array
     {
@@ -160,7 +144,6 @@ class Schema
      * Get all relationship paths.
      * Caches the data after the first call as long as the schema hasn't changed
      *
-     * @param  string  $base
      * @return mixed
      */
     public function getAllRelationshipPaths(string $base = 'devices')
@@ -204,7 +187,6 @@ class Schema
     /**
      * Find the relationship path from $start to $target
      *
-     * @param  string  $target
      * @param  string  $start  Default: devices
      * @return array|false list of tables in path order, or false if no path is found
      */
@@ -341,7 +323,6 @@ class Schema
      * Each entry in the Indexes array contains these keys: Name, Columns(array), Unique
      *
      * @param  string  $connection  use a specific connection
-     * @return array
      */
     public static function dump(string $connection = null): array
     {

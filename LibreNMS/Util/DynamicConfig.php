@@ -48,9 +48,6 @@ class DynamicConfig
 
     /**
      * Check if a setting is valid
-     *
-     * @param  string  $name
-     * @return bool
      */
     public function isValidSetting(string $name): bool
     {
@@ -59,9 +56,6 @@ class DynamicConfig
 
     /**
      * Get config item by name
-     *
-     * @param  string  $name
-     * @return DynamicConfigItem|null
      */
     public function get(string $name): ?DynamicConfigItem
     {
@@ -70,8 +64,6 @@ class DynamicConfig
 
     /**
      * Get all groups defined
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getGroups(): Collection
     {
@@ -93,8 +85,6 @@ class DynamicConfig
 
     /**
      * Get all config definitions grouped by group then section.
-     *
-     * @return Collection
      */
     public function getGrouped(): Collection
     {
@@ -128,8 +118,6 @@ class DynamicConfig
 
     /**
      * Get all config items keyed by name
-     *
-     * @return Collection
      */
     public function all(): Collection
     {

@@ -53,15 +53,8 @@ class Graph extends Component
     /**
      * Create a new component instance.
      *
-     * @param  string  $type
-     * @param  array  $vars
      * @param  int|string  $from
      * @param  int|string  $to
-     * @param  string  $legend
-     * @param  string  $aspect
-     * @param  int|null  $width
-     * @param  int|null  $height
-     * @param  int  $absolute_size
      * @param  \App\Models\Device|int|null  $device
      * @param  \App\Models\Port|int|null  $port
      */
@@ -123,7 +116,6 @@ class Graph extends Component
     /**
      * @param  mixed  $value
      * @param  int|string  $key
-     * @return bool
      */
     public function filterAttributes($value, $key): bool
     {

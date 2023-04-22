@@ -103,7 +103,6 @@ class TestConfigCommands extends InMemoryDbTestCase
     }
 
     /**
-     * @param  string  $setting
      * @param  mixed  $expected
      */
     private function assertCliSets(string $setting, $expected): void
@@ -118,7 +117,6 @@ class TestConfigCommands extends InMemoryDbTestCase
     }
 
     /**
-     * @param  string  $setting
      * @param  mixed  $expected
      */
     private function assertCliGets(string $setting, $expected): void

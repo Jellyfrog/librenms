@@ -104,9 +104,6 @@ class Validator
 
     /**
      * Get the overall status of a validation group.
-     *
-     * @param  string  $validation_group
-     * @return int
      */
     public function getGroupStatus(string $validation_group): int
     {
@@ -120,7 +117,6 @@ class Validator
     /**
      * Get the ValidationResults for a specific validation group.
      *
-     * @param  string|null  $validation_group
      * @return ValidationResult[]
      */
     public function getResults(string $validation_group = null): array
@@ -145,8 +141,6 @@ class Validator
 
     /**
      * Print all ValidationResults or a group of them.
-     *
-     * @param  string|null  $validation_group
      */
     public function printResults(string $validation_group = null): void
     {
@@ -172,7 +166,6 @@ class Validator
      * Submit a validation result.
      * This allows customizing ValidationResults before submitting.
      *
-     * @param  ValidationResult  $result
      * @param  string|null  $group  manually specify the group, otherwise this will be inferred from the callers class name
      */
     public function result(ValidationResult $result, string $group = null): void
@@ -195,8 +188,6 @@ class Validator
     /**
      * Submit an ok validation result.
      *
-     * @param  string  $message
-     * @param  string|null  $fix
      * @param  string|null  $group  manually specify the group, otherwise this will be inferred from the callers class name
      */
     public function ok(string $message, string $fix = null, string $group = null): void
@@ -207,8 +198,6 @@ class Validator
     /**
      * Submit a warning validation result.
      *
-     * @param  string  $message
-     * @param  string|null  $fix
      * @param  string|null  $group  manually specify the group, otherwise this will be inferred from the callers class name
      */
     public function warn(string $message, string $fix = null, string $group = null): void
@@ -219,8 +208,6 @@ class Validator
     /**
      * Submit a failed validation result.
      *
-     * @param  string  $message
-     * @param  string|null  $fix
      * @param  string|null  $group  manually specify the group, otherwise this will be inferred from the callers class name
      */
     public function fail(string $message, string $fix = null, string $group = null): void
@@ -231,7 +218,6 @@ class Validator
     /**
      * Submit an informational validation result.
      *
-     * @param  string  $message
      * @param  string|null  $group  manually specify the group, otherwise this will be inferred from the callers class name
      */
     public function info(string $message, string $group = null): void
@@ -257,8 +243,6 @@ class Validator
 
     /**
      * Get the username of the user running this and cache it for future requests.
-     *
-     * @return string
      */
     public function getUsername(): string
     {

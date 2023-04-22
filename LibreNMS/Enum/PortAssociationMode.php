@@ -49,9 +49,6 @@ class PortAssociationMode
 
     /**
      * Translate a named port association mode to an integer for storage
-     *
-     * @param  string  $name
-     * @return int|null
      */
     public static function getId(string $name): ?int
     {
@@ -62,9 +59,6 @@ class PortAssociationMode
 
     /**
      * Get name of given port association mode id
-     *
-     * @param  int  $id
-     * @return string|null
      */
     public static function getName(int $id): ?string
     {

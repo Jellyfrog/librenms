@@ -39,9 +39,6 @@ class DeviceGroupController extends SelectController
         return DeviceGroup::hasAccess($request->user())->select('id', 'name');
     }
 
-    /**
-     * @param  DeviceGroup  $device_group
-     */
     public function formatItem(DeviceGroup $device_group)
     {
         return [

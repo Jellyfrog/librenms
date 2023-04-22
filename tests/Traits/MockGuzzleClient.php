@@ -50,8 +50,6 @@ trait MockGuzzleClient
 
     /**
      * Get the request and response history to inspect
-     *
-     * @return array
      */
     public function guzzleHistory(): array
     {

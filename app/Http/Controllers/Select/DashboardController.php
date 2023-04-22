@@ -38,7 +38,6 @@ class DashboardController extends SelectController
     /**
      * Defines the base query for this resource
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     protected function baseQuery(Request $request)
@@ -51,10 +50,6 @@ class DashboardController extends SelectController
             ->select(['dashboard_id', 'username', 'dashboard_name']);
     }
 
-    /**
-     * @param  object  $dashboard
-     * @return array
-     */
     public function formatItem(object $dashboard): array
     {
         return [

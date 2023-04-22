@@ -30,11 +30,6 @@ use Illuminate\Http\JsonResponse;
 
 class ApiException extends \Exception
 {
-    /**
-     * @param  string  $message
-     * @param  int  $code
-     * @param  \Throwable|null  $previous
-     */
     public function __construct(string $message = '', int $code = 400, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
@@ -42,8 +37,6 @@ class ApiException extends \Exception
 
     /**
      * Render the exception into an HTTP response.
-     *
-     * @param  \Illuminate\Http\Request  $request
      */
     public function render(Request $request): JsonResponse
     {

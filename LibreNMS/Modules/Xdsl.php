@@ -72,8 +72,6 @@ class Xdsl implements Module
      * Poll data for this module and update the DB / RRD.
      * Try to keep this efficient and only run if discovery has indicated there is a reason to run.
      * Run frequently (default every 5 minutes)
-     *
-     * @param  \LibreNMS\OS  $os
      */
     public function poll(OS $os): void
     {
@@ -115,9 +113,6 @@ class Xdsl implements Module
      * Poll data for this module and update the DB / RRD.
      * Try to keep this efficient and only run if discovery has indicated there is a reason to run.
      * Run frequently (default every 5 minutes)
-     *
-     * @param  \LibreNMS\OS  $os
-     * @param  bool  $store
      */
     private function pollAdsl(OS $os, bool $store = true): Collection
     {
@@ -158,9 +153,6 @@ class Xdsl implements Module
      * Poll data for this module and update the DB / RRD.
      * Try to keep this efficient and only run if discovery has indicated there is a reason to run.
      * Run frequently (default every 5 minutes)
-     *
-     * @param  \LibreNMS\OS  $os
-     * @param  bool  $store
      */
     private function pollVdsl(OS $os, bool $store = true): Collection
     {

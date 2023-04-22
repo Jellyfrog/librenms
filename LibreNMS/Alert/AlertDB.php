@@ -39,7 +39,6 @@ use LibreNMS\Alerting\QueryBuilderParser;
 class AlertDB
 {
     /**
-     * @param  string  $rule
      * @param  mixed  $query_builder
      * @return bool|string
      */

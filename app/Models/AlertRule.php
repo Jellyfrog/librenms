@@ -38,7 +38,6 @@ class AlertRule extends BaseModel
 
     /**
      * @param  Builder<AlertRule>  $query
-     * @return Builder
      */
     public function scopeEnabled(Builder $query): Builder
     {
@@ -49,7 +48,6 @@ class AlertRule extends BaseModel
      * Scope for only alert rules that are currently in alarm
      *
      * @param  Builder<AlertRule>  $query
-     * @return Builder
      */
     public function scopeIsActive(Builder $query): Builder
     {
@@ -63,7 +61,6 @@ class AlertRule extends BaseModel
      * (do not use for admin and global read-only users)
      *
      * @param  Builder<AlertRule>  $query
-     * @param  User  $user
      * @return mixed
      */
     public function scopeHasAccess(Builder $query, User $user)

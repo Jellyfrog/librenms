@@ -66,7 +66,6 @@ class ValidateDeviceAndCreate
     }
 
     /**
-     * @return bool
      *
      * @throws \LibreNMS\Exceptions\HostExistsException
      * @throws \LibreNMS\Exceptions\HostUnreachablePingException
@@ -230,7 +229,6 @@ class ValidateDeviceAndCreate
      * Check if a device with match hostname or sysname exists in the database.
      * Throw and error if they do.
      *
-     * @return void
      *
      * @throws \LibreNMS\Exceptions\HostExistsException
      */

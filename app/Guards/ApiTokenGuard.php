@@ -31,8 +31,6 @@ class ApiTokenGuard extends TokenGuard
 {
     /**
      * Get the token for the current request.
-     *
-     * @return string
      */
     public function getTokenForRequest(): string
     {

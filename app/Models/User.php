@@ -50,8 +50,6 @@ class User extends Authenticatable
     /**
      * Test if this user has global read access
      * these users have a level of 5, 10 or 11 (demo).
-     *
-     * @return bool
      */
     public function hasGlobalRead(): bool
     {
@@ -61,8 +59,6 @@ class User extends Authenticatable
     /**
      * Test if this user has global admin access
      * these users have a level of 10 or 11 (demo).
-     *
-     * @return bool
      */
     public function hasGlobalAdmin(): bool
     {
@@ -71,8 +67,6 @@ class User extends Authenticatable
 
     /**
      * Test if the User is an admin.
-     *
-     * @return bool
      */
     public function isAdmin(): bool
     {
@@ -81,8 +75,6 @@ class User extends Authenticatable
 
     /**
      * Test if this user is the demo user
-     *
-     * @return bool
      */
     public function isDemo(): bool
     {
@@ -93,7 +85,6 @@ class User extends Authenticatable
      * Check if this user has access to a device
      *
      * @param  Device|int  $device  can be a device Model or device id
-     * @return bool
      */
     public function canAccessDevice($device): bool
     {
@@ -102,8 +93,6 @@ class User extends Authenticatable
 
     /**
      * Helper function to hash passwords before setting
-     *
-     * @param  string  $password
      */
     public function setPassword(string $password)
     {
@@ -112,9 +101,6 @@ class User extends Authenticatable
 
     /**
      * Check if the given user can set the password for this user
-     *
-     * @param  User  $user
-     * @return bool
      */
     public function canSetPassword(User $user): bool
     {
@@ -131,8 +117,6 @@ class User extends Authenticatable
 
     /**
      * Checks if this user has a browser push notification transport configured.
-     *
-     * @return bool
      */
     public function hasBrowserPushTransport(): bool
     {
@@ -149,9 +133,6 @@ class User extends Authenticatable
     /**
      * This restricts the query to only users that match the current auth method
      * It is not needed when using user_id, but should be used for username and auth_id
-     *
-     * @param  Builder  $query
-     * @return Builder
      */
     public function scopeThisAuth(Builder $query): Builder
     {

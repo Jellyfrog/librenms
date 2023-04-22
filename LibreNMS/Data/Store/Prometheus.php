@@ -132,8 +132,6 @@ class Prometheus extends BaseDatastore
 
     /**
      * Checks if the datastore wants rrdtags to be sent when issuing put()
-     *
-     * @return bool
      */
     public function wantsRrdTags(): bool
     {

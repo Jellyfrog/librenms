@@ -120,8 +120,6 @@ class XirrusAos extends OS implements
 
     /**
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessNoiseFloor(): array
     {
@@ -131,8 +129,6 @@ class XirrusAos extends OS implements
     /**
      * Discover wireless rate. This is in bps. Type is rate.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessRate(): array
     {
@@ -142,8 +138,6 @@ class XirrusAos extends OS implements
     /**
      * Discover wireless RSSI (Received Signal Strength Indicator). This is in dBm. Type is rssi.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessRssi(): array
     {

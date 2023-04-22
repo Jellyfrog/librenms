@@ -76,8 +76,6 @@ class PluginProvider extends ServiceProvider
     /**
      * Check if a hook is extended by the given class.
      *
-     * @param  string  $class
-     * @return string
      *
      * @throws \App\Exceptions\PluginDoesNotImplementHookException
      */

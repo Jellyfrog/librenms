@@ -182,8 +182,6 @@ class Stats
 
     /**
      * @param  Builder|string  $table
-     * @param  array  $groups
-     * @return \Illuminate\Support\Collection
      */
     private function selectTotal($table, array $groups = []): Collection
     {
@@ -200,7 +198,6 @@ class Stats
 
     /**
      * @param  string|int|float  $value
-     * @param  string  $name
      * @return array[]
      */
     private function selectStatic($value, string $name = 'version'): array

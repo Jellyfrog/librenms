@@ -59,7 +59,6 @@ class AlertScheduleController extends TableController
     }
 
     /**
-     * @param  AlertSchedule  $schedule
      * @return array
      */
     public function formatItem(AlertSchedule $schedule)

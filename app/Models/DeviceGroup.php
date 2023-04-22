@@ -72,8 +72,6 @@ class DeviceGroup extends BaseModel
 
     /**
      * Get a query builder parser instance from this device group
-     *
-     * @return QueryBuilderFluentParser
      */
     public function getParser(): QueryBuilderFluentParser
     {

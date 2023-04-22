@@ -80,9 +80,6 @@ class PortStpController extends TableController
         return PortStp::query()->with('port');
     }
 
-    /**
-     * @param  PortStp  $stpPort
-     */
     public function formatItem(PortStp $stpPort)
     {
         return [

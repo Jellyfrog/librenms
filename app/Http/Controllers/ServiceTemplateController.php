@@ -60,7 +60,6 @@ class ServiceTemplateController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function store(Request $request, FlasherInterface $flasher): RedirectResponse
@@ -116,7 +115,6 @@ class ServiceTemplateController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\ServiceTemplate  $template
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function show(ServiceTemplate $template): RedirectResponse
@@ -127,7 +125,6 @@ class ServiceTemplateController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\ServiceTemplate  $template
      * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
     public function edit(ServiceTemplate $template): View
@@ -145,8 +142,6 @@ class ServiceTemplateController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\ServiceTemplate  $template
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function update(Request $request, ServiceTemplate $template, FlasherInterface $flasher)
@@ -238,7 +233,6 @@ class ServiceTemplateController extends Controller
     /**
      * Apply specified Service Template to Device Groups.
      *
-     * @param  \App\Models\ServiceTemplate  $template
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function applyDeviceGroups(ServiceTemplate $template): Response
@@ -270,7 +264,6 @@ class ServiceTemplateController extends Controller
     /**
      * Apply specified Service Template to Devices.
      *
-     * @param  \App\Models\ServiceTemplate  $template
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function applyDevices(ServiceTemplate $template): Response
@@ -315,7 +308,6 @@ class ServiceTemplateController extends Controller
     /**
      * Apply specified Service Template.
      *
-     * @param  \App\Models\ServiceTemplate  $template
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function apply(ServiceTemplate $template): Response
@@ -335,7 +327,6 @@ class ServiceTemplateController extends Controller
     /**
      * Remove specified Service Template.
      *
-     * @param  \App\Models\ServiceTemplate  $template
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function remove(ServiceTemplate $template): Response
@@ -350,7 +341,6 @@ class ServiceTemplateController extends Controller
     /**
      * Destroy the specified resource from storage.
      *
-     * @param  \App\Models\ServiceTemplate  $template
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function destroy(ServiceTemplate $template): Response

@@ -164,8 +164,6 @@ class Device extends BaseModel
     /**
      * Get VRF contexts to poll.
      * If no contexts are found, return the default context ''
-     *
-     * @return array
      */
     public function getVrfContexts(): array
     {
@@ -237,7 +235,6 @@ class Device extends BaseModel
      * Length is always overridden by shorthost_target_length.
      *
      * @param  int  $length  length to shorten to, will not break up words so may be longer
-     * @return string
      */
     public function shortDisplayName(int $length = 12): string
     {
@@ -260,9 +257,6 @@ class Device extends BaseModel
 
     /**
      * Check if user can access this device.
-     *
-     * @param  User  $user
-     * @return bool
      */
     public function canAccess(User $user): bool
     {
@@ -284,9 +278,6 @@ class Device extends BaseModel
         return Time::formatInterval($time, $short);
     }
 
-    /**
-     * @return string
-     */
     public function logo(): string
     {
         $base_name = pathinfo($this->icon, PATHINFO_FILENAME);

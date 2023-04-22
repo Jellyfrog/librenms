@@ -19,9 +19,6 @@ class SocialiteWasCalledListener
 
     /**
      * Handle the event.
-     *
-     * @param  \SocialiteProviders\Manager\SocialiteWasCalled  $event
-     * @return void
      */
     public function handle(\SocialiteProviders\Manager\SocialiteWasCalled $event): void
     {

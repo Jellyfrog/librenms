@@ -77,10 +77,6 @@ class DeviceSearchController extends SearchController
             });
     }
 
-    /**
-     * @param  Device  $device
-     * @return array
-     */
     public function formatItem(Device $device): array
     {
         $name = $device->displayName();

@@ -66,7 +66,6 @@ class SyslogController extends TableController
     /**
      * Defines the base query for this resource
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     public function baseQuery(Request $request)
@@ -92,9 +91,6 @@ class SyslogController extends TableController
             });
     }
 
-    /**
-     * @param  Syslog  $syslog
-     */
     public function formatItem(Syslog $syslog)
     {
         $device = $syslog->device;
@@ -120,10 +116,6 @@ class SyslogController extends TableController
         return $output;
     }
 
-    /**
-     * @param  int  $syslog_priority
-     * @return string
-     */
     private function priorityLabel(int $syslog_priority): string
     {
         switch ($syslog_priority) {

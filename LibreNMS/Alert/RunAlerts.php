@@ -46,7 +46,6 @@ class RunAlerts
      *
      * @param  string  $txt  Text with variables
      * @param  bool  $wrap  Wrap variable for text-usage (default: true)
-     * @return string
      */
     public function populate(string $txt, bool $wrap = true): string
     {
@@ -215,7 +214,6 @@ class RunAlerts
      *
      * @param  int  $device_id  Device-ID
      * @param  int  $rule  Rule-ID
-     * @return bool
      */
     public function isRuleValid(int $device_id, int $rule): bool
     {
@@ -235,9 +233,6 @@ class RunAlerts
 
     /**
      * Issue Alert-Object
-     *
-     * @param  array  $alert
-     * @return bool
      */
     public function issueAlert(array $alert): bool
     {
@@ -263,8 +258,6 @@ class RunAlerts
 
     /**
      * Issue ACK notification
-     *
-     * @return void
      */
     public function runAcks(): void
     {
@@ -276,8 +269,6 @@ class RunAlerts
 
     /**
      * Run Follow-Up alerts
-     *
-     * @return void
      */
     public function runFollowUp(): void
     {
@@ -361,8 +352,6 @@ class RunAlerts
 
     /**
      * Run all alerts
-     *
-     * @return void
      */
     public function runAlerts(): void
     {
@@ -471,7 +460,6 @@ class RunAlerts
      * Run external transports
      *
      * @param  array  $obj  Alert-Array
-     * @return void
      */
     public function extTransports(array $obj): void
     {
@@ -563,7 +551,6 @@ class RunAlerts
      * Returns true if all parents are down
      *
      * @param  int  $device  Device-ID
-     * @return bool
      */
     public function isParentDown(int $device): bool
     {

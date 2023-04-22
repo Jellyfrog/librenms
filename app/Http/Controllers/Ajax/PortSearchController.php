@@ -51,10 +51,6 @@ class PortSearchController extends SearchController
             ->orderBy('ifDescr');
     }
 
-    /**
-     * @param  \App\Models\Port  $port
-     * @return array
-     */
     public function formatItem(Port $port): array
     {
         $description = $port->getDescription();

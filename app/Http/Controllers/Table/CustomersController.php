@@ -48,7 +48,6 @@ class CustomersController extends TableController
     /**
      * Defines the base query for this resource
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     public function baseQuery(Request $request)
@@ -62,10 +61,6 @@ class CustomersController extends TableController
             ->groupBy('port_descr_descr');
     }
 
-    /**
-     * @param  \Illuminate\Contracts\Pagination\LengthAwarePaginator&\Countable  $paginator
-     * @return \Illuminate\Http\JsonResponse
-     */
     protected function formatResponse(\Illuminate\Contracts\Pagination\LengthAwarePaginator&\Countable $paginator): JsonResponse
     {
         $customers = collect($paginator->items())->pluck('port_descr_descr');
@@ -99,7 +94,6 @@ class CustomersController extends TableController
     }
 
     /**
-     * @param  Port  $port
      * @return array|\Illuminate\Database\Eloquent\Model|\Illuminate\Support\Collection
      */
     public function formatItem(Port $port)

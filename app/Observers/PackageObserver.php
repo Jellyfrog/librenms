@@ -10,9 +10,6 @@ class PackageObserver
 {
     /**
      * Handle the Package "created" event.
-     *
-     * @param  \App\Models\Package  $package
-     * @return void
      */
     public function created(Package $package): void
     {
@@ -22,9 +19,6 @@ class PackageObserver
 
     /**
      * Handle the Package "updated" event.
-     *
-     * @param  \App\Models\Package  $package
-     * @return void
      */
     public function updated(Package $package): void
     {
@@ -37,9 +31,6 @@ class PackageObserver
 
     /**
      * Handle the Package "deleted" event.
-     *
-     * @param  \App\Models\Package  $package
-     * @return void
      */
     public function deleted(Package $package): void
     {
@@ -49,9 +40,6 @@ class PackageObserver
 
     /**
      * Handle the Package "restored" event.
-     *
-     * @param  \App\Models\Package  $package
-     * @return void
      */
     public function restored(Package $package): void
     {
@@ -60,9 +48,6 @@ class PackageObserver
 
     /**
      * Handle the Package "force deleted" event.
-     *
-     * @param  \App\Models\Package  $package
-     * @return void
      */
     public function forceDeleted(Package $package): void
     {

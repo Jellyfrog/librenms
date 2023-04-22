@@ -38,7 +38,6 @@ class LocationController extends SelectController
     /**
      * Defines the base query for this resource
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     protected function baseQuery(Request $request)

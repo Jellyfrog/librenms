@@ -30,10 +30,6 @@ class ApiClientException extends \Exception
     /** @var array */
     private $output;
 
-    /**
-     * @param  string  $message
-     * @param  array  $output
-     */
     public function __construct(string $message = '', array $output = [])
     {
         parent::__construct($message, 0, null);

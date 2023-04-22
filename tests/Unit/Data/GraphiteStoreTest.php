@@ -92,7 +92,6 @@ class GraphiteStoreTest extends TestCase
 
     /**
      * @param  mixed  $mockSocket
-     * @return Graphite
      */
     private function mockGraphite($mockSocket): Graphite
     {

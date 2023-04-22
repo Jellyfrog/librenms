@@ -51,9 +51,6 @@ class Notification extends Model
 
     /**
      * Mark this notification as read or unread
-     *
-     * @param  bool  $enabled
-     * @return bool
      */
     public function markRead(bool $enabled = true): bool
     {
@@ -68,11 +65,6 @@ class Notification extends Model
         return $this->setAttrib('sticky', $enabled);
     }
 
-    /**
-     * @param  string  $name
-     * @param  bool  $enabled
-     * @return bool
-     */
     private function setAttrib(string $name, bool $enabled): bool
     {
         if ($enabled === true) {
@@ -92,7 +84,6 @@ class Notification extends Model
 
     /**
      * @param  Builder<Notification>  $query
-     * @param  User  $user
      * @return mixed
      */
     public function scopeIsUnread(Builder $query, User $user)

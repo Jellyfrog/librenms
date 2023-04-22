@@ -29,8 +29,6 @@ class Services
 {
     /**
      * List all available services from nagios plugins directory
-     *
-     * @return array
      */
     public static function list(): array
     {

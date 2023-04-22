@@ -47,7 +47,6 @@ class PermissionsCache
      *
      * @param  \App\Models\Device|int  $device
      * @param  \App\Models\User|int  $user
-     * @return bool
      */
     public function canAccessDevice($device, $user = null): bool
     {
@@ -61,7 +60,6 @@ class PermissionsCache
      *
      * @param  \App\Models\Port|int  $port
      * @param  \App\Models\User|int  $user
-     * @return bool
      */
     public function canAccessPort($port, $user = null): bool
     {
@@ -77,7 +75,6 @@ class PermissionsCache
      *
      * @param  \App\Models\Bill|int  $bill
      * @param  \App\Models\User|int  $user
-     * @return bool
      */
     public function canAccessBill($bill, $user = null): bool
     {
@@ -106,7 +103,6 @@ class PermissionsCache
      * Get the user_id of users that have been granted access to port
      *
      * @param  \App\Models\Port|int  $port
-     * @return \Illuminate\Support\Collection
      */
     public function usersForPort($port): Collection
     {
@@ -119,7 +115,6 @@ class PermissionsCache
      * Get the user_id of users that have been granted access to bill
      *
      * @param  \App\Models\Bill|int  $bill
-     * @return \Illuminate\Support\Collection
      */
     public function usersForBill($bill): Collection
     {
@@ -132,7 +127,6 @@ class PermissionsCache
      * Get a list of device_id of all devices the user can access
      *
      * @param  \App\Models\User|int  $user
-     * @return \Illuminate\Support\Collection
      */
     public function devicesForUser($user = null): Collection
     {
@@ -144,7 +138,6 @@ class PermissionsCache
      * Get a list of port_id of all ports the user can access directly
      *
      * @param  \App\Models\User|int  $user
-     * @return \Illuminate\Support\Collection
      */
     public function portsForUser($user = null): Collection
     {
@@ -157,7 +150,6 @@ class PermissionsCache
      * Get a list of bill_id of all bills the user can access directly
      *
      * @param  \App\Models\User|int  $user
-     * @return \Illuminate\Support\Collection
      */
     public function billsForUser($user = null): Collection
     {
@@ -170,7 +162,6 @@ class PermissionsCache
      * Get the ids of all device groups the user can access
      *
      * @param  \App\Models\User|int  $user
-     * @return \Illuminate\Support\Collection
      */
     public function deviceGroupsForUser($user = null): Collection
     {
@@ -191,7 +182,6 @@ class PermissionsCache
      * Get the cached data for device permissions.  Use helpers instead.
      *
      * @param  \App\Models\User|int  $user
-     * @return \Illuminate\Support\Collection
      */
     public function getDevicePermissions($user = null): Collection
     {
@@ -210,8 +200,6 @@ class PermissionsCache
 
     /**
      * Get the cached data for port permissions.  Use helpers instead.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getPortPermissions(): Collection
     {
@@ -226,8 +214,6 @@ class PermissionsCache
 
     /**
      * Get the cached data for bill permissions.  Use helpers instead.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getBillPermissions(): Collection
     {
@@ -241,7 +227,6 @@ class PermissionsCache
 
     /**
      * @param  mixed  $user
-     * @return int|null
      */
     private function getUserId($user): ?int
     {
@@ -250,7 +235,6 @@ class PermissionsCache
 
     /**
      * @param  mixed  $device
-     * @return int
      */
     private function getDeviceId($device): int
     {
@@ -259,7 +243,6 @@ class PermissionsCache
 
     /**
      * @param  mixed  $port
-     * @return int
      */
     private function getPortId($port): int
     {
@@ -268,16 +251,12 @@ class PermissionsCache
 
     /**
      * @param  mixed  $bill
-     * @return int
      */
     private function getBillId($bill): int
     {
         return $bill instanceof Bill ? $bill->bill_id : (is_numeric($bill) ? (int) $bill : 0);
     }
 
-    /**
-     * @return \Illuminate\Database\Query\Builder
-     */
     public function getDeviceGroupPermissionsQuery(): Builder
     {
         return DB::table('devices_group_perms')

@@ -57,8 +57,6 @@ class Plugins
 
     /**
      * Start loading active plugins
-     *
-     * @return bool
      */
     public static function start(): bool
     {
@@ -97,7 +95,6 @@ class Plugins
      *
      * @param  string  $file  Full path and filename of plugin
      * @param  string  $pluginName  Plugin name without any namespace
-     * @return object|null
      */
     public static function load(string $file, string $pluginName): ?object
     {
@@ -123,10 +120,6 @@ class Plugins
     /**
      * Get an instance of this plugin
      * Search various namespaces and include files if needed.
-     *
-     * @param  string  $file
-     * @param  string  $pluginName
-     * @return object|null
      */
     private static function getInstance(string $file, string $pluginName): ?object
     {
@@ -175,7 +168,6 @@ class Plugins
      *
      * @param  string  $hook  Name of hook to call
      * @param  array|false  $params  Optional array of parameters for hook
-     * @return string
      */
     public static function call(string $hook, $params = false): string
     {
@@ -212,8 +204,6 @@ class Plugins
 
     /**
      * Get count of hooks.
-     *
-     * @return int
      */
     public static function count(): int
     {

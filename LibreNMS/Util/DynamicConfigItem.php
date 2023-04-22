@@ -209,7 +209,6 @@ class DynamicConfigItem implements \ArrayAccess
 
     /**
      * @param  mixed  $value  The value that was validated
-     * @return string
      */
     public function getValidationMessage($value): string
     {

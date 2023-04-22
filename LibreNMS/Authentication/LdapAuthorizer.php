@@ -288,8 +288,6 @@ class LdapAuthorizer extends AuthorizerBase
      * Get the full dn with auth_ldap_prefix and auth_ldap_suffix
      *
      * @internal
-     *
-     * @return string
      */
     protected function getFullDn($username): string
     {
@@ -331,7 +329,6 @@ class LdapAuthorizer extends AuthorizerBase
      * @internal
      *
      * @param  bool  $skip_bind  do not attempt to bind on connection
-     * @return \LDAP\Connection
      *
      * @throws AuthenticationException
      */
@@ -352,7 +349,6 @@ class LdapAuthorizer extends AuthorizerBase
 
     /**
      * @param  array  $entry  ldap entry array
-     * @return array
      */
     private function ldapToUser(array $entry): array
     {

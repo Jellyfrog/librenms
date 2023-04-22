@@ -93,8 +93,6 @@ class TwoFactor
 
     /**
      * Generate Secret Key
-     *
-     * @return string
      */
     public static function genKey(): string
     {
@@ -166,7 +164,6 @@ class TwoFactor
      *
      * @param  string  $key  Secret Key
      * @param  int|bool  $counter  Optional Counter, Defaults to Timestamp
-     * @return string
      */
     private static function oathHOTP(string $key, $counter = false): string
     {
@@ -200,10 +197,7 @@ class TwoFactor
     /**
      * Generate 2fa URI
      *
-     * @param  string  $username
-     * @param  string  $key
      * @param  bool  $counter  if type is counter (false for time based)
-     * @return string
      */
     public static function generateUri(string $username, string $key, bool $counter = false): string
     {

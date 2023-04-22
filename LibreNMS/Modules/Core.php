@@ -193,7 +193,6 @@ class Core implements Module
      *
      * Appending _except to any condition will invert the match.
      *
-     * @param  Device  $device
      * @param  array  $array  Array of items, keys should be sysObjectID, sysDescr, or sysDescr_regex
      * @param  string|array  $mibdir  MIB directory for evaluated OS
      * @return bool the result (all items passed return true)

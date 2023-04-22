@@ -72,8 +72,6 @@ class Proxy
 
     /**
      * Get the ip and port of the proxy
-     *
-     * @return string
      */
     public static function forCurl(?string $target_url = null): string
     {
@@ -82,8 +80,6 @@ class Proxy
 
     /**
      * Set the proxy on a curl handle
-     *
-     * @param  \CurlHandle  $curl
      */
     public static function applyToCurl(CurlHandle $curl): void
     {

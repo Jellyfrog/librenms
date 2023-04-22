@@ -44,7 +44,6 @@ class PollerCluster extends Model
 
     /**
      * @param  array|string  $groups
-     * @return void
      */
     public function setPollerGroupsAttribute($groups): void
     {
@@ -72,7 +71,6 @@ class PollerCluster extends Model
     /**
      * Get the value of a setting (falls back to the global value if not set on this node)
      *
-     * @param  string  $name
      * @return mixed
      *
      * @throws \LibreNMS\Exceptions\InvalidNameException

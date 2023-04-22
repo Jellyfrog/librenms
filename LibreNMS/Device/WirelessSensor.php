@@ -128,7 +128,6 @@ class WirelessSensor extends Sensor
      *
      * @param  bool  $valid  filter this list by valid types in the database
      * @param  int  $device_id  when filtering, only return types valid for this device_id
-     * @return array
      */
     public static function getTypes(bool $valid = false, int $device_id = null): array
     {
@@ -249,9 +248,6 @@ class WirelessSensor extends Sensor
 
     /**
      * Convert a WiFi channel to a Frequency in MHz
-     *
-     * @param  int  $channel
-     * @return int
      */
     public static function channelToFrequency(int $channel): int
     {

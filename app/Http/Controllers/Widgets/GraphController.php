@@ -158,10 +158,6 @@ class GraphController extends WidgetController
         return view('widgets.settings.graph', $data);
     }
 
-    /**
-     * @param  Request  $request
-     * @return View
-     */
     public function getView(Request $request): View
     {
         $settings = $this->getSettings();

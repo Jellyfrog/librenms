@@ -16,8 +16,6 @@ class Dashboard extends Model
     // ---- Query scopes ----
 
     /**
-     * @param  Builder  $query
-     * @param  User  $user
      * @return Builder|static
      */
     public function scopeAllAvailable(Builder $query, User $user)

@@ -67,7 +67,6 @@ class Trap
      * Find the first in this trap by substring
      *
      * @param  string|string[]  $search
-     * @return string
      */
     public function findOid(array|string $search): string
     {
@@ -80,7 +79,6 @@ class Trap
      * Find all oids that match the given string
      *
      * @param  string|string[]  $search
-     * @return array
      */
     public function findOids(array|string $search): array
     {
@@ -110,9 +108,6 @@ class Trap
 
     /**
      * Render the Trap for debugging purpose
-     *
-     * @param  bool  $detailed
-     * @return string
      */
     public function toString(bool $detailed = false): string
     {

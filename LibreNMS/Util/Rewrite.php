@@ -138,9 +138,6 @@ class Rewrite
 
     /**
      * Reformat a mac stored in the DB (only hex) to a nice readable format
-     *
-     * @param  string  $mac
-     * @return string
      */
     public static function readableMac(string $mac): string
     {
@@ -149,9 +146,6 @@ class Rewrite
 
     /**
      * Extract the OUI and match it against cached values
-     *
-     * @param  string  $mac
-     * @return string
      */
     public static function readableOUI(string $mac): string
     {
@@ -172,7 +166,6 @@ class Rewrite
      * 00:02:04:0B:0D:0F becomes 0.2.4.11.13.239
      * 0:2:4:B:D:F       becomes 0.2.4.11.13.15
      *
-     * @param  string  $mac
      * @return string oid representation of a MAC address
      */
     public static function oidMac(string $mac): string
@@ -209,10 +202,6 @@ class Rewrite
 
     /**
      * Make Cisco hardware human readable
-     *
-     * @param  Device  $device
-     * @param  bool  $short
-     * @return string
      */
     public static function ciscoHardware(Device &$device, bool $short = false): string
     {
@@ -458,9 +447,6 @@ class Rewrite
 
     /**
      * If given input is an IPv6 address, wrap it in [] for use in applications that require it
-     *
-     * @param  string  $ip
-     * @return string|null
      */
     public static function addIpv6Brackets(string $ip): ?string
     {

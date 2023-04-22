@@ -37,8 +37,6 @@ class SetConfigCommand extends LnmsCommand
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle(DynamicConfig $definition): void
     {
@@ -204,8 +202,6 @@ class SetConfigCommand extends LnmsCommand
     }
 
     /**
-     * @param  string  $os
-     * @param  string  $setting
      * @param  mixed  $value
      *
      * @throws \JsonSchema\Exception\ValidationException

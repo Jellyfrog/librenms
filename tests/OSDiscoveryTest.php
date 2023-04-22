@@ -65,8 +65,6 @@ class OSDiscoveryTest extends TestCase
      * @group os
      *
      * @dataProvider osProvider
-     *
-     * @param  string  $os_name
      */
     public function testOSDetection(string $os_name): void
     {
@@ -156,8 +154,6 @@ class OSDiscoveryTest extends TestCase
 
     /**
      * Provides a list of OS to generate tests.
-     *
-     * @return array
      */
     public function osProvider(): array
     {

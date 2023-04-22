@@ -36,9 +36,6 @@ class ApiToken extends BaseModel
 
     /**
      * Check if the given token is valid
-     *
-     * @param  string  $token
-     * @return bool
      */
     public static function isValid(string $token, $user_id = null): bool
     {
@@ -53,9 +50,6 @@ class ApiToken extends BaseModel
 
     /**
      * Get User model based on the given API token (or null if invalid)
-     *
-     * @param  string  $token
-     * @return User|null
      */
     public static function userFromToken(string $token): ?User
     {
@@ -76,9 +70,6 @@ class ApiToken extends BaseModel
 
     /**
      * Get the user_id for the given token.
-     *
-     * @param  string  $token
-     * @return int
      */
     public static function idFromToken(string $token): int
     {

@@ -71,7 +71,6 @@ class ObjectCache implements ArrayAccess
      * Check if data exists
      *
      * @param  mixed  $obj  Name of Data-Object
-     * @return bool
      */
     public function offsetExists($obj): bool
     {
@@ -115,7 +114,6 @@ class ObjectCache implements ArrayAccess
      *
      * @param  mixed  $obj  Name of Data-Object
      * @param  mixed  $value  Value
-     * @return void
      */
     public function offsetSet($obj, $value): void
     {
@@ -132,7 +130,6 @@ class ObjectCache implements ArrayAccess
      * Reset Data-Object
      *
      * @param  mixed  $obj  Name of Data-Object
-     * @return void
      */
     public function offsetUnset($obj): void
     {

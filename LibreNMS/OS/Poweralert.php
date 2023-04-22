@@ -42,9 +42,6 @@ class Poweralert extends \LibreNMS\OS implements OSPolling
         $this->customSysName($this->getDevice());
     }
 
-    /**
-     * @param  \App\Models\Device  $device
-     */
     private function customSysName(Device $device): void
     {
         $device->sysName = \SnmpQuery::get('.1.3.6.1.2.1.33.1.1.5.0')->value() ?: $device->sysName;

@@ -60,10 +60,6 @@ class TopDevicesController extends WidgetController
         return isset($settings['title']) ? $settings['title'] : $this->title;
     }
 
-    /**
-     * @param  Request  $request
-     * @return View
-     */
     public function getView(Request $request): View
     {
         $settings = $this->getSettings();
@@ -108,8 +104,6 @@ class TopDevicesController extends WidgetController
 
     /**
      * @param  array|string  $headers
-     * @param  Collection  $rows
-     * @return array
      */
     private function formatData($headers, Collection $rows): array
     {
@@ -119,11 +113,6 @@ class TopDevicesController extends WidgetController
         ];
     }
 
-    /**
-     * @param  Builder  $query
-     * @param  string  $left_table
-     * @return Builder
-     */
     private function withDeviceQuery(Builder $query, string $left_table): Builder
     {
         $settings = $this->getSettings();
@@ -144,9 +133,6 @@ class TopDevicesController extends WidgetController
             });
     }
 
-    /**
-     * @return Builder
-     */
     private function deviceQuery(): Builder
     {
         $settings = $this->getSettings();
@@ -159,12 +145,6 @@ class TopDevicesController extends WidgetController
             ->limit($settings['device_count']);
     }
 
-    /**
-     * @param  Device  $device
-     * @param  string  $graph_type
-     * @param  array  $graph_params
-     * @return array
-     */
     private function standardRow(Device $device, string $graph_type, array $graph_params = []): array
     {
         return [

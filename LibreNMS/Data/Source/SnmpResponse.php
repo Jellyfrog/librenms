@@ -45,10 +45,6 @@ class SnmpResponse
 
     /**
      * Create a new response object filling with output from the net-snmp command.
-     *
-     * @param  string  $output
-     * @param  string  $errorOutput
-     * @param  int  $exitCode
      */
     public function __construct(string $output, string $errorOutput = '', int $exitCode = 0)
     {
@@ -235,9 +231,6 @@ class SnmpResponse
             });
     }
 
-    /**
-     * @return int
-     */
     public function getExitCode(): int
     {
         return $this->exitCode;

@@ -66,7 +66,6 @@ class ValidationResult
      *
      * @param  string  $message  The message to describe this result
      * @param  string|null  $fix  a suggested fix to highlight for the user
-     * @return ValidationResult
      */
     public static function ok(string $message, string $fix = null): ValidationResult
     {
@@ -78,7 +77,6 @@ class ValidationResult
      *
      * @param  string  $message  The message to describe this result
      * @param  string|null  $fix  a suggested fix to highlight for the user
-     * @return ValidationResult
      */
     public static function warn(string $message, string $fix = null): ValidationResult
     {
@@ -89,7 +87,6 @@ class ValidationResult
      * Create a new informational Validation result
      *
      * @param  string  $message  The message to describe this result
-     * @return ValidationResult
      */
     public static function info(string $message): ValidationResult
     {
@@ -101,7 +98,6 @@ class ValidationResult
      *
      * @param  string  $message  The message to describe this result
      * @param  string|null  $fix  a suggested fix to highlight for the user
-     * @return ValidationResult
      */
     public static function fail(string $message, string $fix = null): ValidationResult
     {
@@ -111,8 +107,6 @@ class ValidationResult
     /**
      * Returns the status an int representing
      * ValidationResult::FAILURE, ValidationResult::WARNING, or ValidationResult::SUCCESS
-     *
-     * @return int
      */
     public function getStatus(): int
     {
@@ -197,8 +191,6 @@ class ValidationResult
 
     /**
      * Get the colorized string that represents the status of a ValidatonResult
-     *
-     * @return string
      */
     public static function getStatusText(int $status): string
     {

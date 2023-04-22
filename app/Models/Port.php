@@ -57,8 +57,6 @@ class Port extends DeviceRelatedModel
 
     /**
      * Returns a human readable label for this port
-     *
-     * @return string
      */
     public function getLabel(): string
     {
@@ -93,8 +91,6 @@ class Port extends DeviceRelatedModel
 
     /**
      * Get the shortened label for this device.  Replaces things like GigabitEthernet with GE.
-     *
-     * @return string
      */
     public function getShortLabel(): string
     {
@@ -113,7 +109,6 @@ class Port extends DeviceRelatedModel
      * Check if user can access this port.
      *
      * @param  User|int  $user
-     * @return bool
      */
     public function canAccess($user): bool
     {
@@ -141,10 +136,6 @@ class Port extends DeviceRelatedModel
 
     // ---- Query scopes ----
 
-    /**
-     * @param  Builder  $query
-     * @return Builder
-     */
     public function scopeIsDeleted(Builder $query): Builder
     {
         return $query->where([
@@ -152,10 +143,6 @@ class Port extends DeviceRelatedModel
         ]);
     }
 
-    /**
-     * @param  Builder  $query
-     * @return Builder
-     */
     public function scopeIsNotDeleted(Builder $query): Builder
     {
         return $query->where([
@@ -163,10 +150,6 @@ class Port extends DeviceRelatedModel
         ]);
     }
 
-    /**
-     * @param  Builder  $query
-     * @return Builder
-     */
     public function scopeIsUp(Builder $query): Builder
     {
         return $query->where([
@@ -177,10 +160,6 @@ class Port extends DeviceRelatedModel
         ]);
     }
 
-    /**
-     * @param  Builder  $query
-     * @return Builder
-     */
     public function scopeIsDown(Builder $query): Builder
     {
         return $query->where([
@@ -192,10 +171,6 @@ class Port extends DeviceRelatedModel
         ]);
     }
 
-    /**
-     * @param  Builder  $query
-     * @return Builder
-     */
     public function scopeIsShutdown(Builder $query): Builder
     {
         return $query->where([
@@ -206,10 +181,6 @@ class Port extends DeviceRelatedModel
         ]);
     }
 
-    /**
-     * @param  Builder  $query
-     * @return Builder
-     */
     public function scopeIsIgnored(Builder $query): Builder
     {
         return $query->where([
@@ -218,10 +189,6 @@ class Port extends DeviceRelatedModel
         ]);
     }
 
-    /**
-     * @param  Builder  $query
-     * @return Builder
-     */
     public function scopeIsDisabled(Builder $query): Builder
     {
         return $query->where([
@@ -230,10 +197,6 @@ class Port extends DeviceRelatedModel
         ]);
     }
 
-    /**
-     * @param  Builder  $query
-     * @return Builder
-     */
     public function scopeHasErrors(Builder $query): Builder
     {
         return $query->where([
@@ -247,10 +210,6 @@ class Port extends DeviceRelatedModel
         });
     }
 
-    /**
-     * @param  Builder  $query
-     * @return Builder
-     */
     public function scopeIsValid(Builder $query): Builder
     {
         return $query->where([

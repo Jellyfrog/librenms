@@ -44,9 +44,6 @@ class ModuleModelObserver
         }
     }
 
-    /**
-     * @param  Eloquent  $model
-     */
     public function saving(Eloquent $model)
     {
         if (! $model->isDirty()) {
@@ -54,26 +51,17 @@ class ModuleModelObserver
         }
     }
 
-    /**
-     * @param  Eloquent  $model
-     */
     public function updated(Eloquent $model): void
     {
         d_echo('Updated data:', 'U');
         d_echo($model->getDirty());
     }
 
-    /**
-     * @param  Eloquent  $model
-     */
     public function created(Eloquent $model): void
     {
         echo '+';
     }
 
-    /**
-     * @param  Eloquent  $model
-     */
     public function deleted(Eloquent $model): void
     {
         echo '-';

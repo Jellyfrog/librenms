@@ -52,11 +52,6 @@ class PluginManager
      * Publish plugin hook, this is the main way to hook into different parts of LibreNMS.
      * plugin_name should be unique. For internal (user) plugins in the app/Plugins directory, the directory name will be used.
      * Hook type will be the full class name of the hook from app/Plugins/Hooks.
-     *
-     * @param  string  $pluginName
-     * @param  string  $hookType
-     * @param  string  $implementationClass
-     * @return bool
      */
     public function publishHook(string $pluginName, string $hookType, string $implementationClass): bool
     {
@@ -86,10 +81,7 @@ class PluginManager
     /**
      * Check if there are any valid hooks
      *
-     * @param  string  $hookType
-     * @param  array  $args
      * @param  string|null  $plugin  only for this plugin if set
-     * @return bool
      */
     public function hasHooks(string $hookType, array $args = [], ?string $plugin = null): bool
     {
@@ -101,10 +93,7 @@ class PluginManager
      * args will be available for injection into the handle method to pass data through
      * settings is automatically injected
      *
-     * @param  string  $hookType
-     * @param  array  $args
      * @param  string|null  $plugin  only for this plugin if set
-     * @return \Illuminate\Support\Collection
      */
     public function call(string $hookType, array $args = [], ?string $plugin = null): Collection
     {
@@ -129,9 +118,6 @@ class PluginManager
     /**
      * Get the settings stored in the database for a plugin.
      * One plugin shares the settings across all hooks
-     *
-     * @param  string  $pluginName
-     * @return array
      */
     public function getSettings(string $pluginName): array
     {
@@ -140,10 +126,6 @@ class PluginManager
 
     /**
      * Save settings array to the database for the given plugin
-     *
-     * @param  string  $pluginName
-     * @param  array  $settings
-     * @return bool
      */
     public function setSettings(string $pluginName, array $settings): bool
     {
@@ -156,9 +138,6 @@ class PluginManager
     /**
      * Check if plugin exists.
      * Does not create a DB entry if it does not exist.
-     *
-     * @param  string  $pluginName
-     * @return bool
      */
     public function pluginExists(string $pluginName): bool
     {
@@ -168,9 +147,6 @@ class PluginManager
     /**
      * Check if plugin of the given name is enabled.
      * Creates DB entry if one does not exist yet.
-     *
-     * @param  string  $pluginName
-     * @return bool
      */
     public function pluginEnabled(string $pluginName): bool
     {
@@ -228,12 +204,6 @@ class PluginManager
         return $this->plugins;
     }
 
-    /**
-     * @param  string  $hookType
-     * @param  array  $args
-     * @param  string|null  $onlyPlugin
-     * @return \Illuminate\Support\Collection
-     */
     protected function hooksFor(string $hookType, array $args, ?string $onlyPlugin): Collection
     {
         if (! $this->hooks->has($hookType)) {

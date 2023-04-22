@@ -26,8 +26,6 @@ class CiscoMacViolationTest extends SnmpTrapTestCase
 {
     /**
      * Test CiscoMacViolation trap handle
-     *
-     * @return void
      */
     public function testMacViolation(): void
     {

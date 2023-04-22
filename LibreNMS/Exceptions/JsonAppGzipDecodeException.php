@@ -23,9 +23,6 @@ class JsonAppGzipDecodeException extends JsonAppException
         $this->output = $output;
     }
 
-    /**
-     * @return string
-     */
     public function getOutput(): string
     {
         return $this->output;

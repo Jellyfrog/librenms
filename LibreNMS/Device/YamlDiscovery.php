@@ -37,10 +37,7 @@ use LibreNMS\Util\Oid;
 class YamlDiscovery
 {
     /**
-     * @param  OS  $os
      * @param  DiscoveryItem|string  $class
-     * @param  array  $yaml_data
-     * @return array
      */
     public static function discover(OS $os, $class, array $yaml_data): array
     {
@@ -127,7 +124,6 @@ class YamlDiscovery
     /**
      * @param  \LibreNMS\OS  $os  OS/device we areworking on
      * @param  array  $data  Array derived from YAML
-     * @return string
      *
      * @throws \LibreNMS\Exceptions\InvalidOidException
      */
@@ -329,7 +325,6 @@ class YamlDiscovery
      * @param  array  $yaml_item_data  The data key from this item
      * @param  array  $group_options  The options key from this group of items
      * @param  array  $pre_cache  The pre-cache data array
-     * @return bool
      */
     public static function canSkipItem($value, $index, array $yaml_item_data, array $group_options, array $pre_cache = []): bool
     {

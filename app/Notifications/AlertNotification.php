@@ -67,8 +67,6 @@ class AlertNotification extends Notification
 
     /**
      * @param  mixed  $notifiable
-     * @param  \Illuminate\Notifications\Notification  $notification
-     * @return \NotificationChannels\WebPush\WebPushMessage
      */
     public function toWebPush($notifiable, Notification $notification): WebPushMessage
     {

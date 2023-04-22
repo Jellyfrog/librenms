@@ -121,7 +121,6 @@ trait YamlMempoolsDiscovery
 
     /**
      * @param  array  $yaml  item yaml definition
-     * @param  string  $mib
      *
      * @throws \LibreNMS\Exceptions\InvalidOidException
      */

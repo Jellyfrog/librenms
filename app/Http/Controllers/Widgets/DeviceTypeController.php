@@ -87,10 +87,6 @@ class DeviceTypeController extends WidgetController
         return $data;
     }
 
-    /**
-     * @param  Request  $request
-     * @return \Illuminate\View\View
-     */
     public function getView(Request $request): View
     {
         return view('widgets.device-types', $this->getData($request));

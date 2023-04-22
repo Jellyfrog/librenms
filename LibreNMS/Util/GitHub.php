@@ -88,8 +88,6 @@ class GitHub
 
     /**
      * Return the GitHub Authorization header for the API call
-     *
-     * @return array
      */
     public function getHeaders(): array
     {
@@ -107,7 +105,6 @@ class GitHub
     /**
      * Get the release information for a specific tag
      *
-     * @param  string  $tag
      * @return mixed
      */
     public function getRelease(string $tag)
@@ -128,9 +125,6 @@ class GitHub
 
     /**
      * Get all closed pull requests up to a certain date
-     *
-     * @param  string  $date
-     * @param  string  $after
      */
     public function getPullRequests(string $date, string $after = null)
     {
@@ -200,9 +194,6 @@ GRAPHQL;
 
     /**
      * Parse labels response into standardized names and remove emoji
-     *
-     * @param  array  $labels
-     * @return array
      */
     private function parseLabels(array $labels): array
     {
@@ -259,9 +250,6 @@ GRAPHQL;
     /**
      * Record user info and count into the specified array (default changelog_users)
      * Record profile links too.
-     *
-     * @param  array  $user
-     * @param  string  $type
      */
     private function recordUserInfo(array $user, string $type = 'changelog_users')
     {
@@ -308,9 +296,6 @@ GRAPHQL;
 
     /**
      * Create a markdown list of users and link their github profile
-     *
-     * @param  array  $users
-     * @return string
      */
     private function formatUserList(array $users): string
     {
@@ -351,7 +336,6 @@ GRAPHQL;
     }
 
     /**
-     * @return bool
      *
      * @throws Exception
      */
@@ -379,7 +363,6 @@ GRAPHQL;
     /**
      * Function to control the creation of creating a change log.
      *
-     * @param  bool  $write
      *
      * @throws Exception
      */

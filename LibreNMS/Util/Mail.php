@@ -35,7 +35,6 @@ class Mail
     /**
      * Parse string with emails. Return array with email (as key) and name (as value)
      *
-     * @param  string  $emails
      * @return array|false
      */
     public static function parseEmails(string $emails)
@@ -65,10 +64,6 @@ class Mail
     /**
      * Send email with PHPMailer
      *
-     * @param  string  $emails
-     * @param  string  $subject
-     * @param  string  $message
-     * @param  bool  $html
      * @return bool|string
      */
     public static function send(string $emails, string $subject, string $message, bool $html = false, ?bool $embedGraphs = null)

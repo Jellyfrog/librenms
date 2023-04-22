@@ -471,8 +471,6 @@ class Pmp extends OS implements
 
     /**
      * Private method to declare if device is an AP
-     *
-     * @return bool
      */
     private function isAp(): bool
     {

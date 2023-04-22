@@ -93,9 +93,6 @@ class UserPref extends BaseModel
 
     /**
      * Set the keys for a save update query. (no primary key)
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function setKeysForSaveQuery(Builder $query): Builder
     {

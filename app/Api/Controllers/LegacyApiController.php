@@ -30,8 +30,6 @@ class LegacyApiController
     /**
      * Pass through api functions to api_functions.inc.php
      *
-     * @param  string  $method_name
-     * @param  array  $arguments
      * @return mixed
      */
     public function __call(string $method_name, array $arguments)

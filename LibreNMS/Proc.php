@@ -111,9 +111,6 @@ class Proc
      * the output may not correspond to this command if this
      * process is not synchronous
      * If the command isn't terminated with a newline, add one
-     *
-     * @param  string  $command
-     * @return array
      */
     public function sendCommand(string $command): array
     {
@@ -255,8 +252,6 @@ class Proc
 
     /**
      * Check if this process is running
-     *
-     * @return bool
      */
     public function isRunning(): bool
     {
@@ -272,8 +267,6 @@ class Proc
     /**
      * Returns the exit code from the process.
      * Will return null unless isRunning() or getStatus() has been run and returns false.
-     *
-     * @return int|null
      */
     public function getExitCode(): ?int
     {
@@ -282,8 +275,6 @@ class Proc
 
     /**
      * If this process waits for output
-     *
-     * @return bool
      */
     public function isSynchronous(): bool
     {
@@ -294,8 +285,6 @@ class Proc
      * Set this process as synchronous, by default processes are synchronous
      * It is advisable not to change this mid way as output could get mixed up
      * or you could end up blocking until the getOutput timeout expires
-     *
-     * @param  bool  $synchronous
      */
     public function setSynchronous(bool $synchronous)
     {
@@ -305,9 +294,6 @@ class Proc
     /**
      * Add and end of line character to a string if
      * it doesn't already end with one
-     *
-     * @param  string  $string
-     * @return string
      */
     private function checkAddEOL(string $string): string
     {

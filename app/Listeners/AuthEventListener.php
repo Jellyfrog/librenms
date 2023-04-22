@@ -22,9 +22,6 @@ class AuthEventListener
 
     /**
      * Handle the login event.
-     *
-     * @param  Login  $event
-     * @return void
      */
     public function login(Login $event): void
     {
@@ -38,9 +35,6 @@ class AuthEventListener
 
     /**
      * Handle the logout event.
-     *
-     * @param  Logout  $event
-     * @return void
      */
     public function logout(Logout $event): void
     {

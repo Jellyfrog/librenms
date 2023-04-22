@@ -42,8 +42,6 @@ class DevSimulate extends LnmsCommand
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(): int
     {

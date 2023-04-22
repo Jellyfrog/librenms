@@ -94,8 +94,6 @@ class OS implements
 
     /**
      * OS constructor. Not allowed to be created directly.  Use OS::make()
-     *
-     * @param  array  $device
      */
     protected function __construct(array &$device)
     {
@@ -115,8 +113,6 @@ class OS implements
 
     /**
      * Get the device_id of the device that owns this OS instance
-     *
-     * @return int
      */
     public function getDeviceId(): int
     {
@@ -125,8 +121,6 @@ class OS implements
 
     /**
      * Get the Eloquent Device Model for the current device
-     *
-     * @return Device
      */
     public function getDevice(): Device
     {
@@ -135,8 +129,6 @@ class OS implements
 
     /**
      * Enable a graph for this device
-     *
-     * @param  string  $name
      */
     public function enableGraph(string $name)
     {
@@ -218,9 +210,6 @@ class OS implements
 
     /**
      * Check if an OID has been cached
-     *
-     * @param  string  $oid
-     * @return bool
      */
     public function isCached(string $oid): bool
     {
@@ -233,7 +222,6 @@ class OS implements
      * Otherwise, returns Generic
      *
      * @param  array  $device  device array, must have os set
-     * @return OS
      */
     public static function make(array &$device): OS
     {
@@ -283,9 +271,7 @@ class OS implements
     /**
      * Poll a channel based OID, but return data in MHz
      *
-     * @param  array  $sensors
      * @param  callable  $callback  Function to modify the value before converting it to a frequency
-     * @return array
      */
     protected function pollWirelessChannelAsFrequency(array $sensors, callable $callback = null): array
     {

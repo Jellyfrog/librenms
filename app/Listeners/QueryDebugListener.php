@@ -20,9 +20,6 @@ class QueryDebugListener
 
     /**
      * Handle the event.
-     *
-     * @param  \Illuminate\Database\Events\QueryExecuted  $query
-     * @return void
      */
     public function handle(QueryExecuted $query): void
     {

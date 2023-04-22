@@ -59,8 +59,6 @@ class Isis implements Module
     /**
      * Discover this module. Heavier processes can be run here
      * Run infrequently (default 4 times a day)
-     *
-     * @param  \LibreNMS\OS  $os
      */
     public function discover(OS $os): void
     {
@@ -76,8 +74,6 @@ class Isis implements Module
      * Poll data for this module and update the DB / RRD.
      * Try to keep this efficient and only run if discovery has indicated there is a reason to run.
      * Run frequently (default every 5 minutes)
-     *
-     * @param  \LibreNMS\OS  $os
      */
     public function poll(OS $os): void
     {

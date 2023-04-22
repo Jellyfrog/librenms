@@ -201,8 +201,6 @@ class ConfigTest extends TestCase
 
     /**
      * Pass an anonymous function which will be passed the config variable to modify before it is set
-     *
-     * @param  callable  $function
      */
     private function setConfig(callable $function)
     {

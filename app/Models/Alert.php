@@ -42,9 +42,6 @@ class Alert extends Model
 
     /**
      * Only select active alerts
-     *
-     * @param  Builder  $query
-     * @return Builder
      */
     public function scopeActive(Builder $query): Builder
     {
@@ -53,9 +50,6 @@ class Alert extends Model
 
     /**
      * Only select active alerts
-     *
-     * @param  Builder  $query
-     * @return Builder
      */
     public function scopeAcknowledged(Builder $query): Builder
     {

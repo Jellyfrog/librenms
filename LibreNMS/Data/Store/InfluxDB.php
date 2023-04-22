@@ -72,7 +72,6 @@ class InfluxDB extends BaseDatastore
      *   rrd_oldname array|string: old rrd filename to rename, will be processed with rrd_name()
      *   rrd_step             int: rrd step, defaults to 300
      *
-     * @param  array  $device
      * @param  string  $measurement  Name of this measurement
      * @param  array  $tags  tags for the data (or to control rrdtool)
      * @param  array|mixed  $fields  The data to update in an associative array, the order must be consistent with rrd_def,
@@ -131,8 +130,6 @@ class InfluxDB extends BaseDatastore
 
     /**
      * Create a new client and select the database
-     *
-     * @return \InfluxDB\Database
      */
     public static function createFromConfig(): Database
     {
@@ -172,8 +169,6 @@ class InfluxDB extends BaseDatastore
 
     /**
      * Checks if the datastore wants rrdtags to be sent when issuing put()
-     *
-     * @return bool
      */
     public function wantsRrdTags(): bool
     {

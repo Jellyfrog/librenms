@@ -37,8 +37,6 @@ class CiscoErrDisableInterfaceEventTest extends SnmpTrapTestCase
 
     /**
      * Test CiscoErrDisableInterfaceEvent trap handle
-     *
-     * @return void
      */
     public function testErrDisableInterfaceEvent(): void
     {
@@ -62,8 +60,6 @@ CISCO-ERR-DISABLE-MIB::cErrDisableIfStatusCause.$port->ifIndex.0 bpduGuard",
 
     /**
      * Test CiscoErrDisableBadIfIndex trap handle
-     *
-     * @return void
      */
     public function testErrDisableBadIfIndex(): void
     {

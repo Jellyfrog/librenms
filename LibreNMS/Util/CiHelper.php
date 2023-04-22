@@ -140,8 +140,6 @@ class CiHelper
 
     /**
      * Confirm that all possible checks have been completed
-     *
-     * @return bool
      */
     public function allChecksComplete(): bool
     {
@@ -152,9 +150,6 @@ class CiHelper
 
     /**
      * Get a flag value
-     *
-     * @param  string  $name
-     * @return bool
      */
     public function getFlag(string $name): bool
     {
@@ -338,7 +333,6 @@ class CiHelper
     }
 
     /**
-     * @param  string  $type
      * @return false|string the method name to run
      */
     private function canCheck(string $type)
@@ -359,10 +353,8 @@ class CiHelper
      * Run a check command
      *
      * @param  string  $name  name for status output
-     * @param  array  $command
      * @param  bool  $silence  silence the status ouput (still shows error output)
      * @param  array  $env  environment to set
-     * @return int
      */
     private function execute(string $name, array $command, bool $silence = false, array $env = null): int
     {

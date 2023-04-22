@@ -33,9 +33,6 @@ class DatabaseConnectException extends \Exception implements UpgradeableExceptio
 {
     /**
      * Try to convert the given Exception to a DatabaseConnectException
-     *
-     * @param  \Exception  $exception
-     * @return static|null
      */
     public static function upgrade(Exception $exception): ?static
     {
@@ -51,8 +48,6 @@ class DatabaseConnectException extends \Exception implements UpgradeableExceptio
 
     /**
      * Render the exception into an HTTP or JSON response.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function render(\Illuminate\Http\Request $request): Response
     {

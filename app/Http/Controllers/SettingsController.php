@@ -11,9 +11,6 @@ class SettingsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  DynamicConfig  $dynamicConfig
-     * @param  string  $tab
-     * @param  string  $section
      * @return \Illuminate\Http\Response|\Illuminate\View\View
      */
     public function index(DynamicConfig $dynamicConfig, string $tab = 'global', string $section = '')
@@ -31,11 +28,6 @@ class SettingsController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  DynamicConfig  $config
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function update(DynamicConfig $config, Request $request, string $id): JsonResponse
     {
@@ -61,10 +53,6 @@ class SettingsController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  DynamicConfig  $config
-     * @param  string  $id
-     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(DynamicConfig $config, string $id): JsonResponse
     {
@@ -84,9 +72,6 @@ class SettingsController extends Controller
 
     /**
      * List all settings (excluding hidden ones and ones that don't have metadata)
-     *
-     * @param  DynamicConfig  $config
-     * @return JsonResponse
      */
     public function listAll(DynamicConfig $config): JsonResponse
     {
@@ -94,11 +79,7 @@ class SettingsController extends Controller
     }
 
     /**
-     * @param  string  $id
-     * @param  string  $message
      * @param  mixed  $value
-     * @param  int  $status
-     * @return \Illuminate\Http\JsonResponse
      */
     protected function jsonResponse(string $id, string $message, $value = null, int $status = 200): JsonResponse
     {

@@ -165,9 +165,7 @@ class FinalizeController extends InstallationController implements InstallerStep
     }
 
     /**
-     * @param  string  $name
      * @param  mixed  $value
-     * @return void
      */
     private function saveSetting(string $name, $value): void
     {

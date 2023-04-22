@@ -35,10 +35,7 @@ trait SyncsModels
      * Sync several models for a device's relationship
      * Model must implement \LibreNMS\Interfaces\Models\Keyable interface
      *
-     * @param  \App\Models\Device  $device
-     * @param  string  $relationship
      * @param  \Illuminate\Support\Collection  $models  \LibreNMS\Interfaces\Models\Keyable
-     * @return \Illuminate\Support\Collection
      */
     protected function syncModels(Device $device, string $relationship, Collection $models): Collection
     {
@@ -82,7 +79,6 @@ trait SyncsModels
      *
      * @param  \Illuminate\Support\Collection  $existing  \LibreNMS\Interfaces\Models\Keyable
      * @param  \Illuminate\Support\Collection  $discovered  \LibreNMS\Interfaces\Models\Keyable
-     * @return \Illuminate\Support\Collection
      */
     protected function fillNew(Collection $existing, Collection $discovered): Collection
     {

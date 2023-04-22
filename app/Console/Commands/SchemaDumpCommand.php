@@ -24,8 +24,6 @@ class SchemaDumpCommand extends DumpCommand
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(ConnectionResolverInterface $connections, Dispatcher $dispatcher): int
     {

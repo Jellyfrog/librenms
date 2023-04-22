@@ -31,9 +31,6 @@ class DuskUnsafeException extends \Exception implements UpgradeableException
 {
     /**
      * Try to convert the given Exception to this exception
-     *
-     * @param  \Exception  $exception
-     * @return static
      */
     public static function upgrade(Exception $exception): static
     {

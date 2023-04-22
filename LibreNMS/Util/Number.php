@@ -90,7 +90,6 @@ class Number
      * Cast string to int or float.
      * Returns 0 if string is not numeric
      *
-     * @param  mixed  $number
      * @return float|int
      */
     public static function cast(mixed $number): float|int
@@ -129,8 +128,6 @@ class Number
      *
      * @param  int|float  $part
      * @param  int|float  $total
-     * @param  int  $precision
-     * @return float
      */
     public static function calculatePercent($part, $total, int $precision = 2): float
     {

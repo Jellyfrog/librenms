@@ -33,7 +33,6 @@ class ServiceController extends SelectController
     /**
      * Defines the base query for this resource
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     protected function baseQuery(Request $request)
@@ -45,9 +44,6 @@ class ServiceController extends SelectController
             ->select('service_id', 'service_type', 'service_desc', 'device_id');
     }
 
-    /**
-     * @param  Service  $service
-     */
     public function formatItem(Service $service)
     {
         return [

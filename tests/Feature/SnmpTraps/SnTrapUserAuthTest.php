@@ -32,8 +32,6 @@ class SnTrapUserAuthTest extends SnmpTrapTestCase
     /**
      * Create snTrapUserLogin trap object
      * Test SnTrapUserLogin handler
-     *
-     * @return void
      */
     public function testSnTrapUserLogin(): void
     {
@@ -52,8 +50,6 @@ TRAP,
     /**
      * Create snTrapUserLogout trap object
      * Test SnTrapUserLogout handler
-     *
-     * @return void
      */
     public function testSnTrapUserLogout(): void
     {

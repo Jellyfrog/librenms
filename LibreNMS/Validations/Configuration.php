@@ -35,8 +35,6 @@ class Configuration extends BaseValidation
     /**
      * Validate this module.
      * To return ValidationResults, call ok, warn, fail, or result methods on the $validator
-     *
-     * @param  Validator  $validator
      */
     public function validate(Validator $validator): void
     {
@@ -66,9 +64,6 @@ class Configuration extends BaseValidation
         }
     }
 
-    /**
-     * @param  \LibreNMS\Validator  $validator
-     */
     private function failKeyChanged(Validator $validator): void
     {
         $validator->fail(

@@ -36,7 +36,6 @@ class AlertUtil
     /**
      * Get the rule_id for a specific alert
      *
-     * @param  int  $alert_id
      * @return mixed|null
      */
     private static function getRuleId(int $alert_id)
@@ -48,9 +47,6 @@ class AlertUtil
 
     /**
      * Get the transport for a given alert_id
-     *
-     * @param  int  $alert_id
-     * @return array
      */
     public static function getAlertTransports(int $alert_id): array
     {
@@ -62,8 +58,6 @@ class AlertUtil
 
     /**
      * Returns the default transports
-     *
-     * @return array
      */
     public static function getDefaultAlertTransports(): array
     {
@@ -76,7 +70,6 @@ class AlertUtil
      * Find contacts for alert
      *
      * @param  array  $results  Rule-Result
-     * @return array
      */
     public static function getContacts(array $results): array
     {
@@ -198,7 +191,6 @@ class AlertUtil
      * Check if device is under maintenance
      *
      * @param  int  $device_id  Device-ID
-     * @return bool
      */
     public static function isMaintenance(int $device_id): bool
     {
@@ -209,7 +201,6 @@ class AlertUtil
      * Check if device is set to ignore alerts
      *
      * @param  int  $device_id  Device-ID
-     * @return bool
      */
     public static function hasDisableNotify(int $device_id): bool
     {

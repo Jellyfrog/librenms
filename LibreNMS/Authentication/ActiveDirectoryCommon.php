@@ -179,9 +179,6 @@ trait ActiveDirectoryCommon
      * Must have the attributes: objectsid, samaccountname, displayname, mail
      *
      * @internal
-     *
-     * @param  array  $entry
-     * @return array
      */
     protected function userFromAd(array $entry): array
     {

@@ -29,8 +29,6 @@ class OspfTxRetransmitTest extends SnmpTrapTestCase
 {
     /**
      * Test OSPF lsUpdate packet type trap
-     *
-     * @return void
      */
     public function testLsUpdatePacket(): void
     {
@@ -55,8 +53,6 @@ TRAP,
 
     /**
      * Test OSPF non lsUpdate packet type
-     *
-     * @return void
      */
     public function testNotLsUpdatePacket(): void
     {

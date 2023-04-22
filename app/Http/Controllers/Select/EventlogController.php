@@ -34,8 +34,6 @@ class EventlogController extends SelectController
 
     /**
      * Defines validation rules (will override base validation rules for select2 responses too)
-     *
-     * @return array
      */
     protected function rules(): array
     {
@@ -48,8 +46,6 @@ class EventlogController extends SelectController
     /**
      * Defines sortable fields.  The incoming sort field should be the key, the sql column or DB::raw() should be the value
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -60,9 +56,6 @@ class EventlogController extends SelectController
 
     /**
      * Defines search fields will be searched in order
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
      */
     protected function searchFields(Request $request): array
     {
@@ -72,7 +65,6 @@ class EventlogController extends SelectController
     /**
      * Defines the base query for this resource
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     protected function baseQuery(Request $request)

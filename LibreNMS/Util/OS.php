@@ -35,8 +35,6 @@ class OS
 {
     /**
      * Load os from yaml into config if not already loaded, preserving user os config
-     *
-     * @param  string  $os
      */
     public static function loadDefinition(string $os)
     {
@@ -88,7 +86,6 @@ class OS
     /**
      * Update the OS cache file cache/os_defs.cache
      *
-     * @param  bool  $force
      * @return bool true if the cache was updated
      */
     public static function updateCache(bool $force = false): bool

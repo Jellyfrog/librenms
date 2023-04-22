@@ -74,7 +74,6 @@ class SSOAuthorizer extends MysqlAuthorizer
      * Returns null if the attribute cannot be found
      *
      * @param  string  $attr  The name of the attribute to find
-     * @return string|null
      */
     public function authSSOGetAttr(string $attr, $prefix = 'HTTP_'): ?string
     {
@@ -102,8 +101,6 @@ class SSOAuthorizer extends MysqlAuthorizer
     /**
      * Checks to see if the connection originated from a trusted source address stored in the configuration.
      * Returns false if the connection is untrusted, true if the connection is trusted, and true if the trusted sources are not defined.
-     *
-     * @return bool
      */
     public function authSSOProxyTrusted(): bool
     {
@@ -147,8 +144,6 @@ class SSOAuthorizer extends MysqlAuthorizer
     /**
      * Calculate the privilege level to assign to a user based on the configuration and attributes supplied by the external authenticator.
      * Returns an integer if the permission is found, or raises an AuthenticationException if the configuration is not valid.
-     *
-     * @return int
      */
     public function authSSOCalculateLevel(): int
     {
@@ -181,8 +176,6 @@ class SSOAuthorizer extends MysqlAuthorizer
 
     /**
      * Map a user to a permission level based on a table mapping, sso.static_level (default 0) if no matching group is found.
-     *
-     * @return int
      */
     public function authSSOParseGroups(): int
     {

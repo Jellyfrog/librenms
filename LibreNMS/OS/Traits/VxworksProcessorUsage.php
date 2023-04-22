@@ -80,7 +80,6 @@ trait VxworksProcessorUsage
      * Parse the silly cpu usage string
      * "    5 Secs ( 96.4918%)   60 Secs ( 54.2271%)  300 Secs ( 38.2591%)"
      *
-     * @param  string  $data
      * @return mixed
      */
     private function parseCpuUsage(string $data)

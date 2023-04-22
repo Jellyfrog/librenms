@@ -40,12 +40,8 @@ class RrdGraphException extends Exception
     private $height;
 
     /**
-     * @param  string  $error
-     * @param  string|null  $short_text
      * @param  int|string|null  $width
      * @param  int|string|null  $height
-     * @param  int  $exit_code
-     * @param  string  $image_output
      */
     public function __construct(string $error, ?string $short_text = null, $width = null, $height = null, int $exit_code = 0, string $image_output = '')
     {

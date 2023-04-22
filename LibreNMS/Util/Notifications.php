@@ -52,12 +52,8 @@ class Notifications
     /**
      * Create a new custom notification. Duplicate title+message notifications will not be created.
      *
-     * @param  string  $title
-     * @param  string  $message
      * @param  string  $source  A string describing what created this notification
      * @param  int  $severity  0=ok, 1=warning, 2=critical
-     * @param  string|null  $date
-     * @return bool
      */
     public static function create(string $title, string $message, string $source, int $severity = 0, ?string $date = null): bool
     {

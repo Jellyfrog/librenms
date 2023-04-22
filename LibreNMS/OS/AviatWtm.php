@@ -45,8 +45,6 @@ class AviatWtm extends OS implements
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessFrequency(): array
     {
@@ -73,8 +71,6 @@ class AviatWtm extends OS implements
     /**
      * Discover wireless tx or rx capacity. This is in bps. Type is rate.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessRate(): array
     {
@@ -115,8 +111,6 @@ class AviatWtm extends OS implements
     /**
      * Discover wireless tx or rx RSL. This is in dbm. Type is rssi.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessRssi(): array
     {
@@ -144,8 +138,6 @@ class AviatWtm extends OS implements
     /**
      * Discover wireless SNR (CINR). This is in dbm. Type is snr.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessSnr(): array
     {
@@ -173,8 +165,6 @@ class AviatWtm extends OS implements
     /**
      * Discover wireless TX power. This is in dbm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessPower(): array
     {

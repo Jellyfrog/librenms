@@ -8,9 +8,6 @@ class ServiceObserver
 {
     /**
      * Handle the service "created" event.
-     *
-     * @param  \App\Models\Service  $service
-     * @return void
      */
     public function created(Service $service): void
     {
@@ -19,9 +16,6 @@ class ServiceObserver
 
     /**
      * Handle the service "updated" event.
-     *
-     * @param  \App\Models\Service  $service
-     * @return void
      */
     public function updated(Service $service): void
     {
@@ -30,9 +24,6 @@ class ServiceObserver
 
     /**
      * Handle the service "deleted" event.
-     *
-     * @param  \App\Models\Service  $service
-     * @return void
      */
     public function deleted(Service $service): void
     {
@@ -41,9 +32,6 @@ class ServiceObserver
 
     /**
      * Handle the service "restored" event.
-     *
-     * @param  \App\Models\Service  $service
-     * @return void
      */
     public function restored(Service $service): void
     {
@@ -52,9 +40,6 @@ class ServiceObserver
 
     /**
      * Handle the service "force deleted" event.
-     *
-     * @param  \App\Models\Service  $service
-     * @return void
      */
     public function forceDeleted(Service $service): void
     {

@@ -49,11 +49,6 @@ class AvailabilityMapController extends Controller
         return $this->setSessionValue($request, 'group_view');
     }
 
-    /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $key
-     * @return \Illuminate\Http\JsonResponse
-     */
     private function setSessionValue(Request $request, string $key): JsonResponse
     {
         $value = $request->get($key);

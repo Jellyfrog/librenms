@@ -42,10 +42,6 @@ class GraylogController extends WidgetController
         'hidenavigation' => 0,
     ];
 
-    /**
-     * @param  Request  $request
-     * @return View
-     */
     public function getView(Request $request): View
     {
         return view('widgets.graylog', $this->getSettings());

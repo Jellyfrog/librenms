@@ -30,8 +30,6 @@ class BashCompletionCommand extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle(): int
     {
@@ -92,9 +90,6 @@ class BashCompletionCommand extends Command
     }
 
     /**
-     * @param  string  $current
-     * @param  string  $previous
-     * @param  InputDefinition  $command_def
      * @return false|InputOption
      */
     private function optionExpectsValue(string $current, string $previous, InputDefinition $command_def)
@@ -135,9 +130,6 @@ class BashCompletionCommand extends Command
 
     /**
      * Complete a command
-     *
-     * @param  string  $partial
-     * @return \Illuminate\Support\Collection
      */
     private function completeCommand(string $partial): Collection
     {
@@ -162,10 +154,7 @@ class BashCompletionCommand extends Command
     /**
      * Complete options for the given command
      *
-     * @param  InputDefinition  $command
-     * @param  string  $partial
      * @param  array  $prev_options  Previous words in the command
-     * @return \Illuminate\Support\Collection
      */
     private function completeOption(InputDefinition $command, string $partial, array $prev_options): Collection
     {
@@ -217,10 +206,6 @@ class BashCompletionCommand extends Command
 
     /**
      * Complete options with values (if a list is enumerate in the description)
-     *
-     * @param  InputOption  $option
-     * @param  string  $partial
-     * @return \Illuminate\Support\Collection
      */
     private function completeOptionValue(InputOption $option, string $partial): Collection
     {
@@ -241,9 +226,6 @@ class BashCompletionCommand extends Command
      * Complete commands with arguments
      *
      * @param  string  $command  Name of the current command
-     * @param  string  $partial
-     * @param  string  $current_word
-     * @return \Illuminate\Support\Collection
      */
     private function completeArguments(string $command, string $partial, string $current_word): Collection
     {

@@ -30,9 +30,6 @@ use App\Models\Plugin;
 trait CompletesPluginArgument
 {
     /**
-     * @param  string  $name
-     * @param  string  $value
-     * @param  string  $previous
      * @return array|false
      */
     public function completeArgument(string $name, string $value, string $previous)

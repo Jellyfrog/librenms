@@ -41,10 +41,6 @@ class TopInterfacesController extends WidgetController
         'port_group' => null,
     ];
 
-    /**
-     * @param  Request  $request
-     * @return View
-     */
     public function getView(Request $request): View
     {
         $data = $this->getSettings();

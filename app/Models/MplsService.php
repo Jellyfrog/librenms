@@ -36,8 +36,6 @@ class MplsService extends DeviceRelatedModel implements Keyable
 
     /**
      * Get a string that can identify a unique instance of this model
-     *
-     * @return int
      */
     public function getCompositeKey(): int
     {

@@ -36,7 +36,6 @@ class Template
     /**
      * Get the template details
      *
-     * @param  array|null  $obj
      * @return mixed
      */
     public function getTemplate(?array $obj = null)
@@ -67,9 +66,6 @@ class Template
 
     /**
      * Parse Blade body
-     *
-     * @param  array  $data
-     * @return string
      */
     public function bladeBody(array $data): string
     {
@@ -83,9 +79,6 @@ class Template
 
     /**
      * Parse Blade title
-     *
-     * @param  array  $data
-     * @return string
      */
     public function bladeTitle(array $data): string
     {
@@ -99,8 +92,6 @@ class Template
 
     /**
      * Get the default template
-     *
-     * @return string
      */
     public function getDefaultTemplate(): string
     {

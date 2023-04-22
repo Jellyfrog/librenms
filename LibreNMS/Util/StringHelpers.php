@@ -29,10 +29,6 @@ class StringHelpers
 {
     /**
      * Shorten text over 50 chars, if shortened, add ellipsis
-     *
-     * @param  string  $string
-     * @param  int  $max
-     * @return string
      */
     public static function shortenText(string $string, int $max = 30): string
     {
@@ -88,9 +84,6 @@ class StringHelpers
 
     /**
      * Convert a camel or studly case string to Title case (with spaces)
-     *
-     * @param  string  $string
-     * @return string
      */
     public static function camelToTitle(string $string): string
     {
@@ -100,9 +93,6 @@ class StringHelpers
     /**
      * Sometimes devices store strings as non-unicode strings and return them directly.
      * NetSnmp parses those as UTF-8, try to convert the string if it contains non-printable ascii characters.
-     *
-     * @param  string|null  $string
-     * @return string
      */
     public static function inferEncoding(?string $string): ?string
     {
@@ -154,7 +144,6 @@ class StringHelpers
      * Check if variable can be cast to a string
      *
      * @param  mixed  $var
-     * @return bool
      */
     public static function isStringable($var): bool
     {

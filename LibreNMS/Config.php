@@ -81,8 +81,6 @@ class Config
 
     /**
      * Get the config setting definitions
-     *
-     * @return array
      */
     public static function getDefinitions(): array
     {
@@ -210,7 +208,6 @@ class Config
      * @param  string  $key  period separated config variable name
      * @param  string  $global_prefix  prefix for global setting
      * @param  array  $default  optional array to return if the setting is not set
-     * @return array
      */
     public static function getCombined(?string $os, string $key, string $global_prefix = '', array $default = []): array
     {
@@ -282,7 +279,6 @@ class Config
      * Forget a key and all it's descendants from persistent storage.
      * This will effectively set it back to default.
      *
-     * @param  string  $key
      * @return int|false
      */
     public static function erase(string $key)
@@ -299,7 +295,6 @@ class Config
      * Check if a setting is set
      *
      * @param  string  $key  period separated config variable name
-     * @return bool
      */
     public static function has(string $key): bool
     {
@@ -316,8 +311,6 @@ class Config
 
     /**
      * Serialise the whole configuration to json for use in external processes.
-     *
-     * @return string
      */
     public static function toJson(): string
     {
@@ -326,8 +319,6 @@ class Config
 
     /**
      * Get the full configuration array
-     *
-     * @return array
      */
     public static function getAll(): array
     {
@@ -486,7 +477,6 @@ class Config
     /**
      * Set default values for defaults that depend on other settings, if they are not already loaded
      *
-     * @param  string  $key
      * @param  string  $value  value to set to key or vsprintf() format string for values below
      * @param  array  $format_values  array of keys to send to vsprintf()
      */
@@ -504,9 +494,6 @@ class Config
 
     /**
      * Copy data from old variables to new ones.
-     *
-     * @param  string  $old
-     * @param  string  $new
      */
     private static function deprecatedVariable(string $old, string $new)
     {
@@ -521,7 +508,6 @@ class Config
     /**
      * Locate the actual path of a binary
      *
-     * @param  string  $binary
      * @return mixed
      */
     public static function locateBinary(string $binary)
@@ -575,8 +561,6 @@ class Config
 
     /**
      * Check if the config has been loaded yet
-     *
-     * @return bool
      */
     public static function isLoaded(): bool
     {

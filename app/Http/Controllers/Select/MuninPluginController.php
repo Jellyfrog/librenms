@@ -33,7 +33,6 @@ class MuninPluginController extends SelectController
     /**
      * Defines the base query for this resource
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     protected function baseQuery(Request $request)
@@ -45,9 +44,6 @@ class MuninPluginController extends SelectController
             ->select('mplug_id', 'mplug_type', 'device_id');
     }
 
-    /**
-     * @param  MuninPlugin  $munin_plugin
-     */
     public function formatItem(MuninPlugin $munin_plugin)
     {
         return [

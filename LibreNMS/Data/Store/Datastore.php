@@ -35,9 +35,6 @@ class Datastore
 
     /**
      * Initialize and create the Datastore(s)
-     *
-     * @param  array  $options
-     * @return Datastore
      */
     public static function init(array $options = []): Datastore
     {
@@ -73,8 +70,6 @@ class Datastore
 
     /**
      * Disable a datastore for the rest of this run
-     *
-     * @param  string  $name
      */
     public function disable(string $name)
     {
@@ -97,7 +92,6 @@ class Datastore
      *   rrd_oldname array|string: old rrd filename to rename, will be processed with rrd_name()
      *   rrd_step             int: rrd step, defaults to 300
      *
-     * @param  array  $device
      * @param  string  $measurement  Name of this measurement
      * @param  array  $tags  tags for the data (or to control rrdtool)
      * @param  array|mixed  $fields  The data to update in an associative array, the order must be consistent with rrd_def,
@@ -144,8 +138,6 @@ class Datastore
 
     /**
      * Get all the active data stores
-     *
-     * @return array
      */
     public function getStores(): array
     {
@@ -154,8 +146,6 @@ class Datastore
 
     /**
      * Get the measurements for all datastores, keyed by datastore name
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getStats(): Collection
     {

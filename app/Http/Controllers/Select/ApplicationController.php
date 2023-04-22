@@ -40,7 +40,6 @@ class ApplicationController extends SelectController
     /**
      * Defines the base query for this resource
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     protected function baseQuery(Request $request)
@@ -56,9 +55,6 @@ class ApplicationController extends SelectController
         return $query;
     }
 
-    /**
-     * @param  Application  $app
-     */
     public function formatItem(Application $app)
     {
         return [

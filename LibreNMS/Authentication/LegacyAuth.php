@@ -22,8 +22,6 @@ class LegacyAuth
 
     /**
      * Gets the authorizer based on the config
-     *
-     * @return Authorizer
      */
     public static function get(): Authorizer
     {
@@ -47,9 +45,6 @@ class LegacyAuth
 
     /**
      * Get class for the given or current authentication type/mechanism
-     *
-     * @param  string  $type
-     * @return string
      */
     public static function getClass(string $type = null): string
     {
@@ -66,8 +61,6 @@ class LegacyAuth
 
     /**
      * Destroy the existing instance and get a new one - required for tests.
-     *
-     * @return Authorizer
      */
     public static function reset(): Authorizer
     {

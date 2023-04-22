@@ -62,10 +62,6 @@ class NotesController implements DeviceTab
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  Request  $request
-     * @param  Device  $device
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Device $device): RedirectResponse
     {

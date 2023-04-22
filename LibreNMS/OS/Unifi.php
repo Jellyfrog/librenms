@@ -159,8 +159,6 @@ class Unifi extends OS implements
 
     /**
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessCcq(): array
     {
@@ -261,8 +259,6 @@ class Unifi extends OS implements
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessPower(): array
     {

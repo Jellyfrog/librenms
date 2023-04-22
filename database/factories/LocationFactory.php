@@ -10,8 +10,6 @@ class LocationFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
     public function definition(): array
     {
@@ -25,8 +23,6 @@ class LocationFactory extends Factory
 
     /**
      * Indicate add lat,lng
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
     public function withCoordinates(): Factory
     {

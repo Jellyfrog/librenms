@@ -182,8 +182,6 @@ class Sensor implements DiscoveryModule, PollerModule
     /**
      * Fetch the sensor from the database.
      * If it doesn't exist, returns null.
-     *
-     * @return array|null
      */
     private function fetch(): ?array
     {
@@ -207,8 +205,6 @@ class Sensor implements DiscoveryModule, PollerModule
 
     /**
      * Get the table for this sensor
-     *
-     * @return string
      */
     public function getTable(): string
     {
@@ -218,8 +214,6 @@ class Sensor implements DiscoveryModule, PollerModule
     /**
      * Get an array of this sensor with fields that line up with the database.
      * Excludes sensor_id and current
-     *
-     * @return array
      */
     protected function toArray(): array
     {
@@ -247,9 +241,6 @@ class Sensor implements DiscoveryModule, PollerModule
     /**
      * Escape null values so dbFacile doesn't mess them up
      * honestly, this should be the default, but could break shit
-     *
-     * @param  array  $array
-     * @return array
      */
     private function escapeNull(array $array): array
     {
@@ -260,8 +251,6 @@ class Sensor implements DiscoveryModule, PollerModule
 
     /**
      * Run Sensors discovery for the supplied OS (device)
-     *
-     * @param  OS  $os
      */
     public static function runDiscovery(OS $os)
     {
@@ -270,8 +259,6 @@ class Sensor implements DiscoveryModule, PollerModule
 
     /**
      * Poll sensors for the supplied OS (device)
-     *
-     * @param  OS  $os
      */
     public static function poll(OS $os)
     {
@@ -324,11 +311,6 @@ class Sensor implements DiscoveryModule, PollerModule
 
     /**
      * Poll all sensors of a specific class
-     *
-     * @param  OS  $os
-     * @param  string  $type
-     * @param  array  $sensors
-     * @param  array  $prefetch
      */
     protected static function pollSensorType(OS $os, string $type, array $sensors, array $prefetch = [])
     {
@@ -352,10 +334,6 @@ class Sensor implements DiscoveryModule, PollerModule
     /**
      * Fetch snmp data from the device
      * Return an array keyed by oid
-     *
-     * @param  array  $device
-     * @param  array  $sensors
-     * @return array
      */
     private static function fetchSnmpData(array $device, array $sensors): array
     {
@@ -384,9 +362,6 @@ class Sensor implements DiscoveryModule, PollerModule
      * Process the snmp data for the specified sensors
      * Returns an array sensor_id => value
      *
-     * @param  array  $sensors
-     * @param  array  $prefetch
-     * @return array
      *
      * @internal param $device
      */
@@ -433,9 +408,7 @@ class Sensor implements DiscoveryModule, PollerModule
     /**
      * Get a list of unique oids from an array of sensors and break it into chunks.
      *
-     * @param  array  $sensors
      * @param  int  $chunk  How many oids per chunk.  Default 10.
-     * @return array
      */
     private static function getOidsFromSensors(array $sensors, int $chunk = 10): array
     {
@@ -500,8 +473,6 @@ class Sensor implements DiscoveryModule, PollerModule
     /**
      * Returns a string that must be unique for each sensor
      * type (class), subtype (type), index (index)
-     *
-     * @return string
      */
     private function getUniqueId(): string
     {
@@ -531,8 +502,6 @@ class Sensor implements DiscoveryModule, PollerModule
     /**
      * Is this sensor valid?
      * If not, it should not be added to or in the database
-     *
-     * @return bool
      */
     public function isValid(): bool
     {
@@ -543,10 +512,6 @@ class Sensor implements DiscoveryModule, PollerModule
      * Save sensors and remove invalid sensors
      * This the sensors array should contain all the sensors of a specific class
      * It may contain sensors from multiple tables and devices, but that isn't the primary use
-     *
-     * @param  int  $device_id
-     * @param  string  $type
-     * @param  array  $sensors
      */
     final public static function sync(int $device_id, string $type, array $sensors)
     {
@@ -566,8 +531,6 @@ class Sensor implements DiscoveryModule, PollerModule
     /**
      * Remove invalid sensors.  Passing an empty array will remove all sensors of that class
      *
-     * @param  int  $device_id
-     * @param  string  $type
      * @param  array  $sensor_ids  valid sensor ids
      */
     private static function clean(int $device_id, string $type, array $sensor_ids)
@@ -605,7 +568,6 @@ class Sensor implements DiscoveryModule, PollerModule
      *
      * @param  bool  $valid  filter this list by valid types in the database
      * @param  int  $device_id  when filtering, only return types valid for this device_id
-     * @return array
      */
     public static function getTypes(bool $valid = false, int $device_id = null): array
     {
@@ -614,10 +576,6 @@ class Sensor implements DiscoveryModule, PollerModule
 
     /**
      * Record sensor data in the database and data stores
-     *
-     * @param  OS  $os
-     * @param  array  $sensors
-     * @param  array  $data
      */
     protected static function recordSensorData(OS $os, array $sensors, array $data)
     {

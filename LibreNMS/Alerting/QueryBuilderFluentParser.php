@@ -34,8 +34,6 @@ class QueryBuilderFluentParser extends QueryBuilderParser
 {
     /**
      * Convert the query builder rules to a Laravel Fluent builder
-     *
-     * @return Builder|null
      */
     public function toQuery(): ?Builder
     {
@@ -53,10 +51,7 @@ class QueryBuilderFluentParser extends QueryBuilderParser
     }
 
     /**
-     * @param  Builder  $query
-     * @param  array  $rule
      * @param  string  $parent_condition  AND or OR  (for root, this should be null)
-     * @return Builder
      */
     protected function parseGroupToQuery(Builder $query, array $rule, string $parent_condition = null): Builder
     {
@@ -72,10 +67,7 @@ class QueryBuilderFluentParser extends QueryBuilderParser
     }
 
     /**
-     * @param  Builder  $query
-     * @param  array  $rule
      * @param  string  $condition  AND or OR
-     * @return Builder
      */
     protected function parseRuleToQuery(Builder $query, array $rule, string $condition): Builder
     {
@@ -127,7 +119,6 @@ class QueryBuilderFluentParser extends QueryBuilderParser
     /**
      * Extract field, operator and value from the rule and expand macros and raw values
      *
-     * @param  array  $rule
      * @return array [field, operator, value]
      */
     protected function expandRule(array $rule): array
@@ -147,10 +138,6 @@ class QueryBuilderFluentParser extends QueryBuilderParser
         return [$field, $op, $value];
     }
 
-    /**
-     * @param  Builder  $query
-     * @return Builder
-     */
     protected function joinTables(Builder $query): Builder
     {
         if (! isset($this->builder['joins'])) {
@@ -168,8 +155,6 @@ class QueryBuilderFluentParser extends QueryBuilderParser
     /**
      * Generate the joins for this rule and store them in the rule.
      * This is an expensive operation.
-     *
-     * @return $this
      */
     public function generateJoins(): static
     {

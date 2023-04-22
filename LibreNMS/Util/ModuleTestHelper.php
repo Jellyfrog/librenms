@@ -60,8 +60,6 @@ class ModuleTestHelper
      * ModuleTester constructor.
      *
      * @param  array|string  $modules
-     * @param  string  $os
-     * @param  string  $variant
      *
      * @throws InvalidModuleException
      */
@@ -234,8 +232,6 @@ class ModuleTestHelper
      * Each entry contains [$os, $variant, $valid_modules]
      * $valid_modules is an array of selected modules this os has test data for
      *
-     * @param  array  $modules
-     * @return array
      *
      * @throws InvalidModuleException
      */
@@ -310,8 +306,6 @@ class ModuleTestHelper
      * Generate a module list.  Try to take dependencies into account.
      * Probably needs to be more robust
      *
-     * @param  array  $modules
-     * @return array
      *
      * @throws InvalidModuleException
      */
@@ -518,9 +512,6 @@ class ModuleTestHelper
      * Run discovery and polling against snmpsim data and create a database dump
      * Save the dumped data to tests/data/<os>.json
      *
-     * @param  Snmpsim  $snmpsim
-     * @param  bool  $no_save
-     * @return array|null
      *
      * @throws FileNotFoundException
      */
@@ -670,7 +661,6 @@ class ModuleTestHelper
     /**
      * @param  string  $output  poller or discovery output
      * @param  string  $type  poller|disco identified by "#### Load disco module" string
-     * @return array
      */
     private function extractModuleOutput(string $output, string $type): array
     {
@@ -727,7 +717,6 @@ class ModuleTestHelper
 
     /**
      * @param  array|\Illuminate\Support\Collection|\stdClass  $data
-     * @return array
      */
     private function dumpToArray($data): array
     {

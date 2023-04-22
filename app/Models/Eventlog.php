@@ -58,10 +58,7 @@ class Eventlog extends DeviceRelatedModel
     /**
      * Log events to the event table
      *
-     * @param  string  $text
      * @param  Device|int|null  $device
-     * @param  string  $type
-     * @param  int  $severity
      * @param  int|string|null  $reference
      */
     public function _log(string $text, $device = null, string $type = null, int $severity = Alert::INFO, $reference = null): void

@@ -32,9 +32,6 @@ class Html
 {
     /**
      * return icon and color for application state
-     *
-     * @param  string  $app_state
-     * @return array
      */
     public static function appStateIcon(string $app_state): array
     {
@@ -71,10 +68,6 @@ class Html
 
     /**
      * Print or return a row of graphs
-     *
-     * @param  array  $graph_array
-     * @param  bool  $print
-     * @return array
      */
     public static function graphRow(array $graph_array, bool $print = false): array
     {

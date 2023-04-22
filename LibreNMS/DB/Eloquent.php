@@ -34,8 +34,6 @@ class Eloquent
 {
     /**
      * Set the strict mode for the current connection (will not persist)
-     *
-     * @param  bool  $strict
      */
     public static function setStrictMode(bool $strict = true): void
     {
@@ -66,9 +64,6 @@ class Eloquent
 
     /**
      * Access the Database Manager for Fluent style queries. Like the Laravel DB facade.
-     *
-     * @param  string|null  $name
-     * @return \Illuminate\Database\Connection|null
      */
     public static function DB(?string $name = null): ?Connection
     {
@@ -90,14 +85,7 @@ class Eloquent
     /**
      * Set the active connection, used during install
      *
-     * @param  string  $name
-     * @param  string  $db_host
-     * @param  string  $db_user
-     * @param  string  $db_pass
-     * @param  string  $db_name
      * @param  int|string  $db_port
-     * @param  string  $db_socket
-     * @return void
      */
     public static function setConnection(string $name, string $db_host = null, string $db_user = '', string $db_pass = '', string $db_name = '', $db_port = null, string $db_socket = null): void
     {

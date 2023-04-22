@@ -48,10 +48,6 @@ class BgpSearchController extends SearchController
             ->orderBy('astext');
     }
 
-    /**
-     * @param  \App\Models\BgpPeer  $peer
-     * @return array
-     */
     public function formatItem(BgpPeer $peer): array
     {
         $bgp_image = $peer->bgpPeerRemoteAs == $peer->device->bgpLocalAs

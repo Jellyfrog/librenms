@@ -189,8 +189,6 @@ class Rrd extends BaseDatastore
      *
      * @internal
      *
-     * @param  string  $filename
-     * @param  array  $data
      * @return array|string
      */
     public function update(string $filename, array $data)
@@ -224,7 +222,6 @@ class Rrd extends BaseDatastore
      * @param  string  $type  only 'port' is supported at this time
      * @param  string  $filename  the path to the rrd file
      * @param  int  $max  the new max value
-     * @return bool
      */
     public function tune(string $type, string $filename, int $max): bool
     {
@@ -265,9 +262,6 @@ class Rrd extends BaseDatastore
     /**
      * Generates a filename for a proxmox cluster rrd
      *
-     * @param  string  $pmxcluster
-     * @param  string  $vmid
-     * @param  string  $vmport
      * @return string full path to the rrd.
      */
     public function proxmoxName(string $pmxcluster, string $vmid, string $vmport): string
@@ -283,10 +277,6 @@ class Rrd extends BaseDatastore
 
     /**
      * Get the name of the port rrd file.  For alternate rrd, specify the suffix.
-     *
-     * @param  int  $port_id
-     * @param  string  $suffix
-     * @return string
      */
     public function portName(int $port_id, string $suffix = null): string
     {
@@ -556,8 +546,6 @@ class Rrd extends BaseDatastore
      * Generates a graph file at $graph_file using $options
      * Graphs are a single command per run, so this just runs rrdtool
      *
-     * @param  string  $options
-     * @return string
      *
      * @throws \LibreNMS\Exceptions\RrdGraphException
      */
@@ -617,9 +605,6 @@ class Rrd extends BaseDatastore
 
     /**
      * Remove invalid characters from the rrd file name
-     *
-     * @param  string  $name
-     * @return string
      */
     public static function safeName(string $name): string
     {
@@ -628,9 +613,6 @@ class Rrd extends BaseDatastore
 
     /**
      * Remove invalid characters from the rrd description
-     *
-     * @param  string  $descr
-     * @return string
      */
     public static function safeDescr(string $descr): string
     {
@@ -642,7 +624,6 @@ class Rrd extends BaseDatastore
      *
      * @param  string  $descr  the string to escape
      * @param  int  $length  if passed, string will be padded and trimmed to exactly this length (after rrdtool unescapes it)
-     * @return string
      */
     public static function fixedSafeDescr(string $descr, int $length): string
     {
@@ -669,8 +650,6 @@ class Rrd extends BaseDatastore
 
     /**
      * Run rrdtool and parse the version from the output.
-     *
-     * @return string
      */
     public static function version(): ?string
     {
@@ -683,9 +662,6 @@ class Rrd extends BaseDatastore
 
     /**
      * Only track update and create primarily, just put all others in an "other" bin
-     *
-     * @param  string  $type
-     * @return string
      */
     private function coalesceStatisticType(string $type): string
     {

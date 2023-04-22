@@ -70,10 +70,6 @@ class DashboardController extends Controller
         $this->authorizeResource(Dashboard::class, 'dashboard');
     }
 
-    /**
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Contracts\View\View
-     */
     public function index(Request $request): View
     {
         $request->validate([
@@ -116,11 +112,6 @@ class DashboardController extends Controller
         ]));
     }
 
-    /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Dashboard  $dashboard
-     * @return \Illuminate\Contracts\View\View
-     */
     public function show(Request $request, Dashboard $dashboard): View
     {
         $request->validate([
@@ -257,7 +248,6 @@ class DashboardController extends Controller
     }
 
     /**
-     * @param  \App\Models\User  $user
      * @return \Illuminate\Support\Collection<\App\Models\Dashboard>
      */
     private function getAvailableDashboards(User $user): Collection

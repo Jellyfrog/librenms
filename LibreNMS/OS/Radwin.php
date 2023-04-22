@@ -54,8 +54,6 @@ class Radwin extends OS implements
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessPower(): array
     {
@@ -71,8 +69,6 @@ class Radwin extends OS implements
     /**
      * Discover wireless RSSI (Received Signal Strength Indicator). This is in dBm. Type is rssi.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessRssi(): array
     {

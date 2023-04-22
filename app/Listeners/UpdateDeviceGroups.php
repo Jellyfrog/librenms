@@ -21,9 +21,6 @@ class UpdateDeviceGroups
 
     /**
      * Handle the event.
-     *
-     * @param  DevicePolled  $event
-     * @return void
      */
     public function handle(DevicePolled $event): void
     {

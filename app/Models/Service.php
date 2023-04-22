@@ -27,10 +27,6 @@ class Service extends DeviceRelatedModel
 
     // ---- Query Scopes ----
 
-    /**
-     * @param  Builder  $query
-     * @return Builder
-     */
     public function scopeIsOk(Builder $query): Builder
     {
         return $query->where([
@@ -40,10 +36,6 @@ class Service extends DeviceRelatedModel
         ]);
     }
 
-    /**
-     * @param  Builder  $query
-     * @return Builder
-     */
     public function scopeIsCritical(Builder $query): Builder
     {
         return $query->where([
@@ -53,10 +45,6 @@ class Service extends DeviceRelatedModel
         ]);
     }
 
-    /**
-     * @param  Builder  $query
-     * @return Builder
-     */
     public function scopeIsWarning(Builder $query): Builder
     {
         return $query->where([
@@ -66,10 +54,6 @@ class Service extends DeviceRelatedModel
         ]);
     }
 
-    /**
-     * @param  Builder  $query
-     * @return Builder
-     */
     public function scopeIsIgnored(Builder $query): Builder
     {
         return $query->where([
@@ -78,10 +62,6 @@ class Service extends DeviceRelatedModel
         ]);
     }
 
-    /**
-     * @param  Builder  $query
-     * @return Builder
-     */
     public function scopeIsDisabled(Builder $query): Builder
     {
         return $query->where('service_disabled', 1);

@@ -26,8 +26,6 @@ class ApcPduOverloadTest extends SnmpTrapTestCase
 {
     /**
      * Test ApcPduNearOverload trap handle
-     *
-     * @return void
      */
     public function testNearOverload(): void
     {
@@ -50,8 +48,6 @@ TRAP,
 
     /**
      * Test ApcPduNearOverloadClear trap handle
-     *
-     * @return void
      */
     public function testNearOverloadClear(): void
     {
@@ -74,8 +70,6 @@ TRAP,
 
     /**
      * Test ApcPduOverload trap handle
-     *
-     * @return void
      */
     public function testOverload(): void
     {
@@ -98,8 +92,6 @@ TRAP,
 
     /**
      * Test ApcPduOverloadCleared trap handle
-     *
-     * @return void
      */
     public function testOverloadClear(): void
     {

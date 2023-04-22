@@ -32,7 +32,6 @@ class IPv6 extends IP
     /**
      * IPv6 constructor.
      *
-     * @param  string  $ipv6
      *
      * @throws InvalidIpException
      */
@@ -68,9 +67,7 @@ class IPv6 extends IP
     /**
      * Check if the supplied IP is valid.
      *
-     * @param  string  $ipv6
      * @param  bool  $exclude_reserved  Exclude reserved IP ranges.
-     * @return bool
      */
     public static function isValid(string $ipv6, bool $exclude_reserved = false): bool
     {
@@ -96,7 +93,6 @@ class IPv6 extends IP
      * Get the network address of this IP
      *
      * @param  int  $cidr  If not given will use the cidr stored with this IP
-     * @return string
      */
     public function getNetworkAddress(int $cidr = null): string
     {
@@ -156,8 +152,6 @@ class IPv6 extends IP
 
     /**
      * Expand this IPv6 address to it's full IPv6 representation. For example: ::1 -> 0000:0000:0000:0000:0000:0000:0000:0001
-     *
-     * @return string
      */
     public function uncompressed(): string
     {
@@ -175,8 +169,6 @@ class IPv6 extends IP
 
     /**
      * Convert this IP to an snmp index hex encoded
-     *
-     * @return string
      */
     public function toSnmpIndex(): string
     {

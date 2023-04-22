@@ -96,10 +96,6 @@ class Mempool extends DeviceRelatedModel implements Keyable
 
     /**
      * Set the mempool class.  If no class is given, try to detect it from available data.
-     *
-     * @param  string  $class
-     * @param  string  $default
-     * @return \App\Models\Mempool
      */
     public function setClass(string $class = null, string $default = 'system'): Mempool
     {

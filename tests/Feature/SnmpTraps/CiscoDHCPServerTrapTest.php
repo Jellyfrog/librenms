@@ -27,8 +27,6 @@ class CiscoDHCPServerTrapTest extends SnmpTrapTestCase
 {
     /**
      * Test CiscoDHCPServer trap handles
-     *
-     * @return void
      */
     public function testCiscoDHCPServerFreeAddressHigh(): void
     {

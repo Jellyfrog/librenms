@@ -179,7 +179,6 @@ class SnmpQueryMock implements SnmpQueryInterface
 
     /**
      * @param  array|string  $oids
-     * @return \LibreNMS\Data\Source\SnmpResponse
      *
      * @throws \Exception
      */

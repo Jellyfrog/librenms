@@ -51,7 +51,6 @@ class RrdDefinition
      * @param  int  $min  Minimum allowed value.  null means undefined.
      * @param  int  $max  Maximum allowed value.  null means undefined.
      * @param  int  $heartbeat  Heartbeat for this dataset. Uses the global setting if null.
-     * @return RrdDefinition
      */
     public function addDataset(string $name, string $type, int $min = null, int $max = null, int $heartbeat = null): RrdDefinition
     {
@@ -73,8 +72,6 @@ class RrdDefinition
 
     /**
      * Get the RRD Definition as it would be passed to rrdtool
-     *
-     * @return string
      */
     public function __toString(): string
     {
@@ -85,9 +82,6 @@ class RrdDefinition
 
     /**
      * Check if the give dataset name is valid for this definition
-     *
-     * @param  string  $name
-     * @return bool
      */
     public function isValidDataset(string $name): bool
     {
@@ -97,8 +91,6 @@ class RrdDefinition
     /**
      * Disable checking if the name is valid for incoming data and just assign values
      * based on order
-     *
-     * @return $this
      */
     public function disableNameChecking(): static
     {
@@ -110,7 +102,6 @@ class RrdDefinition
     /**
      * Check that the data set type is valid.
      *
-     * @param  string  $type
      * @return mixed
      *
      * @throws InvalidRrdTypeException
@@ -127,9 +118,6 @@ class RrdDefinition
 
     /**
      * Remove all invalid characters from the name and truncate to 19 characters.
-     *
-     * @param  string  $name
-     * @return string
      */
     private function escapeName(string $name): string
     {

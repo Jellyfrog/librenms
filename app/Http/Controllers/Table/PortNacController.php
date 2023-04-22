@@ -68,7 +68,6 @@ class PortNacController extends TableController
     /**
      * Defines the base query for this resource
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     public function baseQuery(Request $request)
@@ -79,9 +78,6 @@ class PortNacController extends TableController
             ->with('port');
     }
 
-    /**
-     * @param  PortsNac  $nac
-     */
     public function formatItem(PortsNac $nac)
     {
         $item = $nac->toArray();

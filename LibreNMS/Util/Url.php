@@ -39,16 +39,6 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class Url
 {
-    /**
-     * @param  Device  $device
-     * @param  string  $text
-     * @param  array  $vars
-     * @param  int  $start
-     * @param  int  $end
-     * @param  int  $escape_text
-     * @param  int  $overlib
-     * @return string
-     */
     public static function deviceLink(Device $device, string $text = null, array $vars = [], int $start = 0, int $end = 0, int $escape_text = 1, int $overlib = 1): string
     {
         if (! $device instanceof Device || ! $device->hostname) {
@@ -124,11 +114,6 @@ class Url
     }
 
     /**
-     * @param  Port  $port
-     * @param  string  $text
-     * @param  string  $type
-     * @param  bool  $overlib
-     * @param  bool  $single_graph
      * @return mixed|string
      */
     public static function portLink(Port $port, string $text = null, string $type = null, bool $overlib = true, bool $single_graph = false)
@@ -180,11 +165,6 @@ class Url
     }
 
     /**
-     * @param  \App\Models\Sensor  $sensor
-     * @param  string  $text
-     * @param  string  $type
-     * @param  bool  $overlib
-     * @param  bool  $single_graph
      * @return mixed|string
      */
     public static function sensorLink(Sensor $sensor, string $text = null, string $type = null, bool $overlib = true, bool $single_graph = false)
@@ -228,8 +208,6 @@ class Url
 
     /**
      * @param  int|Device  $device
-     * @param  array  $vars
-     * @return string
      */
     public static function deviceUrl($device, array $vars = []): string
     {
@@ -252,10 +230,6 @@ class Url
         return self::generate(['page' => 'device', 'device' => $sensor->device_id, 'tab' => 'health', 'metric' => $sensor->sensor_class], $vars);
     }
 
-    /**
-     * @param  Port  $port
-     * @return string
-     */
     public static function portThumbnail(Port $port): string
     {
         $graph_array = [
@@ -270,10 +244,6 @@ class Url
         return self::portImage($graph_array);
     }
 
-    /**
-     * @param  Port  $port
-     * @return string
-     */
     public static function portErrorsThumbnail(Port $port): string
     {
         $graph_array = [
@@ -310,10 +280,6 @@ class Url
     /**
      * Generate url parameters to append to url
      * $prefix will only be prepended if there are parameters
-     *
-     * @param  array  $vars
-     * @param  string  $prefix
-     * @return string
      */
     private static function urlParams(array $vars, string $prefix = '/'): string
     {
@@ -341,10 +307,6 @@ class Url
         return LaravelUrl::signedRoute('graph', $args);
     }
 
-    /**
-     * @param  array  $args
-     * @return string
-     */
     public static function graphTag(array $args): string
     {
         $urlargs = [];
@@ -441,18 +403,6 @@ class Url
 
     /**
      * Generate minigraph image url
-     *
-     * @param  Device  $device
-     * @param  int  $start
-     * @param  int  $end
-     * @param  string  $type
-     * @param  string  $legend
-     * @param  int  $width
-     * @param  int  $height
-     * @param  string  $sep
-     * @param  string  $class
-     * @param  int  $absolute_size
-     * @return string
      */
     public static function minigraphImage(Device $device, int $start, int $end, string $type, string $legend = 'no', int $width = 275, int $height = 100, string $sep = '&amp;', string $class = 'minigraph-image', int $absolute_size = 0): string
     {
@@ -461,10 +411,6 @@ class Url
         return '<img class="' . $class . '" width="' . $width . '" height="' . $height . '" src="' . url('graph.php') . '?' . implode($sep, $vars) . '">';
     }
 
-    /**
-     * @param  Device  $device
-     * @return string
-     */
     private static function deviceLinkDisplayClass(Device $device): string
     {
         if ($device->disabled) {
@@ -480,9 +426,6 @@ class Url
 
     /**
      * Get html class for a port using ifAdminStatus and ifOperStatus
-     *
-     * @param  Port  $port
-     * @return string
      */
     public static function portLinkDisplayClass(Port $port): string
     {
@@ -499,9 +442,6 @@ class Url
 
     /**
      * Get html class for a sensor
-     *
-     * @param  \App\Models\Sensor  $sensor
-     * @return string
      */
     public static function sensorLinkDisplayClass(Sensor $sensor): string
     {
@@ -517,11 +457,7 @@ class Url
     }
 
     /**
-     * @param  string  $os
-     * @param  string|null  $feature
-     * @param  string  $icon
      * @param  string  $dir  directory to search in (images/os/ or images/logos)
-     * @return string
      */
     public static function findOsImage(string $os, ?string $feature, string $icon = null, string $dir = 'images/os/'): string
     {
@@ -559,9 +495,6 @@ class Url
 
     /**
      * parse a legacy path (one without ? or &)
-     *
-     * @param  string  $path
-     * @return ParameterBag
      */
     public static function parseLegacyPath(string $path): ParameterBag
     {

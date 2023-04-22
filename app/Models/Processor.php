@@ -11,8 +11,6 @@ class Processor extends DeviceRelatedModel
 
     /**
      * Return Processor Description, formatted for display
-     *
-     * @return string
      */
     public function getFormattedDescription(): string
     {

@@ -34,12 +34,10 @@ class Fping
     /**
      * Run fping against a hostname/ip in count mode and collect stats.
      *
-     * @param  string  $host
      * @param  int  $count  (min 1)
      * @param  int  $interval  (min 20)
      * @param  int  $timeout  (not more than $interval)
      * @param  string  $address_family  ipv4 or ipv6
-     * @return \LibreNMS\Data\Source\FpingResponse
      */
     public function ping(string $host, int $count = 3, int $interval = 1000, int $timeout = 500, string $address_family = 'ipv4'): FpingResponse
     {

@@ -124,25 +124,16 @@ class Snmpsim
         return false;
     }
 
-    /**
-     * @return string
-     */
     public function getDir(): string
     {
         return $this->snmprec_dir;
     }
 
-    /**
-     * @return string
-     */
     public function getIp(): string
     {
         return $this->ip;
     }
 
-    /**
-     * @return int
-     */
     public function getPort(): int
     {
         return $this->port;
@@ -150,9 +141,6 @@ class Snmpsim
 
     /**
      * Generate the command for snmpsimd
-     *
-     * @param  bool  $with_log
-     * @return string
      */
     private function getCmd(bool $with_log = true): string
     {

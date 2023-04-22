@@ -41,9 +41,6 @@ class HostUnreachableException extends \Exception
 
     /**
      * Add additional reasons
-     *
-     * @param  string  $snmpVersion
-     * @param  string  $credentials
      */
     public function addReason(string $snmpVersion, string $credentials)
     {
@@ -61,8 +58,6 @@ class HostUnreachableException extends \Exception
 
     /**
      * Get the reasons
-     *
-     * @return array
      */
     public function getReasons(): array
     {

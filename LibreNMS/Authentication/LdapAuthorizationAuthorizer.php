@@ -230,8 +230,6 @@ class LdapAuthorizationAuthorizer extends AuthorizerBase
      * Get the full dn with auth_ldap_prefix and auth_ldap_suffix
      *
      * @internal
-     *
-     * @return string
      */
     protected function getFullDn(string $username): string
     {

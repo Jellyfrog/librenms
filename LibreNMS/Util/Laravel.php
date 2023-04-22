@@ -79,8 +79,6 @@ class Laravel
     /**
      * Check if running in the command line.
      * Safe for code without Laravel running and in Laravel console application.
-     *
-     * @return bool
      */
     public static function isCli(): bool
     {
@@ -91,9 +89,6 @@ class Laravel
 
     /**
      * Add prefix and strip .php to make the url helper work in non-laravel php scripts
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  bool  $auth
      */
     private static function rewriteDummyHeaders(Request $request, bool $auth)
     {

@@ -31,8 +31,6 @@ class TwoFactorPage extends Page
 {
     /**
      * Get the URL for the page.
-     *
-     * @return string
      */
     public function url(): string
     {
@@ -41,9 +39,6 @@ class TwoFactorPage extends Page
 
     /**
      * Assert that the browser is on the page.
-     *
-     * @param  Browser  $browser
-     * @return void
      */
     public function assert(Browser $browser): void
     {
@@ -52,8 +47,6 @@ class TwoFactorPage extends Page
 
     /**
      * Get the element shortcuts for the page.
-     *
-     * @return array
      */
     public function elements(): array
     {

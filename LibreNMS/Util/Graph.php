@@ -47,8 +47,6 @@ class Graph
      * Convenience helper to specify desired image output
      *
      * @param  array|string  $vars
-     * @param  int  $flags
-     * @return string
      */
     public static function getImageData($vars, int $flags = 0): string
     {
@@ -76,7 +74,6 @@ class Graph
      * Catches errors generated and always returns GraphImage
      *
      * @param  array|string  $vars
-     * @return GraphImage
      */
     public static function getImage($vars): GraphImage
     {
@@ -95,7 +92,6 @@ class Graph
      * Fetch a GraphImage based on the given $vars
      *
      * @param  array|string  $vars
-     * @return GraphImage
      *
      * @throws \LibreNMS\Exceptions\RrdGraphException
      */
@@ -190,10 +186,6 @@ class Graph
 
     /**
      * Get an array of all graph subtypes for the given type
-     *
-     * @param  string  $type
-     * @param  Device  $device
-     * @return array
      */
     public static function getSubtypes(string $type, Device $device = null): array
     {
@@ -227,10 +219,6 @@ class Graph
 
     /**
      * Check if the given graph is a mib graph
-     *
-     * @param  string  $type
-     * @param  string  $subtype
-     * @return bool
      */
     public static function isMibGraph(string $type, string $subtype): bool
     {

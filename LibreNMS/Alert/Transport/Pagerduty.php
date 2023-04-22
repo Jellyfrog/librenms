@@ -47,8 +47,6 @@ class Pagerduty extends Transport
     }
 
     /**
-     * @param  array  $obj
-     * @param  array  $config
      * @return bool|string
      */
     public function contactPagerduty(array $obj, array $config)

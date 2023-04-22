@@ -45,7 +45,6 @@ class VminfoController extends TableController
     /**
      * Defines the base query for this resource
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     public function baseQuery(Request $request)
@@ -59,9 +58,6 @@ class VminfoController extends TableController
             });
     }
 
-    /**
-     * @param  Vminfo  $vm
-     */
     public function formatItem(Vminfo $vm)
     {
         return [

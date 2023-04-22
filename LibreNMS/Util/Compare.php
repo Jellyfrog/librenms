@@ -38,7 +38,6 @@ class Compare
      * @param  mixed  $a
      * @param  mixed  $b
      * @param  string  $comparison  =, !=, ==, !== >=, <=, >, <, contains, starts, ends, regex
-     * @return bool
      */
     public static function values($a, $b, string $comparison = '='): bool
     {

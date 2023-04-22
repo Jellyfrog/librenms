@@ -55,7 +55,6 @@ class EditPortsController extends TableController
     }
 
     /**
-     * @param  \App\Models\Port  $port
      * @return array
      */
     public function formatItem(Port $port)

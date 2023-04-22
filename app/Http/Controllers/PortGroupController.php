@@ -14,8 +14,6 @@ class PortGroupController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\View\View
      */
     public function index(): View
     {
@@ -26,8 +24,6 @@ class PortGroupController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\View\View
      */
     public function create(): View
     {
@@ -38,9 +34,6 @@ class PortGroupController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request, FlasherInterface $flasher): RedirectResponse
     {
@@ -58,9 +51,6 @@ class PortGroupController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\PortGroup  $portGroup
-     * @return \Illuminate\View\View
      */
     public function edit(PortGroup $portGroup): View
     {
@@ -71,10 +61,6 @@ class PortGroupController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\PortGroup  $portGroup
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, PortGroup $portGroup, FlasherInterface $flasher): RedirectResponse
     {
@@ -105,9 +91,6 @@ class PortGroupController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\PortGroup  $portGroup
-     * @return \Illuminate\Http\Response
      */
     public function destroy(PortGroup $portGroup): Response
     {

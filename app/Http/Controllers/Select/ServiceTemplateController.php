@@ -39,9 +39,6 @@ class ServiceTemplateController extends SelectController
         return ServiceTemplate::hasAccess($request->user())->select('id', 'name');
     }
 
-    /**
-     * @param  ServiceTemplate  $template
-     */
     public function formatItem(ServiceTemplate $template)
     {
         return [

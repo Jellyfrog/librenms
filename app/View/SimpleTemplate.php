@@ -89,10 +89,6 @@ class SimpleTemplate
 
     /**
      * Create and parse a simple template
-     *
-     * @param  string  $template
-     * @param  array  $variables
-     * @return string
      */
     public static function parse(string $template, array $variables): string
     {

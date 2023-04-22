@@ -28,8 +28,6 @@ class ApcSmartAvrReducingOffTest extends SnmpTrapTestCase
 {
     /**
      * Test ApcSmartAvrReducingOff handle
-     *
-     * @return void
      */
     public function testApcSmartAvrReducingOff(): void
     {

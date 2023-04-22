@@ -28,8 +28,6 @@ class ApcPowerRestoredTest extends SnmpTrapTestCase
 {
     /**
      * Test ApcPowerRestored handle
-     *
-     * @return void
      */
     public function testApcPowerRestored(): void
     {

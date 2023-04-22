@@ -30,7 +30,6 @@ class Action
     /**
      * Execute an action and return the results
      *
-     * @param  string  $action
      * @param  mixed  ...$parameters
      * @return mixed
      */

@@ -90,8 +90,6 @@ class PingCheck implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle(): void
     {
@@ -280,8 +278,6 @@ class PingCheck implements ShouldQueue
 
     /**
      * Done processing $hostname, remove it from our active data
-     *
-     * @param  string  $hostname
      */
     private function complete(string $hostname)
     {

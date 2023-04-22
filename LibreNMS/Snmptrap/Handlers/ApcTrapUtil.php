@@ -34,9 +34,6 @@ class ApcTrapUtil
 {
     /**
      * Get the APC PDU Name
-     *
-     * @param  Trap  $trap
-     * @return string
      */
     public static function getPduIdentName(Trap $trap): string
     {
@@ -45,9 +42,6 @@ class ApcTrapUtil
 
     /**
      * Get the APC PDU Phase Number
-     *
-     * @param  Trap  $trap
-     * @return string
      */
     public static function getPduPhaseNum(Trap $trap): string
     {
@@ -56,9 +50,6 @@ class ApcTrapUtil
 
     /**
      * Get the APC Trap String
-     *
-     * @param  Trap  $trap
-     * @return string
      */
     public static function getApcTrapString(Trap $trap): string
     {

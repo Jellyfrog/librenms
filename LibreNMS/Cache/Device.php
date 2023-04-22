@@ -33,8 +33,6 @@ class Device
 
     /**
      * Gets the current primary device.
-     *
-     * @return \App\Models\Device
      */
     public function getPrimary(): \App\Models\Device
     {
@@ -44,8 +42,6 @@ class Device
     /**
      * Set the primary device.
      * This will be fetched by getPrimary()
-     *
-     * @param  int  $device_id
      */
     public function setPrimary(int $device_id): void
     {
@@ -64,7 +60,6 @@ class Device
      * Get a device by device_id or hostname
      *
      * @param  int|string|null  $device  device_id or hostname
-     * @return \App\Models\Device
      */
     public function get(int|string|null $device): \App\Models\Device
     {
@@ -83,9 +78,6 @@ class Device
 
     /**
      * Get a device by hostname
-     *
-     * @param  string|null  $hostname
-     * @return \App\Models\Device
      */
     public function getByHostname(?string $hostname): \App\Models\Device
     {
@@ -96,9 +88,6 @@ class Device
 
     /**
      * Ignore cache and load the device fresh from the database
-     *
-     * @param  int  $device_id
-     * @return \App\Models\Device
      */
     public function refresh(?int $device_id): \App\Models\Device
     {

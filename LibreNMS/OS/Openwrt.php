@@ -147,8 +147,6 @@ class Openwrt extends OS implements
     /**
      * Discover wireless rate. This is in bps. Type is rate.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessRate(): array
     {
@@ -161,8 +159,6 @@ class Openwrt extends OS implements
     /**
      * Discover wireless snr. This is in dB. Type is snr.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessSNR(): array
     {

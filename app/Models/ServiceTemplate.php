@@ -100,7 +100,6 @@ class ServiceTemplate extends BaseModel
      * Update the device template groups for the given device or device_id
      *
      * @param  Device|int  $device
-     * @return array
      */
     public static function updateServiceTemplatesForDevice($device): array
     {
@@ -147,7 +146,6 @@ class ServiceTemplate extends BaseModel
      * Update the device template groups for the given device group or device_group_id
      *
      * @param  DeviceGroup|int  $deviceGroup
-     * @return array
      */
     public static function updateServiceTemplatesForDeviceGroup($deviceGroup): array
     {
@@ -178,8 +176,6 @@ class ServiceTemplate extends BaseModel
 
     /**
      * Get a query builder parser instance from this Service Template device rule
-     *
-     * @return QueryBuilderFluentParser
      */
     public function getDeviceParser(): QueryBuilderFluentParser
     {
@@ -188,10 +184,6 @@ class ServiceTemplate extends BaseModel
 
     // ---- Query Scopes ----
 
-    /**
-     * @param  Builder  $query
-     * @return Builder
-     */
     public function scopeIsDisabled(Builder $query): Builder
     {
         return $query->where('disabled', 1);

@@ -51,8 +51,6 @@ class Location extends Model
 
     /**
      * Checks if this location has resolved latitude and longitude.
-     *
-     * @return bool
      */
     public function hasCoordinates(): bool
     {
@@ -73,9 +71,6 @@ class Location extends Model
      * Try to parse coordinates
      * then try to lookup DNS LOC records if hostname is provided
      * then call geocoding API to resolve latitude and longitude.
-     *
-     * @param  string  $hostname
-     * @return bool
      */
     public function lookupCoordinates(string $hostname = null): bool
     {
@@ -102,9 +97,6 @@ class Location extends Model
 
     /**
      * Remove encoded GPS for nicer display
-     *
-     * @param  bool  $withCoords
-     * @return string
      */
     public function display(bool $withCoords = false): string
     {
@@ -142,11 +134,6 @@ class Location extends Model
 
     // ---- Query scopes ----
 
-    /**
-     * @param  Builder  $query
-     * @param  User  $user
-     * @return Builder
-     */
     public function scopeHasAccess(Builder $query, User $user): Builder
     {
         if ($user->hasGlobalRead()) {

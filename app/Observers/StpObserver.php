@@ -10,9 +10,6 @@ class StpObserver
 {
     /**
      * Handle the Stp "updating" event.
-     *
-     * @param  \App\Models\Stp  $stp
-     * @return void
      */
     public function updating(Stp $stp): void
     {

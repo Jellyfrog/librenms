@@ -34,9 +34,6 @@ class FilePermissionsException extends \Exception implements UpgradeableExceptio
 {
     /**
      * Try to convert the given Exception to a FilePermissionsException
-     *
-     * @param  \Exception  $exception
-     * @return static|null
      */
     public static function upgrade(Exception $exception): ?static
     {
@@ -78,10 +75,6 @@ class FilePermissionsException extends \Exception implements UpgradeableExceptio
         return new SymfonyResponse($content);
     }
 
-    /**
-     * @param  string  $log_file
-     * @return array
-     */
     private function generateCommands(string $log_file): array
     {
         $user = config('librenms.user');

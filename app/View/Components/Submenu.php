@@ -57,9 +57,6 @@ class Submenu extends Component
 
     /**
      * Determine if the given option is the current selected option.
-     *
-     * @param  string  $url
-     * @return bool
      */
     public function isSelected(string $url): bool
     {

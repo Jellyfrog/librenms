@@ -169,7 +169,6 @@ class ObjectCache
 
     /**
      * @param  array  $fields  array of counts to get. Valid options: total, up, down, ignored, disabled
-     * @return array
      */
     public static function deviceCounts(array $fields = ['total']): array
     {
@@ -205,7 +204,6 @@ class ObjectCache
 
     /**
      * @param  array  $fields  array of counts to get. Valid options: total, ok, warning, critical, ignored, disabled
-     * @return array
      */
     public static function serviceCounts(array $fields = ['total'], $device_id = 0): array
     {

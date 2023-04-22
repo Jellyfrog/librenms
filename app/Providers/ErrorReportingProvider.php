@@ -152,12 +152,6 @@ class ErrorReportingProvider extends \Spatie\LaravelIgnition\IgnitionServiceProv
     /**
      * Report PHP deprecations, or convert PHP errors to ErrorException instances.
      *
-     * @param  int  $level
-     * @param  string  $message
-     * @param  string  $file
-     * @param  int  $line
-     * @param  array  $context
-     * @return bool
      *
      * @throws \ErrorException
      */

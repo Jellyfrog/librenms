@@ -138,8 +138,6 @@ class Arubaos extends OS implements
     /**
      * Discover wireless noise floor. This is in dBm/Hz. Type is noise-floor.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessNoiseFloor(): array
     {
@@ -150,8 +148,6 @@ class Arubaos extends OS implements
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessPower(): array
     {

@@ -46,12 +46,7 @@ class GraphRow extends Component
     /**
      * Create a new component instance.
      *
-     * @param  string  $type
-     * @param  string|null  $title
-     * @param  string  $loading
-     * @param  string  $aspect
      * @param  int|string  $columns  Either a number or 'responsive' aka auto columns
-     * @param  array  $graphs
      * @param  \App\Models\Device|int|null  $device
      * @param  \App\Models\Port|int|null  $port
      */

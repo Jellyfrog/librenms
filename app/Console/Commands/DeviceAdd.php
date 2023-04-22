@@ -82,8 +82,6 @@ class DeviceAdd extends LnmsCommand
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(): int
     {

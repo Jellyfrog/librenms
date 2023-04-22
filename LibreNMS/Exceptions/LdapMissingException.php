@@ -41,8 +41,6 @@ class LdapMissingException extends AuthenticationException
 
     /**
      * Render the exception into an HTTP or JSON response.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function render(\Illuminate\Http\Request $request): Response
     {

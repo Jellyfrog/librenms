@@ -86,8 +86,6 @@ class SafCfm extends OS implements
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessPower(): array
     {
@@ -134,8 +132,6 @@ class SafCfm extends OS implements
     /**
      * Discover wireless tx or rx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
-     *
-     * @return array
      */
     public function discoverWirelessErrors(): array
     {

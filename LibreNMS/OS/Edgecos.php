@@ -122,8 +122,6 @@ class Edgecos extends OS implements MempoolsDiscovery, ProcessorDiscovery
 
     /**
      * Find the MIB based on sysObjectID
-     *
-     * @return string
      */
     protected function findMib(): ?string
     {

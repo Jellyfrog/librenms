@@ -73,8 +73,6 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, WirelessPowerDisco
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      * ALU-MICROWAVE-MIB::aluMwRadioLocalRxMainPower
      * ALU-MICROWAVE-MIB::aluMwRadioLocalTxPower
-     *
-     * @return array
      */
     public function discoverWirelesspower(): array
     {

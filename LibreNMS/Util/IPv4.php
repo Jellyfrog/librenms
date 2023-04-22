@@ -32,7 +32,6 @@ class IPv4 extends IP
     /**
      * IPv4 constructor.
      *
-     * @param  string  $ipv4
      *
      * @throws InvalidIpException
      */
@@ -49,9 +48,7 @@ class IPv4 extends IP
     /**
      * Check if the supplied IP is valid.
      *
-     * @param  string  $ipv4
      * @param  bool  $exclude_reserved  Exclude reserved IP ranges.
-     * @return bool
      */
     public static function isValid(string $ipv4, bool $exclude_reserved = false): bool
     {
@@ -65,9 +62,6 @@ class IPv4 extends IP
 
     /**
      * Convert an IPv4 network mask to a bit mask.  For example: 255.255.255.0 -> 24
-     *
-     * @param  string  $netmask
-     * @return int
      */
     public static function netmask2cidr(string $netmask): int
     {
@@ -79,8 +73,6 @@ class IPv4 extends IP
 
     /**
      * Returns the netmask of this IP address. For example: 255.255.255.0
-     *
-     * @return string
      */
     public function getNetmask(): string
     {
@@ -89,8 +81,6 @@ class IPv4 extends IP
 
     /**
      * Convert an IPv4 bit mask to a long. Generally used with long2ip() or bitwise operations.
-     *
-     * @return int
      */
     private function cidr2long($cidr): int
     {
@@ -119,7 +109,6 @@ class IPv4 extends IP
      * Get the network address of this IP
      *
      * @param  int  $cidr  if not given will use the cidr stored with this IP
-     * @return string
      */
     public function getNetworkAddress(int $cidr = null): string
     {
@@ -132,8 +121,6 @@ class IPv4 extends IP
 
     /**
      * Convert this IP to an snmp index hex encoded
-     *
-     * @return string
      */
     public function toSnmpIndex(): string
     {

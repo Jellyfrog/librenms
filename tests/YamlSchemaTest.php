@@ -110,10 +110,6 @@ class YamlSchemaTest extends TestCase
             }, []);
     }
 
-    /**
-     * @param  string  $filePath
-     * @param  string  $schema_file
-     */
     private function validateFileAgainstSchema(string $filePath, string $schema_file)
     {
         $schema = (object) ['$ref' => 'file://' . Config::get('install_dir') . $schema_file];

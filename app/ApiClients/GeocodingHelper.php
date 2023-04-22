@@ -38,7 +38,6 @@ trait GeocodingHelper
      * Try to get the coordinates of a given address.
      * If unsuccessful, the returned array will be empty
      *
-     * @param  string  $address
      * @return array ['lat' => 0, 'lng' => 0]
      */
     public function getCoordinates(string $address): array
@@ -76,17 +75,12 @@ trait GeocodingHelper
 
     /**
      * Get latitude and longitude from geocode response
-     *
-     * @param  array  $data
-     * @return array
      */
     abstract protected function parseLatLng(array $data): array;
 
     /**
      * Build Guzzle request option array
      *
-     * @param  string  $address
-     * @return array
      *
      * @throws \Exception you may throw an Exception if validation fails
      */

@@ -72,7 +72,6 @@ class RoutesTablesController extends TableController
     /**
      * Defines the base query for this resource
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
      */
     protected function baseQuery(Request $request)
@@ -113,9 +112,6 @@ class RoutesTablesController extends TableController
     }
 
     /**
-     * @param  string  $search
-     * @param  Builder  $query
-     * @param  array  $fields
      * @return Builder|\Illuminate\Database\Query\Builder
      */
     protected function search(string $search, Builder $query, array $fields = [])
@@ -132,11 +128,6 @@ class RoutesTablesController extends TableController
         return $query;
     }
 
-    /**
-     * @param  Request  $request
-     * @param  Builder  $query
-     * @return Builder
-     */
     public function sort(Request $request, Builder $query): Builder
     {
         $sort = $request->get('sort');
@@ -165,9 +156,6 @@ class RoutesTablesController extends TableController
         return $query;
     }
 
-    /**
-     * @param  Route  $route_entry
-     */
     public function formatItem(Route $route_entry)
     {
         $item['updated_at'] = $route_entry->updated_at ? $route_entry->updated_at->diffForHumans() : $route_entry->updated_at;
