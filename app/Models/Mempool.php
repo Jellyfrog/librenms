@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Mempool;
 use Illuminate\Support\Str;
 use LibreNMS\Interfaces\Models\Keyable;
 use LibreNMS\Util\Number;
