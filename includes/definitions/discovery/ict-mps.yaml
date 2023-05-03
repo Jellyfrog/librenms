@@ -32,7 +32,7 @@ modules:
                     skip_values:
                         -
                             oid: moduleVoltage
-                            op: =
+                            op: '='
                             value: '.'
         state:
             data:
