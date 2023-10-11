@@ -8,6 +8,117 @@
         "text": {
             "type": "string"
         },
+        "group": {
+            "type": "string"
+        },
+        "type": {
+            "type": "string"
+        },
+        "icon": {
+            "type": "string"
+        },
+        "icons": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "mib_dir": {
+            "type":  "string"
+        },
+
+        "oids": {
+            "type": "object",
+            "properties": {
+                "no_bulk": {
+                    "type": "array"
+                },
+                "unordered": {
+                    "type": "array"
+                }
+            },
+            "additionalProperties": false
+        },
+        "snmp_bulk": {
+            "type": "boolean"
+        },
+        "snmp_max_oid": {
+            "type": "integer",
+            "minimum": 1
+        },
+        "ifname": {
+            "type": "boolean"
+        },
+        "ifXmcbc": {
+            "type": "boolean"
+        },
+        "rfc1628_compat": {
+            "type": "boolean"
+        },
+        "empty_ifdescr": {
+            "type": "boolean"
+        },
+        "processor_stacked": {
+            "type": "boolean"
+        },
+        "good_if": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "bad_entity_sensor_regex": {"$ref": "#/$defs/regex_group"},
+        "bad_if": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "bad_ifXEntry": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "bad_iftype": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "bad_ifoperstatus": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "bad_ifname_regexp": {"$ref": "#/$defs/regex_group"},
+        "bad_if_regexp": {"$ref": "#/$defs/regex_group"},
+        "bad_snmpEngineTime": {
+            "type": "boolean"
+        },
+        "bad_uptime": {
+            "type": "boolean"
+        },
+        "bad_hrSystemUptime": {
+            "type": "boolean"
+        },
+        "ignore_mount_string": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "config_highlighting": {
+            "type": "string"
+        },
+        "disabled_sensors": {
+            "type": "object",
+            "patternProperties": {
+                ".": {"type": "boolean"}
+            }
+        },
+        "disabled_sensors_regex": {"$ref": "#/$defs/regex_group"},
         "over": {
             "type": "array",
             "items": {
@@ -23,9 +134,6 @@
                 "required": ["graph", "text"],
                 "additionalProperties": false
             }
-        },
-        "type": {
-            "type": "string"
         },
         "discovery": {
             "type": "array",
@@ -48,14 +156,146 @@
                 "additionalProperties": false
             }
         },
-        "group": {
-            "type": "string"
-        },
-        "icon": {
-            "type": "string"
-        },
-        "config_highlighting": {
-            "type": "string"
+        "discovery_modules": {
+            "type": "object",
+            "properties": {
+                "applications": {
+                    "type": "boolean"
+                },
+                "arp-table": {
+                    "type": "boolean"
+                },
+                "bgp-peers": {
+                    "type": "boolean"
+                },
+                "charge": {
+                    "type": "boolean"
+                },
+                "cisco-cef": {
+                    "type": "boolean"
+                },
+                "cisco-mac-accounting": {
+                    "type": "boolean"
+                },
+                "cisco-otv": {
+                    "type": "boolean"
+                },
+                "cisco-pw": {
+                    "type": "boolean"
+                },
+                "cisco-qfp": {
+                    "type": "boolean"
+                },
+                "cisco-vrf-lite": {
+                    "type": "boolean"
+                },
+                "discovery-protocols": {
+                    "type": "boolean"
+                },
+                "diskio": {
+                    "type": "boolean"
+                },
+                "entity-physical": {
+                    "type": "boolean"
+                },
+                "entity-state": {
+                    "type": "boolean"
+                },
+                "fdb-table": {
+                    "type": "boolean"
+                },
+                "hr-device": {
+                    "type": "boolean"
+                },
+                "ip6-addresses": {
+                    "type": "boolean"
+                },
+                "ipmi": {
+                    "type": "boolean"
+                },
+                "ipv4-addresses": {
+                    "type": "boolean"
+                },
+                "ipv6-address": {
+                    "type": "boolean"
+                },
+                "ipv6-addresses": {
+                    "type": "boolean"
+                },
+                "junose-atm-vp": {
+                    "type": "boolean"
+                },
+                "loadbalancers": {
+                    "type": "boolean"
+                },
+                "mef": {
+                    "type": "boolean"
+                },
+                "mempools": {
+                    "type": "boolean"
+                },
+                "mpls": {
+                    "type": "boolean"
+                },
+                "ntp": {
+                    "type": "boolean"
+                },
+                "ospf": {
+                    "type": "boolean"
+                },
+                "ports": {
+                    "type": "boolean"
+                },
+                "ports-stack": {
+                    "type": "boolean"
+                },
+                "printer-supplies": {
+                    "type": "boolean"
+                },
+                "processors": {
+                    "type": "boolean"
+                },
+                "sensors": {
+                    "type": "boolean"
+                },
+                "services": {
+                    "type": "boolean"
+                },
+                "slas": {
+                    "type": "boolean"
+                },
+                "storage": {
+                    "type": "boolean"
+                },
+                "stp": {
+                    "type": "boolean"
+                },
+                "ucd-diskio": {
+                    "type": "boolean"
+                },
+                "ucd-dsktable": {
+                    "type": "boolean"
+                },
+                "ucd-mib": {
+                    "type": "boolean"
+                },
+                "vlans": {
+                    "type": "boolean"
+                },
+                "vminfo": {
+                    "type": "boolean"
+                },
+                "vrf": {
+                    "type": "boolean"
+                },
+                "wireless": {
+                    "type": "boolean"
+                },
+                "xdsl": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": false
         },
         "poller_modules": {
             "type": "object",
@@ -215,245 +455,6 @@
                 }
             },
             "additionalProperties": false
-        },
-        "discovery_modules": {
-            "type": "object",
-            "properties": {
-                "cisco-qfp": {
-                    "type": "boolean"
-                },
-                "cisco-cef": {
-                    "type": "boolean"
-                },
-                "slas": {
-                    "type": "boolean"
-                },
-                "cisco-mac-accounting": {
-                    "type": "boolean"
-                },
-                "cisco-otv": {
-                    "type": "boolean"
-                },
-                "cisco-pw": {
-                    "type": "boolean"
-                },
-                "entity-state": {
-                    "type": "boolean"
-                },
-                "vrf": {
-                    "type": "boolean"
-                },
-                "cisco-vrf-lite": {
-                    "type": "boolean"
-                },
-                "ports": {
-                    "type": "boolean"
-                },
-                "ports-stack": {
-                    "type": "boolean"
-                },
-                "entity-physical": {
-                    "type": "boolean"
-                },
-                "processors": {
-                    "type": "boolean"
-                },
-                "mempools": {
-                    "type": "boolean"
-                },
-                "storage": {
-                    "type": "boolean"
-                },
-                "hr-device": {
-                    "type": "boolean"
-                },
-                "discovery-protocols": {
-                    "type": "boolean"
-                },
-                "bgp-peers": {
-                    "type": "boolean"
-                },
-                "vlans": {
-                    "type": "boolean"
-                },
-                "ucd-diskio": {
-                    "type": "boolean"
-                },
-                "ucd-dsktable": {
-                    "type": "boolean"
-                },
-                "services": {
-                    "type": "boolean"
-                },
-                "stp": {
-                    "type": "boolean"
-                },
-                "ntp": {
-                    "type": "boolean"
-                },
-                "wireless": {
-                    "type": "boolean"
-                },
-                "fdb-table": {
-                    "type": "boolean"
-                },
-                "arp-table": {
-                    "type": "boolean"
-                },
-                "printer-supplies": {
-                    "type": "boolean"
-                },
-                "ipv4-addresses": {
-                    "type": "boolean"
-                },
-                "ipv6-addresses": {
-                    "type": "boolean"
-                },
-                "charge": {
-                    "type": "boolean"
-                },
-                "ospf": {
-                    "type": "boolean"
-                },
-                "ucd-mib": {
-                    "type": "boolean"
-                },
-                "ipmi": {
-                    "type": "boolean"
-                },
-                "mef": {
-                    "type": "boolean"
-                },
-                "ipv6-address": {
-                    "type": "boolean"
-                },
-                "loadbalancers": {
-                    "type": "boolean"
-                },
-                "applications": {
-                    "type": "boolean"
-                },
-                "sensors": {
-                    "type": "boolean"
-                },
-                "diskio": {
-                    "type": "boolean"
-                },
-                "junose-atm-vp": {
-                    "type": "boolean"
-                },
-                "vminfo": {
-                    "type": "boolean"
-                },
-                "mpls": {
-                    "type": "boolean"
-                },
-                "ip6-addresses": {
-                    "type": "boolean"
-                },
-                "xdsl": {
-                    "type": "boolean"
-                }
-            },
-            "additionalProperties": false
-        },
-        "ifname": {
-            "type": "boolean"
-        },
-        "mib_dir": {
-            "type":  "string"
-        },
-        "good_if": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
-        "oids": {
-            "type": "object",
-            "properties": {
-                "no_bulk": {
-                    "type": "array"
-                },
-                "unordered": {
-                    "type": "array"
-                }
-            },
-            "additionalProperties": false
-        },
-        "snmp_bulk": {
-            "type": "boolean"
-        },
-        "snmp_max_oid": {
-            "type": "integer",
-            "minimum": 1
-        },
-        "ifXmcbc": {
-            "type": "boolean"
-        },
-        "rfc1628_compat": {
-            "type": "boolean"
-        },
-        "empty_ifdescr": {
-            "type": "boolean"
-        },
-        "bad_entity_sensor_regex": {"$ref": "#/$defs/regex_group"},
-        "bad_if": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
-        "bad_ifXEntry": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
-        "bad_iftype": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
-        "bad_ifoperstatus": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
-        "processor_stacked": {
-            "type": "boolean"
-        },
-        "disabled_sensors": {
-            "type": "object",
-            "patternProperties": {
-                ".": {"type": "boolean"}
-            }
-        },
-        "disabled_sensors_regex": {"$ref": "#/$defs/regex_group"},
-        "bad_ifname_regexp": {"$ref": "#/$defs/regex_group"},
-        "bad_if_regexp": {"$ref": "#/$defs/regex_group"},
-        "bad_snmpEngineTime": {
-            "type": "boolean"
-        },
-        "bad_uptime": {
-            "type": "boolean"
-        },
-        "ignore_mount_string": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
-        "bad_hrSystemUptime": {
-            "type": "boolean"
-        },
-        "icons": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
         }
     },
     "additionalProperties": false,

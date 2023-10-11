@@ -8,85 +8,15 @@
         "modules": {
             "type": "object",
             "properties": {
-                "mempools": {
-                    "type": "object",
-                    "properties": {
-                        "pre-cache": {"$ref": "#/$defs/pre-cache"},
-                        "data": {
-                            "type": "array",
-                            "items": {
-                                "properties": {
-                                    "descr": {
-                                        "type": "string"
-                                    },
-                                    "free": {
-                                        "type": "string"
-                                    },
-                                    "index": {
-                                        "type": [
-                                            "integer",
-                                            "string"
-                                        ]
-                                    },
-                                    "oid": {"$ref": "#/$defs/oid"},
-                                    "percent_used": {
-                                        "type": "string"
-                                    },
-                                    "precision": {
-                                        "type": [
-                                            "integer",
-                                            "string"
-                                        ]
-                                    },
-                                    "skip_values": {
-                                        "$ref": "#/$defs/skip_values"
-                                    },
-                                    "snmp_flags": {
-                                        "type": "string"
-                                    },
-                                    "total": {
-                                        "type": [
-                                            "integer",
-                                            "string"
-                                        ]
-                                    },
-                                    "type": {
-                                        "type": "string"
-                                    },
-                                    "class": {
-                                        "type": "string"
-                                    },
-                                    "used": {
-                                        "type": "string"
-                                    },
-                                    "warn_percent": {
-                                        "type": [
-                                            "integer",
-                                            "string"
-                                        ]
-                                    },
-                                    "snmp_no_Ih_flag": {
-                                        "type": "string"
-                                    }
-                                },
-                                "additionalProperties": false
-                            }
-                        }
-                    },
-                    "additionalProperties": false,
-                    "required": [
-                        "data"
-                    ]
-                },
                 "os": {
                     "type": "object",
                     "properties": {
-                        "version": {"$ref": "#/$defs/oids"},
-                        "hardware": {"$ref": "#/$defs/oids"},
                         "features": {"$ref": "#/$defs/oids"},
+                        "hardware": {"$ref": "#/$defs/oids"},
                         "serial": {"$ref": "#/$defs/oids"},
-                        "lat": {"$ref": "#/$defs/oid"},
+                        "version": {"$ref": "#/$defs/oids"},
                         "location": {"$ref": "#/$defs/oids"},
+                        "lat": {"$ref": "#/$defs/oid"},
                         "long": {"$ref": "#/$defs/oid"},
                         "sysDescr_regex": {
                             "type": ["string", "array"]
@@ -124,12 +54,82 @@
                         "location_template": {
                             "type": "string"
                         },
-                        "version_replace": {"$ref": "#/$defs/os_replacements"},
-                        "hardware_replace": {"$ref": "#/$defs/os_replacements"},
                         "features_replace": {"$ref": "#/$defs/os_replacements"},
-                        "serial_replace": {"$ref": "#/$defs/os_replacements"}
+                        "hardware_replace": {"$ref": "#/$defs/os_replacements"},
+                        "serial_replace": {"$ref": "#/$defs/os_replacements"},
+                        "version_replace": {"$ref": "#/$defs/os_replacements"}
                     },
                     "additionalProperties": false
+                },
+                "mempools": {
+                    "type": "object",
+                    "properties": {
+                        "pre-cache": {"$ref": "#/$defs/pre-cache"},
+                        "data": {
+                            "type": "array",
+                            "items": {
+                                "properties": {
+                                    "descr": {
+                                        "type": "string"
+                                    },
+                                    "free": {
+                                        "type": "string"
+                                    },
+                                    "index": {
+                                        "type": [
+                                            "integer",
+                                            "string"
+                                        ]
+                                    },
+                                    "oid": {"$ref": "#/$defs/oid"},
+                                    "percent_used": {
+                                        "type": "string"
+                                    },
+                                    "precision": {
+                                        "type": [
+                                            "integer",
+                                            "string"
+                                        ]
+                                    },
+                                    "skip_values": {
+                                        "$ref": "#/$defs/skip_values"
+                                    },
+                                    "snmp_flags": {
+                                        "type": "string"
+                                    },
+                                    "snmp_no_Ih_flag": {
+                                        "type": "string"
+                                    },
+                                    "total": {
+                                        "type": [
+                                            "integer",
+                                            "string"
+                                        ]
+                                    },
+                                    "type": {
+                                        "type": "string"
+                                    },
+                                    "class": {
+                                        "type": "string"
+                                    },
+                                    "used": {
+                                        "type": "string"
+                                    },
+                                    "warn_percent": {
+                                        "type": [
+                                            "integer",
+                                            "string"
+                                        ]
+                                    }
+                                },
+                                "additionalProperties": false
+                            }
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "data"
+                    ]
                 },
                 "processors": {
                     "type": "object",
@@ -194,6 +194,56 @@
                 "sensors": {
                     "type": "object",
                     "properties": {
+                        "pre-cache": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "oid": {"$ref": "#/$defs/oids"},
+                                            "snmp_flags": {
+                                                "type": [
+                                                    "string",
+                                                    "array"
+                                                ]
+                                            },
+                                            "snmp_no_Ih_flag": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "additionalProperties": false,
+                                        "required": [
+                                            "oid"
+                                        ]
+                                    }
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "data"
+                            ]
+                        },
+                        "fanspeed": {"$ref": "#/$defs/sensor"},
+                        "temperature": {"$ref": "#/$defs/sensor"},
+                        "voltage": {"$ref": "#/$defs/sensor"},
+                        "airflow": {"$ref": "#/$defs/sensor"},
+                        "charge": {"$ref": "#/$defs/sensor"},
+                        "chromatic_dispersion": {"$ref": "#/$defs/sensor"},
+                        "cooling": {"$ref": "#/$defs/sensor"},
+                        "current": {"$ref": "#/$defs/sensor"},
+                        "dbm": {"$ref": "#/$defs/sensor"},
+                        "delay": {"$ref": "#/$defs/sensor"},
+                        "eer": {"$ref": "#/$defs/sensor"},
+                        "frequency": {"$ref": "#/$defs/sensor"},
+                        "humidity": {"$ref": "#/$defs/sensor"},
+                        "load": {"$ref": "#/$defs/sensor"},
+                        "power": {"$ref": "#/$defs/sensor"},
+                        "pressure": {"$ref": "#/$defs/sensor"},
+                        "quality_factor": {"$ref": "#/$defs/sensor"},
+                        "runtime": {"$ref": "#/$defs/sensor"},
+                        "snr": {"$ref": "#/$defs/sensor"},
                         "state": {
                             "type": "object",
                             "properties": {
@@ -285,13 +335,13 @@
                                             "snmp_bulk": {
                                                 "type": "boolean"
                                             },
+                                            "snmp_no_Ih_flag": {
+                                                "type": "string"
+                                            },
                                             "entPhysicalIndex": {
                                                 "type": ["integer", "string"]
                                             },
                                             "entPhysicalIndex_measured": {
-                                                "type": "string"
-                                            },
-                                            "snmp_no_Ih_flag": {
                                                 "type": "string"
                                             }
                                         },
@@ -310,57 +360,7 @@
                                 "data"
                             ]
                         },
-                        "voltage": {"$ref": "#/$defs/sensor"},
-                        "fanspeed": {"$ref": "#/$defs/sensor"},
-                        "temperature": {"$ref": "#/$defs/sensor"},
-                        "pre-cache": {
-                            "type": "object",
-                            "properties": {
-                                "data": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "oid": {"$ref": "#/$defs/oids"},
-                                            "snmp_flags": {
-                                                "type": [
-                                                    "string",
-                                                    "array"
-                                                ]
-                                            },
-                                            "snmp_no_Ih_flag": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "additionalProperties": false,
-                                        "required": [
-                                            "oid"
-                                        ]
-                                    }
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "data"
-                            ]
-                        },
-                        "humidity": {"$ref": "#/$defs/sensor"},
-                        "airflow": {"$ref": "#/$defs/sensor"},
-                        "current": {"$ref": "#/$defs/sensor"},
-                        "frequency": {"$ref": "#/$defs/sensor"},
-                        "power": {"$ref": "#/$defs/sensor"},
-                        "pressure": {"$ref": "#/$defs/sensor"},
-                        "cooling": {"$ref": "#/$defs/sensor"},
-                        "charge": {"$ref": "#/$defs/sensor"},
-                        "runtime": {"$ref": "#/$defs/sensor"},
-                        "dbm": {"$ref": "#/$defs/sensor"},
-                        "load": {"$ref": "#/$defs/sensor"},
-                        "chromatic_dispersion": {"$ref": "#/$defs/sensor"},
-                        "delay": {"$ref": "#/$defs/sensor"},
-                        "quality_factor": {"$ref": "#/$defs/sensor"},
-                        "snr": {"$ref": "#/$defs/sensor"},
-                        "waterflow": {"$ref": "#/$defs/sensor"},
-                        "eer": {"$ref": "#/$defs/sensor"}
+                        "waterflow": {"$ref": "#/$defs/sensor"}
                     }
                 }
             }
@@ -462,6 +462,9 @@
                             "snmp_bulk": {
                                 "type": "boolean"
                             },
+                            "snmp_no_Ih_flag": {
+                                "type": "string"
+                            },
                             "rrd_type": {
                                 "type": "string"
                             },
@@ -472,9 +475,6 @@
                                 "type": "string"
                             },
                             "user_func": {
-                                "type": "string"
-                            },
-                            "snmp_no_Ih_flag": {
                                 "type": "string"
                             }
                         },
