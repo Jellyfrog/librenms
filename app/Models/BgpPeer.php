@@ -61,4 +61,15 @@ class BgpPeer extends DeviceRelatedModel
                 ->orWhere('bgpPeerAdminStatus', 'running');
         })->where('bgpPeerState', '!=', 'established');
     }
+
+    public function scopeFamily(Builder $query, int $family): Builder
+    {
+        return $query
+            ->when($family == 4, function (Builder $query) {
+                $query->where('bgpLocalAddr', 'like', '%.%');
+            })
+            ->when($family == 6, function (Builder $query) {
+                $query->where('bgpLocalAddr', 'like', '%:%');
+            });
+    }
 }

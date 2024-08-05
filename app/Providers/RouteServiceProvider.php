@@ -44,9 +44,13 @@ class RouteServiceProvider extends ServiceProvider
              * These routes are typically stateless.
              */
             Route::prefix('api')
-                 ->middleware('api')
-                 ->namespace($this->namespace)
+                 ->middleware('web')
                  ->group(base_path('routes/api.php'));
+
+            Route::prefix('api')
+                 ->middleware('api_legacy')
+                 ->namespace($this->namespace)
+                 ->group(base_path('routes/api_legacy.php'));
 
             /**
              * Define the "web" routes for the application.

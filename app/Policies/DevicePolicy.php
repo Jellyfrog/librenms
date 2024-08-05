@@ -108,4 +108,14 @@ class DevicePolicy
     {
         return $user->isAdmin();
     }
+
+    public function viewPort(User $user, Device $device): bool
+    {
+        return $this->view($user, $device);
+    }
+
+    public function viewPorts(User $user, Device $device): bool
+    {
+        return $this->view($user, $device);
+    }
 }
