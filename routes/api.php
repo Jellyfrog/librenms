@@ -4,6 +4,9 @@ use LaravelJsonApi\Laravel\Facades\JsonApiRoute;
 use LaravelJsonApi\Laravel\Http\Controllers\JsonApiController;
 use LaravelJsonApi\Laravel\Routing\Relationships;
 use LaravelJsonApi\Laravel\Routing\ResourceRegistrar;
+use LaravelJsonApi\Laravel\Routing\ActionRegistrar;
+
+Use App\Http\Controllers\Api\V1\PortController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,10 +29,12 @@ JsonApiRoute::server('v1')->prefix('v1')->resources(function (ResourceRegistrar 
             $relations->hasOne('location')->readOnly();
         });
 
-    $server->resource('ports', JsonApiController::class)
+    $server->resource('ports', PortController::class)
         ->readOnly()
         ->relationships(function (Relationships $relations) {
             $relations->hasOne('device')->readOnly();
+        })->actions('-actions', function (ActionRegistrar $actions) {
+            $actions->withId()->get('graph');
         });
 
     $server->resource('locations', JsonApiController::class)
