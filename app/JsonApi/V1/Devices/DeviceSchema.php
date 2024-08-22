@@ -88,6 +88,7 @@ class DeviceSchema extends Schema
             Boolean::make('disableNotify'),
 
             // Relationships
+            HasMany::make('ports'),
         ];
     }
 

@@ -85,4 +85,14 @@ class PortPolicy
     {
         return $user->hasGlobalAdmin();
     }
+
+    public function viewDevice(User $user, Port $port): bool
+    {
+        return $this->viewAny($user) || Permissions::canAccessDevice($port->device_id, $user);
+    }
+
+    public function viewDevices(User $user, Port $port): bool
+    {
+        return $this->viewAny($user) || Permissions::canAccessDevice($port->device_id, $user);
+    }
 }

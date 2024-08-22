@@ -19,5 +19,14 @@ use LaravelJsonApi\Laravel\Routing\ActionRegistrar;
 
 JsonApiRoute::server('v1')->prefix('v1')->resources(function (ResourceRegistrar $server) {
     $server->resource('devices', JsonApiController::class)
-        ->readOnly();
+        ->readOnly()
+        ->relationships(function (Relationships $relations) {
+            $relations->hasMany('ports')->readOnly();
+        });
+
+    $server->resource('ports', JsonApiController::class)
+        ->readOnly()
+        ->relationships(function (Relationships $relations) {
+            $relations->hasOne('device')->readOnly();
+        });
 });
