@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use LaravelJsonApi\Core\Exceptions\JsonApiException;
+use LaravelJsonApi\Exceptions\ExceptionParser;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -18,6 +20,7 @@ class Handler extends ExceptionHandler
         \Illuminate\Session\TokenMismatchException::class,
         \Illuminate\Validation\ValidationException::class,
         \Symfony\Component\Console\Exception\CommandNotFoundException::class,
+        JsonApiException::class,
     ];
 
     /**
@@ -70,5 +73,16 @@ class Handler extends ExceptionHandler
         }
 
         return parent::convertExceptionToArray($e);
+    }
+
+    public function register()
+    {
+        $this->reportable(function (Throwable $e) {
+             //
+        });
+
+        $this->renderable(
+            ExceptionParser::make()->renderable()
+        );
     }
 }

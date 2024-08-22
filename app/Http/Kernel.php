@@ -53,10 +53,15 @@ class Kernel extends HttpKernel
             \Illuminate\Session\Middleware\StartSession::class,
         ],
 
-        'api' => [
+        'api_legacy' => [
             \App\Http\Middleware\EnforceJson::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            'authenticate:token',
+        //    'authenticate:token',
+        ],
+
+        'api' => [
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            //'authenticate',
         ],
     ];
 

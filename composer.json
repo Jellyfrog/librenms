@@ -37,6 +37,7 @@
         "influxdata/influxdb-client-php": "^3.4",
         "influxdb/influxdb-php": "^1.15",
         "justinrainbow/json-schema": "^5.2",
+        "laravel-json-api/laravel": "^3.4",
         "laravel-notification-channels/webpush": "^7.1",
         "laravel/framework": "^10.8",
         "laravel/tinker": "^2.8",
