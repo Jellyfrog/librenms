@@ -6,7 +6,6 @@ use LaravelJsonApi\Laravel\Routing\Relationships;
 use LaravelJsonApi\Laravel\Routing\ResourceRegistrar;
 use LaravelJsonApi\Laravel\Routing\ActionRegistrar;
 
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,3 +16,8 @@ use LaravelJsonApi\Laravel\Routing\ActionRegistrar;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+JsonApiRoute::server('v1')->prefix('v1')->resources(function (ResourceRegistrar $server) {
+    $server->resource('devices', JsonApiController::class)
+        ->readOnly();
+});

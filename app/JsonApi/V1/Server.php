@@ -30,6 +30,8 @@ class Server extends BaseServer
      */
     protected function allSchemas(): array
     {
-        return [];
+        return [
+            Devices\DeviceSchema::class,
+        ];
     }
 }
