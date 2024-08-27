@@ -4,7 +4,6 @@ use LaravelJsonApi\Laravel\Facades\JsonApiRoute;
 use LaravelJsonApi\Laravel\Http\Controllers\JsonApiController;
 use LaravelJsonApi\Laravel\Routing\Relationships;
 use LaravelJsonApi\Laravel\Routing\ResourceRegistrar;
-use LaravelJsonApi\Laravel\Routing\ActionRegistrar;
 
 /*
 |--------------------------------------------------------------------------

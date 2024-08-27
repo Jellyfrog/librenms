@@ -3,8 +3,8 @@
 namespace App\Policies;
 
 use App\Facades\Permissions;
-use App\Models\Vlan;
 use App\Models\User;
+use App\Models\Vlan;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class VlanPolicy
