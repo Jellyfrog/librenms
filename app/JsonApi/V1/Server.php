@@ -35,6 +35,7 @@ class Server extends BaseServer
             Ports\PortSchema::class,
             Vlans\VlanSchema::class,
             BgpPeers\BgpPeerSchema::class,
+            Locations\LocationSchema::class,
         ];
     }
 }

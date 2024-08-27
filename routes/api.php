@@ -24,6 +24,7 @@ JsonApiRoute::server('v1')->prefix('v1')->resources(function (ResourceRegistrar 
             $relations->hasMany('ports')->readOnly();
             $relations->hasMany('vlans')->readOnly();
             $relations->hasMany('bgppeers')->readOnly();
+            $relations->hasMany('locations')->readOnly();
         });
 
     $server->resource('ports', JsonApiController::class)
@@ -39,6 +40,12 @@ JsonApiRoute::server('v1')->prefix('v1')->resources(function (ResourceRegistrar 
         });
 
     $server->resource('bgppeers', JsonApiController::class)
+        ->readOnly()
+        ->relationships(function (Relationships $relations) {
+            $relations->hasOne('device')->readOnly();
+        });
+
+    $server->resource('locations', JsonApiController::class)
         ->readOnly()
         ->relationships(function (Relationships $relations) {
             $relations->hasOne('device')->readOnly();

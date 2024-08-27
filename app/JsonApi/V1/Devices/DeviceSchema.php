@@ -91,6 +91,7 @@ class DeviceSchema extends Schema
             HasMany::make('ports'),
             HasMany::make('vlans'),
             HasMany::make('bgp-peers'),
+            BelongsTo::make('location'),
         ];
     }
 
