@@ -22,9 +22,16 @@ JsonApiRoute::server('v1')->prefix('v1')->resources(function (ResourceRegistrar 
         ->readOnly()
         ->relationships(function (Relationships $relations) {
             $relations->hasMany('ports')->readOnly();
+            $relations->hasMany('vlans')->readOnly();
         });
 
     $server->resource('ports', JsonApiController::class)
+        ->readOnly()
+        ->relationships(function (Relationships $relations) {
+            $relations->hasOne('device')->readOnly();
+        });
+
+    $server->resource('vlans', JsonApiController::class)
         ->readOnly()
         ->relationships(function (Relationships $relations) {
             $relations->hasOne('device')->readOnly();

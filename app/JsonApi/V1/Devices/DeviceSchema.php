@@ -89,6 +89,7 @@ class DeviceSchema extends Schema
 
             // Relationships
             HasMany::make('ports'),
+            HasMany::make('vlans'),
         ];
     }
 

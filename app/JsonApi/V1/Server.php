@@ -33,6 +33,7 @@ class Server extends BaseServer
         return [
             Devices\DeviceSchema::class,
             Ports\PortSchema::class,
+            Vlans\VlanSchema::class,
         ];
     }
 }
