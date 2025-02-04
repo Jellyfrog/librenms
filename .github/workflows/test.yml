@@ -37,7 +37,8 @@ jobs:
           declare -A FILE_LIST
           for FILE in "${INPUT_FILES[@]}"
           do
-            (( FILE_LIST[${FILE:0:2}]++ ))
+            KEY=${FILE:0:2}
+            FILE_LIST[$KEY]=$(( ${FILE_LIST[$KEY]:-0} + 1 ))
           done
 
           declare -r PER_SPLIT=$(( INPUT_FILES_TOTAL / SPLITS ))
