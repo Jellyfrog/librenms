@@ -28,6 +28,7 @@ jobs:
       - name: Calculate `test-shard-matrix` output
         id: shards
         run: |
+          set -x
           declare -r SPLITS=8
 
           readarray -t INPUT_FILES < <(find includes/definitions/ -maxdepth 1 -name "*.yaml" -printf "%f\n")
