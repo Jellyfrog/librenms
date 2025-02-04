@@ -191,13 +191,14 @@ class CiHelper
         // exclusive tests
         if ($this->flags['unit_os']) {
             echo 'Only checking os: ' . implode(', ', $this->os) . PHP_EOL;
-            $filter = implode('.*|', $this->os);
+            $filter = implode('|', $this->os);
             // include tests that don't have data providers and only data sets that match
             array_push($phpunit_cmd, '--group', 'os');
             if ($this->flags['os-modules-only']) {
-                array_push($phpunit_cmd, '--filter', "/::testOS with data set \"$filter.*\"$/");
+                array_push($phpunit_cmd, '--filter', "/::testOS with data set \"($filter)/");
             } else {
-                array_push($phpunit_cmd, '--filter', "/::test[A-Za-z]+$|::testOSDetection|::test[A-Za-z]+ with data set \"$filter.*\"$/");
+                //array_push($phpunit_cmd, '--filter', "/::test[A-Za-z]+$|::testOSDetection|::test[A-Za-z]+ with data set \"$filter.*\"$/");
+                array_push($phpunit_cmd, '--filter', "/::test[A-Za-z]+$|with data set \"($filter)/");
             }
         } elseif ($this->flags['unit_docs']) {
             array_push($phpunit_cmd, '--group', 'docs');
