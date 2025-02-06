@@ -22,8 +22,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          sparse-checkout-cone-mode: false
           sparse-checkout: |
-            includes/definitions
+            includes/definitions/*.yaml
 
       - name: Calculate `test-shard-matrix` output
         id: shards
@@ -162,6 +163,11 @@ jobs:
         name: Composer install
         run: |
           composer install --prefer-dist --no-interaction --no-progress
+
+      -
+        name: Composer install 2
+        run: |
+          composer install --prefer-dist --no-interaction --no-progress          
       -
         name: Snmpsim setup
         run: |
@@ -212,7 +218,7 @@ jobs:
         name: lnms dev:check ci (Web)
         if: matrix.skip-web-check != '1'
         run: |
-          php lnms dev:check ci -o ${{ matrix.shard }}
+          php lnms dev:check ci
         env:
           SKIP_UNIT_CHECK: ${{ matrix.skip-unit-check }}
           SKIP_WEB_CHECK: ${{ matrix.skip-web-check }}          
