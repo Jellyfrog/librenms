@@ -92,17 +92,6 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      -
-         name: Set $FILES
-         run: |
-           FILES=$(git diff --diff-filter=d --name-only origin/master | tr '\n' ' '|sed 's/,*$//g')
-           echo $FILES
-
-           echo 'FILES<<EOF' >> $GITHUB_ENV
-           echo $FILES >> $GITHUB_ENV
-           echo 'EOF' >> $GITHUB_ENV
       -
          name: Set $PATH
          run: |
@@ -211,12 +200,22 @@ jobs:
         run: |
           .python_venvs/snmpsim/bin/snmpsim-command-responder-lite --data-dir=tests/snmpsim --agent-udpv4-endpoint=127.1.6.2:1162 --log-level=error --logging-method=file:/tmp/snmpsimd.log &
       -
-        name: lnms dev:check ci
+        name: lnms dev:check ci (OS)
+        if: matrix.skip-unit-check != '1'
         run: |
           php lnms dev:check ci -o ${{ matrix.shard }}
         env:
           SKIP_UNIT_CHECK: ${{ matrix.skip-unit-check }}
           SKIP_WEB_CHECK: ${{ matrix.skip-web-check }}
+
+      -
+        name: lnms dev:check ci (Web)
+        if: matrix.skip-web-check != '1'
+        run: |
+          php lnms dev:check ci -o ${{ matrix.shard }}
+        env:
+          SKIP_UNIT_CHECK: ${{ matrix.skip-unit-check }}
+          SKIP_WEB_CHECK: ${{ matrix.skip-web-check }}          
       -
         name: Dump docker logs on failure
         if: failure()
