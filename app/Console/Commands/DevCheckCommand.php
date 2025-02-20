@@ -51,7 +51,7 @@ class DevCheckCommand extends LnmsCommand
         $this->addOption('snmpsim', null, InputOption::VALUE_NONE);
         $this->addOption('full', null, InputOption::VALUE_NONE);
         $this->addOption('os-modules-only', null, InputOption::VALUE_NONE);
-        $this->addOption('exclude-group', null, InputOption::VALUE_NONE);
+        $this->addOption('exclude-group', null, InputOption::VALUE_REQUIRED);
         $this->addOption('commands', 'c', InputOption::VALUE_NONE);
     }
 
