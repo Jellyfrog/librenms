@@ -30,7 +30,7 @@ jobs:
         id: shards
         run: |
           set -x
-          declare -r SPLITS=10
+          declare -r SPLITS=5
 
           readarray -t INPUT_FILES < <(find includes/definitions/ -maxdepth 1 -name "*.yaml" -printf "%f\n")
           declare -i -r INPUT_FILES_TOTAL=${#INPUT_FILES[@]}
@@ -193,7 +193,7 @@ jobs:
       - name: lnms dev:check ci
         if: matrix.skip-web-check != '1'
         run: |
-          php lnms dev:check ci --exclude-group=os
+          php lnms dev:check ci --exclude-group=os,mibs
 
       - name: Dump docker logs on failure
         if: failure()
