@@ -3,11 +3,11 @@ name: test
 on:
   push:
     branches:
-      - 'master'
-      - 'tests/sharded-os'
+      - "master"
+      - "tests/sharded-os"
   pull_request:
     branches:
-      - 'master'
+      - "master"
 
 permissions:
   contents: read # to fetch code (actions/checkout)
@@ -70,7 +70,6 @@ jobs:
           done
           printf "]" >> "$GITHUB_OUTPUT"
 
-
   test:
     needs: [setup]
     runs-on: ubuntu-22.04
@@ -90,57 +89,47 @@ jobs:
         ports:
           - 3306
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v4
-      -
-         name: Set $PATH
-         run: |
-           echo "/home/runner/.local/bin/" >> $GITHUB_PATH
-      -
-        name: Set up PHP
+      - name: Set $PATH
+        run: |
+          echo "/home/runner/.local/bin/" >> $GITHUB_PATH
+      - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
           tools: composer,php-cs-fixer
           coverage: none
-      -
-        name: Get composer cache directory
+      - name: Get composer cache directory
         id: composer-cache
         run: |
           echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-      -
-        name: Cache composer
+      - name: Cache composer
         uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
-      -
-        name: Cache pip
+      - name: Cache pip
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-
-      -
-        name: Install packages
+      - name: Install packages
         run: |
           sudo apt-get -qq update
           sudo apt-get install -y fping python3-pip python3-setuptools snmp sqlite3
-      -
-        name: Pip install
+      - name: Pip install
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install --upgrade --user pylint python-memcached mysqlclient
-      -
-        name: Composer validate
+      - name: Composer validate
         run: |
           composer validate
-      -
-        name: Init env
+      - name: Init env
         run: |
           cat > .env <<EOL
           APP_KEY=base64:vHI+YHgkyCDad31iPEErGSNEOWO21wNzV+zyENKQv04=
@@ -159,74 +148,62 @@ jobs:
           DB_TEST_USERNAME=librenms
           DB_TEST_PASSWORD=librenms
           EOL
-      -
-        name: Composer install
+      - name: Composer install
         run: |
           composer install --prefer-dist --no-interaction --no-progress
-      -
-        name: Snmpsim setup
+      - name: Snmpsim setup
         run: |
           php lnms dev:simulate --setup-venv
-      -
-        name: Copy seeded config
+      - name: Copy seeded config
         run: cp "${GITHUB_WORKSPACE}/tests/testing_config.yaml" "${GITHUB_WORKSPACE}/database/seeders/config/"
-      -
-        name: Ensure MySQL is up
+      - name: Ensure MySQL is up
         env:
           PORT: ${{ job.services.database.ports[3306] }}
         run: |
           mysqladmin -h"127.0.0.1" -P"$PORT" --user=librenms --password=librenms ping --wait=5
-      -
-        name: Set MySQL authentication plugin
+      - name: Set MySQL authentication plugin
         if: matrix.database == 'mysql:8.0'
         env:
           PORT: ${{ job.services.database.ports[3306] }}
         run: |
           mysql -h"127.0.0.1" -P"$PORT" --user=root -e "ALTER USER 'librenms'@'%' IDENTIFIED WITH mysql_native_password BY 'librenms'"
-      -
-        name: Set MySQL collate
+      - name: Set MySQL collate
         env:
           PORT: ${{ job.services.database.ports[3306] }}
         run: |
           mysql -h"127.0.0.1" -P"$PORT" --user=librenms --password=librenms -e 'ALTER DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'
-      -
-        name: Setup SQLite
+      - name: Setup SQLite
         run: sqlite3 database/testing.sqlite ""
-      -
-        name: Migrate Database
+
+      - name: Migrate Database
         run: php artisan migrate
-      -
-        name: Start SNMPSIM
+
+      - name: Start SNMPSIM
         if: matrix.skip-unit-check != '1'
         run: |
           .python_venvs/snmpsim/bin/snmpsim-command-responder-lite --data-dir=tests/snmpsim --agent-udpv4-endpoint=127.1.6.2:1162 --log-level=error --logging-method=file:/tmp/snmpsimd.log &
-      -
-        name: lnms dev:check ci (OS)
+
+      - name: lnms dev:check ci (OS)
         if: matrix.skip-unit-check != '1'
         run: |
-          php lnms dev:check ci -o ${{ matrix.shard }}
+          php lnms dev:check ci --os ${{ matrix.shard }}
         env:
-          SKIP_UNIT_CHECK: ${{ matrix.skip-unit-check }}
-          SKIP_WEB_CHECK: ${{ matrix.skip-web-check }}
+          SKIP_WEB_CHECK: 1
 
-      -
-        name: lnms dev:check ci (Web)
+      - name: lnms dev:check ci
         if: matrix.skip-web-check != '1'
         run: |
-          php lnms dev:check ci
-        env:
-          SKIP_UNIT_CHECK: ${{ matrix.skip-unit-check }}
-          SKIP_WEB_CHECK: ${{ matrix.skip-web-check }}          
-      -
-        name: Dump docker logs on failure
+          php lnms dev:check ci --exclude-group=os
+
+      - name: Dump docker logs on failure
         if: failure()
         uses: jwalton/gh-docker-logs@v2
-      -
-        name: Dump snmp logs
+
+      - name: Dump snmp logs
         if: failure() && matrix.skip-unit-check != '1'
         run: |
           cat /tmp/snmpsimd.log || true
-      -
-        name: Dump context
+
+      - name: Dump context
         if: always()
         uses: crazy-max/ghaction-dump-context@v1

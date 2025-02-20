@@ -74,6 +74,7 @@ class CiHelper
         'full' => false,
         'quiet' => false,
         'os-modules-only' => false,
+        'exclude-group' => null,
     ];
 
     public function enable($check, $enabled = true): void
@@ -185,7 +186,11 @@ class CiHelper
         }
 
         if (Debug::isVerbose()) {
-            $phpunit_cmd[] = '--debug';
+            array_push($phpunit_cmd, '--debug');
+        }
+
+        if ($this->flags['exclude-group']) {
+            array_push($phpunit_cmd, '--exclude-group', $this->flags['exclude-group']);
         }
 
         // exclusive tests
@@ -203,9 +208,9 @@ class CiHelper
         } elseif ($this->flags['unit_docs']) {
             array_push($phpunit_cmd, '--group', 'docs');
         } elseif ($this->flags['unit_svg']) {
-            $phpunit_cmd[] = 'tests/SVGTest.php';
+            array_push($phpunit_cmd, 'tests/SVGTest.php');
         } elseif ($this->flags['unit_modules'] || $this->flags['os-modules-only']) {
-            $phpunit_cmd[] = 'tests/OSModulesTest.php';
+            array_push($phpunit_cmd, 'tests/OSModulesTest.php');
         }
 
         return $this->execute('unit', $phpunit_cmd, false, $this->unitEnv);
