@@ -30,7 +30,7 @@ jobs:
         id: shards
         run: |
           set -x
-          declare -r SPLITS=5
+          declare -r SPLITS=8
 
           readarray -t INPUT_FILES < <(find includes/definitions/ -maxdepth 1 -name "*.yaml" -printf "%f\n")
           declare -i -r INPUT_FILES_TOTAL=${#INPUT_FILES[@]}
@@ -65,9 +65,13 @@ jobs:
           printf '{"name":"Web", "php-version":"8.2", "skip-unit-check": "1", "database": "mariadb:10.11"}, ' >> "$GITHUB_OUTPUT"
 
           for ((i=1;i<=${#SPLIT_GROUPS[@]};i++)); do
-            printf "{\"name\":\"OS Test 8.3 (%i/%i)\", \"php-version\":\"8.3\", \"skip-web-check\":\"1\", \"database\":\"mariadb:10.5\", \"shard\":\"%s\"}, " $i ${#SPLIT_GROUPS[@]} "${SPLIT_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
-            printf "{\"name\":\"OS Test 8.2 (%i/%i)\", \"php-version\":\"8.2\", \"skip-web-check\":\"1\", \"database\":\"mysql:8.0\", \"shard\":\"%s\"}, " $i ${#SPLIT_GROUPS[@]} "${SPLIT_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
+            printf "{\"name\":\"OS 8.3 (%i/%i)\", \"php-version\":\"8.3\", \"skip-web-check\":\"1\", \"database\":\"mariadb:10.5\", \"shard\":\"%s\"}, " $i ${#SPLIT_GROUPS[@]} "${SPLIT_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
           done
+
+          for ((i=1;i<=${#SPLIT_GROUPS[@]};i++)); do
+            printf "{\"name\":\"OS 8.2 (%i/%i)\", \"php-version\":\"8.2\", \"skip-web-check\":\"1\", \"database\":\"mysql:8.0\", \"shard\":\"%s\"}, " $i ${#SPLIT_GROUPS[@]} "${SPLIT_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
+          done
+
           printf "]" >> "$GITHUB_OUTPUT"
 
   test:
