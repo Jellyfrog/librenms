@@ -193,7 +193,7 @@ jobs:
       - name: lnms dev:check ci
         if: matrix.skip-web-check != '1'
         run: |
-          php lnms dev:check ci --exclude-group=os,mibs
+          php lnms dev:check ci --full --exclude-phpunit-group=os,mibs
 
       - name: Dump docker logs on failure
         if: failure()

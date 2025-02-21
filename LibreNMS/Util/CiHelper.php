@@ -34,6 +34,7 @@ class CiHelper
     private ?array $os = null;
     private array $unitEnv = [];
     private array $duskEnv = ['APP_ENV' => 'testing'];
+    private array $excludedPhpunitGroups = [];
     private Snmpsim|null $snmpsim = null;
 
     private array $completedChecks = [
@@ -74,7 +75,6 @@ class CiHelper
         'full' => false,
         'quiet' => false,
         'os-modules-only' => false,
-        'exclude-group' => null,
     ];
 
     public function enable($check, $enabled = true): void
@@ -124,6 +124,11 @@ class CiHelper
         foreach (array_intersect_key($flags, $this->flags) as $key => $value) {
             $this->flags[$key] = $value;
         }
+    }
+
+    public function setExcludedPhpunitGroups(array $groups): void
+    {
+        $this->excludedPhpunitGroups = $groups;
     }
 
     public function run(): int
@@ -189,8 +194,8 @@ class CiHelper
             array_push($phpunit_cmd, '--debug');
         }
 
-        if ($this->flags['exclude-group']) {
-            array_push($phpunit_cmd, '--exclude-group', $this->flags['exclude-group']);
+        if ($this->excludedPhpunitGroups) {
+            array_push($phpunit_cmd, '--exclude-group', implode(',', $this->excludedPhpunitGroups));
         }
 
         // exclusive tests
