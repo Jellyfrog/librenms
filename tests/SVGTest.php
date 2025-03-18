@@ -38,6 +38,9 @@ use RegexIterator;
 #[Group('os')]
 class SVGTest extends TestCase
 {
+    /**
+     * @testdox SVG contains PNG
+     */
     public function testSVGContainsPNG(): void
     {
         foreach ($this->getSvgFiles() as $file => $_unused) {
@@ -50,6 +53,9 @@ class SVGTest extends TestCase
         }
     }
 
+    /**
+     * @testdox SVG has length or width
+     */
     public function testSVGHasLengthWidth(): void
     {
         foreach ($this->getSvgFiles() as $file => $_unused) {
@@ -71,6 +77,9 @@ class SVGTest extends TestCase
         }
     }
 
+    /**
+     * @testdox SVG has viewBox
+     */
     public function testSVGHasViewBox(): void
     {
         foreach ($this->getSvgFiles() as $file => $_unused) {
