@@ -26,51 +26,62 @@ jobs:
           sparse-checkout: |
             includes/definitions/*.yaml
 
-      - name: Calculate `test-shard-matrix` output
+      - name: Calculate shards
         id: shards
         run: |
-          set -x
-          declare -r SPLITS=8
+          cd includes/definitions/
+          declare -r SHARDS=8
+          declare -A SHARD_GROUPS
+          declare -i CURRENT_GROUP=1
 
-          readarray -t INPUT_FILES < <(find includes/definitions/ -maxdepth 1 -name "*.yaml" -printf "%f\n")
-          declare -i -r INPUT_FILES_TOTAL=${#INPUT_FILES[@]}
-
+          declare -a INPUT_FILES=(*.yaml)
+          declare -r PER_SPLIT=$(( ${#INPUT_FILES[@]} / SHARDS ))
           declare -A FILE_LIST
+
+          # Loop through each input file, extract the first two characters as the key,
+          # and increment the count of files for each unique key in the FILE_LIST array.
           for FILE in "${INPUT_FILES[@]}"
           do
             KEY=${FILE:0:2}
             FILE_LIST[$KEY]=$(( ${FILE_LIST[$KEY]:-0} + 1 ))
           done
 
-          declare -r PER_SPLIT=$(( INPUT_FILES_TOTAL / SPLITS ))
-
+          # Bash cannot preserve the order of keys in associative arrays.
+          # Sort the keys of the FILE_LIST array and store them in FILE_LIST_KEYS.
           readarray -t FILE_LIST_KEYS < <(printf '%s\n' "${!FILE_LIST[@]}" | sort)
 
-          declare -A SPLIT_GROUPS
-          declare -i CURRENT_GROUP=1
           for KEY in "${FILE_LIST_KEYS[@]}"
           do
-            (( COUNTER += ${FILE_LIST[$KEY]} ))
-            SPLIT_GROUPS[$CURRENT_GROUP]+="${KEY},"
-            if [ $COUNTER -ge $PER_SPLIT ]
+            (( GROUP_SIZE += ${FILE_LIST[$KEY]} ))
+            SHARD_GROUPS[$CURRENT_GROUP]+="${KEY},"
+            if [ $GROUP_SIZE -ge $PER_SPLIT ]
             then
-              COUNTER=0
+              GROUP_SIZE=0
               (( CURRENT_GROUP++ ))
-
             fi
           done
 
-          printf "test-shard-matrix=[" >> "$GITHUB_OUTPUT"
+          printf "test-shard-matrix=[" #>> "$GITHUB_OUTPUT"
 
-          for ((i=1;i<=${#SPLIT_GROUPS[@]};i++)); do
-            printf "{\"name\":\"OS 8.3 (%i/%i)\", \"php-version\":\"8.3\", \"skip-web-check\":\"1\", \"database\":\"mariadb:10.5\", \"shard\":\"%s\"}, " $i ${#SPLIT_GROUPS[@]} "${SPLIT_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
+          for ((i=1;i<=${#SHARD_GROUPS[@]};i++)); do
+            printf '{
+              "name":"OS 8.3 (%i/%i)",
+              "php-version":"8.3",
+              "database":"mariadb:10.5",
+              "shard":"%s"
+            },' $i ${#SHARD_GROUPS[@]} "${SHARD_GROUPS[$i]::-1}" #>> "$GITHUB_OUTPUT"
           done
 
-          for ((i=1;i<=${#SPLIT_GROUPS[@]};i++)); do
-            printf "{\"name\":\"OS 8.2 (%i/%i)\", \"php-version\":\"8.2\", \"skip-web-check\":\"1\", \"database\":\"mysql:8.0\", \"shard\":\"%s\"}, " $i ${#SPLIT_GROUPS[@]} "${SPLIT_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
+          for ((i=1;i<=${#SHARD_GROUPS[@]};i++)); do
+            printf '{
+              "name":"OS 8.2 (%i/%i)",
+              "php-version":"8.2",
+              "database":"mysql:8.0",
+              "shard":"%s"
+            },' $i ${#SHARD_GROUPS[@]} "${SHARD_GROUPS[$i]::-1}" #>> "$GITHUB_OUTPUT"
           done
 
-          printf "]" >> "$GITHUB_OUTPUT"
+          printf "]" #>> "$GITHUB_OUTPUT"
 
   test:
     needs: [setup]
@@ -201,13 +212,11 @@ jobs:
 
       -
         name: Start SNMPSIM
-        if: matrix.skip-unit-check != '1'
         run: |
           .python_venvs/snmpsim/bin/snmpsim-command-responder-lite --data-dir=tests/snmpsim --agent-udpv4-endpoint=127.1.6.2:1162 --log-level=error --logging-method=file:/tmp/snmpsimd.log &
 
       -
         name: lnms dev:check ci (OS)
-        if: matrix.skip-unit-check != '1'
         run: |
           php lnms dev:check ci --os ${{ matrix.shard }}
         env:

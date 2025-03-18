@@ -184,7 +184,7 @@ class CiHelper
      */
     public function checkUnit(): int
     {
-        $phpunit_cmd = [$this->checkPhpExec('phpunit'), '--colors=always'];
+        $phpunit_cmd = [$this->checkPhpExec('phpunit'), '--colors=always', '--testdox'];
 
         if ($this->flags['fail-fast']) {
             array_push($phpunit_cmd, '--stop-on-error', '--stop-on-failure');
@@ -207,8 +207,7 @@ class CiHelper
             if ($this->flags['os-modules-only']) {
                 array_push($phpunit_cmd, '--filter', "/::testOS with data set \"($filter)/");
             } else {
-                //array_push($phpunit_cmd, '--filter', "/::test[A-Za-z]+$|::testOSDetection|::test[A-Za-z]+ with data set \"$filter.*\"$/");
-                array_push($phpunit_cmd, '--filter', "/::test[A-Za-z]+$|with data set \"($filter)/");
+                array_push($phpunit_cmd, '--filter', "/::test\w+$|with data set \"($filter)/");
             }
         } elseif ($this->flags['unit_docs']) {
             array_push($phpunit_cmd, '--group', 'docs');
