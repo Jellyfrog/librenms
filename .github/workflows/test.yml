@@ -64,21 +64,11 @@ jobs:
           printf "test-shard-matrix=[" >> "$GITHUB_OUTPUT"
 
           for ((i=1;i<=${#SHARD_GROUPS[@]};i++)); do
-            printf '{
-              "name":"OS 8.3 (%i/%i)",
-              "php-version":"8.3",
-              "database":"mariadb:10.5",
-              "shard":"%s"
-            },' $i ${#SHARD_GROUPS[@]} "${SHARD_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
+            printf '{"name":"OS 8.3 (%i/%i)", "php-version":"8.3", "database":"mariadb:10.5", "shard":"%s"}, ' $i ${#SHARD_GROUPS[@]} "${SHARD_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
           done
 
           for ((i=1;i<=${#SHARD_GROUPS[@]};i++)); do
-            printf '{
-              "name":"OS 8.2 (%i/%i)",
-              "php-version":"8.2",
-              "database":"mysql:8.0",
-              "shard":"%s"
-            },' $i ${#SHARD_GROUPS[@]} "${SHARD_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
+            printf '{"name":"OS 8.2 (%i/%i)", "php-version":"8.2", "database":"mysql:8.0", "shard":"%s"}, ' $i ${#SHARD_GROUPS[@]} "${SHARD_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
           done
 
           printf "]" >> "$GITHUB_OUTPUT"
