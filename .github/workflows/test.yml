@@ -68,11 +68,11 @@ jobs:
           printf '{"name":"Other", "php-version":"8.3", "database":"mariadb:10.5", "exclude-phpunit-group":"browser,mibs,os"}, ' >> "$GITHUB_OUTPUT"
 
           for ((i=1;i<=${#SHARD_GROUPS[@]};i++)); do
-            printf '{"name":"OS PHP 8.3 (%i/%i)", "php-version":"8.3", "database":"mariadb:10.5", "shard":"%s"}, ' $i ${#SHARD_GROUPS[@]} "${SHARD_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
+            printf '{"name":"PHP 8.3 - OS (%i/%i)", "php-version":"8.3", "database":"mariadb:10.5", "os-shard":"%s"}, ' $i ${#SHARD_GROUPS[@]} "${SHARD_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
           done
 
           for ((i=1;i<=${#SHARD_GROUPS[@]};i++)); do
-            printf '{"name":"OS PHP 8.2 (%i/%i)", "php-version":"8.2", "database":"mysql:8.0", "shard":"%s"}, ' $i ${#SHARD_GROUPS[@]} "${SHARD_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
+            printf '{"name":"PHP 8.2 - OS (%i/%i)", "php-version":"8.2", "database":"mysql:8.0", "os-shard":"%s"}, ' $i ${#SHARD_GROUPS[@]} "${SHARD_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
           done
 
           printf "]" >> "$GITHUB_OUTPUT"
@@ -208,8 +208,9 @@ jobs:
 
       -
         name: lnms dev:check ci (OS)
+        if: matrix.os-shard
         run: |
-          php lnms dev:check ci --os ${{ matrix.shard }}
+          php lnms dev:check ci --os ${{ matrix.os-shard }}
         env:
           SKIP_WEB_CHECK: 1
 
