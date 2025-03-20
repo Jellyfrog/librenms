@@ -209,7 +209,7 @@ jobs:
       -
         name: lnms dev:check ci (OS)
         run: |
-          php lnms dev:check ci -${{ matrix.arguments }}
+          php lnms dev:check ci ${{ matrix.arguments }}
 
       -
         name: Dump docker logs on failure
