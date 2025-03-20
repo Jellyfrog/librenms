@@ -65,14 +65,14 @@ jobs:
 
           printf "test-shard-matrix=[" >> "$GITHUB_OUTPUT"
 
-          printf '{"name":"Other", "php-version":"8.3", "database":"mariadb:10.5", "exclude-phpunit-group":"browser,mibs,os"}, ' >> "$GITHUB_OUTPUT"
+          printf '{"name":"Other", "php-version":"8.3", "database":"mariadb:10.5", "arguments":"--full --exclude-phpunit-group=browser,mibs,os"}, ' >> "$GITHUB_OUTPUT"
 
           for ((i=1;i<=${#SHARD_GROUPS[@]};i++)); do
-            printf '{"name":"PHP 8.3 - OS (%i/%i)", "php-version":"8.3", "database":"mariadb:10.5", "os-shard":"%s"}, ' $i ${#SHARD_GROUPS[@]} "${SHARD_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
+            printf '{"name":"PHP 8.3 - OS (%i/%i)", "php-version":"8.3", "database":"mariadb:10.5", "arguments":"--os %s"}, ' $i ${#SHARD_GROUPS[@]} "${SHARD_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
           done
 
           for ((i=1;i<=${#SHARD_GROUPS[@]};i++)); do
-            printf '{"name":"PHP 8.2 - OS (%i/%i)", "php-version":"8.2", "database":"mysql:8.0", "os-shard":"%s"}, ' $i ${#SHARD_GROUPS[@]} "${SHARD_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
+            printf '{"name":"PHP 8.2 - OS (%i/%i)", "php-version":"8.2", "database":"mysql:8.0", "arguments":"--os %s"}, ' $i ${#SHARD_GROUPS[@]} "${SHARD_GROUPS[$i]::-1}" >> "$GITHUB_OUTPUT"
           done
 
           printf "]" >> "$GITHUB_OUTPUT"
@@ -208,17 +208,8 @@ jobs:
 
       -
         name: lnms dev:check ci (OS)
-        if: matrix.os-shard
         run: |
-          php lnms dev:check ci --os ${{ matrix.os-shard }}
-        env:
-          SKIP_WEB_CHECK: 1
-
-      -
-        name: lnms dev:check ci
-        if: matrix.exclude-phpunit-group
-        run: |
-          php lnms dev:check ci --full --exclude-phpunit-group=${{ matrix.exclude-phpunit-group }}
+          php lnms dev:check ci -${{ matrix.arguments }}
 
       -
         name: Dump docker logs on failure
@@ -227,7 +218,7 @@ jobs:
 
       -
         name: Dump snmp logs
-        if: failure() && matrix.skip-unit-check != '1'
+        if: failure()
         run: |
           cat /tmp/snmpsimd.log || true
 
