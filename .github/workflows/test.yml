@@ -207,7 +207,7 @@ jobs:
           .python_venvs/snmpsim/bin/snmpsim-command-responder-lite --data-dir=tests/snmpsim --agent-udpv4-endpoint=127.1.6.2:1162 --log-level=error --logging-method=file:/tmp/snmpsimd.log &
 
       -
-        name: lnms dev:check ci (OS)
+        name: lnms dev:check ci
         run: |
           php lnms dev:check ci ${{ matrix.arguments }}
 
