@@ -89,7 +89,7 @@ class DevCheckCommand extends LnmsCommand
         $this->helper->enable('style', $check == 'all' || $check === 'style');
         $this->helper->enable('lint', $check == 'all' || $check == 'ci' || $check === 'lint');
         $this->helper->enable('unit', $check == 'all' || $check == 'ci' || $check === 'unit');
-        $this->helper->enable('web', $check == 'ci' || $check === 'web');
+        $this->helper->enable('web', $check === 'web');
 
         if ($os = $this->option('os')) {
             $this->helper->setFlags([
