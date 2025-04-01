@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Providers\AppServiceProvider;
 use App\Http\Controllers\Controller;
+use App\Providers\AppServiceProvider;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\VerifiesEmails;
 

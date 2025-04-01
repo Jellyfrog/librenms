@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -296,12 +296,12 @@ class Port extends DeviceRelatedModel
 
     // ---- Define Relationships ----
 
-    public function adsl(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function adsl(): HasOne
     {
         return $this->hasOne(PortAdsl::class, 'port_id');
     }
 
-    public function vdsl(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function vdsl(): HasOne
     {
         return $this->hasOne(PortVdsl::class, 'port_id');
     }

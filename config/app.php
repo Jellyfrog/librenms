@@ -17,7 +17,6 @@ return [
 
     'default_locale' => env('APP_LOCALE', 'en'), // just a holder for the system set locale
 
-
     'aliases' => Facade::defaultAliases()->merge([
         'Debugbar' => Barryvdh\Debugbar\Facades\Debugbar::class,
         'Flare' => Spatie\LaravelIgnition\Facades\Flare::class,
