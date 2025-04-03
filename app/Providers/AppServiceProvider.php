@@ -2,20 +2,19 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Http\Request;
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use App\Guards\ApiTokenGuard;
 use App\Facades\LibrenmsConfig;
+use App\Guards\ApiTokenGuard;
 use App\Models\Sensor;
+use App\Models\User;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use LibreNMS\Cache\PermissionsCache;
 use LibreNMS\Util\IP;
@@ -289,10 +288,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function bootRoute()
     {
-        //RateLimiter::for('api', function (Request $request) {
+        RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60);
         });
-
-        
     }
 }
