@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -32,7 +31,7 @@ return new class extends Migration
                 DB::table('assigned_roles')->insert([
                     'role_id' => $roles[$role],
                     'entity_id' => $user->user_id,
-                    'entity_type' => \App\Models\User::class,
+                    'entity_type' => App\Models\User::class,
                 ]);
             }
         }
@@ -55,7 +54,7 @@ return new class extends Migration
 
         $rolesByUserId = DB::table('assigned_roles')
             ->join('roles', 'assigned_roles.role_id', '=', 'roles.id')
-            ->where('assigned_roles.entity_type', \App\Models\User::class) // Adjust namespace if needed
+            ->where('assigned_roles.entity_type', App\Models\User::class) // Adjust namespace if needed
             ->select(
                 'assigned_roles.entity_id as user_id',
                 DB::raw('GROUP_CONCAT(roles.name ORDER BY roles.name ASC SEPARATOR ",c") as roles')
