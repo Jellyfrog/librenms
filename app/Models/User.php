@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Scope;
+use App\Events\UserCreated;
 use App\Observers\UserObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-use App\Events\UserCreated;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -22,7 +22,7 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  */
-#[ObservedBy([\App\Observers\UserObserver::class])]
+#[ObservedBy([UserObserver::class])]
 class User extends Authenticatable
 {
     use HasFactory;

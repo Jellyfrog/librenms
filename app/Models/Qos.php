@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use LibreNMS\Interfaces\Models\Keyable;
 
-#[ObservedBy([\App\Observers\QosObserver::class])]
+#[ObservedBy([QosObserver::class])]
 class Qos extends Model implements Keyable
 {
     use HasFactory;

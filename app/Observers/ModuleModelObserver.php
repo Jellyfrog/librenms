@@ -25,40 +25,40 @@
 
 namespace App\Observers;
 
-use App\Models\WirelessSensor;
-use App\Models\Vminfo;
-use App\Models\Transceiver;
-use App\Models\Stp;
-use App\Models\Storage;
-use App\Models\Sla;
-use App\Models\Qos;
-use App\Models\PrinterSupply;
-use App\Models\PortsNac;
-use App\Models\PortVdsl;
-use App\Models\PortStp;
-use App\Models\PortStack;
-use App\Models\PortAdsl;
-use App\Models\Ospfv3Port;
-use App\Models\Ospfv3Nbr;
-use App\Models\Ospfv3Instance;
-use App\Models\Ospfv3Area;
-use App\Models\OspfPort;
-use App\Models\OspfNbr;
-use App\Models\OspfInstance;
-use App\Models\OspfArea;
-use App\Models\MplsTunnelCHop;
-use App\Models\MplsTunnelArHop;
-use App\Models\MplsService;
-use App\Models\MplsSdpBind;
-use App\Models\MplsSdp;
-use App\Models\MplsSap;
-use App\Models\MplsLspPath;
-use App\Models\MplsLsp;
-use App\Models\Mempool;
-use App\Models\IsisAdjacency;
-use App\Models\Ipv6Address;
-use App\Models\EntPhysical;
 use App\Models\AccessPoint;
+use App\Models\EntPhysical;
+use App\Models\Ipv6Address;
+use App\Models\IsisAdjacency;
+use App\Models\Mempool;
+use App\Models\MplsLsp;
+use App\Models\MplsLspPath;
+use App\Models\MplsSap;
+use App\Models\MplsSdp;
+use App\Models\MplsSdpBind;
+use App\Models\MplsService;
+use App\Models\MplsTunnelArHop;
+use App\Models\MplsTunnelCHop;
+use App\Models\OspfArea;
+use App\Models\OspfInstance;
+use App\Models\OspfNbr;
+use App\Models\OspfPort;
+use App\Models\Ospfv3Area;
+use App\Models\Ospfv3Instance;
+use App\Models\Ospfv3Nbr;
+use App\Models\Ospfv3Port;
+use App\Models\PortAdsl;
+use App\Models\PortsNac;
+use App\Models\PortStack;
+use App\Models\PortStp;
+use App\Models\PortVdsl;
+use App\Models\PrinterSupply;
+use App\Models\Qos;
+use App\Models\Sla;
+use App\Models\Storage;
+use App\Models\Stp;
+use App\Models\Transceiver;
+use App\Models\Vminfo;
+use App\Models\WirelessSensor;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
@@ -66,22 +66,22 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 #[ObservedBy([Ipv6Address::class])]
 #[ObservedBy([IsisAdjacency::class])]
 #[ObservedBy([Mempool::class])]
-#[ObservedBy([\App\Models\MplsTunnelCHop::class])]
-#[ObservedBy([\App\Models\MplsTunnelArHop::class])]
-#[ObservedBy([\App\Models\MplsSdpBind::class])]
-#[ObservedBy([\App\Models\MplsSap::class])]
-#[ObservedBy([\App\Models\MplsService::class])]
-#[ObservedBy([\App\Models\MplsSdp::class])]
-#[ObservedBy([\App\Models\MplsLspPath::class])]
-#[ObservedBy([\App\Models\MplsLsp::class])]
-#[ObservedBy([\App\Models\MplsTunnelCHop::class])]
-#[ObservedBy([\App\Models\MplsTunnelArHop::class])]
-#[ObservedBy([\App\Models\MplsSdpBind::class])]
-#[ObservedBy([\App\Models\MplsSap::class])]
-#[ObservedBy([\App\Models\MplsService::class])]
-#[ObservedBy([\App\Models\MplsSdp::class])]
-#[ObservedBy([\App\Models\MplsLspPath::class])]
-#[ObservedBy([\App\Models\MplsLsp::class])]
+#[ObservedBy([MplsTunnelCHop::class])]
+#[ObservedBy([MplsTunnelArHop::class])]
+#[ObservedBy([MplsSdpBind::class])]
+#[ObservedBy([MplsSap::class])]
+#[ObservedBy([MplsService::class])]
+#[ObservedBy([MplsSdp::class])]
+#[ObservedBy([MplsLspPath::class])]
+#[ObservedBy([MplsLsp::class])]
+#[ObservedBy([MplsTunnelCHop::class])]
+#[ObservedBy([MplsTunnelArHop::class])]
+#[ObservedBy([MplsSdpBind::class])]
+#[ObservedBy([MplsSap::class])]
+#[ObservedBy([MplsService::class])]
+#[ObservedBy([MplsSdp::class])]
+#[ObservedBy([MplsLspPath::class])]
+#[ObservedBy([MplsLsp::class])]
 #[ObservedBy([PortsNac::class])]
 #[ObservedBy([OspfNbr::class])]
 #[ObservedBy([OspfPort::class])]
@@ -97,16 +97,16 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 #[ObservedBy([Ospfv3Instance::class])]
 #[ObservedBy([PortStack::class])]
 #[ObservedBy([PrinterSupply::class])]
-#[ObservedBy([\App\Models\Qos::class])]
+#[ObservedBy([Qos::class])]
 #[ObservedBy([Sla::class])]
-#[ObservedBy([\App\Models\Storage::class])]
+#[ObservedBy([Storage::class])]
 #[ObservedBy([PortStp::class])]
-#[ObservedBy([\App\Models\Stp::class])]
+#[ObservedBy([Stp::class])]
 #[ObservedBy([PortStp::class])]
-#[ObservedBy([\App\Models\Stp::class])]
+#[ObservedBy([Stp::class])]
 #[ObservedBy([Transceiver::class])]
-#[ObservedBy([\App\Models\Vminfo::class])]
-#[ObservedBy([\App\Models\Vminfo::class])]
+#[ObservedBy([Vminfo::class])]
+#[ObservedBy([Vminfo::class])]
 #[ObservedBy([WirelessSensor::class])]
 #[ObservedBy([PortVdsl::class])]
 #[ObservedBy([PortAdsl::class])]

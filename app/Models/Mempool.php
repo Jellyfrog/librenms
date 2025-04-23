@@ -11,7 +11,7 @@ use LibreNMS\Exceptions\UncorrectableNegativeException;
 use LibreNMS\Interfaces\Models\Keyable;
 use LibreNMS\Util\Number;
 
-#[ObservedBy([\App\Observers\MempoolObserver::class])]
+#[ObservedBy([MempoolObserver::class])]
 class Mempool extends DeviceRelatedModel implements Keyable
 {
     protected $table = 'mempools';

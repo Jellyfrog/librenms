@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Observers\VminfoObserver;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Config;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -15,7 +15,7 @@ use LibreNMS\Util\Html;
 use LibreNMS\Util\Number;
 use LibreNMS\Util\Rewrite;
 
-#[ObservedBy([\App\Observers\VminfoObserver::class])]
+#[ObservedBy([VminfoObserver::class])]
 class Vminfo extends DeviceRelatedModel implements Keyable
 {
     use HasFactory;

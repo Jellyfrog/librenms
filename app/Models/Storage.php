@@ -9,7 +9,7 @@ use LibreNMS\Exceptions\InsufficientDataException;
 use LibreNMS\Interfaces\Models\Keyable;
 use LibreNMS\Util\Number;
 
-#[ObservedBy([\App\Observers\StorageObserver::class])]
+#[ObservedBy([StorageObserver::class])]
 class Storage extends DeviceRelatedModel implements Keyable
 {
     protected $table = 'storage';

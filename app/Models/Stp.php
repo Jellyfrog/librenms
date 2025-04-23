@@ -6,7 +6,7 @@ use App\Observers\StpObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use LibreNMS\Interfaces\Models\Keyable;
 
-#[ObservedBy([\App\Observers\StpObserver::class])]
+#[ObservedBy([StpObserver::class])]
 class Stp extends DeviceRelatedModel implements Keyable
 {
     protected $table = 'stp';

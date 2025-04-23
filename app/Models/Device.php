@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Observers\DeviceObserver;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\View\SimpleTemplate;
 use Carbon\Carbon;
 use Fico7489\Laravel\Pivot\Traits\PivotEventTrait;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -36,7 +36,7 @@ use Permissions;
  *
  * @method static \Database\Factories\DeviceFactory factory(...$parameters)
  */
-#[ObservedBy([\App\Observers\DeviceObserver::class])]
+#[ObservedBy([DeviceObserver::class])]
 class Device extends BaseModel
 {
     use PivotEventTrait, HasFactory;

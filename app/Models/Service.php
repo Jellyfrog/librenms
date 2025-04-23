@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Scope;
 use App\Observers\ServiceObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 
-#[ObservedBy([\App\Observers\ServiceObserver::class])]
+#[ObservedBy([ServiceObserver::class])]
 class Service extends DeviceRelatedModel
 {
     public $timestamps = false;
