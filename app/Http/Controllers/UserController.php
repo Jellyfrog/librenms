@@ -35,7 +35,6 @@ use App\Models\User;
 use App\Models\UserPref;
 use Auth;
 use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use LibreNMS\Authentication\LegacyAuth;
