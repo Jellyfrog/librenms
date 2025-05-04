@@ -12,7 +12,7 @@ if ($pre_cache['awplus-sfpddm']) {
             $low_limit = isset($data['atPluggableDiagTxBiasAlarmMin']) ? ($data['atPluggableDiagTxBiasAlarmMin'] / $divisor) : null;
 
             $tmp = get_port_by_index_cache($device['device_id'], $ifIndex);
-            $descr = $tmp['ifName'];
+            $descr = $tmp['ifName'] ?? null;
             $oid = '.1.3.6.1.4.1.207.8.4.4.3.28.1.3.1.3.' . $index;
             discover_sensor(
                 null,

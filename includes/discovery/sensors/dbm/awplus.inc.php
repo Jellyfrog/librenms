@@ -12,7 +12,7 @@ if ($pre_cache['awplus-sfpddm']) {
             $low_limit = isset($data['atPluggableDiagTxPowerAlarmMin']) ? mw_to_dbm($data['atPluggableDiagTxPowerAlarmMin'] / $divisor) : null;
 
             $tmp = get_port_by_index_cache($device['device_id'], $ifIndex);
-            $descr = $tmp['ifName'];
+            $descr = $tmp['ifName'] ?? null;
             $oid = '.1.3.6.1.4.1.207.8.4.4.3.28.1.4.1.3.' . $index;
             discover_sensor(
                 null,
@@ -48,7 +48,7 @@ if ($pre_cache['awplus-sfpddm']) {
             $low_limit = isset($data['atPluggableDiagRxPowerAlarmMin']) ? mw_to_dbm($data['atPluggableDiagRxPowerAlarmMin'] / $divisor) : null;
 
             $tmp = get_port_by_index_cache($device['device_id'], $ifIndex);
-            $descr = $tmp['ifName'];
+            $descr = $tmp['ifName'] ?? null;
             $oid = '.1.3.6.1.4.1.207.8.4.4.3.28.1.5.1.3.' . $index;
             discover_sensor(
                 null,
