@@ -35,6 +35,7 @@ class CiHelper
     private ?array $os = null;
     private array $unitEnv = [];
     private array $duskEnv = ['APP_ENV' => 'testing'];
+    private array $excludedPhpunitGroups = [];
     private ?Snmpsim $snmpsim = null;
 
     private array $completedChecks = [
