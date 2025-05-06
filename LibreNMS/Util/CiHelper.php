@@ -126,6 +126,11 @@ class CiHelper
         }
     }
 
+    public function setExcludedPhpunitGroups(array $groups): void
+    {
+        $this->excludedPhpunitGroups = $groups;
+    }
+
     public function run(): int
     {
         $return = 0;
@@ -179,33 +184,37 @@ class CiHelper
      */
     public function checkUnit(): int
     {
-        $phpunit_cmd = [$this->checkPhpExec('phpunit'), '--colors=always'];
+        $phpunit_cmd = [$this->checkPhpExec('phpunit'), '--colors=always', '--testdox'];
 
         if ($this->flags['fail-fast']) {
             array_push($phpunit_cmd, '--stop-on-error', '--stop-on-failure');
         }
 
         if (Debug::isVerbose()) {
-            $phpunit_cmd[] = '--debug';
+            array_push($phpunit_cmd, '--debug');
+        }
+
+        if ($this->excludedPhpunitGroups) {
+            array_push($phpunit_cmd, '--exclude-group', implode(',', $this->excludedPhpunitGroups));
         }
 
         // exclusive tests
         if ($this->flags['unit_os']) {
             echo 'Only checking os: ' . implode(', ', $this->os) . PHP_EOL;
-            $filter = implode('.*|', $this->os);
+            $filter = implode('|', $this->os);
             // include tests that don't have data providers and only data sets that match
             array_push($phpunit_cmd, '--group', 'os');
             if ($this->flags['os-modules-only']) {
-                array_push($phpunit_cmd, '--filter', "/::testOS with data set \"$filter.*\"$/");
+                array_push($phpunit_cmd, '--filter', "/::testOS with data set \"($filter)/");
             } else {
-                array_push($phpunit_cmd, '--filter', "/::test[A-Za-z]+$|::testOSDetection|::test[A-Za-z]+ with data set \"$filter.*\"$/");
+                array_push($phpunit_cmd, '--filter', "/::test\w+$|with data set \"($filter)/");
             }
         } elseif ($this->flags['unit_docs']) {
             array_push($phpunit_cmd, '--group', 'docs');
         } elseif ($this->flags['unit_svg']) {
-            $phpunit_cmd[] = 'tests/SVGTest.php';
+            array_push($phpunit_cmd, 'tests/SVGTest.php');
         } elseif ($this->flags['unit_modules'] || $this->flags['os-modules-only']) {
-            $phpunit_cmd[] = 'tests/OSModulesTest.php';
+            array_push($phpunit_cmd, 'tests/OSModulesTest.php');
         }
 
         return $this->execute('unit', $phpunit_cmd, false, $this->unitEnv);

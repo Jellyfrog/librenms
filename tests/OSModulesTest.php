@@ -84,6 +84,12 @@ class OSModulesTest extends DBTestCase
     /**
      * Test all modules for a particular OS
      *
+     * @group os
+     *
+     * @dataProvider dumpedDataProvider
+     *
+     * @testdox OS
+     *
      * @param  string  $os  base os
      * @param  string  $variant  optional variant
      * @param  array  $modules  modules to test for this os
