@@ -57,7 +57,7 @@ jobs:
             /*
             !/doc/
             !/mibs/
-            !/resources/definitions/
+            !/resources/definitions/os_*
             !/tests/data/
             !/tests/snmpsim/
 
@@ -74,20 +74,6 @@ jobs:
             resources/**.php
             routes/**.php
             tests/**.php
-
-
-      - name: Display all outputs as JSON
-        run: |
-          echo "${{ toJSON(steps.changed-files.outputs) }}"
-
-      - name: Dump GitHub Actions context
-        run: |
-          echo "Dumping context for debugging"
-          env
-
-
-
-
 
 
       - name: List all added files
@@ -116,14 +102,14 @@ jobs:
         run: composer install --prefer-dist --no-interaction --no-progress --no-scripts
 
       -
-        name: Run PHPStan (New files)
-        if: steps.changed-files.outputs.any_changed == 'true'
-        run: ./vendor/bin/phpstan analyze --no-interaction --
+        name: PHPStan (New files)
+        if: steps.changed-files.outputs.any_added == 'true'
+        run: ./vendor/bin/phpstan analyze --no-interaction --level=7 -- ${{ steps.changed-files.outputs.added_files }}
 
       -
-        name: Run PHPStan
+        name: PHPStan
         run: ./vendor/bin/phpstan analyze --no-interaction
 
       -
-        name: Run PHPStan (Deprecated functions)
+        name: PHPStan (Deprecated functions)
         run: ./vendor/bin/phpstan analyze --no-interaction --configuration=phpstan-deprecated.neon
