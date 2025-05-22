@@ -63,7 +63,7 @@ jobs:
 
       - name: Get all new PHP files
         id: changed-files
-        uses: jellyfrog/changed-files@feature/any_added
+        uses: jellyfrog/changed-files@5fa0cdcf2a0560f2ad9c6ba4a8fcb035d23b939c
         with:
           files: |
             app/**.php
