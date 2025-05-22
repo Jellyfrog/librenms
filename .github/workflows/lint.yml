@@ -55,43 +55,48 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*
+            !/doc/
+            !/mibs/
+            !/resources/definitions/
             !/tests/data/
             !/tests/snmpsim/
-            !/mibs/
-            !/doc/
 
-      # -----------------------------------------------------------------------------------------------------------
-      # Example 1
-      # -----------------------------------------------------------------------------------------------------------
-      - name: Get changed files
+      - name: Get all new PHP files
         id: changed-files
-        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46
-        # To compare changes between the current commit and the last pushed remote commit set `since_last_remote_commit: true`. e.g
-        # with:
-        #   since_last_remote_commit: true 
-
-      - name: List all changed files
-        env:
-          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-        run: |
-          for file in ${ALL_CHANGED_FILES}; do
-            echo "$file was changed"
-          done
-
-      - name: Get changed files1
-        id: changed-files1
-        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c # v46
-        # To compare changes between the current commit and the last pushed remote commit set `since_last_remote_commit: true`. e.g
+        uses: jellyfrog/changed-files@feature/any_added
         with:
-          since_last_remote_commit: true 
+          files: |
+            app/**.php
+            bootstrap/**.php
+            config/**.php
+            database/**.php
+            LibreNMS/**.php
+            resources/**.php
+            routes/**.php
+            tests/**.php
 
-      - name: List all changed files1
-        env:
-          ALL_CHANGED_FILES: ${{ steps.changed-files1.outputs.all_changed_files }}
+
+      - name: Display all outputs as JSON
         run: |
-          for file in ${ALL_CHANGED_FILES}; do
-            echo "$file was changed"
-          done            
+          echo "${{ toJSON(steps.changed-files.outputs) }}"
+
+      - name: Dump GitHub Actions context
+        run: |
+          echo "Dumping context for debugging"
+          env
+
+
+
+
+
+
+      - name: List all added files
+        env:
+          ADDED_FILES: ${{ steps.changed-files.outputs.added_files }}
+        run: |
+          for file in ${ADDED_FILES}; do
+            echo "$file was added"
+          done
 
       -
         name: Get composer cache directory
@@ -111,9 +116,14 @@ jobs:
         run: composer install --prefer-dist --no-interaction --no-progress --no-scripts
 
       -
+        name: Run PHPStan (New files)
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: ./vendor/bin/phpstan analyze --no-interaction --
+
+      -
         name: Run PHPStan
-        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G
+        run: ./vendor/bin/phpstan analyze --no-interaction
 
       -
         name: Run PHPStan (Deprecated functions)
-        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan-deprecated.neon
+        run: ./vendor/bin/phpstan analyze --no-interaction --configuration=phpstan-deprecated.neon
