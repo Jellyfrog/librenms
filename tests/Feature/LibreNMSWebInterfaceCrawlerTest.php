@@ -29,8 +29,8 @@ namespace LibreNMS\Tests\Feature;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
-use Spatie\Crawler\CrawlProfiles\CrawlProfile;
 use Psr\Http\Message\UriInterface;
+use Spatie\Crawler\CrawlProfiles\CrawlProfile;
 
 #[Group('crawler')]
 #[Group('web-interface')]
@@ -80,11 +80,11 @@ class LibreNMSWebInterfaceCrawlerTest extends CrawlerTestCase
     /**
      * Test that LibreNMS pages contain expected branding
      */
-    #[DataProvider('successfulUrlsProvider')] 
+    #[DataProvider('successfulUrlsProvider')]
     public function testLibreNMSPagesContainBranding(string $url, array $result): void
     {
         $body = $result['body'];
-        
+
         // Skip non-HTML responses
         $contentType = $result['headers']['content-type'][0] ?? '';
         if (! str_contains($contentType, 'text/html')) {
@@ -92,10 +92,10 @@ class LibreNMSWebInterfaceCrawlerTest extends CrawlerTestCase
         }
 
         // Check for LibreNMS branding (adjust based on actual HTML structure)
-        $hasLibreNMSBranding = str_contains($body, 'LibreNMS') || 
+        $hasLibreNMSBranding = str_contains($body, 'LibreNMS') ||
                               str_contains($body, 'librenms') ||
                               str_contains($body, 'Network Monitoring');
-        
+
         $this->assertTrue($hasLibreNMSBranding, "LibreNMS page $url should contain LibreNMS branding");
     }
 
@@ -106,7 +106,7 @@ class LibreNMSWebInterfaceCrawlerTest extends CrawlerTestCase
     public function testLibreNMSPagesHaveProperMetaTags(string $url, array $result): void
     {
         $body = $result['body'];
-        
+
         // Skip non-HTML responses
         $contentType = $result['headers']['content-type'][0] ?? '';
         if (! str_contains($contentType, 'text/html')) {
@@ -115,10 +115,10 @@ class LibreNMSWebInterfaceCrawlerTest extends CrawlerTestCase
 
         // Check for viewport meta tag (important for mobile responsiveness)
         $hasViewport = str_contains($body, 'name="viewport"');
-        
+
         // Check for charset declaration
         $hasCharset = str_contains($body, 'charset=') || str_contains($body, 'meta charset');
-        
+
         if ($hasViewport || $hasCharset) {
             $this->assertTrue(true, "LibreNMS page $url has proper meta tags");
         } else {
@@ -143,7 +143,7 @@ class LibreNMSWebInterfaceCrawlerTest extends CrawlerTestCase
 
         // Check content type
         $contentType = $result['headers']['content-type'][0] ?? '';
-        $this->assertStringContainsString('application/json', $contentType, 
+        $this->assertStringContainsString('application/json', $contentType,
             "API endpoint $url should return JSON content");
 
         // Try to decode JSON
@@ -159,10 +159,10 @@ class LibreNMSWebInterfaceCrawlerTest extends CrawlerTestCase
     public function testPagesHaveNoObviousErrors(string $url, array $result): void
     {
         $body = strtolower($result['body']);
-        
+
         $errorIndicators = [
             'fatal error',
-            'parse error', 
+            'parse error',
             'undefined variable',
             'undefined index',
             'call to undefined',
@@ -172,7 +172,7 @@ class LibreNMSWebInterfaceCrawlerTest extends CrawlerTestCase
         ];
 
         foreach ($errorIndicators as $indicator) {
-            $this->assertStringNotContainsString($indicator, $body, 
+            $this->assertStringNotContainsString($indicator, $body,
                 "Page $url should not contain error: $indicator");
         }
     }
@@ -183,7 +183,7 @@ class LibreNMSWebInterfaceCrawlerTest extends CrawlerTestCase
     public function testCrawlPerformanceMetrics(): void
     {
         $results = $this->getCrawlResults();
-        
+
         $responseTimes = [];
         foreach ($results as $url => $result) {
             if ($result['response_time'] !== null) {
@@ -194,15 +194,15 @@ class LibreNMSWebInterfaceCrawlerTest extends CrawlerTestCase
         if (! empty($responseTimes)) {
             $avgResponseTime = array_sum($responseTimes) / count($responseTimes);
             $maxResponseTime = max($responseTimes);
-            
+
             echo "\nPerformance Metrics:\n";
-            echo "Average response time: " . number_format($avgResponseTime, 3) . "s\n";
-            echo "Max response time: " . number_format($maxResponseTime, 3) . "s\n";
-            
+            echo 'Average response time: ' . number_format($avgResponseTime, 3) . "s\n";
+            echo 'Max response time: ' . number_format($maxResponseTime, 3) . "s\n";
+
             // Performance assertions
-            $this->assertLessThan(10.0, $avgResponseTime, 
+            $this->assertLessThan(10.0, $avgResponseTime,
                 'Average response time should be less than 10 seconds');
-            $this->assertLessThan(30.0, $maxResponseTime, 
+            $this->assertLessThan(30.0, $maxResponseTime,
                 'Maximum response time should be less than 30 seconds');
         } else {
             $this->markTestSkipped('No response time data available');
@@ -225,7 +225,7 @@ class LibreNMSCrawlProfile extends CrawlProfile
     public function shouldCrawl(UriInterface $url): bool
     {
         $urlString = (string) $url;
-        
+
         // Only crawl URLs from the same domain
         if (! str_starts_with($urlString, $this->baseUrl)) {
             return false;

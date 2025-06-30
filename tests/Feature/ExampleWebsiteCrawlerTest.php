@@ -30,8 +30,8 @@ namespace LibreNMS\Tests\Feature;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
-use Spatie\Crawler\CrawlProfiles\CrawlProfile;
 use Spatie\Crawler\CrawlProfiles\CrawlInternalUrls;
+use Spatie\Crawler\CrawlProfiles\CrawlProfile;
 
 #[Group('crawler')]
 #[Group('external-dependencies')]
@@ -85,7 +85,7 @@ class ExampleWebsiteCrawlerTest extends CrawlerTestCase
     public function testPagesHaveValidHtmlStructure(string $url, array $result): void
     {
         $body = $result['body'];
-        
+
         // Skip non-HTML responses
         $contentType = $result['headers']['content-type'][0] ?? '';
         if (! str_contains($contentType, 'text/html')) {
@@ -94,11 +94,11 @@ class ExampleWebsiteCrawlerTest extends CrawlerTestCase
 
         // Basic HTML structure checks
         $this->assertStringContainsString('<html', $body, "Page $url should contain HTML tag");
-        
+
         // Check for basic HTML elements
         $hasHead = str_contains($body, '<head') || str_contains($body, '<HEAD');
         $hasBody = str_contains($body, '<body') || str_contains($body, '<BODY');
-        
+
         $this->assertTrue($hasHead || $hasBody, "Page $url should have either head or body tag");
     }
 
@@ -123,7 +123,7 @@ class ExampleWebsiteCrawlerTest extends CrawlerTestCase
     public function testPagesHaveSecurityHeaders(string $url, array $result): void
     {
         $headers = array_change_key_case($result['headers'], CASE_LOWER);
-        
+
         // Check for common security headers (not all are required, just testing approach)
         $securityHeaders = [
             'x-content-type-options',
@@ -189,7 +189,7 @@ class ExampleWebsiteCrawlerTest extends CrawlerTestCase
             $this->markTestSkipped("Network error for $url");
         }
 
-        $this->assertGreaterThanOrEqual(400, $result['status_code'], 
+        $this->assertGreaterThanOrEqual(400, $result['status_code'],
             "Failed page $url should return 4xx or 5xx status code");
     }
 
@@ -199,32 +199,32 @@ class ExampleWebsiteCrawlerTest extends CrawlerTestCase
     public function testCrawlSummaryStatistics(): void
     {
         $results = $this->getCrawlResults();
-        
+
         $this->assertNotEmpty($results, 'Should have crawled at least one page');
-        
-        $successful = array_filter($results, fn($r) => $r['status_code'] >= 200 && $r['status_code'] < 300);
-        $failed = array_filter($results, fn($r) => $r['status_code'] >= 400);
-        $errors = array_filter($results, fn($r) => isset($r['error']));
-        
+
+        $successful = array_filter($results, fn ($r) => $r['status_code'] >= 200 && $r['status_code'] < 300);
+        $failed = array_filter($results, fn ($r) => $r['status_code'] >= 400);
+        $errors = array_filter($results, fn ($r) => isset($r['error']));
+
         $totalPages = count($results);
         $successfulPages = count($successful);
         $failedPages = count($failed);
         $errorPages = count($errors);
-        
+
         // Log summary for debugging
         echo "\nCrawl Summary:\n";
         echo "Total pages: $totalPages\n";
         echo "Successful: $successfulPages\n";
         echo "Failed: $failedPages\n";
         echo "Errors: $errorPages\n";
-        
+
         // Basic assertions about the crawl results
         $this->assertGreaterThan(0, $totalPages, 'Should have crawled at least one page');
-        
+
         // At least 50% of pages should be successful (adjust as needed)
         if ($totalPages > 1) {
             $successRate = $successfulPages / $totalPages;
-            $this->assertGreaterThanOrEqual(0.5, $successRate, 
+            $this->assertGreaterThanOrEqual(0.5, $successRate,
                 'At least 50% of crawled pages should be successful');
         }
     }

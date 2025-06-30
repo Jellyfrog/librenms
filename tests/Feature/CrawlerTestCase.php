@@ -29,7 +29,6 @@
 
 namespace LibreNMS\Tests\Feature;
 
-use GuzzleHttp\Psr7\Response;
 use LibreNMS\Tests\TestCase;
 use LibreNMS\Traits\RuntimeClassCache;
 use Psr\Http\Message\ResponseInterface;
@@ -242,7 +241,7 @@ abstract class CrawlerTestCase extends TestCase
     public function createApplication()
     {
         $app = require __DIR__ . '/../../bootstrap/app.php';
-        
+
         return $app;
     }
 }
@@ -261,8 +260,8 @@ class TestCrawlObserver extends CrawlObserver
             'headers' => $response->getHeaders(),
             'body' => (string) $response->getBody(),
             'found_on_url' => $foundOnUrl ? (string) $foundOnUrl : null,
-            'response_time' => $response->hasHeader('X-Response-Time') 
-                ? $response->getHeaderLine('X-Response-Time') 
+            'response_time' => $response->hasHeader('X-Response-Time')
+                ? $response->getHeaderLine('X-Response-Time')
                 : null,
         ];
     }

@@ -56,7 +56,7 @@ class CrawlerTestCaseUnitTest extends TestCase
     public function testGetCrawlConfigReturnsArray(): void
     {
         $config = $this->crawler->getCrawlConfig();
-        
+
         $this->assertIsArray($config);
         $this->assertArrayHasKey('base_url', $config);
         $this->assertArrayHasKey('max_depth', $config);
@@ -67,7 +67,7 @@ class CrawlerTestCaseUnitTest extends TestCase
     public function testGetCrawlConfigMergesWithDefaults(): void
     {
         $config = $this->crawler->getCrawlConfig();
-        
+
         // Should have default values
         $this->assertArrayHasKey('delay_between_requests', $config);
         $this->assertArrayHasKey('concurrent_requests', $config);
@@ -79,11 +79,11 @@ class CrawlerTestCaseUnitTest extends TestCase
     {
         // Without CRAWLER_TESTS=1, should return false
         $this->assertFalse($this->crawler->isCrawlingEnabled());
-        
+
         // Set environment variable
         putenv('CRAWLER_TESTS=1');
         $this->assertTrue($this->crawler->isCrawlingEnabled());
-        
+
         // Clean up
         putenv('CRAWLER_TESTS=');
     }
@@ -93,7 +93,7 @@ class CrawlerTestCaseUnitTest extends TestCase
         // This test verifies the reset functionality works
         // We can't easily test the actual crawling without network access
         $this->crawler->resetCrawlResults();
-        
+
         // If no exception is thrown, the method works
         $this->assertTrue(true);
     }
@@ -101,11 +101,11 @@ class CrawlerTestCaseUnitTest extends TestCase
     public function testDataProviderMethodsExist(): void
     {
         $reflection = new \ReflectionClass(CrawlerTestCase::class);
-        
+
         $this->assertTrue($reflection->hasMethod('successfulUrlsProvider'));
         $this->assertTrue($reflection->hasMethod('allUrlsProvider'));
         $this->assertTrue($reflection->hasMethod('failedUrlsProvider'));
-        
+
         // All should be static methods
         $this->assertTrue($reflection->getMethod('successfulUrlsProvider')->isStatic());
         $this->assertTrue($reflection->getMethod('allUrlsProvider')->isStatic());
