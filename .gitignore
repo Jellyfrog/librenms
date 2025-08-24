@@ -48,3 +48,10 @@ pyvenv.cfg
 
 /.phpunit.cache/storage/pail
 /.nova
+
+# Crawler Test Artifacts #
+##########################
+/tests/crawler_results/
+/tests/crawler_cache/
+crawler_screenshots/
+*.crawler.log
