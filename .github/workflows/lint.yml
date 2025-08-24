@@ -55,10 +55,34 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*
+            !/doc/
+            !/mibs/
+            !/resources/definitions/os_*
             !/tests/data/
             !/tests/snmpsim/
-            !/mibs/
-            !/doc/
+
+      - name: Get all new PHP files
+        id: changed-files
+        uses: jellyfrog/changed-files@feature/any_added
+        with:
+          files: |
+            app/**.php
+            bootstrap/**.php
+            config/**.php
+            database/**.php
+            LibreNMS/**.php
+            resources/**.php
+            routes/**.php
+            tests/**.php
+
+
+      - name: List all added files
+        env:
+          ADDED_FILES: ${{ steps.changed-files.outputs.added_files }}
+        run: |
+          for file in ${ADDED_FILES}; do
+            echo "$file was added"
+          done
 
       -
         name: Get composer cache directory
@@ -78,9 +102,14 @@ jobs:
         run: composer install --prefer-dist --no-interaction --no-progress --no-scripts
 
       -
-        name: Run PHPStan
-        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G
+        name: PHPStan (New files)
+        if: steps.changed-files.outputs.any_added == 'true'
+        run: ./vendor/bin/phpstan analyze --no-interaction --level=7 -- ${{ steps.changed-files.outputs.added_files }}
 
       -
-        name: Run PHPStan (Deprecated functions)
-        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan-deprecated.neon
+        name: PHPStan
+        run: ./vendor/bin/phpstan analyze --no-interaction
+
+      -
+        name: PHPStan (Deprecated functions)
+        run: ./vendor/bin/phpstan analyze --no-interaction --configuration=phpstan-deprecated.neon
