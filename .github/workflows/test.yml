@@ -19,22 +19,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: [8.2, 8.4]
+        database: 
+          - mariadb:11.7
+        php-version: 
+          - 8.2
+          - 8.4
         arguments:
-          - "--os a"
-          - "--os b,c,d"
-          - "--os e,f"
-          - "--os g,h,i"
-          - "--os j,k,l,m,n"
-          - "--os o,p,q,r,s"
-          - "--os t,u"
-          - "--os v,w,x,y,z,0,1,2,3,4,5,6,7,8,9"   
+          - --os a
+          - --os b,c,d
+          - --os e,f
+          - --os g,h,i
+          - --os j,k,l,m,n
+          - --os o,p,q,r,s
+          - --os t,u
+          - --os v,w,x,y,z,0,1,2,3,4,5,6,7,8,9
         include:
           -
             name: Other
             php-version: 8.4
-            database: mariadb:11.7
-            arguments: "--full --exclude-phpunit-group=browser,mibs,external-dependencies,os"
+            arguments: --full --exclude-phpunit-group=browser,mibs,external-dependencies,os
           -
             name: "PHP 8.2"
             php-version: 8.2
@@ -42,7 +45,6 @@ jobs:
           -
             name: "PHP 8.4"
             php-version: 8.4
-            database: mariadb:11.7
 
     services:
       database:
@@ -55,9 +57,6 @@ jobs:
         ports:
           - 3306
     steps:
-      -
-        name: Init env
-        run: exit 1    
       -
         name: Checkout
         uses: actions/checkout@v4
