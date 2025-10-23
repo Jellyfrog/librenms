@@ -19,11 +19,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        database: 
-          - mariadb:11.7
-        php-version: 
-          - 8.2
-          - 8.4
         arguments:
           - --os a
           - --os b,c,d
@@ -37,6 +32,7 @@ jobs:
           -
             name: Other
             php-version: 8.4
+            database: mariadb:11.7
             arguments: --full --exclude-phpunit-group=browser,mibs,external-dependencies,os
           -
             name: "PHP 8.2"
@@ -45,6 +41,7 @@ jobs:
           -
             name: "PHP 8.4"
             php-version: 8.4
+            database: mariadb:11.7
 
     services:
       database:
