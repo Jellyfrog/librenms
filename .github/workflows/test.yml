@@ -1,9 +1,10 @@
 name: Test
 
-on:a
+on:
   push:
     branches:
       - 'master'
+      - Jellyfrog-patch-13
   pull_request:
     branches:
       - 'master'
