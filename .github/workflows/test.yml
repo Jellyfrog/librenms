@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - 'master'
-      - Jellyfrog-patch-13
+      - 'Jellyfrog-patch-13'
   pull_request:
     branches:
       - 'master'
