@@ -24,30 +24,26 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests;
-
 use App\Models\ApiToken;
 use App\Models\Device;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use LibreNMS\Tests\DBTestCase;
 
-final class BasicApiTest extends DBTestCase
-{
-    use DatabaseTransactions;
+uses(DBTestCase::class);
+uses(DatabaseTransactions::class);
 
-    public function testListDevices(): void
-    {
-        /** @var User $user */
-        $user = User::factory()->admin()->create();
-        $token = ApiToken::generateToken($user);
-        $device = Device::factory()->create();
+test('list devices', function () {
+    /** @var User $user */
+    $user = User::factory()->admin()->create();
+    $token = ApiToken::generateToken($user);
+    $device = Device::factory()->create();
 
-        $this->json('GET', '/api/v0/devices', [], ['X-Auth-Token' => $token->token_hash])
-            ->assertStatus(200)
-            ->assertJson([
-                'status' => 'ok',
-                'devices' => [$device->toArray()],
-                'count' => 1,
-            ]);
-    }
-}
+    $this->json('GET', '/api/v0/devices', [], ['X-Auth-Token' => $token->token_hash])
+        ->assertStatus(200)
+        ->assertJson([
+            'status' => 'ok',
+            'devices' => [$device->toArray()],
+            'count' => 1,
+        ]);
+});

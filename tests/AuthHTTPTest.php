@@ -1,5 +1,9 @@
 <?php
 
+use LibreNMS\Tests\TestCase;
+
+uses(TestCase::class);
+
 /**
  * AuthHTTP.php
  *
@@ -24,79 +28,64 @@
  * @author     Adam Bishop <adam@omega.org.uk>
  */
 
-namespace LibreNMS\Tests;
-
 use App\Facades\LibrenmsConfig;
 use LibreNMS\Authentication\LegacyAuth;
 
 use function strip_tags;
 use function strip_tags as strip_tags1;
 
-final class AuthHTTPTest extends TestCase
-{
-    private $original_auth_mech;
-    private $server;
+beforeEach(function () {
+    $this->original_auth_mech = LibrenmsConfig::get('auth_mechanism');
+    LibrenmsConfig::set('auth_mechanism', 'http-auth');
+    $this->server = $_SERVER;
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+afterEach(function () {
+    LibrenmsConfig::set('auth_mechanism', $this->original_auth_mech);
+    $_SERVER = $this->server;
+});
 
-        $this->original_auth_mech = LibrenmsConfig::get('auth_mechanism');
-        LibrenmsConfig::set('auth_mechanism', 'http-auth');
-        $this->server = $_SERVER;
-    }
+// Document the modules current behaviour, so that changes trigger test failures
+test('capability functions', function () {
+    $a = LegacyAuth::reset();
 
-    protected function tearDown(): void
-    {
-        LibrenmsConfig::set('auth_mechanism', $this->original_auth_mech);
-        $_SERVER = $this->server;
-        parent::tearDown();
-    }
+    $this->assertFalse($a->canUpdatePasswords());
+    $this->assertTrue($a->canManageUsers());
+    $this->assertTrue($a->canUpdateUsers());
+    $this->assertTrue($a->authIsExternal());
+});
 
-    // Document the modules current behaviour, so that changes trigger test failures
-    public function testCapabilityFunctions(): void
-    {
-        $a = LegacyAuth::reset();
+test('old behaviour against current', function () {
+    $old_username = null;
+    $new_username = null;
 
-        $this->assertFalse($a->canUpdatePasswords());
-        $this->assertTrue($a->canManageUsers());
-        $this->assertTrue($a->canUpdateUsers());
-        $this->assertTrue($a->authIsExternal());
-    }
+    $users = ['steve',  '   steve', 'steve   ', '   steve   ', '    steve   ', '', 'CAT'];
+    $vars = ['REMOTE_USER', 'PHP_AUTH_USER'];
 
-    public function testOldBehaviourAgainstCurrent(): void
-    {
-        $old_username = null;
-        $new_username = null;
+    $a = LegacyAuth::reset();
 
-        $users = ['steve',  '   steve', 'steve   ', '   steve   ', '    steve   ', '', 'CAT'];
-        $vars = ['REMOTE_USER', 'PHP_AUTH_USER'];
+    foreach ($vars as $v) {
+        foreach ($users as $u) {
+            $_SERVER[$v] = $u;
 
-        $a = LegacyAuth::reset();
-
-        foreach ($vars as $v) {
-            foreach ($users as $u) {
-                $_SERVER[$v] = $u;
-
-                // Old Behaviour
-                if (isset($_SERVER['REMOTE_USER'])) {
-                    $old_username = strip_tags1($_SERVER['REMOTE_USER']);
-                } elseif (isset($_SERVER['PHP_AUTH_USER']) && LibrenmsConfig::get('auth_mechanism') === 'http-auth') {
-                    $old_username = strip_tags($_SERVER['PHP_AUTH_USER']);
-                }
-
-                // Current Behaviour
-                if ($a->authIsExternal()) {
-                    $new_username = $a->getExternalUsername();
-                }
-
-                $this->assertFalse($old_username === null);
-                $this->assertFalse($new_username === null);
-
-                $this->assertTrue($old_username === $new_username);
+            // Old Behaviour
+            if (isset($_SERVER['REMOTE_USER'])) {
+                $old_username = strip_tags1($_SERVER['REMOTE_USER']);
+            } elseif (isset($_SERVER['PHP_AUTH_USER']) && LibrenmsConfig::get('auth_mechanism') === 'http-auth') {
+                $old_username = strip_tags($_SERVER['PHP_AUTH_USER']);
             }
 
-            unset($_SERVER[$v]);
+            // Current Behaviour
+            if ($a->authIsExternal()) {
+                $new_username = $a->getExternalUsername();
+            }
+
+            $this->assertFalse($old_username === null);
+            $this->assertFalse($new_username === null);
+
+            $this->assertTrue($old_username === $new_username);
         }
+
+        unset($_SERVER[$v]);
     }
-}
+});

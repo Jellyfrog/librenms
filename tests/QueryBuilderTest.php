@@ -1,5 +1,9 @@
 <?php
 
+use LibreNMS\Tests\TestCase;
+
+uses(TestCase::class);
+
 /**
  * QueryBuilderTest.php
  *
@@ -24,47 +28,34 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests;
-
 use App\Facades\LibrenmsConfig;
 use LibreNMS\Alerting\QueryBuilderFluentParser;
-use PHPUnit\Framework\Attributes\DataProvider;
 
-final class QueryBuilderTest extends TestCase
+$dataFile = 'tests/data/misc/querybuilder.json';
+
+function loadQueryDataForTest(): array
 {
-    private static string $data_file = 'tests/data/misc/querybuilder.json';
+    $base = LibrenmsConfig::get('install_dir');
+    $data = file_get_contents("$base/tests/data/misc/querybuilder.json");
 
-    public function testHasQueryData(): void
-    {
-        $this->assertNotEmpty(
-            $this->loadQueryData(),
-            'Could not load query builder test data from ' . self::$data_file
-        );
-    }
-
-    /**
-     * @param  string  $legacy
-     * @param  array  $builder
-     * @param  string  $display
-     * @param  string  $sql
-     */
-    #[DataProvider('loadQueryData')]
-    public function testQueryConversion($legacy, $builder, $display, $sql, $query): void
-    {
-        $qb = QueryBuilderFluentParser::fromJson($builder);
-        $this->assertEquals($display, $qb->toSql(false));
-        $this->assertEquals($sql, $qb->toSql());
-
-        $qbq = $qb->toQuery();
-        $this->assertEquals($query[0], $qbq->toSql(), 'Fluent SQL does not match');
-        $this->assertEquals($query[1], $qbq->getBindings(), 'Fluent bindings do not match');
-    }
-
-    public static function loadQueryData(): array
-    {
-        $base = LibrenmsConfig::get('install_dir');
-        $data = file_get_contents("$base/" . self::$data_file);
-
-        return json_decode($data, true);
-    }
+    return json_decode($data, true);
 }
+
+test('has query data', function () {
+    $this->assertNotEmpty(
+        loadQueryDataForTest(),
+        'Could not load query builder test data from tests/data/misc/querybuilder.json'
+    );
+});
+
+test('query conversion', function ($legacy, $builder, $display, $sql, $query) {
+    $qb = QueryBuilderFluentParser::fromJson($builder);
+    $this->assertEquals($display, $qb->toSql(false));
+    $this->assertEquals($sql, $qb->toSql());
+
+    $qbq = $qb->toQuery();
+    $this->assertEquals($query[0], $qbq->toSql(), 'Fluent SQL does not match');
+    $this->assertEquals($query[1], $qbq->getBindings(), 'Fluent bindings do not match');
+})->with(function () {
+    return loadQueryDataForTest();
+});

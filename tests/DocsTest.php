@@ -1,5 +1,9 @@
 <?php
 
+use LibreNMS\Tests\TestCase;
+
+uses(TestCase::class);
+
 /**
  * DocsTest.php
  *
@@ -24,43 +28,34 @@
  * @author     Neil Lathwood <gh+n@laf.io>
  */
 
-namespace LibreNMS\Tests;
-
-use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\Yaml\Yaml;
 
-final class DocsTest extends TestCase
-{
-    private $hidden_pages = [
+$hidden_pages = [];
+
+test('doc exist', function () use ($hidden_pages) {
+    $mkdocs = Yaml::parse(file_get_contents(__DIR__ . '/../mkdocs.yml'));
+    $dir = __DIR__ . '/../doc/';
+
+    // Define paths to exclude
+    $exclude_paths = [
+        '*/Extensions/Applications/*',
+        '*/General/Changelogs/*',
+        '*/Alerting/Transports/*',
     ];
 
-    #[Group('docs')]
-    public function testDocExist(): void
-    {
-        $mkdocs = Yaml::parse(file_get_contents(__DIR__ . '/../mkdocs.yml'));
-        $dir = __DIR__ . '/../doc/';
+    // Build the exclusion part of the find command
+    $exclude_conditions = implode(' -not -path ', array_map(escapeshellarg(...), $exclude_paths));
+    $find_command = "find $dir -name '*.md' -not -path $exclude_conditions";
 
-        // Define paths to exclude
-        $exclude_paths = [
-            '*/Extensions/Applications/*',
-            '*/General/Changelogs/*',
-            '*/Alerting/Transports/*',
-        ];
+    // Run the find command with exclusions
+    $files = str_replace($dir, '', rtrim((string) shell_exec($find_command)));
 
-        // Build the exclusion part of the find command
-        $exclude_conditions = implode(' -not -path ', array_map(escapeshellarg(...), $exclude_paths));
-        $find_command = "find $dir -name '*.md' -not -path $exclude_conditions";
+    // Check for missing pages
+    collect(explode(PHP_EOL, $files))
+        ->diff(collect($mkdocs['nav'])->flatten()->merge($hidden_pages)) // grab defined pages and diff
+        ->each(function ($missing_doc): void {
+            test()->fail("The doc $missing_doc doesn't exist in mkdocs.yml, please add it to the relevant section");
+        });
 
-        // Run the find command with exclusions
-        $files = str_replace($dir, '', rtrim((string) shell_exec($find_command)));
-
-        // Check for missing pages
-        collect(explode(PHP_EOL, $files))
-            ->diff(collect($mkdocs['nav'])->flatten()->merge($this->hidden_pages)) // grab defined pages and diff
-            ->each(function ($missing_doc): void {
-                $this->fail("The doc $missing_doc doesn't exist in mkdocs.yml, please add it to the relevant section");
-            });
-
-        $this->expectNotToPerformAssertions();
-    }
-}
+    $this->expectNotToPerformAssertions();
+})->group('docs');

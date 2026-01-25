@@ -1,5 +1,9 @@
 <?php
 
+use LibreNMS\Tests\TestCase;
+
+uses(TestCase::class);
+
 /**
  * SVGTest.php
  *
@@ -24,74 +28,57 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests;
-
 use Illuminate\Support\Str;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\TestDox;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RecursiveRegexIterator;
 use RegexIterator;
 
-/**
- * Class SVGTest
- */
-#[Group('svg')]
-final class SVGTest extends TestCase
+function getSvgFiles(): RegexIterator
 {
-    #[TestDox('SVG contains PNG')]
-    public function testSVGContainsPNG(): void
-    {
-        foreach ($this->getSvgFiles() as $file => $_unused) {
-            $svg = file_get_contents($file);
+    $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('html/images'));
 
-            $this->assertFalse(
-                Str::contains($svg, 'data:image/'),
-                "$file contains a bitmap image, please use a regular png or valid svg"
-            );
-        }
-    }
-
-    #[TestDox('SVG has length or width')]
-    public function testSVGHasLengthWidth(): void
-    {
-        foreach ($this->getSvgFiles() as $file => $_unused) {
-            if ($file == 'html/images/safari-pinned-tab.svg') {
-                continue;
-            }
-
-            if (str_starts_with((string) $file, 'html/images/custommap/background/')) {
-                continue;
-            }
-
-            $svg = file_get_contents($file);
-
-            $this->assertEquals(
-                0,
-                preg_match('/<svg[^>]*(length|width)=/', $svg, $matches),
-                "$file: SVG files must not contain length or width attributes "
-            );
-        }
-    }
-
-    #[TestDox('SVG has viewBox')]
-    public function testSVGHasViewBox(): void
-    {
-        foreach ($this->getSvgFiles() as $file => $_unused) {
-            $svg = file_get_contents($file);
-
-            $this->assertTrue(
-                Str::contains($svg, 'viewBox'),
-                "$file: SVG files must have the viewBox attribute set"
-            );
-        }
-    }
-
-    private function getSvgFiles(): RegexIterator
-    {
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('html/images'));
-
-        return new RegexIterator($iterator, '/^.+\.svg$/i', RecursiveRegexIterator::GET_MATCH);
-    }
+    return new RegexIterator($iterator, '/^.+\.svg$/i', RecursiveRegexIterator::GET_MATCH);
 }
+
+test('svg contains png', function () {
+    foreach (getSvgFiles() as $file => $_unused) {
+        $svg = file_get_contents($file);
+
+        $this->assertFalse(
+            Str::contains($svg, 'data:image/'),
+            "$file contains a bitmap image, please use a regular png or valid svg"
+        );
+    }
+})->group('svg');
+
+test('svg has length width', function () {
+    foreach (getSvgFiles() as $file => $_unused) {
+        if ($file == 'html/images/safari-pinned-tab.svg') {
+            continue;
+        }
+
+        if (str_starts_with((string) $file, 'html/images/custommap/background/')) {
+            continue;
+        }
+
+        $svg = file_get_contents($file);
+
+        $this->assertEquals(
+            0,
+            preg_match('/<svg[^>]*(length|width)=/', $svg, $matches),
+            "$file: SVG files must not contain length or width attributes "
+        );
+    }
+})->group('svg');
+
+test('svg has viewbox', function () {
+    foreach (getSvgFiles() as $file => $_unused) {
+        $svg = file_get_contents($file);
+
+        $this->assertTrue(
+            Str::contains($svg, 'viewBox'),
+            "$file: SVG files must have the viewBox attribute set"
+        );
+    }
+})->group('svg');

@@ -1,5 +1,9 @@
 <?php
 
+use LibreNMS\Tests\TestCase;
+
+uses(TestCase::class);
+
 /**
  * AlertingTest.php
  *
@@ -24,38 +28,31 @@
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
 
-namespace LibreNMS\Tests;
-
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RegexIterator;
 
-final class AlertingTest extends TestCase
+function getTransportFiles(): RegexIterator
 {
-    public function testJsonAlertCollection(): void
-    {
-        $rules = get_rules_from_json();
-        $this->assertIsArray($rules);
-        foreach ($rules as $rule) {
-            $this->assertIsArray($rule);
-        }
-    }
+    $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('LibreNMS/Alert/Transport'));
 
-    public function testTransports(): void
-    {
-        foreach ($this->getTransportFiles() as $file => $_unused) {
-            $parts = explode('/', (string) $file);
-            $transport = ucfirst(str_replace('.php', '', array_pop($parts)));
-            $class = 'LibreNMS\\Alert\\Transport\\' . $transport;
-            $this->assertTrue(class_exists($class), "The transport $transport does not exist");
-            $this->assertInstanceOf(\LibreNMS\Interfaces\Alert\Transport::class, new $class);
-        }
-    }
-
-    private function getTransportFiles(): RegexIterator
-    {
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('LibreNMS/Alert/Transport'));
-
-        return new RegexIterator($iterator, '/^.+\.php$/i', RegexIterator::GET_MATCH);
-    }
+    return new RegexIterator($iterator, '/^.+\.php$/i', RegexIterator::GET_MATCH);
 }
+
+test('json alert collection', function () {
+    $rules = get_rules_from_json();
+    $this->assertIsArray($rules);
+    foreach ($rules as $rule) {
+        $this->assertIsArray($rule);
+    }
+});
+
+test('transports', function () {
+    foreach (getTransportFiles() as $file => $_unused) {
+        $parts = explode('/', (string) $file);
+        $transport = ucfirst(str_replace('.php', '', array_pop($parts)));
+        $class = 'LibreNMS\\Alert\\Transport\\' . $transport;
+        $this->assertTrue(class_exists($class), "The transport $transport does not exist");
+        $this->assertInstanceOf(\LibreNMS\Interfaces\Alert\Transport::class, new $class);
+    }
+});
