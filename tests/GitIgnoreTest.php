@@ -27,7 +27,6 @@ uses(TestCase::class);
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
 $gitIgnoreFiles = [
     '.gitignore',
     'bootstrap/cache/.gitignore',
