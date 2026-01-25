@@ -35,16 +35,6 @@ parameters:
 			path: LibreNMS/Device/Processor.php
 
 		-
-			message: "#^Variable \\$lsps might not be defined\\.$#"
-			count: 1
-			path: LibreNMS/Modules/Mpls.php
-
-		-
-			message: "#^Variable \\$paths might not be defined\\.$#"
-			count: 2
-			path: LibreNMS/Modules/Mpls.php
-
-		-
 			message: "#^Variable \\$features on left side of \\?\\? is never defined\\.$#"
 			count: 1
 			path: LibreNMS/Modules/Os.php
