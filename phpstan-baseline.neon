@@ -80,11 +80,6 @@ parameters:
 			path: LibreNMS/OS/Ceraos.php
 
 		-
-			message: "#^Parameter \\#16 \\$entPhysicalIndex of class LibreNMS\\\\Device\\\\WirelessSensor constructor expects float\\|int\\|null, string given\\.$#"
-			count: 1
-			path: LibreNMS/OS/Ios.php
-
-		-
 			message: "#^Variable \\$index might not be defined\\.$#"
 			count: 2
 			path: LibreNMS/OS/SmOs.php
