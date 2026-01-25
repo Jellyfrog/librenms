@@ -155,7 +155,7 @@ class CiHelper
      */
     public function allChecksComplete(): bool
     {
-        return array_reduce($this->completedChecks, fn ($result, $check) => $result && $check, false);
+        return array_reduce($this->completedChecks, fn ($result, $check) => $result && $check, true);
     }
 
     /**
