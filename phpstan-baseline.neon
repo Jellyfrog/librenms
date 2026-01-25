@@ -85,11 +85,6 @@ parameters:
 			path: LibreNMS/OS/Ios.php
 
 		-
-			message: "#^Variable \\$index might not be defined\\.$#"
-			count: 2
-			path: LibreNMS/OS/SmOs.php
-
-		-
 			message: "#^If condition is always false\\.$#"
 			count: 2
 			path: LibreNMS/Util/CiHelper.php
