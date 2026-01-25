@@ -25,16 +25,6 @@ parameters:
 			path: LibreNMS/Device/Processor.php
 
 		-
-			message: "#^Unsafe call to private method LibreNMS\\\\Device\\\\Processor\\:\\:pollProcessors\\(\\) through static\\:\\:\\.$#"
-			count: 1
-			path: LibreNMS/Device/Processor.php
-
-		-
-			message: "#^Unsafe call to private method LibreNMS\\\\Device\\\\Processor\\:\\:processData\\(\\) through static\\:\\:\\.$#"
-			count: 3
-			path: LibreNMS/Device/Processor.php
-
-		-
 			message: "#^Variable \\$lsps might not be defined\\.$#"
 			count: 1
 			path: LibreNMS/Modules/Mpls.php
