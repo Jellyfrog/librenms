@@ -24,50 +24,42 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Unit\Util;
-
-use LibreNMS\Tests\TestCase;
 use LibreNMS\Util\EnvHelper;
 
-final class EnvTest extends TestCase
-{
-    public function testParseArray(): void
-    {
-        putenv('PARSETEST=one,two');
-        $this->assertSame(['one', 'two'], EnvHelper::parseArray('PARSETEST'), 'Could not parse simple array');
-        $this->assertSame(['default'], EnvHelper::parseArray('PARSETESTNOTSET', 'default'), 'Did not get default value as expected');
-        $this->assertSame(null, EnvHelper::parseArray('PARSETESTNOTSET'), 'Did not get null as expected when env not set');
-        $this->assertSame(3, EnvHelper::parseArray('PARSETESTNOTSET', 3), 'Did not get default value (non-array) as expected');
-        $this->assertSame('default', EnvHelper::parseArray('PARSETESTNOTSET', 'default', ['default']), 'Did not get default value as expected, excluding it from exploding');
+test('parseArray', function () {
+    putenv('PARSETEST=one,two');
+    expect(EnvHelper::parseArray('PARSETEST'))->toBe(['one', 'two']);
+    expect(EnvHelper::parseArray('PARSETESTNOTSET', 'default'))->toBe(['default']);
+    expect(EnvHelper::parseArray('PARSETESTNOTSET'))->toBeNull();
+    expect(EnvHelper::parseArray('PARSETESTNOTSET', 3))->toBe(3);
+    expect(EnvHelper::parseArray('PARSETESTNOTSET', 'default', ['default']))->toBe('default');
 
-        putenv('PARSETEST=');
-        $this->assertSame([''], EnvHelper::parseArray('PARSETEST', null, []), 'Did not get empty string as expected when env set to empty');
+    putenv('PARSETEST=');
+    expect(EnvHelper::parseArray('PARSETEST', null, []))->toBe(['']);
 
-        putenv('PARSETEST=*');
-        $this->assertSame('*', EnvHelper::parseArray('PARSETEST', null, ['*', '*']), 'Did not properly ignore exclude values');
+    putenv('PARSETEST=*');
+    expect(EnvHelper::parseArray('PARSETEST', null, ['*', '*']))->toBe('*');
 
-        // clean the environment
-        putenv('PARSETEST');
-    }
+    // clean the environment
+    putenv('PARSETEST');
+});
 
-    public function testSetEnv(): void
-    {
-        $this->assertEquals("ONE=one\nTWO=2\$\nTHREE=\"space space\"\n", EnvHelper::setEnv("ONE=one\nTWO=\n", [
-            'ONE' => 'zero',
-            'TWO' => '2$',
-            'THREE' => 'space space',
-        ]));
+test('setEnv', function () {
+    expect(EnvHelper::setEnv("ONE=one\nTWO=\n", [
+        'ONE' => 'zero',
+        'TWO' => '2$',
+        'THREE' => 'space space',
+    ]))->toBe("ONE=one\nTWO=2\$\nTHREE=\"space space\"\n");
 
-        $this->assertEquals("A=a\nB=b\nC=c\nD=d\n", EnvHelper::setEnv("#A=\nB=b\nF=blah\nC=\n", [
-            'C' => 'c',
-            'D' => 'd',
-            'B' => 'nope',
-            'A' => 'a',
-        ], ['F', 'A']));
+    expect(EnvHelper::setEnv("#A=\nB=b\nF=blah\nC=\n", [
+        'C' => 'c',
+        'D' => 'd',
+        'B' => 'nope',
+        'A' => 'a',
+    ], ['F', 'A']))->toBe("A=a\nB=b\nC=c\nD=d\n");
 
-        // replace
-        $this->assertEquals("#COMMENT=something\nCOMMENT=else\n", EnvHelper::setEnv("COMMENT=nothing\n#COMMENT=something", [
-            'COMMENT' => 'else',
-        ], ['COMMENT']));
-    }
-}
+    // replace
+    expect(EnvHelper::setEnv("COMMENT=nothing\n#COMMENT=something", [
+        'COMMENT' => 'else',
+    ], ['COMMENT']))->toBe("#COMMENT=something\nCOMMENT=else\n");
+});

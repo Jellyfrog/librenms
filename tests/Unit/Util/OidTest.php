@@ -1,129 +1,107 @@
 <?php
 
-namespace LibreNMS\Tests\Unit\Util;
-
-use LibreNMS\Tests\TestCase;
 use LibreNMS\Util\Oid;
 
-final class OidTest extends TestCase
-{
-    public function testStringFromOidSingle(): void
-    {
-        // 3 characters: 'A' (65) 'B' (66) 'C' (67)
-        $oid = '3.65.66.67';
-        $this->assertSame('ABC', Oid::stringFromOid($oid)); // default 's' extracts first string
-        $this->assertSame('ABC', Oid::stringFromOid($oid, 's')); // explicit
-    }
+test('stringFromOid single', function () {
+    // 3 characters: 'A' (65) 'B' (66) 'C' (67)
+    $oid = '3.65.66.67';
+    expect(Oid::stringFromOid($oid))->toBe('ABC'); // default 's' extracts first string
+    expect(Oid::stringFromOid($oid, 's'))->toBe('ABC'); // explicit
+});
 
-    public function testStringFromOidMultiplePositions(): void
-    {
-        // two strings: 'ABC' and 'xy'
-        $oid = '3.65.66.67.2.120.121';
-        $this->assertSame('ABC', Oid::stringFromOid($oid, 's'));
-        $this->assertSame('xy', Oid::stringFromOid($oid, 'ss')); // skip first string, extract second
-    }
+test('stringFromOid multiple positions', function () {
+    // two strings: 'ABC' and 'xy'
+    $oid = '3.65.66.67.2.120.121';
+    expect(Oid::stringFromOid($oid, 's'))->toBe('ABC');
+    expect(Oid::stringFromOid($oid, 'ss'))->toBe('xy'); // skip first string, extract second
+});
 
-    public function testStringFromOidPositionOutOfBounds(): void
-    {
-        $oid = '1.90'; // 'Z'
-        $this->assertSame('Z', Oid::stringFromOid($oid, 's'));
-        $this->assertSame('', Oid::stringFromOid($oid, 'ss')); // no second string present
-    }
+test('stringFromOid position out of bounds', function () {
+    $oid = '1.90'; // 'Z'
+    expect(Oid::stringFromOid($oid, 's'))->toBe('Z');
+    expect(Oid::stringFromOid($oid, 'ss'))->toBe(''); // no second string present
+});
 
-    public function testStringFromOidZeroLengthSegment(): void
-    {
-        // three segments: 'ABC', '', 'Z'
-        $oid = '3.65.66.67.0.1.90';
-        $this->assertSame('ABC', Oid::stringFromOid($oid, 's'));
-        $this->assertSame('', Oid::stringFromOid($oid, 'ss'));
-        $this->assertSame('Z', Oid::stringFromOid($oid, 'sss'));
-    }
+test('stringFromOid zero length segment', function () {
+    // three segments: 'ABC', '', 'Z'
+    $oid = '3.65.66.67.0.1.90';
+    expect(Oid::stringFromOid($oid, 's'))->toBe('ABC');
+    expect(Oid::stringFromOid($oid, 'ss'))->toBe('');
+    expect(Oid::stringFromOid($oid, 'sss'))->toBe('Z');
+});
 
-    public function testOidWithCombinedNumericAndString(): void
-    {
-        // first two indices are numeric (3, 49), followed by a string of length 7: 'Pre-Amp'
-        $oid = '3.49.7.80.114.101.45.65.109.112';
-        $this->assertSame('Pre-Amp', Oid::stringFromOid($oid, 'nns'));
-        // sanity checks of other formats
-        $this->assertSame("1\x07P", Oid::stringFromOid($oid, 's'));   // first string length=3 -> 49,7,80 ("1\x07P")
-        $this->assertSame('', Oid::stringFromOid($oid, 'ns'));  // interpreting 49 as length also fails
-    }
+test('oid with combined numeric and string', function () {
+    // first two indices are numeric (3, 49), followed by a string of length 7: 'Pre-Amp'
+    $oid = '3.49.7.80.114.101.45.65.109.112';
+    expect(Oid::stringFromOid($oid, 'nns'))->toBe('Pre-Amp');
+    // sanity checks of other formats
+    expect(Oid::stringFromOid($oid, 's'))->toBe("1\x07P"); // first string length=3 -> 49,7,80 ("1\x07P")
+    expect(Oid::stringFromOid($oid, 'ns'))->toBe(''); // interpreting 49 as length also fails
+});
 
-    public function testStringFromOidHighAsciiBytes(): void
-    {
-        // bytes > 127 should be packed as-is
-        // example: 0xC3 0xBC (UTF-8 bytes for 'ü') length 2
-        $oid = '2.195.188';
-        $this->assertSame("\xC3\xBC", Oid::stringFromOid($oid));
-    }
+test('stringFromOid high ASCII bytes', function () {
+    // bytes > 127 should be packed as-is
+    // example: 0xC3 0xBC (UTF-8 bytes for 'ü') length 2
+    $oid = '2.195.188';
+    expect(Oid::stringFromOid($oid))->toBe("\xC3\xBC");
+});
 
-    public function testStringFromOidEmpty(): void
-    {
-        // zero length string segment
-        $oid = '0';
-        $this->assertSame('', Oid::stringFromOid($oid));
-    }
+test('stringFromOid empty', function () {
+    // zero length string segment
+    $oid = '0';
+    expect(Oid::stringFromOid($oid))->toBe('');
+});
 
-    public function testEncodeString(): void
-    {
-        $encoded = Oid::encodeString('ABC');
-        $this->assertSame('3.65.66.67', $encoded->oid);
-    }
+test('encodeString', function () {
+    $encoded = Oid::encodeString('ABC');
+    expect($encoded->oid)->toBe('3.65.66.67');
+});
 
-    public function testEncodeStringEmpty(): void
-    {
-        $encoded = Oid::encodeString('');
-        $this->assertSame('0', $encoded->oid);
-    }
+test('encodeString empty', function () {
+    $encoded = Oid::encodeString('');
+    expect($encoded->oid)->toBe('0');
+});
 
-    public function testIsNumeric(): void
-    {
-        $this->assertTrue(Oid::of('1.3.6.1')->isNumeric());
-        $this->assertTrue(Oid::of('.1.3.6.1')->isNumeric());
-        $this->assertFalse(Oid::of('IF-MIB::ifDescr.0')->isNumeric());
-        $this->assertFalse(Oid::of('ifDescr.0')->isNumeric());
-    }
+test('isNumeric', function () {
+    expect(Oid::of('1.3.6.1')->isNumeric())->toBeTrue();
+    expect(Oid::of('.1.3.6.1')->isNumeric())->toBeTrue();
+    expect(Oid::of('IF-MIB::ifDescr.0')->isNumeric())->toBeFalse();
+    expect(Oid::of('ifDescr.0')->isNumeric())->toBeFalse();
+});
 
-    public function testIsFullTextualOid(): void
-    {
-        $this->assertTrue(Oid::of('IF-MIB::ifDescr')->isFullTextualOid());
-        // still matches even with instance suffix
-        $this->assertTrue(Oid::of('IF-MIB::ifDescr.0')->isFullTextualOid());
-        $this->assertFalse(Oid::of('ifDescr.0')->isFullTextualOid());
-        $this->assertFalse(Oid::of('1.3.6.1')->isFullTextualOid());
-    }
+test('isFullTextualOid', function () {
+    expect(Oid::of('IF-MIB::ifDescr')->isFullTextualOid())->toBeTrue();
+    // still matches even with instance suffix
+    expect(Oid::of('IF-MIB::ifDescr.0')->isFullTextualOid())->toBeTrue();
+    expect(Oid::of('ifDescr.0')->isFullTextualOid())->toBeFalse();
+    expect(Oid::of('1.3.6.1')->isFullTextualOid())->toBeFalse();
+});
 
-    public function testHasMibAndGetMib(): void
-    {
-        $this->assertTrue(Oid::of('IF-MIB::ifDescr.0')->hasMib());
-        $this->assertSame('IF-MIB', Oid::of('IF-MIB::ifDescr.0')->getMib());
-        $this->assertFalse(Oid::of('ifDescr.0')->hasMib());
-        $this->assertSame('', Oid::of('ifDescr.0')->getMib());
-    }
+test('hasMib and getMib', function () {
+    expect(Oid::of('IF-MIB::ifDescr.0')->hasMib())->toBeTrue();
+    expect(Oid::of('IF-MIB::ifDescr.0')->getMib())->toBe('IF-MIB');
+    expect(Oid::of('ifDescr.0')->hasMib())->toBeFalse();
+    expect(Oid::of('ifDescr.0')->getMib())->toBe('');
+});
 
-    public function testHasNumericRoot(): void
-    {
-        $this->assertTrue(Oid::of('1.3.6.1')->hasNumericRoot());
-        $this->assertTrue(Oid::of('.1.3.6.1')->hasNumericRoot());
-        $this->assertFalse(Oid::of('2.3.6.1')->hasNumericRoot());
-        $this->assertFalse(Oid::of('IF-MIB::ifDescr')->hasNumericRoot());
-    }
+test('hasNumericRoot', function () {
+    expect(Oid::of('1.3.6.1')->hasNumericRoot())->toBeTrue();
+    expect(Oid::of('.1.3.6.1')->hasNumericRoot())->toBeTrue();
+    expect(Oid::of('2.3.6.1')->hasNumericRoot())->toBeFalse();
+    expect(Oid::of('IF-MIB::ifDescr')->hasNumericRoot())->toBeFalse();
+});
 
-    public function testIsValid(): void
-    {
-        $this->assertTrue(Oid::of('1.3.6.1')->isValid('1.3.6.1'));
-        $this->assertTrue(Oid::of('IF-MIB::ifDescr')->isValid('IF-MIB::ifDescr'));
-        $this->assertFalse(Oid::of('ifDescr')->isValid('ifDescr'));
-    }
+test('isValid', function () {
+    expect(Oid::of('1.3.6.1')->isValid('1.3.6.1'))->toBeTrue();
+    expect(Oid::of('IF-MIB::ifDescr')->isValid('IF-MIB::ifDescr'))->toBeTrue();
+    expect(Oid::of('ifDescr')->isValid('ifDescr'))->toBeFalse();
+});
 
-    public function testHasNumericStatic(): void
-    {
-        $this->assertTrue(Oid::hasNumeric(['IF-MIB::ifDescr', '1.3.6.1']));
-        $this->assertFalse(Oid::hasNumeric(['IF-MIB::ifDescr', 'ifName.0']));
-    }
+test('hasNumeric static', function () {
+    expect(Oid::hasNumeric(['IF-MIB::ifDescr', '1.3.6.1']))->toBeTrue();
+    expect(Oid::hasNumeric(['IF-MIB::ifDescr', 'ifName.0']))->toBeFalse();
+});
 
-    public function testToStringCastsToOriginal(): void
-    {
-        $this->assertSame('1.2.3', (string) Oid::of('1.2.3'));
-    }
-}
+test('toString casts to original', function () {
+    expect((string) Oid::of('1.2.3'))->toBe('1.2.3');
+});

@@ -24,214 +24,190 @@
  * @author     Juan Diego Iannelli <jdibach@gmail.com>
  */
 
-namespace LibreNMS\Tests\Unit\Alert\Transports;
-
 use App\Models\AlertTransport;
 use App\Models\Device;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use LibreNMS\Alert\AlertData;
 use LibreNMS\Alert\Transport;
-use LibreNMS\Tests\TestCase;
 
-use function PHPUnit\Framework\assertEquals;
+test('discord no config delivery', function () {
+    Http::fake();
 
-final class DiscordTest extends TestCase
-{
-    public function testDiscordNoConfigDelivery(): void
-    {
-        Http::fake();
+    $transport = new Transport\Discord(new AlertTransport([
+        'transport_config' => [
+            'url' => '',
+            'options' => '',
+            'discord-embed-fields' => '',
+        ],
+    ]));
 
-        $transport = new Transport\Discord(new AlertTransport([
-            'transport_config' => [
-                'url' => '',
-                'options' => '',
-                'discord-embed-fields' => '',
-            ],
-        ]));
+    /** @var Device $mock_device */
+    $mock_device = Device::factory()->make(['hostname' => 'my-hostname.com']);
 
-        /** @var Device $mock_device */
-        $mock_device = Device::factory()->make(['hostname' => 'my-hostname.com']);
+    $transport->deliverAlert(AlertData::testData($mock_device));
 
-        $transport->deliverAlert(AlertData::testData($mock_device));
-
-        Http::assertSent(function (Request $request) {
-            assertEquals('', $request->url());
-            assertEquals('POST', $request->method());
-            assertEquals('application/json', $request->header('Content-Type')[0]);
-            assertEquals(
+    Http::assertSent(function (Request $request) {
+        expect($request->url())->toBe('');
+        expect($request->method())->toBe('POST');
+        expect($request->header('Content-Type')[0])->toBe('application/json');
+        expect($request->data())->toBe([
+            'embeds' => [
                 [
-                    'embeds' => [
-                        [
-                            'title' => '#000 Testing transport from LibreNMS',
-                            'color' => 16711680,
-                            'description' => 'This is a test alert',
-                            'fields' => [],
-                            'footer' => [
-                                'text' => 'alert took 11s',
-                            ],
-                        ],
+                    'title' => '#000 Testing transport from LibreNMS',
+                    'color' => 16711680,
+                    'description' => 'This is a test alert',
+                    'fields' => [],
+                    'footer' => [
+                        'text' => 'alert took 11s',
                     ],
                 ],
-                $request->data()
-            );
-
-            return true;
-        });
-    }
-
-    public function testBadOptionsDelivery(): void
-    {
-        Http::fake();
-
-        $transport = new Transport\Discord(new AlertTransport([
-            'transport_config' => [
-                'url' => 'https://discord.com/api/webhooks/number/id',
-                'options' => 'multi-line options not in INIFormat' . PHP_EOL . 'are ignored',
-                'discord-embed-fields' => '',
             ],
-        ]));
+        ]);
 
-        /** @var Device $mock_device */
-        $mock_device = Device::factory()->make(['hostname' => 'my-hostname.com']);
+        return true;
+    });
+});
 
-        $transport->deliverAlert(AlertData::testData($mock_device));
+test('bad options delivery', function () {
+    Http::fake();
 
-        Http::assertSent(function (Request $request) {
-            assertEquals('https://discord.com/api/webhooks/number/id', $request->url());
-            assertEquals('POST', $request->method());
-            assertEquals('application/json', $request->header('Content-Type')[0]);
-            assertEquals(
+    $transport = new Transport\Discord(new AlertTransport([
+        'transport_config' => [
+            'url' => 'https://discord.com/api/webhooks/number/id',
+            'options' => 'multi-line options not in INIFormat' . PHP_EOL . 'are ignored',
+            'discord-embed-fields' => '',
+        ],
+    ]));
+
+    /** @var Device $mock_device */
+    $mock_device = Device::factory()->make(['hostname' => 'my-hostname.com']);
+
+    $transport->deliverAlert(AlertData::testData($mock_device));
+
+    Http::assertSent(function (Request $request) {
+        expect($request->url())->toBe('https://discord.com/api/webhooks/number/id');
+        expect($request->method())->toBe('POST');
+        expect($request->header('Content-Type')[0])->toBe('application/json');
+        expect($request->data())->toBe([
+            'embeds' => [
                 [
-                    'embeds' => [
-                        [
-                            'title' => '#000 Testing transport from LibreNMS',
-                            'color' => 16711680,
-                            'description' => 'This is a test alert',
-                            'fields' => [],
-                            'footer' => [
-                                'text' => 'alert took 11s',
-                            ],
-                        ],
+                    'title' => '#000 Testing transport from LibreNMS',
+                    'color' => 16711680,
+                    'description' => 'This is a test alert',
+                    'fields' => [],
+                    'footer' => [
+                        'text' => 'alert took 11s',
                     ],
                 ],
-                $request->data()
-            );
-
-            return true;
-        });
-    }
-
-    public function testBadEmbedFieldsDelivery(): void
-    {
-        Http::fake();
-
-        $transport = new Transport\Discord(new AlertTransport([
-            'transport_config' => [
-                'url' => 'https://discord.com/api/webhooks/number/id',
-                'options' => '',
-                'discord-embed-fields' => 'hostname severity',
             ],
-        ]));
+        ]);
 
-        /** @var Device $mock_device */
-        $mock_device = Device::factory()->make(['hostname' => 'my-hostname.com']);
+        return true;
+    });
+});
 
-        $transport->deliverAlert(AlertData::testData($mock_device));
+test('bad embed fields delivery', function () {
+    Http::fake();
 
-        Http::assertSent(function (Request $request) {
-            assertEquals('https://discord.com/api/webhooks/number/id', $request->url());
-            assertEquals('POST', $request->method());
-            assertEquals('application/json', $request->header('Content-Type')[0]);
-            assertEquals(
+    $transport = new Transport\Discord(new AlertTransport([
+        'transport_config' => [
+            'url' => 'https://discord.com/api/webhooks/number/id',
+            'options' => '',
+            'discord-embed-fields' => 'hostname severity',
+        ],
+    ]));
+
+    /** @var Device $mock_device */
+    $mock_device = Device::factory()->make(['hostname' => 'my-hostname.com']);
+
+    $transport->deliverAlert(AlertData::testData($mock_device));
+
+    Http::assertSent(function (Request $request) {
+        expect($request->url())->toBe('https://discord.com/api/webhooks/number/id');
+        expect($request->method())->toBe('POST');
+        expect($request->header('Content-Type')[0])->toBe('application/json');
+        expect($request->data())->toBe([
+            'embeds' => [
                 [
-                    'embeds' => [
+                    'title' => '#000 Testing transport from LibreNMS',
+                    'color' => 16711680,
+                    'description' => 'This is a test alert',
+                    'fields' => [
                         [
-                            'title' => '#000 Testing transport from LibreNMS',
-                            'color' => 16711680,
-                            'description' => 'This is a test alert',
-                            'fields' => [
-                                [
-                                    'name' => 'Hostname severity',
-                                    'value' => 'Error: Invalid Field',
-                                ],
-                            ],
-                            'footer' => [
-                                'text' => 'alert took 11s',
-                            ],
+                            'name' => 'Hostname severity',
+                            'value' => 'Error: Invalid Field',
                         ],
                     ],
-                ],
-                $request->data()
-            );
-
-            return true;
-        });
-    }
-
-    public function testDiscordDelivery(): void
-    {
-        Http::fake();
-
-        $transport = new Transport\Discord(new AlertTransport([
-            'transport_config' => [
-                'url' => 'https://discord.com/api/webhooks/number/id',
-                'options' => 'tts=true' . PHP_EOL . 'content=This is a text',
-                'discord-embed-fields' => 'hostname,severity,wrongfield',
-            ],
-        ]));
-
-        /** @var Device $mock_device */
-        $mock_device = Device::factory()->make(['hostname' => 'my-hostname.com']);
-
-        $alert_data = AlertData::testData($mock_device);
-
-        $alert_data['msg'] = 'This test alert should not have image <img class="librenms-graph" src="google.jpeg" /> or <h2>html tags</h2></br>';
-
-        $transport->deliverAlert($alert_data);
-
-        Http::assertSent(function (Request $request) {
-            assertEquals($request->url(), 'https://discord.com/api/webhooks/number/id');
-            assertEquals($request->method(), 'POST');
-            assertEquals($request->header('Content-Type')[0], 'application/json');
-            assertEquals(
-                [
-                    'tts' => 'true',
-                    'content' => 'This is a text',
-                    'embeds' => [
-                        [
-                            'title' => '#000 Testing transport from LibreNMS',
-                            'color' => 16711680,
-                            'description' => 'This test alert should not have image [Image 1] or html tags',
-                            'fields' => [
-                                [
-                                    'name' => 'Hostname',
-                                    'value' => 'my-hostname.com',
-                                ],
-                                [
-                                    'name' => 'Severity',
-                                    'value' => 'critical',
-                                ],
-                                [
-                                    'name' => 'Wrongfield',
-                                    'value' => 'Error: Invalid Field',
-                                ],
-                            ],
-                            'footer' => [
-                                'text' => 'alert took 11s',
-                            ],
-                        ],
-                        [
-                            'image' => [
-                                'url' => 'google.jpeg',
-                            ],
-                        ],
+                    'footer' => [
+                        'text' => 'alert took 11s',
                     ],
                 ],
-                $request->data()
-            );
+            ],
+        ]);
 
-            return true;
-        });
-    }
-}
+        return true;
+    });
+});
+
+test('discord delivery', function () {
+    Http::fake();
+
+    $transport = new Transport\Discord(new AlertTransport([
+        'transport_config' => [
+            'url' => 'https://discord.com/api/webhooks/number/id',
+            'options' => 'tts=true' . PHP_EOL . 'content=This is a text',
+            'discord-embed-fields' => 'hostname,severity,wrongfield',
+        ],
+    ]));
+
+    /** @var Device $mock_device */
+    $mock_device = Device::factory()->make(['hostname' => 'my-hostname.com']);
+
+    $alert_data = AlertData::testData($mock_device);
+
+    $alert_data['msg'] = 'This test alert should not have image <img class="librenms-graph" src="google.jpeg" /> or <h2>html tags</h2></br>';
+
+    $transport->deliverAlert($alert_data);
+
+    Http::assertSent(function (Request $request) {
+        expect($request->url())->toBe('https://discord.com/api/webhooks/number/id');
+        expect($request->method())->toBe('POST');
+        expect($request->header('Content-Type')[0])->toBe('application/json');
+        expect($request->data())->toBe([
+            'tts' => 'true',
+            'content' => 'This is a text',
+            'embeds' => [
+                [
+                    'title' => '#000 Testing transport from LibreNMS',
+                    'color' => 16711680,
+                    'description' => 'This test alert should not have image [Image 1] or html tags',
+                    'fields' => [
+                        [
+                            'name' => 'Hostname',
+                            'value' => 'my-hostname.com',
+                        ],
+                        [
+                            'name' => 'Severity',
+                            'value' => 'critical',
+                        ],
+                        [
+                            'name' => 'Wrongfield',
+                            'value' => 'Error: Invalid Field',
+                        ],
+                    ],
+                    'footer' => [
+                        'text' => 'alert took 11s',
+                    ],
+                ],
+                [
+                    'image' => [
+                        'url' => 'google.jpeg',
+                    ],
+                ],
+            ],
+        ]);
+
+        return true;
+    });
+});
