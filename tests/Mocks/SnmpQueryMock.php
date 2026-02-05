@@ -101,6 +101,9 @@ class SnmpQueryMock implements SnmpQueryInterface
         if ($this->numericIndex) {
             $options[] = '-Ob';
         }
+        if ($this->enumStrings) {
+            $options[] = '-Te';
+        }
 
         return NetSnmpQuery::make()
             ->mibDir($this->mibDir)
