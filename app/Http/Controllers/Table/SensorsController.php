@@ -79,7 +79,7 @@ class SensorsController extends TableController
         ];
 
         $hostname = Blade::render('<x-device-link :device="$device" />', ['device' => $sensor->device]);
-        $link = Url::generate(['page' => 'device', 'device' => $sensor['device_id'], 'tab' => 'health', 'metric' => $sensor->sensor_class]);
+        $link = Url::generate(['page' => 'device', 'device' => $sensor['device_id'], 'tab' => 'health', 'metric' => $sensor->sensor_class->value]);
         $descr = Url::graphPopup($graph_array, $sensor->sensor_descr, $link);
         $mini_graph = Url::graphPopup($graph_array);
         $sensor_current = Html::severityToLabel($sensor->currentStatus(), $sensor->formatValue());
@@ -137,7 +137,7 @@ class SensorsController extends TableController
             $sensor->formatValue(),
             $sensor->formatValue('sensor_limit_low'),
             $sensor->formatValue('sensor_limit'),
-            $sensor->sensor_class,
+            $sensor->sensor_class->value,
             $sensor->sensor_type,
         ];
     }
