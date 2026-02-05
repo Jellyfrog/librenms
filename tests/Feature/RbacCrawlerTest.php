@@ -1,4 +1,5 @@
 <?php
+
 /**
  * RbacCrawlerTest.php
  *
@@ -28,7 +29,6 @@ use App\Models\Device;
 use App\Models\Port;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Testing\TestResponse;
 use LibreNMS\Tests\DBTestCase;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -169,7 +169,7 @@ class RbacCrawlerTest extends DBTestCase
             $errorMessages[] = 'Server errors (5xx) found on ' . count($this->serverErrors) . " pages:\n" . implode("\n", $lines);
         }
 
-        echo "\n[Admin Crawl] Visited " . count($this->visited) . " pages. Status summary: " . json_encode($this->statusSummary) . "\n";
+        echo "\n[Admin Crawl] Visited " . count($this->visited) . ' pages. Status summary: ' . json_encode($this->statusSummary) . "\n";
 
         $this->assertEmpty($errorMessages, implode("\n\n", $errorMessages));
     }
@@ -422,7 +422,7 @@ class RbacCrawlerTest extends DBTestCase
         }
 
         // Print summary regardless of pass/fail
-        echo "\n[RBAC Crawl] Visited " . count($this->visited) . " pages. Status summary: " . json_encode($this->statusSummary) . "\n";
+        echo "\n[RBAC Crawl] Visited " . count($this->visited) . ' pages. Status summary: ' . json_encode($this->statusSummary) . "\n";
 
         if (! empty($this->rbacLeaks)) {
             echo '[RBAC Crawl] Leaked on these URLs:' . "\n";
