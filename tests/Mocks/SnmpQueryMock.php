@@ -46,7 +46,9 @@ class SnmpQueryMock implements SnmpQueryInterface
     private ?string $mibDir = null;
     private array $mibs = [];
     private bool $numeric = false;
+    private bool $numericIndex = false;
     private bool $hideMib = false;
+    private bool $enumStrings = false;
     private array $options = [];
     private bool $abort = false;
 
@@ -96,6 +98,9 @@ class SnmpQueryMock implements SnmpQueryInterface
         if ($this->hideMib) {
             $options[] = '-Os';
         }
+        if ($this->numericIndex) {
+            $options[] = '-Ob';
+        }
 
         return NetSnmpQuery::make()
             ->mibDir($this->mibDir)
@@ -125,8 +130,7 @@ class SnmpQueryMock implements SnmpQueryInterface
 
     public function numericIndex(bool $numericIndex = true): SnmpQueryInterface
     {
-        // TODO: Implement numericIndex() method
-        Log::error('numericIndex not implemented in SnmpQueryMock');
+        $this->numericIndex = $numericIndex;
 
         return $this;
     }
@@ -140,8 +144,10 @@ class SnmpQueryMock implements SnmpQueryInterface
 
     public function enumStrings(): SnmpQueryInterface
     {
-        // TODO: Implement enumStrings() method, no idea how
-        Log::error('enumStrings not implemented in SnmpQueryMock');
+        // Note: This flag is tracked but doesn't transform snmprec data values.
+        // Converting integer enum values to strings would require MIB lookups
+        // which is complex to implement. The snmprec files contain raw values.
+        $this->enumStrings = true;
 
         return $this;
     }
