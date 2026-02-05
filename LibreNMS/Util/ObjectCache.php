@@ -43,7 +43,6 @@ use App\Models\Service;
 use App\Models\Vrf;
 use Cache;
 use Illuminate\Support\Collection;
-use LibreNMS\Enum\Sensor as SensorEnum;
 
 class ObjectCache
 {
