@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Validation\Rule;
+use LibreNMS\Enum\Sensor as SensorEnum;
 use LibreNMS\Enum\Severity;
 use LibreNMS\Util\Html;
 use LibreNMS\Util\Url;
@@ -51,7 +52,7 @@ class SensorsController extends TableController
     {
         $class = $request->input('class');
         $relations = [];
-        if ($class == 'state') {
+        if ($class === SensorEnum::STATE->value) {
             $relations[] = 'translations';
         }
 
