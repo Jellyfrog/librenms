@@ -99,7 +99,8 @@
             "dont-discover": [
                 "nunomaduro/laravel-console-summary",
                 "facade/ignition",
-                "socialiteproviders/manager"
+                "socialiteproviders/manager",
+                "api-platform/laravel"
             ]
         }
     },

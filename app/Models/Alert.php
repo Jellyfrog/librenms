@@ -93,7 +93,7 @@ class Alert extends Model
 
     // ---- Define Relationships ----
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\Device, $this>
+     * @return BelongsTo<Device, $this>
      */
     public function device(): BelongsTo
     {
@@ -101,7 +101,7 @@ class Alert extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\AlertRule, $this>
+     * @return BelongsTo<AlertRule, $this>
      */
     public function rule(): BelongsTo
     {
@@ -109,7 +109,7 @@ class Alert extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\User, $this>
+     * @return BelongsToMany<User, $this>
      */
     public function users(): BelongsToMany
     {

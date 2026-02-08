@@ -140,7 +140,7 @@ class AlertRule extends BaseModel
     // ---- Define Relationships ----
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Alert, $this>
+     * @return HasMany<Alert, $this>
      */
     public function alerts(): HasMany
     {
@@ -148,7 +148,7 @@ class AlertRule extends BaseModel
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\AlertLog, $this>
+     * @return HasMany<AlertLog, $this>
      */
     public function logs(): HasMany
     {
@@ -156,7 +156,7 @@ class AlertRule extends BaseModel
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\AlertTemplateMap, $this>
+     * @return HasMany<AlertTemplateMap, $this>
      */
     public function templateMaps(): HasMany
     {
@@ -164,7 +164,7 @@ class AlertRule extends BaseModel
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\Device, $this>
+     * @return BelongsToMany<Device, $this>
      */
     public function devices(): BelongsToMany
     {
@@ -172,7 +172,7 @@ class AlertRule extends BaseModel
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\DeviceGroup, $this>
+     * @return BelongsToMany<DeviceGroup, $this>
      */
     public function groups(): BelongsToMany
     {
@@ -180,7 +180,7 @@ class AlertRule extends BaseModel
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\Location, $this>
+     * @return BelongsToMany<Location, $this>
      */
     public function locations(): BelongsToMany
     {
@@ -188,7 +188,7 @@ class AlertRule extends BaseModel
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\AlertTransport, $this>
+     * @return BelongsToMany<AlertTransport, $this>
      */
     public function transportSingles(): BelongsToMany
     {
@@ -198,7 +198,7 @@ class AlertRule extends BaseModel
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\AlertTransportGroup, $this>
+     * @return BelongsToMany<AlertTransportGroup, $this>
      */
     public function transportGroups(): BelongsToMany
     {
