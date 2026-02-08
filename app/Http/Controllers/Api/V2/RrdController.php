@@ -96,23 +96,19 @@ class RrdController extends Controller
 
         $device = Device::findOrFail($deviceId);
 
-        $rrd = new Rrd();
-        $rrdDir = config('librenms.rrd_dir', base_path('rrd'));
-        $filename = $rrdDir . '/' . $device->hostname . '/' . $request->input('filename');
-
+        $rrdDir = $this->getRrdDir();
+        $filename = $request->input('filename');
         if (! str_ends_with($filename, '.rrd')) {
             $filename .= '.rrd';
         }
 
-        // Sanitize - ensure the file is within the expected directory
-        $realPath = realpath($filename);
-        $realRrdDir = realpath($rrdDir);
-
-        if ($realPath === false || ! str_starts_with($realPath, $realRrdDir)) {
+        $realPath = $this->resolveRrdPath($rrdDir, $device->hostname, $filename);
+        if ($realPath === null) {
             return response()->json(['message' => 'RRD file not found.'], 404);
         }
 
-        $lastUpdate = $rrd->lastUpdate($filename);
+        $rrd = new Rrd();
+        $lastUpdate = $rrd->lastUpdate($realPath);
         if ($lastUpdate === null) {
             return response()->json(['message' => 'No data available.'], 404);
         }
@@ -120,7 +116,7 @@ class RrdController extends Controller
         return response()->json([
             'device_id' => $deviceId,
             'hostname' => $device->hostname,
-            'filename' => $request->input('filename'),
+            'filename' => basename($realPath),
             'last_update' => $lastUpdate->timestamp,
             'data' => $lastUpdate->data,
         ]);
@@ -137,10 +133,10 @@ class RrdController extends Controller
 
         $device = Device::findOrFail($deviceId);
 
-        $rrdDir = config('librenms.rrd_dir', base_path('rrd'));
-        $deviceDir = $rrdDir . '/' . $device->hostname;
+        $rrdDir = $this->getRrdDir();
+        $deviceDir = $this->resolveDeviceRrdDir($rrdDir, $device->hostname);
 
-        if (! is_dir($deviceDir)) {
+        if ($deviceDir === null || ! is_dir($deviceDir)) {
             return response()->json([
                 'device_id' => $deviceId,
                 'hostname' => $device->hostname,
@@ -194,6 +190,53 @@ class RrdController extends Controller
             'graphs' => $graphs,
             'count' => $graphs->count(),
         ]);
+    }
+
+    private function getRrdDir(): string
+    {
+        return config('librenms.rrd_dir', base_path('rrd'));
+    }
+
+    /**
+     * Safely resolve an RRD file path, preventing path traversal.
+     *
+     * Returns the real path if it exists within the RRD directory, or null.
+     */
+    private function resolveRrdPath(string $rrdDir, string $hostname, string $filename): ?string
+    {
+        $realRrdDir = realpath($rrdDir);
+        if ($realRrdDir === false) {
+            return null;
+        }
+
+        $candidate = $rrdDir . '/' . basename($hostname) . '/' . basename($filename);
+        $realPath = realpath($candidate);
+        if ($realPath === false || ! str_starts_with($realPath, $realRrdDir . DIRECTORY_SEPARATOR)) {
+            return null;
+        }
+
+        return $realPath;
+    }
+
+    /**
+     * Safely resolve a device's RRD directory, preventing path traversal.
+     *
+     * Returns the real path if it exists within the RRD directory, or null.
+     */
+    private function resolveDeviceRrdDir(string $rrdDir, string $hostname): ?string
+    {
+        $realRrdDir = realpath($rrdDir);
+        if ($realRrdDir === false) {
+            return null;
+        }
+
+        $candidate = $rrdDir . '/' . basename($hostname);
+        $realPath = realpath($candidate);
+        if ($realPath === false || ! str_starts_with($realPath, $realRrdDir . DIRECTORY_SEPARATOR)) {
+            return null;
+        }
+
+        return $realPath;
     }
 
     private function canAccessDevice(int $deviceId): bool
