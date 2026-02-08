@@ -5,12 +5,10 @@ namespace App\Http\Controllers\Api\V2;
 use App\Facades\Permissions;
 use App\Http\Controllers\Controller;
 use App\Models\Device;
-use App\Models\Port;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use LibreNMS\Data\Store\Rrd;
-use LibreNMS\Enum\ImageFormat;
 use LibreNMS\Exceptions\RrdGraphException;
 use LibreNMS\Util\Graph;
 

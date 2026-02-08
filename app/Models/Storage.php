@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Facades\Log;
-use LibreNMS\Exceptions\InsufficientDataException;
-use LibreNMS\Interfaces\Models\Keyable;
-use LibreNMS\Util\Number;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\QueryParameter;
-use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
-use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
-use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use Illuminate\Support\Facades\Log;
+use LibreNMS\Exceptions\InsufficientDataException;
+use LibreNMS\Interfaces\Models\Keyable;
+use LibreNMS\Util\Number;
 
 #[ApiResource(
     shortName: 'Storage',
