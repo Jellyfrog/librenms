@@ -6,7 +6,26 @@ use Illuminate\Support\Facades\Log;
 use LibreNMS\Exceptions\InsufficientDataException;
 use LibreNMS\Interfaces\Models\Keyable;
 use LibreNMS\Util\Number;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
 
+#[ApiResource(
+    shortName: 'Storage',
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'device_id', filter: new EqualsFilter())]
+#[QueryParameter(key: 'storage_type', filter: new EqualsFilter())]
+#[QueryParameter(key: 'storage_descr', filter: new PartialSearchFilter())]
+#[QueryParameter(key: 'order', filter: new OrderFilter())]
 class Storage extends DeviceRelatedModel implements Keyable
 {
     protected $table = 'storage';

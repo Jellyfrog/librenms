@@ -31,7 +31,24 @@ use App\Models\Traits\HasThresholds;
 use Illuminate\Support\Arr;
 use LibreNMS\Interfaces\Models\Keyable;
 use LibreNMS\Util\Number;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
 
+#[ApiResource(
+    shortName: 'WirelessSensor',
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'device_id', filter: new EqualsFilter())]
+#[QueryParameter(key: 'sensor_class', filter: new EqualsFilter())]
+#[QueryParameter(key: 'sensor_descr', filter: new PartialSearchFilter())]
 class WirelessSensor extends DeviceRelatedModel implements Keyable
 {
     use HasThresholds;

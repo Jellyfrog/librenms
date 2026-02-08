@@ -26,6 +26,21 @@
 
 namespace App\Models;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+
+#[ApiResource(
+    shortName: 'OspfInstance',
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'device_id', filter: new EqualsFilter())]
 class OspfInstance extends DeviceRelatedModel
 {
     public $timestamps = false;

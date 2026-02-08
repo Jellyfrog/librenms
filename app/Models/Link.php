@@ -2,11 +2,28 @@
 
 namespace App\Models;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+#[ApiResource(
+    shortName: 'Link',
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'local_device_id', filter: new EqualsFilter())]
+#[QueryParameter(key: 'remote_device_id', filter: new EqualsFilter())]
+#[QueryParameter(key: 'order', filter: new OrderFilter())]
 class Link extends Model
 {
     use HasFactory;

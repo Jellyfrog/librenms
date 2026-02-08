@@ -28,7 +28,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 
+#[ApiResource(
+    shortName: 'Poller',
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+    paginationItemsPerPage: 50,
+)]
 class Poller extends Model
 {
     public $timestamps = false;

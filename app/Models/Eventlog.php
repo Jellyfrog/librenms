@@ -26,11 +26,31 @@
 
 namespace App\Models;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Auth;
 use LibreNMS\Enum\Severity;
 
+#[ApiResource(
+    shortName: 'Eventlog',
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+    paginationItemsPerPage: 50,
+    order: ['event_id' => 'DESC'],
+)]
+#[QueryParameter(key: 'device_id', filter: new EqualsFilter())]
+#[QueryParameter(key: 'type', filter: new EqualsFilter())]
+#[QueryParameter(key: 'message', filter: new PartialSearchFilter())]
+#[QueryParameter(key: 'order', filter: new OrderFilter())]
 class Eventlog extends DeviceRelatedModel
 {
     protected $table = 'eventlog';

@@ -2,6 +2,23 @@
 
 namespace App\Models;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+
+#[ApiResource(
+    shortName: 'Processor',
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'device_id', filter: new EqualsFilter())]
+#[QueryParameter(key: 'order', filter: new OrderFilter())]
 class Processor extends DeviceRelatedModel
 {
     public $timestamps = false;

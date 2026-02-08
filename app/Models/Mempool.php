@@ -8,7 +8,24 @@ use LibreNMS\Exceptions\InsufficientDataException;
 use LibreNMS\Exceptions\UncorrectableNegativeException;
 use LibreNMS\Interfaces\Models\Keyable;
 use LibreNMS\Util\Number;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
 
+#[ApiResource(
+    shortName: 'Mempool',
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'device_id', filter: new EqualsFilter())]
+#[QueryParameter(key: 'mempool_type', filter: new EqualsFilter())]
+#[QueryParameter(key: 'order', filter: new OrderFilter())]
 class Mempool extends DeviceRelatedModel implements Keyable
 {
     protected $table = 'mempools';

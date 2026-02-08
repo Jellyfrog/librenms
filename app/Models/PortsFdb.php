@@ -4,7 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
 
+#[ApiResource(
+    shortName: 'FdbEntry',
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'device_id', filter: new EqualsFilter())]
+#[QueryParameter(key: 'port_id', filter: new EqualsFilter())]
+#[QueryParameter(key: 'mac_address', filter: new PartialSearchFilter())]
 class PortsFdb extends PortRelatedModel
 {
     protected $table = 'ports_fdb';

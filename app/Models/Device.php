@@ -28,7 +28,37 @@ use LibreNMS\Util\Rewrite;
 use LibreNMS\Util\Time;
 use LibreNMS\Util\Url;
 use Permissions;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
 
+#[ApiResource(
+    shortName: 'Device',
+    operations: [
+        new GetCollection(),
+        new Get(policy: 'view'),
+        new Post(policy: 'create'),
+        new Patch(policy: 'update'),
+        new Delete(policy: 'delete'),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'hostname', filter: new PartialSearchFilter())]
+#[QueryParameter(key: 'sysName', filter: new PartialSearchFilter())]
+#[QueryParameter(key: 'os', filter: new EqualsFilter())]
+#[QueryParameter(key: 'status', filter: new EqualsFilter())]
+#[QueryParameter(key: 'type', filter: new EqualsFilter())]
+#[QueryParameter(key: 'disabled', filter: new EqualsFilter())]
+#[QueryParameter(key: 'location_id', filter: new EqualsFilter())]
+#[QueryParameter(key: 'poller_group', filter: new EqualsFilter())]
+#[QueryParameter(key: 'order', filter: new OrderFilter())]
 /**
  * @property-read int|null $ports_count
  * @property-read int|null $sensors_count
@@ -44,6 +74,7 @@ class Device extends BaseModel
 
     public $timestamps = false;
     protected $primaryKey = 'device_id';
+    protected $hidden = ['community', 'authlevel', 'authname', 'authpass', 'authalgo', 'cryptoalgo', 'cryptopass'];
     protected $fillable = [
         'authalgo',
         'authlevel',

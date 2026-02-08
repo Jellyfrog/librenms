@@ -14,8 +14,33 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use LibreNMS\Util\Number;
 use LibreNMS\Util\Rewrite;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
 use Permissions;
 
+#[ApiResource(
+    shortName: 'Port',
+    operations: [
+        new GetCollection(),
+        new Get(policy: 'view'),
+        new Patch(policy: 'update'),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'device_id', filter: new EqualsFilter())]
+#[QueryParameter(key: 'ifName', filter: new PartialSearchFilter())]
+#[QueryParameter(key: 'ifAlias', filter: new PartialSearchFilter())]
+#[QueryParameter(key: 'ifDescr', filter: new PartialSearchFilter())]
+#[QueryParameter(key: 'ifType', filter: new EqualsFilter())]
+#[QueryParameter(key: 'ifOperStatus', filter: new EqualsFilter())]
+#[QueryParameter(key: 'ifAdminStatus', filter: new EqualsFilter())]
+#[QueryParameter(key: 'order', filter: new OrderFilter())]
 class Port extends DeviceRelatedModel
 {
     use HasFactory;

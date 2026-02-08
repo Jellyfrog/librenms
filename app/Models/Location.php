@@ -32,10 +32,32 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use LibreNMS\Util\Dns;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
 
 /**
  * @method static \Database\Factories\LocationFactory factory(...$parameters)
  */
+#[ApiResource(
+    shortName: 'Location',
+    operations: [
+        new GetCollection(),
+        new Get(policy: 'view'),
+        new Post(policy: 'create'),
+        new Patch(policy: 'update'),
+        new Delete(policy: 'delete'),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'location', filter: new PartialSearchFilter())]
+#[QueryParameter(key: 'order', filter: new OrderFilter())]
 class Location extends Model
 {
     use HasFactory;
