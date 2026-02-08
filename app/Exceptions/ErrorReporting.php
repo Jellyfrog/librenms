@@ -31,9 +31,9 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Symfony\Component\HttpFoundation\Response;
 use LibreNMS\Util\Git;
 use Spatie\LaravelIgnition\Facades\Flare;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class ErrorReporting
