@@ -34,6 +34,7 @@ modules:
                     oid: LENOVO-XCC-MIB::systemHealthStat
                     num_oid: '.1.3.6.1.4.1.19046.11.1.1.4.1.{{ $index }}'
                     index: 'systemHealthStat.{{ $index }}'
+                    state_name: systemHealthStat
                     states:
                         - { descr: 'completely failed', graph: 1, value: 0, generic: 2 }
                         - { descr: ok, graph: 1, value: 255, generic: 0 }
@@ -46,6 +47,7 @@ modules:
                     oid: LENOVO-XCC-MIB::currentSysPowerStatus
                     num_oid: '.1.3.6.1.4.1.19046.11.1.5.1.1.{{ $index }}'
                     index: 'currentSysPowerStatus.{{ $index }}'
+                    state_name: currentSysPowerStatus
                     states:
                         - { descr: 'powered off', graph: 1, value: 0, generic: 2 }
                         - { descr: sleep, graph: 1, value: 1, generic: 1 }
