@@ -2440,7 +2440,7 @@
                     "processor_index": "8.112.108.97.116.102.111.114.109",
                     "processor_type": "f5os",
                     "processor_usage": 26,
-                    "processor_descr": "cpuCore",
+                    "processor_descr": "F5-PLATFORM-STATS-MIB::cpuCore",
                     "processor_precision": 1,
                     "processor_perc_warn": 75
                 }
