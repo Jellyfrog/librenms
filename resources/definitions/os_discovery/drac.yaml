@@ -1,4 +1,3 @@
-mib: DELL-RAC-MIB:IDRAC-MIB-SMIv2
 modules:
     os:
         hardware:
@@ -31,11 +30,12 @@ modules:
         state:
             data:
                 -
-                    oid: drsGlobalSystemStatus
-                    value: drsGlobalSystemStatus
+                    oid: DELL-RAC-MIB::drsGlobalSystemStatus
+                    value: DELL-RAC-MIB::drsGlobalSystemStatus
                     num_oid: '.1.3.6.1.4.1.674.10892.2.2.1.{{ $index }}'
                     descr: 'Global System'
                     index: 'drsGlobalSystemStatus.{{ $index }}'
+                    state_name: drsGlobalSystemStatus
                     states:
                         - { value: 1, descr: other, graph: 1, generic: 3 }
                         - { value: 2, descr: unknown, graph: 1, generic: 3 }
@@ -44,11 +44,12 @@ modules:
                         - { value: 5, descr: critical, graph: 1, generic: 2 }
                         - { value: 6, descr: nonRecoverable, graph: 1, generic: 2 }
                 -
-                    oid: systemStateIDSDMCardUnitStatusCombined
-                    value: systemStateIDSDMCardUnitStatusCombined
+                    oid: IDRAC-MIB-SMIv2::systemStateIDSDMCardUnitStatusCombined
+                    value: IDRAC-MIB-SMIv2::systemStateIDSDMCardUnitStatusCombined
                     num_oid: '.1.3.6.1.4.1.674.10892.5.4.200.10.1.58.{{ $index }}'
                     descr: 'IDSDM Card Unit Combined'
                     index: 'systemStateIDSDMCardUnitStatusCombined.{{ $index }}'
+                    state_name: systemStateIDSDMCardUnitStatusCombined
                     states:
                         - { value: 1, descr: other, graph: 1, generic: 3 }
                         - { value: 2, descr: unknown, graph: 1, generic: 3 }
@@ -57,11 +58,12 @@ modules:
                         - { value: 5, descr: critical, graph: 1, generic: 2 }
                         - { value: 6, descr: nonRecoverable, graph: 1, generic: 2 }
                 -
-                    oid: systemStateIDSDMCardDeviceStatusCombined
-                    value: systemStateIDSDMCardDeviceStatusCombined
+                    oid: IDRAC-MIB-SMIv2::systemStateIDSDMCardDeviceStatusCombined
+                    value: IDRAC-MIB-SMIv2::systemStateIDSDMCardDeviceStatusCombined
                     num_oid: '.1.3.6.1.4.1.674.10892.5.4.200.10.1.60.{{ $index }}'
                     descr: 'IDSDM Card Device Combined'
                     index: 'systemStateIDSDMCardDeviceStatusCombined.{{ $index }}'
+                    state_name: systemStateIDSDMCardDeviceStatusCombined
                     states:
                         - { value: 1, descr: other, graph: 1, generic: 3 }
                         - { value: 2, descr: unknown, graph: 1, generic: 3 }
@@ -70,11 +72,12 @@ modules:
                         - { value: 5, descr: critical, graph: 1, generic: 2 }
                         - { value: 6, descr: nonRecoverable, graph: 1, generic: 2 }
                 -
-                    oid: intrusionStatus
-                    value: intrusionStatus
+                    oid: IDRAC-MIB-SMIv2::intrusionStatus
+                    value: IDRAC-MIB-SMIv2::intrusionStatus
                     num_oid: '.1.3.6.1.4.1.674.10892.5.4.300.70.1.5.{{ $index }}'
                     descr: 'Intrusion'
                     index: 'intrusionStatus.{{ $index }}'
+                    state_name: intrusionStatus
                     states:
                         - { value: 1, descr: other, graph: 1, generic: 3 }
                         - { value: 2, descr: unknown, graph: 1, generic: 3 }
@@ -83,22 +86,24 @@ modules:
                         - { value: 5, descr: critical, graph: 1, generic: 2 }
                         - { value: 6, descr: nonRecoverable, graph: 1, generic: 2 }
                 -
-                    oid: intrusionReading
-                    value: intrusionReading
+                    oid: IDRAC-MIB-SMIv2::intrusionReading
+                    value: IDRAC-MIB-SMIv2::intrusionReading
                     num_oid: '.1.3.6.1.4.1.674.10892.5.4.300.70.1.6.{{ $index }}'
                     descr: 'Intrusion Reading'
                     index: 'intrusionReading.{{ $index }}'
+                    state_name: intrusionReading
                     states:
                         - { value: 1, descr: chassisNotBreached, graph: 1, generic: 0 }
                         - { value: 2, descr: chassisBreached, graph: 1, generic: 2 }
                         - { value: 3, descr: chassisBreachedPrior, graph: 1, generic: 1 }
                         - { value: 4, descr: chassisBreachSensorFailure, graph: 1, generic: 1 }
                 -
-                    oid: drsIOMCurrStatus
-                    value: drsIOMCurrStatus
+                    oid: DELL-RAC-MIB::drsIOMCurrStatus
+                    value: DELL-RAC-MIB::drsIOMCurrStatus
                     num_oid: '.1.3.6.1.4.1.674.10892.2.3.1.2.{{ $index }}'
                     descr: 'IOM'
                     index: 'drsIOMCurrStatus.{{ $index }}'
+                    state_name: drsIOMCurrStatus
                     states:
                         - { value: 1, descr: other, graph: 1, generic: 3 }
                         - { value: 2, descr: unknown, graph: 1, generic: 3 }
@@ -112,6 +117,7 @@ modules:
                     num_oid: '.1.3.6.1.4.1.674.10892.2.3.1.3.{{ $index }}'
                     descr: 'KVM'
                     index: 'drsKVMCurrStatus.{{ $index }}'
+                    state_name: DELL-RAC-MIB::drsKVMCurrStatus
                     states:
                         - { value: 1, descr: other, graph: 1, generic: 3 }
                         - { value: 2, descr: unknown, graph: 1, generic: 3 }
@@ -120,11 +126,12 @@ modules:
                         - { value: 5, descr: critical, graph: 1, generic: 2 }
                         - { value: 6, descr: nonRecoverable, graph: 1, generic: 2 }
                 -
-                    oid: drsRedCurrStatus
-                    value: drsRedCurrStatus
+                    oid: DELL-RAC-MIB::drsRedCurrStatus
+                    value: DELL-RAC-MIB::drsRedCurrStatus
                     num_oid: '.1.3.6.1.4.1.674.10892.2.3.1.4.{{ $index }}'
                     descr: 'Redundancy'
                     index: 'drsRedCurrStatus.{{ $index }}'
+                    state_name: drsRedCurrStatus
                     states:
                         - { value: 1, descr: other, graph: 1, generic: 3 }
                         - { value: 2, descr: unknown, graph: 1, generic: 3 }
@@ -138,6 +145,7 @@ modules:
                     num_oid: '.1.3.6.1.4.1.674.10892.2.3.1.5.{{ $index }}'
                     descr: 'Power'
                     index: 'drsPowerCurrStatus.{{ $index }}'
+                    state_name: DELL-RAC-MIB::drsPowerCurrStatus
                     states:
                         - { value: 1, descr: other, graph: 1, generic: 3 }
                         - { value: 2, descr: unknown, graph: 1, generic: 3 }
@@ -147,10 +155,11 @@ modules:
                         - { value: 6, descr: nonRecoverable, graph: 1, generic: 2 }
                 -
                     oid: DELL-RAC-MIB::drsFanCurrStatus
-                    value: drsFanCurrStatus
+                    value: DELL-RAC-MIB::drsFanCurrStatus
                     num_oid: '.1.3.6.1.4.1.674.10892.2.3.1.6.{{ $index }}'
                     descr: 'FAN'
                     index: 'drsFanCurrStatus.{{ $index }}'
+                    state_name: DELL-RAC-MIB::drsFanCurrStatus
                     states:
                         - { value: 1, descr: other, graph: 1, generic: 3 }
                         - { value: 2, descr: unknown, graph: 1, generic: 3 }
@@ -163,6 +172,7 @@ modules:
                     num_oid: '.1.3.6.1.4.1.674.10892.2.3.1.7.{{ $index }}'
                     descr: 'Blade'
                     index: 'drsBladeCurrStatus.{{ $index }}'
+                    state_name: DELL-RAC-MIB::drsBladeCurrStatus
                     states:
                         - { value: 1, descr: other, graph: 1, generic: 3 }
                         - { value: 2, descr: unknown, graph: 1, generic: 3 }
@@ -175,6 +185,7 @@ modules:
                     num_oid: '.1.3.6.1.4.1.674.10892.2.3.1.8.{{ $index }}'
                     descr: 'Temperature'
                     index: 'drsTempCurrStatus.{{ $index }}'
+                    state_name: DELL-RAC-MIB::drsTempCurrStatus
                     states:
                         - { value: 1, descr: other, graph: 1, generic: 3 }
                         - { value: 2, descr: unknown, graph: 1, generic: 3 }
@@ -187,6 +198,7 @@ modules:
                     num_oid: '.1.3.6.1.4.1.674.10892.2.3.1.9.{{ $index }}'
                     descr: 'CMC'
                     index: 'drsCMCCurrStatus.{{ $index }}'
+                    state_name: DELL-RAC-MIB::drsCMCCurrStatus
                     states:
                         - { value: 1, descr: other, graph: 1, generic: 3 }
                         - { value: 2, descr: unknown, graph: 1, generic: 3 }
@@ -359,15 +371,15 @@ modules:
                         - { value: 9, descr: nonRecoverableLower, graph: 0, generic: 2 }
                         - { value: 10, descr: failed, graph: 0, generic: 2 }
                 -
-                    oid: drsCMCServerTable
-                    value: drsServerMonitoringCapable
+                    oid: DELL-RAC-MIB::drsCMCServerTable
+                    value: DELL-RAC-MIB::drsServerMonitoringCapable
                     num_oid: '.1.3.6.1.4.1.674.10892.2.5.1.1.2.{{ $index }}'
-                    descr: 'Slot {{ $drsServerSlotNumber }} {{ $drsServerModel }}'
+                    descr: 'Slot {{ DELL-RAC-MIB::drsServerSlotNumber }} {{ DELL-RAC-MIB::drsServerModel }}'
                     index: '{{ $index }}'
                     state_name: drsServerMonitoringCapable
                     skip_values:
                         -
-                            oid: drsServerSlotName
+                            oid: DELL-RAC-MIB::drsServerSlotName
                             op: '=='
                             value: 'N/A'
                     states:
@@ -378,117 +390,117 @@ modules:
         temperature:
             data:
                 -
-                    oid: drsChassisFrontPanelAmbientTemperature
-                    value: drsChassisFrontPanelAmbientTemperature
+                    oid: DELL-RAC-MIB::drsChassisFrontPanelAmbientTemperature
+                    value: DELL-RAC-MIB::drsChassisFrontPanelAmbientTemperature
                     num_oid: '.1.3.6.1.4.1.674.10892.2.3.1.10.{{ $index }}'
                     index: 'drsChassisFrontPanelAmbientTemperature.{{ $index }}'
                     descr: 'Chassis Front Panel Temperature'
                 -
-                    oid: drsCMCAmbientTemperature
-                    value: drsCMCAmbientTemperature
+                    oid: DELL-RAC-MIB::drsCMCAmbientTemperature
+                    value: DELL-RAC-MIB::drsCMCAmbientTemperature
                     num_oid: '.1.3.6.1.4.1.674.10892.2.3.1.11.{{ $index }}'
                     index: 'drsCMCAmbientTemperature.{{ $index }}'
                     descr: 'CMC Ambient Temperature'
                 -
-                    oid: drsCMCProcessorTemperature
-                    value: drsCMCProcessorTemperature
+                    oid: DELL-RAC-MIB::drsCMCProcessorTemperature
+                    value: DELL-RAC-MIB::drsCMCProcessorTemperature
                     num_oid: '.1.3.6.1.4.1.674.10892.2.3.1.12.{{ $index }}'
                     index: 'drsCMCProcessorTemperature.{{ $index }}'
                     descr: 'CMC Processor Temperature'
                 -
-                    oid: temperatureProbeTable
-                    value: temperatureProbeReading
+                    oid: IDRAC-MIB-SMIv2::temperatureProbeTable
+                    value: IDRAC-MIB-SMIv2::temperatureProbeReading
                     num_oid: '.1.3.6.1.4.1.674.10892.5.4.700.20.1.6.{{ $index }}'
                     index: '{{ $index }}'
-                    descr: temperatureProbeLocationName
+                    descr: IDRAC-MIB-SMIv2::temperatureProbeLocationName
                     divisor: 10
-                    high_limit: temperatureProbeUpperCriticalThreshold
-                    warn_limit: temperatureProbeUpperNonCriticalThreshold
-                    low_warn_limit: temperatureProbeLowerNonCriticalThreshold
-                    low_limit: temperatureProbeLowerCriticalThreshold
+                    high_limit: IDRAC-MIB-SMIv2::temperatureProbeUpperCriticalThreshold
+                    warn_limit: IDRAC-MIB-SMIv2::temperatureProbeUpperNonCriticalThreshold
+                    low_warn_limit: IDRAC-MIB-SMIv2::temperatureProbeLowerNonCriticalThreshold
+                    low_limit: IDRAC-MIB-SMIv2::temperatureProbeLowerCriticalThreshold
         voltage:
             data:
                 -
-                    oid: drsCMCPSUTable
-                    value: drsPSUVoltsReading
+                    oid: DELL-RAC-MIB::drsCMCPSUTable
+                    value: DELL-RAC-MIB::drsPSUVoltsReading
                     num_oid: '.1.3.6.1.4.1.674.10892.2.4.2.1.5.{{ $index }}'
-                    descr: 'Chassis {{ $drsPSUChassisIndex }} PS-{{ $drsPSUIndex }}'
+                    descr: 'Chassis {{ DELL-RAC-MIB::drsPSUChassisIndex }} PS-{{ DELL-RAC-MIB::drsPSUIndex }}'
                 -
-                    oid: powerSupplyTable
-                    value: powerSupplyCurrentInputVoltage
+                    oid: IDRAC-MIB-SMIv2::powerSupplyTable
+                    value: IDRAC-MIB-SMIv2::powerSupplyCurrentInputVoltage
                     num_oid: '.1.3.6.1.4.1.674.10892.5.4.600.12.1.16.{{ $index }}'
                     index: 'powerSupplyCurrentInputVoltage.{{ $index }}'
-                    descr: powerSupplyLocationName
-                    high_limit: powerSupplyMaximumInputVoltage
+                    descr: IDRAC-MIB-SMIv2::powerSupplyLocationName
+                    high_limit: IDRAC-MIB-SMIv2::powerSupplyMaximumInputVoltage
         current:
             data:
                 -
-                    oid: drsCMCPowerTable
-                    value: drsAmpsReading
+                    oid: DELL-RAC-MIB::drsCMCPowerTable
+                    value: DELL-RAC-MIB::drsAmpsReading
                     num_oid: '.1.3.6.1.4.1.674.10892.2.4.1.1.14.{{ $index }}'
-                    descr: 'Chassis {{ $drsChassisIndex }}'
+                    descr: 'Chassis {{ DELL-RAC-MIB::drsChassisIndex }}'
                 -
-                    oid: drsCMCPSUTable
-                    value: drsPSUAmpsReading
+                    oid: DELL-RAC-MIB::drsCMCPSUTable
+                    value: DELL-RAC-MIB::drsPSUAmpsReading
                     num_oid: '.1.3.6.1.4.1.674.10892.2.4.2.1.6.{{ $index }}'
-                    descr: 'Chassis {{ $drsPSUChassisIndex }} PS-{{ $drsPSUIndex }}'
+                    descr: 'Chassis {{ DELL-RAC-MIB::drsPSUChassisIndex }} PS-{{ DELL-RAC-MIB::drsPSUIndex }}'
                 -
-                    oid: amperageProbeTable
-                    value: amperageProbeReading
+                    oid: IDRAC-MIB-SMIv2::amperageProbeTable
+                    value: IDRAC-MIB-SMIv2::amperageProbeReading
                     divisor: 10
                     num_oid: '.1.3.6.1.4.1.674.10892.5.4.600.30.1.6.{{ $index }}'
-                    descr: '{{ $amperageProbeLocationName }}'
+                    descr: '{{ $IDRAC-MIB-SMIv2::amperageProbeLocationName }}'
                     skip_values:
                         -
-                            oid: amperageProbeType
+                            oid: IDRAC-MIB-SMIv2::amperageProbeType
                             op: '!='
                             value: 23
         power:
             data:
                 -
-                    oid: drsCMCPowerTable
-                    value: drsWattsReading
+                    oid: DELL-RAC-MIB::drsCMCPowerTable
+                    value: DELL-RAC-MIB::drsWattsReading
                     num_oid: '.1.3.6.1.4.1.674.10892.2.4.1.1.13.{{ $index }}'
                     index: 'drsWattsReading.{{ $index }}'
-                    descr: 'Chassis {{ $drsChassisIndex }}'
+                    descr: 'Chassis {{ DELL-RAC-MIB::drsChassisIndex }}'
                 -
-                    oid: drsCMCPowerTable
-                    value: drsWattsPeakUsage
+                    oid: DELL-RAC-MIB::drsCMCPowerTable
+                    value: DELL-RAC-MIB::drsWattsPeakUsage
                     num_oid: '.1.3.6.1.4.1.674.10892.2.4.1.1.8.{{ $index }}'
                     index: 'drsWattsPeakUsage.{{ $index }}'
-                    descr: 'Chassis {{ $drsChassisIndex }} Peak Usage'
+                    descr: 'Chassis {{ DELL-RAC-MIB::drsChassisIndex }} Peak Usage'
                 -
-                    oid: drsCMCPowerTable
-                    value: drsPotentialPower
+                    oid: DELL-RAC-MIB::drsCMCPowerTable
+                    value: DELL-RAC-MIB::drsPotentialPower
                     num_oid: '.1.3.6.1.4.1.674.10892.2.4.1.1.2.{{ $index }}'
                     index: 'drsPotentialPower.{{ $index }}'
-                    descr: 'Chassis {{ $drsChassisIndex }} Potential Power'
+                    descr: 'Chassis {{ DELL-RAC-MIB::drsChassisIndex }} Potential Power'
                 -
-                    oid: drsCMCPowerTable
-                    value: drsIdlePower
+                    oid: DELL-RAC-MIB::drsCMCPowerTable
+                    value: DELL-RAC-MIB::drsIdlePower
                     num_oid: '.1.3.6.1.4.1.674.10892.2.4.1.1.3.{{ $index }}'
                     index: 'drsIdlePower.{{ $index }}'
-                    descr: 'Chassis {{ $drsChassisIndex }} Idle Power'
+                    descr: 'Chassis {{ DELL-RAC-MIB::drsChassisIndex }} Idle Power'
                 -
-                    oid: drsCMCPowerTable
-                    value: drsMaxPowerSpecification
+                    oid: DELL-RAC-MIB::drsCMCPowerTable
+                    value: DELL-RAC-MIB::drsMaxPowerSpecification
                     num_oid: '.1.3.6.1.4.1.674.10892.2.4.1.1.4.{{ $index }}'
                     index: 'drsMaxPowerSpecification.{{ $index }}'
-                    descr: 'Chassis {{ $drsChassisIndex }} Max Power'
+                    descr: 'Chassis {{ DELL-RAC-MIB::drsChassisIndex }} Max Power'
                 -
-                    oid: drsCMCPowerTable
-                    value: drsPowerSurplus
+                    oid: DELL-RAC-MIB::drsCMCPowerTable
+                    value: DELL-RAC-MIB::drsPowerSurplus
                     num_oid: '.1.3.6.1.4.1.674.10892.2.4.1.1.5.{{ $index }}'
                     index: 'drsPowerSurplus.{{ $index }}'
-                    descr: 'Chassis {{ $drsChassisIndex }} Surplus Power'
+                    descr: 'Chassis {{ DELL-RAC-MIB::drsChassisIndex }} Surplus Power'
                 -
-                    oid: amperageProbeTable
-                    value: amperageProbeReading
+                    oid: IDRAC-MIB-SMIv2::amperageProbeTable
+                    value: IDRAC-MIB-SMIv2::amperageProbeReading
                     num_oid: '.1.3.6.1.4.1.674.10892.5.4.600.30.1.6.{{ $index }}'
-                    descr: '{{ $amperageProbeLocationName }}'
+                    descr: '{{ $IDRAC-MIB-SMIv2::amperageProbeLocationName }}'
                     skip_values:
                         -
-                            oid: amperageProbeType
+                            oid: IDRAC-MIB-SMIv2::amperageProbeType
                             op: '!='
                             value: 26
         percent:
