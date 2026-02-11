@@ -11020,5 +11020,587 @@
                 }
             ]
         }
+    },
+    "hr-device": {
+        "discovery": {
+            "hrDevice": [
+                {
+                    "hrDeviceIndex": 196608,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196609,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196610,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196611,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196612,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 196613,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 196614,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196615,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196616,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196617,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196618,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196619,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196620,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196621,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196622,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196623,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196624,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196625,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196626,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 196627,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196628,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196629,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196630,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196631,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196632,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196633,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196634,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196635,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196636,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 196637,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 196638,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196639,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196640,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196641,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196642,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 196643,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196644,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196645,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196646,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 196647,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196648,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196649,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196650,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196651,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196652,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196653,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196654,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196655,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196656,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 196657,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 196658,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196659,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196660,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196661,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 196662,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196663,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 196664,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196665,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196666,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196667,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196668,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196669,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196670,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196671,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196672,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196673,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196674,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196675,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196676,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196677,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196678,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 196679,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) Gold 5220 CPU @ 2.20GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                }
+            ]
+        }
     }
 }
