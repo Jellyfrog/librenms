@@ -1,5 +1,4 @@
 # need to reference these MIBs
-mib: XUPS-MIB:EATON-EMP-MIB
 modules:
     os:
         hardware: XUPS-MIB::xupsIdentModel.0
@@ -39,6 +38,7 @@ modules:
                     num_oid: '.1.3.6.1.4.1.534.1.2.5.{{ $index }}'
                     descr: 'Battery Status {{ $index }}'
                     index: 'xupsBatteryAbmStatus.{{ $index }}'
+                    state_name: XUPS-MIB::xupsBattery
                     states:
                         - { value: 2, descr: batteryDischarging, graph: 1, generic: 2 }
                         - { value: 3, descr: batteryFloating, graph: 1, generic: 0 }
@@ -53,6 +53,7 @@ modules:
                     num_oid: '.1.3.6.1.4.1.534.1.8.2.0.{{ $index }}'
                     descr: 'Battery Test Status {{ $index }}'
                     index: 'xupsTestBatteryStatus.{{ $index }}'
+                    state_name: XUPS-MIB::xupsTest
                     states:
                         - { value: 1, descr: unknown, graph: 1, generic: 3 }
                         - { value: 2, descr: passed, graph: 1, generic: 0 }

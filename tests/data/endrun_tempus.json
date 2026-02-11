@@ -569,5 +569,43 @@
                 }
             ]
         }
+    },
+    "hr-device": {
+        "discovery": {
+            "hrDevice": [
+                {
+                    "hrDeviceIndex": 768,
+                    "hrDeviceDescr": "AuthenticAMD: 486 DX/4-WB",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "unknown",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1025,
+                    "hrDeviceDescr": "network interface lo",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "unknown",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1026,
+                    "hrDeviceDescr": "network interface eth0",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "unknown",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 3072,
+                    "hrDeviceDescr": "Guessing that there's a floating point co-processor",
+                    "hrDeviceType": "hrDeviceCoprocessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "unknown",
+                    "hrProcessorLoad": null
+                }
+            ]
+        }
     }
 }

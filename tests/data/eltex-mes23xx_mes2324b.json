@@ -11284,7 +11284,7 @@
                     "poller_type": "snmp",
                     "sensor_oid": ".1.3.6.1.4.1.35265.1.23.11.1.1.2.67109186",
                     "sensor_index": "mesBattStatus.67109186",
-                    "sensor_type": "eltEnvMonBatteryStatusEntry",
+                    "sensor_type": "eltEnvMonBatteryState",
                     "sensor_descr": "Backup battery status",
                     "group": "Chassis PSU",
                     "sensor_divisor": 1,
@@ -11301,7 +11301,7 @@
                     "sensor_prev": null,
                     "user_func": null,
                     "rrd_type": "GAUGE",
-                    "state_name": "eltEnvMonBatteryStatusEntry"
+                    "state_name": "eltEnvMonBatteryState"
                 },
                 {
                     "sensor_deleted": 0,
@@ -11309,7 +11309,7 @@
                     "poller_type": "snmp",
                     "sensor_oid": ".1.3.6.1.4.1.89.83.1.1.1.3.67109249",
                     "sensor_index": "mesFanStatus.67109249",
-                    "sensor_type": "rlEnvMonFanStatusTable",
+                    "sensor_type": "rlEnvMonFanState",
                     "sensor_descr": "fan1_unit1 status",
                     "group": "Chassis FAN",
                     "sensor_divisor": 1,
@@ -11326,7 +11326,7 @@
                     "sensor_prev": null,
                     "user_func": null,
                     "rrd_type": "GAUGE",
-                    "state_name": "rlEnvMonFanStatusTable"
+                    "state_name": "rlEnvMonFanState"
                 },
                 {
                     "sensor_deleted": 0,
@@ -11334,7 +11334,7 @@
                     "poller_type": "snmp",
                     "sensor_oid": ".1.3.6.1.4.1.89.83.1.1.1.3.67109250",
                     "sensor_index": "mesFanStatus.67109250",
-                    "sensor_type": "rlEnvMonFanStatusTable",
+                    "sensor_type": "rlEnvMonFanState",
                     "sensor_descr": "fan2_unit1 status",
                     "group": "Chassis FAN",
                     "sensor_divisor": 1,
@@ -11351,7 +11351,7 @@
                     "sensor_prev": null,
                     "user_func": null,
                     "rrd_type": "GAUGE",
-                    "state_name": "rlEnvMonFanStatusTable"
+                    "state_name": "rlEnvMonFanState"
                 },
                 {
                     "sensor_deleted": 0,
@@ -11359,7 +11359,7 @@
                     "poller_type": "snmp",
                     "sensor_oid": ".1.3.6.1.4.1.89.83.1.1.1.3.67109251",
                     "sensor_index": "mesFanStatus.67109251",
-                    "sensor_type": "rlEnvMonFanStatusTable",
+                    "sensor_type": "rlEnvMonFanState",
                     "sensor_descr": "fan3_unit1 status",
                     "group": "Chassis FAN",
                     "sensor_divisor": 1,
@@ -11376,7 +11376,7 @@
                     "sensor_prev": null,
                     "user_func": null,
                     "rrd_type": "GAUGE",
-                    "state_name": "rlEnvMonFanStatusTable"
+                    "state_name": "rlEnvMonFanState"
                 },
                 {
                     "sensor_deleted": 0,
@@ -11384,7 +11384,7 @@
                     "poller_type": "snmp",
                     "sensor_oid": ".1.3.6.1.4.1.89.83.1.1.1.3.67109252",
                     "sensor_index": "mesFanStatus.67109252",
-                    "sensor_type": "rlEnvMonFanStatusTable",
+                    "sensor_type": "rlEnvMonFanState",
                     "sensor_descr": "fan4_unit1 status",
                     "group": "Chassis FAN",
                     "sensor_divisor": 1,
@@ -11401,57 +11401,7 @@
                     "sensor_prev": null,
                     "user_func": null,
                     "rrd_type": "GAUGE",
-                    "state_name": "rlEnvMonFanStatusTable"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "state",
-                    "poller_type": "snmp",
-                    "sensor_oid": ".1.3.6.1.4.1.89.53.15.1.3.1",
-                    "sensor_index": "mesBackupPsuStatus.1",
-                    "sensor_type": "rlPhdUnitEnvParamEntry",
-                    "sensor_descr": "Chassis#1 PSU#2 status",
-                    "group": "Chassis PSU",
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_current": 1,
-                    "sensor_limit": null,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_prev": null,
-                    "user_func": null,
-                    "rrd_type": "GAUGE",
-                    "state_name": "rlPhdUnitEnvParamEntry"
-                },
-                {
-                    "sensor_deleted": 0,
-                    "sensor_class": "state",
-                    "poller_type": "snmp",
-                    "sensor_oid": ".1.3.6.1.4.1.89.53.15.1.16.1",
-                    "sensor_index": "mesChassisTempStatus.1",
-                    "sensor_type": "rlPhdUnitEnvParamEntry",
-                    "sensor_descr": "Chassis#1 TEMP status",
-                    "group": "Chassis TEMP",
-                    "sensor_divisor": 1,
-                    "sensor_multiplier": 1,
-                    "sensor_current": 1,
-                    "sensor_limit": null,
-                    "sensor_limit_warn": null,
-                    "sensor_limit_low": null,
-                    "sensor_limit_low_warn": null,
-                    "sensor_alert": 1,
-                    "sensor_custom": "No",
-                    "entPhysicalIndex": null,
-                    "entPhysicalIndex_measured": null,
-                    "sensor_prev": null,
-                    "user_func": null,
-                    "rrd_type": "GAUGE",
-                    "state_name": "rlPhdUnitEnvParamEntry"
+                    "state_name": "rlEnvMonFanState"
                 },
                 {
                     "sensor_deleted": 0,
@@ -11459,7 +11409,7 @@
                     "poller_type": "snmp",
                     "sensor_oid": ".1.3.6.1.4.1.89.53.15.1.2.1",
                     "sensor_index": "mesMainPsuStatus.1",
-                    "sensor_type": "rlPhdUnitEnvParamEntry",
+                    "sensor_type": "rlPhdUnitEnvParamMainPSStatus",
                     "sensor_descr": "Chassis#1 PSU#1 status",
                     "group": "Chassis PSU",
                     "sensor_divisor": 1,
@@ -11476,7 +11426,57 @@
                     "sensor_prev": null,
                     "user_func": null,
                     "rrd_type": "GAUGE",
-                    "state_name": "rlPhdUnitEnvParamEntry"
+                    "state_name": "rlPhdUnitEnvParamMainPSStatus"
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "state",
+                    "poller_type": "snmp",
+                    "sensor_oid": ".1.3.6.1.4.1.89.53.15.1.16.1",
+                    "sensor_index": "mesChassisTempStatus.1",
+                    "sensor_type": "rlPhdUnitEnvParamMonitorTemperatureStatus",
+                    "sensor_descr": "Chassis#1 TEMP status",
+                    "group": "Chassis TEMP",
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_current": 1,
+                    "sensor_limit": null,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": null,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_prev": null,
+                    "user_func": null,
+                    "rrd_type": "GAUGE",
+                    "state_name": "rlPhdUnitEnvParamMonitorTemperatureStatus"
+                },
+                {
+                    "sensor_deleted": 0,
+                    "sensor_class": "state",
+                    "poller_type": "snmp",
+                    "sensor_oid": ".1.3.6.1.4.1.89.53.15.1.3.1",
+                    "sensor_index": "mesBackupPsuStatus.1",
+                    "sensor_type": "rlPhdUnitEnvParamRedundantPSStatus",
+                    "sensor_descr": "Chassis#1 PSU#2 status",
+                    "group": "Chassis PSU",
+                    "sensor_divisor": 1,
+                    "sensor_multiplier": 1,
+                    "sensor_current": 1,
+                    "sensor_limit": null,
+                    "sensor_limit_warn": null,
+                    "sensor_limit_low": null,
+                    "sensor_limit_low_warn": null,
+                    "sensor_alert": 1,
+                    "sensor_custom": "No",
+                    "entPhysicalIndex": null,
+                    "entPhysicalIndex_measured": null,
+                    "sensor_prev": null,
+                    "user_func": null,
+                    "rrd_type": "GAUGE",
+                    "state_name": "rlPhdUnitEnvParamRedundantPSStatus"
                 },
                 {
                     "sensor_deleted": 0,
@@ -11484,8 +11484,8 @@
                     "poller_type": "snmp",
                     "sensor_oid": ".1.3.6.1.4.1.89.90.1.2.1.3.105.11",
                     "sensor_index": "SfpLOS105",
-                    "sensor_type": "rlPhyTestGetTable",
-                    "sensor_descr": "SfpLOS-te1/0/1",
+                    "sensor_type": "rlPhyTestGetResult",
+                    "sensor_descr": "SfpLOS-",
                     "group": "transceiver",
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
@@ -11501,7 +11501,7 @@
                     "sensor_prev": null,
                     "user_func": null,
                     "rrd_type": "GAUGE",
-                    "state_name": "rlPhyTestGetTable"
+                    "state_name": "rlPhyTestGetResult"
                 },
                 {
                     "sensor_deleted": 0,
@@ -11509,8 +11509,8 @@
                     "poller_type": "snmp",
                     "sensor_oid": ".1.3.6.1.4.1.89.90.1.2.1.3.107.11",
                     "sensor_index": "SfpLOS107",
-                    "sensor_type": "rlPhyTestGetTable",
-                    "sensor_descr": "SfpLOS-te1/0/3",
+                    "sensor_type": "rlPhyTestGetResult",
+                    "sensor_descr": "SfpLOS-",
                     "group": "transceiver",
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
@@ -11526,7 +11526,7 @@
                     "sensor_prev": null,
                     "user_func": null,
                     "rrd_type": "GAUGE",
-                    "state_name": "rlPhyTestGetTable"
+                    "state_name": "rlPhyTestGetResult"
                 },
                 {
                     "sensor_deleted": 0,
@@ -11656,91 +11656,217 @@
             ],
             "state_indexes": [
                 {
-                    "state_name": "eltEnvMonBatteryStatusEntry",
+                    "state_name": "eltEnvMonBatteryState",
                     "state_descr": "Charged",
                     "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
-                    "state_name": "eltEnvMonBatteryStatusEntry",
+                    "state_name": "eltEnvMonBatteryState",
                     "state_descr": "Discharged",
                     "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 2
                 },
                 {
-                    "state_name": "eltEnvMonBatteryStatusEntry",
+                    "state_name": "eltEnvMonBatteryState",
                     "state_descr": "Low",
                     "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 1
                 },
                 {
-                    "state_name": "eltEnvMonBatteryStatusEntry",
+                    "state_name": "eltEnvMonBatteryState",
                     "state_descr": "Missing",
                     "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 3
                 },
                 {
-                    "state_name": "eltEnvMonBatteryStatusEntry",
+                    "state_name": "eltEnvMonBatteryState",
                     "state_descr": "BattFuseError",
                     "state_draw_graph": 1,
                     "state_value": 6,
                     "state_generic_value": 2
                 },
                 {
-                    "state_name": "eltEnvMonBatteryStatusEntry",
+                    "state_name": "eltEnvMonBatteryState",
                     "state_descr": "Charging",
                     "state_draw_graph": 1,
                     "state_value": 7,
                     "state_generic_value": 1
                 },
                 {
-                    "state_name": "rlEnvMonFanStatusTable",
+                    "state_name": "rlEnvMonFanState",
                     "state_descr": "OK",
                     "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
-                    "state_name": "rlEnvMonFanStatusTable",
+                    "state_name": "rlEnvMonFanState",
                     "state_descr": "Missing",
                     "state_draw_graph": 1,
                     "state_value": 5,
                     "state_generic_value": 3
                 },
                 {
-                    "state_name": "rlPhdUnitEnvParamEntry",
+                    "state_name": "rlPhdUnitEnvParamMainPSStatus",
                     "state_descr": "Normal",
                     "state_draw_graph": 1,
                     "state_value": 1,
                     "state_generic_value": 0
                 },
                 {
-                    "state_name": "rlPhdUnitEnvParamEntry",
+                    "state_name": "rlPhdUnitEnvParamMainPSStatus",
                     "state_descr": "Warning",
                     "state_draw_graph": 1,
                     "state_value": 2,
                     "state_generic_value": 1
                 },
                 {
-                    "state_name": "rlPhdUnitEnvParamEntry",
+                    "state_name": "rlPhdUnitEnvParamMainPSStatus",
                     "state_descr": "Critical",
                     "state_draw_graph": 1,
                     "state_value": 3,
                     "state_generic_value": 2
                 },
                 {
-                    "state_name": "rlPhyTestGetTable",
+                    "state_name": "rlPhdUnitEnvParamMainPSStatus",
+                    "state_descr": "Shutdown",
+                    "state_draw_graph": 1,
+                    "state_value": 4,
+                    "state_generic_value": 2
+                },
+                {
+                    "state_name": "rlPhdUnitEnvParamMainPSStatus",
+                    "state_descr": "notPresent",
+                    "state_draw_graph": 1,
+                    "state_value": 5,
+                    "state_generic_value": 3
+                },
+                {
+                    "state_name": "rlPhdUnitEnvParamMainPSStatus",
+                    "state_descr": "notFunctioning",
+                    "state_draw_graph": 1,
+                    "state_value": 6,
+                    "state_generic_value": 3
+                },
+                {
+                    "state_name": "rlPhdUnitEnvParamMainPSStatus",
+                    "state_descr": "restore",
+                    "state_draw_graph": 1,
+                    "state_value": 7,
+                    "state_generic_value": 2
+                },
+                {
+                    "state_name": "rlPhdUnitEnvParamMainPSStatus",
+                    "state_descr": "notAvailable",
+                    "state_draw_graph": 1,
+                    "state_value": 8,
+                    "state_generic_value": 3
+                },
+                {
+                    "state_name": "rlPhdUnitEnvParamMainPSStatus",
+                    "state_descr": "backingUp",
+                    "state_draw_graph": 1,
+                    "state_value": 9,
+                    "state_generic_value": 1
+                },
+                {
+                    "state_name": "rlPhdUnitEnvParamMonitorTemperatureStatus",
+                    "state_descr": "Normal",
+                    "state_draw_graph": 1,
+                    "state_value": 1,
+                    "state_generic_value": 0
+                },
+                {
+                    "state_name": "rlPhdUnitEnvParamMonitorTemperatureStatus",
+                    "state_descr": "Warning",
+                    "state_draw_graph": 1,
+                    "state_value": 2,
+                    "state_generic_value": 1
+                },
+                {
+                    "state_name": "rlPhdUnitEnvParamMonitorTemperatureStatus",
+                    "state_descr": "Critical",
+                    "state_draw_graph": 1,
+                    "state_value": 3,
+                    "state_generic_value": 2
+                },
+                {
+                    "state_name": "rlPhdUnitEnvParamRedundantPSStatus",
+                    "state_descr": "Normal",
+                    "state_draw_graph": 1,
+                    "state_value": 1,
+                    "state_generic_value": 0
+                },
+                {
+                    "state_name": "rlPhdUnitEnvParamRedundantPSStatus",
+                    "state_descr": "Warning",
+                    "state_draw_graph": 1,
+                    "state_value": 2,
+                    "state_generic_value": 1
+                },
+                {
+                    "state_name": "rlPhdUnitEnvParamRedundantPSStatus",
+                    "state_descr": "Critical",
+                    "state_draw_graph": 1,
+                    "state_value": 3,
+                    "state_generic_value": 2
+                },
+                {
+                    "state_name": "rlPhdUnitEnvParamRedundantPSStatus",
+                    "state_descr": "Shutdown",
+                    "state_draw_graph": 1,
+                    "state_value": 4,
+                    "state_generic_value": 2
+                },
+                {
+                    "state_name": "rlPhdUnitEnvParamRedundantPSStatus",
+                    "state_descr": "notPresent",
+                    "state_draw_graph": 1,
+                    "state_value": 5,
+                    "state_generic_value": 3
+                },
+                {
+                    "state_name": "rlPhdUnitEnvParamRedundantPSStatus",
+                    "state_descr": "notFunctioning",
+                    "state_draw_graph": 1,
+                    "state_value": 6,
+                    "state_generic_value": 3
+                },
+                {
+                    "state_name": "rlPhdUnitEnvParamRedundantPSStatus",
+                    "state_descr": "restore",
+                    "state_draw_graph": 1,
+                    "state_value": 7,
+                    "state_generic_value": 2
+                },
+                {
+                    "state_name": "rlPhdUnitEnvParamRedundantPSStatus",
+                    "state_descr": "notAvailable",
+                    "state_draw_graph": 1,
+                    "state_value": 8,
+                    "state_generic_value": 3
+                },
+                {
+                    "state_name": "rlPhdUnitEnvParamRedundantPSStatus",
+                    "state_descr": "backingUp",
+                    "state_draw_graph": 1,
+                    "state_value": 9,
+                    "state_generic_value": 1
+                },
+                {
+                    "state_name": "rlPhyTestGetResult",
                     "state_descr": "False",
                     "state_draw_graph": 1,
                     "state_value": 0,
                     "state_generic_value": 0
                 },
                 {
-                    "state_name": "rlPhyTestGetTable",
+                    "state_name": "rlPhyTestGetResult",
                     "state_descr": "True",
                     "state_draw_graph": 1,
                     "state_value": 1,

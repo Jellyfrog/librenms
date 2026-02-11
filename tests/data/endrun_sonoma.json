@@ -1246,5 +1246,67 @@
                 }
             ]
         }
+    },
+    "hr-device": {
+        "discovery": {
+            "hrDevice": [
+                {
+                    "hrDeviceIndex": 768,
+                    "hrDeviceDescr": "",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "unknown",
+                    "hrProcessorLoad": 17
+                },
+                {
+                    "hrDeviceIndex": 1025,
+                    "hrDeviceDescr": "network interface lo",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1026,
+                    "hrDeviceDescr": "network interface dummy0",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "down",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1027,
+                    "hrDeviceDescr": "network interface eth0",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1028,
+                    "hrDeviceDescr": "network interface eth1",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1029,
+                    "hrDeviceDescr": "network interface sit0",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "down",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 3072,
+                    "hrDeviceDescr": "Guessing that there's a floating point co-processor",
+                    "hrDeviceType": "hrDeviceCoprocessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "unknown",
+                    "hrProcessorLoad": null
+                }
+            ]
+        }
     }
 }
