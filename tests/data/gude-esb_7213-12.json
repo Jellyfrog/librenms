@@ -10,7 +10,7 @@
                     "version": null,
                     "hardware": null,
                     "features": null,
-                    "location": "sysLocation",
+                    "location": "SysLocation",
                     "os": "gude-esb",
                     "type": "power",
                     "serial": null,

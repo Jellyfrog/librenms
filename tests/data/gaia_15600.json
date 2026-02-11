@@ -4760,5 +4760,522 @@
             ]
         },
         "poller": "matches discovery"
+    },
+    "hr-device": {
+        "discovery": {
+            "hrDevice": [
+                {
+                    "hrDeviceIndex": 768,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 769,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 770,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 771,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 772,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 773,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 774,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 775,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 2
+                },
+                {
+                    "hrDeviceIndex": 776,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 777,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 2
+                },
+                {
+                    "hrDeviceIndex": 778,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 779,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 780,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 781,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 782,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 783,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 784,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 785,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 786,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 787,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 788,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 789,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 790,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 2
+                },
+                {
+                    "hrDeviceIndex": 791,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 2
+                },
+                {
+                    "hrDeviceIndex": 792,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 793,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 2
+                },
+                {
+                    "hrDeviceIndex": 794,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 795,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 796,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 797,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 798,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 0
+                },
+                {
+                    "hrDeviceIndex": 799,
+                    "hrDeviceDescr": "GenuineIntel: Intel(R) Xeon(R) CPU E5-2630 v3 @ 2.40GHz",
+                    "hrDeviceType": "hrDeviceProcessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": 1
+                },
+                {
+                    "hrDeviceIndex": 1025,
+                    "hrDeviceDescr": "network interface lo",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1026,
+                    "hrDeviceDescr": "network interface eth3-01",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1027,
+                    "hrDeviceDescr": "network interface eth3-02",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1028,
+                    "hrDeviceDescr": "network interface eth3-03",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1029,
+                    "hrDeviceDescr": "network interface eth3-04",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1030,
+                    "hrDeviceDescr": "network interface Mgmt",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "down",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1031,
+                    "hrDeviceDescr": "network interface Sync",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "down",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1032,
+                    "hrDeviceDescr": "network interface eth1-01",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1033,
+                    "hrDeviceDescr": "network interface eth1-02",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "down",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1034,
+                    "hrDeviceDescr": "network interface eth2-01",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 7,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1035,
+                    "hrDeviceDescr": "network interface eth2-02",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 1,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1037,
+                    "hrDeviceDescr": "network interface bond0",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1038,
+                    "hrDeviceDescr": "network interface bond1",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 8,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1039,
+                    "hrDeviceDescr": "network interface bond2",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1040,
+                    "hrDeviceDescr": "network interface bond3",
+                    "hrDeviceType": "hrDeviceNetwork",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "running",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1552,
+                    "hrDeviceDescr": "SCSI disk (/dev/sda)",
+                    "hrDeviceType": "hrDeviceDiskStorage",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "unknown",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1553,
+                    "hrDeviceDescr": "SCSI disk (/dev/sdb)",
+                    "hrDeviceType": "hrDeviceDiskStorage",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "unknown",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1554,
+                    "hrDeviceDescr": "SCSI disk (/dev/sdc)",
+                    "hrDeviceType": "hrDeviceDiskStorage",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "unknown",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1555,
+                    "hrDeviceDescr": "SCSI disk (/dev/sdd)",
+                    "hrDeviceType": "hrDeviceDiskStorage",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "unknown",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1568,
+                    "hrDeviceDescr": "RAID disk (/dev/md0)",
+                    "hrDeviceType": "hrDeviceDiskStorage",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "unknown",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1569,
+                    "hrDeviceDescr": "RAID disk (/dev/md1)",
+                    "hrDeviceType": "hrDeviceDiskStorage",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "unknown",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 1570,
+                    "hrDeviceDescr": "RAID disk (/dev/md2)",
+                    "hrDeviceType": "hrDeviceDiskStorage",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "unknown",
+                    "hrProcessorLoad": null
+                },
+                {
+                    "hrDeviceIndex": 3072,
+                    "hrDeviceDescr": "Guessing that there's a floating point co-processor",
+                    "hrDeviceType": "hrDeviceCoprocessor",
+                    "hrDeviceErrors": 0,
+                    "hrDeviceStatus": "unknown",
+                    "hrProcessorLoad": null
+                }
+            ]
+        }
+    },
+    "ucd-diskio": {
+        "discovery": {
+            "disks": [
+                {
+                    "diskio_index": 30,
+                    "diskio_descr": "dm-0"
+                },
+                {
+                    "diskio_index": 31,
+                    "diskio_descr": "dm-1"
+                },
+                {
+                    "diskio_index": 32,
+                    "diskio_descr": "dm-2"
+                },
+                {
+                    "diskio_index": 33,
+                    "diskio_descr": "dm-3"
+                },
+                {
+                    "diskio_index": 34,
+                    "diskio_descr": "dm-4"
+                },
+                {
+                    "diskio_index": 29,
+                    "diskio_descr": "md0"
+                },
+                {
+                    "diskio_index": 28,
+                    "diskio_descr": "md1"
+                },
+                {
+                    "diskio_index": 27,
+                    "diskio_descr": "md2"
+                },
+                {
+                    "diskio_index": 17,
+                    "diskio_descr": "sda"
+                },
+                {
+                    "diskio_index": 18,
+                    "diskio_descr": "sda1"
+                },
+                {
+                    "diskio_index": 19,
+                    "diskio_descr": "sda2"
+                },
+                {
+                    "diskio_index": 20,
+                    "diskio_descr": "sda3"
+                },
+                {
+                    "diskio_index": 21,
+                    "diskio_descr": "sdb"
+                },
+                {
+                    "diskio_index": 22,
+                    "diskio_descr": "sdb1"
+                },
+                {
+                    "diskio_index": 23,
+                    "diskio_descr": "sdb2"
+                },
+                {
+                    "diskio_index": 24,
+                    "diskio_descr": "sdb3"
+                }
+            ]
+        },
+        "poller": "matches discovery"
     }
 }
