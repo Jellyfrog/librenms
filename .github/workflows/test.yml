@@ -74,7 +74,7 @@ jobs:
         name: Checkout
         uses: actions/checkout@v6
         with:
-          filter: blob:none
+          filter: tree:0
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*
