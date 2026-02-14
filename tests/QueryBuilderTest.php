@@ -32,7 +32,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 final class QueryBuilderTest extends TestCase
 {
-    private static string $data_file = 'tests/data/misc/querybuilder.json';
+    private static string $data_file = 'tests/querybuilder.json';
 
     public function testHasQueryData(): void
     {

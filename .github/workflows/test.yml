@@ -57,8 +57,30 @@ jobs:
           - 3306
     steps:
       -
+        name: Determine OS sparse includes
+        id: sparse
+        if: contains(matrix.arguments, '--os ')
+        run: |
+          LETTERS=$(echo "${{ matrix.arguments }}" | sed 's/--os //' | tr ',' ' ')
+          {
+            echo "patterns<<EOF"
+            for letter in $LETTERS; do
+              echo "/tests/data/${letter}*"
+              echo "/tests/snmpsim/${letter}*"
+            done
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+      -
         name: Checkout
         uses: actions/checkout@v5
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/tests/data/
+            !/tests/snmpsim/
+            !/doc/
+            ${{ steps.sparse.outputs.patterns }}
       -
         name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -79,19 +101,6 @@ jobs:
           key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
-      -
-        name: Cache pip
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-
-      -
-        name: Pip install
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install --upgrade --user pylint python-memcached mysqlclient
       -
         name: Composer validate
         run: |
