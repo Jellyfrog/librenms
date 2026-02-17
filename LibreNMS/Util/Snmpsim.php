@@ -96,7 +96,7 @@ class Snmpsim extends Process
                 Log::error($setupProcess->getErrorOutput());
             }
 
-            $installProcess = new Process([$snmpsim_venv_path . '/bin/pip', 'install', 'git+https://github.com/Jellyfrog/snmpsim.git@feat/pysnmp7']);
+            $installProcess = new Process([$snmpsim_venv_path . '/bin/pip', 'install', 'git+https://github.com/Jellyfrog/snmpsim.git@fix/getbulk-end-of-mib']);
             $installProcess->setTty($print_output);
             $installProcess->run();
 
