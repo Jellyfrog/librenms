@@ -38,6 +38,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use LibreNMS\Enum\IfOperStatus;
 
 class MapDataController extends Controller
 {
@@ -677,7 +678,7 @@ class MapDataController extends Controller
                                 'color' => LibrenmsConfig::get('network_map_legend.dn.edge'),
                             ],
                         ];
-                    } elseif ($port->ifOperStatus == 'down' || $remote_port->ifOperStatus == 'down') {
+                    } elseif ($port->ifOperStatus === IfOperStatus::Down || $remote_port->ifOperStatus === IfOperStatus::Down) {
                         // If either port is offline, mark the link as being down
                         $link_style = [
                             'dashes' => [8, 12],
