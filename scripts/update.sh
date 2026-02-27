@@ -1041,6 +1041,47 @@ rollback() {
 }
 
 ########################################################################
+# POLLER WAIT
+########################################################################
+
+#######################################
+# Wait for running pollers to finish (up to 5 minutes)
+#######################################
+wait_for_pollers() {
+    local max_wait=300
+    local interval=10
+    local waited=0
+
+    while (( waited < max_wait )); do
+        local running=false
+
+        if pgrep -f "poller\.php" &>/dev/null; then
+            running=true
+        elif pgrep -f "discovery\.php" &>/dev/null; then
+            running=true
+        elif pgrep -f "lnms device:poll" &>/dev/null; then
+            running=true
+        elif pgrep -f "lnms device:discover" &>/dev/null; then
+            running=true
+        fi
+
+        if [[ "$running" == "false" ]]; then
+            log_verbose "No pollers running"
+            return 0
+        fi
+
+        if (( waited == 0 )); then
+            log_info "Waiting for pollers to finish..."
+        fi
+
+        sleep "$interval"
+        (( waited += interval ))
+    done
+
+    log_warn "Pollers still running after ${max_wait}s, proceeding with update"
+    return 0
+}
+
 ########################################################################
 # NOTIFICATION AND CLEANUP
 ########################################################################
@@ -1153,6 +1194,9 @@ main() {
 
     # Create backup
     create_backup
+
+    # Wait for pollers
+    wait_for_pollers
 
     # Pre-update steps
     pre_update
