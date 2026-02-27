@@ -66,6 +66,7 @@ UPDATE_ENABLED=true
 UPDATE_CHANNEL=nightly
 LIBRENMS_USER=""
 LOCK_ACQUIRED=false
+TARGET_REF=""
 
 
 #######################################
@@ -546,6 +547,65 @@ preflight_checks() {
 }
 
 ########################################################################
+# TARGET DETERMINATION
+########################################################################
+
+#######################################
+# Determine the target ref for the update
+#######################################
+determine_target() {
+    log_info "Determining update target (channel: ${UPDATE_CHANNEL})..."
+
+    if [[ "$UPDATE_CHANNEL" == "nightly" ]]; then
+        log_verbose "Fetching origin/master..."
+        if ! git fetch origin master 2>/dev/null; then
+            log_error "Failed to fetch origin/master"
+            return 1
+        fi
+        TARGET_REF="origin/master"
+
+        local current_head target_head
+        current_head=$(git rev-parse HEAD)
+        target_head=$(git rev-parse "$TARGET_REF")
+
+        if [[ "$current_head" == "$target_head" ]]; then
+            log_info "Already up to date (${current_head:0:8})"
+            return 2
+        fi
+
+        log_info "Target: ${TARGET_REF} (${target_head:0:8})"
+    else
+        # Stable channel
+        log_verbose "Fetching tags..."
+        if ! git fetch --tags 2>/dev/null; then
+            log_error "Failed to fetch tags"
+            return 1
+        fi
+
+        local latest_hash latest_tag
+        latest_hash=$(git rev-list --tags --max-count=1 2>/dev/null)
+        if [[ -z "$latest_hash" ]]; then
+            log_error "No tags found"
+            return 1
+        fi
+        latest_tag=$(git describe --exact-match --tags "$latest_hash" 2>/dev/null)
+        TARGET_REF="$latest_tag"
+
+        # Check if already at latest
+        local current_tag
+        current_tag=$(git describe --exact-match --tags HEAD 2>/dev/null || echo "")
+        if [[ "$current_tag" == "$latest_tag" ]]; then
+            log_info "Already at latest release (${latest_tag})"
+            return 2
+        fi
+
+        log_info "Target: ${TARGET_REF}"
+    fi
+
+    return 0
+}
+
+########################################################################
 # MAIN
 ########################################################################
 
@@ -584,6 +644,21 @@ main() {
     # --pre-flight-only mode
     if [[ "$FLAG_PRE_FLIGHT_ONLY" == "true" ]]; then
         log_info "Pre-flight checks complete (--pre-flight-only)"
+        exit "$EXIT_SUCCESS"
+    fi
+
+    # Determine target
+    local target_result
+    determine_target
+    target_result=$?
+
+    if (( target_result == 1 )); then
+        log_error "Failed to determine update target"
+        exit "$EXIT_UPDATE_FAIL"
+    fi
+
+    if (( target_result == 2 )); then
+        # Already up to date
         exit "$EXIT_SUCCESS"
     fi
 
