@@ -356,6 +356,196 @@ show_status() {
 }
 
 ########################################################################
+# PRE-FLIGHT CHECKS
+########################################################################
+
+#######################################
+# Check available disk space (require 1GB free)
+#######################################
+preflight_disk_space() {
+    local free_mb
+    free_mb=$(df -m "$LIBRENMS_DIR" | awk 'NR==2 {print $4}')
+    if [[ -z "$free_mb" ]]; then
+        log_warn "Could not determine free disk space"
+        return 1
+    fi
+    if (( free_mb < 1024 )); then
+        log_error "Insufficient disk space: ${free_mb}MB free, 1024MB required"
+        return 1
+    fi
+    log_verbose "Disk space check passed: ${free_mb}MB free"
+    return 0
+}
+
+#######################################
+# Check git state
+#######################################
+preflight_git_state() {
+    if [[ ! -d "${LIBRENMS_DIR}/.git" ]]; then
+        log_error "Not a git repository: ${LIBRENMS_DIR}"
+        return 1
+    fi
+
+    if ! command -v git &>/dev/null; then
+        log_error "git command not found"
+        return 1
+    fi
+
+    # Check for clean working tree (allow untracked files)
+    if ! git diff --quiet 2>/dev/null; then
+        log_error "Git working tree has uncommitted changes. Commit or stash them first."
+        return 1
+    fi
+    if ! git diff --cached --quiet 2>/dev/null; then
+        log_error "Git index has staged changes. Commit or reset them first."
+        return 1
+    fi
+
+    log_verbose "Git state check passed"
+    return 0
+}
+
+#######################################
+# Check write permissions on key directories
+#######################################
+preflight_permissions() {
+    local dirs=("logs" "storage" "vendor" "bootstrap/cache")
+    local failed=false
+
+    for dir in "${dirs[@]}"; do
+        local full_path="${LIBRENMS_DIR}/${dir}"
+        if [[ ! -w "$full_path" ]]; then
+            log_error "Directory not writable: ${full_path}"
+            failed=true
+        fi
+    done
+
+    if [[ "$failed" == "true" ]]; then
+        return 1
+    fi
+    log_verbose "Permission check passed"
+    return 0
+}
+
+#######################################
+# Check PHP version (>= 8.2)
+#######################################
+preflight_php_version() {
+    local php_version
+    if ! command -v php &>/dev/null; then
+        log_error "php command not found"
+        return 1
+    fi
+
+    php_version=$(php -r 'echo PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION;' 2>/dev/null)
+    if [[ -z "$php_version" ]]; then
+        log_error "Could not determine PHP version"
+        return 1
+    fi
+
+    local major minor
+    IFS='.' read -r major minor <<< "$php_version"
+    if (( major < 8 )) || (( major == 8 && minor < 2 )); then
+        log_error "PHP ${php_version} is too old. PHP >= 8.2 is required."
+        return 1
+    fi
+
+    log_verbose "PHP version check passed: ${php_version}"
+    return 0
+}
+
+#######################################
+# Check Python dependencies
+#######################################
+preflight_python_deps() {
+    if [[ ! -f "${LIBRENMS_DIR}/scripts/check_requirements.py" ]]; then
+        log_warn "scripts/check_requirements.py not found, skipping Python check"
+        return 0
+    fi
+
+    if "${LIBRENMS_DIR}/scripts/check_requirements.py" &>/dev/null; then
+        log_verbose "Python dependency check passed"
+        return 0
+    fi
+
+    log_warn "Python dependencies are missing; will attempt to install after update"
+    return 0
+}
+
+#######################################
+# Check database connectivity
+#######################################
+preflight_db() {
+    local db_host db_port db_database db_username db_password
+
+    db_host="${DB_HOST:-localhost}"
+    db_port="${DB_PORT:-3306}"
+    db_database="${DB_DATABASE:-librenms}"
+    db_username="${DB_USERNAME:-librenms}"
+    db_password="${DB_PASSWORD:-}"
+
+    if command -v mysql &>/dev/null; then
+        if mysql -h "$db_host" -P "$db_port" -u "$db_username" -p"$db_password" "$db_database" -e "SELECT 1" &>/dev/null; then
+            log_verbose "Database connectivity check passed"
+            return 0
+        fi
+        log_error "Cannot connect to database at ${db_host}:${db_port}"
+        return 1
+    fi
+
+    # Try php artisan as fallback
+    if php "${LIBRENMS_DIR}/artisan" db:monitor --max=100 &>/dev/null; then
+        log_verbose "Database connectivity check passed (via artisan)"
+        return 0
+    fi
+
+    log_warn "Could not verify database connectivity (mysql client not available)"
+    return 0
+}
+
+#######################################
+# Check for Docker environment
+#######################################
+preflight_docker() {
+    if [[ -f "/.dockerenv" ]] || [[ -n "${DOCKER_LIBRENMS:-}" ]]; then
+        if [[ "$FLAG_FORCE" == "true" ]]; then
+            log_warn "Docker environment detected, proceeding with --force"
+            return 0
+        fi
+        log_error "Docker environment detected. Updates should be managed via container image. Use --force to override."
+        return 1
+    fi
+    log_verbose "Docker check passed (not in Docker)"
+    return 0
+}
+
+#######################################
+# Run all pre-flight checks
+# Returns: 0 if all pass, 1 if any fail
+#######################################
+preflight_checks() {
+    local failed=0
+
+    log_info "Running pre-flight checks..."
+
+    preflight_docker || (( failed++ ))
+    preflight_disk_space || (( failed++ ))
+    preflight_git_state || (( failed++ ))
+    preflight_permissions || (( failed++ ))
+    preflight_php_version || (( failed++ ))
+    preflight_python_deps || (( failed++ ))
+    preflight_db || (( failed++ ))
+
+    if (( failed > 0 )); then
+        log_error "Pre-flight checks failed (${failed} issue(s))"
+        return 1
+    fi
+
+    log_info "All pre-flight checks passed"
+    return 0
+}
+
+########################################################################
 # MAIN
 ########################################################################
 
@@ -385,6 +575,17 @@ main() {
 
     # Acquire lock
     acquire_lock
+
+    # Pre-flight checks
+    if ! preflight_checks; then
+        exit "$EXIT_PREFLIGHT"
+    fi
+
+    # --pre-flight-only mode
+    if [[ "$FLAG_PRE_FLIGHT_ONLY" == "true" ]]; then
+        log_info "Pre-flight checks complete (--pre-flight-only)"
+        exit "$EXIT_SUCCESS"
+    fi
 
     log_info "Update completed successfully"
     exit "$EXIT_SUCCESS"
