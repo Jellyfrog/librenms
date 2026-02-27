@@ -37,6 +37,7 @@ readonly EXIT_PREFLIGHT=3
 readonly EXIT_UPDATE_FAIL=4
 readonly EXIT_ROLLBACK_FAIL=5
 
+LOCK_FILE="${LIBRENMS_DIR}/storage/app/private/update.lock"
 
 #######################################
 # CLI FLAGS (defaults)
@@ -56,6 +57,7 @@ FLAG_ROLLBACK_ONLY=false
 UPDATE_ENABLED=true
 UPDATE_CHANNEL=nightly
 LIBRENMS_USER=""
+LOCK_ACQUIRED=false
 
 #######################################
 # Show usage information
@@ -157,6 +159,66 @@ check_user() {
 }
 
 ########################################################################
+# LOCK MECHANISM
+########################################################################
+
+#######################################
+# Acquire an exclusive lock file
+# Creates storage/app/private/ if needed
+#######################################
+acquire_lock() {
+    local lock_dir
+    lock_dir=$(dirname "$LOCK_FILE")
+
+    if [[ ! -d "$lock_dir" ]]; then
+        mkdir -p "$lock_dir" 2>/dev/null || {
+            echo "ERROR: Cannot create lock directory: ${lock_dir}" >&2
+            exit "$EXIT_LOCKED"
+        }
+    fi
+
+    # Check for stale lock
+    if [[ -f "$LOCK_FILE" ]]; then
+        local old_pid
+        old_pid=$(cat "$LOCK_FILE" 2>/dev/null)
+        if [[ -n "$old_pid" ]] && kill -0 "$old_pid" 2>/dev/null; then
+            echo "ERROR: Another update is running (PID ${old_pid}). Lock file: ${LOCK_FILE}" >&2
+            exit "$EXIT_LOCKED"
+        fi
+        echo "WARNING: Removing stale lock file (PID ${old_pid} is not running)" >&2
+        rm -f "$LOCK_FILE"
+    fi
+
+    # Write our PID atomically
+    echo $$ > "$LOCK_FILE" 2>/dev/null || {
+        echo "ERROR: Cannot create lock file: ${LOCK_FILE}" >&2
+        exit "$EXIT_LOCKED"
+    }
+    LOCK_ACQUIRED=true
+}
+
+#######################################
+# Release the lock file
+#######################################
+# shellcheck disable=SC2329
+release_lock() {
+    if [[ "$LOCK_ACQUIRED" == "true" && -f "$LOCK_FILE" ]]; then
+        rm -f "$LOCK_FILE"
+        LOCK_ACQUIRED=false
+    fi
+}
+
+#######################################
+# Signal handler — release lock and exit
+#######################################
+# shellcheck disable=SC2329
+handle_signal() {
+    echo "Caught signal, releasing lock and exiting" >&2
+    release_lock
+    exit "$EXIT_DISABLED"
+}
+
+########################################################################
 # MAIN
 ########################################################################
 
@@ -167,6 +229,13 @@ main() {
 
     load_env
     check_user
+
+    # Register signal handlers
+    trap handle_signal INT TERM
+    trap release_lock EXIT
+
+    # Acquire lock
+    acquire_lock
 
     exit "$EXIT_SUCCESS"
 }
