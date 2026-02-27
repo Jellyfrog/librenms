@@ -759,6 +759,26 @@ show_dry_run() {
 }
 
 ########################################################################
+# PRE-UPDATE STEPS
+########################################################################
+
+#######################################
+# Clear caches and de-optimize autoloader before git update
+#######################################
+pre_update() {
+    log_info "Preparing for update..."
+
+    # Clear old code caches
+    log_verbose "Clearing caches before update..."
+    php "${LIBRENMS_DIR}/artisan" optimize:clear &>/dev/null || log_warn "Cache clear had issues (non-fatal)"
+
+    # De-optimize autoloader: removes optimized classmap, falls back to PSR-4 discovery
+    # This keeps the site working during the git pull
+    log_verbose "De-optimizing autoloader for safe update..."
+    eval "$COMPOSER dump-autoload" &>/dev/null || log_warn "Autoloader de-optimization had issues (non-fatal)"
+}
+
+########################################################################
 # MAIN
 ########################################################################
 
@@ -832,6 +852,9 @@ main() {
         show_dry_run
         exit "$EXIT_SUCCESS"
     fi
+
+    # Pre-update steps
+    pre_update
 
     log_info "Update completed successfully"
     exit "$EXIT_SUCCESS"
