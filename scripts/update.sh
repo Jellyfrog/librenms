@@ -606,6 +606,41 @@ determine_target() {
 }
 
 ########################################################################
+# COMPOSER PRE-CHECK
+########################################################################
+
+#######################################
+# Check composer platform requirements against target ref
+#######################################
+preflight_composer_reqs() {
+    local tmp_dir
+    tmp_dir=$(mktemp -d)
+
+    log_verbose "Checking composer platform requirements for target ref..."
+
+    # Extract future composer files from target ref
+    if ! git show "${TARGET_REF}:composer.json" > "${tmp_dir}/composer.json" 2>/dev/null; then
+        log_warn "Could not extract composer.json from ${TARGET_REF}, skipping platform check"
+        rm -rf "$tmp_dir"
+        return 0
+    fi
+    git show "${TARGET_REF}:composer.lock" > "${tmp_dir}/composer.lock" 2>/dev/null || true
+
+    # Run platform requirements check
+    local output
+    if output=$(eval "$COMPOSER check-platform-reqs --working-dir=${tmp_dir} --no-dev" 2>&1); then
+        log_verbose "Composer platform requirements satisfied"
+        rm -rf "$tmp_dir"
+        return 0
+    fi
+
+    log_error "Composer platform requirements not met for target version:"
+    echo "$output" >&2
+    rm -rf "$tmp_dir"
+    return 1
+}
+
+########################################################################
 # MAIN
 ########################################################################
 
@@ -660,6 +695,12 @@ main() {
     if (( target_result == 2 )); then
         # Already up to date
         exit "$EXIT_SUCCESS"
+    fi
+
+    # Composer platform pre-check
+    if ! preflight_composer_reqs; then
+        log_error "Composer platform requirements not met. Aborting update."
+        exit "$EXIT_PREFLIGHT"
     fi
 
     log_info "Update completed successfully"
