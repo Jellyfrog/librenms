@@ -68,6 +68,7 @@ LIBRENMS_USER=""
 LOCK_ACQUIRED=false
 TARGET_REF=""
 SAVED_HEAD=""
+SAVED_MIGRATION=""
 REQUIREMENTS_CHANGED=false
 
 
@@ -905,6 +906,68 @@ post_update() {
 }
 
 ########################################################################
+# ROLLBACK
+########################################################################
+
+#######################################
+# Rollback to pre-update state
+#######################################
+rollback() {
+    if [[ -z "$SAVED_HEAD" ]]; then
+        log_error "No saved HEAD to rollback to"
+        return 1
+    fi
+
+    log_info "Rolling back to ${SAVED_HEAD:0:8}..."
+
+    # Ensure maintenance mode is OFF
+    php "${LIBRENMS_DIR}/artisan" up &>/dev/null || true
+
+    # Git reset to saved HEAD
+    if ! git reset --hard "$SAVED_HEAD" 2>/dev/null; then
+        log_error "Git reset failed"
+        return 1
+    fi
+
+    # Restore composer packages
+    if ! eval "$COMPOSER install --no-dev" 2>/dev/null; then
+        log_error "Composer install failed during rollback"
+        return 1
+    fi
+
+    # Re-optimize autoloader
+    eval "$COMPOSER dump-autoload --optimize" &>/dev/null || true
+
+    # Rollback migrations if requested
+    if [[ "$FLAG_ROLLBACK_MIGRATIONS" == "true" ]]; then
+        if [[ -n "$SAVED_MIGRATION" ]]; then
+            local db_host db_port db_database db_username db_password rollback_steps
+            db_host="${DB_HOST:-localhost}"
+            db_port="${DB_PORT:-3306}"
+            db_database="${DB_DATABASE:-librenms}"
+            db_username="${DB_USERNAME:-librenms}"
+            db_password="${DB_PASSWORD:-}"
+
+            rollback_steps=$(mysql -h "$db_host" -P "$db_port" -u "$db_username" -p"$db_password" "$db_database" -sN -e \
+                "SELECT COUNT(DISTINCT batch) FROM migrations WHERE id > (SELECT id FROM migrations WHERE migration = '${SAVED_MIGRATION}' LIMIT 1)" 2>/dev/null || echo "0")
+
+            if (( rollback_steps > 0 )); then
+                log_info "Rolling back ${rollback_steps} migration batch(es)..."
+                "${LIBRENMS_DIR}/lnms" migrate:rollback --step="$rollback_steps" --force 2>/dev/null || log_warn "Migration rollback had issues"
+            fi
+        else
+            log_warn "No saved migration found, skipping migration rollback"
+        fi
+    fi
+
+    # Clear caches
+    php "${LIBRENMS_DIR}/artisan" optimize:clear &>/dev/null || true
+
+    log_info "Rollback completed"
+    return 0
+}
+
+########################################################################
 # MAIN
 ########################################################################
 
@@ -930,6 +993,19 @@ main() {
     if [[ "$FLAG_STATUS" == "true" ]]; then
         show_status
         exit "$EXIT_SUCCESS"
+    fi
+
+    # --rollback-only mode
+    if [[ "$FLAG_ROLLBACK_ONLY" == "true" ]]; then
+        acquire_lock
+        log_info "Manual rollback requested"
+        if rollback; then
+            log_info "Manual rollback completed successfully"
+            exit "$EXIT_SUCCESS"
+        else
+            log_error "Manual rollback failed"
+            exit "$EXIT_ROLLBACK_FAIL"
+        fi
     fi
 
     # Acquire lock
@@ -985,12 +1061,24 @@ main() {
     # Perform the git update
     if ! perform_update; then
         log_error "Update failed, attempting rollback..."
+        if rollback; then
+            log_warn "Rolled back successfully after update failure"
+        else
+            log_error "Rollback also failed!"
+            exit "$EXIT_ROLLBACK_FAIL"
+        fi
         exit "$EXIT_UPDATE_FAIL"
     fi
 
     # Post-update steps
     if ! post_update; then
         log_error "Post-update steps failed, attempting rollback..."
+        if rollback; then
+            log_warn "Rolled back successfully after post-update failure"
+        else
+            log_error "Rollback also failed!"
+            exit "$EXIT_ROLLBACK_FAIL"
+        fi
         exit "$EXIT_UPDATE_FAIL"
     fi
 
