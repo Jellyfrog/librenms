@@ -67,6 +67,7 @@ UPDATE_CHANNEL=nightly
 LIBRENMS_USER=""
 LOCK_ACQUIRED=false
 TARGET_REF=""
+REQUIREMENTS_CHANGED=false
 
 
 #######################################
@@ -673,6 +674,47 @@ precache_composer() {
 }
 
 ########################################################################
+# PYTHON PRE-CHECK AND PRE-DOWNLOAD
+########################################################################
+
+#######################################
+# Check and pre-download Python packages for the target ref
+#######################################
+preflight_python_reqs() {
+    local tmp_dir
+    tmp_dir=$(mktemp -d)
+
+    # Extract future requirements.txt from target ref
+    if ! git show "${TARGET_REF}:requirements.txt" > "${tmp_dir}/requirements.txt" 2>/dev/null; then
+        log_verbose "No requirements.txt in target ref, skipping Python pre-check"
+        rm -rf "$tmp_dir"
+        return 0
+    fi
+
+    # Compare with current requirements.txt
+    if [[ -f "${LIBRENMS_DIR}/requirements.txt" ]]; then
+        if diff -q "${LIBRENMS_DIR}/requirements.txt" "${tmp_dir}/requirements.txt" &>/dev/null; then
+            log_verbose "Python requirements unchanged"
+            rm -rf "$tmp_dir"
+            return 0
+        fi
+    fi
+
+    REQUIREMENTS_CHANGED=true
+    log_info "Python requirements changed, pre-downloading packages..."
+
+    # pip3 download acts as platform check too — fails if packages don't support current Python
+    if pip3 download -r "${tmp_dir}/requirements.txt" -d "${tmp_dir}/pip-cache" &>/dev/null; then
+        log_verbose "Python packages pre-downloaded"
+    else
+        log_warn "Some Python packages could not be pre-downloaded (will retry during install)"
+    fi
+
+    rm -rf "$tmp_dir"
+    return 0
+}
+
+########################################################################
 # MAIN
 ########################################################################
 
@@ -737,6 +779,9 @@ main() {
 
     # Pre-cache composer packages
     precache_composer
+
+    # Python pre-check and pre-download
+    preflight_python_reqs
 
     log_info "Update completed successfully"
     exit "$EXIT_SUCCESS"
