@@ -67,6 +67,7 @@ UPDATE_CHANNEL=nightly
 LIBRENMS_USER=""
 LOCK_ACQUIRED=false
 TARGET_REF=""
+SAVED_HEAD=""
 REQUIREMENTS_CHANGED=false
 
 
@@ -779,6 +780,54 @@ pre_update() {
 }
 
 ########################################################################
+# CORE UPDATE — GIT OPERATIONS
+########################################################################
+
+#######################################
+# Perform the git update
+# Returns: 0 on success, non-zero on failure
+#######################################
+perform_update() {
+    SAVED_HEAD=$(git rev-parse HEAD)
+    log_verbose "Saved current HEAD: ${SAVED_HEAD:0:8}"
+
+    if [[ "$UPDATE_CHANNEL" == "nightly" ]]; then
+        # Handle detached HEAD case
+        local current_branch
+        current_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+        if [[ "$current_branch" == "HEAD" ]]; then
+            log_verbose "Detached HEAD detected, checking out master first..."
+            if ! git checkout master 2>/dev/null; then
+                log_error "Failed to checkout master from detached HEAD"
+                return 1
+            fi
+        fi
+
+        log_info "Pulling latest changes..."
+        if ! git pull --quiet 2>/dev/null; then
+            log_error "Git pull failed"
+            return 1
+        fi
+    else
+        # Stable: checkout the target tag
+        log_info "Checking out ${TARGET_REF}..."
+
+        # Restore composer files before checkout to avoid conflicts
+        git checkout --quiet -- composer.json composer.lock 2>/dev/null || true
+
+        if ! git checkout "$TARGET_REF" 2>/dev/null; then
+            log_error "Git checkout failed for ${TARGET_REF}"
+            return 1
+        fi
+    fi
+
+    local new_head
+    new_head=$(git rev-parse HEAD)
+    log_info "Updated: ${SAVED_HEAD:0:8} -> ${new_head:0:8}"
+    return 0
+}
+
+########################################################################
 # MAIN
 ########################################################################
 
@@ -855,6 +904,12 @@ main() {
 
     # Pre-update steps
     pre_update
+
+    # Perform the git update
+    if ! perform_update; then
+        log_error "Update failed, attempting rollback..."
+        exit "$EXIT_UPDATE_FAIL"
+    fi
 
     log_info "Update completed successfully"
     exit "$EXIT_SUCCESS"
