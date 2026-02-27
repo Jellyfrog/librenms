@@ -828,6 +828,83 @@ perform_update() {
 }
 
 ########################################################################
+# POST-UPDATE STEPS
+########################################################################
+
+#######################################
+# Run post-update tasks (composer, migrations, etc.)
+#######################################
+post_update() {
+    log_info "Running post-update steps..."
+
+    # Clear caches for new code
+    log_verbose "Clearing caches after update..."
+    php "${LIBRENMS_DIR}/artisan" optimize:clear &>/dev/null || log_warn "Post-update cache clear had issues"
+
+    # Re-add user-installed plugins
+    if [[ -f "${LIBRENMS_DIR}/composer.plugins.json" ]]; then
+        local plugins
+        plugins=$(php -r "
+            \$p = json_decode(file_get_contents('${LIBRENMS_DIR}/composer.plugins.json'), true);
+            if (is_array(\$p) && isset(\$p['require'])) {
+                foreach (\$p['require'] as \$pkg => \$ver) echo \$pkg . ':' . \$ver . ' ';
+            }
+        " 2>/dev/null)
+
+        if [[ -n "$plugins" ]]; then
+            log_verbose "Re-adding user plugins: ${plugins}"
+            # shellcheck disable=SC2086
+            FORCE=1 eval "$COMPOSER require --update-no-dev --no-install $plugins" &>/dev/null || log_warn "Plugin re-add had issues"
+        fi
+    fi
+
+    # Composer install (fast — packages already cached from pre-cache step)
+    log_info "Installing composer packages..."
+    if ! eval "$COMPOSER install --no-dev" 2>/dev/null; then
+        log_error "Composer install failed"
+        return 1
+    fi
+
+    # Re-optimize autoloader for production
+    log_verbose "Optimizing autoloader..."
+    eval "$COMPOSER dump-autoload --optimize" &>/dev/null || log_warn "Autoloader optimization had issues"
+
+    # Maintenance mode ON
+    log_verbose "Enabling maintenance mode..."
+    php "${LIBRENMS_DIR}/artisan" down &>/dev/null || log_warn "Failed to enable maintenance mode"
+
+    # Database migrations
+    log_info "Running database migrations..."
+    if ! "${LIBRENMS_DIR}/lnms" migrate --force --no-interaction --isolated 2>/dev/null; then
+        log_error "Database migration failed"
+        # Maintenance mode OFF before returning failure
+        php "${LIBRENMS_DIR}/artisan" up &>/dev/null
+        return 1
+    fi
+
+    # Install Python requirements if changed
+    if [[ "$REQUIREMENTS_CHANGED" == "true" ]]; then
+        log_info "Installing Python requirements..."
+        pip3 install -r "${LIBRENMS_DIR}/requirements.txt" &>/dev/null || log_warn "pip3 install had issues"
+    fi
+
+    # Reset CLI opcache
+    log_verbose "Resetting opcache..."
+    php -r "if(function_exists('opcache_reset')) opcache_reset();" &>/dev/null || true
+
+    # Maintenance mode OFF
+    log_verbose "Disabling maintenance mode..."
+    php "${LIBRENMS_DIR}/artisan" up &>/dev/null || log_warn "Failed to disable maintenance mode"
+
+    # Final cache clear with new code + deps
+    log_verbose "Final cache clear..."
+    php "${LIBRENMS_DIR}/artisan" optimize:clear &>/dev/null || log_warn "Final cache clear had issues"
+
+    log_info "Post-update steps completed"
+    return 0
+}
+
+########################################################################
 # MAIN
 ########################################################################
 
@@ -908,6 +985,12 @@ main() {
     # Perform the git update
     if ! perform_update; then
         log_error "Update failed, attempting rollback..."
+        exit "$EXIT_UPDATE_FAIL"
+    fi
+
+    # Post-update steps
+    if ! post_update; then
+        log_error "Post-update steps failed, attempting rollback..."
         exit "$EXIT_UPDATE_FAIL"
     fi
 
