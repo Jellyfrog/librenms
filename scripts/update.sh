@@ -39,6 +39,7 @@ readonly EXIT_ROLLBACK_FAIL=5
 
 LOCK_FILE="${LIBRENMS_DIR}/storage/app/private/update.lock"
 LOG_FILE="${LIBRENMS_DIR}/logs/update.log"
+BACKUP_DIR="${LIBRENMS_DIR}/storage/app/private/update-backup"
 
 
 # Color codes (set in init_colors)
@@ -906,6 +907,42 @@ post_update() {
 }
 
 ########################################################################
+# BACKUP
+########################################################################
+
+#######################################
+# Create a backup of current state before update
+#######################################
+create_backup() {
+    mkdir -p "$BACKUP_DIR" 2>/dev/null || {
+        log_warn "Cannot create backup directory: ${BACKUP_DIR}"
+        return 1
+    }
+
+    # Save current HEAD
+    echo "$SAVED_HEAD" > "${BACKUP_DIR}/head" 2>/dev/null
+
+    # Save last migration name
+    local db_host db_port db_database db_username db_password
+    db_host="${DB_HOST:-localhost}"
+    db_port="${DB_PORT:-3306}"
+    db_database="${DB_DATABASE:-librenms}"
+    db_username="${DB_USERNAME:-librenms}"
+    db_password="${DB_PASSWORD:-}"
+
+    if command -v mysql &>/dev/null; then
+        SAVED_MIGRATION=$(mysql -h "$db_host" -P "$db_port" -u "$db_username" -p"$db_password" "$db_database" -sN -e "SELECT migration FROM migrations ORDER BY id DESC LIMIT 1" 2>/dev/null || echo "")
+        if [[ -n "$SAVED_MIGRATION" ]]; then
+            echo "$SAVED_MIGRATION" > "${BACKUP_DIR}/last_migration" 2>/dev/null
+            log_verbose "Saved last migration: ${SAVED_MIGRATION}"
+        fi
+    fi
+
+    log_verbose "Backup created in ${BACKUP_DIR}"
+    return 0
+}
+
+########################################################################
 # ROLLBACK
 ########################################################################
 
@@ -913,18 +950,25 @@ post_update() {
 # Rollback to pre-update state
 #######################################
 rollback() {
-    if [[ -z "$SAVED_HEAD" ]]; then
+    local rollback_head="$SAVED_HEAD"
+
+    # Load from backup if SAVED_HEAD is empty (e.g., --rollback-only)
+    if [[ -z "$rollback_head" && -f "${BACKUP_DIR}/head" ]]; then
+        rollback_head=$(cat "${BACKUP_DIR}/head" 2>/dev/null)
+    fi
+
+    if [[ -z "$rollback_head" ]]; then
         log_error "No saved HEAD to rollback to"
         return 1
     fi
 
-    log_info "Rolling back to ${SAVED_HEAD:0:8}..."
+    log_info "Rolling back to ${rollback_head:0:8}..."
 
     # Ensure maintenance mode is OFF
     php "${LIBRENMS_DIR}/artisan" up &>/dev/null || true
 
     # Git reset to saved HEAD
-    if ! git reset --hard "$SAVED_HEAD" 2>/dev/null; then
+    if ! git reset --hard "$rollback_head" 2>/dev/null; then
         log_error "Git reset failed"
         return 1
     fi
@@ -940,7 +984,12 @@ rollback() {
 
     # Rollback migrations if requested
     if [[ "$FLAG_ROLLBACK_MIGRATIONS" == "true" ]]; then
-        if [[ -n "$SAVED_MIGRATION" ]]; then
+        local saved_migration="$SAVED_MIGRATION"
+        if [[ -z "$saved_migration" && -f "${BACKUP_DIR}/last_migration" ]]; then
+            saved_migration=$(cat "${BACKUP_DIR}/last_migration" 2>/dev/null)
+        fi
+
+        if [[ -n "$saved_migration" ]]; then
             local db_host db_port db_database db_username db_password rollback_steps
             db_host="${DB_HOST:-localhost}"
             db_port="${DB_PORT:-3306}"
@@ -949,7 +998,7 @@ rollback() {
             db_password="${DB_PASSWORD:-}"
 
             rollback_steps=$(mysql -h "$db_host" -P "$db_port" -u "$db_username" -p"$db_password" "$db_database" -sN -e \
-                "SELECT COUNT(DISTINCT batch) FROM migrations WHERE id > (SELECT id FROM migrations WHERE migration = '${SAVED_MIGRATION}' LIMIT 1)" 2>/dev/null || echo "0")
+                "SELECT COUNT(DISTINCT batch) FROM migrations WHERE id > (SELECT id FROM migrations WHERE migration = '${saved_migration}' LIMIT 1)" 2>/dev/null || echo "0")
 
             if (( rollback_steps > 0 )); then
                 log_info "Rolling back ${rollback_steps} migration batch(es)..."
@@ -1074,6 +1123,9 @@ main() {
         show_dry_run
         exit "$EXIT_SUCCESS"
     fi
+
+    # Create backup
+    create_backup
 
     # Pre-update steps
     pre_update
