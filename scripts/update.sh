@@ -38,6 +38,14 @@ readonly EXIT_UPDATE_FAIL=4
 readonly EXIT_ROLLBACK_FAIL=5
 
 LOCK_FILE="${LIBRENMS_DIR}/storage/app/private/update.lock"
+LOG_FILE="${LIBRENMS_DIR}/logs/update.log"
+
+
+# Color codes (set in init_colors)
+COLOR_RED=""
+COLOR_GREEN=""
+COLOR_YELLOW=""
+COLOR_RESET=""
 
 #######################################
 # CLI FLAGS (defaults)
@@ -58,6 +66,20 @@ UPDATE_ENABLED=true
 UPDATE_CHANNEL=nightly
 LIBRENMS_USER=""
 LOCK_ACQUIRED=false
+
+
+#######################################
+# Initialize ANSI color codes
+# Colors are enabled when stdout is a terminal and --quiet is not set
+#######################################
+init_colors() {
+    if [[ -t 1 ]] && [[ "$FLAG_QUIET" != "true" ]]; then
+        COLOR_RED=$'\033[0;31m'
+        COLOR_GREEN=$'\033[0;32m'
+        COLOR_YELLOW=$'\033[0;33m'
+        COLOR_RESET=$'\033[0m'
+    fi
+}
 
 #######################################
 # Show usage information
@@ -159,6 +181,64 @@ check_user() {
 }
 
 ########################################################################
+# LOGGING
+########################################################################
+
+#######################################
+# Log a message to file and optionally to stdout
+# Arguments:
+#   $1 - level (INFO, WARN, ERROR)
+#   $2 - message
+#######################################
+log_msg() {
+    local level="$1"
+    local message="$2"
+    local timestamp
+    timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+    local log_line="[${timestamp}] [${level}] ${message}"
+
+    # Always write to log file
+    echo "$log_line" >> "$LOG_FILE" 2>/dev/null
+
+    # Console output based on flags and level
+    if [[ "$FLAG_QUIET" == "true" && "$level" != "ERROR" ]]; then
+        return
+    fi
+
+    local color=""
+    case "$level" in
+        INFO)
+            if [[ "$FLAG_QUIET" == "true" ]]; then
+                return
+            fi
+            color="$COLOR_GREEN"
+            ;;
+        WARN)  color="$COLOR_YELLOW" ;;
+        ERROR) color="$COLOR_RED" ;;
+    esac
+
+    if [[ "$FLAG_VERBOSE" == "true" ]]; then
+        echo "${color}[${level}]${COLOR_RESET} ${message}"
+    elif [[ "$level" != "INFO" ]]; then
+        echo "${color}[${level}]${COLOR_RESET} ${message}"
+    fi
+}
+
+log_info()  { log_msg "INFO" "$1"; }
+log_warn()  { log_msg "WARN" "$1"; }
+log_error() { log_msg "ERROR" "$1"; }
+log_verbose() {
+    if [[ "$FLAG_VERBOSE" == "true" ]]; then
+        log_msg "INFO" "$1"
+    else
+        # Still write to log file even when not verbose
+        local timestamp
+        timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        echo "[${timestamp}] [INFO] $1" >> "$LOG_FILE" 2>/dev/null
+    fi
+}
+
+########################################################################
 # LOCK MECHANISM
 ########################################################################
 
@@ -172,7 +252,7 @@ acquire_lock() {
 
     if [[ ! -d "$lock_dir" ]]; then
         mkdir -p "$lock_dir" 2>/dev/null || {
-            echo "ERROR: Cannot create lock directory: ${lock_dir}" >&2
+            log_error "Cannot create lock directory: ${lock_dir}"
             exit "$EXIT_LOCKED"
         }
     fi
@@ -182,19 +262,20 @@ acquire_lock() {
         local old_pid
         old_pid=$(cat "$LOCK_FILE" 2>/dev/null)
         if [[ -n "$old_pid" ]] && kill -0 "$old_pid" 2>/dev/null; then
-            echo "ERROR: Another update is running (PID ${old_pid}). Lock file: ${LOCK_FILE}" >&2
+            log_error "Another update is running (PID ${old_pid}). Lock file: ${LOCK_FILE}"
             exit "$EXIT_LOCKED"
         fi
-        echo "WARNING: Removing stale lock file (PID ${old_pid} is not running)" >&2
+        log_warn "Removing stale lock file (PID ${old_pid} is not running)"
         rm -f "$LOCK_FILE"
     fi
 
     # Write our PID atomically
     echo $$ > "$LOCK_FILE" 2>/dev/null || {
-        echo "ERROR: Cannot create lock file: ${LOCK_FILE}" >&2
+        log_error "Cannot create lock file: ${LOCK_FILE}"
         exit "$EXIT_LOCKED"
     }
     LOCK_ACQUIRED=true
+    log_verbose "Lock acquired (PID $$)"
 }
 
 #######################################
@@ -205,6 +286,7 @@ release_lock() {
     if [[ "$LOCK_ACQUIRED" == "true" && -f "$LOCK_FILE" ]]; then
         rm -f "$LOCK_FILE"
         LOCK_ACQUIRED=false
+        log_verbose "Lock released"
     fi
 }
 
@@ -213,7 +295,7 @@ release_lock() {
 #######################################
 # shellcheck disable=SC2329
 handle_signal() {
-    echo "Caught signal, releasing lock and exiting" >&2
+    log_warn "Caught signal, releasing lock and exiting"
     release_lock
     exit "$EXIT_DISABLED"
 }
@@ -228,7 +310,10 @@ main() {
     cd "$LIBRENMS_DIR" || exit "$EXIT_DISABLED"
 
     load_env
+    init_colors
     check_user
+
+    log_info "LibreNMS update script started"
 
     # Register signal handlers
     trap handle_signal INT TERM
@@ -237,6 +322,7 @@ main() {
     # Acquire lock
     acquire_lock
 
+    log_info "Update completed successfully"
     exit "$EXIT_SUCCESS"
 }
 
