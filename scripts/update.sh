@@ -715,6 +715,50 @@ preflight_python_reqs() {
 }
 
 ########################################################################
+# DRY-RUN SUPPORT
+########################################################################
+
+#######################################
+# Show what would happen without making changes
+#######################################
+show_dry_run() {
+    echo ""
+    echo "=== DRY RUN ==="
+    echo "Channel:      ${UPDATE_CHANNEL}"
+    echo "Current HEAD: $(git rev-parse --short HEAD 2>/dev/null)"
+    echo "Target ref:   ${TARGET_REF}"
+
+    if [[ "$REQUIREMENTS_CHANGED" == "true" ]]; then
+        echo "Python:       requirements.txt changed (will install)"
+    else
+        echo "Python:       requirements.txt unchanged"
+    fi
+
+    echo ""
+    echo "The following steps would be performed:"
+    echo "  1. Clear caches (artisan optimize:clear)"
+    echo "  2. De-optimize autoloader (composer dump-autoload)"
+    if [[ "$UPDATE_CHANNEL" == "nightly" ]]; then
+        echo "  3. Git pull (merge origin/master)"
+    else
+        echo "  3. Git checkout ${TARGET_REF}"
+    fi
+    echo "  4. Clear caches again"
+    echo "  5. Composer install --no-dev"
+    echo "  6. Optimize autoloader"
+    echo "  7. Maintenance mode ON"
+    echo "  8. Run database migrations"
+    if [[ "$REQUIREMENTS_CHANGED" == "true" ]]; then
+        echo "  9. Install Python requirements"
+    fi
+    echo " 10. Reset opcache"
+    echo " 11. Maintenance mode OFF"
+    echo " 12. Final cache clear"
+    echo ""
+    echo "=== END DRY RUN ==="
+}
+
+########################################################################
 # MAIN
 ########################################################################
 
@@ -782,6 +826,12 @@ main() {
 
     # Python pre-check and pre-download
     preflight_python_reqs
+
+    # --dry-run mode
+    if [[ "$FLAG_DRY_RUN" == "true" ]]; then
+        show_dry_run
+        exit "$EXIT_SUCCESS"
+    fi
 
     log_info "Update completed successfully"
     exit "$EXIT_SUCCESS"
