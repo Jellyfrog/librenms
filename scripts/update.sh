@@ -968,6 +968,20 @@ rollback() {
 }
 
 ########################################################################
+# NOTIFICATION AND CLEANUP
+########################################################################
+
+#######################################
+# Notify of update result via daily.php handler
+# Arguments:
+#   $1 - result: 1 for success, 0 for failure
+#######################################
+notify_result() {
+    local result="$1"
+    php "${LIBRENMS_DIR}/daily.php" -f handle_notifiable -t update -r "$result" &>/dev/null || true
+}
+
+########################################################################
 # MAIN
 ########################################################################
 
@@ -1001,9 +1015,11 @@ main() {
         log_info "Manual rollback requested"
         if rollback; then
             log_info "Manual rollback completed successfully"
+            notify_result 1
             exit "$EXIT_SUCCESS"
         else
             log_error "Manual rollback failed"
+            notify_result 0
             exit "$EXIT_ROLLBACK_FAIL"
         fi
     fi
@@ -1013,6 +1029,7 @@ main() {
 
     # Pre-flight checks
     if ! preflight_checks; then
+        notify_result 0
         exit "$EXIT_PREFLIGHT"
     fi
 
@@ -1029,17 +1046,20 @@ main() {
 
     if (( target_result == 1 )); then
         log_error "Failed to determine update target"
+        notify_result 0
         exit "$EXIT_UPDATE_FAIL"
     fi
 
     if (( target_result == 2 )); then
         # Already up to date
+        notify_result 1
         exit "$EXIT_SUCCESS"
     fi
 
     # Composer platform pre-check
     if ! preflight_composer_reqs; then
         log_error "Composer platform requirements not met. Aborting update."
+        notify_result 0
         exit "$EXIT_PREFLIGHT"
     fi
 
@@ -1065,8 +1085,10 @@ main() {
             log_warn "Rolled back successfully after update failure"
         else
             log_error "Rollback also failed!"
+            notify_result 0
             exit "$EXIT_ROLLBACK_FAIL"
         fi
+        notify_result 0
         exit "$EXIT_UPDATE_FAIL"
     fi
 
@@ -1077,12 +1099,15 @@ main() {
             log_warn "Rolled back successfully after post-update failure"
         else
             log_error "Rollback also failed!"
+            notify_result 0
             exit "$EXIT_ROLLBACK_FAIL"
         fi
+        notify_result 0
         exit "$EXIT_UPDATE_FAIL"
     fi
 
     log_info "Update completed successfully"
+    notify_result 1
     exit "$EXIT_SUCCESS"
 }
 
