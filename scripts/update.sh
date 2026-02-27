@@ -59,6 +59,8 @@ FLAG_PRE_FLIGHT_ONLY=false
 FLAG_STATUS=false
 FLAG_ROLLBACK_MIGRATIONS=false
 FLAG_ROLLBACK_ONLY=false
+FLAG_SKIP_COMPOSER=false
+FLAG_SKIP_MIGRATIONS=false
 
 #######################################
 # STATE
@@ -106,6 +108,8 @@ Options:
   --status                Show current update status and exit
   --rollback-migrations   Enable DB migration rollback on failure
   --rollback-only         Manually trigger a rollback to saved state
+  --skip-composer         Skip composer install step
+  --skip-migrations       Skip DB migration step
 
 Exit codes:
   0  Success
@@ -139,6 +143,8 @@ parse_args() {
             --status)           FLAG_STATUS=true ;;
             --rollback-migrations) FLAG_ROLLBACK_MIGRATIONS=true ;;
             --rollback-only)    FLAG_ROLLBACK_ONLY=true ;;
+            --skip-composer)    FLAG_SKIP_COMPOSER=true ;;
+            --skip-migrations)  FLAG_SKIP_MIGRATIONS=true ;;
             *)
                 echo "Unknown option: $1" >&2
                 echo "Run with --help for usage information." >&2
@@ -652,6 +658,11 @@ preflight_composer_reqs() {
 # Pre-download composer packages for the target ref
 #######################################
 precache_composer() {
+    if [[ "$FLAG_SKIP_COMPOSER" == "true" ]]; then
+        log_verbose "Skipping composer pre-cache (--skip-composer)"
+        return 0
+    fi
+
     local tmp_dir
     tmp_dir=$(mktemp -d)
 
@@ -750,7 +761,11 @@ show_dry_run() {
     echo "  5. Composer install --no-dev"
     echo "  6. Optimize autoloader"
     echo "  7. Maintenance mode ON"
-    echo "  8. Run database migrations"
+    if [[ "$FLAG_SKIP_MIGRATIONS" != "true" ]]; then
+        echo "  8. Run database migrations"
+    else
+        echo "  8. Skip database migrations (--skip-migrations)"
+    fi
     if [[ "$REQUIREMENTS_CHANGED" == "true" ]]; then
         echo "  9. Install Python requirements"
     fi
@@ -843,45 +858,54 @@ post_update() {
     log_verbose "Clearing caches after update..."
     php "${LIBRENMS_DIR}/artisan" optimize:clear &>/dev/null || log_warn "Post-update cache clear had issues"
 
-    # Re-add user-installed plugins
-    if [[ -f "${LIBRENMS_DIR}/composer.plugins.json" ]]; then
-        local plugins
-        plugins=$(php -r "
-            \$p = json_decode(file_get_contents('${LIBRENMS_DIR}/composer.plugins.json'), true);
-            if (is_array(\$p) && isset(\$p['require'])) {
-                foreach (\$p['require'] as \$pkg => \$ver) echo \$pkg . ':' . \$ver . ' ';
-            }
-        " 2>/dev/null)
+    if [[ "$FLAG_SKIP_COMPOSER" != "true" ]]; then
+        # Re-add user-installed plugins
+        if [[ -f "${LIBRENMS_DIR}/composer.plugins.json" ]]; then
+            local plugins
+            plugins=$(php -r "
+                \$p = json_decode(file_get_contents('${LIBRENMS_DIR}/composer.plugins.json'), true);
+                if (is_array(\$p) && isset(\$p['require'])) {
+                    foreach (\$p['require'] as \$pkg => \$ver) echo \$pkg . ':' . \$ver . ' ';
+                }
+            " 2>/dev/null)
 
-        if [[ -n "$plugins" ]]; then
-            log_verbose "Re-adding user plugins: ${plugins}"
-            # shellcheck disable=SC2086
-            FORCE=1 eval "$COMPOSER require --update-no-dev --no-install $plugins" &>/dev/null || log_warn "Plugin re-add had issues"
+            if [[ -n "$plugins" ]]; then
+                log_verbose "Re-adding user plugins: ${plugins}"
+                # shellcheck disable=SC2086
+                FORCE=1 eval "$COMPOSER require --update-no-dev --no-install $plugins" &>/dev/null || log_warn "Plugin re-add had issues"
+            fi
         fi
+
+        # Composer install (fast — packages already cached from pre-cache step)
+        log_info "Installing composer packages..."
+        if ! eval "$COMPOSER install --no-dev" 2>/dev/null; then
+            log_error "Composer install failed"
+            return 1
+        fi
+
+        # Re-optimize autoloader for production
+        log_verbose "Optimizing autoloader..."
+        eval "$COMPOSER dump-autoload --optimize" &>/dev/null || log_warn "Autoloader optimization had issues"
+    else
+        log_verbose "Skipping composer install (--skip-composer)"
     fi
 
-    # Composer install (fast — packages already cached from pre-cache step)
-    log_info "Installing composer packages..."
-    if ! eval "$COMPOSER install --no-dev" 2>/dev/null; then
-        log_error "Composer install failed"
-        return 1
-    fi
-
-    # Re-optimize autoloader for production
-    log_verbose "Optimizing autoloader..."
-    eval "$COMPOSER dump-autoload --optimize" &>/dev/null || log_warn "Autoloader optimization had issues"
 
     # Maintenance mode ON
     log_verbose "Enabling maintenance mode..."
     php "${LIBRENMS_DIR}/artisan" down &>/dev/null || log_warn "Failed to enable maintenance mode"
 
     # Database migrations
-    log_info "Running database migrations..."
-    if ! "${LIBRENMS_DIR}/lnms" migrate --force --no-interaction --isolated 2>/dev/null; then
-        log_error "Database migration failed"
-        # Maintenance mode OFF before returning failure
-        php "${LIBRENMS_DIR}/artisan" up &>/dev/null
-        return 1
+    if [[ "$FLAG_SKIP_MIGRATIONS" != "true" ]]; then
+        log_info "Running database migrations..."
+        if ! "${LIBRENMS_DIR}/lnms" migrate --force --no-interaction --isolated 2>/dev/null; then
+            log_error "Database migration failed"
+            # Maintenance mode OFF before returning failure
+            php "${LIBRENMS_DIR}/artisan" up &>/dev/null
+            return 1
+        fi
+    else
+        log_verbose "Skipping migrations (--skip-migrations)"
     fi
 
     # Install Python requirements if changed
@@ -1017,6 +1041,7 @@ rollback() {
 }
 
 ########################################################################
+########################################################################
 # NOTIFICATION AND CLEANUP
 ########################################################################
 
@@ -1106,10 +1131,12 @@ main() {
     fi
 
     # Composer platform pre-check
-    if ! preflight_composer_reqs; then
-        log_error "Composer platform requirements not met. Aborting update."
-        notify_result 0
-        exit "$EXIT_PREFLIGHT"
+    if [[ "$FLAG_SKIP_COMPOSER" != "true" ]]; then
+        if ! preflight_composer_reqs; then
+            log_error "Composer platform requirements not met. Aborting update."
+            notify_result 0
+            exit "$EXIT_PREFLIGHT"
+        fi
     fi
 
     # Pre-cache composer packages
