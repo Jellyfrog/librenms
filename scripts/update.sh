@@ -301,6 +301,61 @@ handle_signal() {
 }
 
 ########################################################################
+# CONFIG RESOLUTION
+########################################################################
+
+#######################################
+# Resolve update configuration from .env and CLI overrides
+#######################################
+resolve_update_config() {
+    # Read from .env (already sourced)
+    UPDATE_ENABLED="${UPDATE_ENABLED:-true}"
+    UPDATE_CHANNEL="${UPDATE_CHANNEL:-nightly}"
+
+    # Normalize channel names
+    case "$UPDATE_CHANNEL" in
+        master|nightly)   UPDATE_CHANNEL=nightly ;;
+        release|stable)   UPDATE_CHANNEL=stable ;;
+    esac
+
+    # Check if updates are enabled
+    if [[ "$UPDATE_ENABLED" == "false" ]]; then
+        if [[ "$FLAG_FORCE" == "true" ]]; then
+            log_warn "Updates are disabled in .env but --force was specified, continuing"
+        else
+            log_info "Updates are disabled (UPDATE_ENABLED=false in .env). Use --force to override."
+            exit "$EXIT_DISABLED"
+        fi
+    fi
+
+    log_verbose "Update config: channel=${UPDATE_CHANNEL}, enabled=${UPDATE_ENABLED}"
+}
+#######################################
+# Show current update status
+#######################################
+show_status() {
+    local current_head current_tag last_update_time
+
+    current_head=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+    current_tag=$(git describe --exact-match --tags HEAD 2>/dev/null || echo "none")
+
+    if [[ -f "$LOG_FILE" ]]; then
+        last_update_time=$(grep "Update completed successfully" "$LOG_FILE" 2>/dev/null | tail -1 | grep -oP '^\[\K[^]]+' || echo "never")
+    else
+        last_update_time="never"
+    fi
+
+    echo "LibreNMS Update Status"
+    echo "======================"
+    echo "  Channel:     ${UPDATE_CHANNEL}"
+    echo "  Enabled:     ${UPDATE_ENABLED}"
+    echo "  Current HEAD: ${current_head}"
+    echo "  Current tag:  ${current_tag}"
+    echo "  Last update:  ${last_update_time}"
+    echo "  Branch:       $(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo 'unknown')"
+}
+
+########################################################################
 # MAIN
 ########################################################################
 
@@ -318,6 +373,15 @@ main() {
     # Register signal handlers
     trap handle_signal INT TERM
     trap release_lock EXIT
+
+    # Resolve configuration
+    resolve_update_config
+
+    # --status mode
+    if [[ "$FLAG_STATUS" == "true" ]]; then
+        show_status
+        exit "$EXIT_SUCCESS"
+    fi
 
     # Acquire lock
     acquire_lock
