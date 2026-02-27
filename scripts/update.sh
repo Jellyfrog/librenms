@@ -641,6 +641,38 @@ preflight_composer_reqs() {
 }
 
 ########################################################################
+# COMPOSER PRE-CACHE
+########################################################################
+
+#######################################
+# Pre-download composer packages for the target ref
+#######################################
+precache_composer() {
+    local tmp_dir
+    tmp_dir=$(mktemp -d)
+
+    log_info "Pre-caching composer packages..."
+
+    # Extract future composer files from target ref
+    git show "${TARGET_REF}:composer.json" > "${tmp_dir}/composer.json" 2>/dev/null || {
+        log_warn "Could not extract composer.json from ${TARGET_REF}"
+        rm -rf "$tmp_dir"
+        return 0
+    }
+    git show "${TARGET_REF}:composer.lock" > "${tmp_dir}/composer.lock" 2>/dev/null || true
+
+    # Download packages to cache without installing
+    if eval "$COMPOSER install --no-dev --download-only --working-dir=${tmp_dir}" &>/dev/null; then
+        log_verbose "Composer packages pre-cached"
+    else
+        log_warn "Composer pre-cache had issues (non-fatal, install will retry)"
+    fi
+
+    rm -rf "$tmp_dir"
+    return 0
+}
+
+########################################################################
 # MAIN
 ########################################################################
 
@@ -702,6 +734,9 @@ main() {
         log_error "Composer platform requirements not met. Aborting update."
         exit "$EXIT_PREFLIGHT"
     fi
+
+    # Pre-cache composer packages
+    precache_composer
 
     log_info "Update completed successfully"
     exit "$EXIT_SUCCESS"
