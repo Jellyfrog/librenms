@@ -2,6 +2,13 @@
 
 namespace App\Models;
 
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Facades\LibrenmsConfig;
 use App\Models\Traits\HasThresholds;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,6 +21,19 @@ use LibreNMS\Util\Number;
 use LibreNMS\Util\Rewrite;
 use LibreNMS\Util\Time;
 
+#[ApiResource(
+    shortName: 'Sensor',
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'device_id', filter: new EqualsFilter())]
+#[QueryParameter(key: 'sensor_class', filter: new EqualsFilter())]
+#[QueryParameter(key: 'sensor_type', filter: new EqualsFilter())]
+#[QueryParameter(key: 'sensor_descr', filter: new PartialSearchFilter())]
+#[QueryParameter(key: 'order', filter: new OrderFilter())]
 class Sensor extends DeviceRelatedModel implements Keyable
 {
     use HasFactory;

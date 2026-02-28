@@ -27,11 +27,27 @@
 
 namespace App\Models;
 
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use LibreNMS\Interfaces\Models\Keyable;
 
+#[ApiResource(
+    shortName: 'Ipv4Address',
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'port_id', filter: new EqualsFilter())]
+#[QueryParameter(key: 'ipv4_address', filter: new PartialSearchFilter())]
 class Ipv4Address extends PortRelatedModel implements Keyable
 {
     use HasFactory;

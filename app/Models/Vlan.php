@@ -2,8 +2,27 @@
 
 namespace App\Models;
 
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+#[ApiResource(
+    shortName: 'Vlan',
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'device_id', filter: new EqualsFilter())]
+#[QueryParameter(key: 'vlan_vlan', filter: new EqualsFilter())]
+#[QueryParameter(key: 'vlan_name', filter: new PartialSearchFilter())]
+#[QueryParameter(key: 'order', filter: new OrderFilter())]
 class Vlan extends DeviceRelatedModel
 {
     protected $primaryKey = 'vlan_id';

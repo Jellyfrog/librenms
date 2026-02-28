@@ -27,10 +27,26 @@
 
 namespace App\Models;
 
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use LibreNMS\Interfaces\Models\Keyable;
 
+#[ApiResource(
+    shortName: 'Ipv6Address',
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'port_id', filter: new EqualsFilter())]
+#[QueryParameter(key: 'ipv6_address', filter: new PartialSearchFilter())]
 class Ipv6Address extends PortRelatedModel implements Keyable
 {
     public $timestamps = false;

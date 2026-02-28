@@ -26,11 +26,36 @@
 
 namespace App\Models;
 
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\QueryParameter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use LibreNMS\Enum\AlertState;
 
+#[ApiResource(
+    shortName: 'AlertRule',
+    operations: [
+        new GetCollection(),
+        new Get(policy: 'view'),
+        new Post(policy: 'create'),
+        new Patch(policy: 'update'),
+        new Delete(policy: 'delete'),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'name', filter: new PartialSearchFilter())]
+#[QueryParameter(key: 'severity', filter: new EqualsFilter())]
+#[QueryParameter(key: 'disabled', filter: new EqualsFilter())]
+#[QueryParameter(key: 'order', filter: new OrderFilter())]
 class AlertRule extends BaseModel
 {
     public $timestamps = false;
@@ -115,7 +140,7 @@ class AlertRule extends BaseModel
     // ---- Define Relationships ----
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Alert, $this>
+     * @return HasMany<Alert, $this>
      */
     public function alerts(): HasMany
     {
@@ -123,7 +148,7 @@ class AlertRule extends BaseModel
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\AlertLog, $this>
+     * @return HasMany<AlertLog, $this>
      */
     public function logs(): HasMany
     {
@@ -131,7 +156,7 @@ class AlertRule extends BaseModel
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\AlertTemplateMap, $this>
+     * @return HasMany<AlertTemplateMap, $this>
      */
     public function templateMaps(): HasMany
     {
@@ -139,7 +164,7 @@ class AlertRule extends BaseModel
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\Device, $this>
+     * @return BelongsToMany<Device, $this>
      */
     public function devices(): BelongsToMany
     {
@@ -147,7 +172,7 @@ class AlertRule extends BaseModel
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\DeviceGroup, $this>
+     * @return BelongsToMany<DeviceGroup, $this>
      */
     public function groups(): BelongsToMany
     {
@@ -155,7 +180,7 @@ class AlertRule extends BaseModel
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\Location, $this>
+     * @return BelongsToMany<Location, $this>
      */
     public function locations(): BelongsToMany
     {
@@ -163,7 +188,7 @@ class AlertRule extends BaseModel
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\AlertTransport, $this>
+     * @return BelongsToMany<AlertTransport, $this>
      */
     public function transportSingles(): BelongsToMany
     {
@@ -173,7 +198,7 @@ class AlertRule extends BaseModel
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\AlertTransportGroup, $this>
+     * @return BelongsToMany<AlertTransportGroup, $this>
      */
     public function transportGroups(): BelongsToMany
     {

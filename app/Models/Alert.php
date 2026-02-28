@@ -26,12 +26,33 @@
 
 namespace App\Models;
 
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\QueryParameter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use LibreNMS\Enum\AlertState;
 
+#[ApiResource(
+    shortName: 'Alert',
+    operations: [
+        new GetCollection(),
+        new Get(policy: 'view'),
+        new Patch(policy: 'update'),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'device_id', filter: new EqualsFilter())]
+#[QueryParameter(key: 'rule_id', filter: new EqualsFilter())]
+#[QueryParameter(key: 'state', filter: new EqualsFilter())]
+#[QueryParameter(key: 'severity', filter: new EqualsFilter())]
+#[QueryParameter(key: 'order', filter: new OrderFilter())]
 class Alert extends Model
 {
     public $timestamps = false;
@@ -72,7 +93,7 @@ class Alert extends Model
 
     // ---- Define Relationships ----
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\Device, $this>
+     * @return BelongsTo<Device, $this>
      */
     public function device(): BelongsTo
     {
@@ -80,7 +101,7 @@ class Alert extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\AlertRule, $this>
+     * @return BelongsTo<AlertRule, $this>
      */
     public function rule(): BelongsTo
     {
@@ -88,7 +109,7 @@ class Alert extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\User, $this>
+     * @return BelongsToMany<User, $this>
      */
     public function users(): BelongsToMany
     {

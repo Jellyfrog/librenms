@@ -27,6 +27,7 @@
         "ext-xml": "*",
         "ext-zlib": "*",
         "amenadiel/jpgraph": "^4",
+        "api-platform/laravel": "^4.2",
         "clue/socket-raw": "^1.4",
         "dapphp/radius": "^3.0",
         "easybook/geshi": "^1.0.8",
@@ -85,6 +86,9 @@
     "config": {
         "discard-changes": true,
         "optimize-autoloader": true,
+        "platform": {
+            "php": "8.2.0"
+        },
         "platform-check": true,
         "preferred-install": "dist",
         "sort-packages": true,
@@ -98,7 +102,8 @@
             "dont-discover": [
                 "nunomaduro/laravel-console-summary",
                 "facade/ignition",
-                "socialiteproviders/manager"
+                "socialiteproviders/manager",
+                "api-platform/laravel"
             ]
         }
     },

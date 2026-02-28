@@ -165,6 +165,12 @@ parameters:
 			path: app/Models/UserPref.php
 
 		-
+			message: "#^Parameter \\$filter of attribute class ApiPlatform\\\\Metadata\\\\QueryParameter constructor expects#"
+			identifier: argument.type
+			reportUnmatched: false
+			path: app/Models/
+
+		-
 			message: "#^Parameter \\#1 \\$attr of method LibreNMS\\\\Authentication\\\\SSOAuthorizer\\:\\:authSSOGetAttr\\(\\) expects string, int given\\.$#"
 			count: 2
 			path: tests/AuthSSOTest.php
