@@ -11,7 +11,7 @@ if ($device['os'] === 'terra') {
             $value = SnmpQuery::get($row[1])->value();
             if (is_numeric($value)) {
                 $c = $value / 10;
-                discover_sensor(null, 'voltage', $device, $row[1], 0, $row[0], 'Supply voltage', 10, 1, null, null, null, null, $c);
+                discover_sensor(null, \LibreNMS\Enum\Sensor::Voltage, $device, $row[1], 0, $row[0], 'Supply voltage', 10, 1, null, null, null, null, $c);
             }
         }
     }
