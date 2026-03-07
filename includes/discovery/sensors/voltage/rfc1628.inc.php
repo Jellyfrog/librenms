@@ -5,7 +5,7 @@ use LibreNMS\Util\Number;
 
 echo 'RFC1628 ';
 
-$battery_volts = snmp_get($device, 'upsBatteryVoltage.0', '-OqvU', 'UPS-MIB');
+$battery_volts = SnmpQuery::mibs(['UPS-MIB'])->get('upsBatteryVoltage.0')->value();
 if (is_numeric($battery_volts)) {
     $volt_oid = '.1.3.6.1.2.1.33.1.2.5.0';
     $divisor = get_device_divisor($device, $pre_cache['poweralert_serial'] ?? 0, 'voltage', $volt_oid);
@@ -28,7 +28,7 @@ if (is_numeric($battery_volts)) {
     );
 }
 
-$output_volts = snmpwalk_group($device, 'upsOutputVoltage', 'UPS-MIB');
+$output_volts = SnmpQuery::hideMib()->walk('UPS-MIB::upsOutputVoltage')->table(1);
 foreach ($output_volts as $index => $data) {
     $volt_oid = ".1.3.6.1.2.1.33.1.4.4.1.2.$index";
     $divisor = get_device_divisor($device, $pre_cache['poweralert_serial'] ?? 0, 'voltage', $volt_oid);
@@ -39,8 +39,8 @@ foreach ($output_volts as $index => $data) {
 
     $upsOutputVoltage_value = $data['upsOutputVoltage'] ?? null;
 
-    if (is_array($data['upsOutputVoltage'])) {
-        $upsOutputVoltage_value = $data['upsOutputVoltage'][0];
+    if (is_array($upsOutputVoltage_value)) {
+        $upsOutputVoltage_value = reset($upsOutputVoltage_value);
         $volt_oid .= '.0';
     }
 
@@ -68,7 +68,7 @@ foreach ($output_volts as $index => $data) {
     );
 }
 
-$input_volts = snmpwalk_group($device, 'upsInputVoltage', 'UPS-MIB');
+$input_volts = SnmpQuery::hideMib()->walk('UPS-MIB::upsInputVoltage')->table(1);
 foreach ($input_volts as $index => $data) {
     $volt_oid = ".1.3.6.1.2.1.33.1.3.3.1.3.$index";
     $divisor = get_device_divisor($device, $pre_cache['poweralert_serial'] ?? 0, 'voltage', $volt_oid);
@@ -79,8 +79,8 @@ foreach ($input_volts as $index => $data) {
 
     $upsInputVoltage_value = $data['upsInputVoltage'] ?? null;
 
-    if (is_array($data['upsInputVoltage'])) {
-        $upsInputVoltage_value = $data['upsInputVoltage'][0];
+    if (is_array($upsInputVoltage_value)) {
+        $upsInputVoltage_value = reset($upsInputVoltage_value);
         $volt_oid .= '.0';
     }
     if (! is_numeric($upsInputVoltage_value)) {
@@ -107,7 +107,7 @@ foreach ($input_volts as $index => $data) {
     );
 }
 
-$bypass_volts = snmpwalk_group($device, 'upsBypassVoltage', 'UPS-MIB');
+$bypass_volts = SnmpQuery::hideMib()->walk('UPS-MIB::upsBypassVoltage')->table(1);
 foreach ($bypass_volts as $index => $data) {
     $volt_oid = ".1.3.6.1.2.1.33.1.5.3.1.2.$index";
     $divisor = get_device_divisor($device, $pre_cache['poweralert_serial'] ?? 0, 'voltage', $volt_oid);
@@ -117,7 +117,7 @@ foreach ($bypass_volts as $index => $data) {
     }
     $bypassVoltage = $data['upsBypassVoltage'] ?? null;
     if (is_array($bypassVoltage)) {
-        $bypassVoltage = $bypassVoltage[0];
+        $bypassVoltage = reset($bypassVoltage);
         $volt_oid .= '.0';
     }
 

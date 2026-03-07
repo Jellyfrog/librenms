@@ -24,7 +24,7 @@
  * @author     Neil Lathwood <gh+n@laf.io>
  */
 echo 'OneFS: ';
-$oids = snmpwalk_cache_multi_oid($device, 'powerSensorTable', [], 'ISILON-MIB');
+$oids = SnmpQuery::hideMib()->walk('ISILON-MIB::powerSensorTable')->valuesByIndex();
 
 foreach ($oids as $index => $entry) {
     if (is_numeric($entry['powerSensorValue']) && is_numeric($index)) {
