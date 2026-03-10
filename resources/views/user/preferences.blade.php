@@ -143,14 +143,10 @@
     @config('twofactor')
     <x-panel title="{{ __('Two-Factor Authentication') }}">
         @if($twofactor)
-            <div class="tw:text-center" id="twofactorqrcontainer">
-                <div class="tw:inline-block tw:bg-white tw:p-4 tw:pb-2 tw:rounded-lg tw:mb-2">
-                    <div id="twofactorqr"></div>
-                    <script>$("#twofactorqr").qrcode({"text": "{{ $twofactor_uri }}"});</script>
-                </div>
-                <div>
-                    <button class="btn btn-default" onclick="$('#twofactorkeycontainer').show(); $('#twofactorqrcontainer').hide();">{{ __('Manual') }}</button>
-                </div>
+            <div id="twofactorqrcontainer">
+                <div id="twofactorqr"></div>
+                <script>$("#twofactorqr").qrcode({"text": "{{ $twofactor_uri }}"});</script>
+                <button class="btn btn-default" onclick="$('#twofactorkeycontainer').show(); $('#twofactorqrcontainer').hide();">{{ __('Manual') }}</button>
             </div>
             <div id="twofactorkeycontainer">
                 <form id="twofactorkey" class="form-horizontal" role="form">
@@ -199,6 +195,63 @@
     </x-panel>
     @endconfig
 
+    <x-panel title="{{ __('API Tokens') }}">
+        <div id="token-created-alert" class="alert alert-success" style="display:none;">
+            <button type="button" class="close" onclick="$('#token-created-alert').hide();">&times;</button>
+            <strong>{{ __('Token created!') }}</strong> {{ __('Copy it now — it will not be shown again:') }}
+            <br><code id="new-token-value"></code>
+        </div>
+
+        <table class="table table-condensed table-striped" id="tokens-table">
+            <thead>
+                <tr>
+                    <th>{{ __('Name') }}</th>
+                    <th>{{ __('Scopes') }}</th>
+                    <th>{{ __('Last Used') }}</th>
+                    <th>{{ __('Created') }}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($tokens as $token)
+                <tr id="token-row-{{ $token->id }}">
+                    <td>{{ $token->name }}</td>
+                    <td>
+                        @foreach($token->abilities as $scope)
+                            <span class="label label-primary">{{ $scope }}</span>
+                        @endforeach
+                    </td>
+                    <td>{{ $token->last_used_at ? $token->last_used_at->diffForHumans() : __('Never') }}</td>
+                    <td>{{ $token->created_at->diffForHumans() }}</td>
+                    <td>
+                        <button class="btn btn-danger btn-xs delete-token-btn" data-token-id="{{ $token->id }}">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                @empty
+                <tr id="no-tokens-row">
+                    <td colspan="5" class="text-muted">{{ __('No API tokens.') }}</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+
+        <hr>
+        <form id="create-token-form" class="form-inline">
+            @csrf
+            <div class="form-group" style="margin-right: 10px;">
+                <input type="text" name="token_name" class="form-control input-sm" placeholder="{{ __('Token name') }}" required>
+            </div>
+            <div class="form-group" style="margin-right: 10px;">
+                <select class="form-control input-sm" disabled>
+                    <option selected>read</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">{{ __('Create Token') }}</button>
+        </form>
+    </x-panel>
+
     <x-panel title="{{ __('Roles') }}">
         @forelse($user->roles->map(fn($r) => Str::title(str_replace('-', ' ', $r->name))) as $role)
             <span class="label label-info tw:mr-1">{{ $role }}</span>
@@ -208,9 +261,9 @@
     </x-panel>
 
     <x-panel title="{{ __('Device Permissions') }}">
-        @can('update', \App\Models\Device::class)
+        @if($user->can('global-admin'))
             <strong class="blue">{{ __('Global Administrative Access') }}</strong>
-        @elseCan('viewAny', \App\Models\Device::class)
+        @elseif($user->can('global-read'))
             <strong class="green">{{ __('Global Viewing Access') }}</strong>
         @else
             @forelse($devices as $device)
@@ -218,7 +271,7 @@
             @empty
                 <strong class="red">{{ __('No access!') }}</strong>
             @endforelse
-        @endcan
+        @endif
     </x-panel>
 </div>
 @endsection
@@ -284,6 +337,65 @@
                     }
                 });
             });
+
+        // API Token management
+        $('#create-token-form').on('submit', function (e) {
+            e.preventDefault();
+            var $form = $(this);
+            $.ajax({
+                url: '{{ route('tokens.store') }}',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    name: $form.find('input[name="token_name"]').val(),
+                },
+                success: function (data) {
+                    $('#new-token-value').text(data.token);
+                    $('#token-created-alert').show();
+                    $('#no-tokens-row').remove();
+                    var scopeLabels = '';
+                    data.abilities.forEach(function (s) {
+                        scopeLabels += '<span class="label label-primary">' + s + '</span> ';
+                    });
+                    $('#tokens-table tbody').append(
+                        '<tr id="token-row-' + data.id + '">' +
+                        '<td>' + $('<span>').text(data.name).html() + '</td>' +
+                        '<td>' + scopeLabels + '</td>' +
+                        '<td>{{ __("Never") }}</td>' +
+                        '<td>{{ __("just now") }}</td>' +
+                        '<td><button class="btn btn-danger btn-xs delete-token-btn" data-token-id="' + data.id + '"><i class="fa fa-trash"></i></button></td>' +
+                        '</tr>'
+                    );
+                    $form.find('input[name="token_name"]').val('');
+                },
+                error: function (xhr) {
+                    var msg = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : '{{ __("Error creating token.") }}';
+                    toastr.error(msg);
+                }
+            });
+        });
+
+        $(document).on('click', '.delete-token-btn', function () {
+            var $btn = $(this);
+            var tokenId = $btn.data('token-id');
+            if (!confirm('{{ __("Revoke this token?") }}')) return;
+            $.ajax({
+                url: '{{ url("user-preferences/tokens") }}/' + tokenId,
+                type: 'DELETE',
+                dataType: 'json',
+                data: { _token: '{{ csrf_token() }}' },
+                success: function () {
+                    $('#token-row-' + tokenId).remove();
+                    if ($('#tokens-table tbody tr').length === 0) {
+                        $('#tokens-table tbody').append('<tr id="no-tokens-row"><td colspan="5" class="text-muted">{{ __("No API tokens.") }}</td></tr>');
+                    }
+                    toastr.success('{{ __("Token revoked.") }}');
+                },
+                error: function () {
+                    toastr.error('{{ __("Error revoking token.") }}');
+                }
+            });
+        });
 
         $('.ajax-select').on("change", function () {
             var $this = $(this);

@@ -2,6 +2,15 @@
 
 namespace App\Models;
 
+use ApiPlatform\Laravel\Eloquent\Filter\BooleanFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\DateFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
 use App\View\SimpleTemplate;
 use Carbon\Carbon;
 use Fico7489\Laravel\Pivot\Traits\PivotEventTrait;
@@ -27,6 +36,7 @@ use LibreNMS\Util\IPv6;
 use LibreNMS\Util\Rewrite;
 use LibreNMS\Util\Time;
 use LibreNMS\Util\Url;
+use Permissions;
 
 /**
  * @property-read int|null $ports_count
@@ -35,6 +45,32 @@ use LibreNMS\Util\Url;
  *
  * @method static \Database\Factories\DeviceFactory factory(...$parameters)
  */
+#[ApiResource(
+    shortName: 'Device',
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+    paginationItemsPerPage: 30,
+    paginationMaximumItemsPerPage: 100,
+)]
+#[QueryParameter(key: 'hostname', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'sysName', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'display', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'os', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'type', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'hardware', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'serial', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'version', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'features', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'location_id', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'poller_group', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'status', filter: BooleanFilter::class)]
+#[QueryParameter(key: 'disabled', filter: BooleanFilter::class)]
+#[QueryParameter(key: 'ignore', filter: BooleanFilter::class)]
+#[QueryParameter(key: 'snmp_disable', filter: BooleanFilter::class)]
+#[QueryParameter(key: 'last_polled', filter: DateFilter::class)]
+#[QueryParameter(key: 'sort[:property]', filter: OrderFilter::class, properties: ['hostname', 'sysName', 'os', 'uptime', 'last_polled', 'inserted'])]
 class Device extends BaseModel
 {
     use PivotEventTrait, HasFactory;
@@ -43,6 +79,15 @@ class Device extends BaseModel
 
     public $timestamps = false;
     protected $primaryKey = 'device_id';
+    protected $hidden = [
+        'community',
+        'authlevel',
+        'authname',
+        'authpass',
+        'authalgo',
+        'cryptopass',
+        'cryptoalgo',
+    ];
     protected $fillable = [
         'authalgo',
         'authlevel',
@@ -339,6 +384,25 @@ class Device extends BaseModel
         }
 
         return $this->last_polled ?? Carbon::now();
+    }
+
+    /**
+     * Check if user can access this device.
+     *
+     * @param  User  $user
+     * @return bool
+     */
+    public function canAccess($user)
+    {
+        if (! $user) {
+            return false;
+        }
+
+        if ($user->hasGlobalRead()) {
+            return true;
+        }
+
+        return Permissions::canAccessDevice($this->device_id, $user->user_id);
     }
 
     public function formatDownUptime($short = false): string
@@ -906,15 +970,6 @@ class Device extends BaseModel
 
     /**
      * @return HasMany<Ipv4Mac, $this>
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\MacAccounting, $this>
-     */
-    public function macAccounting(): HasMany
-    {
-        return $this->hasMany(MacAccounting::class, 'device_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Ipv4Mac, $this>
      */
     public function macs(): HasMany
     {

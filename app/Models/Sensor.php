@@ -2,6 +2,13 @@
 
 namespace App\Models;
 
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Facades\LibrenmsConfig;
 use App\Models\Traits\HasThresholds;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,6 +21,21 @@ use LibreNMS\Util\Number;
 use LibreNMS\Util\Rewrite;
 use LibreNMS\Util\Time;
 
+#[ApiResource(
+    shortName: 'Sensor',
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+    paginationItemsPerPage: 50,
+    paginationMaximumItemsPerPage: 100,
+)]
+#[QueryParameter(key: 'sensor_class', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'sensor_descr', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'sensor_type', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'device_id', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'poller_type', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'sort[:property]', filter: OrderFilter::class, properties: ['sensor_class', 'sensor_descr', 'sensor_current', 'device_id'])]
 class Sensor extends DeviceRelatedModel implements Keyable
 {
     use HasFactory;
@@ -36,7 +58,6 @@ class Sensor extends DeviceRelatedModel implements Keyable
         'sensor_limit_warn',
         'sensor_limit_low',
         'sensor_limit_low_warn',
-        'sensor_current',
         'entPhysicalIndex',
         'entPhysicalIndex_measured',
         'user_func',

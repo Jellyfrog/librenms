@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->validateCsrfTokens(except: [
             '/auth/*/callback',
+            '/api/v2/*',
         ]);
 
         $middleware->authenticateSessions();
@@ -30,10 +31,11 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\LoadUserPreferences::class,
         ]);
 
-        $middleware->api([
-            \App\Http\Middleware\EnforceJson::class,  // prevent redirect to login page
-            'auth:token',
-        ]);
+        // v0 API routes apply EnforceJson and auth:token via route group middleware.
+        // v2 API Platform routes use auth:sanctum configured in config/api-platform.php
+        // and need the Accept header untouched for content negotiation.
+        // The api group is kept clean to avoid middleware conflicts between v0 and v2.
+        $middleware->api([]);
 
         $middleware->replace(\Illuminate\Http\Middleware\TrustProxies::class, \App\Http\Middleware\TrustProxies::class);
         $middleware->replace(\Illuminate\Http\Middleware\HandleCors::class, \App\Http\Middleware\HandleCors::class);

@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\HasApiTokens;
 use LibreNMS\Authentication\LegacyAuth;
 use NotificationChannels\WebPush\HasPushSubscriptions;
 use Permissions;
@@ -22,6 +22,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable
 {
+    use HasApiTokens;
     use HasFactory;
     use HasPushSubscriptions;
     use HasRoles;
@@ -60,6 +61,49 @@ class User extends Authenticatable
     // ---- Helper Functions ----
 
     /**
+     * Test if this user has global read access
+     */
+    public function hasGlobalRead(): bool
+    {
+        return $this->can('global-read');
+    }
+
+    /**
+     * Test if this user has global admin access
+     */
+    public function hasGlobalAdmin(): bool
+    {
+        return $this->can('global-admin');
+    }
+
+    /**
+     * Test if the User is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->can('admin');
+    }
+
+    /**
+     * Test if this user is the demo user
+     */
+    public function isDemo(): bool
+    {
+        return $this->hasRole('demo');
+    }
+
+    /**
+     * Check if this user has access to a device
+     *
+     * @param  Device|int  $device  can be a device Model or device id
+     * @return bool
+     */
+    public function canAccessDevice($device): bool
+    {
+        return $this->hasGlobalRead() || Permissions::canAccessDevice($device, $this->user_id);
+    }
+
+    /**
      * Helper function to hash passwords before setting
      *
      * @param  string  $password
@@ -67,6 +111,25 @@ class User extends Authenticatable
     public function setPassword($password)
     {
         $this->attributes['password'] = $password ? Hash::make($password) : null;
+    }
+
+    /**
+     * Check if the given user can set the password for this user
+     *
+     * @param  User  $user
+     * @return bool
+     */
+    public function canSetPassword($user)
+    {
+        if ($user && LegacyAuth::get()->canUpdatePasswords()) {
+            if ($user->isAdmin()) {
+                return true;
+            }
+
+            return $user->is($this) && $this->can_modify_passwd;
+        }
+
+        return false;
     }
 
     public function getNotifications(?string $type = null): int|Collection
@@ -162,6 +225,14 @@ class User extends Authenticatable
         return $this->getRelation('devices');
     }
 
+    /**
+     * Get the user's Sanctum tokens with standard display columns.
+     */
+    public function displayTokens(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->tokens()->select(['id', 'tokenable_id', 'tokenable_type', 'name', 'abilities', 'last_used_at', 'created_at']);
+    }
+
     // ---- Define Relationships ----
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\ApiToken, $this>
@@ -182,7 +253,7 @@ class User extends Authenticatable
     public function devices()
     {
         // pseudo relation
-        return Device::query()->when(Gate::denies('viewAny', Device::class), fn ($query) => $query->whereIntegerInRaw('device_id', Permissions::devicesForUser($this)));
+        return Device::query()->when(! $this->hasGlobalRead(), fn ($query) => $query->whereIntegerInRaw('device_id', Permissions::devicesForUser($this)));
     }
 
     /**
@@ -203,7 +274,7 @@ class User extends Authenticatable
 
     public function ports()
     {
-        if (Gate::allows('viewAny', Port::class)) {
+        if ($this->hasGlobalRead()) {
             return Port::query();
         } else {
             //FIXME we should return all ports for a device if the user has been given access to the whole device.

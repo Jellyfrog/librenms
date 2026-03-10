@@ -2,51 +2,43 @@
 
 namespace App\Policies;
 
+use App\Models\Device;
 use App\Models\Location;
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class LocationPolicy
 {
-    use ChecksGlobalPermissions;
+    use HandlesAuthorization;
 
-    /**
-     * Determine whether the user can view any locations.
-     */
     public function viewAny(User $user): bool
     {
-        return $this->hasGlobalPermission($user, 'viewAny');
+        return $user->hasGlobalRead();
     }
 
-    /**
-     * Determine whether the user can view the location.
-     */
     public function view(User $user, Location $location): bool
     {
-        return $this->hasGlobalPermission($user, 'view')
-            || Location::hasAccess($user)->where('id', $location->id)->exists(); // FIXME not a db query
+        if ($user->hasGlobalRead()) {
+            return true;
+        }
+
+        return Device::hasAccess($user)
+            ->where('location_id', $location->id)
+            ->exists();
     }
 
-    /**
-     * Determine whether the user can create locations.
-     */
     public function create(User $user): bool
     {
-        return $this->hasGlobalPermission($user, 'create');
+        return $user->isAdmin();
     }
 
-    /**
-     * Determine whether the user can update the location.
-     */
-    public function update(User $user): bool
+    public function update(User $user, Location $location): bool
     {
-        return $this->hasGlobalPermission($user, 'update');
+        return $user->isAdmin();
     }
 
-    /**
-     * Determine whether the user can delete the location.
-     */
-    public function delete(User $user): bool
+    public function delete(User $user, Location $location): bool
     {
-        return $this->hasGlobalPermission($user, 'delete');
+        return $user->isAdmin();
     }
 }

@@ -26,14 +26,35 @@
 
 namespace App\Models;
 
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Support\Facades\Gate;
 use LibreNMS\Alerting\QueryBuilderFluentParser;
 use Permissions;
 
+#[ApiResource(
+    shortName: 'DeviceGroup',
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'name', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'desc', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'type', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'sort[:property]', filter: OrderFilter::class, properties: ['id', 'name', 'type'])]
 class DeviceGroup extends BaseModel
 {
+    use HasFactory;
+
     public $timestamps = false;
     protected $fillable = ['name', 'desc', 'type'];
 
@@ -95,7 +116,7 @@ class DeviceGroup extends BaseModel
 
     public function scopeHasAccess($query, User $user)
     {
-        if (Gate::allows('viewAny', DeviceGroup::class)) {
+        if ($user->hasGlobalRead()) {
             return $query;
         }
 

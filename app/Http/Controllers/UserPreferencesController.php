@@ -32,7 +32,6 @@ use App\Models\Device;
 use App\Models\UserPref;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 use LibreNMS\Authentication\LegacyAuth;
 use LibreNMS\Authentication\TwoFactor;
@@ -89,7 +88,9 @@ class UserPreferencesController extends Controller
             $data['twofactor'] = $twofactor;
         }
 
-        if (Gate::denies('viewAny', Device::class)) {
+        $data['tokens'] = $user->displayTokens()->get();
+
+        if (! $user->hasGlobalRead()) {
             $data['devices'] = Device::hasAccess($user)->get();
         }
 

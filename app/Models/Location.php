@@ -26,17 +26,32 @@
 
 namespace App\Models;
 
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Gate;
 use LibreNMS\Util\Dns;
 
 /**
  * @method static \Database\Factories\LocationFactory factory(...$parameters)
  */
+#[ApiResource(
+    shortName: 'Location',
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ],
+    paginationItemsPerPage: 50,
+)]
+#[QueryParameter(key: 'location', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'sort[:property]', filter: OrderFilter::class, properties: ['location', 'lat', 'lng'])]
 class Location extends Model
 {
     use HasFactory;
@@ -162,7 +177,7 @@ class Location extends Model
      */
     public function scopeHasAccess($query, $user)
     {
-        if (Gate::allows('viewAny', Location::class)) {
+        if ($user->hasGlobalRead()) {
             return $query;
         }
 

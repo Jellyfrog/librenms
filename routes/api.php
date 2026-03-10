@@ -11,7 +11,7 @@
 |
 */
 
-Route::prefix('v0')->group(function (): void {
+Route::middleware([\App\Http\Middleware\EnforceJson::class, 'auth:token'])->prefix('v0')->group(function (): void {
     Route::get('ping', fn () => response()->json(['message' => 'pong']))->name('ping');
     Route::get('system', [App\Api\Controllers\LegacyApiController::class, 'server_info'])->name('server_info');
     Route::get('', [App\Api\Controllers\LegacyApiController::class, 'show_endpoints']);
@@ -197,4 +197,20 @@ Route::prefix('v0')->group(function (): void {
     });
     // Route not found
     Route::any('/{path?}', [App\Api\Controllers\LegacyApiController::class, 'api_not_found'])->where('path', '.*');
+});
+
+// v2 API custom routes (graph and RRD data endpoints)
+// These are registered outside API Platform because they return non-standard responses
+// (binary images and raw time-series data) that don't go through API Platform serialization.
+// Auth uses Sanctum, same as the API Platform v2 resources.
+Route::middleware([
+    \App\Http\Middleware\EnforceJson::class,
+    'auth:sanctum',
+    \App\Http\Middleware\CheckTokenScope::class,
+    \Illuminate\Routing\Middleware\SubstituteBindings::class,
+])->prefix('v2')->group(function (): void {
+    Route::get('ports/{port}/graph', [App\Http\Controllers\Api\V2\GraphController::class, 'port'])->name('v2.ports.graph');
+    Route::get('ports/{port}/rrd', [App\Http\Controllers\Api\V2\RrdController::class, 'port'])->name('v2.ports.rrd');
+    Route::get('devices/{device}/graph', [App\Http\Controllers\Api\V2\GraphController::class, 'device'])->name('v2.devices.graph');
+    Route::get('devices/{device}/rrd', [App\Http\Controllers\Api\V2\RrdController::class, 'device'])->name('v2.devices.rrd');
 });

@@ -18,6 +18,7 @@ class SensorFactory extends Factory
         return [
             'sensor_index' => $this->faker->randomDigit(),
             'sensor_class' => $this->faker->randomElement(Sensor::values()),
+            'sensor_type' => $this->faker->word(),
             'sensor_current' => $this->faker->randomDigit(),
             'sensor_oid' => $sensor_oid,
         ];

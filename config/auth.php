@@ -27,11 +27,21 @@ return [
             'provider' => 'token_provider',
             'hash' => false,
         ],
+
+        'sanctum' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+        ],
     ],
 
     'providers' => [
         'legacy' => [
             'driver' => 'legacy',
+            'model' => App\Models\User::class,
+        ],
+
+        'users' => [
+            'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
     ],

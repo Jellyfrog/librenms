@@ -2,33 +2,37 @@
 
 namespace App\Policies;
 
+use App\Facades\Permissions;
+use App\Models\Sensor;
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class SensorPolicy
 {
-    use ChecksGlobalPermissions;
+    use HandlesAuthorization;
 
-    /**
-     * Determine whether the user can view any models.
-     */
     public function viewAny(User $user): bool
     {
-        return $this->hasGlobalPermission($user, 'viewAny');
+        return $user->hasGlobalRead();
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user): bool
+    public function view(User $user, Sensor $sensor): bool
     {
-        return $this->hasGlobalPermission($user, 'view');
+        return $this->viewAny($user) || Permissions::canAccessDevice($sensor->device_id, $user);
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user): bool
+    public function create(User $user): bool
     {
-        return $this->hasGlobalPermission($user, 'update');
+        return $user->isAdmin();
+    }
+
+    public function update(User $user, Sensor $sensor): bool
+    {
+        return $user->isAdmin();
+    }
+
+    public function delete(User $user, Sensor $sensor): bool
+    {
+        return $user->isAdmin();
     }
 }

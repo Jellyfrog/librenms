@@ -30,10 +30,10 @@ use App\Facades\LibrenmsConfig;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use LibreNMS\Util\Git;
 use Spatie\LaravelIgnition\Facades\Flare;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class ErrorReporting
