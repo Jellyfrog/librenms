@@ -33,7 +33,8 @@ class MuninPluginDs extends BaseModel
     public $timestamps = false;
     public $incrementing = false;
     protected $table = 'munin_plugins_ds';
-    protected $primaryKey = 'mplug_id';
+    protected $primaryKey = null;
+    protected $keyType = 'string';
     protected $fillable = [
         'mplug_id',
         'ds_name',

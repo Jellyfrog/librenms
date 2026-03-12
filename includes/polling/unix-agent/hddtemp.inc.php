@@ -26,8 +26,10 @@ if (isset($agent_data['hddtemp']) && $agent_data['hddtemp'] != '|') {
                 ->where('poller_type', 'agent')
                 ->where('sensor_deleted', 0)
                 ->first();
-            $tmp_agent_sensors['new_value'] = $temperature;
-            $agent_sensors[] = $tmp_agent_sensors;
+            if ($tmp_agent_sensors) {
+                $tmp_agent_sensors['new_value'] = $temperature;
+                $agent_sensors[] = $tmp_agent_sensors;
+            }
             unset($tmp_agent_sensors);
         }
     }
