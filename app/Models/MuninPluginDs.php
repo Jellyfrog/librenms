@@ -1,7 +1,7 @@
 <?php
 
 /**
- * MuninPlugin.php
+ * MuninPluginDs.php
  *
  * -Description-
  *
@@ -26,25 +26,37 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class MuninPlugin extends DeviceRelatedModel
+class MuninPluginDs extends BaseModel
 {
     public $timestamps = false;
+    public $incrementing = false;
+    protected $table = 'munin_plugins_ds';
     protected $primaryKey = 'mplug_id';
     protected $fillable = [
-        'device_id',
-        'mplug_type',
-        'mplug_instance',
-        'mplug_category',
-        'mplug_title',
-        'mplug_vlabel',
-        'mplug_args',
-        'mplug_info',
+        'mplug_id',
+        'ds_name',
+        'ds_type',
+        'ds_label',
+        'ds_cdef',
+        'ds_draw',
+        'ds_info',
+        'ds_extinfo',
+        'ds_min',
+        'ds_max',
+        'ds_graph',
+        'ds_negative',
+        'ds_warning',
+        'ds_critical',
+        'ds_colour',
+        'ds_sum',
+        'ds_stack',
+        'ds_line',
     ];
 
-    public function pluginDs(): HasMany
+    public function plugin(): BelongsTo
     {
-        return $this->hasMany(MuninPluginDs::class, 'mplug_id', 'mplug_id');
+        return $this->belongsTo(MuninPlugin::class, 'mplug_id', 'mplug_id');
     }
 }

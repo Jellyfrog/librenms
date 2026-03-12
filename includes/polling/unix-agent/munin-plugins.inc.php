@@ -1,6 +1,8 @@
 <?php
 
 // Plugins
+use App\Models\MuninPlugin;
+use App\Models\MuninPluginDs;
 use LibreNMS\RRD\RrdDefinition;
 
 if (! empty($agent_data['munin'])) {
@@ -8,9 +10,9 @@ if (! empty($agent_data['munin'])) {
     d_echo($agent_data['munin']);
 
     // Build array of existing plugins
-    $plugins_dbq = dbFetchRows('SELECT * FROM `munin_plugins` WHERE `device_id` = ?', [$device['device_id']]);
+    $plugins_dbq = MuninPlugin::where('device_id', $device['device_id'])->get();
     foreach ($plugins_dbq as $plugin_db) {
-        $plugins_db[$plugin_db['mplug_type']]['id'] = $plugin_db['mplug_id'];
+        $plugins_db[$plugin_db->mplug_type]['id'] = $plugin_db->mplug_id;
     }
 
     $old_plugins_rrd_dir = $host_rrd . 'plugins';
@@ -54,7 +56,7 @@ if (! empty($agent_data['munin'])) {
                 'mplug_args' => $plugin['graph']['args'],
                 'mplug_info' => $plugin['graph']['info'],
             ];
-            $mplug_id = dbInsert($insert, 'munin_plugins');
+            $mplug_id = MuninPlugin::create($insert)->mplug_id;
         } else {
             $mplug_id = $plugins_db[$plugin_type]['id'];
         }
@@ -62,9 +64,9 @@ if (! empty($agent_data['munin'])) {
         if ($mplug_id) {
             echo " ID: $mplug_id";
 
-            $dbq = dbFetchRows('SELECT * FROM `munin_plugins_ds` WHERE `mplug_id` = ?', [$mplug_id]);
+            $dbq = MuninPluginDs::where('mplug_id', $mplug_id)->get();
             foreach ($dbq as $v) {
-                $vu = $v['mplug_id'] . '_' . $v['ds_name'];
+                $vu = $v->mplug_id . '_' . $v->ds_name;
                 $ds_list[$vu] = 1;
             }
 
@@ -120,7 +122,7 @@ if (! empty($agent_data['munin'])) {
                         'ds_stack' => $data['stack'],
                         'ds_line' => $data['line'],
                     ];
-                    $ds_id = dbInsert($insert, 'munin_plugins_ds');
+                    MuninPluginDs::create($insert);
                 }//end if
             }//end foreach
         } else {
