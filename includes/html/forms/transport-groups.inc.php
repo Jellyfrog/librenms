@@ -25,6 +25,7 @@
  */
 
 use App\Models\AlertTransport;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 header('Content-type: application/json');
@@ -83,7 +84,7 @@ if (empty($name)) {
             ];
         }
         if (! empty($insert)) {
-            dbBulkInsert($insert, 'transport_group_transport');
+            DB::table('transport_group_transport')->insert($insert);
         }
 
         // Remove old transport group members
