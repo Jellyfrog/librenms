@@ -15,6 +15,7 @@
 use App\Actions\Device\ValidateDeviceAndCreate;
 use App\Facades\DeviceCache;
 use App\Facades\LibrenmsConfig;
+use App\Models\AlertRule;
 use App\Models\AlertTemplate;
 use App\Models\AlertTemplateMap;
 use App\Models\Availability;
@@ -1692,9 +1693,10 @@ function add_edit_rule(Illuminate\Http\Request $request)
         return api_error(500, 'Failed to create new alert rule');
     }
 
-    dbSyncRelationship('alert_device_map', 'rule_id', $rule_id, 'device_id', $devices);
-    dbSyncRelationship('alert_group_map', 'rule_id', $rule_id, 'group_id', $groups);
-    dbSyncRelationship('alert_location_map', 'rule_id', $rule_id, 'location_id', $locations);
+    $alertRule = AlertRule::findOrFail($rule_id);
+    $alertRule->devices()->sync($devices);
+    $alertRule->groups()->sync($groups);
+    $alertRule->locations()->sync($locations);
 
     return api_success_noresult(200);
 }
