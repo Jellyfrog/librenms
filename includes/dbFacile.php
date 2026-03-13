@@ -379,4 +379,3 @@ function dbGenPlaceholders($count)
 {
     return '(' . implode(',', array_fill(0, $count, '?')) . ')';
 }
-
