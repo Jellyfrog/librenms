@@ -72,7 +72,7 @@ final class FileCategorizerTest extends TestCase
             'docs' => [
                 'doc/CNAME',
                 'doc/Developing/Creating-Release.md',
-                'mkdocs.yml',
+                'zensical.toml',
             ],
         ]);
     }

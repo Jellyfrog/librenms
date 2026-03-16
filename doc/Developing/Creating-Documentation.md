@@ -4,7 +4,7 @@ One of the goals of the LibreNMS project is to enable users to get all of the
 help they need from our documentation.
 
 The documentation uses the [markdown](https://en.wikipedia.org/wiki/Markdown)
-markup language and is generated with [mkdocs](https://www.mkdocs.org/). To edit
+markup language and is generated with [Zensical](https://zensical.org/). To edit
 or create markdown you only need a text editor, but it is recommended to build
 your docs before submitting, in order to check them visually. The section on
 this page has instructions for this step.
@@ -18,7 +18,7 @@ documentation to go along with it. It's quite simple to do this:
   and Extensions are the most likely choices.
 - Think of a descriptive name that's not too long, it should match what they may
   be looking for or describes the feature.
-- Add the new document into the `nav` section of `mkdocs.yml` if it needs to
+- Add the new document into the `nav` section of `zensical.toml` if it needs to
   appear in the table of contents
 - Ensure the first line contains: `source: path/to/file.md` - don't include the
   initial `doc/`.
@@ -29,20 +29,14 @@ least put a placeholder in asking for contributions.
   - Ensure you use the correct formatting for `commands` and `code blocks` by
     wrapping one liners in backticks or blocks in ```.
   - Put content into sub-headings where possible to organise the content.
-- If you rename a file, please add a redirect for the old file in `mkdocs.yml` like so:
-```yaml
-  - redirects:
-      redirect_maps:
-        'old/page.md': 'new/page.md'
-```
 
-Please ensure you add the document to the relevant section within `pages` of
-`mkdocs.yml` so that it's in the correct menu and is built.  Forgetting this
+Please ensure you add the document to the relevant section within `nav` of
+`zensical.toml` so that it's in the correct menu and is built.  Forgetting this
 step will result in your document never seeing the light of day :)
 
 ## Formatting docs
 
-Our docs are based on Markdown using mkdocs which adheres to markdown specs and
+Our docs are based on Markdown using Zensical which adheres to markdown specs and
 nothing more, because of that we also import a couple of extra libraries:
 
 - pymdownx.tasklist
@@ -64,7 +58,15 @@ This means you can use:
 
 ## Building docs
 
-This is achieved with `mkdocs`, a python package.
+This is achieved with `zensical` or via the Docker image.
+
+### Using Docker
+
+```
+docker run --rm -v "$(pwd):/docs" zensical/zensical build
+```
+
+### Using pip
 
 1. Install the required packages.
 
@@ -76,33 +78,19 @@ source .python_venvs/docs/bin/activate
 ```
 
 ```
-pip install \
- markdown-exec \
- markdown-include \
- mkdocs \
- mkdocs-awesome-pages-plugin \
- mkdocs-exclude \
- mkdocs-git-revision-date-localized-plugin \
- mkdocs-include-dir-to-nav \
- mkdocs-macros-plugin \
- mkdocs-material \
- mkdocs-minify-plugin \
- mkdocs-redirects
+pip install zensical
 ```
-If you encounter permissions issues, these might be resolved by using the
-user option, with whatever user you are building as, e.g. `-u librenms`
 
 2. A configuration file for building LibreNMS docs is already included in the
-distribution: `/opt/librenms/mkdocs.yml`. The various configuration
-directives are documented
-[here](https://www.mkdocs.org/user-guide/configuration/).
+distribution: `/opt/librenms/zensical.toml`. The various configuration
+directives are documented on [zensical.org](https://zensical.org/docs/).
 
 3. Build from the librenms base directory: `cd /opt/librenms`.
 
 4. Building is simple:
 
 ```
-mkdocs build
+zensical build
 ```
 
 This will output all the documentation in html format to `/opt/librenms/out`
@@ -111,19 +99,12 @@ This will output all the documentation in html format to `/opt/librenms/out`
 
 ## Viewing docs
 
-mkdocs includes it's own light-weight webserver for this purpose.
+Zensical includes its own light-weight webserver for this purpose.
 
 Viewing is as simple as running the following command:
 
 ```
-$ mkdocs serve
-INFO    -  Building documentation...
-<..>
-INFO    -  Documentation built in 12.54 seconds
-<..>
-INFO    -  Serving on http://127.0.0.1:8000
-<..>
-INFO    -  Start watching changes
+$ zensical serve
 ```
 
 Now you will find the complete set of LibreNMS documentation by opening your
@@ -140,9 +121,8 @@ If you are building on a different machine you can use the following directive
 to listen on all interfaces:
 
 ```
-mkdocs serve --dev-addr=0.0.0.0:8000
+zensical serve --dev-addr=0.0.0.0:8000
 ```
 
 WARNING: this is not a secure webserver, do this at your own risk, with
 appropriate host security and do not leave the server running.
-

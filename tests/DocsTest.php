@@ -27,7 +27,6 @@
 namespace LibreNMS\Tests;
 
 use PHPUnit\Framework\Attributes\Group;
-use Symfony\Component\Yaml\Yaml;
 
 final class DocsTest extends TestCase
 {
@@ -37,7 +36,10 @@ final class DocsTest extends TestCase
     #[Group('docs')]
     public function testDocExist(): void
     {
-        $mkdocs = Yaml::parse(file_get_contents(__DIR__ . '/../mkdocs.yml'));
+        $config = file_get_contents(__DIR__ . '/../zensical.toml');
+        preg_match_all('/=\s*"([^"]+\.md)"/', $config, $matches);
+        $nav_pages = collect($matches[1]);
+
         $dir = __DIR__ . '/../doc/';
 
         // Define paths to exclude
@@ -56,9 +58,9 @@ final class DocsTest extends TestCase
 
         // Check for missing pages
         collect(explode(PHP_EOL, $files))
-            ->diff(collect($mkdocs['nav'])->flatten()->merge($this->hidden_pages)) // grab defined pages and diff
+            ->diff($nav_pages->merge($this->hidden_pages))
             ->each(function ($missing_doc): void {
-                $this->fail("The doc $missing_doc doesn't exist in mkdocs.yml, please add it to the relevant section");
+                $this->fail("The doc $missing_doc doesn't exist in zensical.toml, please add it to the relevant section");
             });
 
         $this->expectNotToPerformAssertions();

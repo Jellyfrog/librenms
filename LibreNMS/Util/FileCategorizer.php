@@ -48,7 +48,7 @@ class FileCategorizer extends Categorizer
         }
 
         $this->addCategory('php', fn ($item) => Str::endsWith($item, '.php') ? $item : false);
-        $this->addCategory('docs', fn ($item) => (Str::startsWith($item, 'doc/') || $item == 'mkdocs.yml') ? $item : false);
+        $this->addCategory('docs', fn ($item) => (Str::startsWith($item, 'doc/') || $item == 'zensical.toml') ? $item : false);
         $this->addCategory('python', fn ($item) => Str::endsWith($item, '.py') ? $item : false);
         $this->addCategory('bash', fn ($item) => Str::endsWith($item, '.sh') ? $item : false);
         $this->addCategory('svg', fn ($item) => Str::endsWith($item, '.svg') ? $item : false);

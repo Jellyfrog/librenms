@@ -7,7 +7,7 @@ on:
     paths:
       - '.github/workflows/doc.yml'
       - 'doc/**'
-      - 'mkdocs.yml'
+      - 'zensical.toml'
       - 'resources/definitions/os_detection/**'
   pull_request:
     branches:
@@ -15,7 +15,7 @@ on:
     paths:
       - '.github/workflows/doc.yml'
       - 'doc/**'
-      - 'mkdocs.yml'
+      - 'zensical.toml'
       - 'resources/definitions/os_detection/**'
 
 permissions:
@@ -38,15 +38,15 @@ jobs:
           sparse-checkout: |
             /resources/definitions/os_detection
             /doc
-            /mkdocs.yml
+            /zensical.toml
       -
-        name: Build mkdocs Docker image
+        name: Build Zensical Docker image
         run: |
-          docker build -t mkdocs - < doc/Dockerfile
+          docker build -t zensical - < doc/Dockerfile
       -
         name: Build docs
         run: |
-          docker run --rm -v "$(pwd):/docs" mkdocs build --strict 2>&1 | tee output.log
+          docker run --rm -v "$(pwd):/docs" zensical build --strict 2>&1 | tee output.log
           sudo chown -R $(id -u):$(id -g) ./out
           echo "Problems found:" && (grep -F 'no such' output.log && exit 1 || echo "None, Good job :)")
       -
