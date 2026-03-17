@@ -38,7 +38,7 @@ directories that will be most interesting during development:
 ### doc/
 
 This is the location of all the documentation for LibreNMS, this is in
-GitHub markdown format and can be viewed [online](@= config.site_url =@)
+GitHub markdown format and can be viewed [online](${SITE_URL})
 
 ### app/
 

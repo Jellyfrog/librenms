@@ -14,7 +14,7 @@ Connect to the server command line and follow the instructions below.
     at `mysql>` prompts) or temporarily become a user with root
     privileges with `sudo -s` or `sudo -i`.
 
-**Please note the minimum supported PHP version is @= php.version_min =@**
+**Please note the minimum supported PHP version is ${PHP_VERSION_MIN}**
 
 ## Install Required Packages
 
@@ -669,7 +669,7 @@ cp /opt/librenms/dist/librenms.cron /etc/cron.d/librenms
     settings in config.php is possible too. The config.php file will be
     created in the upcoming steps. Review the following URL after you
     finished librenms install steps:
-    <@= config.site_url =@/Support/Configuration/#proxy-support>
+    <${SITE_URL}/Support/Configuration/#proxy-support>
 
 ## Enable the scheduler
 

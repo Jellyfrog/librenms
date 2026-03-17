@@ -37,12 +37,21 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /resources/definitions/os_detection
+            /scripts/docs-pre-build.sh
             /doc
             /zensical.toml
       -
         name: Build Zensical Docker image
         run: |
           docker build -t zensical - < doc/Dockerfile
+      -
+        name: Pre-build (variable substitution, vendor list, redirects)
+        run: |
+          docker run --rm -v "$(pwd):/docs" \
+            -e PHP_VERSION_MIN=8.2 \
+            -e SITE_URL=https://docs.librenms.org \
+            --entrypoint bash \
+            zensical scripts/docs-pre-build.sh
       -
         name: Build docs
         run: |
