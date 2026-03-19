@@ -121,7 +121,7 @@ class ArpTable implements Module
                     // avoid invalid output IP-MIB::ipNetToPhysicalPhysAddress[17][ipv4][.10.19.0.9 = 18:94:ef:13:eb:88
                     $ip = Str::chopStart($ip, '.');
 
-                    if (empty($ip) || empty($raw_mac) || $raw_mac == '0:0:0:0:0:0') {
+                    if (empty($ip) || empty($raw_mac) || ! is_string($raw_mac) || $raw_mac == '0:0:0:0:0:0') {
                         continue;
                     }
 
