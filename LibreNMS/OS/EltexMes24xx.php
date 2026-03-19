@@ -82,7 +82,7 @@ class EltexMes24xx extends OS implements TransceiverDiscovery, Ipv6AddressDiscov
                             'port_id' => PortCache::getIdFromIfIndex($ifIndex, $this->getDevice()),
                         ]);
                     } catch (InvalidIpException $e) {
-                        Log::error('Failed to parse IP: ' . $e->getMessage());
+                        Log::warning('Failed to parse IP: ' . $e->getMessage());
 
                         return null;
                     }

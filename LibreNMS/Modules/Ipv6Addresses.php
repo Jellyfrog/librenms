@@ -168,7 +168,7 @@ class Ipv6Addresses implements Module
                             'context_name' => $context_name,
                         ]);
                     } catch (InvalidIpException $e) {
-                        Log::error('Failed to parse IP: ' . $e->getMessage());
+                        Log::warning('Failed to parse IP: ' . $e->getMessage());
 
                         return null;
                     }
@@ -204,7 +204,7 @@ class Ipv6Addresses implements Module
                         'context_name' => $context_name,
                     ]);
                 } catch (InvalidIpException $e) {
-                    Log::error('Failed to parse IP: ' . $e->getMessage());
+                    Log::warning('Failed to parse IP: ' . $e->getMessage());
 
                     return null;
                 }

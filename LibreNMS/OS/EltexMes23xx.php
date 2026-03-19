@@ -119,7 +119,7 @@ class EltexMes23xx extends Radlan implements TransceiverDiscovery, Ipv6AddressDi
                         'port_id' => PortCache::getIdFromIfIndex($data['IP-MIB::ipAddressIfIndex'], $this->getDevice()),
                     ]);
                 } catch (InvalidIpException $e) {
-                    Log::error('Failed to parse IP: ' . $e->getMessage());
+                    Log::warning('Failed to parse IP: ' . $e->getMessage());
 
                     return null;
                 }

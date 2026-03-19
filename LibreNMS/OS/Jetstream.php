@@ -68,7 +68,7 @@ class Jetstream extends OS implements Ipv6AddressDiscovery, RouteDiscovery, Vlan
                         'context_name' => '',
                     ]);
                 } catch (InvalidIpException $e) {
-                    Log::error('Failed to parse IP: ' . $e->getMessage());
+                    Log::warning('Failed to parse IP: ' . $e->getMessage());
 
                     return null;
                 }

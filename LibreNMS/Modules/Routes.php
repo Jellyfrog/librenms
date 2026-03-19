@@ -132,7 +132,7 @@ class Routes implements Module
                     return null;
                 }
             } catch (InvalidIpException $e) {
-                Log::error('Failed to parse IP: ' . $e->getMessage());
+                Log::warning('Failed to parse IP: ' . $e->getMessage());
 
                 return null;
             }

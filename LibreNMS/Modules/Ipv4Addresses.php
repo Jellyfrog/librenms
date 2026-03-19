@@ -110,7 +110,7 @@ class Ipv4Addresses implements Module
                 Log::debug($addr . ' - ' . $pfxLen);
                 $tst = new IPv4($addr . '/' . $pfxLen);
             } catch (InvalidIpException $e) {
-                Log::error('Failed to parse IP: ' . $e->getMessage());
+                Log::warning('Failed to parse IP: ' . $e->getMessage());
 
                 return null;
             }
