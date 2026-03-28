@@ -190,10 +190,11 @@ class SnmpQueryMock implements SnmpQueryInterface
         foreach (Arr::wrap($oids) as $oid) {
             $num_oid = $this->translateNumber($oid);
 
+            $mib = (new Oid($oid))->getMib();
             $output = '';
             foreach ($dev as $key => $data) {
                 if (Str::startsWith($key, $num_oid)) {
-                    $output .= $this->outputLine($oid, $num_oid, $data[0], $data[1]);
+                    $output .= $this->outputLine($key, $key, $data[0], $data[1], $mib);
                 }
             }
 
@@ -283,12 +284,12 @@ class SnmpQueryMock implements SnmpQueryInterface
         throw new Exception("SNMPREC: community $community not cached");
     }
 
-    private function outputLine(string $oid, string $num_oid, string $type, string $data): string
+    private function outputLine(string $oid, string $num_oid, string $type, string $data, ?string $mib = null): string
     {
         $oid = new Oid($oid);
 
         if ($type == 6) {
-            $mib = $oid->getMib();
+            $mib = $mib ?? $oid->getMib();
             $data = $this->numeric ? ".$data" : $this->mibs($mib ? [$mib] : [])->translate($data);
         }
 
