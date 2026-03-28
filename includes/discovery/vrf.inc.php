@@ -163,7 +163,7 @@ if (LibrenmsConfig::get('enable_vrfs')) {
         unset($vrf_count);
 
         $vrtr = snmpwalk_cache_oid($device, 'vRtrConfTable', [], 'TIMETRA-VRTR-MIB');
-        $port_table = snmpwalk_cache_twopart_oid($device, 'vRtrIfName', [], 'TIMETRA-VRTR-MIB');
+        $port_table = SnmpQuery::hideMib()->walk('TIMETRA-VRTR-MIB::vRtrIfName')->table(2);
 
         foreach ($vrtr as $vrf_oid => $vr) {
             $vrf_name = $vr['vRtrName'] ?? null;

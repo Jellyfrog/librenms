@@ -1,4 +1,4 @@
 <?php
 
 echo 'raisecomOpticalTransceiverDDMTable ';
-$pre_cache['raisecomOpticalTransceiverDDMTable'] = snmpwalk_cache_twopart_oid($device, 'raisecomOpticalTransceiverDDMTable', [], 'RAISECOM-OPTICAL-TRANSCEIVER-MIB', 'raisecom', ['-OeQUs', '-Pu']);
+$pre_cache['raisecomOpticalTransceiverDDMTable'] = SnmpQuery::hideMib()->walk('RAISECOM-OPTICAL-TRANSCEIVER-MIB::raisecomOpticalTransceiverDDMTable')->table(2);

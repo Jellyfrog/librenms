@@ -1,6 +1,6 @@
 <?php
 
-$snmp_data['nokiaIsamSlotTemperature'] = snmpwalk_cache_twopart_oid($device, 'eqptBoardThermalSensorTable', [], 'ASAM-EQUIP-MIB', 'nokia');
+$snmp_data['nokiaIsamSlotTemperature'] = SnmpQuery::hideMib()->walk('ASAM-EQUIP-MIB::eqptBoardThermalSensorTable')->table(2);
 
 $multiplier = 1;
 $divisor = 1;
