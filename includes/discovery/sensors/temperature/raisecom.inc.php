@@ -6,16 +6,16 @@ $multiplier = 1;
 $divisor = 1000;
 foreach ($pre_cache['raisecomOpticalTransceiverDDMTable'] as $index => $data) {
     foreach ($data as $key => $value) {
-        if (isset($value['raisecomOpticalTransceiverParameterValue'], $value['raisecomOpticalTransceiverDDMValidStatus']) && ($key == 'transceiverTemperature') && is_numeric($value['raisecomOpticalTransceiverParameterValue']) && ($value['raisecomOpticalTransceiverDDMValidStatus'] == 1)) {
+        if (isset($value['RAISECOM-OPTICAL-TRANSCEIVER-MIB::raisecomOpticalTransceiverParameterValue'], $value['RAISECOM-OPTICAL-TRANSCEIVER-MIB::raisecomOpticalTransceiverDDMValidStatus']) && ($key == 'transceiverTemperature') && is_numeric($value['RAISECOM-OPTICAL-TRANSCEIVER-MIB::raisecomOpticalTransceiverParameterValue']) && ($value['RAISECOM-OPTICAL-TRANSCEIVER-MIB::raisecomOpticalTransceiverDDMValidStatus'] == 1)) {
             $oid = '.1.3.6.1.4.1.8886.1.18.2.2.1.1.2.' . $index . '.1';
             $sensor_type = 'raisecomOpticalTransceiverTemperature';
             $port = PortCache::getByIfIndex(str_replace('1.', '', $index), $device['device_id']);
             $descr = $port?->ifDescr . ' Transceiver Temperature';
-            $low_limit = $value['raisecomOpticalTransceiverParamLowAlarmThresh'] / $divisor;
-            $low_warn_limit = $value['raisecomOpticalTransceiverParamLowWarningThresh'] / $divisor;
-            $warn_limit = $value['raisecomOpticalTransceiverParamHighWarningThresh'] / $divisor;
-            $high_limit = $value['raisecomOpticalTransceiverParamHighAlarmThresh'] / $divisor;
-            $current = $value['raisecomOpticalTransceiverParameterValue'] / $divisor;
+            $low_limit = $value['RAISECOM-OPTICAL-TRANSCEIVER-MIB::raisecomOpticalTransceiverParamLowAlarmThresh'] / $divisor;
+            $low_warn_limit = $value['RAISECOM-OPTICAL-TRANSCEIVER-MIB::raisecomOpticalTransceiverParamLowWarningThresh'] / $divisor;
+            $warn_limit = $value['RAISECOM-OPTICAL-TRANSCEIVER-MIB::raisecomOpticalTransceiverParamHighWarningThresh'] / $divisor;
+            $high_limit = $value['RAISECOM-OPTICAL-TRANSCEIVER-MIB::raisecomOpticalTransceiverParamHighAlarmThresh'] / $divisor;
+            $current = $value['RAISECOM-OPTICAL-TRANSCEIVER-MIB::raisecomOpticalTransceiverParameterValue'] / $divisor;
             $entPhysicalIndex = $index;
             $entPhysicalIndex_measured = 'ports';
             discover_sensor(null, 'temperature', $device, $oid, 'tx-' . $index, $sensor_type, $descr, $divisor, $multiplier, $low_limit, $low_warn_limit, $warn_limit, $high_limit, $current, 'snmp', $entPhysicalIndex, $entPhysicalIndex_measured);

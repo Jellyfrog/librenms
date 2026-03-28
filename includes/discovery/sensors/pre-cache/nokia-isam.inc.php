@@ -152,7 +152,7 @@ $portTable = [
 ];
 
 // dbm pre cache
-$pre_cache['nokiaIsamSfpPort'] = SnmpQuery::hideMib()->walk('SFP-MIB::sfpDiagAvailable')->table(2);
+$pre_cache['nokiaIsamSfpPort'] = SnmpQuery::walk('SFP-MIB::sfpDiagAvailable')->table(2);
 foreach ($pre_cache['nokiaIsamSfpPort'] as $slotId => $slot) {
     foreach ($slot as $portId => $port) {
         if (isset($portTable[$portId])) {
@@ -173,7 +173,7 @@ foreach ($pre_cache['nokiaIsamSfpPort'] as $slotId => $slot) {
             'sfpDiagRSSITxPowerWarnLow' . $oId,
             'sfpDiagRSSITxPowerWarnHigh' . $oId,
         ];
-        if ($port['sfpDiagAvailable'] == 'noError') {
+        if ($port['SFP-MIB::sfpDiagAvailable'] == 'noError') {
             $twopart_value = snmp_get_multi($device, $oIds, '-OQUs', 'SFP-MIB', 'nokia', []);
             foreach ($twopart_value[$slotId . '.' . $portId] as $index => $value) {
                 $value = str_replace(' dBm', '', $value);

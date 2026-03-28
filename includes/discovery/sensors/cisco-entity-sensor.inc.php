@@ -16,7 +16,7 @@ if ($device['os_group'] == 'cisco') {
             $entity_array = snmpwalk_cache_multi_oid($device, $tmp_oid, $entity_array, 'ENTITY-MIB:CISCO-ENTITY-SENSOR-MIB');
         }
         echo ' entAliasMappingIdentifier';
-        SnmpQuery::hideMib()->walk('ENTITY-MIB::entAliasMappingIdentifier')->table(2, $entity_array);
+        SnmpQuery::walk('ENTITY-MIB::entAliasMappingIdentifier')->table(2, $entity_array);
     }
 
     $port_array = [];
@@ -41,11 +41,11 @@ if ($device['os_group'] == 'cisco') {
 
     $t_oids = [];
     echo ' entSensorThresholdSeverity';
-    $t_oids = SnmpQuery::hideMib()->walk('CISCO-ENTITY-SENSOR-MIB::entSensorThresholdSeverity')->table(2);
+    $t_oids = SnmpQuery::walk('CISCO-ENTITY-SENSOR-MIB::entSensorThresholdSeverity')->table(2);
     echo ' entSensorThresholdRelation';
-    SnmpQuery::hideMib()->walk('CISCO-ENTITY-SENSOR-MIB::entSensorThresholdRelation')->table(2, $t_oids);
+    SnmpQuery::walk('CISCO-ENTITY-SENSOR-MIB::entSensorThresholdRelation')->table(2, $t_oids);
     echo ' entSensorThresholdValue';
-    SnmpQuery::hideMib()->walk('CISCO-ENTITY-SENSOR-MIB::entSensorThresholdValue')->table(2, $t_oids);
+    SnmpQuery::walk('CISCO-ENTITY-SENSOR-MIB::entSensorThresholdValue')->table(2, $t_oids);
 
     d_echo($oids);
 
@@ -128,44 +128,44 @@ if ($device['os_group'] == 'cisco') {
                 if (isset($t_oids[$index]) && is_array($t_oids[$index])) {
                     foreach ($t_oids[$index] as $key) {
                         // Skip invalid treshold values
-                        if (! isset($key['entSensorThresholdValue']) || $key['entSensorThresholdValue'] == '-32768' || $key['entSensorThresholdValue'] == '2147483647') {
+                        if (! isset($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdValue']) || $key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdValue'] == '-32768' || $key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdValue'] == '2147483647') {
                             continue;
-                        } elseif ($type == 'fanspeed' && $key['entSensorThresholdValue'] == '-1') {
+                        } elseif ($type == 'fanspeed' && $key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdValue'] == '-1') {
                             continue;
                         }
                         // Critical Limit
-                        if (($key['entSensorThresholdSeverity'] == 'major' || $key['entSensorThresholdSeverity'] == 'critical') && ($key['entSensorThresholdRelation'] == 'greaterOrEqual' || $key['entSensorThresholdRelation'] == 'greaterThan')) {
-                            if ($key['entSensorThresholdValue'] == '0' && isset($limit)) {
+                        if (($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdSeverity'] == 'major' || $key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdSeverity'] == 'critical') && ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdRelation'] == 'greaterOrEqual' || $key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdRelation'] == 'greaterThan')) {
+                            if ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdValue'] == '0' && isset($limit)) {
                                 // Ignore a threshold of 0 if another threshold has been set (major vs critical)
                                 continue;
                             }
-                            $limit = ($key['entSensorThresholdValue'] * $multiplier / $divisor);
+                            $limit = ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdValue'] * $multiplier / $divisor);
                         }
 
-                        if (($key['entSensorThresholdSeverity'] == 'major' || $key['entSensorThresholdSeverity'] == 'critical') && ($key['entSensorThresholdRelation'] == 'lessOrEqual' || $key['entSensorThresholdRelation'] == 'lessThan')) {
-                            if ($key['entSensorThresholdValue'] == '0' && isset($limit_low)) {
+                        if (($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdSeverity'] == 'major' || $key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdSeverity'] == 'critical') && ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdRelation'] == 'lessOrEqual' || $key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdRelation'] == 'lessThan')) {
+                            if ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdValue'] == '0' && isset($limit_low)) {
                                 // Ignore a threshold of 0 if another threshold has been set (major vs critical)
                                 continue;
                             }
-                            $limit_low = ($key['entSensorThresholdValue'] * $multiplier / $divisor);
+                            $limit_low = ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdValue'] * $multiplier / $divisor);
                         }
 
                         // Warning Limit
-                        if ($key['entSensorThresholdSeverity'] == 'minor' && ($key['entSensorThresholdRelation'] == 'greaterOrEqual' || $key['entSensorThresholdRelation'] == 'greaterThan')) {
-                            $warn_limit = ($key['entSensorThresholdValue'] * $multiplier / $divisor);
+                        if ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdSeverity'] == 'minor' && ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdRelation'] == 'greaterOrEqual' || $key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdRelation'] == 'greaterThan')) {
+                            $warn_limit = ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdValue'] * $multiplier / $divisor);
                         }
 
-                        if ($key['entSensorThresholdSeverity'] == 'minor' && ($key['entSensorThresholdRelation'] == 'lessOrEqual' || $key['entSensorThresholdRelation'] == 'lessThan')) {
-                            $warn_limit_low = ($key['entSensorThresholdValue'] * $multiplier / $divisor);
+                        if ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdSeverity'] == 'minor' && ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdRelation'] == 'lessOrEqual' || $key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdRelation'] == 'lessThan')) {
+                            $warn_limit_low = ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdValue'] * $multiplier / $divisor);
                         }
 
                         // Other Limit
-                        if ($key['entSensorThresholdSeverity'] == 'other' && ($key['entSensorThresholdRelation'] == 'greaterOrEqual' || $key['entSensorThresholdRelation'] == 'greaterThan')) {
-                            $other_limit = ($key['entSensorThresholdValue'] * $multiplier / $divisor);
+                        if ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdSeverity'] == 'other' && ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdRelation'] == 'greaterOrEqual' || $key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdRelation'] == 'greaterThan')) {
+                            $other_limit = ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdValue'] * $multiplier / $divisor);
                         }
 
-                        if ($key['entSensorThresholdSeverity'] == 'other' && ($key['entSensorThresholdRelation'] == 'lessOrEqual' || $key['entSensorThresholdRelation'] == 'lessThan')) {
-                            $other_limit_low = ($key['entSensorThresholdValue'] * $multiplier / $divisor);
+                        if ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdSeverity'] == 'other' && ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdRelation'] == 'lessOrEqual' || $key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdRelation'] == 'lessThan')) {
+                            $other_limit_low = ($key['CISCO-ENTITY-SENSOR-MIB::entSensorThresholdValue'] * $multiplier / $divisor);
                         }
                     }//end foreach
                 }//end if
@@ -223,7 +223,7 @@ if ($device['os_group'] == 'cisco') {
                         }
                         //either sensor is contained by a port class entity.
                         if ($entPhysicalClass === 'port') {
-                            $entAliasMappingIdentifier = $entity_array[$phys_index][0]['entAliasMappingIdentifier'];
+                            $entAliasMappingIdentifier = $entity_array[$phys_index][0]['ENTITY-MIB::entAliasMappingIdentifier'];
                             if (Str::contains($entAliasMappingIdentifier, 'ifIndex.')) {
                                 [, $tmp_ifindex] = explode('.', (string) $entAliasMappingIdentifier);
                             }

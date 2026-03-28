@@ -163,7 +163,7 @@ if (LibrenmsConfig::get('enable_vrfs')) {
         unset($vrf_count);
 
         $vrtr = snmpwalk_cache_oid($device, 'vRtrConfTable', [], 'TIMETRA-VRTR-MIB');
-        $port_table = SnmpQuery::hideMib()->walk('TIMETRA-VRTR-MIB::vRtrIfName')->table(2);
+        $port_table = SnmpQuery::walk('TIMETRA-VRTR-MIB::vRtrIfName')->table(2);
 
         foreach ($vrtr as $vrf_oid => $vr) {
             $vrf_name = $vr['vRtrName'] ?? null;
@@ -268,7 +268,7 @@ if (LibrenmsConfig::get('enable_vrfs')) {
         }
     } elseif ($device['os'] == 'cumulus') {
         // Cumulus Linux
-        $vrf_table = \SnmpQuery::hideMib()->walk(['CUMULUS-BGPVRF-MIB::bgpVrfId', 'CUMULUS-BGPVRF-MIB::bgpVrfName'])->table(1);
+        $vrf_table = \SnmpQuery::walk(['CUMULUS-BGPVRF-MIB::bgpVrfId', 'CUMULUS-BGPVRF-MIB::bgpVrfName'])->table(1);
         foreach ($vrf_table as $vrf_oid => $vrf_data) {
             $vrf_name = $vrf_data['bgpVrfName'];
 
