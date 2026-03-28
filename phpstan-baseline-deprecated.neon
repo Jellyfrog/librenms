@@ -999,14 +999,6 @@ parameters:
 			count: 1
 			path: LibreNMS/OS/Netscaler.php
 
-		-
-			message: '''
-				#^Call to deprecated function snmp_getnext\(\)\:
-				Please use SnmpQuery instead$#
-			'''
-			identifier: function.deprecated
-			count: 1
-			path: LibreNMS/OS/Netsure.php
 
 		-
 			message: '''
@@ -1125,14 +1117,6 @@ parameters:
 			count: 1
 			path: LibreNMS/OS/Radlan.php
 
-		-
-			message: '''
-				#^Call to deprecated function snmp_getnext\(\)\:
-				Please use SnmpQuery instead$#
-			'''
-			identifier: function.deprecated
-			count: 2
-			path: LibreNMS/OS/Radlan.php
 
 		-
 			message: '''
@@ -1395,14 +1379,6 @@ parameters:
 			count: 1
 			path: LibreNMS/OS/Topvision.php
 
-		-
-			message: '''
-				#^Call to deprecated function snmp_getnext\(\)\:
-				Please use SnmpQuery instead$#
-			'''
-			identifier: function.deprecated
-			count: 2
-			path: LibreNMS/OS/Topvision.php
 
 		-
 			message: '''
@@ -1431,14 +1407,6 @@ parameters:
 			count: 1
 			path: LibreNMS/OS/Valere.php
 
-		-
-			message: '''
-				#^Call to deprecated function snmp_getnext\(\)\:
-				Please use SnmpQuery instead$#
-			'''
-			identifier: function.deprecated
-			count: 1
-			path: LibreNMS/OS/Vrp.php
 
 		-
 			message: '''
@@ -2349,14 +2317,6 @@ parameters:
 			count: 1
 			path: includes/discovery/sensors/current/ict-pdu.inc.php
 
-		-
-			message: '''
-				#^Call to deprecated function snmp_getnext\(\)\:
-				Please use SnmpQuery instead$#
-			'''
-			identifier: function.deprecated
-			count: 1
-			path: includes/discovery/sensors/current/liebert.inc.php
 
 		-
 			message: '''

@@ -30,15 +30,16 @@ use App\Models\Device;
 use LibreNMS\Interfaces\Data\DataStorageInterface;
 use LibreNMS\Interfaces\Polling\OSPolling;
 use LibreNMS\RRD\RrdDefinition;
+use SnmpQuery;
 
 class Topvision extends \LibreNMS\OS implements OSPolling
 {
     public function discoverOS(Device $device): void
     {
         parent::discoverOS($device); // yaml
-        $device->serial = snmp_getnext($this->getDeviceArray(), '.1.3.6.1.4.1.32285.11.1.1.2.1.1.1.16', '-OQv') ?: null;
+        $device->serial = SnmpQuery::numeric()->next('.1.3.6.1.4.1.32285.11.1.1.2.1.1.1.16')->value() ?: null;
         if (empty($device->hardware)) {
-            $device->hardware = snmp_getnext($this->getDeviceArray(), '.1.3.6.1.4.1.32285.11.1.1.2.1.1.1.18', '-OQv') ?: null;
+            $device->hardware = SnmpQuery::numeric()->next('.1.3.6.1.4.1.32285.11.1.1.2.1.1.1.18')->value() ?: null;
         }
     }
 

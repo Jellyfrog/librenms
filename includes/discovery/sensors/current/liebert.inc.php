@@ -31,7 +31,7 @@ $class = 'current';
 $poller_type = 'snmp';
 
 $psline_data = snmpwalk_cache_oid($device, 'lgpPduPsLineTable', [], 'LIEBERT-GP-PDU-MIB', 'liebert');
-$ec_input_rated = snmp_getnext($device, 'lgpPduPsEntryEcInputRated', '-OUqsev', 'LIEBERT-GP-PDU-MIB', 'liebert');
+$ec_input_rated = SnmpQuery::next('LIEBERT-GP-PDU-MIB::lgpPduPsEntryEcInputRated')->value();
 
 foreach (array_keys($psline_data) as $index) {
     $low_limit_p = $psline_data[$index]['lgpPduPsLineEntryEcThrshldUndrAlarm'] / 100;

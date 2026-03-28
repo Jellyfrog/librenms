@@ -28,11 +28,12 @@ namespace LibreNMS\OS;
 use App\Models\Device;
 use LibreNMS\Interfaces\Discovery\OSDiscovery;
 use LibreNMS\OS;
+use SnmpQuery;
 
 class Netsure extends OS implements OSDiscovery
 {
     public function discoverOS(Device $device): void
     {
-        $device->version = snmp_getnext($this->getDeviceArray(), 'vecFirmwareVersion', '-Oqv', 'VEC-MIBv5-9');
+        $device->version = SnmpQuery::next('VEC-MIBv5-9::vecFirmwareVersion')->value() ?: null;
     }
 }

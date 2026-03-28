@@ -250,7 +250,7 @@ class Vrp extends OS implements
         $device->version = isset($matches[1]) ? ($matches[1] . ($device->version ? " ($device->version)" : '')) : null; // version from yaml sysDescr
 
         if ($device->version) {
-            $patch = snmp_getnext($this->getDeviceArray(), 'HUAWEI-SYS-MAN-MIB::hwPatchVersion', '-OQv');
+            $patch = SnmpQuery::next('HUAWEI-SYS-MAN-MIB::hwPatchVersion')->value();
             if ($patch) {
                 $device->version .= " [$patch]";
             }
