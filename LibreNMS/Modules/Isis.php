@@ -41,6 +41,7 @@ use LibreNMS\Interfaces\Polling\IsIsPolling;
 use LibreNMS\OS;
 use LibreNMS\Polling\ModuleStatus;
 use LibreNMS\Util\IP;
+use SnmpQuery;
 
 class Isis implements Module
 {
@@ -116,7 +117,7 @@ class Isis implements Module
         $adjacencies = new Collection;
 
         if (! empty($circuits)) {
-            $adjacencies_data = snmpwalk_cache_twopart_oid($os->getDeviceArray(), 'ISIS-MIB::isisISAdj', [], null, null, '-OQUstx');
+            $adjacencies_data = SnmpQuery::hideMib()->walk('ISIS-MIB::isisISAdj')->table(2);
 
             // No ISIS enabled interfaces -> delete the component
             foreach ($circuits as $circuit_id => $circuit_data) {
@@ -159,7 +160,7 @@ class Isis implements Module
 
     public function pollIsIsMib(Collection $adjacencies, OS $os): Collection
     {
-        $data = snmpwalk_cache_twopart_oid($os->getDeviceArray(), 'isisISAdjState', [], 'ISIS-MIB');
+        $data = SnmpQuery::hideMib()->walk('ISIS-MIB::isisISAdjState')->table(2);
 
         if (count($data) !== $adjacencies->where('isisISAdjState', 'up')->count()) {
             Log::info('New Adjacencies, running discovery');
@@ -168,7 +169,7 @@ class Isis implements Module
             return $this->fillNew($adjacencies, $this->discoverIsIsMib($os));
         }
 
-        $data = snmpwalk_cache_twopart_oid($os->getDeviceArray(), 'isisISAdjLastUpTime', $data, 'ISIS-MIB', null, '-OQUst');
+        SnmpQuery::hideMib()->walk('ISIS-MIB::isisISAdjLastUpTime')->table(2, $data);
 
         $adjacencies->each(function (IsisAdjacency $adjacency) use (&$data): void {
             $adjacency_data = Arr::last($data[$adjacency->ifIndex] ?? []);

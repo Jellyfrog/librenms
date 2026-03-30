@@ -243,14 +243,6 @@ parameters:
 			count: 1
 			path: LibreNMS/Modules/Isis.php
 
-		-
-			message: '''
-				#^Call to deprecated function snmpwalk_cache_twopart_oid\(\)\:
-				Please use SnmpQuery instead$#
-			'''
-			identifier: function.deprecated
-			count: 3
-			path: LibreNMS/Modules/Isis.php
 
 		-
 			message: '''
@@ -2277,14 +2269,6 @@ parameters:
 			count: 7
 			path: includes/discovery/sensors/cisco-entity-sensor.inc.php
 
-		-
-			message: '''
-				#^Call to deprecated function snmpwalk_cache_twopart_oid\(\)\:
-				Please use SnmpQuery instead$#
-			'''
-			identifier: function.deprecated
-			count: 4
-			path: includes/discovery/sensors/cisco-entity-sensor.inc.php
 
 		-
 			message: '''
@@ -2835,14 +2819,6 @@ parameters:
 			count: 2
 			path: includes/discovery/sensors/pre-cache/nokia-isam.inc.php
 
-		-
-			message: '''
-				#^Call to deprecated function snmpwalk_cache_twopart_oid\(\)\:
-				Please use SnmpQuery instead$#
-			'''
-			identifier: function.deprecated
-			count: 1
-			path: includes/discovery/sensors/pre-cache/nokia-isam.inc.php
 
 		-
 			message: '''
@@ -2853,23 +2829,6 @@ parameters:
 			count: 1
 			path: includes/discovery/sensors/pre-cache/pbn.inc.php
 
-		-
-			message: '''
-				#^Call to deprecated function snmpwalk_cache_twopart_oid\(\)\:
-				Please use SnmpQuery instead$#
-			'''
-			identifier: function.deprecated
-			count: 1
-			path: includes/discovery/sensors/pre-cache/raisecom-ros.inc.php
-
-		-
-			message: '''
-				#^Call to deprecated function snmpwalk_cache_twopart_oid\(\)\:
-				Please use SnmpQuery instead$#
-			'''
-			identifier: function.deprecated
-			count: 1
-			path: includes/discovery/sensors/pre-cache/raisecom.inc.php
 
 		-
 			message: '''
@@ -3519,14 +3478,6 @@ parameters:
 			count: 1
 			path: includes/discovery/sensors/temperature/netapp.inc.php
 
-		-
-			message: '''
-				#^Call to deprecated function snmpwalk_cache_twopart_oid\(\)\:
-				Please use SnmpQuery instead$#
-			'''
-			identifier: function.deprecated
-			count: 1
-			path: includes/discovery/sensors/temperature/nokia-isam.inc.php
 
 		-
 			message: '''
@@ -3861,14 +3812,6 @@ parameters:
 			count: 3
 			path: includes/discovery/vrf.inc.php
 
-		-
-			message: '''
-				#^Call to deprecated function snmpwalk_cache_twopart_oid\(\)\:
-				Please use SnmpQuery instead$#
-			'''
-			identifier: function.deprecated
-			count: 1
-			path: includes/discovery/vrf.inc.php
 
 		-
 			message: '''

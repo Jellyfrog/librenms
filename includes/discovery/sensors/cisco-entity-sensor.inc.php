@@ -16,7 +16,7 @@ if ($device['os_group'] == 'cisco') {
             $entity_array = snmpwalk_cache_multi_oid($device, $tmp_oid, $entity_array, 'ENTITY-MIB:CISCO-ENTITY-SENSOR-MIB');
         }
         echo ' entAliasMappingIdentifier';
-        $entity_array = snmpwalk_cache_twopart_oid($device, 'entAliasMappingIdentifier', $entity_array, 'ENTITY-MIB:IF-MIB');
+        SnmpQuery::hideMib()->walk('ENTITY-MIB::entAliasMappingIdentifier')->table(2, $entity_array);
     }
 
     $port_array = [];
@@ -41,11 +41,11 @@ if ($device['os_group'] == 'cisco') {
 
     $t_oids = [];
     echo ' entSensorThresholdSeverity';
-    $t_oids = snmpwalk_cache_twopart_oid($device, 'entSensorThresholdSeverity', $t_oids, 'CISCO-ENTITY-SENSOR-MIB');
+    $t_oids = SnmpQuery::hideMib()->walk('CISCO-ENTITY-SENSOR-MIB::entSensorThresholdSeverity')->table(2);
     echo ' entSensorThresholdRelation';
-    $t_oids = snmpwalk_cache_twopart_oid($device, 'entSensorThresholdRelation', $t_oids, 'CISCO-ENTITY-SENSOR-MIB');
+    SnmpQuery::hideMib()->walk('CISCO-ENTITY-SENSOR-MIB::entSensorThresholdRelation')->table(2, $t_oids);
     echo ' entSensorThresholdValue';
-    $t_oids = snmpwalk_cache_twopart_oid($device, 'entSensorThresholdValue', $t_oids, 'CISCO-ENTITY-SENSOR-MIB');
+    SnmpQuery::hideMib()->walk('CISCO-ENTITY-SENSOR-MIB::entSensorThresholdValue')->table(2, $t_oids);
 
     d_echo($oids);
 
