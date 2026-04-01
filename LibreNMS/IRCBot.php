@@ -274,6 +274,7 @@ class IRCBot
 
     //end connect_alert()
 
+    /** @param mixed $buff */
     private function read($buff)
     {
         $r = fread($this->socket[$buff], 8192);
@@ -343,6 +344,7 @@ class IRCBot
 
     //end alertData()
 
+    /** @param mixed $alert */
     private function sendAlert($sendto, $severity, $alert)
     {
         $sendto = explode(' ', (string) $sendto)[0];
@@ -461,6 +463,7 @@ class IRCBot
 
     //end getData()
 
+    /** @param mixed $chan */
     private function joinChan($chan = false)
     {
         if ($chan) {
@@ -497,6 +500,7 @@ class IRCBot
 
     //end handleCommand()
 
+    /** @param mixed $command */
     private function proceedCommand($command, $params)
     {
         $command = strtolower((string) $command);
@@ -517,6 +521,7 @@ class IRCBot
 
     //end proceedCommand()
 
+    /** @param mixed $msg */
     private function respond($msg)
     {
         $chan = $this->getChan($this->data);
@@ -526,6 +531,7 @@ class IRCBot
 
     //end respond()
 
+    /** @param mixed $param */
     private function getChan($param)
     {
         $data = explode('PRIVMSG ', (string) $this->data, 3);
@@ -536,6 +542,7 @@ class IRCBot
 
     //end getChan()
 
+    /** @param mixed $param */
     private function getUser($param)
     {
         $arrData = explode('!', (string) $param, 2);
@@ -545,6 +552,7 @@ class IRCBot
 
     //end getUser()
 
+    /** @param mixed $param */
     private function getUserHost($param)
     {
         $arrData = explode(' ', (string) $param, 2);
@@ -554,6 +562,7 @@ class IRCBot
 
     //end getUserHost()
 
+    /** @param mixed $try */
     private function connect($try = 0)
     {
         if ($try > $this->max_retry) {
@@ -612,6 +621,7 @@ class IRCBot
 
     //end doAuth()
 
+    /** @param mixed $chan */
     private function sendMessage($message, $chan)
     {
         if ($this->debug) {
@@ -623,6 +633,7 @@ class IRCBot
 
     //end sendMessage()
 
+    /** @param mixed $msg */
     private function log($msg)
     {
         $log = '[' . date('r') . '] IRCbot ' . trim((string) $msg) . "\n";
@@ -699,6 +710,7 @@ class IRCBot
 
     //end hostAuth
 
+    /** @param mixed $params */
     private function ircRaw($params)
     {
         return fwrite($this->socket['irc'], $params . "\r\n");
@@ -706,6 +718,7 @@ class IRCBot
 
     //end irc_raw()
 
+    /** @param mixed $params */
     private function _auth($params)
     {
         global $authorizer;
@@ -743,6 +756,7 @@ class IRCBot
 
     //end _auth()
 
+    /** @param mixed $params */
     private function _reload($params)
     {
         if ($this->user['user']->can('irc.reload')) {
@@ -765,6 +779,7 @@ class IRCBot
 
     //end _reload()
 
+    /** @param mixed $params */
     private function _join($params)
     {
         if ($this->user['user']->can('irc.join')) {
@@ -776,6 +791,7 @@ class IRCBot
 
     //end _join()
 
+    /** @param mixed $params */
     private function _quit($params)
     {
         if ($this->user['user']->can('irc.quit')) {
@@ -789,6 +805,7 @@ class IRCBot
 
     //end _quit()
 
+    /** @param mixed $params */
     private function _help($params)
     {
         $msg = implode(', ', $this->commands);
@@ -801,6 +818,7 @@ class IRCBot
 
     //end _help()
 
+    /** @param mixed $params */
     private function _version($params)
     {
         $version = Version::get();
@@ -812,6 +830,7 @@ class IRCBot
 
     //end _version()
 
+    /** @param mixed $params */
     private function _log($params)
     {
         $num = 1;
@@ -868,6 +887,7 @@ class IRCBot
 
     //end _log()
 
+    /** @param mixed $params */
     private function _down($params)
     {
         $devices = Device::hasAccess($this->user['user'])->isDown()
@@ -880,6 +900,7 @@ class IRCBot
 
     //end _down()
 
+    /** @param mixed $params */
     private function _device($params)
     {
         $params = explode(' ', (string) $params);
@@ -898,6 +919,7 @@ class IRCBot
 
     //end _device()
 
+    /** @param mixed $params */
     private function _port($params)
     {
         $params = explode(' ', (string) $params);
@@ -927,6 +949,7 @@ class IRCBot
 
     //end _port()
 
+    /** @param mixed $params */
     private function _listdevices($params)
     {
         $devices = Device::hasAccess($this->user['user'])->pluck('hostname');
@@ -938,6 +961,7 @@ class IRCBot
 
     //end _listdevices()
 
+    /** @param mixed $params */
     private function _status($params)
     {
         $params = explode(' ', (string) $params);
@@ -1021,6 +1045,7 @@ class IRCBot
 
     //end _status()
 
+    /** @param mixed $bg_color */
     private function _color($text, $fg_color, $bg_color = null, $other = null)
     {
         $colors = [
@@ -1068,6 +1093,7 @@ class IRCBot
 
     // end _color
 
+    /** @param mixed $string */
     private function _html2irc($string)
     {
         $string = urldecode((string) $string);

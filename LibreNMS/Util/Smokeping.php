@@ -75,6 +75,7 @@ class Smokeping
         return $this->getFiles();
     }
 
+    /** @param mixed $file */
     public function generateFileName($file = '')
     {
         if (LibrenmsConfig::get('smokeping.integration') === true) {
@@ -84,6 +85,7 @@ class Smokeping
         }
     }
 
+    /** @param mixed $direction */
     public function otherGraphs($direction)
     {
         $remote = $direction == 'in' ? 'src' : 'dest';
@@ -125,6 +127,7 @@ class Smokeping
         return ! empty($this->getFiles()['out'][$this->device->hostname]);
     }
 
+    /** @param mixed $name */
     private function filenameToHostname($name)
     {
         if (LibrenmsConfig::get('smokeping.integration') === true) {

@@ -157,6 +157,7 @@ class Port extends DeviceRelatedModel
 
     // ---- Accessors/Mutators ----
 
+    /** @param mixed $mac */
     public function getIfPhysAddressAttribute($mac)
     {
         if (! empty($mac)) {
@@ -286,11 +287,13 @@ class Port extends DeviceRelatedModel
         ]);
     }
 
+    /** @param mixed $query */
     public function scopeHasAccess($query, User $user)
     {
         return $this->hasPortAccess($query, $user);
     }
 
+    /** @param mixed $portGroup */
     public function scopeInPortGroup($query, $portGroup)
     {
         return $query->whereIn($query->qualifyColumn('port_id'), function ($query) use ($portGroup): void {

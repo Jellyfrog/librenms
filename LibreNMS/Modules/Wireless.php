@@ -208,21 +208,25 @@ class Wireless implements Module
         Log::info("  $sensor->sensor_descr: $sensor->sensor_current " . __("wireless.{$sensor->sensor_class->value}.unit"));
     }
 
+    /** @param mixed $type */
     protected function getDiscoveryInterface($type): string
     {
         return StringHelpers::toClass("wireless $type discovery", 'LibreNMS\\Interfaces\\Discovery\\Sensors\\');
     }
 
+    /** @param mixed $type */
     protected function getDiscoveryMethod($type): string
     {
         return 'discover' . StringHelpers::toClass("wireless $type");
     }
 
+    /** @param mixed $type */
     protected function getPollingInterface($type): string
     {
         return StringHelpers::toClass("wireless $type polling", 'LibreNMS\\Interfaces\\Polling\\Sensors\\');
     }
 
+    /** @param mixed $type */
     protected function getPollingMethod($type): string
     {
         return 'poll' . StringHelpers::toClass("wireless $type");

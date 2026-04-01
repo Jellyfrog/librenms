@@ -192,6 +192,7 @@ final class ComponentTest extends DBTestCase
         $this->assertEquals($message, $log->message);
     }
 
+    /** @param mixed $target */
     private function buildExpected($target)
     {
         $collection = $target instanceof \App\Models\Component ? collect([$target]) : $target;

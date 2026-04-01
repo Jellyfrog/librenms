@@ -151,6 +151,7 @@ class UcdDiskio implements Module
         ];
     }
 
+    /** @param mixed $disk */
     private function valid_disk($os, $disk): bool
     {
         foreach (LibrenmsConfig::getCombined($os->getDevice()->os, 'bad_disk_regexp') as $bir) {

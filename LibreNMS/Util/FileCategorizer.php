@@ -33,6 +33,7 @@ class FileCategorizer extends Categorizer
 {
     private const TESTS_REGEX = '#^tests/(snmpsim|data)/(([0-9a-z\-]+)(_[0-9a-z\-]+)?)(_[0-9a-z\-]+)?\.(json|snmprec)$#';
 
+    /** @param mixed $items */
     public function __construct($items = [])
     {
         parent::__construct($items);
@@ -82,6 +83,7 @@ class FileCategorizer extends Categorizer
         return $this->categorized;
     }
 
+    /** @param mixed $os */
     private function validateOs($os)
     {
         return file_exists("resources/definitions/os_detection/$os.yaml") ? $os : null;
@@ -128,6 +130,7 @@ class FileCategorizer extends Categorizer
         }
     }
 
+    /** @param mixed $file */
     private function osFromFile($file)
     {
         if (Str::startsWith($file, 'resources/definitions/os_')) {

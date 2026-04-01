@@ -109,6 +109,7 @@ class InstallationController extends Controller
         return (bool) session("install.$step");
     }
 
+    /** @param mixed $data */
     final protected function formatData($data = [])
     {
         $data['steps'] = $this->hydrateControllers();

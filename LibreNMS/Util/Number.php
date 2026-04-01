@@ -33,6 +33,7 @@ use LibreNMS\Exceptions\UncorrectableNegativeException;
 
 class Number
 {
+    /** @param mixed $base */
     public static function formatBase($value, $base = 1000, $round = 2, $sf = 0, $suffix = 'B'): string
     {
         return $base == 1000
@@ -67,6 +68,7 @@ class Number
         return $round;
     }
 
+    /** @param mixed $round */
     public static function formatSi($value, $round = 2, $sf = 0, $suffix = 'B'): string
     {
         $value = (float) $value;
@@ -101,6 +103,7 @@ class Number
         return self::cast(number_format($value, $round, '.', '')) . " $ext$suffix";
     }
 
+    /** @param mixed $round */
     public static function formatBi($value, $round = 2, $sf = 0, $suffix = 'B'): string
     {
         $value = (float) $value;

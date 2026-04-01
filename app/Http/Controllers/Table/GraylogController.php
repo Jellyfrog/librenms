@@ -102,6 +102,7 @@ class GraylogController extends SimpleTableController
         ], 500);
     }
 
+    /** @param mixed $message */
     private function formatMessage($message)
     {
         if ($this->timezone) {
@@ -129,6 +130,7 @@ class GraylogController extends SimpleTableController
         ];
     }
 
+    /** @param mixed $severity */
     private function severityLabel($severity)
     {
         $map = [

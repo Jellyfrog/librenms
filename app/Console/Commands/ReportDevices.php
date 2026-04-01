@@ -71,6 +71,7 @@ class ReportDevices extends LnmsCommand
         return 0;
     }
 
+    /** @param mixed $fields */
     protected function fetchDeviceData($fields): Collection
     {
         $columns = $fields->pluck('columns')->flatten()->all();

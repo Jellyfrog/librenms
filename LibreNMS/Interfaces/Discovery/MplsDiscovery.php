@@ -66,11 +66,13 @@ interface MplsDiscovery
 
     /**
      * @return Collection MplsTunnelArHop objects
+     * @param mixed $paths
      */
     public function discoverMplsTunnelArHops($paths);
 
     /**
      * @return Collection MplsTunnelCHop objects
+     * @param mixed $paths
      */
     public function discoverMplsTunnelCHops($paths);
 }

@@ -113,6 +113,7 @@ class CustomersController extends TableController
         ];
     }
 
+    /** @param mixed $customer */
     private function getGraphRow($customer)
     {
         $graph_array = [

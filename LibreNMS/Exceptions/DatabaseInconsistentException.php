@@ -40,6 +40,7 @@ class DatabaseInconsistentException extends \Exception implements UpgradeableExc
 {
     /**
      * @param  \LibreNMS\ValidationResult[]  $validationResults
+     * @param mixed $code
      */
     public function __construct(/**
      * @var \LibreNMS\ValidationResult[]

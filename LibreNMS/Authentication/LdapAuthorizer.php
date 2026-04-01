@@ -204,6 +204,7 @@ class LdapAuthorizer extends AuthorizerBase
         return false;
     }
 
+    /** @param mixed $username */
     protected function getMembername($username)
     {
         $type = LibrenmsConfig::get('auth_ldap_groupmembertype');
@@ -250,6 +251,7 @@ class LdapAuthorizer extends AuthorizerBase
      * @internal
      *
      * @return string
+     * @param mixed $username
      */
     protected function getFullDn($username): string
     {
@@ -263,6 +265,7 @@ class LdapAuthorizer extends AuthorizerBase
      * @internal
      *
      * @return false|true
+     * @param mixed $username
      */
     protected function setAuthLdapSuffixOu($username): bool
     {
@@ -366,6 +369,7 @@ class LdapAuthorizer extends AuthorizerBase
         }
     }
 
+    /** @param mixed $credentials */
     public function bind($credentials = []): void
     {
         if (LibrenmsConfig::get('auth_ldap_debug')) {

@@ -194,6 +194,7 @@ class InfluxDB extends BaseDatastore
         return @$client->selectDB($db);
     }
 
+    /** @param mixed $data */
     private function forceType($data)
     {
         /*

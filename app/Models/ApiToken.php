@@ -40,6 +40,7 @@ class ApiToken extends BaseModel
      *
      * @param  string  $token
      * @return bool
+     * @param mixed $user_id
      */
     public static function isValid($token, $user_id = null)
     {
@@ -63,6 +64,7 @@ class ApiToken extends BaseModel
         return User::find(self::idFromToken($token));
     }
 
+    /** @param mixed $description */
     public static function generateToken(User $user, $description = '')
     {
         $token = new static;
@@ -88,6 +90,7 @@ class ApiToken extends BaseModel
 
     // ---- Query scopes ----
 
+    /** @param mixed $query */
     public function scopeIsEnabled($query)
     {
         return $query->where('disabled', 0);

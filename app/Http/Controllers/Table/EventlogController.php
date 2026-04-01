@@ -99,6 +99,7 @@ class EventlogController extends TableController
         ];
     }
 
+    /** @param mixed $eventlog */
     private function formatType($eventlog)
     {
         if ($eventlog->type == 'interface') {
@@ -122,6 +123,7 @@ class EventlogController extends TableController
         return htmlspecialchars((string) $eventlog->type);
     }
 
+    /** @param mixed $eventlog */
     private function formatDatetime($eventlog)
     {
         $output = "<span class='alert-status ";

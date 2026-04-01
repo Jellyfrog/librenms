@@ -78,6 +78,7 @@ class CiHelper
         'os-modules-only' => false,
     ];
 
+    /** @param mixed $check */
     public function enable($check, $enabled = true): void
     {
         $this->flags["{$check}_enable"] = $enabled;

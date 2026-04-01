@@ -382,6 +382,7 @@ class OS implements
         return $this->discoverUcdStorage();
     }
 
+    /** @param mixed $module */
     public function getDiscovery($module = null)
     {
         if (! array_key_exists('dynamic_discovery', $this->device)) {

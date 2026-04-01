@@ -61,6 +61,7 @@ class DynamicConfigItem implements \ArrayAccess
     /** @var mixed */
     public $units;
 
+    /** @param mixed $name */
     public function __construct(public $name, $settings = [])
     {
         $this->value = LibrenmsConfig::get($this->name, $this->default);
@@ -209,6 +210,7 @@ class DynamicConfigItem implements \ArrayAccess
         return __($this->helpTranslationKey());
     }
 
+    /** @param mixed $fields */
     public function only($fields = [])
     {
         $array = [];
@@ -278,11 +280,13 @@ class DynamicConfigItem implements \ArrayAccess
         return "settings.settings.$this->name.help";
     }
 
+    /** @param mixed $option */
     private function optionTranslationKey($option)
     {
         return "settings.settings.$this->name.options.$option";
     }
 
+    /** @param mixed $value */
     private function buildValidator($value)
     {
         return Validator::make(['value' => $value], $this->validate);

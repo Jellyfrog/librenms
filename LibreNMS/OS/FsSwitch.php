@@ -31,6 +31,7 @@ use LibreNMS\OS;
 
 class FsSwitch extends OS
 {
+    /** @param mixed $value */
     public static function normalizeTransceiverValues($value): float
     {
         // Convert fixed-point integer thresholds to float
@@ -43,6 +44,7 @@ class FsSwitch extends OS
         return $value;
     }
 
+    /** @param mixed $value */
     public static function normalizeTransceiverValuesCurrent($value): float
     {
         $value = FsSwitch::normalizeTransceiverValues($value);

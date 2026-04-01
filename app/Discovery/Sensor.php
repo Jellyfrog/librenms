@@ -88,6 +88,7 @@ class Sensor
         return $this->discovered[$type] ?? false;
     }
 
+    /** @param mixed $params */
     public function sync(...$params): Collection
     {
         $type = implode('-', $params);

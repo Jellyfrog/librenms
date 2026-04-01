@@ -79,6 +79,7 @@ class AlertSchedule extends Model
         return explode(',', str_replace(array_values($this->days), array_keys($this->days), $this->attributes['recurring_day']));
     }
 
+    /** @param mixed $days */
     public function setRecurringDayAttribute($days)
     {
         $this->attributes['recurring_day'] = is_array($days) ? implode(',', $days) : $days;
@@ -89,6 +90,7 @@ class AlertSchedule extends Model
         return Date::parse($this->attributes['start'], 'UTC')->tz($this->timezone);
     }
 
+    /** @param mixed $start */
     public function setStartAttribute($start)
     {
         $this->attributes['start'] = $this->fromDateTime(Date::parse($start)->tz('UTC'));
@@ -99,6 +101,7 @@ class AlertSchedule extends Model
         return Date::parse($this->attributes['end'], 'UTC')->tz($this->timezone);
     }
 
+    /** @param mixed $end */
     public function setEndAttribute($end)
     {
         $this->attributes['end'] = $this->fromDateTime(Date::parse($end)->tz('UTC'));
@@ -126,21 +129,25 @@ class AlertSchedule extends Model
         return $this->end->toTimeString('minute');
     }
 
+    /** @param mixed $date */
     public function setStartRecurringDtAttribute($date)
     {
         $this->start = $this->start->setDateFrom(Date::parse($date, $this->timezone));
     }
 
+    /** @param mixed $time */
     public function setStartRecurringHrAttribute($time)
     {
         $this->start = $this->start->setTimeFrom(Date::parse($time, $this->timezone));
     }
 
+    /** @param mixed $date */
     public function setEndRecurringDtAttribute($date)
     {
         $this->end = $this->end->setDateFrom(Date::parse($date ?: '9000-09-09', $this->timezone));
     }
 
+    /** @param mixed $time */
     public function setEndRecurringHrAttribute($time)
     {
         $this->end = $this->end->setTimeFrom(Date::parse($time, $this->timezone));
@@ -176,6 +183,7 @@ class AlertSchedule extends Model
 
     // ---- Query scopes ----
 
+    /** @param mixed $query */
     public function scopeIsActive($query)
     {
         return $query->where(function ($query): void {

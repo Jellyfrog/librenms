@@ -57,6 +57,7 @@ return new class extends Migration
         }
     }
 
+    /** @param mixed $dir */
     private function deleteIfEmpty($dir): void
     {
         if (is_dir($dir)) {

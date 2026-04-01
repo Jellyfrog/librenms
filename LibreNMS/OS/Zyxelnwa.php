@@ -64,6 +64,7 @@ class Zyxelnwa extends Zyxel implements OSDiscovery, WirelessClientsDiscovery, W
         return $this->pollWirelessChannelAsFrequency($sensors);
     }
 
+    /** @param mixed $value */
     private function getRadioName($value): string
     {
         return match ($value) {

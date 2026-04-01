@@ -248,6 +248,7 @@ class Junos extends \LibreNMS\OS implements SlaDiscovery, OSPolling, SlaPolling,
 
     /**
      * Retrieve specific Juniper PingCtlType
+     * @param mixed $rtt_type
      */
     private function retrieveJuniperType($rtt_type)
     {
@@ -289,6 +290,7 @@ class Junos extends \LibreNMS\OS implements SlaDiscovery, OSPolling, SlaPolling,
         return implode(' ', $words);
     }
 
+    /** @param mixed $type */
     public function parseClass($type): ?string
     {
         return match ($type) {

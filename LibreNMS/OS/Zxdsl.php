@@ -39,6 +39,7 @@ class Zxdsl extends \LibreNMS\OS
         }
     }
 
+    /** @param mixed $oid */
     protected function parseVariant($oid)
     {
         $variant = ' ';

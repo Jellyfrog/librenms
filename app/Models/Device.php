@@ -341,6 +341,7 @@ class Device extends BaseModel
         return $this->last_polled ?? Carbon::now();
     }
 
+    /** @param mixed $short */
     public function formatDownUptime($short = false): string
     {
         $time = ($this->status == 1) ? $this->uptime : (int) $this->last_polled?->diffInSeconds(null, true);
@@ -416,11 +417,13 @@ class Device extends BaseModel
         $this->save();
     }
 
+    /** @param mixed $default */
     public function getAttrib($name, $default = null)
     {
         return $this->attribs->pluck('attrib_value', 'attrib_type')->get($name, $default);
     }
 
+    /** @param mixed $name */
     public function setAttrib($name, $value)
     {
         $attrib = $this->attribs->first(fn ($item) => $item->attrib_type === $name);
@@ -435,6 +438,7 @@ class Device extends BaseModel
         return (bool) $this->attribs()->save($attrib);
     }
 
+    /** @param mixed $name */
     public function forgetAttrib($name)
     {
         $attrib_index = $this->attribs->search(fn ($attrib) => $attrib->attrib_type === $name);
@@ -495,11 +499,13 @@ class Device extends BaseModel
 
     // ---- Accessors/Mutators ----
 
+    /** @param mixed $icon */
     public function getIconAttribute($icon): string
     {
         return Str::start(Url::findOsImage($this->os, $this->features, $icon), 'images/os/');
     }
 
+    /** @param mixed $ip */
     public function getIpAttribute($ip): ?string
     {
         if (empty($ip)) {
@@ -510,11 +516,13 @@ class Device extends BaseModel
         return @inet_ntop($ip) ?: null;
     }
 
+    /** @param mixed $ip */
     public function setIpAttribute($ip): void
     {
         $this->attributes['ip'] = $ip ? inet_pton($ip) : null;
     }
 
+    /** @param mixed $status */
     public function setStatusAttribute($status): void
     {
         $this->attributes['status'] = (int) $status;
@@ -532,6 +540,7 @@ class Device extends BaseModel
 
     // ---- Query scopes ----
 
+    /** @param mixed $query */
     public function scopeIsUp($query)
     {
         return $query->where([
@@ -542,6 +551,7 @@ class Device extends BaseModel
         ]);
     }
 
+    /** @param mixed $query */
     public function scopeIsActive($query)
     {
         return $query->where([
@@ -550,6 +560,7 @@ class Device extends BaseModel
         ]);
     }
 
+    /** @param mixed $query */
     public function scopeIsDown($query)
     {
         return $query->where([
@@ -559,6 +570,7 @@ class Device extends BaseModel
         ]);
     }
 
+    /** @param mixed $query */
     public function scopeIsIgnored($query)
     {
         return $query->where([
@@ -567,6 +579,7 @@ class Device extends BaseModel
         ]);
     }
 
+    /** @param mixed $query */
     public function scopeNotIgnored($query)
     {
         return $query->where([
@@ -574,6 +587,7 @@ class Device extends BaseModel
         ]);
     }
 
+    /** @param mixed $query */
     public function scopeIsDisabled($query)
     {
         return $query->where([
@@ -581,6 +595,7 @@ class Device extends BaseModel
         ]);
     }
 
+    /** @param mixed $query */
     public function scopeIsDisableNotify($query)
     {
         return $query->where([
@@ -588,6 +603,7 @@ class Device extends BaseModel
         ]);
     }
 
+    /** @param mixed $query */
     public function scopeIsNotDisabled($query)
     {
         return $query->where([
@@ -607,6 +623,7 @@ class Device extends BaseModel
         });
     }
 
+    /** @param mixed $modifier */
     public function scopeWhereUptime($query, $uptime, $modifier = '<')
     {
         return $query->where([
@@ -620,11 +637,13 @@ class Device extends BaseModel
         return $this->scopeWhereAttributeDisabled($query->where('disabled', 0), 'override_icmp_disable');
     }
 
+    /** @param mixed $query */
     public function scopeHasAccess($query, User $user)
     {
         return $this->hasDeviceAccess($query, $user);
     }
 
+    /** @param mixed $deviceGroup */
     public function scopeInDeviceGroup($query, $deviceGroup)
     {
         return $query->whereIn(
@@ -636,6 +655,7 @@ class Device extends BaseModel
         );
     }
 
+    /** @param mixed $deviceGroup */
     public function scopeNotInDeviceGroup($query, $deviceGroup)
     {
         return $query->whereNotIn(
@@ -647,6 +667,7 @@ class Device extends BaseModel
         );
     }
 
+    /** @param mixed $query */
     public function scopeInServiceTemplate($query, $serviceTemplate)
     {
         return $query->whereIn(
@@ -658,6 +679,7 @@ class Device extends BaseModel
         );
     }
 
+    /** @param mixed $query */
     public function scopeNotInServiceTemplate($query, $serviceTemplate)
     {
         return $query->whereNotIn(

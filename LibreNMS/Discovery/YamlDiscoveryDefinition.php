@@ -94,6 +94,7 @@ class YamlDiscoveryDefinition
         }
     }
 
+    /** @param mixed $attributes */
     public function discover($yaml, $attributes = []): Collection
     {
         $models = new Collection;

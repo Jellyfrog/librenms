@@ -208,6 +208,7 @@ final class FileCategorizerTest extends TestCase
         ]);
     }
 
+    /** @param mixed $expected */
     private function assertCategorized($expected, $input = null, $message = '')
     {
         $files = $input ?? array_unique(Arr::flatten(Arr::except($expected, ['os']))); // os is a virtual category

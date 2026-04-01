@@ -451,6 +451,7 @@ class Cisco extends OS implements
         return $slas;
     }
 
+    /** @param mixed $data */
     private function getSlaTag($data): string
     {
         if (! empty($data['rttMonCtrlAdminTag'])) {
@@ -880,6 +881,7 @@ class Cisco extends OS implements
         return $qos;
     }
 
+    /** @param mixed $qos */
     public function setQosParents($qos)
     {
         $qos->each(function (Qos $thisQos, int $key) use ($qos): void {

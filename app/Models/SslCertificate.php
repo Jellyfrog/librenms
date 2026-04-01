@@ -93,11 +93,13 @@ class SslCertificate extends Model
         return $this->belongsTo(Device::class, 'device_id', 'device_id');
     }
 
+    /** @param mixed $query */
     public function scopeEnabled($query)
     {
         return $query->where('disabled', false);
     }
 
+    /** @param mixed $query */
     public function scopeDisabled($query)
     {
         return $query->where('disabled', true);
@@ -105,6 +107,7 @@ class SslCertificate extends Model
 
     /**
      * Scope to certificates the user is allowed to see (linked to device they have access to, or no device).
+     * @param mixed $query
      */
     public function scopeHasAccess($query, $user)
     {

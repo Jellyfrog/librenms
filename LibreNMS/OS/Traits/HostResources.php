@@ -261,6 +261,7 @@ trait HostResources
         ));
     }
 
+    /** @param mixed $storage */
     protected function memValid($storage): bool
     {
         if (! isset($storage['hrStorageIndex'])) {
@@ -307,6 +308,7 @@ trait HostResources
         }
     }
 
+    /** @param mixed $hrStorageType */
     protected function fixBadTypes($hrStorageType): string
     {
         if (str_starts_with((string) $hrStorageType, 'hrStorage')) {

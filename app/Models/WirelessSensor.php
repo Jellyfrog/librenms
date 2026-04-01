@@ -97,6 +97,7 @@ class WirelessSensor extends DeviceRelatedModel implements Keyable
         return 'wireless_' . $this->sensor_class->value;
     }
 
+    /** @param mixed $field */
     public function formatValue($field = 'sensor_current'): string
     {
         $value = $this->$field;

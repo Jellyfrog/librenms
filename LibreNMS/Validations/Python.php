@@ -56,6 +56,7 @@ class Python extends BaseValidation
         $this->checkExtensions($validator);
     }
 
+    /** @param mixed $version */
     private function checkVersion(Validator $validator, $version)
     {
         if (version_compare($version, self::PYTHON_MIN_VERSION, '<')) {
@@ -63,6 +64,7 @@ class Python extends BaseValidation
         }
     }
 
+    /** @param mixed $version */
     private function checkPipVersion(Validator $validator, $version)
     {
         preg_match('/\(python ([0-9.]+)\)/', (string) `pip3 --version 2>/dev/null`, $matches);

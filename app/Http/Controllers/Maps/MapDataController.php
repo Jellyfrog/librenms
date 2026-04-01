@@ -437,6 +437,7 @@ class MapDataController extends Controller
         ];
     }
 
+    /** @param mixed $device */
     protected function deviceStyle($device, $highlight_node = 0): array
     {
         if ($device->disabled) {

@@ -105,6 +105,7 @@ class GraphController extends Controller
         ]);
     }
 
+    /** @param mixed $graph */
     private function formatGraph($top, $graph)
     {
         $text = $graph;

@@ -10,16 +10,19 @@ use LibreNMS\Util\Number;
 
 class Billing
 {
+    /** @param mixed $value */
     public static function formatBytes($value): string
     {
         return Number::formatBase($value, LibrenmsConfig::get('billing.base'));
     }
 
+    /** @param mixed $value */
     public static function formatBytesShort($value): string
     {
         return Number::formatBase($value, LibrenmsConfig::get('billing.base'), 2, 0, '');
     }
 
+    /** @param mixed $dayofmonth */
     public static function getDates($dayofmonth, $months = 0): array
     {
         $dayofmonth = Str::padLeft($dayofmonth, 2, '0');
@@ -64,6 +67,7 @@ class Billing
         return $return;
     }
 
+    /** @param mixed $bill_day */
     public static function getPredictedUsage($bill_day, $cur_used): float|int
     {
         $tmp = self::getDates($bill_day, 0);
@@ -81,6 +85,7 @@ class Billing
         return $cur_used / $since * $total;
     }
 
+    /** @param mixed $host */
     public static function getValue($host, $port, $id, $inout): int
     {
         $oid = 'IF-MIB::ifHC' . $inout . 'Octets.' . $id;
@@ -95,6 +100,7 @@ class Billing
         return (int) $value;
     }
 
+    /** @param mixed $bill_id */
     public static function getLastPortCounter($port_id, $bill_id): array
     {
         $return = [];
@@ -113,6 +119,7 @@ class Billing
         return $return;
     }
 
+    /** @param mixed $bill_id */
     public static function getLastMeasurement($bill_id): array
     {
         $return = [];
@@ -130,6 +137,7 @@ class Billing
         return $return;
     }
 
+    /** @param mixed $bill_id */
     private static function get95thagg($bill_id, $datefrom, $dateto): float
     {
         $sum_data = dbFetchRows('SELECT (SUM(delta) / SUM(period) * 8) as rate, FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(`timestamp`) / 300) * 300) AS bucket_start,   DATE_ADD(FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(`timestamp`) / 300) * 300), INTERVAL 5 MINUTE) AS bucket_end,SUM(delta) as delta_sum FROM bill_data WHERE bill_id = ? AND timestamp > ? AND timestamp <= ? GROUP BY bill_id, bucket_start ORDER BY rate ASC', [$bill_id, $datefrom, $dateto]);
@@ -138,6 +146,7 @@ class Billing
         return round($sum_data[$measurement_95th]['rate'], 2);
     }
 
+    /** @param mixed $bill_id */
     private static function get95thIn($bill_id, $datefrom, $dateto): float
     {
         $sum_data = dbFetchRows('SELECT (SUM(in_delta) / SUM(period) * 8) as rate, FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(`timestamp`) / 300) * 300) AS bucket_start,   DATE_ADD(FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(`timestamp`) / 300) * 300), INTERVAL 5 MINUTE) AS bucket_end,SUM(in_delta) as delta_sum FROM bill_data WHERE bill_id = ? AND timestamp > ? AND timestamp <= ? GROUP BY bill_id, bucket_start ORDER BY rate ASC', [$bill_id, $datefrom, $dateto]);
@@ -146,6 +155,7 @@ class Billing
         return round($sum_data[$measurement_95th]['rate'], 2);
     }
 
+    /** @param mixed $bill_id */
     private static function get95thout($bill_id, $datefrom, $dateto): float
     {
         $sum_data = dbFetchRows('SELECT (SUM(out_delta) / SUM(period) * 8) as rate, FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(`timestamp`) / 300) * 300) AS bucket_start,   DATE_ADD(FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(`timestamp`) / 300) * 300), INTERVAL 5 MINUTE) AS bucket_end,SUM(out_delta) as delta_sum FROM bill_data WHERE bill_id = ? AND timestamp > ? AND timestamp <= ? GROUP BY bill_id, bucket_start ORDER BY rate ASC', [$bill_id, $datefrom, $dateto]);
@@ -154,6 +164,7 @@ class Billing
         return round($sum_data[$measurement_95th]['rate'], 2);
     }
 
+    /** @param mixed $bill_id */
     public static function getRates($bill_id, $datefrom, $dateto, $dir_95th): array
     {
         $data = [];
@@ -190,6 +201,7 @@ class Billing
         return $data;
     }
 
+    /** @param mixed $bill_id */
     private static function getSum($bill_id, $datefrom, $dateto)
     {
         $sum = dbFetchRow('SELECT SUM(period) as period, SUM(delta) as total, SUM(in_delta) as inbound, SUM(out_delta) as outbound FROM bill_data WHERE bill_id = ? AND timestamp > ? AND timestamp <= ?', [$bill_id, $datefrom, $dateto]);
@@ -197,6 +209,7 @@ class Billing
         return $sum;
     }
 
+    /** @param mixed $bill_id */
     public static function getPeriod($bill_id, $datefrom, $dateto): array
     {
         $ptot = dbFetchRow('SELECT SUM(period) as `period`, MAX(in_delta) as `peak_in`, MAX(out_delta) as `peak_out`  FROM bill_data WHERE bill_id = ? AND timestamp > ? AND timestamp <= ?', [$bill_id, $datefrom, $dateto]);
@@ -204,6 +217,7 @@ class Billing
         return $ptot;
     }
 
+    /** @param mixed $bill_hist_id */
     public static function getHistoryBitsGraphData($bill_id, $bill_hist_id, $reducefactor): ?array
     {
         $histrow = dbFetchRow('SELECT UNIX_TIMESTAMP(bill_datefrom) as `from`, UNIX_TIMESTAMP(bill_dateto) AS `to`, rate_95th, rate_average, bill_type FROM bill_history WHERE bill_id = ? AND bill_hist_id = ?', [$bill_id, $bill_hist_id]);
@@ -222,6 +236,7 @@ class Billing
         return $graph_data;
     }
 
+    /** @param mixed $bill_id */
     public static function getBitsGraphData($bill_id, $from, $to, $reducefactor): array
     {
         $i = '0';
@@ -324,6 +339,7 @@ class Billing
         return $result;
     }
 
+    /** @param mixed $bill_id */
     public static function getHistoricTransferGraphData($bill_id): array
     {
         $i = '0';
@@ -378,6 +394,7 @@ class Billing
         ];
     }
 
+    /** @param mixed $bill_hist_id */
     public static function getBandwidthGraphData($bill_id, $bill_hist_id, $from, $to, $imgtype): ?array
     {
         if (is_numeric($bill_hist_id)) {

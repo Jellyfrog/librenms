@@ -90,6 +90,7 @@ final class YamlSchemaTest extends TestCase
         $this->assertEmpty($errors, implode("\n", $errors) . "\nFiles with errors: $count\n\n");
     }
 
+    /** @param mixed $pattern */
     private function listFiles($pattern): array
     {
         return collect(glob($pattern))

@@ -164,6 +164,7 @@ class PrinterSupplies implements Module
         ];
     }
 
+    /** @param mixed $device */
     private function discoveryLevels($device): Collection
     {
         $levels = new Collection();
@@ -233,6 +234,7 @@ class PrinterSupplies implements Module
         return $levels;
     }
 
+    /** @param mixed $device */
     private function discoveryPapers($device): Collection
     {
         $papers = new Collection();

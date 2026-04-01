@@ -51,6 +51,7 @@ class Mempool extends DeviceRelatedModel implements Keyable
         return $this->mempool_total > 0 && $this->mempool_used !== null && $this->mempool_free !== null && $this->mempool_perc !== null;
     }
 
+    /** @param mixed $free */
     public function fillUsage($used = null, $total = null, $free = null, $percent = null, $multiplier = null): self
     {
         try {
@@ -122,6 +123,7 @@ class Mempool extends DeviceRelatedModel implements Keyable
         return $this;
     }
 
+    /** @param mixed $percent */
     public function setMempoolPercAttribute($percent)
     {
         $this->attributes['mempool_perc'] = is_numeric($percent) ? round($percent) : null;

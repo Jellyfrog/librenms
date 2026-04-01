@@ -47,6 +47,7 @@ class Fabos extends OS implements OSDiscovery, TransceiverDiscovery
         $device->hardware = $this->fcSwitchModelToName($revboard);
     }
 
+    /** @param mixed $model */
     protected function fcSwitchModelToName($model)
     {
         $models = [

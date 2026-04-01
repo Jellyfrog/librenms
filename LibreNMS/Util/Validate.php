@@ -53,6 +53,7 @@ class Validate
             && preg_match("/^[^\.]{1,63}(\.[^\.]{1,63})*\.?$/", $hostname);
     }
 
+    /** @param mixed $default */
     public static function ascDesc($direction, $default = 'ASC')
     {
         return in_array(strtolower((string) $direction), ['asc', 'desc'], true)

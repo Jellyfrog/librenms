@@ -273,11 +273,13 @@ class Url
         return route('device', $routeParams) . self::urlParams($vars);
     }
 
+    /** @param mixed $port */
     public static function portUrl($port, $vars = [])
     {
         return self::generate(['page' => 'device', 'device' => $port->device_id, 'tab' => 'port', 'port' => $port->port_id], $vars);
     }
 
+    /** @param mixed $sensor */
     public static function sensorUrl($sensor, $vars = [])
     {
         return self::generate(['page' => 'device', 'device' => $sensor->device_id, 'tab' => 'health', 'metric' => $sensor->sensor_class], $vars);
@@ -319,6 +321,7 @@ class Url
         return self::portImage($graph_array);
     }
 
+    /** @param mixed $args */
     public static function portImage($args)
     {
         if (empty($args['bg'])) {
@@ -328,6 +331,7 @@ class Url
         return '<img src="graph-image ' . url('graph.php') . '?type=' . $args['graph_type'] . '&amp;id=' . $args['port_id'] . '&amp;from=' . $args['from'] . '&amp;to=' . $args['to'] . '&amp;width=' . $args['width'] . '&amp;height=' . $args['height'] . '&amp;bg=' . $args['bg'] . '">';
     }
 
+    /** @param mixed $new_vars */
     public static function generate($vars, $new_vars = [])
     {
         $vars = array_merge($vars, $new_vars);
@@ -391,6 +395,7 @@ class Url
         return '<img class="graph-image" src="' . url('graph.php') . '?' . implode('&amp;', $urlargs) . '" style="border:0;" />';
     }
 
+    /** @param mixed $args */
     public static function graphPopup($args, $content = null, $link = null)
     {
         // Take $args and print day,week,month,year graphs in overlib, hovered over graph
@@ -421,6 +426,7 @@ class Url
         return self::overlibLink($args['link'], $graph, $popup, null);
     }
 
+    /** @param mixed $args */
     public static function lazyGraphTag($args)
     {
         $urlargs = [];
@@ -438,6 +444,7 @@ class Url
         return $tag . ' />';
     }
 
+    /** @param mixed $class */
     public static function overlibLink($url, $text, $contents, $class = null)
     {
         $contents = "<div class=\'overlib-contents\'>" . $contents . '</div>';
@@ -460,6 +467,7 @@ class Url
         return $output;
     }
 
+    /** @param mixed $graph_array */
     public static function overlibContent($graph_array, $text)
     {
         $overlib_content = '<div class=overlib><span class=overlib-text>' . $text . '</span><br />';
@@ -685,6 +693,7 @@ class Url
         return $vars;
     }
 
+    /** @param mixed $string */
     private static function escapeBothQuotes($string)
     {
         return str_replace(["'", '"'], "\'", $string);

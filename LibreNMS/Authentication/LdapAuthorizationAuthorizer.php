@@ -246,6 +246,7 @@ class LdapAuthorizationAuthorizer extends AuthorizerBase
         return LibrenmsConfig::get('auth_ldap_prefix', '') . $username . LibrenmsConfig::get('auth_ldap_suffix', '');
     }
 
+    /** @param mixed $username */
     protected function getMembername($username)
     {
         if (LibrenmsConfig::get('auth_ldap_groupmembertype') == 'fulldn') {

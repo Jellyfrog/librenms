@@ -80,6 +80,7 @@ class Snmpsim extends Process
         return $pipCheck->isSuccessful();
     }
 
+    /** @param mixed $print_output */
     public function setupVenv($print_output = false): void
     {
         $snmpsim_venv_path = $this->getVenvPath();

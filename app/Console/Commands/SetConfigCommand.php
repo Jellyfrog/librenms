@@ -138,6 +138,7 @@ class SetConfigCommand extends LnmsCommand
         return json_last_error() ? $value : $json;
     }
 
+    /** @param mixed $setting */
     private function findParentSetting(DynamicConfig $definition, $setting): ?string
     {
         $parts = explode('.', (string) $setting);
@@ -154,6 +155,7 @@ class SetConfigCommand extends LnmsCommand
         return null;
     }
 
+    /** @param mixed $parent */
     private function erase($setting, $parent = null)
     {
         if ($parent) {
@@ -175,11 +177,13 @@ class SetConfigCommand extends LnmsCommand
         return LibrenmsConfig::erase($setting);
     }
 
+    /** @param mixed $parent */
     private function getChildPath($setting, $parent = null): string
     {
         return ltrim(Str::after($setting, $parent), '.');
     }
 
+    /** @param mixed $array */
     private function hasSequentialIndex($array): bool
     {
         if (! is_array($array) || $array === []) {
@@ -189,6 +193,7 @@ class SetConfigCommand extends LnmsCommand
         return array_keys($array) === range(0, count($array) - 1);
     }
 
+    /** @param mixed $data */
     private function forgetWithIndex(&$data, $matches)
     {
         // detect sequentially numeric indexed array so we can re-index the array

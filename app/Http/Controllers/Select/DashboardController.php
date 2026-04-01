@@ -71,6 +71,7 @@ class DashboardController extends SelectController
         ];
     }
 
+    /** @param mixed $dashboard */
     private function describe($dashboard): string
     {
         if ($dashboard->dashboard_id == 0) {

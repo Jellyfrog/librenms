@@ -81,6 +81,7 @@ class GitHub
     /** @var mixed */
     protected $graphql = 'https://api.github.com/graphql';
 
+    /** @param mixed $file */
     public function __construct(protected $tag, protected $from, protected $file, $token = null, protected $pr = null)
     {
         if (! is_null($token) || getenv('GH_TOKEN')) {

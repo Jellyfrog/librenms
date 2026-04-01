@@ -68,6 +68,7 @@ class Helios extends OS implements WirelessFrequencyDiscovery, WirelessPowerDisc
         return $this->discoverOid(WirelessSensorType::Rssi, 'mlRadioInfoRSSILocal', '.1.3.6.1.4.1.47307.1.4.2.1.10.');
     }
 
+    /** @param mixed $oid */
     private function discoverOid(WirelessSensorType $type, $oid, $oid_prefix)
     {
         $oids = snmpwalk_cache_oid($this->getDeviceArray(), $oid, [], 'IGNITENET-MIB');

@@ -47,6 +47,7 @@ final class QueryBuilderTest extends TestCase
      * @param  array  $builder
      * @param  string  $display
      * @param  string  $sql
+     * @param mixed $query
      */
     #[DataProvider('loadQueryData')]
     public function testQueryConversion($legacy, $builder, $display, $sql, $query): void

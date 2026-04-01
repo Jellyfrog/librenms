@@ -153,6 +153,7 @@ class UserPreferencesController extends Controller
         return $definitions->get('site_style')->getOptions();
     }
 
+    /** @param mixed $preference */
     private function updatePreference($preference, $value)
     {
         if ($value == 'default') {

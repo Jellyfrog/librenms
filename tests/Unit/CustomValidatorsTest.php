@@ -10,6 +10,7 @@ use LibreNMS\Tests\TestCase;
 
 final class CustomValidatorsTest extends TestCase
 {
+    /** @param mixed $value */
     private function assertRulePasses($value, string $rule): void
     {
         $validator = Validator::make(['field' => $value], ['field' => $rule]);
@@ -20,6 +21,7 @@ final class CustomValidatorsTest extends TestCase
         );
     }
 
+    /** @param mixed $value */
     private function assertRuleFails($value, string $rule): void
     {
         $validator = Validator::make(['field' => $value], ['field' => $rule]);

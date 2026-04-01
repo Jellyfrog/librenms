@@ -120,6 +120,7 @@ class User extends Authenticatable
         });
     }
 
+    /** @param mixed $query */
     public function scopeAdminOnly($query)
     {
         $query->role('admin');
@@ -127,26 +128,31 @@ class User extends Authenticatable
 
     // ---- Accessors/Mutators ----
 
+    /** @param mixed $realname */
     public function setRealnameAttribute($realname)
     {
         $this->attributes['realname'] = (string) $realname;
     }
 
+    /** @param mixed $descr */
     public function setDescrAttribute($descr)
     {
         $this->attributes['descr'] = (string) $descr;
     }
 
+    /** @param mixed $email */
     public function setEmailAttribute($email)
     {
         $this->attributes['email'] = (string) $email;
     }
 
+    /** @param mixed $modify */
     public function setCanModifyPasswdAttribute($modify)
     {
         $this->attributes['can_modify_passwd'] = $modify ? 1 : 0;
     }
 
+    /** @param mixed $enable */
     public function setEnabledAttribute($enable)
     {
         $this->attributes['enabled'] = $enable ? 1 : 0;

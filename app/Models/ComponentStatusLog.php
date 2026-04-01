@@ -12,6 +12,7 @@ class ComponentStatusLog extends Model
 
     // ---- Accessors/Mutators ----
 
+    /** @param mixed $status */
     public function setStatusAttribute($status)
     {
         $this->attributes['status'] = (int) $status;

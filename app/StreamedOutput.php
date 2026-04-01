@@ -31,6 +31,7 @@ use Symfony\Component\Console\Output\StreamOutput;
 
 class StreamedOutput extends StreamOutput
 {
+    /** @param mixed $message */
     protected function doWrite($message, $newline): void
     {
         if (false === @fwrite($this->getStream(), (string) $message) || ($newline && (false === @fwrite($this->getStream(), PHP_EOL)))) {

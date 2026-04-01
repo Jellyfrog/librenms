@@ -36,6 +36,7 @@ use LibreNMS\Util\Url;
 class NetMapController extends Controller
 {
     // Device Dependency Map
+    /** @param mixed $vars */
     public function netMap(Request $request, $vars = ''): View
     {
         $group_id = Url::parseOptions('group');

@@ -34,6 +34,7 @@ use LibreNMS\Util\DynamicConfigItem;
 
 trait CompletesConfigArgument
 {
+    /** @param mixed $name */
     public function completeArgument($name, $value, $previous)
     {
         if ($name == 'setting') {

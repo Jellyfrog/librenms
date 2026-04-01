@@ -28,6 +28,7 @@ namespace LibreNMS\Util;
 
 class StringHelpers
 {
+    /** @param mixed $string */
     public static function niceCase($string)
     {
         $replacements = [

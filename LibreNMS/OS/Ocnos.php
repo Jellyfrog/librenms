@@ -161,6 +161,7 @@ class Ocnos extends OS implements EntityPhysicalDiscovery, TransceiverDiscovery
         return $description;
     }
 
+    /** @param mixed $cmmTransIndex */
     public function guessIfName($cmmTransIndex, $cmmTransType): ?string
     {
         // IP Infusion has no reliable way of mapping a transceiver to a port it varies by hardware

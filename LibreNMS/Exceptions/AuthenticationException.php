@@ -31,6 +31,7 @@ use Exception;
 class AuthenticationException extends Exception
 {
     // Redefine the exception so message defaults to a generic 'Invalid credentials'
+    /** @param mixed $code */
     public function __construct($message = 'Invalid credentials', $hide_message = false, $code = 0, ?Exception $previous = null)
     {
         if ($hide_message) {

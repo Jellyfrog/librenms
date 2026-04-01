@@ -57,11 +57,13 @@ class Template
         return $this->template;
     }
 
+    /** @param mixed $data */
     public function getTitle($data)
     {
         return $this->bladeTitle($data);
     }
 
+    /** @param mixed $data */
     public function getBody($data)
     {
         return $this->bladeBody($data);

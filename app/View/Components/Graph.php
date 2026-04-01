@@ -58,6 +58,7 @@ class Graph extends Component
      * @param  Port|int|null  $port
      * @param  bool  $link
      * @param  string  $popupTitle
+     * @param mixed $popup
      */
     public function __construct(
         string $type = '',

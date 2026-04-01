@@ -266,6 +266,7 @@ class ArubaInstant extends OS implements
             })->all();
     }
 
+    /** @param mixed $channel */
     protected function decodeChannel($channel): int
     {
         // Trim off everything not a digit, like channel "116e"

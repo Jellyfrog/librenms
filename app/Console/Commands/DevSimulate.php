@@ -94,6 +94,7 @@ class DevSimulate extends LnmsCommand
         }
     }
 
+    /** @param mixed $community */
     private function addDevice($community): void
     {
         $hostname = $this->option('multiple') ? $community : 'snmpsim';
@@ -117,6 +118,7 @@ class DevSimulate extends LnmsCommand
         }
     }
 
+    /** @param mixed $device_id */
     private function queueRemoval($device_id): void
     {
         if (function_exists('pcntl_signal')) {
@@ -132,6 +134,7 @@ class DevSimulate extends LnmsCommand
         });
     }
 
+    /** @param mixed $name */
     public function completeArgument($name, $value)
     {
         if ($name == 'file') {

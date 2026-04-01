@@ -149,6 +149,7 @@ class TopDevicesController extends WidgetController
         ];
     }
 
+    /** @param mixed $sort */
     private function getTrafficData($sort)
     {
         $settings = $this->getSettings();
@@ -169,6 +170,7 @@ class TopDevicesController extends WidgetController
         return $this->formatData('Traffic', $results);
     }
 
+    /** @param mixed $sort */
     private function getUptimeData($sort)
     {
         $settings = $this->getSettings();
@@ -184,6 +186,7 @@ class TopDevicesController extends WidgetController
         return $this->formatData('Uptime', $results);
     }
 
+    /** @param mixed $sort */
     private function getPingData($sort)
     {
         $settings = $this->getSettings();
@@ -199,6 +202,7 @@ class TopDevicesController extends WidgetController
         return $this->formatData('Response time', $results);
     }
 
+    /** @param mixed $sort */
     private function getProcessorData($sort)
     {
         $settings = $this->getSettings();
@@ -213,6 +217,7 @@ class TopDevicesController extends WidgetController
         return $this->formatData('CPU Load', $results);
     }
 
+    /** @param mixed $sort */
     private function getMemoryData($sort)
     {
         $settings = $this->getSettings();
@@ -227,6 +232,7 @@ class TopDevicesController extends WidgetController
         return $this->formatData('Memory usage', $results);
     }
 
+    /** @param mixed $sort */
     private function getPollerData($sort)
     {
         $settings = $this->getSettings();
@@ -241,6 +247,7 @@ class TopDevicesController extends WidgetController
         return $this->formatData('Poller duration', $results);
     }
 
+    /** @param mixed $sort */
     private function getStorageData($sort)
     {
         $settings = $this->getSettings();

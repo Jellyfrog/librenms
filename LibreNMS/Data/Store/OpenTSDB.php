@@ -97,6 +97,7 @@ class OpenTSDB extends BaseDatastore
         }
     }
 
+    /** @param mixed $measurement */
     private function putData($measurement, $timestamp, $value, $tags)
     {
         try {

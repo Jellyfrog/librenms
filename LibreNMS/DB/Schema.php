@@ -203,6 +203,7 @@ class Schema
         return $all[$target] ?? false;
     }
 
+    /** @param mixed $history */
     private function findPathRecursive(array $tables, $target, $history = [])
     {
         $relationships = $this->getTableRelationships();
@@ -279,6 +280,7 @@ class Schema
         return $this->relationships;
     }
 
+    /** @param mixed $key */
     public function getTableFromKey($key)
     {
         if (Str::endsWith($key, '_id')) {
@@ -306,6 +308,7 @@ class Schema
         return null;
     }
 
+    /** @param mixed $column */
     public function columnExists($table, $column)
     {
         return in_array($column, $this->getColumns($table));

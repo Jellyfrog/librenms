@@ -66,11 +66,13 @@ interface MplsPolling
 
     /**
      * @return Collection MplsTunnelArHop objects
+     * @param mixed $paths
      */
     public function pollMplsTunnelArHops($paths);
 
     /**
      * @return Collection MplsTunnelCHop objects
+     * @param mixed $paths
      */
     public function pollMplsTunnelCHops($paths);
 }

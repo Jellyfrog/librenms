@@ -60,6 +60,7 @@ class Purestorage extends \LibreNMS\OS implements OSPolling
     /**
      * Store bandwidth metrics in RRD
      * Bandwidth is in bytes/second and will be converted to bits/second by the YAML RPN
+     * @param mixed $data
      */
     private function storeBandwidth(DataStorageInterface $datastore, $data): void
     {
@@ -87,6 +88,7 @@ class Purestorage extends \LibreNMS\OS implements OSPolling
     /**
      * Store IOPS metrics in RRD
      * Operations per second (no conversion needed)
+     * @param mixed $data
      */
     private function storeIOPS(DataStorageInterface $datastore, $data): void
     {
@@ -114,6 +116,7 @@ class Purestorage extends \LibreNMS\OS implements OSPolling
     /**
      * Store latency metrics in RRD
      * Latency is in microseconds and will be converted to milliseconds by the YAML RPN
+     * @param mixed $data
      */
     private function storeLatency(DataStorageInterface $datastore, $data): void
     {

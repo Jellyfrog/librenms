@@ -403,6 +403,7 @@ class Panos extends \LibreNMS\OS implements OSPolling
         }
     }
 
+    /** @param mixed $storage */
     protected function memValid($storage): bool
     {
         return $storage['hrStorageType'] == 'hrStorageOther'

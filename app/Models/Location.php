@@ -176,6 +176,7 @@ class Location extends Model
         return $query->whereIntegerInRaw('id', $ids);
     }
 
+    /** @param mixed $deviceGroup */
     public function scopeInDeviceGroup($query, $deviceGroup)
     {
         return $query->whereHas('devices.groups', function ($query) use ($deviceGroup): void {

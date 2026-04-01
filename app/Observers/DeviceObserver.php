@@ -242,6 +242,7 @@ class DeviceObserver
         }
     }
 
+    /** @param mixed $attribute */
     public static function attributeChangedMessage($attribute, $value, $previous): string
     {
         return trans("device.attributes.$attribute") . ': '

@@ -109,6 +109,7 @@ class SyslogController extends TableController
         ];
     }
 
+    /** @param mixed $syslog */
     private function setLabel($syslog)
     {
         $output = "<span class='alert-status ";

@@ -21,6 +21,7 @@ class PortVlan extends PortRelatedModel implements Keyable
         'untagged',
     ];
 
+    /** @param mixed $value */
     public function getUntaggedAttribute($value)
     {
         if (! $value) {

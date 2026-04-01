@@ -35,6 +35,7 @@ class Categorizer
     /** @var mixed */
     protected $skippable;
 
+    /** @param mixed $items */
     public function __construct(protected $items = [])
     {
         $this->skippable = (fn ($item) => false);

@@ -126,6 +126,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      * Build and output the target configuration
      *
      * @return int
+     * @param mixed $devices
      */
     public function buildTargetsConfiguration($devices)
     {
@@ -148,6 +149,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      * Set a warning to be emitted
      *
      * @return void
+     * @param mixed $warning
      */
     public function setWarning($warning)
     {
@@ -204,6 +206,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      * Generate a header to append to the smokeping configuration file
      *
      * @return array
+     * @param mixed $compat
      */
     public function buildHeader($noHeader, $compat)
     {
@@ -232,6 +235,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      *
      * @param  array  $smokelist  A list of devices to create a a config block for
      * @return array
+     * @param mixed $probeCount
      */
     public function buildTargets($smokelist, $probeCount, $singleProcess)
     {
@@ -315,6 +319,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      *
      * @param  array  $devices  A list of devices to create a a config block for
      * @return array
+     * @param mixed $probeCount
      */
     private function buildDevices($devices, $probeCount, $singleProcess)
     {
@@ -376,6 +381,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      *
      * @param  string  $transport  The transport (udp or udp6) as per the device database entry
      * @return string
+     * @param mixed $probeCount
      */
     private function balanceProbes($transport, $probeCount)
     {

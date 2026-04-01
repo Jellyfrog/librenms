@@ -256,6 +256,7 @@ final class CiHelperTest extends TestCase
         ]);
     }
 
+    /** @param mixed $flags */
     private function assertFlagsSet(CiHelper $helper, $flags = [])
     {
         $full = $this->getDefaultFlags();

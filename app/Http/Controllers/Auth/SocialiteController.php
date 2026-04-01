@@ -155,6 +155,7 @@ class SocialiteController extends Controller
         }
     }
 
+    /** @param mixed $user */
     private function setRolesFromClaim(string $provider, $user): bool
     {
         $scopes = LibrenmsConfig::get('auth.socialite.scopes');

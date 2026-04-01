@@ -559,6 +559,7 @@ class Routeros extends OS implements
         return $qos;
     }
 
+    /** @param mixed $qos */
     public function setQosParents($qos)
     {
         $qos->each(function (Qos $thisQos, int $key) use ($qos): void {

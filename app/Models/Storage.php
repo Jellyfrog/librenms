@@ -34,6 +34,7 @@ class Storage extends DeviceRelatedModel implements Keyable
         return "$this->type-$this->storage_index";
     }
 
+    /** @param mixed $free */
     public function fillUsage($used = null, $total = null, $free = null, $percent = null): self
     {
         try {

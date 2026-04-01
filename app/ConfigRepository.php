@@ -347,6 +347,7 @@ class ConfigRepository
         $this->loadGraphsFromDb($this->config);
     }
 
+    /** @param mixed $config */
     private function loadGraphsFromDb(&$config): void
     {
         try {

@@ -114,6 +114,7 @@ OUT;
         $this->assertEquals(1, $actual->exit_code);
     }
 
+    /** @param mixed $exitCode */
     private function mockFpingProcess($output, $exitCode)
     {
         $process = \Mockery::mock(Process::class);

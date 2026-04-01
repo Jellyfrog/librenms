@@ -47,6 +47,7 @@ class SnmpTranslate extends SnmpFetch
         return new Collection([new Device]);
     }
 
+    /** @param mixed $device */
     protected function fetchData($device): SnmpResponse
     {
         $res = new SnmpResponse('');

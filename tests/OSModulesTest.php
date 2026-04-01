@@ -72,6 +72,7 @@ final class OSModulesTest extends DBTestCase
 
     /**
      * Test all modules for a particular OS
+     * @param mixed $modules
      */
     #[Group('os')]
     #[DataProvider('dumpedDataProvider')]

@@ -182,6 +182,7 @@ class Isis implements Module
         return $adjacencies;
     }
 
+    /** @param mixed $data */
     protected function parseAdjacencyTime($data): int
     {
         return (int) (max($data['isisISAdjLastUpTime'] ?? 1, 1) / 100);

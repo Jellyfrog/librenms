@@ -215,6 +215,7 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
         }
     }
 
+    /** @param mixed $processors */
     private static function pollProcessors(OS $os, $processors)
     {
         if (empty($processors)) {
@@ -249,6 +250,7 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
         return $results;
     }
 
+    /** @param mixed $data */
     private static function processData($data, $precision)
     {
         if (preg_match('/([0-9]{1,5}(\.[0-9]+)?)/', (string) $data, $matches) !== 1) {

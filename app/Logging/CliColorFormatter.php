@@ -35,6 +35,7 @@ class CliColorFormatter extends \Monolog\Formatter\LineFormatter
 
     protected bool $console;
 
+    /** @param mixed $ignoreEmptyContextAndExtra */
     public function __construct($format = "%message% %context% %extra%\n", $dateFormat = null, $allowInlineLineBreaks = true, $ignoreEmptyContextAndExtra = true)
     {
         parent::__construct(

@@ -88,6 +88,7 @@ class VlansController implements DeviceTab
         ];
     }
 
+    /** @param mixed $searchVlanName */
     private static function getVlans(
         Device $device,
         $searchVlanNumber = null,

@@ -48,11 +48,13 @@ class Config extends BaseModel
 
     // ---- Accessors/Mutators ----
 
+    /** @param mixed $value */
     public function getConfigValueAttribute($value)
     {
         return json_decode((string) $value, true);
     }
 
+    /** @param mixed $value */
     public function setConfigValueAttribute($value)
     {
         $this->attributes['config_value'] = json_encode($value, JSON_UNESCAPED_SLASHES);
@@ -60,6 +62,7 @@ class Config extends BaseModel
 
     // ---- Query Scopes ----
 
+    /** @param mixed $name */
     public function scopeWithChildren($query, $name)
     {
         return $query->where('config_name', $name)

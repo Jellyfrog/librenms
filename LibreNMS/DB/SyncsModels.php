@@ -41,6 +41,7 @@ trait SyncsModels
      * @param  string  $relationship
      * @param  \Illuminate\Support\Collection<Keyable>  $models  \LibreNMS\Interfaces\Models\Keyable
      * @return Collection
+     * @param mixed $existing
      */
     protected function syncModels($parentModel, $relationship, $models, $existing = null): Collection
     {

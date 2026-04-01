@@ -142,6 +142,7 @@ class ObjectCache
         return $result;
     }
 
+    /** @param mixed $device_id */
     private static function getPortCount($field, $device_id)
     {
         return Cache::remember("ObjectCache:port_{$field}_count:$device_id:" . auth()->id(), self::$cache_time, function () use ($field, $device_id) {
@@ -177,6 +178,7 @@ class ObjectCache
         return $result;
     }
 
+    /** @param mixed $field */
     private static function getDeviceCount($field)
     {
         return Cache::remember("ObjectCache:device_{$field}_count:" . auth()->id(), self::$cache_time, function () use ($field) {
@@ -196,6 +198,7 @@ class ObjectCache
     /**
      * @param  array  $fields  array of counts to get. Valid options: total, ok, warning, critical, ignored, disabled
      * @return array
+     * @param mixed $device_id
      */
     public static function serviceCounts($fields = ['total'], $device_id = 0)
     {
@@ -207,6 +210,7 @@ class ObjectCache
         return $result;
     }
 
+    /** @param mixed $device_id */
     private static function getServiceCount($field, $device_id)
     {
         return Cache::remember("ObjectCache:service_{$field}_count:$device_id:" . auth()->id(), self::$cache_time, function () use ($field, $device_id) {
@@ -228,6 +232,7 @@ class ObjectCache
     /**
      * @param  array  $fields  array of counts to get. Valid options: total, ok, critical, disable_notify
      * @return array
+     * @param mixed $device_id
      */
     public static function sensorCounts($fields = ['total'], $device_id = 0)
     {
@@ -239,6 +244,7 @@ class ObjectCache
         return $result;
     }
 
+    /** @param mixed $device_id */
     private static function getSensorCount($field, $device_id)
     {
         return Cache::remember("ObjectCache:sensor_{$field}_count:$device_id:" . auth()->id(), self::$cache_time, function () use ($field, $device_id) {

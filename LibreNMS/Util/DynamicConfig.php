@@ -106,6 +106,7 @@ class DynamicConfig
         return $grouped;
     }
 
+    /** @param mixed $group */
     public function getByGroup($group, $subgroup = null)
     {
         return $this->definitions->filter(function ($item) use ($group, $subgroup) {

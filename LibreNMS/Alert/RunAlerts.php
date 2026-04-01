@@ -460,6 +460,7 @@ class RunAlerts
         return [$added_elements, $removed_elements];
     }
 
+    /** @param mixed $where */
     public function loadAlerts($where)
     {
         $alerts = [];
@@ -681,6 +682,7 @@ class RunAlerts
     }
 
     // Log alert event
+    /** @param mixed $obj */
     public function alertLog($result, $obj, $transport)
     {
         $prefix = [

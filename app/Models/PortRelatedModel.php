@@ -32,6 +32,7 @@ abstract class PortRelatedModel extends BaseModel
 {
     // ---- Query scopes ----
 
+    /** @param mixed $query */
     public function scopeHasAccess($query, User $user)
     {
         return $this->hasPortAccess($query, $user);

@@ -73,6 +73,7 @@ class PollerController extends Controller
         return view('poller.performance', ['current_tab' => 'performance']);
     }
 
+    /** @param mixed $last */
     protected function pollerStatus($poller, $last)
     {
         $since_last_poll = (int) Carbon::parse($last)->diffInSeconds(null, true);
@@ -93,6 +94,7 @@ class PollerController extends Controller
         return PollerCluster::with('stats')->orderBy('poller_name')->get()->map(fn ($poller) => $this->pollerStatus($poller, $poller->last_report));
     }
 
+    /** @param mixed $seconds */
     private function checkTimeSinceLastPoll($seconds)
     {
         if ($seconds >= $this->rrdstep) {
@@ -104,6 +106,7 @@ class PollerController extends Controller
         return 'success';
     }
 
+    /** @param mixed $pollers */
     private function pollerSettings($pollers): Collection
     {
         $groups = PollerGroup::list();

@@ -93,6 +93,7 @@ class DeviceGroup extends BaseModel
 
     // ---- Query Scopes ----
 
+    /** @param mixed $query */
     public function scopeHasAccess($query, User $user)
     {
         if (Gate::allows('viewAll', DeviceGroup::class)) {
@@ -102,6 +103,7 @@ class DeviceGroup extends BaseModel
         return $query->whereIntegerInRaw('id', Permissions::deviceGroupsForUser($user));
     }
 
+    /** @param mixed $query */
     public function scopeInServiceTemplate($query, $serviceTemplate)
     {
         return $query->whereIn(
@@ -113,6 +115,7 @@ class DeviceGroup extends BaseModel
         );
     }
 
+    /** @param mixed $query */
     public function scopeNotInServiceTemplate($query, $serviceTemplate)
     {
         return $query->whereNotIn(

@@ -45,6 +45,7 @@ use PDOException;
 
 class AlertRules
 {
+    /** @param mixed $device_id */
     public function runRules($device_id)
     {
         //Check to see if under maintenance

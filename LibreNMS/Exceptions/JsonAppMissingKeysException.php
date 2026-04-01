@@ -6,6 +6,7 @@ use Throwable;
 
 class JsonAppMissingKeysException extends JsonAppException
 {
+    /** @param mixed $code */
     public function __construct($message, private $output, private $parsed_json = [], $code = 0, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);

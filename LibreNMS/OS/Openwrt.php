@@ -81,6 +81,7 @@ class Openwrt extends OS implements
      * NOTE: system and stats are assumed to be mutually exclusive (at least for now!)
      *
      * @return array Sensors
+     * @param mixed $query
      */
     private function getSensorData(WirelessSensorType $type, $query = '', $system = false, $stats = false)
     {

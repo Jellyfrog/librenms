@@ -62,6 +62,7 @@ class QueryBuilderFilter implements \JsonSerializable
         $this->generateTableFilter();
     }
 
+    /** @param mixed $config_location */
     private function generateMacroFilter($config_location)
     {
         $macros = LibrenmsConfig::get($config_location, []);
@@ -145,6 +146,7 @@ class QueryBuilderFilter implements \JsonSerializable
         }
     }
 
+    /** @param mixed $type */
     private function getColumnType($type)
     {
         if (Str::startsWith($type, ['varchar', 'text', 'double', 'float'])) {

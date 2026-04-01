@@ -37,6 +37,7 @@ trait VxworksProcessorUsage
      *
      * @param  string  $oid  Custom OID to fetch from
      * @return array Processors
+     * @param mixed $oid
      */
     public function discoverProcessors($oid = '.1.3.6.1.4.1.4413.1.1.1.1.4.9.0')
     {
@@ -86,6 +87,7 @@ trait VxworksProcessorUsage
      *
      * @param  string  $data
      * @return mixed
+     * @param mixed $data
      */
     private function parseCpuUsage($data)
     {

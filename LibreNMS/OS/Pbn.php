@@ -32,6 +32,7 @@ use LibreNMS\OS;
 
 class Pbn extends OS implements ProcessorDiscovery
 {
+    /** @param mixed $device */
     public function __construct(&$device)
     {
         parent::__construct($device);

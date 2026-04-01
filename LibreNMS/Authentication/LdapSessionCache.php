@@ -32,6 +32,7 @@ use Session;
 
 trait LdapSessionCache
 {
+    /** @param mixed $attr */
     protected function authLdapSessionCacheGet($attr)
     {
         $ttl = LibrenmsConfig::get('auth_ldap_cache_ttl', 300);
@@ -61,6 +62,7 @@ trait LdapSessionCache
         return $cache[$attr]['value'];
     }
 
+    /** @param mixed $attr */
     protected function authLdapSessionCacheSet($attr, $value)
     {
         if (class_exists('Session')) {

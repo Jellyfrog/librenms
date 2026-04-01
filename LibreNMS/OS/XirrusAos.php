@@ -176,6 +176,7 @@ class XirrusAos extends OS implements
         return $this->discoverSensor(WirelessSensorType::Utilization, 'realtimeMonitorDot11Busy', '.1.3.6.1.4.1.21013.1.2.24.7.1.11.');
     }
 
+    /** @param mixed $oid */
     private function discoverSensor(WirelessSensorType $type, $oid, $oid_num_prefix)
     {
         $names = $this->getCacheByIndex('realtimeMonitorIfaceName', 'XIRRUS-MIB');
