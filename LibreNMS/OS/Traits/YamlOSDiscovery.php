@@ -119,7 +119,7 @@ trait YamlOSDiscovery
     }
 
     /**
-     * @param mixed $data
+     * @param  mixed  $data
      * @return mixed
      */
     private function findFirst($data, $oids, $numeric = false)
@@ -139,7 +139,7 @@ trait YamlOSDiscovery
     }
 
     /**
-     * @param mixed $regexes
+     * @param  mixed  $regexes
      * @return mixed
      */
     private function parseRegex($regexes, $subject)
@@ -158,9 +158,9 @@ trait YamlOSDiscovery
     }
 
     /**
-     * @param mixed $numeric
+     * @param  mixed  $numeric
+     * @param  array<mixed>  $oids
      * @return mixed
-     * @param array<mixed> $oids
      */
     private function fetch(array $oids, $numeric)
     {

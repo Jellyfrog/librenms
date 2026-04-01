@@ -58,7 +58,7 @@ class Template
     }
 
     /**
-     * @param mixed $data
+     * @param  mixed  $data
      * @return mixed
      */
     public function getTitle($data)
@@ -67,7 +67,7 @@ class Template
     }
 
     /**
-     * @param mixed $data
+     * @param  mixed  $data
      * @return mixed
      */
     public function getBody($data)

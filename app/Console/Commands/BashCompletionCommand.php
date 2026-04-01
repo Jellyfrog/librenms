@@ -200,7 +200,7 @@ class BashCompletionCommand extends Command
     }
 
     /**
-     * @param mixed $words
+     * @param  mixed  $words
      * @return mixed
      */
     private function getPreviousOptions($words)

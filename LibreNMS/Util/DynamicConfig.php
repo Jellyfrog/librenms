@@ -108,7 +108,7 @@ class DynamicConfig
     }
 
     /**
-     * @param mixed $group
+     * @param  mixed  $group
      * @return mixed
      */
     public function getByGroup($group, $subgroup = null)

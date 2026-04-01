@@ -37,7 +37,8 @@ class NominatimApi extends BaseApi implements Geocoder
 
     /**
      * Get latitude and longitude from geocode response
-     * @param array<mixed> $data
+     *
+     * @param  array<mixed>  $data
      */
     protected function parseLatLng(array $data): array
     {
@@ -49,6 +50,7 @@ class NominatimApi extends BaseApi implements Geocoder
 
     /**
      * Build request option array
+     *
      * @return array<mixed>
      */
     protected function buildGeocodingOptions(string $address): array

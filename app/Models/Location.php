@@ -77,6 +77,7 @@ class Location extends Model
     /**
      * Check if the coordinates are valid
      * Even though 0,0 is a valid coordinate, we consider it invalid for ease
+     *
      * @return mixed
      */
     public function coordinatesValid()
@@ -180,7 +181,7 @@ class Location extends Model
     }
 
     /**
-     * @param mixed $deviceGroup
+     * @param  mixed  $deviceGroup
      * @return mixed
      */
     public function scopeInDeviceGroup($query, $deviceGroup)

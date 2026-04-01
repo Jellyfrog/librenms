@@ -298,7 +298,8 @@ class FdbTablesController extends TableController
 
     /**
      * Get all port ids from vendor OUIs
-     * @param array<mixed> $vendor_ouis
+     *
+     * @param  array<mixed>  $vendor_ouis
      */
     protected function findPortsByOui(array $vendor_ouis, Builder $query): Builder
     {

@@ -295,7 +295,7 @@ class SmOs extends OS implements
     }
 
     /**
-     * @param mixed $index
+     * @param  mixed  $index
      * @return mixed
      */
     public function getRadioLabel($index)
@@ -308,7 +308,7 @@ class SmOs extends OS implements
     }
 
     /**
-     * @param mixed $index
+     * @param  mixed  $index
      * @return mixed
      */
     public function getLinkLabel($index)

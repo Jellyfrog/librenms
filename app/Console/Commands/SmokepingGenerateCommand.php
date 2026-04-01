@@ -125,8 +125,8 @@ class SmokepingGenerateCommand extends LnmsCommand
     /**
      * Build and output the target configuration
      *
+     * @param  mixed  $devices
      * @return int
-     * @param mixed $devices
      */
     public function buildTargetsConfiguration($devices)
     {
@@ -148,8 +148,8 @@ class SmokepingGenerateCommand extends LnmsCommand
     /**
      * Set a warning to be emitted
      *
+     * @param  mixed  $warning
      * @return void
-     * @param mixed $warning
      */
     public function setWarning($warning)
     {
@@ -205,8 +205,8 @@ class SmokepingGenerateCommand extends LnmsCommand
     /**
      * Generate a header to append to the smokeping configuration file
      *
+     * @param  mixed  $compat
      * @return array<mixed>
-     * @param mixed $compat
      */
     public function buildHeader($noHeader, $compat)
     {
@@ -234,8 +234,8 @@ class SmokepingGenerateCommand extends LnmsCommand
      * Determine if a list of targets is needed, and write one if so
      *
      * @param  array<mixed>  $smokelist  A list of devices to create a a config block for
+     * @param  mixed  $probeCount
      * @return array
-     * @param mixed $probeCount
      */
     public function buildTargets($smokelist, $probeCount, $singleProcess)
     {
@@ -303,8 +303,8 @@ class SmokepingGenerateCommand extends LnmsCommand
      * Take config lines and output them to stdout
      *
      * @param  array  ...$blocks  Blocks of smokeping configuration arranged in arrays of strings
+     * @param  array<mixed>  $blocks
      * @return int
-     * @param array<mixed> $blocks
      */
     private function render(...$blocks)
     {
@@ -319,8 +319,8 @@ class SmokepingGenerateCommand extends LnmsCommand
      * Build the configuration for a set of devices inside a type block
      *
      * @param  array<mixed>  $devices  A list of devices to create a a config block for
+     * @param  mixed  $probeCount
      * @return array
-     * @param mixed $probeCount
      */
     private function buildDevices($devices, $probeCount, $singleProcess)
     {
@@ -381,8 +381,8 @@ class SmokepingGenerateCommand extends LnmsCommand
      * Select a probe to use deterministically.
      *
      * @param  string  $transport  The transport (udp or udp6) as per the device database entry
+     * @param  mixed  $probeCount
      * @return string
-     * @param mixed $probeCount
      */
     private function balanceProbes($transport, $probeCount)
     {

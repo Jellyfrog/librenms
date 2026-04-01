@@ -32,7 +32,8 @@ class Packetlight extends OS
 {
     /**
      * Subtract 30 (for yaml user_func)
-     * @param mixed $value
+     *
+     * @param  mixed  $value
      * @return mixed
      */
     public static function offsetSfpDbm($value)
@@ -42,7 +43,8 @@ class Packetlight extends OS
 
     /**
      * Subtract 128 (for yaml user_func)
-     * @param mixed $value
+     *
+     * @param  mixed  $value
      * @return mixed
      */
     public static function offsetSfpTemperature($value)
@@ -52,7 +54,8 @@ class Packetlight extends OS
 
     /**
      * Convert Watts 10e-7 to Dbm
-     * @param mixed $value
+     *
+     * @param  mixed  $value
      * @return mixed
      */
     public static function convertWattToDbm($value)

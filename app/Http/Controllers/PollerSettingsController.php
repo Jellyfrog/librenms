@@ -32,7 +32,7 @@ use Illuminate\Http\Request;
 class PollerSettingsController extends Controller
 {
     /**
-     * @param mixed $id
+     * @param  mixed  $id
      * @return mixed
      */
     public function update(Request $request, $id, $setting)
@@ -52,7 +52,7 @@ class PollerSettingsController extends Controller
     }
 
     /**
-     * @param mixed $id
+     * @param  mixed  $id
      * @return mixed
      */
     public function destroy($id, $setting)

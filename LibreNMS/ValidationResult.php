@@ -47,7 +47,7 @@ class ValidationResult
      * @param  string  $message  The message to describe this result
      * @param  int  $status  The status of this result FAILURE, WARNING, or SUCCESS
      * @param  string|null  $fix  a suggested fix to highlight for the user
-     * @param array<mixed> $fix
+     * @param  array<mixed>  $fix
      */
     public function __construct(private readonly string $message, private readonly int $status, private string|array|null $fix = null)
     {

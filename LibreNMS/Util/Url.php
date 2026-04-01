@@ -274,7 +274,7 @@ class Url
     }
 
     /**
-     * @param mixed $port
+     * @param  mixed  $port
      * @return mixed
      */
     public static function portUrl($port, $vars = [])
@@ -283,7 +283,7 @@ class Url
     }
 
     /**
-     * @param mixed $sensor
+     * @param  mixed  $sensor
      * @return mixed
      */
     public static function sensorUrl($sensor, $vars = [])
@@ -328,7 +328,7 @@ class Url
     }
 
     /**
-     * @param mixed $args
+     * @param  mixed  $args
      * @return mixed
      */
     public static function portImage($args)
@@ -341,7 +341,7 @@ class Url
     }
 
     /**
-     * @param mixed $new_vars
+     * @param  mixed  $new_vars
      * @return mixed
      */
     public static function generate($vars, $new_vars = [])
@@ -409,7 +409,7 @@ class Url
     }
 
     /**
-     * @param mixed $args
+     * @param  mixed  $args
      * @return mixed
      */
     public static function graphPopup($args, $content = null, $link = null)
@@ -443,7 +443,7 @@ class Url
     }
 
     /**
-     * @param mixed $args
+     * @param  mixed  $args
      * @return mixed
      */
     public static function lazyGraphTag($args)
@@ -464,7 +464,7 @@ class Url
     }
 
     /**
-     * @param mixed $class
+     * @param  mixed  $class
      * @return mixed
      */
     public static function overlibLink($url, $text, $contents, $class = null)
@@ -490,7 +490,7 @@ class Url
     }
 
     /**
-     * @param mixed $graph_array
+     * @param  mixed  $graph_array
      * @return mixed
      */
     public static function overlibContent($graph_array, $text)
@@ -669,6 +669,7 @@ class Url
 
     /**
      * Parse variables from legacy path /key=value/key=value or regular get/post variables
+     *
      * @return array<mixed>
      */
     public static function parseLegacyPathVars(?string $path = null): array
@@ -720,7 +721,7 @@ class Url
     }
 
     /**
-     * @param mixed $string
+     * @param  mixed  $string
      * @return mixed
      */
     private static function escapeBothQuotes($string)

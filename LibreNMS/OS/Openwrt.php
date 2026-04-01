@@ -80,8 +80,8 @@ class Openwrt extends OS implements
      * stats - boolean, flag denoting that statistics are to be retrieved (min, max, avg)
      * NOTE: system and stats are assumed to be mutually exclusive (at least for now!)
      *
+     * @param  mixed  $query
      * @return array<mixed> Sensors
-     * @param mixed $query
      */
     private function getSensorData(WirelessSensorType $type, $query = '', $system = false, $stats = false)
     {

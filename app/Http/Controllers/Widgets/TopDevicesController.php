@@ -151,7 +151,7 @@ class TopDevicesController extends WidgetController
     }
 
     /**
-     * @param mixed $sort
+     * @param  mixed  $sort
      * @return mixed
      */
     private function getTrafficData($sort)
@@ -175,7 +175,7 @@ class TopDevicesController extends WidgetController
     }
 
     /**
-     * @param mixed $sort
+     * @param  mixed  $sort
      * @return mixed
      */
     private function getUptimeData($sort)
@@ -194,7 +194,7 @@ class TopDevicesController extends WidgetController
     }
 
     /**
-     * @param mixed $sort
+     * @param  mixed  $sort
      * @return mixed
      */
     private function getPingData($sort)
@@ -213,7 +213,7 @@ class TopDevicesController extends WidgetController
     }
 
     /**
-     * @param mixed $sort
+     * @param  mixed  $sort
      * @return mixed
      */
     private function getProcessorData($sort)
@@ -231,7 +231,7 @@ class TopDevicesController extends WidgetController
     }
 
     /**
-     * @param mixed $sort
+     * @param  mixed  $sort
      * @return mixed
      */
     private function getMemoryData($sort)
@@ -249,7 +249,7 @@ class TopDevicesController extends WidgetController
     }
 
     /**
-     * @param mixed $sort
+     * @param  mixed  $sort
      * @return mixed
      */
     private function getPollerData($sort)
@@ -267,7 +267,7 @@ class TopDevicesController extends WidgetController
     }
 
     /**
-     * @param mixed $sort
+     * @param  mixed  $sort
      * @return mixed
      */
     private function getStorageData($sort)

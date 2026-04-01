@@ -207,7 +207,7 @@ class LdapAuthorizer extends AuthorizerBase
     }
 
     /**
-     * @param mixed $username
+     * @param  mixed  $username
      * @return mixed
      */
     protected function getMembername($username)
@@ -256,8 +256,8 @@ class LdapAuthorizer extends AuthorizerBase
      *
      * @internal
      *
+     * @param  mixed  $username
      * @return string
-     * @param mixed $username
      */
     protected function getFullDn($username): string
     {
@@ -270,8 +270,8 @@ class LdapAuthorizer extends AuthorizerBase
      *
      * @internal
      *
+     * @param  mixed  $username
      * @return false|true
-     * @param mixed $username
      */
     protected function setAuthLdapSuffixOu($username): bool
     {

@@ -51,7 +51,7 @@ class Component
     ];
 
     /**
-     * @param mixed $device_id
+     * @param  mixed  $device_id
      * @return mixed
      */
     public function getComponentCount($device_id = null)
@@ -62,7 +62,7 @@ class Component
     }
 
     /**
-     * @param mixed $TYPE
+     * @param  mixed  $TYPE
      * @return mixed
      */
     public function getComponentType($TYPE = null)
@@ -85,7 +85,7 @@ class Component
     }
 
     /**
-     * @param mixed $device_id
+     * @param  mixed  $device_id
      * @return mixed
      */
     public function getComponents($device_id = null, $options = [])
@@ -131,7 +131,7 @@ class Component
     }
 
     /**
-     * @param mixed $device
+     * @param  mixed  $device
      * @return mixed
      */
     public function getComponentStatus($device = null)
@@ -170,7 +170,7 @@ class Component
     }
 
     /**
-     * @param mixed $component_id
+     * @param  mixed  $component_id
      * @return mixed
      */
     public function getComponentStatusLog($component_id, $start, $end)
@@ -206,7 +206,7 @@ class Component
     }
 
     /**
-     * @param mixed $device_id
+     * @param  mixed  $device_id
      * @return mixed
      */
     public function createComponent($device_id, $type)
@@ -221,7 +221,7 @@ class Component
     }
 
     /**
-     * @param mixed $component_id
+     * @param  mixed  $component_id
      * @return mixed
      */
     public function createStatusLogEntry($component_id, $status, $message)
@@ -236,7 +236,7 @@ class Component
     }
 
     /**
-     * @param mixed $id
+     * @param  mixed  $id
      * @return mixed
      */
     public function deleteComponent($id)
@@ -246,7 +246,7 @@ class Component
     }
 
     /**
-     * @param mixed $device_id
+     * @param  mixed  $device_id
      * @return mixed
      */
     public function setComponentPrefs($device_id, $updated)

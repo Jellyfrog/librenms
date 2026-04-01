@@ -35,7 +35,7 @@ class PortGroup extends BaseModel
     protected $fillable = ['name', 'desc'];
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeHasAccess($query, User $user)

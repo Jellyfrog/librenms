@@ -51,6 +51,7 @@ class Ospfv3 implements Module
 
     /**
      * @inheritDoc
+     *
      * @return array<mixed>
      */
     public function dependencies(): array
@@ -243,6 +244,7 @@ class Ospfv3 implements Module
 
     /**
      * @inheritDoc
+     *
      * @return array<mixed>
      */
     public function dump(Device $device, string $type): ?array
@@ -282,7 +284,8 @@ class Ospfv3 implements Module
 
     /**
      * create a new area model if $data is null fetch values with individual gets
-     * @param array<mixed> $data
+     *
+     * @param  array<mixed>  $data
      */
     private function createArea(int $ospfv3AreaId, Ospfv3Instance $instance, array $data): Ospfv3Area
     {

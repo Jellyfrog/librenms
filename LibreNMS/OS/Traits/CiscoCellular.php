@@ -32,7 +32,7 @@ use LibreNMS\Enum\WirelessSensorType;
 trait CiscoCellular
 {
     /**
-     * @param mixed $index
+     * @param  mixed  $index
      * @return mixed
      */
     public function profileApn($index)

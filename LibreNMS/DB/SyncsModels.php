@@ -40,8 +40,8 @@ trait SyncsModels
      * @param  \Illuminate\Database\Eloquent\Model  $parentModel
      * @param  string  $relationship
      * @param  \Illuminate\Support\Collection<Keyable>  $models  \LibreNMS\Interfaces\Models\Keyable
+     * @param  mixed  $existing
      * @return Collection
-     * @param mixed $existing
      */
     protected function syncModels($parentModel, $relationship, $models, $existing = null): Collection
     {
@@ -86,7 +86,7 @@ trait SyncsModels
      * Sync a sub-group of models to the database
      *
      * @param  Collection<Keyable>  $models
-     * @param array<mixed> $where
+     * @param  array<mixed>  $where
      */
     public function syncModelsByGroup(Device $device, string $relationship, Collection $models, array $where): Collection
     {

@@ -537,8 +537,9 @@ class ModuleTestHelper
      * Run discovery and polling against snmpsim data and create a database dump
      * Save the dumped data to tests/data/<os>.json
      *
-     * @throws FileNotFoundException
      * @return array<mixed>
+     *
+     * @throws FileNotFoundException
      */
     public function generateTestData(string $snmpSimIp, int $snmpSimPort, bool $noSave = false): ?array
     {

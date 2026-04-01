@@ -32,7 +32,7 @@ use App\Models\Device;
 class Rewrite
 {
     /**
-     * @param mixed $type
+     * @param  mixed  $type
      * @return mixed
      */
     public static function normalizeIfType($type)
@@ -60,7 +60,7 @@ class Rewrite
     }
 
     /**
-     * @param mixed $type
+     * @param  mixed  $type
      * @return mixed
      */
     public static function shortenIfType($type)
@@ -87,7 +87,7 @@ class Rewrite
     }
 
     /**
-     * @param mixed $name
+     * @param  mixed  $name
      * @return mixed
      */
     public static function normalizeIfName($name)
@@ -194,7 +194,7 @@ class Rewrite
     }
 
     /**
-     * @param mixed $location
+     * @param  mixed  $location
      * @return mixed
      */
     public static function location($location)
@@ -239,7 +239,7 @@ class Rewrite
     }
 
     /**
-     * @param mixed $guest_id
+     * @param  mixed  $guest_id
      * @return mixed
      */
     public static function vmwareGuest($guest_id)

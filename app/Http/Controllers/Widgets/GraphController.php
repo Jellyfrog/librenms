@@ -274,7 +274,7 @@ class GraphController extends WidgetController
     }
 
     /**
-     * @param mixed $summarize
+     * @param  mixed  $summarize
      * @return mixed
      */
     private function getGraphType($summarize = true)
@@ -339,7 +339,7 @@ class GraphController extends WidgetController
     }
 
     /**
-     * @param mixed $key
+     * @param  mixed  $key
      * @return mixed
      */
     private function convertLegacySettingId($setting, $key)

@@ -490,6 +490,7 @@ class Pmp extends OS implements
      * FSK 5.2, 5.4, 5.7 GHz: OID returns MHz
      * FSK 900 MHz, 2.4 GHz: OID returns 100's of KHz
      * OFDM: OID returns 10's of KHz"
+     *
      * @return mixed
      */
     private function freqDivisor()

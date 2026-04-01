@@ -32,7 +32,7 @@ use LDAP\Connection;
 trait ActiveDirectoryCommon
 {
     /**
-     * @param mixed $sid
+     * @param  mixed  $sid
      * @return mixed
      */
     protected function getUseridFromSid($sid)
@@ -41,7 +41,7 @@ trait ActiveDirectoryCommon
     }
 
     /**
-     * @param mixed $sid
+     * @param  mixed  $sid
      * @return mixed
      */
     protected function sidFromLdap($sid)
@@ -63,7 +63,7 @@ trait ActiveDirectoryCommon
     }
 
     /**
-     * @param mixed $dn
+     * @param  mixed  $dn
      * @return mixed
      */
     protected function getCn($dn)
@@ -75,7 +75,7 @@ trait ActiveDirectoryCommon
     }
 
     /**
-     * @param mixed $samaccountname
+     * @param  mixed  $samaccountname
      * @return mixed
      */
     protected function getDn($samaccountname)
@@ -97,7 +97,7 @@ trait ActiveDirectoryCommon
     }
 
     /**
-     * @param mixed $username
+     * @param  mixed  $username
      * @return mixed
      */
     protected function userFilter($username)
@@ -115,7 +115,7 @@ trait ActiveDirectoryCommon
     }
 
     /**
-     * @param mixed $groupname
+     * @param  mixed  $groupname
      * @return mixed
      */
     protected function groupFilter($groupname)
@@ -131,7 +131,7 @@ trait ActiveDirectoryCommon
     }
 
     /**
-     * @param mixed $username
+     * @param  mixed  $username
      * @return mixed
      */
     protected function getFullname($username)

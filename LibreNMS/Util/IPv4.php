@@ -91,8 +91,8 @@ class IPv4 extends IP
     /**
      * Convert an IPv4 bit mask to a long. Generally used with long2ip() or bitwise operations.
      *
+     * @param  mixed  $cidr
      * @return int
-     * @param mixed $cidr
      */
     private function cidr2long($cidr)
     {
@@ -155,8 +155,8 @@ class IPv4 extends IP
     /**
      * Calculate missing prefix from IPv4 according to RFC
      *
+     * @param  mixed  $ipv4
      * @return string
-     * @param mixed $ipv4
      */
     public static function classfullNetmaskFromRfc($ipv4 = '')
     {

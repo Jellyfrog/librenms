@@ -46,6 +46,7 @@ class Ospf implements Module
 {
     /**
      * @inheritDoc
+     *
      * @return array<mixed>
      */
     public function dependencies(): array
@@ -258,6 +259,7 @@ class Ospf implements Module
 
     /**
      * @inheritDoc
+     *
      * @return array<mixed>
      */
     public function dump(Device $device, string $type): ?array

@@ -85,7 +85,7 @@ class FileCategorizer extends Categorizer
     }
 
     /**
-     * @param mixed $os
+     * @param  mixed  $os
      * @return mixed
      */
     private function validateOs($os)
@@ -135,7 +135,7 @@ class FileCategorizer extends Categorizer
     }
 
     /**
-     * @param mixed $file
+     * @param  mixed  $file
      * @return mixed
      */
     private function osFromFile($file)

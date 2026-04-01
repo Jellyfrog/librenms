@@ -193,7 +193,7 @@ final class ComponentTest extends DBTestCase
     }
 
     /**
-     * @param mixed $target
+     * @param  mixed  $target
      * @return mixed
      */
     private function buildExpected($target)

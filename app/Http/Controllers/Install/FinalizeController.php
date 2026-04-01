@@ -141,8 +141,9 @@ class FinalizeController extends InstallationController implements InstallerStep
     }
 
     /**
-     * @throws FileWriteFailedException
      * @return mixed
+     *
+     * @throws FileWriteFailedException
      */
     private function writeConfigFile()
     {

@@ -79,7 +79,7 @@ class PollerController extends Controller
     }
 
     /**
-     * @param mixed $last
+     * @param  mixed  $last
      * @return mixed
      */
     protected function pollerStatus($poller, $last)
@@ -105,7 +105,7 @@ class PollerController extends Controller
     }
 
     /**
-     * @param mixed $seconds
+     * @param  mixed  $seconds
      * @return mixed
      */
     private function checkTimeSinceLastPoll($seconds)

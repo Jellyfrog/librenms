@@ -171,6 +171,7 @@ class Git
 
     /**
      * Fetches the remote commit from the github api if on the daily release channel
+     *
      * @return array<mixed>
      */
     private function remoteCommit(): array

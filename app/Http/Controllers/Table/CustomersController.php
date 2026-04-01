@@ -116,7 +116,7 @@ class CustomersController extends TableController
     }
 
     /**
-     * @param mixed $customer
+     * @param  mixed  $customer
      * @return mixed
      */
     private function getGraphRow($customer)

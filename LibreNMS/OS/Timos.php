@@ -365,8 +365,8 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, TransceiverDiscove
     }
 
     /**
+     * @param  mixed  $paths
      * @return Collection MplsTunnelArHop objects
-     * @param mixed $paths
      */
     public function discoverMplsTunnelArHops($paths): Collection
     {
@@ -415,8 +415,8 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, TransceiverDiscove
     }
 
     /**
+     * @param  mixed  $paths
      * @return Collection MplsTunnelCHop objects
-     * @param mixed $paths
      */
     public function discoverMplsTunnelCHops($paths): Collection
     {
@@ -701,8 +701,8 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, TransceiverDiscove
     }
 
     /**
+     * @param  mixed  $paths
      * @return Collection MplsTunnelArHop objects
-     * @param mixed $paths
      */
     public function pollMplsTunnelArHops($paths): Collection
     {
@@ -754,8 +754,8 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, TransceiverDiscove
     }
 
     /**
+     * @param  mixed  $paths
      * @return Collection MplsTunnelCHop objects
-     * @param mixed $paths
      */
     public function pollMplsTunnelCHops($paths): Collection
     {

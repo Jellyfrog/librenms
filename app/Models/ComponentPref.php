@@ -10,7 +10,7 @@ class ComponentPref extends Model
     protected $fillable = ['component', 'attribute', 'value'];
 
     /**
-     * @param mixed $value
+     * @param  mixed  $value
      * @return mixed
      */
     public function setValueAttribute($value)

@@ -115,7 +115,7 @@ OUT;
     }
 
     /**
-     * @param mixed $exitCode
+     * @param  mixed  $exitCode
      * @return mixed
      */
     private function mockFpingProcess($output, $exitCode)

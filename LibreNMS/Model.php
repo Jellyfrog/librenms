@@ -12,8 +12,8 @@ abstract class Model
     protected static $primaryKey = 'id';
 
     /**
+     * @param  array<mixed>  $data
      * @return mixed
-     * @param array<mixed> $data
      */
     public static function create(array $data)
     {
@@ -24,8 +24,8 @@ abstract class Model
     }
 
     /**
+     * @param  array<mixed>  $data
      * @return mixed
-     * @param array<mixed> $data
      */
     protected function fill(array $data = [])
     {

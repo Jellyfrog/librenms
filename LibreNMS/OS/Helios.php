@@ -69,7 +69,7 @@ class Helios extends OS implements WirelessFrequencyDiscovery, WirelessPowerDisc
     }
 
     /**
-     * @param mixed $oid
+     * @param  mixed  $oid
      * @return mixed
      */
     private function discoverOid(WirelessSensorType $type, $oid, $oid_prefix)

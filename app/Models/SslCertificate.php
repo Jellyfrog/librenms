@@ -94,7 +94,7 @@ class SslCertificate extends Model
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeEnabled($query)
@@ -103,7 +103,7 @@ class SslCertificate extends Model
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeDisabled($query)
@@ -113,7 +113,8 @@ class SslCertificate extends Model
 
     /**
      * Scope to certificates the user is allowed to see (linked to device they have access to, or no device).
-     * @param mixed $query
+     *
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeHasAccess($query, $user)
@@ -225,8 +226,9 @@ class SslCertificate extends Model
     /**
      * Fetch certificate from host:port and return array of attributes for create/update.
      *
-     * @throws ProviderException|CertificateParsingException
      * @return array<mixed>
+     *
+     * @throws ProviderException|CertificateParsingException
      */
     public static function fetchAndParse(string $host, int $port = 443, int $timeout = 10): array
     {

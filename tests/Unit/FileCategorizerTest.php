@@ -209,7 +209,7 @@ final class FileCategorizerTest extends TestCase
     }
 
     /**
-     * @param mixed $expected
+     * @param  mixed  $expected
      * @return mixed
      */
     private function assertCategorized($expected, $input = null, $message = '')

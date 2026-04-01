@@ -40,7 +40,8 @@ class BingApi extends BaseApi implements Geocoder
 
     /**
      * Get latitude and longitude from geocode response
-     * @param array<mixed> $data
+     *
+     * @param  array<mixed>  $data
      */
     protected function parseLatLng(array $data): array
     {
@@ -53,8 +54,9 @@ class BingApi extends BaseApi implements Geocoder
     /**
      * Build request option array
      *
-     * @throws Exception you may throw an Exception if validation fails
      * @return array<mixed>
+     *
+     * @throws Exception you may throw an Exception if validation fails
      */
     protected function buildGeocodingOptions(string $address): array
     {
@@ -73,7 +75,8 @@ class BingApi extends BaseApi implements Geocoder
 
     /**
      * Checks if the request was a success
-     * @param array<mixed> $data
+     *
+     * @param  array<mixed>  $data
      */
     protected function checkResponse(Response $response, array $data): bool
     {

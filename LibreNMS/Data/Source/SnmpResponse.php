@@ -92,8 +92,9 @@ class SnmpResponse implements \Stringable
      * If an oid or list of oids is given, return the first one found.
      * If forceNumeric is set, force the search to use numeric oids even if textual oids are given
      *
+     * @param  array<mixed>  $oids
+     *
      * @throws \LibreNMS\Exceptions\InvalidOidException
-     * @param array<mixed> $oids
      */
     public function value(array|string $oids = [], bool $forceNumeric = false): string
     {
@@ -187,6 +188,7 @@ class SnmpResponse implements \Stringable
     /**
      * Create a key to value pair for an OID
      * You may omit $oid if there is only one $oid in the walk
+     *
      * @return array<mixed>
      */
     public function pluck(?string $oid = null): array
@@ -209,7 +211,8 @@ class SnmpResponse implements \Stringable
      * Group values by index as specified by $index_count
      * Useful when dealing with numeric oids
      * (By default this counts from right to left, using a negative index count will count from left to right)
-     * @param array<mixed> $array
+     *
+     * @param  array<mixed>  $array
      */
     public function groupByIndex(int $index_count = 1, array &$array = []): array
     {
@@ -227,7 +230,8 @@ class SnmpResponse implements \Stringable
     /**
      * Separate the index from the OID name
      * Insert into array as index => oidName
-     * @param array<mixed> $array
+     *
+     * @param  array<mixed>  $array
      */
     public function valuesByIndex(array &$array = []): array
     {

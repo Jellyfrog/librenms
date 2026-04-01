@@ -159,7 +159,7 @@ trait UcdResources
     }
 
     /**
-     * @param mixed $data
+     * @param  mixed  $data
      * @return mixed
      */
     private function oidValid($data, $oid)

@@ -156,6 +156,7 @@ class Proc
 
     /**
      * Close all pipes for this process
+     *
      * @return mixed
      */
     private function closePipes()
@@ -202,9 +203,9 @@ class Proc
      *
      * @param  int  $timeout  how many microseconds to wait before terminating (SIGKILL)
      * @param  int  $signal  the signal to send
+     * @return mixed
      *
      * @throws Exception
-     * @return mixed
      */
     public function terminate($timeout = 3000, $signal = 15)
     {

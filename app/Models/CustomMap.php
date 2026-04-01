@@ -70,6 +70,7 @@ class CustomMap extends BaseModel
 
     /**
      * Get background data intended to be passed to javascript to configure the background
+     *
      * @return array<mixed>
      */
     public function getBackgroundConfig(): array

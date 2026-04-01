@@ -35,6 +35,7 @@ interface Module
 {
     /**
      * An array of all modules this module depends on
+     *
      * @return array<mixed>
      */
     public function dependencies(): array;

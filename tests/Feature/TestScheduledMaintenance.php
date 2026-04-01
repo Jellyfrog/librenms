@@ -59,7 +59,7 @@ final class TestScheduledMaintenance extends DBTestCase
     }
 
     /**
-     * @param mixed $schedule
+     * @param  mixed  $schedule
      * @return mixed
      */
     private function assertScheduleActive($time, $schedule)
@@ -70,7 +70,7 @@ final class TestScheduledMaintenance extends DBTestCase
     }
 
     /**
-     * @param mixed $schedule
+     * @param  mixed  $schedule
      * @return mixed
      */
     private function assertScheduleSet($time, $schedule)
@@ -81,7 +81,7 @@ final class TestScheduledMaintenance extends DBTestCase
     }
 
     /**
-     * @param mixed $schedule
+     * @param  mixed  $schedule
      * @return mixed
      */
     private function assertScheduleLapsed($time, $schedule)
@@ -104,7 +104,7 @@ final class TestScheduledMaintenance extends DBTestCase
     }
 
     /**
-     * @param mixed $timezone
+     * @param  mixed  $timezone
      * @return mixed
      */
     private function setTimezone($timezone)

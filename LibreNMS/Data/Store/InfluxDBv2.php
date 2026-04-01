@@ -192,7 +192,7 @@ class InfluxDBv2 extends BaseDatastore
     }
 
     /**
-     * @param mixed $data
+     * @param  mixed  $data
      * @return mixed
      */
     private function forceType($data)

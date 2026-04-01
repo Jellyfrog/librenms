@@ -84,8 +84,8 @@ class HiveosWireless extends OS implements
      * Discover wireless frequency.  This is in GHz. Type is frequency.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
+     * @param  array<mixed>  $sensors
      * @return array Sensors
-     * @param array<mixed> $sensors
      */
     public function pollWirelessFrequency(array $sensors)
     {

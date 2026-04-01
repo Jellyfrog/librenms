@@ -92,7 +92,7 @@ final class YamlSchemaTest extends TestCase
     }
 
     /**
-     * @param mixed $pattern
+     * @param  mixed  $pattern
      * @return array<mixed>
      */
     private function listFiles($pattern): array

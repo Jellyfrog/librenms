@@ -54,7 +54,7 @@ class Validate
     }
 
     /**
-     * @param mixed $default
+     * @param  mixed  $default
      * @return mixed
      */
     public static function ascDesc($direction, $default = 'ASC')

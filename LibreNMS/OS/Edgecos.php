@@ -189,8 +189,8 @@ class Edgecos extends OS implements MempoolsDiscovery, ProcessorDiscovery, Trans
     /**
      * discover transceiver sensors
      *
+     * @param  mixed  $types
      * @return void
-     * @param mixed $types
      */
     public function discoverTransceiverSensors($types = ['dbm', 'current', 'temperature', 'voltage']): void
     {
@@ -388,8 +388,8 @@ class Edgecos extends OS implements MempoolsDiscovery, ProcessorDiscovery, Trans
     /**
      * discover Fan Status sensors
      *
+     * @param  mixed  $types
      * @return void
-     * @param mixed $types
      */
     public function discoverFanSensors($types = ['fanspeed', 'state']): void
     {

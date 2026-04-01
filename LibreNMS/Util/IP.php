@@ -242,6 +242,7 @@ abstract class IP implements \Stringable
      * Packed address for storage in database
      *
      * return string
+     *
      * @return mixed
      */
     public function packed()

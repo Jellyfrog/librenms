@@ -107,7 +107,7 @@ class GraphController extends Controller
     }
 
     /**
-     * @param mixed $graph
+     * @param  mixed  $graph
      * @return mixed
      */
     private function formatGraph($top, $graph)

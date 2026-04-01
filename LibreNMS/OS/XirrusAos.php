@@ -177,7 +177,7 @@ class XirrusAos extends OS implements
     }
 
     /**
-     * @param mixed $oid
+     * @param  mixed  $oid
      * @return mixed
      */
     private function discoverSensor(WirelessSensorType $type, $oid, $oid_num_prefix)

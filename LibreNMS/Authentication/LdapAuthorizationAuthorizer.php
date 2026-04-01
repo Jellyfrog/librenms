@@ -249,7 +249,7 @@ class LdapAuthorizationAuthorizer extends AuthorizerBase
     }
 
     /**
-     * @param mixed $username
+     * @param  mixed  $username
      * @return mixed
      */
     protected function getMembername($username)

@@ -36,8 +36,8 @@ trait VxworksProcessorUsage
      * Returns an array of LibreNMS\Device\Processor objects that have been discovered
      *
      * @param  string  $oid  Custom OID to fetch from
+     * @param  mixed  $oid
      * @return array<mixed> Processors
-     * @param mixed $oid
      */
     public function discoverProcessors($oid = '.1.3.6.1.4.1.4413.1.1.1.1.4.9.0')
     {
@@ -86,8 +86,8 @@ trait VxworksProcessorUsage
      * "    5 Secs ( 96.4918%)   60 Secs ( 54.2271%)  300 Secs ( 38.2591%)"
      *
      * @param  string  $data
+     * @param  mixed  $data
      * @return mixed
-     * @param mixed $data
      */
     private function parseCpuUsage($data)
     {

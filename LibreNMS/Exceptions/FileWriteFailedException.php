@@ -32,7 +32,7 @@ class FileWriteFailedException extends \Exception
 {
     /**
      * @param  string  $file_path
-     * @param mixed $code
+     * @param  mixed  $code
      */
     public function __construct(protected $file_path, $code = 0, ?Throwable $previous = null)
     {

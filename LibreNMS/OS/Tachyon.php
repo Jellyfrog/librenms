@@ -44,6 +44,7 @@ class Tachyon extends OS implements
 {
     /**
      * Discover wireless clients.
+     *
      * @return array<mixed>
      */
     public function discoverWirelessClients()
@@ -68,6 +69,7 @@ class Tachyon extends OS implements
 
     /**
      * Discover wireless frequency.
+     *
      * @return array<mixed>
      */
     public function discoverWirelessFrequency()

@@ -156,7 +156,7 @@ class UserPreferencesController extends Controller
     }
 
     /**
-     * @param mixed $preference
+     * @param  mixed  $preference
      * @return mixed
      */
     private function updatePreference($preference, $value)

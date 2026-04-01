@@ -69,7 +69,8 @@ trait GeocodingHelper
 
     /**
      * Checks if the request was a success
-     * @param array<mixed> $data
+     *
+     * @param  array<mixed>  $data
      */
     protected function checkResponse(Response $response, array $data): bool
     {

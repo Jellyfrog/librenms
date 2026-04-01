@@ -103,6 +103,7 @@ class Snmptrap extends Transport
      *   OID type value
      * where value may be a double-quoted string containing spaces.
      * Lines beginning with '#' are treated as comments and ignored.
+     *
      * @return array<mixed>
      */
     private function parseVarbinds(string $msg): array

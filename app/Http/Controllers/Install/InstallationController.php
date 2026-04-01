@@ -116,7 +116,7 @@ class InstallationController extends Controller
     }
 
     /**
-     * @param mixed $data
+     * @param  mixed  $data
      * @return mixed
      */
     final protected function formatData($data = [])

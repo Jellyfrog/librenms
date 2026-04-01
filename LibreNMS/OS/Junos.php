@@ -248,7 +248,8 @@ class Junos extends \LibreNMS\OS implements SlaDiscovery, OSPolling, SlaPolling,
 
     /**
      * Retrieve specific Juniper PingCtlType
-     * @param mixed $rtt_type
+     *
+     * @param  mixed  $rtt_type
      * @return mixed
      */
     private function retrieveJuniperType($rtt_type)

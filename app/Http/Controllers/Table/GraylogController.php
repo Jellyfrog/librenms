@@ -104,7 +104,7 @@ class GraylogController extends SimpleTableController
     }
 
     /**
-     * @param mixed $message
+     * @param  mixed  $message
      * @return mixed
      */
     private function formatMessage($message)
@@ -135,7 +135,7 @@ class GraylogController extends SimpleTableController
     }
 
     /**
-     * @param mixed $severity
+     * @param  mixed  $severity
      * @return mixed
      */
     private function severityLabel($severity)

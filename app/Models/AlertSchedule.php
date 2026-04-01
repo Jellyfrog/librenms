@@ -81,7 +81,7 @@ class AlertSchedule extends Model
     }
 
     /**
-     * @param mixed $days
+     * @param  mixed  $days
      * @return mixed
      */
     public function setRecurringDayAttribute($days)
@@ -96,7 +96,7 @@ class AlertSchedule extends Model
     }
 
     /**
-     * @param mixed $start
+     * @param  mixed  $start
      * @return mixed
      */
     public function setStartAttribute($start)
@@ -111,7 +111,7 @@ class AlertSchedule extends Model
     }
 
     /**
-     * @param mixed $end
+     * @param  mixed  $end
      * @return mixed
      */
     public function setEndAttribute($end)
@@ -146,7 +146,7 @@ class AlertSchedule extends Model
     }
 
     /**
-     * @param mixed $date
+     * @param  mixed  $date
      * @return mixed
      */
     public function setStartRecurringDtAttribute($date)
@@ -155,7 +155,7 @@ class AlertSchedule extends Model
     }
 
     /**
-     * @param mixed $time
+     * @param  mixed  $time
      * @return mixed
      */
     public function setStartRecurringHrAttribute($time)
@@ -164,7 +164,7 @@ class AlertSchedule extends Model
     }
 
     /**
-     * @param mixed $date
+     * @param  mixed  $date
      * @return mixed
      */
     public function setEndRecurringDtAttribute($date)
@@ -173,7 +173,7 @@ class AlertSchedule extends Model
     }
 
     /**
-     * @param mixed $time
+     * @param  mixed  $time
      * @return mixed
      */
     public function setEndRecurringHrAttribute($time)
@@ -212,7 +212,7 @@ class AlertSchedule extends Model
     // ---- Query scopes ----
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeIsActive($query)

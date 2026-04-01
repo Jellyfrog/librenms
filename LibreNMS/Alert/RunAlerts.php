@@ -462,7 +462,7 @@ class RunAlerts
     }
 
     /**
-     * @param mixed $where
+     * @param  mixed  $where
      * @return mixed
      */
     public function loadAlerts($where)
@@ -687,7 +687,7 @@ class RunAlerts
 
     // Log alert event
     /**
-     * @param mixed $obj
+     * @param  mixed  $obj
      * @return mixed
      */
     public function alertLog($result, $obj, $transport)

@@ -205,9 +205,9 @@ class Schema
     }
 
     /**
-     * @param mixed $history
+     * @param  mixed  $history
+     * @param  array<mixed>  $tables
      * @return mixed
-     * @param array<mixed> $tables
      */
     private function findPathRecursive(array $tables, $target, $history = [])
     {
@@ -287,7 +287,7 @@ class Schema
     }
 
     /**
-     * @param mixed $key
+     * @param  mixed  $key
      * @return mixed
      */
     public function getTableFromKey($key)
@@ -318,7 +318,7 @@ class Schema
     }
 
     /**
-     * @param mixed $column
+     * @param  mixed  $column
      * @return mixed
      */
     public function columnExists($table, $column)

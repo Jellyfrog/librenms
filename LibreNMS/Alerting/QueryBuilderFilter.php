@@ -63,7 +63,7 @@ class QueryBuilderFilter implements \JsonSerializable
     }
 
     /**
-     * @param mixed $config_location
+     * @param  mixed  $config_location
      * @return mixed
      */
     private function generateMacroFilter($config_location)
@@ -151,7 +151,7 @@ class QueryBuilderFilter implements \JsonSerializable
     }
 
     /**
-     * @param mixed $type
+     * @param  mixed  $type
      * @return mixed
      */
     private function getColumnType($type)

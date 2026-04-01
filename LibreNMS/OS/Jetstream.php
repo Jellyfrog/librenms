@@ -193,7 +193,7 @@ class Jetstream extends OS implements Ipv6AddressDiscovery, RouteDiscovery, Vlan
     }
 
     /**
-     * @param mixed $var
+     * @param  mixed  $var
      * @return array<mixed>
      */
     private function jetstreamExpand($var): array

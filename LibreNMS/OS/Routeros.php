@@ -560,7 +560,7 @@ class Routeros extends OS implements
     }
 
     /**
-     * @param mixed $qos
+     * @param  mixed  $qos
      * @return mixed
      */
     public function setQosParents($qos)

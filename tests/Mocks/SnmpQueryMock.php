@@ -153,7 +153,8 @@ class SnmpQueryMock implements SnmpQueryInterface
     /**
      * Set MIBs to use for this query. Base mibs are included by default.
      * They will be appended to existing mibs unless $append is set to false.
-     * @param array<mixed> $mibs
+     *
+     * @param  array<mixed>  $mibs
      */
     public function mibs(array $mibs, bool $append = true): SnmpQueryInterface
     {

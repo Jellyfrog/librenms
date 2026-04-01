@@ -224,7 +224,7 @@ class DynamicConfigItem implements \ArrayAccess
     }
 
     /**
-     * @param mixed $fields
+     * @param  mixed  $fields
      * @return mixed
      */
     public function only($fields = [])
@@ -302,7 +302,7 @@ class DynamicConfigItem implements \ArrayAccess
     }
 
     /**
-     * @param mixed $option
+     * @param  mixed  $option
      * @return mixed
      */
     private function optionTranslationKey($option)
@@ -311,7 +311,7 @@ class DynamicConfigItem implements \ArrayAccess
     }
 
     /**
-     * @param mixed $value
+     * @param  mixed  $value
      * @return mixed
      */
     private function buildValidator($value)

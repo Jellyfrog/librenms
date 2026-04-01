@@ -75,7 +75,8 @@ class SimpleTemplate implements \Stringable
 
     /**
      * Create and parse a simple template
-     * @param array<mixed> $variables
+     *
+     * @param  array<mixed>  $variables
      */
     public static function parse(string $template, array $variables): string
     {
@@ -103,6 +104,7 @@ class SimpleTemplate implements \Stringable
 
     /**
      * Parse function arguments from string
+     *
      * @return array<mixed>
      */
     private function parseArguments(string $argsString): array
@@ -177,7 +179,8 @@ class SimpleTemplate implements \Stringable
 
     /**
      * Execute a specific filter on a value - Twig-compatible filters only
-     * @param array<mixed> $args
+     *
+     * @param  array<mixed>  $args
      */
     private function executeFilter(string $value, string $filterName, array $args): string
     {

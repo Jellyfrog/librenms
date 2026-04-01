@@ -57,7 +57,7 @@ class Programs extends BaseValidation
     }
 
     /**
-     * @param mixed $fping
+     * @param  mixed  $fping
      * @return mixed
      */
     public function checkFping6(Validator $validator, $fping)
@@ -90,7 +90,7 @@ class Programs extends BaseValidation
     }
 
     /**
-     * @param mixed $cmd
+     * @param  mixed  $cmd
      * @return mixed
      */
     public function extraFpingChecks(Validator $validator, $cmd)
@@ -106,7 +106,7 @@ class Programs extends BaseValidation
     }
 
     /**
-     * @param mixed $cmd
+     * @param  mixed  $cmd
      * @return mixed
      */
     private function failFping($validator, $cmd, $output)
@@ -132,7 +132,7 @@ class Programs extends BaseValidation
     }
 
     /**
-     * @param mixed $bin
+     * @param  mixed  $bin
      * @return mixed
      */
     public function findExecutable($bin)

@@ -117,7 +117,8 @@ class OS implements
 
     /**
      * OS constructor. Not allowed to be created directly.  Use OS::make()
-     * @param array<mixed> $device
+     *
+     * @param  array<mixed>  $device
      */
     protected function __construct(array &$device)
     {
@@ -256,7 +257,8 @@ class OS implements
      * OS Factory, returns an instance of the OS for this device
      * If no specific OS is found, Try the OS group.
      * Otherwise, returns Generic
-     * @param array<mixed> $device
+     *
+     * @param  array<mixed>  $device
      */
     public static function make(array &$device): OS
     {
@@ -388,7 +390,7 @@ class OS implements
     }
 
     /**
-     * @param mixed $module
+     * @param  mixed  $module
      * @return mixed
      */
     public function getDiscovery($module = null)

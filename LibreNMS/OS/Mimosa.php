@@ -134,7 +134,7 @@ class Mimosa extends OS implements
     }
 
     /**
-     * @param mixed $polarization
+     * @param  mixed  $polarization
      * @return mixed
      */
     private function getPolarization($polarization)

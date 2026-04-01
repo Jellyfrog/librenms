@@ -51,6 +51,7 @@ class MeasurementSummary
     /**
      * Get the measurement summary
      * ['count' => #, 'duration' => s]
+     *
      * @return array<mixed>
      */
     public function get(): array

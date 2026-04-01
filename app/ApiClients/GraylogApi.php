@@ -68,6 +68,7 @@ class GraylogApi
 
     /**
      * Query the Graylog server
+     *
      * @return array<mixed>
      */
     public function query(string $query = '*', int $range = 0, int $limit = 0, int $offset = 0, ?string $sort = null, ?string $filter = null): array

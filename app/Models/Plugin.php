@@ -57,7 +57,7 @@ class Plugin extends BaseModel
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeVersionOne($query)
@@ -66,7 +66,7 @@ class Plugin extends BaseModel
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeVersionTwo($query)

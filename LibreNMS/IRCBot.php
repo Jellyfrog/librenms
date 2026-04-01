@@ -278,7 +278,7 @@ class IRCBot
     //end connect_alert()
 
     /**
-     * @param mixed $buff
+     * @param  mixed  $buff
      * @return mixed
      */
     private function read($buff)
@@ -352,7 +352,7 @@ class IRCBot
     //end alertData()
 
     /**
-     * @param mixed $alert
+     * @param  mixed  $alert
      * @return mixed
      */
     private function sendAlert($sendto, $severity, $alert)
@@ -475,7 +475,7 @@ class IRCBot
     //end getData()
 
     /**
-     * @param mixed $chan
+     * @param  mixed  $chan
      * @return mixed
      */
     private function joinChan($chan = false)
@@ -516,7 +516,7 @@ class IRCBot
     //end handleCommand()
 
     /**
-     * @param mixed $command
+     * @param  mixed  $command
      * @return mixed
      */
     private function proceedCommand($command, $params)
@@ -540,7 +540,7 @@ class IRCBot
     //end proceedCommand()
 
     /**
-     * @param mixed $msg
+     * @param  mixed  $msg
      * @return mixed
      */
     private function respond($msg)
@@ -553,7 +553,7 @@ class IRCBot
     //end respond()
 
     /**
-     * @param mixed $param
+     * @param  mixed  $param
      * @return mixed
      */
     private function getChan($param)
@@ -567,7 +567,7 @@ class IRCBot
     //end getChan()
 
     /**
-     * @param mixed $param
+     * @param  mixed  $param
      * @return mixed
      */
     private function getUser($param)
@@ -580,7 +580,7 @@ class IRCBot
     //end getUser()
 
     /**
-     * @param mixed $param
+     * @param  mixed  $param
      * @return mixed
      */
     private function getUserHost($param)
@@ -593,7 +593,7 @@ class IRCBot
     //end getUserHost()
 
     /**
-     * @param mixed $try
+     * @param  mixed  $try
      * @return mixed
      */
     private function connect($try = 0)
@@ -656,7 +656,7 @@ class IRCBot
     //end doAuth()
 
     /**
-     * @param mixed $chan
+     * @param  mixed  $chan
      * @return mixed
      */
     private function sendMessage($message, $chan)
@@ -671,7 +671,7 @@ class IRCBot
     //end sendMessage()
 
     /**
-     * @param mixed $msg
+     * @param  mixed  $msg
      * @return mixed
      */
     private function log($msg)
@@ -755,7 +755,7 @@ class IRCBot
     //end hostAuth
 
     /**
-     * @param mixed $params
+     * @param  mixed  $params
      * @return mixed
      */
     private function ircRaw($params)
@@ -766,7 +766,7 @@ class IRCBot
     //end irc_raw()
 
     /**
-     * @param mixed $params
+     * @param  mixed  $params
      * @return mixed
      */
     private function _auth($params)
@@ -807,7 +807,7 @@ class IRCBot
     //end _auth()
 
     /**
-     * @param mixed $params
+     * @param  mixed  $params
      * @return mixed
      */
     private function _reload($params)
@@ -833,7 +833,7 @@ class IRCBot
     //end _reload()
 
     /**
-     * @param mixed $params
+     * @param  mixed  $params
      * @return mixed
      */
     private function _join($params)
@@ -848,7 +848,7 @@ class IRCBot
     //end _join()
 
     /**
-     * @param mixed $params
+     * @param  mixed  $params
      * @return mixed
      */
     private function _quit($params)
@@ -865,7 +865,7 @@ class IRCBot
     //end _quit()
 
     /**
-     * @param mixed $params
+     * @param  mixed  $params
      * @return mixed
      */
     private function _help($params)
@@ -881,7 +881,7 @@ class IRCBot
     //end _help()
 
     /**
-     * @param mixed $params
+     * @param  mixed  $params
      * @return mixed
      */
     private function _version($params)
@@ -896,7 +896,7 @@ class IRCBot
     //end _version()
 
     /**
-     * @param mixed $params
+     * @param  mixed  $params
      * @return mixed
      */
     private function _log($params)
@@ -956,7 +956,7 @@ class IRCBot
     //end _log()
 
     /**
-     * @param mixed $params
+     * @param  mixed  $params
      * @return mixed
      */
     private function _down($params)
@@ -972,7 +972,7 @@ class IRCBot
     //end _down()
 
     /**
-     * @param mixed $params
+     * @param  mixed  $params
      * @return mixed
      */
     private function _device($params)
@@ -994,7 +994,7 @@ class IRCBot
     //end _device()
 
     /**
-     * @param mixed $params
+     * @param  mixed  $params
      * @return mixed
      */
     private function _port($params)
@@ -1027,7 +1027,7 @@ class IRCBot
     //end _port()
 
     /**
-     * @param mixed $params
+     * @param  mixed  $params
      * @return mixed
      */
     private function _listdevices($params)
@@ -1042,7 +1042,7 @@ class IRCBot
     //end _listdevices()
 
     /**
-     * @param mixed $params
+     * @param  mixed  $params
      * @return mixed
      */
     private function _status($params)
@@ -1129,7 +1129,7 @@ class IRCBot
     //end _status()
 
     /**
-     * @param mixed $bg_color
+     * @param  mixed  $bg_color
      * @return mixed
      */
     private function _color($text, $fg_color, $bg_color = null, $other = null)
@@ -1180,7 +1180,7 @@ class IRCBot
     // end _color
 
     /**
-     * @param mixed $string
+     * @param  mixed  $string
      * @return mixed
      */
     private function _html2irc($string)

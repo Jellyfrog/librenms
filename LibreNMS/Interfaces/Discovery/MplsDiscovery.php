@@ -65,14 +65,14 @@ interface MplsDiscovery
     public function discoverMplsSdpBinds($sdps, $svcs);
 
     /**
+     * @param  mixed  $paths
      * @return Collection MplsTunnelArHop objects
-     * @param mixed $paths
      */
     public function discoverMplsTunnelArHops($paths);
 
     /**
+     * @param  mixed  $paths
      * @return Collection MplsTunnelCHop objects
-     * @param mixed $paths
      */
     public function discoverMplsTunnelCHops($paths);
 }

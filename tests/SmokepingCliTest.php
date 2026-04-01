@@ -364,7 +364,7 @@ final class SmokepingCliTest extends DBTestCase
     }
 
     /**
-     * @param mixed $data
+     * @param  mixed  $data
      * @return mixed
      */
     public function legacyAlgo($data)
@@ -394,7 +394,7 @@ final class SmokepingCliTest extends DBTestCase
     }
 
     /**
-     * @param mixed $input
+     * @param  mixed  $input
      * @return mixed
      */
     public function canonicalise($input)

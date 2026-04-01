@@ -146,7 +146,7 @@ class ObjectCache
     }
 
     /**
-     * @param mixed $device_id
+     * @param  mixed  $device_id
      * @return mixed
      */
     private static function getPortCount($field, $device_id)
@@ -185,7 +185,7 @@ class ObjectCache
     }
 
     /**
-     * @param mixed $field
+     * @param  mixed  $field
      * @return mixed
      */
     private static function getDeviceCount($field)
@@ -206,8 +206,8 @@ class ObjectCache
 
     /**
      * @param  array<mixed>  $fields  array of counts to get. Valid options: total, ok, warning, critical, ignored, disabled
+     * @param  mixed  $device_id
      * @return array
-     * @param mixed $device_id
      */
     public static function serviceCounts($fields = ['total'], $device_id = 0)
     {
@@ -220,7 +220,7 @@ class ObjectCache
     }
 
     /**
-     * @param mixed $device_id
+     * @param  mixed  $device_id
      * @return mixed
      */
     private static function getServiceCount($field, $device_id)
@@ -243,8 +243,8 @@ class ObjectCache
 
     /**
      * @param  array<mixed>  $fields  array of counts to get. Valid options: total, ok, critical, disable_notify
+     * @param  mixed  $device_id
      * @return array
-     * @param mixed $device_id
      */
     public static function sensorCounts($fields = ['total'], $device_id = 0)
     {
@@ -257,7 +257,7 @@ class ObjectCache
     }
 
     /**
-     * @param mixed $device_id
+     * @param  mixed  $device_id
      * @return mixed
      */
     private static function getSensorCount($field, $device_id)

@@ -39,8 +39,8 @@ class ApiToken extends BaseModel
      * Check if the given token is valid
      *
      * @param  string  $token
+     * @param  mixed  $user_id
      * @return bool
-     * @param mixed $user_id
      */
     public static function isValid($token, $user_id = null)
     {
@@ -65,7 +65,7 @@ class ApiToken extends BaseModel
     }
 
     /**
-     * @param mixed $description
+     * @param  mixed  $description
      * @return mixed
      */
     public static function generateToken(User $user, $description = '')
@@ -94,7 +94,7 @@ class ApiToken extends BaseModel
     // ---- Query scopes ----
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeIsEnabled($query)

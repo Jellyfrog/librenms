@@ -72,6 +72,7 @@ class DeviceGroup extends BaseModel
 
     /**
      * Update devices included in this group (dynamic only)
+     *
      * @return mixed
      */
     public function updateDevices()
@@ -95,7 +96,7 @@ class DeviceGroup extends BaseModel
     // ---- Query Scopes ----
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeHasAccess($query, User $user)
@@ -108,7 +109,7 @@ class DeviceGroup extends BaseModel
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeInServiceTemplate($query, $serviceTemplate)
@@ -123,7 +124,7 @@ class DeviceGroup extends BaseModel
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeNotInServiceTemplate($query, $serviceTemplate)

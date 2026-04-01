@@ -37,7 +37,7 @@ class DeviceRelatedModel extends BaseModel
     // ---- Query Scopes ----
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeHasAccess($query, User $user)
@@ -46,7 +46,7 @@ class DeviceRelatedModel extends BaseModel
     }
 
     /**
-     * @param mixed $deviceGroup
+     * @param  mixed  $deviceGroup
      * @return mixed
      */
     public function scopeInDeviceGroup($query, $deviceGroup)

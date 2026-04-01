@@ -16,7 +16,7 @@ class LegacyExternalAuth
      *
      * @param  Request  $request
      * @param  Closure  $next
-     * @param mixed $guard
+     * @param  mixed  $guard
      */
     public function handle(Request $request, Closure $next, $guard = null): Response
     {

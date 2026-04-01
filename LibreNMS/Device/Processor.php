@@ -219,7 +219,7 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
     }
 
     /**
-     * @param mixed $processors
+     * @param  mixed  $processors
      * @return mixed
      */
     private static function pollProcessors(OS $os, $processors)
@@ -257,7 +257,7 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
     }
 
     /**
-     * @param mixed $data
+     * @param  mixed  $data
      * @return mixed
      */
     private static function processData($data, $precision)

@@ -29,7 +29,7 @@ namespace LibreNMS\Util;
 class StringHelpers
 {
     /**
-     * @param mixed $string
+     * @param  mixed  $string
      * @return mixed
      */
     public static function niceCase($string)

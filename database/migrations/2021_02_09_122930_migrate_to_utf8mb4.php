@@ -26,7 +26,7 @@ return new class extends Migration
     }
 
     /**
-     * @param mixed $charset
+     * @param  mixed  $charset
      * @return mixed
      */
     protected function migrateCharsetTo($charset, $collation)

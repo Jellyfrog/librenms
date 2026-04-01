@@ -190,7 +190,7 @@ class AlertUtil
     }
 
     /**
-     * @param mixed $device_id
+     * @param  mixed  $device_id
      * @return mixed
      */
     public static function getRules($device_id)

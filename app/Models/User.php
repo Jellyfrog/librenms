@@ -123,7 +123,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeAdminOnly($query)
@@ -134,7 +134,7 @@ class User extends Authenticatable
     // ---- Accessors/Mutators ----
 
     /**
-     * @param mixed $realname
+     * @param  mixed  $realname
      * @return mixed
      */
     public function setRealnameAttribute($realname)
@@ -143,7 +143,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @param mixed $descr
+     * @param  mixed  $descr
      * @return mixed
      */
     public function setDescrAttribute($descr)
@@ -152,7 +152,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @param mixed $email
+     * @param  mixed  $email
      * @return mixed
      */
     public function setEmailAttribute($email)
@@ -161,7 +161,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @param mixed $modify
+     * @param  mixed  $modify
      * @return mixed
      */
     public function setCanModifyPasswdAttribute($modify)
@@ -170,7 +170,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @param mixed $enable
+     * @param  mixed  $enable
      * @return mixed
      */
     public function setEnabledAttribute($enable)

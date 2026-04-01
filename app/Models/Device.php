@@ -406,6 +406,7 @@ class Device extends BaseModel
      * Standalone is a special case where the device has no parents or children and is denoted by a max_depth of 0
      *
      * Only checks on root nodes (where max_depth is 1 or 0)
+     *
      * @return mixed
      */
     public function validateStandalone()
@@ -420,7 +421,7 @@ class Device extends BaseModel
     }
 
     /**
-     * @param mixed $default
+     * @param  mixed  $default
      * @return mixed
      */
     public function getAttrib($name, $default = null)
@@ -429,7 +430,7 @@ class Device extends BaseModel
     }
 
     /**
-     * @param mixed $name
+     * @param  mixed  $name
      * @return mixed
      */
     public function setAttrib($name, $value)
@@ -447,7 +448,7 @@ class Device extends BaseModel
     }
 
     /**
-     * @param mixed $name
+     * @param  mixed  $name
      * @return mixed
      */
     public function forgetAttrib($name)
@@ -553,7 +554,7 @@ class Device extends BaseModel
     // ---- Query scopes ----
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeIsUp($query)
@@ -567,7 +568,7 @@ class Device extends BaseModel
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeIsActive($query)
@@ -579,7 +580,7 @@ class Device extends BaseModel
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeIsDown($query)
@@ -592,7 +593,7 @@ class Device extends BaseModel
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeIsIgnored($query)
@@ -604,7 +605,7 @@ class Device extends BaseModel
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeNotIgnored($query)
@@ -615,7 +616,7 @@ class Device extends BaseModel
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeIsDisabled($query)
@@ -626,7 +627,7 @@ class Device extends BaseModel
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeIsDisableNotify($query)
@@ -637,7 +638,7 @@ class Device extends BaseModel
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeIsNotDisabled($query)
@@ -660,7 +661,7 @@ class Device extends BaseModel
     }
 
     /**
-     * @param mixed $modifier
+     * @param  mixed  $modifier
      * @return mixed
      */
     public function scopeWhereUptime($query, $uptime, $modifier = '<')
@@ -677,7 +678,7 @@ class Device extends BaseModel
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeHasAccess($query, User $user)
@@ -686,7 +687,7 @@ class Device extends BaseModel
     }
 
     /**
-     * @param mixed $deviceGroup
+     * @param  mixed  $deviceGroup
      * @return mixed
      */
     public function scopeInDeviceGroup($query, $deviceGroup)
@@ -701,7 +702,7 @@ class Device extends BaseModel
     }
 
     /**
-     * @param mixed $deviceGroup
+     * @param  mixed  $deviceGroup
      * @return mixed
      */
     public function scopeNotInDeviceGroup($query, $deviceGroup)
@@ -716,7 +717,7 @@ class Device extends BaseModel
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeInServiceTemplate($query, $serviceTemplate)
@@ -731,7 +732,7 @@ class Device extends BaseModel
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeNotInServiceTemplate($query, $serviceTemplate)

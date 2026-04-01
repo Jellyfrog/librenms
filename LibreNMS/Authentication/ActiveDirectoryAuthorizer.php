@@ -65,7 +65,7 @@ class ActiveDirectoryAuthorizer extends AuthorizerBase
     }
 
     /**
-     * @param mixed $groupname
+     * @param  mixed  $groupname
      * @return mixed
      */
     protected function userInGroup($username, $groupname)
@@ -198,6 +198,7 @@ class ActiveDirectoryAuthorizer extends AuthorizerBase
 
     /**
      * Bind to AD with the bind user if available, otherwise anonymous bind
+     *
      * @return mixed
      */
     protected function init()
@@ -250,7 +251,7 @@ class ActiveDirectoryAuthorizer extends AuthorizerBase
     }
 
     /**
-     * @param mixed $credentials
+     * @param  mixed  $credentials
      * @return mixed
      */
     public function bind($credentials = [])

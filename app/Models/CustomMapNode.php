@@ -43,7 +43,7 @@ class CustomMapNode extends BaseModel
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeHasAccess($query, User $user)

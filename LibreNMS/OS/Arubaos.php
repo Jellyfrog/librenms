@@ -164,7 +164,7 @@ class Arubaos extends OS implements
     }
 
     /**
-     * @param mixed $channel
+     * @param  mixed  $channel
      * @return mixed
      */
     protected function decodeChannel($channel)
@@ -173,7 +173,7 @@ class Arubaos extends OS implements
     }
 
     /**
-     * @param mixed $desc
+     * @param  mixed  $desc
      * @return mixed
      */
     private function discoverInstantRadio(WirelessSensorType $type, $oid, $desc = 'Radio %s')

@@ -101,6 +101,7 @@ class PingCheck implements ShouldQueue
 
     /**
      * Get an ordered list of hostnames that we need to ping starting from devices with no parents
+     *
      * @return array<mixed>
      */
     private function orderHostnames(Collection $devices): array

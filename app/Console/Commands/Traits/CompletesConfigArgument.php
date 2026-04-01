@@ -35,7 +35,7 @@ use LibreNMS\Util\DynamicConfigItem;
 trait CompletesConfigArgument
 {
     /**
-     * @param mixed $name
+     * @param  mixed  $name
      * @return mixed
      */
     public function completeArgument($name, $value, $previous)

@@ -33,7 +33,7 @@ final class SyslogTest extends TestCase
     // There add an IP for each OS you want to test and use that in the input file
 
     /**
-     * @param mixed $line
+     * @param  mixed  $line
      * @return mixed
      */
     private function fillLine($line)
@@ -45,7 +45,7 @@ final class SyslogTest extends TestCase
     }
 
     /**
-     * @param mixed $line
+     * @param  mixed  $line
      * @return mixed
      */
     private function createData($line, $resultDelta)

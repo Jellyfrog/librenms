@@ -172,9 +172,9 @@ return new class extends Migration
     }
 
     /**
-     * @param mixed $new
+     * @param  mixed  $new
+     * @param  array<mixed>  $fields
      * @return mixed
-     * @param array<mixed> $fields
      */
     private function renameIndex($table, $old, $new, array $fields, $unique = false)
     {

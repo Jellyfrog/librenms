@@ -35,7 +35,7 @@ use LibreNMS\Tests\TestCase;
 final class PermissionsTest extends TestCase
 {
     /**
-     * @param mixed $user
+     * @param  mixed  $user
      * @return mixed
      */
     private function devicePermissionData($user)

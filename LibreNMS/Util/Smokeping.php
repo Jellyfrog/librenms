@@ -79,7 +79,7 @@ class Smokeping
     }
 
     /**
-     * @param mixed $file
+     * @param  mixed  $file
      * @return mixed
      */
     public function generateFileName($file = '')
@@ -92,7 +92,7 @@ class Smokeping
     }
 
     /**
-     * @param mixed $direction
+     * @param  mixed  $direction
      * @return mixed
      */
     public function otherGraphs($direction)
@@ -140,7 +140,7 @@ class Smokeping
     }
 
     /**
-     * @param mixed $name
+     * @param  mixed  $name
      * @return mixed
      */
     private function filenameToHostname($name)

@@ -182,7 +182,8 @@ class PortNacController extends TableController
 
     /**
      * filter $query from vendor OUIs
-     * @param array<mixed> $vendor_ouis
+     *
+     * @param  array<mixed>  $vendor_ouis
      */
     protected function queryByOui(array $vendor_ouis, Builder $query): Builder
     {

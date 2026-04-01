@@ -308,8 +308,9 @@ class Number
     /**
      * Supply a minimum of two of the four values and the others will be filled.
      *
-     * @throws InsufficientDataException
      * @return array<mixed>
+     *
+     * @throws InsufficientDataException
      */
     public static function fillMissingRatio(mixed $total = null, mixed $used = null, mixed $available = null, mixed $used_percent = null, int $precision = 2, int|float $multiplier = 1): array
     {

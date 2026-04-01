@@ -17,6 +17,7 @@ class EntityPhysical implements Module
 
     /**
      * @inheritDoc
+     *
      * @return array<mixed>
      */
     public function dependencies(): array
@@ -74,6 +75,7 @@ class EntityPhysical implements Module
 
     /**
      * @inheritDoc
+     *
      * @return array<mixed>
      */
     public function dump(Device $device, string $type): ?array

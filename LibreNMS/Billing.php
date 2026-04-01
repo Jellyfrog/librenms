@@ -23,7 +23,7 @@ class Billing
     }
 
     /**
-     * @param mixed $dayofmonth
+     * @param  mixed  $dayofmonth
      * @return array<mixed>
      */
     public static function getDates($dayofmonth, $months = 0): array
@@ -104,7 +104,7 @@ class Billing
     }
 
     /**
-     * @param mixed $bill_id
+     * @param  mixed  $bill_id
      * @return array<mixed>
      */
     public static function getLastPortCounter($port_id, $bill_id): array
@@ -126,7 +126,7 @@ class Billing
     }
 
     /**
-     * @param mixed $bill_id
+     * @param  mixed  $bill_id
      * @return array<mixed>
      */
     public static function getLastMeasurement($bill_id): array
@@ -174,7 +174,7 @@ class Billing
     }
 
     /**
-     * @param mixed $bill_id
+     * @param  mixed  $bill_id
      * @return array<mixed>
      */
     public static function getRates($bill_id, $datefrom, $dateto, $dir_95th): array
@@ -214,7 +214,7 @@ class Billing
     }
 
     /**
-     * @param mixed $bill_id
+     * @param  mixed  $bill_id
      * @return mixed
      */
     private static function getSum($bill_id, $datefrom, $dateto)
@@ -225,7 +225,7 @@ class Billing
     }
 
     /**
-     * @param mixed $bill_id
+     * @param  mixed  $bill_id
      * @return array<mixed>
      */
     public static function getPeriod($bill_id, $datefrom, $dateto): array
@@ -236,7 +236,7 @@ class Billing
     }
 
     /**
-     * @param mixed $bill_hist_id
+     * @param  mixed  $bill_hist_id
      * @return array<mixed>
      */
     public static function getHistoryBitsGraphData($bill_id, $bill_hist_id, $reducefactor): ?array
@@ -258,7 +258,7 @@ class Billing
     }
 
     /**
-     * @param mixed $bill_id
+     * @param  mixed  $bill_id
      * @return array<mixed>
      */
     public static function getBitsGraphData($bill_id, $from, $to, $reducefactor): array
@@ -364,7 +364,7 @@ class Billing
     }
 
     /**
-     * @param mixed $bill_id
+     * @param  mixed  $bill_id
      * @return array<mixed>
      */
     public static function getHistoricTransferGraphData($bill_id): array
@@ -422,7 +422,7 @@ class Billing
     }
 
     /**
-     * @param mixed $bill_hist_id
+     * @param  mixed  $bill_hist_id
      * @return array<mixed>
      */
     public static function getBandwidthGraphData($bill_id, $bill_hist_id, $from, $to, $imgtype): ?array

@@ -125,6 +125,7 @@ class Mac implements \Stringable
 
     /**
      * Reformat the MAC to a nice readable format 00:0a:1f:a3:cc:14
+     *
      * @return mixed
      */
     public function readable()
@@ -174,6 +175,7 @@ class Mac implements \Stringable
 
     /**
      * Get an array of the MAC address bytes
+     *
      * @return array<mixed>
      */
     public function array(): array

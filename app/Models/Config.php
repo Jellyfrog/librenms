@@ -49,7 +49,7 @@ class Config extends BaseModel
     // ---- Accessors/Mutators ----
 
     /**
-     * @param mixed $value
+     * @param  mixed  $value
      * @return mixed
      */
     public function getConfigValueAttribute($value)
@@ -58,7 +58,7 @@ class Config extends BaseModel
     }
 
     /**
-     * @param mixed $value
+     * @param  mixed  $value
      * @return mixed
      */
     public function setConfigValueAttribute($value)
@@ -69,7 +69,7 @@ class Config extends BaseModel
     // ---- Query Scopes ----
 
     /**
-     * @param mixed $name
+     * @param  mixed  $name
      * @return mixed
      */
     public function scopeWithChildren($query, $name)

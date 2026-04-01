@@ -124,7 +124,7 @@ class Mempool extends DeviceRelatedModel implements Keyable
     }
 
     /**
-     * @param mixed $percent
+     * @param  mixed  $percent
      * @return mixed
      */
     public function setMempoolPercAttribute($percent)

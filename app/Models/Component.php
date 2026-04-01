@@ -41,7 +41,7 @@ class Component extends DeviceRelatedModel
     // ---- Accessors/Mutators ----
 
     /**
-     * @param mixed $status
+     * @param  mixed  $status
      * @return mixed
      */
     public function setStatusAttribute($status)
@@ -50,7 +50,7 @@ class Component extends DeviceRelatedModel
     }
 
     /**
-     * @param mixed $disabled
+     * @param  mixed  $disabled
      * @return mixed
      */
     public function setDisabledAttribute($disabled)
@@ -59,7 +59,7 @@ class Component extends DeviceRelatedModel
     }
 
     /**
-     * @param mixed $ignore
+     * @param  mixed  $ignore
      * @return mixed
      */
     public function setIgnoreAttribute($ignore)

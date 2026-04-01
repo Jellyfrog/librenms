@@ -40,7 +40,7 @@ class UserPref extends BaseModel
 
     // ---- Helper Functions ----
     /**
-     * @param mixed $pref
+     * @param  mixed  $pref
      * @return mixed
      */
     public static function getPref(User $user, $pref)
@@ -53,7 +53,7 @@ class UserPref extends BaseModel
     }
 
     /**
-     * @param mixed $pref
+     * @param  mixed  $pref
      * @return mixed
      */
     public static function setPref(User $user, $pref, $value)
@@ -62,7 +62,7 @@ class UserPref extends BaseModel
     }
 
     /**
-     * @param mixed $pref
+     * @param  mixed  $pref
      * @return mixed
      */
     public static function forgetPref(User $user, $pref)
@@ -73,7 +73,7 @@ class UserPref extends BaseModel
     // ---- Accessors/Mutators ----
 
     /**
-     * @param mixed $value
+     * @param  mixed  $value
      * @return mixed
      */
     public function getValueAttribute($value)
@@ -87,7 +87,7 @@ class UserPref extends BaseModel
     }
 
     /**
-     * @param mixed $value
+     * @param  mixed  $value
      * @return mixed
      */
     public function setValueAttribute($value)
@@ -102,7 +102,7 @@ class UserPref extends BaseModel
     // ---- Query Scopes ----
 
     /**
-     * @param mixed $pref
+     * @param  mixed  $pref
      * @return mixed
      */
     public function scopePref($query, $pref)

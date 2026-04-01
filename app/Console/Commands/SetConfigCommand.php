@@ -156,7 +156,7 @@ class SetConfigCommand extends LnmsCommand
     }
 
     /**
-     * @param mixed $parent
+     * @param  mixed  $parent
      * @return mixed
      */
     private function erase($setting, $parent = null)
@@ -197,7 +197,7 @@ class SetConfigCommand extends LnmsCommand
     }
 
     /**
-     * @param mixed $data
+     * @param  mixed  $data
      * @return mixed
      */
     private function forgetWithIndex(&$data, $matches)
@@ -214,9 +214,9 @@ class SetConfigCommand extends LnmsCommand
      * @param  string  $os
      * @param  string  $setting
      * @param  mixed  $value
+     * @return mixed
      *
      * @throws ValidationException
-     * @return mixed
      */
     private function validateOsSetting(string $os, string $setting, $value)
     {

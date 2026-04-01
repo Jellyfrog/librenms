@@ -57,7 +57,7 @@ class Python extends BaseValidation
     }
 
     /**
-     * @param mixed $version
+     * @param  mixed  $version
      * @return mixed
      */
     private function checkVersion(Validator $validator, $version)
@@ -68,7 +68,7 @@ class Python extends BaseValidation
     }
 
     /**
-     * @param mixed $version
+     * @param  mixed  $version
      * @return mixed
      */
     private function checkPipVersion(Validator $validator, $version)

@@ -65,14 +65,14 @@ interface MplsPolling
     public function pollMplsSdpBinds($sdps, $svcs);
 
     /**
+     * @param  mixed  $paths
      * @return Collection MplsTunnelArHop objects
-     * @param mixed $paths
      */
     public function pollMplsTunnelArHops($paths);
 
     /**
+     * @param  mixed  $paths
      * @return Collection MplsTunnelCHop objects
-     * @param mixed $paths
      */
     public function pollMplsTunnelCHops($paths);
 }

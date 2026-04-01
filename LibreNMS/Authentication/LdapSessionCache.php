@@ -33,7 +33,7 @@ use Session;
 trait LdapSessionCache
 {
     /**
-     * @param mixed $attr
+     * @param  mixed  $attr
      * @return mixed
      */
     protected function authLdapSessionCacheGet($attr)
@@ -66,7 +66,7 @@ trait LdapSessionCache
     }
 
     /**
-     * @param mixed $attr
+     * @param  mixed  $attr
      * @return mixed
      */
     protected function authLdapSessionCacheSet($attr, $value)

@@ -105,7 +105,7 @@ class EventlogController extends TableController
     }
 
     /**
-     * @param mixed $eventlog
+     * @param  mixed  $eventlog
      * @return mixed
      */
     private function formatType($eventlog)
@@ -132,7 +132,7 @@ class EventlogController extends TableController
     }
 
     /**
-     * @param mixed $eventlog
+     * @param  mixed  $eventlog
      * @return mixed
      */
     private function formatDatetime($eventlog)

@@ -36,7 +36,7 @@ class Callback extends Model
     protected $fillable = ['name', 'value'];
 
     /**
-     * @param mixed $name
+     * @param  mixed  $name
      * @return mixed
      */
     public static function get($name)
@@ -45,7 +45,7 @@ class Callback extends Model
     }
 
     /**
-     * @param mixed $name
+     * @param  mixed  $name
      * @return mixed
      */
     public static function set($name, $value)

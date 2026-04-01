@@ -38,8 +38,8 @@ class PortLink extends Component
     /**
      * Create a new component instance.
      *
+     * @param  array<mixed>  $graphs
      * @return void
-     * @param array<mixed> $graphs
      */
     public function __construct(Port $port, ?array $graphs = null, public bool $basic = false, array $vars = [])
     {

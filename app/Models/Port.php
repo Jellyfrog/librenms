@@ -158,7 +158,7 @@ class Port extends DeviceRelatedModel
     // ---- Accessors/Mutators ----
 
     /**
-     * @param mixed $mac
+     * @param  mixed  $mac
      * @return mixed
      */
     public function getIfPhysAddressAttribute($mac)
@@ -291,7 +291,7 @@ class Port extends DeviceRelatedModel
     }
 
     /**
-     * @param mixed $query
+     * @param  mixed  $query
      * @return mixed
      */
     public function scopeHasAccess($query, User $user)
@@ -300,7 +300,7 @@ class Port extends DeviceRelatedModel
     }
 
     /**
-     * @param mixed $portGroup
+     * @param  mixed  $portGroup
      * @return mixed
      */
     public function scopeInPortGroup($query, $portGroup)

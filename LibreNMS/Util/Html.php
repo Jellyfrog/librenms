@@ -139,7 +139,7 @@ class Html
     }
 
     /**
-     * @param mixed $colors
+     * @param  mixed  $colors
      * @return mixed
      */
     public static function percentageBar($width, $height, $percent, $left_text = '', $right_text = '', $warn = null, $shadow = null, $colors = null)

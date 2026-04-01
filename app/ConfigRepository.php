@@ -608,6 +608,7 @@ class ConfigRepository
 
     /**
      * Get the fping command for a given address family
+     *
      * @return array<mixed>
      */
     public function fpingCommand(AddressFamily $af): array

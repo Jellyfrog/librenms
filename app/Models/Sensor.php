@@ -93,7 +93,8 @@ class Sensor extends DeviceRelatedModel implements Keyable
 
     /**
      * Format current value for user display including units.
-     * @param mixed $field
+     *
+     * @param  mixed  $field
      */
     public function formatValue($field = 'sensor_current'): string
     {

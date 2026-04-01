@@ -45,7 +45,7 @@ class Printer extends \LibreNMS\OS
     }
 
     /**
-     * @param mixed $data
+     * @param  mixed  $data
      * @return mixed
      */
     protected function parseDeviceId($data)

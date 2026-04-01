@@ -214,7 +214,8 @@ class LegacyUserProvider implements UserProvider
 
     /**
      * @inheritDoc
-     * @param array<mixed> $credentials
+     *
+     * @param  array<mixed>  $credentials
      */
     public function rehashPasswordIfRequired(Authenticatable $user, #[\SensitiveParameter] array $credentials, bool $force = false)
     {
