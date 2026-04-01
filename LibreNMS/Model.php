@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\DB;
 
 abstract class Model
 {
+    /** @var mixed */
     protected static $table;
+    /** @var mixed */
     protected static $primaryKey = 'id';
 
     public static function create(array $data)

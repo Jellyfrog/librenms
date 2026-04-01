@@ -35,9 +35,13 @@ use Illuminate\Support\Facades\DB;
 
 class PermissionsCache
 {
+    /** @var mixed */
     private $devicePermissions;
+    /** @var mixed */
     private $portPermissions;
+    /** @var mixed */
     private $billPermissions;
+    /** @var mixed */
     private $deviceGroupMap;
 
     /**

@@ -35,6 +35,7 @@ use LibreNMS\Interfaces\InstallerStep;
 
 class MakeUserController extends InstallationController implements InstallerStep
 {
+    /** @var mixed */
     protected $step = 'user';
 
     public function index(Request $request)

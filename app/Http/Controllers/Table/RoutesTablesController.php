@@ -36,6 +36,7 @@ use LibreNMS\Util\Url;
 
 class RoutesTablesController extends TableController
 {
+    /** @var mixed */
     protected $ipCache = [];
 
     protected function rules()

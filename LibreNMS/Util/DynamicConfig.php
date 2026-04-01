@@ -32,6 +32,7 @@ use Illuminate\Support\Collection;
 
 class DynamicConfig
 {
+    /** @var mixed */
     private $definitions;
 
     public function __construct()

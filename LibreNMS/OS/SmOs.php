@@ -25,7 +25,9 @@ class SmOs extends OS implements
     WirelessMseDiscovery,
     WirelessSnrDiscovery
 {
+    /** @var mixed */
     private $radioLabels;
+    /** @var mixed */
     private $linkLabels;
 
     public function discoverWirelessRate()

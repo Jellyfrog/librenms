@@ -28,6 +28,7 @@ namespace LibreNMS\Exceptions;
 
 class HostUnreachableException extends \Exception
 {
+    /** @var mixed */
     protected $reasons = [];
 
     public function __toString(): string

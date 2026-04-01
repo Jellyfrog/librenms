@@ -37,7 +37,9 @@ use Illuminate\Support\Facades\Blade;
 
 class GraylogController extends SimpleTableController
 {
+    /** @var mixed */
     private $timezone;
+    /** @var mixed */
     private $deviceLinkCache = [];
 
     public function __construct()

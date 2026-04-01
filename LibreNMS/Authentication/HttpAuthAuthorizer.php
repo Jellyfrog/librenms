@@ -7,9 +7,13 @@ use LibreNMS\Exceptions\AuthenticationException;
 
 class HttpAuthAuthorizer extends MysqlAuthorizer
 {
+    /** @var mixed */
     protected static $HAS_AUTH_USERMANAGEMENT = true;
+    /** @var mixed */
     protected static $CAN_UPDATE_USER = true;
+    /** @var mixed */
     protected static $CAN_UPDATE_PASSWORDS = false;
+    /** @var mixed */
     protected static $AUTH_IS_EXTERNAL = true;
 
     public function authenticate($credentials)

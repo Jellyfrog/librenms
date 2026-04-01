@@ -34,8 +34,10 @@ use Log;
 
 class Graphite extends BaseDatastore
 {
+    /** @var mixed */
     protected $connection;
 
+    /** @var mixed */
     protected $prefix;
 
     public function __construct(\Socket\Raw\Factory $socketFactory)

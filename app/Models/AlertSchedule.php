@@ -50,7 +50,9 @@ class AlertSchedule extends Model
     protected $appends = ['start_recurring_dt', 'end_recurring_dt', 'start_recurring_hr', 'end_recurring_hr', 'status'];
     protected $fillable = ['title', 'notes', 'recurring', 'behavior'];
 
+    /** @var mixed */
     private $timezone;
+    /** @var mixed */
     private $days = [
         'Mo' => 1,
         'Tu' => 2,

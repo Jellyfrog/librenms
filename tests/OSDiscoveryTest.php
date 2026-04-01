@@ -43,6 +43,7 @@ use PHPUnit\Framework\Attributes\TestDox;
 #[TestDox('OS Discovery')]
 final class OSDiscoveryTest extends TestCase
 {
+    /** @var mixed */
     private static $unchecked_files;
 
     public static function setUpBeforeClass(): void

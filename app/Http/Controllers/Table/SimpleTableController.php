@@ -32,6 +32,7 @@ use Illuminate\Support\Collection;
 
 abstract class SimpleTableController extends Controller
 {
+    /** @var mixed */
     public static $base_rules = [
         'current' => 'int',
         'rowCount' => 'int',

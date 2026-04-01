@@ -30,6 +30,7 @@ use App\Models\Device;
 
 class DeviceController extends SelectController
 {
+    /** @var mixed */
     private $id = 'device_id';
 
     protected function rules()

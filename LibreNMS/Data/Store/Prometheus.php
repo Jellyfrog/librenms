@@ -36,10 +36,14 @@ use Log;
 
 class Prometheus extends BaseDatastore
 {
+    /** @var mixed */
     private $client;
+    /** @var mixed */
     private $base_uri;
 
+    /** @var mixed */
     private $enabled;
+    /** @var mixed */
     private $prefix;
 
     public function __construct()

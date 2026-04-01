@@ -30,6 +30,7 @@ use LibreNMS\DB\Schema;
 
 final class SchemaTest extends TestCase
 {
+    /** @var mixed */
     private $mock_schema = [
         'bills' => [
             'Columns' => [

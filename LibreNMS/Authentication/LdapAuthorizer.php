@@ -12,6 +12,7 @@ use LibreNMS\Exceptions\LdapMissingException;
 class LdapAuthorizer extends AuthorizerBase
 {
     protected ?Connection $ldap_connection = null;
+    /** @var mixed */
     private $userloginname = '';
 
     public function authenticate($credentials)

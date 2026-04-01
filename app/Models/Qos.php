@@ -26,6 +26,7 @@ class Qos extends Model implements Keyable
     ];
 
     // Array to store additional data during polling that is not part of the model
+    /** @var mixed */
     public $poll_data = [];
 
     /**

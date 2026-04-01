@@ -104,9 +104,13 @@ class OS implements
      * @var float|null
      */
     public $stpTimeFactor; // for stp time quirks
+    /** @var mixed */
     private $device; // annoying use of references to make sure this is in sync with global $device variable
+    /** @var mixed */
     private $graphs; // stores device graphs
+    /** @var mixed */
     private $cache; // data cache
+    /** @var mixed */
     private $pre_cache; // pre-fetch data cache
 
     protected ?string $entityVendorTypeMib = null;

@@ -42,21 +42,35 @@ use LibreNMS\Util\Oid;
 
 class Processor extends Model implements DiscoveryModule, PollerModule, DiscoveryItem
 {
+    /** @var mixed */
     protected static $table = 'processors';
+    /** @var mixed */
     protected static $primaryKey = 'processor_id';
 
+    /** @var mixed */
     private $valid = true;
 
+    /** @var mixed */
     public $processor_id;
+    /** @var mixed */
     public $device_id;
+    /** @var mixed */
     public $processor_type;
+    /** @var mixed */
     public $processor_usage;
+    /** @var mixed */
     public $processor_oid;
+    /** @var mixed */
     public $processor_index;
+    /** @var mixed */
     public $processor_descr;
+    /** @var mixed */
     public $processor_precision;
+    /** @var mixed */
     public $entPhysicalIndex;
+    /** @var mixed */
     public $hrDeviceIndex;
+    /** @var mixed */
     public $processor_perc_warn;
 
     /**

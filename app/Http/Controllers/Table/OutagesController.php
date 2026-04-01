@@ -36,6 +36,7 @@ use LibreNMS\Util\Url;
 
 class OutagesController extends TableController
 {
+    /** @var mixed */
     protected $model = DeviceOutage::class;
 
     public function rules(): array

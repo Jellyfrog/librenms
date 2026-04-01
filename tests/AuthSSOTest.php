@@ -36,7 +36,9 @@ final class AuthSSOTest extends DBTestCase
 {
     use DatabaseTransactions;
 
+    /** @var mixed */
     private $original_auth_mech = null;
+    /** @var mixed */
     private $server;
 
     protected function setUp(): void

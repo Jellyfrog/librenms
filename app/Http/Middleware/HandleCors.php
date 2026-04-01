@@ -32,6 +32,7 @@ use Illuminate\Support\Arr;
 
 class HandleCors extends \Illuminate\Http\Middleware\HandleCors
 {
+    /** @var mixed */
     private $map = [
         'allowmethods' => 'allowed_methods',
         'origin' => 'allowed_origins',

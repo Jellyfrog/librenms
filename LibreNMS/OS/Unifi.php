@@ -54,6 +54,7 @@ class Unifi extends OS implements
         Traits\FrogfootResources::discoverProcessors as discoverFrogfootProcessors;
     }
 
+    /** @var mixed */
     private $ccqDivisor = 10;
 
     public function discoverOS(Device $device): void

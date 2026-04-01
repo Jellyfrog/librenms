@@ -30,9 +30,13 @@ use Exception;
 
 class GitHub
 {
+    /** @var mixed */
     protected $token;
+    /** @var mixed */
     protected $stop = false;
+    /** @var mixed */
     protected $pull_requests = [];
+    /** @var mixed */
     protected $changelog = [
         'feature' => [],
         'breaking change' => [],
@@ -63,12 +67,18 @@ class GitHub
         'mibs' => [],
         'dependencies' => [],
     ];
+    /** @var mixed */
     protected $changelog_users = [];
+    /** @var mixed */
     protected $changelog_mergers = [];
+    /** @var mixed */
     protected $profile_links = [];
 
+    /** @var mixed */
     protected $markdown;
+    /** @var mixed */
     protected $github = 'https://api.github.com/repos/librenms/librenms';
+    /** @var mixed */
     protected $graphql = 'https://api.github.com/graphql';
 
     public function __construct(protected $tag, protected $from, protected $file, $token = null, protected $pr = null)

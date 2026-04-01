@@ -33,7 +33,9 @@ use LibreNMS\Interfaces\Data\Datastore as DatastoreContract;
 
 class DatastoreServiceProvider extends ServiceProvider
 {
+    /** @var mixed */
     protected $namespace = 'LibreNMS\\Data\\Store\\';
+    /** @var mixed */
     protected $stores = [
         \LibreNMS\Data\Store\Graphite::class,
         \LibreNMS\Data\Store\InfluxDB::class,

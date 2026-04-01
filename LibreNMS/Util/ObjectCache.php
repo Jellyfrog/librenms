@@ -47,6 +47,7 @@ use LibreNMS\Enum\Sensor as SensorEnum;
 
 class ObjectCache
 {
+    /** @var mixed */
     private static $cache_time = 300;
 
     public static function applications()

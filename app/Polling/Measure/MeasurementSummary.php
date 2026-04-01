@@ -28,10 +28,14 @@ namespace App\Polling\Measure;
 
 class MeasurementSummary
 {
+    /** @var mixed */
     private $count = 0;
+    /** @var mixed */
     private $duration = 0.0;
 
+    /** @var mixed */
     private $checkpointCount = 0;
+    /** @var mixed */
     private $checkpointDuration = 0.0;
 
     public function __construct(private readonly string $type)

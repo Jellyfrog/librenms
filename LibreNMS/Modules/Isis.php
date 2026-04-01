@@ -46,6 +46,7 @@ class Isis implements Module
 {
     use SyncsModels;
 
+    /** @var mixed */
     protected $isis_codes = [
         'l1IntermediateSystem' => 'L1',
         'l2IntermediateSystem' => 'L2',

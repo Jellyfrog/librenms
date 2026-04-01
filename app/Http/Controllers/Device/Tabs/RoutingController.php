@@ -34,6 +34,7 @@ use LibreNMS\Interfaces\UI\DeviceTab;
 
 class RoutingController implements DeviceTab
 {
+    /** @var mixed */
     private $tabs;
 
     public function __construct()

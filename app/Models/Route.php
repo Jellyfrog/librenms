@@ -29,6 +29,7 @@ class Route extends PortRelatedModel implements Keyable
     ];
 
     //ipCidrRouteProto from ipForward Mib
+    /** @var mixed */
     public static $translateProto = [
         'undefined',
         'other',
@@ -50,6 +51,7 @@ class Route extends PortRelatedModel implements Keyable
         'dvmrp',
     ];
 
+    /** @var mixed */
     public static $translateType = [
         'undefined',
         'other',

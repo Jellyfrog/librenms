@@ -36,6 +36,7 @@ final class SmokepingCliTest extends DBTestCase
 {
     use DatabaseTransactions;
 
+    /** @var mixed */
     protected $groups = [
         'Le23HKVMvN' => [
             'Cl09bZU4sn' => [
@@ -93,6 +94,7 @@ final class SmokepingCliTest extends DBTestCase
         ],
     ];
 
+    /** @var mixed */
     private $instance = null;
 
     protected function setUp(): void

@@ -36,8 +36,11 @@ use Log;
 
 class InfluxDB extends BaseDatastore
 {
+    /** @var mixed */
     private $batchPoints = []; // Store points before writing
+    /** @var mixed */
     private $batchSize = 0; // Number of points to write at once
+    /** @var mixed */
     private $measurements = []; // List of measurements to write
 
     public function __construct(private readonly Database $connection)

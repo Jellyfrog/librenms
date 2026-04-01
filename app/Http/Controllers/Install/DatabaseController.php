@@ -40,6 +40,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class DatabaseController extends InstallationController implements InstallerStep
 {
     const KEYS = ['host', 'username', 'password', 'database', 'port', 'unix_socket'];
+    /** @var mixed */
     protected $step = 'database';
 
     public function index(Request $request)

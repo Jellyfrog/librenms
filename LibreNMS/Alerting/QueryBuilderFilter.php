@@ -32,13 +32,16 @@ use LibreNMS\DB\Schema;
 
 class QueryBuilderFilter implements \JsonSerializable
 {
+    /** @var mixed */
     private static $table_blacklist = [
         'device_group_device',
         'alerts',
         'alert_log',
     ];
 
+    /** @var mixed */
     private $filter = [];
+    /** @var mixed */
     private $schema;
 
     /**

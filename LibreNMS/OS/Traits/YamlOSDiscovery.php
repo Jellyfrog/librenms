@@ -37,6 +37,7 @@ use SnmpQuery;
 
 trait YamlOSDiscovery
 {
+    /** @var mixed */
     private $osDbFields = [
         'version',
         'hardware',
@@ -45,6 +46,7 @@ trait YamlOSDiscovery
         'sysName',
     ];
 
+    /** @var mixed */
     private $osFields = [
         'version',
         'hardware',

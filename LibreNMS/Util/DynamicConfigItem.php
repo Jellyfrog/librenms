@@ -32,19 +32,33 @@ use Validator;
 #[\AllowDynamicProperties]
 class DynamicConfigItem implements \ArrayAccess
 {
+    /** @var mixed */
     public $group;
+    /** @var mixed */
     public $section;
+    /** @var mixed */
     public $value;
+    /** @var mixed */
     public $type;
+    /** @var mixed */
     public $default;
+    /** @var mixed */
     public $overridden = false;  // overridden by config.php
+    /** @var mixed */
     public $hidden = false;
+    /** @var mixed */
     public $required = false;
+    /** @var mixed */
     public $disabled = false;
+    /** @var mixed */
     public $options = [];
+    /** @var mixed */
     public $when;
+    /** @var mixed */
     public $pattern;
+    /** @var mixed */
     public $validate;
+    /** @var mixed */
     public $units;
 
     public function __construct(public $name, $settings = [])

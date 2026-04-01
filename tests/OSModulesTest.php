@@ -47,7 +47,9 @@ final class OSModulesTest extends DBTestCase
 {
     use DatabaseTransactions;
 
+    /** @var mixed */
     private $discoveryModules;
+    /** @var mixed */
     private $pollerModules;
 
     protected function setUp(): void

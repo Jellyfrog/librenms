@@ -51,6 +51,7 @@ class TwoFactor
 
     /**
      * Base32 Decoding dictionary
+     * @var mixed
      */
     private static $base32 = [
         'A' => 0,
@@ -89,6 +90,7 @@ class TwoFactor
 
     /**
      * Base32 Encoding dictionary
+     * @var mixed
      */
     private static $base32_enc = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 

@@ -37,6 +37,7 @@ use Log;
 
 class InfluxDBv2 extends BaseDatastore
 {
+    /** @var mixed */
     private $client;
 
     public function __construct()

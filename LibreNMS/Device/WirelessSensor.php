@@ -31,6 +31,7 @@ use LibreNMS\Modules\Wireless;
 
 class WirelessSensor
 {
+    /** @var mixed */
     protected $oids;
     protected string $rrd_type = 'GAUGE';
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class SslCertificateController extends TableController
 {
+    /** @var mixed */
     protected $model = SslCertificate::class;
 
     public function searchFields(Request $request): array

@@ -11,6 +11,7 @@ use LibreNMS\Util\Url;
 
 class ProcessorsController extends TableController
 {
+    /** @var mixed */
     protected $model = Processor::class;
 
     protected $default_sort = ['device_hostname' => 'asc', 'processor_descr' => 'asc'];

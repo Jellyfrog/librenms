@@ -32,6 +32,7 @@ use LibreNMS\Validations\Php;
 class ChecksController extends InstallationController implements InstallerStep
 {
     const MODULES = ['pdo_mysql', 'mysqlnd', 'gd'];
+    /** @var mixed */
     protected $step = 'checks';
 
     public function index()

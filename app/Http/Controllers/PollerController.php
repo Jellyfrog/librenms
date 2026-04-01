@@ -13,6 +13,7 @@ use Illuminate\Support\Collection;
 
 class PollerController extends Controller
 {
+    /** @var mixed */
     public $rrdstep;
 
     public function __construct()

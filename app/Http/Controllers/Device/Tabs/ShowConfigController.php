@@ -36,7 +36,9 @@ use Symfony\Component\Process\Process;
 
 class ShowConfigController extends Controller implements DeviceTab
 {
+    /** @var mixed */
     private $rancidPath;
+    /** @var mixed */
     private $rancidFile;
 
     public function visible(Device $device): bool

@@ -31,10 +31,15 @@ use LibreNMS\Exceptions\InvalidRrdTypeException;
 
 class RrdDefinition implements \Stringable
 {
+    /** @var mixed */
     private static $types = ['GAUGE', 'DERIVE', 'COUNTER', 'ABSOLUTE', 'DCOUNTER', 'DDERIVE'];
+    /** @var mixed */
     private $dataSets = [];
+    /** @var mixed */
     private $sources = [];
+    /** @var mixed */
     private $invalid_source = [];
+    /** @var mixed */
     private $skipNameCheck = false;
 
     /**

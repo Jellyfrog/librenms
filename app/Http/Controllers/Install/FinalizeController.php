@@ -36,6 +36,7 @@ use LibreNMS\Util\Git;
 
 class FinalizeController extends InstallationController implements InstallerStep
 {
+    /** @var mixed */
     protected $step = 'finish';
 
     public function index()

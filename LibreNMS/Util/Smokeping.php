@@ -32,6 +32,7 @@ use Illuminate\Support\Str;
 
 class Smokeping
 {
+    /** @var mixed */
     private $files;
 
     public function __construct(private readonly Device $device)

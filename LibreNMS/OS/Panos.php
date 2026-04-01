@@ -33,6 +33,7 @@ use LibreNMS\RRD\RrdDefinition;
 
 class Panos extends \LibreNMS\OS implements OSPolling
 {
+    /** @var mixed */
     private $validNetBufferMemory = [
         'Packet Descriptors',
         'Packet Buffers',

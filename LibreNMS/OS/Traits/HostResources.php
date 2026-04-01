@@ -39,12 +39,15 @@ use SnmpQuery;
 
 trait HostResources
 {
+    /** @var mixed */
     private $hrStorage;
+    /** @var mixed */
     private $memoryStorageTypes = [
         'hrStorageVirtualMemory',
         'hrStorageRam',
         'hrStorageOther',
     ];
+    /** @var mixed */
     private $storageIgnoreTypes = [
         'hrStorageVirtualMemory',
         'hrStorageRam',
@@ -60,6 +63,7 @@ trait HostResources
         'nwhrStorageMSEngineMemory',
         'nwhrStorageUnclaimedMemory',
     ];
+    /** @var mixed */
     private $hrTypes = [
         1 => 'hrStorageOther',
         2 => 'hrStorageRam',
@@ -72,18 +76,21 @@ trait HostResources
         9 => 'hrStorageFlashMemory',
         10 => 'hrStorageNetworkDisk',
     ];
+    /** @var mixed */
     private $ignoreMemoryDescr = [
         'malloc',
         'uma',
         'procfs',
         '/proc',
     ];
+    /** @var mixed */
     private $validOtherMemory = [
         'memory buffers',
         'cached memory',
         'memory cache',
         'shared memory',
     ];
+    /** @var mixed */
     private $memoryDescrWarn = [
         'Cached memory' => 0,
         'Memory buffers' => 0,

@@ -41,6 +41,7 @@ use LibreNMS\Util\Url;
 
 class DeviceController extends TableController
 {
+    /** @var mixed */
     private $detailed; // display format is detailed
 
     protected function rules()

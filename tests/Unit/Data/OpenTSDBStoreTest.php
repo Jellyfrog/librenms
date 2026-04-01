@@ -37,6 +37,7 @@ use PHPUnit\Framework\Attributes\Group;
 #[Group('datastores')]
 final class OpenTSDBStoreTest extends TestCase
 {
+    /** @var mixed */
     protected $timestamp = 1190464400;
 
     protected function setUp(): void

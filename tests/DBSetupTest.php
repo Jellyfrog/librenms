@@ -32,7 +32,9 @@ use LibreNMS\DB\Schema;
 
 final class DBSetupTest extends DBTestCase
 {
+    /** @var mixed */
     protected $db_name;
+    /** @var mixed */
     protected $connection = 'testing';
 
     protected function setUp(): void

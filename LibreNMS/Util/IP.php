@@ -30,8 +30,11 @@ use LibreNMS\Exceptions\InvalidIpException;
 
 abstract class IP implements \Stringable
 {
+    /** @var mixed */
     public $ip;
+    /** @var mixed */
     public $cidr;
+    /** @var mixed */
     public $host_bits;
 
     /**

@@ -28,7 +28,9 @@ namespace App\Polling\Measure;
 
 class Measurement
 {
+    /** @var mixed */
     private $start;
+    /** @var mixed */
     private $duration;
 
     private function __construct(private readonly string $type, ?float $duration = null)

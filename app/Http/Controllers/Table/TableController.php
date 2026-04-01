@@ -34,6 +34,7 @@ use Illuminate\Support\Str;
 
 abstract class TableController extends PaginatedAjaxController
 {
+    /** @var mixed */
     protected $model;
 
     protected function sortFields($request)

@@ -34,7 +34,9 @@ use function strip_tags as strip_tags1;
 
 final class AuthHTTPTest extends TestCase
 {
+    /** @var mixed */
     private $original_auth_mech;
+    /** @var mixed */
     private $server;
 
     protected function setUp(): void

@@ -40,6 +40,7 @@ class Component
      * so that they can be modified but they can not be set as user attributes. We
      * also set their default values.
      */
+    /** @var mixed */
     private $reserved = [
         'type' => '',
         'label' => '',

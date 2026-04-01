@@ -32,6 +32,7 @@ use LibreNMS\Enum\AlertState;
 
 class Template
 {
+    /** @var mixed */
     public $template;
 
     /**

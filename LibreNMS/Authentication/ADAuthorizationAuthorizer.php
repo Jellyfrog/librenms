@@ -13,7 +13,9 @@ class ADAuthorizationAuthorizer extends MysqlAuthorizer
     use LdapSessionCache;
     use ActiveDirectoryCommon;
 
+    /** @var mixed */
     protected static $AUTH_IS_EXTERNAL = true;
+    /** @var mixed */
     protected static $CAN_UPDATE_PASSWORDS = false;
 
     protected ?Connection $ldap_connection = null;

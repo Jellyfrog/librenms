@@ -41,6 +41,7 @@ use Session;
 
 class UserPreferencesController extends Controller
 {
+    /** @var mixed */
     private $cachedPreferences = ['locale', 'site_style', 'timezone'];
 
     public function __construct()

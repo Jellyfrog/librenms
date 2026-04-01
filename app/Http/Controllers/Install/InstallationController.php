@@ -32,8 +32,11 @@ use LibreNMS\Interfaces\InstallerStep;
 
 class InstallationController extends Controller
 {
+    /** @var mixed */
     protected $connection = 'setup';
+    /** @var mixed */
     protected $step;
+    /** @var mixed */
     protected $steps = [
         'checks' => ChecksController::class,
         'database' => DatabaseController::class,

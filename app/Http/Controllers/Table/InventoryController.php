@@ -33,6 +33,7 @@ use LibreNMS\Util\Url;
 
 class InventoryController extends TableController
 {
+    /** @var mixed */
     protected $model = EntPhysical::class;
 
     public function rules()

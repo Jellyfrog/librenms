@@ -32,6 +32,7 @@ use LibreNMS\Tests\TestCase;
 
 final class SqliteTest extends TestCase
 {
+    /** @var mixed */
     private $connection = 'testing_persistent';
 
     public function testMigrationsRunWithoutError(): void

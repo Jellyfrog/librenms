@@ -46,6 +46,7 @@ use Symfony\Component\Process\Process;
 
 class Rrd extends BaseDatastore
 {
+    /** @var mixed */
     private $disabled = false;
 
     private ?Proc $sync_process = null;

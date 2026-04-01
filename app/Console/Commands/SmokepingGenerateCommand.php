@@ -34,10 +34,14 @@ use Symfony\Component\Console\Input\InputOption;
 class SmokepingGenerateCommand extends LnmsCommand
 {
     protected $name = 'smokeping:generate';
+    /** @var mixed */
     protected $dnsLookup = true;
 
+    /** @var mixed */
     private $ip4count = 0;
+    /** @var mixed */
     private $ip6count = 0;
+    /** @var mixed */
     private $warnings = [];
 
     const IP4PROBE = 'lnmsFPing-';

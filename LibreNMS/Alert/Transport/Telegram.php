@@ -35,6 +35,7 @@ class Telegram extends Transport
 {
     private  const BASE_URL = 'https://api.telegram.org/bot';
 
+    /** @var mixed */
     private $message = [];
 
     public function deliverAlert(array $alert_data): bool

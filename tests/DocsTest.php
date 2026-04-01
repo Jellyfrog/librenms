@@ -31,6 +31,7 @@ use Symfony\Component\Yaml\Yaml;
 
 final class DocsTest extends TestCase
 {
+    /** @var mixed */
     private $hidden_pages = [
     ];
 

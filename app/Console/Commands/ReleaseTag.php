@@ -35,6 +35,7 @@ use Symfony\Component\Process\Process;
 class ReleaseTag extends LnmsCommand
 {
     protected $name = 'release:tag';
+    /** @var mixed */
     protected $developer = true;
 
     public function __construct()

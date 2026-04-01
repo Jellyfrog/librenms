@@ -33,6 +33,7 @@ use LibreNMS\Interfaces\UI\DeviceTab;
 
 class LoadBalancerController implements DeviceTab
 {
+    /** @var mixed */
     private $tabs = [];
 
     public function __construct()

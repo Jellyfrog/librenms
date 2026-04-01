@@ -33,6 +33,7 @@ use Illuminate\Support\Str;
 
 class GraphAggregateController extends Controller
 {
+    /** @var mixed */
     private $rules = [
         'limit' => 'int',
         'page' => 'int',

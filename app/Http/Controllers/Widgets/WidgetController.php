@@ -42,7 +42,9 @@ abstract class WidgetController extends Controller
     /** @var array Set default values for settings */
     protected $defaults = [];
 
+    /** @var mixed */
     private $show_settings = false;
+    /** @var mixed */
     protected $settings = null;
 
     /**

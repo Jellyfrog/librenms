@@ -27,6 +27,7 @@ class DeviceLink extends Component
      */
     public $status;
 
+    /** @var mixed */
     public $href;
 
     /**

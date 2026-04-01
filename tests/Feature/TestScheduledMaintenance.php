@@ -10,6 +10,7 @@ use LibreNMS\Tests\DBTestCase;
 
 final class TestScheduledMaintenance extends DBTestCase
 {
+    /** @var mixed */
     private $timezone;
 
     public function testNormal(): void

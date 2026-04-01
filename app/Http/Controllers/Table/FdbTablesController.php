@@ -40,6 +40,7 @@ use LibreNMS\Util\Mac;
 
 class FdbTablesController extends TableController
 {
+    /** @var mixed */
     protected $macCountCache = [];
 
     protected function rules()

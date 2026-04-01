@@ -32,6 +32,7 @@ use LibreNMS\DB\Schema;
 
 class QueryBuilderParser implements \JsonSerializable
 {
+    /** @var mixed */
     protected static $operators = [
         'equal' => '=',
         'not_equal' => '!=',
@@ -57,6 +58,7 @@ class QueryBuilderParser implements \JsonSerializable
         'not_in' => 'NOT IN',
     ];
 
+    /** @var mixed */
     protected static $values = [
         'between' => '? AND ?',
         'not_between' => '? AND ?',
@@ -72,8 +74,11 @@ class QueryBuilderParser implements \JsonSerializable
         'is_not_empty' => "''",
     ];
 
+    /** @var mixed */
     protected $builder;
+    /** @var mixed */
     protected $schema;
+    /** @var mixed */
     private $tables;
 
     private function __construct(array $builder)

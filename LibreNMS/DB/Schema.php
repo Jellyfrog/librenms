@@ -35,13 +35,16 @@ use Symfony\Component\Yaml\Yaml;
 
 class Schema
 {
+    /** @var mixed */
     private static $relationship_blacklist = [
         'devices_perms',
         'bill_perms',
         'ports_perms',
     ];
 
+    /** @var mixed */
     private $relationships;
+    /** @var mixed */
     private $schema;
 
     /**

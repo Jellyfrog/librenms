@@ -36,32 +36,46 @@ use LibreNMS\Util\Version;
 
 class IRCBot
 {
+    /** @var mixed */
     private $config;
 
+    /** @var mixed */
     private $user;
 
+    /** @var mixed */
     private $last_activity = 0;
 
+    /** @var mixed */
     private $data = '';
 
+    /** @var mixed */
     private $authd = [];
 
+    /** @var mixed */
     private $debug = false;
 
+    /** @var mixed */
     private $server = '';
 
+    /** @var mixed */
     private $port = '';
 
+    /** @var mixed */
     private $ssl = false;
 
+    /** @var mixed */
     private $pass = '';
 
+    /** @var mixed */
     private $nick = 'LibreNMS';
 
+    /** @var mixed */
     private $tempnick = null;
 
+    /** @var mixed */
     private $chan = [];
 
+    /** @var mixed */
     private $commands = [
         'auth',
         'quit',
@@ -77,24 +91,34 @@ class IRCBot
         'join',
     ];
 
+    /** @var mixed */
     private $command = '';
 
+    /** @var mixed */
     private $external = [];
 
+    /** @var mixed */
     private $tick = 62500;
 
+    /** @var mixed */
     private $j = 0;
 
+    /** @var mixed */
     private $socket = [];
 
+    /** @var mixed */
     private $floodcount = 0;
 
+    /** @var mixed */
     private $max_retry = 5;
 
+    /** @var mixed */
     private $nickwait;
 
+    /** @var mixed */
     private $buff;
 
+    /** @var mixed */
     private $tokens;
 
     public function __construct()

@@ -15,6 +15,7 @@ use LibreNMS\Util\Url;
 
 class SensorsController extends TableController
 {
+    /** @var mixed */
     protected $model = Sensor::class;
 
     protected $default_sort = ['device_hostname' => 'asc', 'sensor_descr' => 'asc'];

@@ -36,6 +36,7 @@ use LibreNMS\Util\StringHelpers;
 
 class GraphController extends Controller
 {
+    /** @var mixed */
     private $rules = [
         'limit' => 'int',
         'page' => 'int',

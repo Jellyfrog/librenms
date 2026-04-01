@@ -7,7 +7,9 @@ use LibreNMS\Interfaces\Authentication\Authorizer;
 
 class LegacyAuth
 {
+    /** @var mixed */
     protected static $_instance;
+    /** @var mixed */
     private static $configToClassMap = [
         'mysql' => \LibreNMS\Authentication\MysqlAuthorizer::class,
         'active_directory' => \LibreNMS\Authentication\ActiveDirectoryAuthorizer::class,

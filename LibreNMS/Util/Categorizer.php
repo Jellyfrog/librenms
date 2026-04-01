@@ -28,8 +28,11 @@ namespace LibreNMS\Util;
 
 class Categorizer
 {
+    /** @var mixed */
     protected $categorized = [];
+    /** @var mixed */
     protected $categories = [];
+    /** @var mixed */
     protected $skippable;
 
     public function __construct(protected $items = [])
