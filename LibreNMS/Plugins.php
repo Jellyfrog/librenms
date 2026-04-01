@@ -53,7 +53,7 @@ class Plugins
     /**
      * Array of plugin hooks
      *
-     * @var array|null
+     * @var array<mixed>|null
      */
     private static $plugins = null;
 
@@ -176,7 +176,7 @@ class Plugins
      * Call hook for plugin.
      *
      * @param  string  $hook  Name of hook to call
-     * @param  array|false  $params  Optional array of parameters for hook
+     * @param  array<mixed>|false  $params  Optional array of parameters for hook
      * @return string
      */
     public static function call($hook, $params = false)

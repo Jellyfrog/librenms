@@ -38,12 +38,14 @@ class Sensu extends Transport
     public const CRITICAL = 2;
     public const UNKNOWN = 3;
 
+    /** @var array<mixed> */
     private static array $status = [
         'ok' => self::OK,
         'warning' => self::WARNING,
         'critical' => self::CRITICAL,
     ];
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $sensu_opts['source-key'] = $this->config['sensu-source-key'];
@@ -83,6 +85,7 @@ class Sensu extends Transport
         throw new AlertTransportDeliveryException($alert_data, $result->status(), $result->body(), json_encode($data), $sensu_opts);
     }
 
+    /** @param array<mixed> $alert_data */
     private function generateData(array $alert_data, int $status, int $offset = 0): array
     {
         $namespace = $this->config['sensu-namespace'] ?: 'default';
@@ -114,6 +117,7 @@ class Sensu extends Transport
         ];
     }
 
+    /** @param array<mixed> $alert_data */
     private function generateAnnotations(array $alert_data): array
     {
         return array_filter([
@@ -144,6 +148,7 @@ class Sensu extends Transport
         return self::$status[$severity] ?? self::UNKNOWN;
     }
 
+    /** @param array<mixed> $obj */
     private function getEntityName(array $obj): string
     {
         $key = $this->config['sensu-source-key'] ?: 'display';
@@ -183,6 +188,7 @@ class Sensu extends Transport
         return $check;
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

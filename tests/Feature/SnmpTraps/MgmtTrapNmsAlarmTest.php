@@ -121,6 +121,7 @@ EKINOPS-MGNT2-NMS-MIB::mgnt2AlmLogChassisId {{ ip }}",
         );
     }
 
+    /** @return array<mixed> */
     public static function genEkiAlarm(): array
     {
         return [

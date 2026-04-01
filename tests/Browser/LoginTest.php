@@ -21,6 +21,7 @@ use PHPUnit\Framework\Attributes\Group;
 final class LoginTest extends DuskTestCase
 {
     use DatabaseTruncation;
+    /** @var array<mixed> */
     protected array $connectionsToTruncate = ['testing', 'testing_persistent'];
 
 //    protected function setUp(): void

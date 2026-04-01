@@ -92,7 +92,7 @@ class GitHub
     /**
      * Return the GitHub Authorization header for the API call
      *
-     * @return array
+     * @return array<mixed>
      */
     public function getHeaders()
     {
@@ -206,7 +206,7 @@ GRAPHQL;
     /**
      * Parse labels response into standardized names and remove emoji
      *
-     * @param  array  $labels
+     * @param  array<mixed>  $labels
      * @return array
      */
     private function parseLabels($labels)
@@ -266,7 +266,7 @@ GRAPHQL;
      * Record user info and count into the specified array (default changelog_users)
      * Record profile links too.
      *
-     * @param  array  $user
+     * @param  array<mixed>  $user
      * @param  string  $type
      * @return mixed
      */
@@ -317,7 +317,7 @@ GRAPHQL;
     /**
      * Create a markdown list of users and link their github profile
      *
-     * @param  array  $users
+     * @param  array<mixed>  $users
      * @return string
      */
     private function formatUserList($users)

@@ -28,6 +28,7 @@ namespace LibreNMS\Exceptions;
 
 class InvalidTableColumnException extends ApiException
 {
+    /** @param array<mixed> $columns */
     public function __construct(
         public readonly array $columns
     ) {

@@ -153,6 +153,7 @@ final class OSModulesTest extends DBTestCase
         $this->travelBack();
     }
 
+    /** @return array<mixed> */
     public static function dumpedDataProvider(): array
     {
         $modules = [];
@@ -186,6 +187,7 @@ final class OSModulesTest extends DBTestCase
         });
     }
 
+    /** @param array<mixed> $actual */
     private function checkTestData(?array $expected, ?array $actual, string $type, string $os, mixed $module, string $filename, ModuleTestHelper $helper, bool $phpunit_debug): void
     {
         // try simple and fast comparison first, if that fails, do a costly/well formatted comparison

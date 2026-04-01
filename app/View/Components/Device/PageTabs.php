@@ -35,8 +35,10 @@ use LibreNMS\Interfaces\UI\DeviceTab;
 
 class PageTabs extends Component
 {
+    /** @var array<mixed> */
     public array $tabs = [];
     public readonly string $currentTab;
+    /** @var array<mixed> */
     public static array $tabsClasses = [
         'overview' => \App\Http\Controllers\Device\Tabs\OverviewController::class,
         'graphs' => \App\Http\Controllers\Device\Tabs\GraphsController::class,
@@ -76,6 +78,7 @@ class PageTabs extends Component
         'capture' => \App\Http\Controllers\Device\Tabs\CaptureController::class,
     ];
 
+    /** @param array<mixed> $dropdownLinks */
     public function __construct(
         public readonly Device $device,
         public readonly array $dropdownLinks = [],

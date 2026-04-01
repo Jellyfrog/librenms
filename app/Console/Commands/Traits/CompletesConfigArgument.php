@@ -56,6 +56,7 @@ trait CompletesConfigArgument
         return false;
     }
 
+    /** @return array<mixed> */
     protected function suggestionsForSelect(DynamicConfigItem $config, ?string $value): array
     {
         $options = new \Illuminate\Support\Collection($config['options']);
@@ -70,6 +71,7 @@ trait CompletesConfigArgument
         return $options->filter(fn ($description, $key) => Str::contains($description, $value))->keys()->all();
     }
 
+    /** @return array<mixed> */
     protected function suggestionsForSelectDynamic(DynamicConfigItem $config, ?string $value): array
     {
         // need auth to make http request

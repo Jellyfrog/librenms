@@ -51,7 +51,7 @@ class PollerCluster extends Model
     // ---- Accessors/Mutators ----
 
     /**
-     * @param  array|string  $groups
+     * @param  array<mixed>|string  $groups
      * @return void
      */
     public function setPollerGroupsAttribute($groups): void

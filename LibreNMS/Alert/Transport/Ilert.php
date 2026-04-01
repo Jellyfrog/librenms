@@ -37,6 +37,7 @@ class Ilert extends Transport
         return 'ilert';
     }
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         if ($alert_data['state'] == AlertState::RECOVERED) {
@@ -77,6 +78,7 @@ class Ilert extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $alert_data['msg'], $data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

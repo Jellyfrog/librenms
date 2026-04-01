@@ -14,6 +14,7 @@ class Linenotify extends Transport
 {
     protected string $name = 'LINE Notify';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         // TODO possible to attach graph images
@@ -32,6 +33,7 @@ class Linenotify extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $alert_data['msg'], $lineFields);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

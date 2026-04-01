@@ -30,12 +30,13 @@ use App\Models\Eventlog;
 
 class EventlogController extends SelectController
 {
+    /** @var array<mixed> */
     protected $default_sort = ['type' => 'asc'];
 
     /**
      * Defines validation rules (will override base validation rules for select2 responses too)
      *
-     * @return array
+     * @return array<mixed>
      */
     protected function rules()
     {
@@ -49,7 +50,7 @@ class EventlogController extends SelectController
      * Defines sortable fields.  The incoming sort field should be the key, the sql column or DB::raw() should be the value
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return array
+     * @return array<mixed>
      */
     protected function sortFields($request)
     {
@@ -60,7 +61,7 @@ class EventlogController extends SelectController
      * Defines search fields will be searched in order
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return array
+     * @return array<mixed>
      */
     protected function searchFields($request)
     {

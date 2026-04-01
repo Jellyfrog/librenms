@@ -19,7 +19,7 @@ class GraphRow extends Component
      * @param  string  $loading
      * @param  string  $aspect
      * @param  int|string  $columns  Either a number or 'responsive' aka auto columns
-     * @param  array  $graphs
+     * @param  array<mixed>  $graphs
      * @param  Device|int|null  $device
      * @param  Port|int|null  $port
      */

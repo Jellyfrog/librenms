@@ -13,6 +13,7 @@ class Stellar extends OS implements
     WirelessClientsDiscovery,
     WirelessClientsPolling
 {
+    /** @return array<mixed> */
     public function discoverWirelessClients(): array
     {
         $sensors = [];
@@ -43,7 +44,7 @@ class Stellar extends OS implements
      * The returned array should be sensor_id => value pairs
      *
      * @param  Sensor[]  $sensors  Array of sensors needed to be polled
-     * @return array of polled data
+     * @return array<mixed> of polled data
      */
     public function pollWirelessClients(array $sensors): array
     {

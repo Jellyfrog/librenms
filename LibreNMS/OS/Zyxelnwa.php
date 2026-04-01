@@ -27,6 +27,7 @@ use LibreNMS\OS\Shared\Zyxel;
 
 class Zyxelnwa extends Zyxel implements OSDiscovery, WirelessClientsDiscovery, WirelessFrequencyDiscovery, WirelessFrequencyPolling
 {
+    /** @return array<mixed> */
     public function discoverWirelessClients()
     {
         $sensors = [];
@@ -45,6 +46,7 @@ class Zyxelnwa extends Zyxel implements OSDiscovery, WirelessClientsDiscovery, W
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessFrequency()
     {
         $sensors = [];
@@ -59,6 +61,7 @@ class Zyxelnwa extends Zyxel implements OSDiscovery, WirelessClientsDiscovery, W
         return $sensors;
     }
 
+    /** @param array<mixed> $sensors */
     public function pollWirelessFrequency(array $sensors)
     {
         return $this->pollWirelessChannelAsFrequency($sensors);

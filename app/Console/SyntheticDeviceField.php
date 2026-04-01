@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class SyntheticDeviceField
 {
+    /** @param array<mixed> $columns */
     public function __construct(
     public readonly string $name,
     public readonly array $columns = [],

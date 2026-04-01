@@ -28,6 +28,7 @@ use LibreNMS\Exceptions\UserFunctionExistException;
 
 class UserFuncHelper
 {
+    /** @param array<mixed> $sensor */
     public function __construct(
         public string|int|float $value,
         public string|int|float|null $value_raw = null,
@@ -35,6 +36,7 @@ class UserFuncHelper
     ) {
     }
 
+    /** @param array<mixed> $arguments */
     public function __call(string $name, array $arguments): mixed
     {
         throw new UserFunctionExistException("Invalid user function: $name");

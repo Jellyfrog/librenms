@@ -20,7 +20,7 @@ class AlertLogDetailParser
     /**
      * Parse alert details into structured array
      *
-     * @param  array  $alert_details
+     * @param  array<mixed>  $alert_details
      * @return array{sections: array<int, array{title?: string, items: array<int, array{row: int, type?: string, fields: array<int, array{label: string, value: string, url?: string}>}>}>}
      */
     public function parse(array $alert_details): array
@@ -63,7 +63,7 @@ class AlertLogDetailParser
      * Parse a single item using available parsers or fallback
      *
      * @param  int  $row
-     * @param  array  $alert_detail
+     * @param  array<mixed>  $alert_detail
      * @param  string|null  $type
      * @return array{row: int, type?: string, fields: array<int, array{label: string, value: string, url?: string}>}
      */
@@ -119,6 +119,7 @@ class AlertLogDetailParser
     // Entity Parsers
     // ========================================
 
+    /** @param array<mixed> $detail */
     private function parseBill(array $detail): void
     {
         if (empty($detail['bill_id'])) {
@@ -132,6 +133,7 @@ class AlertLogDetailParser
         );
     }
 
+    /** @param array<mixed> $detail */
     private function parsePort(array $detail): void
     {
         if (empty($detail['port_id'])) {
@@ -155,6 +157,7 @@ class AlertLogDetailParser
         }
     }
 
+    /** @param array<mixed> $detail */
     private function parseSensor(array $detail): void
     {
         if (empty($detail['sensor_id'])) {
@@ -204,6 +207,7 @@ class AlertLogDetailParser
         }
     }
 
+    /** @param array<mixed> $detail */
     private function parseAccessPoint(array $detail): void
     {
         if (empty($detail['accesspoint_id'])) {
@@ -217,6 +221,7 @@ class AlertLogDetailParser
         );
     }
 
+    /** @param array<mixed> $detail */
     private function parseService(array $detail): void
     {
         if (empty($detail['service_id'])) {
@@ -253,6 +258,7 @@ class AlertLogDetailParser
         }
     }
 
+    /** @param array<mixed> $detail */
     private function parseBgpPeer(array $detail): void
     {
         if (empty($detail['bgpPeer_id'])) {
@@ -278,6 +284,7 @@ class AlertLogDetailParser
         }
     }
 
+    /** @param array<mixed> $detail */
     private function parseMempool(array $detail): void
     {
         if (empty($detail['mempool_id'])) {
@@ -307,6 +314,7 @@ class AlertLogDetailParser
         }
     }
 
+    /** @param array<mixed> $detail */
     private function parseApplication(array $detail): void
     {
         if (empty($detail['app_id'])) {
@@ -330,6 +338,7 @@ class AlertLogDetailParser
         }
     }
 
+    /** @param array<mixed> $detail */
     private function parseFallback(array $detail): void
     {
         $skip_keys = [

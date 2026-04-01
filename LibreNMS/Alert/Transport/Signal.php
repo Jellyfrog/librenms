@@ -27,6 +27,7 @@ use LibreNMS\Alert\Transport;
 
 class Signal extends Transport
 {
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         exec(escapeshellarg((string) $this->config['path'])
@@ -38,6 +39,7 @@ class Signal extends Transport
         return true;
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

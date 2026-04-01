@@ -189,6 +189,7 @@ class SocialiteController extends Controller
         return true;
     }
 
+    /** @param array<mixed> $attributes */
     private function normalizeAttributes(array $attributes): array
     {
         $first = current($attributes);

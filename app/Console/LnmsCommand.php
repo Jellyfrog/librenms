@@ -68,7 +68,7 @@ abstract class LnmsCommand extends Command
      * @param  int|null  $mode
      * @param  string  $description
      * @param  mixed|null  $default
-     * @param  array|\Closure  $suggestedValues
+     * @param  array<mixed>|\Closure  $suggestedValues
      * @return $this
      *
      * @throws InvalidArgumentException When argument mode is not valid
@@ -90,7 +90,7 @@ abstract class LnmsCommand extends Command
      * If you want the description to be empty, just set an empty string
      *
      * @param  string  $name
-     * @param  array|string|null  $shortcut
+     * @param  array<mixed>|string|null  $shortcut
      * @param  int|null  $mode
      * @param  string  $description
      * @param  mixed|null  $default
@@ -126,6 +126,7 @@ abstract class LnmsCommand extends Command
     /**
      * Validate the input of this command.  Uses Laravel input validation
      * merging the arguments and options together to check.
+     * @param array<mixed> $messages
      */
     protected function validate(array $rules, array $messages = []): array
     {
@@ -163,6 +164,7 @@ abstract class LnmsCommand extends Command
         }
     }
 
+    /** @param array<mixed> $rules */
     protected function validatePromptInput(string $attributeName, string|array $rules): callable
     {
         return function (string|array $value) use ($attributeName, $rules): ?string {

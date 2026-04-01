@@ -41,6 +41,7 @@ class Messagebirdvoice extends Transport
 {
     protected string $name = 'Messagebird Voice';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $messagebird_msg = mb_strimwidth((string) $alert_data['msg'], 0, 1000, '...');
@@ -65,6 +66,7 @@ class Messagebirdvoice extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $messagebird_msg, $fields);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

@@ -52,6 +52,7 @@ class PseudowiresController implements DeviceTab
         return __('Pseudowires');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [];

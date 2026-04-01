@@ -42,6 +42,7 @@ class AlertRuleTemplateController extends Controller
         ]);
     }
 
+    /** @param array<mixed> $extra */
     private function extraWithDefaults(array $extra): array
     {
         $default_extra = [
@@ -57,6 +58,7 @@ class AlertRuleTemplateController extends Controller
         return array_replace($default_extra, $extra);
     }
 
+    /** @return array<mixed> */
     public function templatesCollection(): array
     {
         return json_decode(file_get_contents(resource_path('definitions/alert_rules.json')), true);

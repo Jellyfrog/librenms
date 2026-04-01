@@ -54,6 +54,7 @@ class LatencyController implements DeviceTab
         return __('Latency');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         $smokeping = new Smokeping($device);

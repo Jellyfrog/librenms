@@ -51,7 +51,7 @@ class HiveosWireless extends OS implements
      * Discover processors.
      * Returns an array of LibreNMS\Device\Processor objects that have been discovered
      *
-     * @return array Processors
+     * @return array<mixed> Processors
      */
     public function discoverProcessors(): array
     {
@@ -69,7 +69,7 @@ class HiveosWireless extends OS implements
      * Discover wireless client counts. Type is clients.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessClients()
     {
@@ -85,12 +85,14 @@ class HiveosWireless extends OS implements
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
      * @return array Sensors
+     * @param array<mixed> $sensors
      */
     public function pollWirelessFrequency(array $sensors)
     {
         return $this->pollWirelessChannelAsFrequency($sensors);
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessFrequency()
     {
         $ahRadioName = $this->getCacheByIndex('ahIfName', 'AH-INTERFACE-MIB');
@@ -115,7 +117,7 @@ class HiveosWireless extends OS implements
      * Discover wireless tx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessPower()
     {
@@ -138,6 +140,7 @@ class HiveosWireless extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessNoiseFloor()
     {
         $ahRadioName = $this->getCacheByIndex('ahIfName', 'AH-INTERFACE-MIB');
@@ -162,7 +165,7 @@ class HiveosWireless extends OS implements
      * Poll wireless noise floor
      * The returned array should be sensor_id => value pairs
      *
-     * @param  array  $sensors  Array of sensors needed to be polled
+     * @param  array<mixed>  $sensors  Array of sensors needed to be polled
      * @return array of polled data
      */
     public function pollWirelessNoiseFloor(array $sensors)

@@ -171,6 +171,7 @@ class Git
 
     /**
      * Fetches the remote commit from the github api if on the daily release channel
+     * @return array<mixed>
      */
     private function remoteCommit(): array
     {
@@ -186,6 +187,7 @@ class Git
         });
     }
 
+    /** @return array<mixed> */
     private function headCommit(): array
     {
         return $this->cacheGet('headCommit', function () {
@@ -205,6 +207,7 @@ class Git
         });
     }
 
+    /** @param array<mixed> $options */
     private function run(string $command, array $options): Process
     {
         $version_process = new Process(array_merge(['git', $command], $options), $this->install_dir);

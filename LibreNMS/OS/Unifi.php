@@ -79,7 +79,7 @@ class Unifi extends OS implements
      * Discover processors.
      * Returns an array of LibreNMS\Device\Processor objects that have been discovered
      *
-     * @return array Processors
+     * @return array<mixed> Processors
      */
     public function discoverProcessors()
     {
@@ -89,7 +89,7 @@ class Unifi extends OS implements
     /**
      * Returns an array of LibreNMS\Device\Sensor objects
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessClients()
     {
@@ -168,7 +168,7 @@ class Unifi extends OS implements
     /**
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessCcq()
     {
@@ -203,7 +203,7 @@ class Unifi extends OS implements
      * Poll wireless client connection quality
      * The returned array should be sensor_id => value pairs
      *
-     * @param  array  $sensors  Array of sensors needed to be polled
+     * @param  array<mixed>  $sensors  Array of sensors needed to be polled
      * @return array of polled data
      */
     public function pollWirelessCcq(array $sensors)
@@ -227,7 +227,7 @@ class Unifi extends OS implements
      * Discover wireless frequency.  This is in MHz. Type is frequency.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessFrequency()
     {
@@ -258,7 +258,7 @@ class Unifi extends OS implements
      * Poll wireless frequency as MHz
      * The returned array should be sensor_id => value pairs
      *
-     * @param  array  $sensors  Array of sensors needed to be polled
+     * @param  array<mixed>  $sensors  Array of sensors needed to be polled
      * @return array of polled data
      */
     public function pollWirelessFrequency(array $sensors)
@@ -270,7 +270,7 @@ class Unifi extends OS implements
      * Discover wireless tx or rx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessPower()
     {
@@ -304,7 +304,7 @@ class Unifi extends OS implements
      * Discover wireless utilization.  This is in %. Type is utilization.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessUtilization()
     {

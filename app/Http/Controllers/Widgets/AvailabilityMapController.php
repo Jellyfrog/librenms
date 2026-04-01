@@ -70,6 +70,7 @@ class AvailabilityMapController extends WidgetController
         return view('widgets.availability-map', $data);
     }
 
+    /** @return array<mixed> */
     private function getDevices(): array
     {
         $settings = $this->getSettings();
@@ -125,6 +126,7 @@ class AvailabilityMapController extends WidgetController
         return [$data, $totals];
     }
 
+    /** @return array<mixed> */
     private function getServices(): array
     {
         $settings = $this->getSettings();
@@ -171,6 +173,7 @@ class AvailabilityMapController extends WidgetController
         return [$data, $totals];
     }
 
+    /** @param array<mixed> $data */
     private function sort(array &$data): void
     {
         match ($this->getSettings()['order_by']) {
@@ -234,6 +237,7 @@ class AvailabilityMapController extends WidgetController
         return $tooltip;
     }
 
+    /** @return array<mixed> */
     private function parseDeviceState(Device $device, int $uptime_warn): array
     {
         if ($device->disabled) {
@@ -263,6 +267,7 @@ class AvailabilityMapController extends WidgetController
         return ['down', 'label-danger'];
     }
 
+    /** @return array<mixed> */
     private function parseServiceState(Service $service): array
     {
         if ($service->service_status == 0) {

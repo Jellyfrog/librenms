@@ -42,7 +42,7 @@ class PluginManager implements PluginManagerInterface
     /** @var Collection */
     private $plugins;
 
-    /** @var array */
+    /** @var array<mixed> */
     private $validPlugins = [];
 
     public function __construct()
@@ -89,7 +89,7 @@ class PluginManager implements PluginManagerInterface
      * Check if there are any valid hooks
      *
      * @param  string  $hookType
-     * @param  array  $args
+     * @param  array<mixed>  $args
      * @param  string|null  $plugin  only for this plugin if set
      * @return bool
      */
@@ -104,7 +104,7 @@ class PluginManager implements PluginManagerInterface
      * settings is automatically injected
      *
      * @param  string  $hookType
-     * @param  array  $args
+     * @param  array<mixed>  $args
      * @param  string|null  $plugin  only for this plugin if set
      * @return array
      */
@@ -135,7 +135,7 @@ class PluginManager implements PluginManagerInterface
      * One plugin shares the settings across all hooks
      *
      * @param  string  $pluginName
-     * @return array
+     * @return array<mixed>
      */
     public function getSettings(string $pluginName): array
     {
@@ -146,7 +146,7 @@ class PluginManager implements PluginManagerInterface
      * Save settings array to the database for the given plugin
      *
      * @param  string  $pluginName
-     * @param  array  $settings
+     * @param  array<mixed>  $settings
      * @return bool
      */
     public function setSettings(string $pluginName, array $settings): bool
@@ -234,7 +234,7 @@ class PluginManager implements PluginManagerInterface
 
     /**
      * @param  string  $hookType
-     * @param  array  $args
+     * @param  array<mixed>  $args
      * @param  string|null  $onlyPlugin
      * @return Collection
      */
@@ -249,6 +249,7 @@ class PluginManager implements PluginManagerInterface
             ->filter(fn ($hook) => app()->call([$hook['instance'], 'authorize'], $this->fillArgs($args, $hook['plugin_name'])));
     }
 
+    /** @param array<mixed> $args */
     protected function fillArgs(array $args, string $pluginName): array
     {
         if (isset($args['settings'])) {

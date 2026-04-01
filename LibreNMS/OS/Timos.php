@@ -84,7 +84,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, TransceiverDiscove
      * ALU-MICROWAVE-MIB::aluMwRadioLocalRxMainPower
      * ALU-MICROWAVE-MIB::aluMwRadioLocalTxPower
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessPower(): array
     {
@@ -780,6 +780,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, TransceiverDiscove
             });
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessSnr(): array
     {
         $sensors = [];
@@ -806,6 +807,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, TransceiverDiscove
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRsrq(): array
     {
         $sensors = [];
@@ -830,6 +832,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, TransceiverDiscove
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRssi(): array
     {
         $sensors = [];
@@ -854,6 +857,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, TransceiverDiscove
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRsrp(): array
     {
         $sensors = [];
@@ -878,6 +882,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, TransceiverDiscove
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessChannel(): array
     {
         $sensors = [];
@@ -947,6 +952,7 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, TransceiverDiscove
         return $inventory;
     }
 
+    /** @param array<mixed> $data */
     private function parseIpField(array $data, string $ngField): ?string
     {
         if (isset($data[$ngField])) {

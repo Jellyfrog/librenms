@@ -86,7 +86,7 @@ class WisBridge extends OS implements
      * Discover wireless frequency.  This is in Hz. Type is frequency.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessFrequency()
     {
@@ -101,7 +101,7 @@ class WisBridge extends OS implements
      * Discover wireless capacity.  This is a percent. Type is capacity.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessCapacity()
     {
@@ -116,7 +116,7 @@ class WisBridge extends OS implements
      * Discover wireless client connection quality.  This is a percent. Type is ccq.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessCcq()
     {
@@ -132,7 +132,7 @@ class WisBridge extends OS implements
      * Discover wireless client counts. Type is clients.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessClients()
     {
@@ -147,7 +147,7 @@ class WisBridge extends OS implements
      * Discover wireless distance.  This is in kilometers. Type is distance.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessDistance()
     {
@@ -163,7 +163,7 @@ class WisBridge extends OS implements
      * Discover wireless noise floor. This is in dBm/Hz. Type is noise-floor.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessNoiseFloor()
     {
@@ -178,7 +178,7 @@ class WisBridge extends OS implements
      * Discover wireless tx or rx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessPower()
     {
@@ -195,7 +195,7 @@ class WisBridge extends OS implements
      * Discover wireless quality.  This is a percent. Type is quality.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessQuality()
     {
@@ -211,7 +211,7 @@ class WisBridge extends OS implements
      * Discover wireless rate. This is in bps. Type is rate.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessRate()
     {
@@ -228,7 +228,7 @@ class WisBridge extends OS implements
      * Discover wireless RSSI (Received Signal Strength Indicator). This is in dBm. Type is rssi.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessRssi()
     {

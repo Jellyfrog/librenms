@@ -46,6 +46,7 @@ class YamlDiscoveryField
         $this->should_poll = fn (YamlDiscoveryDefinition $def) => false;
     }
 
+    /** @param array<mixed> $data */
     public function calculateValue(array $yaml, array $data, string $index, int $count): void
     {
         if (array_key_exists($this->key, $yaml)) {

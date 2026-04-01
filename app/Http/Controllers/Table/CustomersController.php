@@ -34,11 +34,13 @@ use LibreNMS\Util\Html;
 
 class CustomersController extends TableController
 {
+    /** @return array<mixed> */
     public function searchFields($request)
     {
         return ['port_descr_descr', 'ifName', 'ifDescr', 'ifAlias', 'hostname', 'sysDescr', 'port_descr_speed', 'port_descr_notes'];
     }
 
+    /** @return array<mixed> */
     public function sortFields($request)
     {
         return ['port_descr_descr', 'hostname', 'ifDescr', 'port_descr_speed', 'port_descr_circuit', 'port_descr_notes'];
@@ -99,7 +101,7 @@ class CustomersController extends TableController
 
     /**
      * @param  Port  $port
-     * @return array|\Illuminate\Database\Eloquent\Model|\Illuminate\Support\Collection
+     * @return array<mixed>|\Illuminate\Database\Eloquent\Model|\Illuminate\Support\Collection
      */
     public function formatItem($port)
     {

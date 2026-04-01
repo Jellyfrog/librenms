@@ -55,6 +55,7 @@ class NeighboursController implements DeviceTab
         return __('Neighbours');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         $selection = Url::parseOptions('selection', 'list');

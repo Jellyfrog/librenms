@@ -28,6 +28,7 @@ namespace App\Http\Controllers\Table;
 
 class EditPortsController extends TableController
 {
+    /** @return array<mixed> */
     public function rules()
     {
         return [
@@ -37,11 +38,13 @@ class EditPortsController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     public function searchFields($request)
     {
         return ['ifName', 'ifAlias', 'ifDescr'];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request)
     {
         return ['ifIndex', 'ifName', 'ifAdminStatus', 'ifOperStatus', 'ifSpeed', 'ifAlias'];
@@ -55,7 +58,7 @@ class EditPortsController extends TableController
 
     /**
      * @param  \App\Models\Port  $port
-     * @return array
+     * @return array<mixed>
      */
     public function formatItem($port)
     {

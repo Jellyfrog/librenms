@@ -36,17 +36,19 @@ use LibreNMS\Util\Http;
 
 class Discord extends Transport
 {
+    /** @var array<mixed> */
     private array $embedFieldTranslations = [
         'name' => 'Rule Name',
     ];
 
+    /** @var array<mixed> */
     private array $discord_message = [];
 
     /**
      * Composes a Discord JSON message and delivers it using HTTP POST
      * https://discord.com/developers/docs/resources/message#create-message
      *
-     * @param  array  $alert_data
+     * @param  array<mixed>  $alert_data
      * @return bool
      */
     public function deliverAlert(array $alert_data): bool
@@ -78,11 +80,13 @@ class Discord extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $alert_data['msg'], $this->discord_message);
     }
 
+    /** @param array<mixed> $alert_data */
     private function getTitle(array $alert_data): string
     {
         return '#' . $alert_data['uid'] . ' ' . $alert_data['title'];
     }
 
+    /** @return array<mixed> */
     private function stripHTMLTagsFromDescription(): array
     {
         $this->discord_message['embeds'][0]['description'] = strip_tags((string) $this->discord_message['embeds'][0]['description']);
@@ -90,6 +94,7 @@ class Discord extends Transport
         return $this->discord_message;
     }
 
+    /** @param array<mixed> $alert_data */
     private function getColorOfAlertState(array $alert_data): int
     {
         $hexColor = self::getColorForState($alert_data['state']);
@@ -98,16 +103,19 @@ class Discord extends Transport
         return hexdec((string) $sanitized);
     }
 
+    /** @param array<mixed> $alert_data */
     private function getDescription(array $alert_data): string
     {
         return $alert_data['msg'];
     }
 
+    /** @param array<mixed> $alert_data */
     private function getFooter(array $alert_data): string
     {
         return $alert_data['elapsed'] ? 'alert took ' . $alert_data['elapsed'] : '';
     }
 
+    /** @return array<mixed> */
     private function includeINIFields(): array
     {
         $ini_fileds = $this->parseUserOptions($this->config['options']);
@@ -123,7 +131,7 @@ class Discord extends Transport
      * Convert an html <img src=""> tag to a json Discord message Embed Image Structure
      * https://discord.com/developers/docs/resources/message#embed-object-embed-image-structure
      *
-     * @return array
+     * @return array<mixed>
      */
     private function embedGraphs(): array
     {
@@ -147,7 +155,7 @@ class Discord extends Transport
      * Converts comma-separated values into an array of name-value pairs.
      * https://discord.com/developers/docs/resources/message#embed-object-embed-field-structure
      *
-     * * @param  array  $alert_data  Array containing the values.
+     * * @param  array<mixed>  $alert_data  Array containing the values.
      * @return array An array of name-value pairs.
      *
      * @example
@@ -180,6 +188,7 @@ class Discord extends Transport
         return $result;
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

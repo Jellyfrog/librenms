@@ -21,7 +21,7 @@ use Jalle19\CertificateParser\Provider\StreamSocketProvider;
  * @property string|null $issuer_country
  * @property string|null $issuer_organization
  * @property string|null $subject
- * @property array|null $subject_alternative_names
+ * @property array<mixed>|null $subject_alternative_names
  * @property string|null $serial_number
  * @property string|null $serial_number_hex
  * @property bool $self_signed
@@ -226,6 +226,7 @@ class SslCertificate extends Model
      * Fetch certificate from host:port and return array of attributes for create/update.
      *
      * @throws ProviderException|CertificateParsingException
+     * @return array<mixed>
      */
     public static function fetchAndParse(string $host, int $port = 443, int $timeout = 10): array
     {

@@ -48,6 +48,7 @@ abstract class AddressSearchController extends TableController
     protected string $additionalSearchField = '';
     protected string $cidrField = ''; // set for display
 
+    /** @return array<mixed> */
     protected function sortFields($request)
     {
         return [
@@ -58,6 +59,7 @@ abstract class AddressSearchController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function rules()
     {
         return [

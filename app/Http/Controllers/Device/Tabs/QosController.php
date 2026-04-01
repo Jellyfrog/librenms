@@ -52,6 +52,7 @@ class QosController implements DeviceTab
         return __('QoS');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         $show = null;

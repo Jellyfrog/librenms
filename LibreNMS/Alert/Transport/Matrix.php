@@ -31,6 +31,7 @@ use LibreNMS\Util\Http;
 
 class Matrix extends Transport
 {
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $server = $this->config['matrix-server'];
@@ -59,6 +60,7 @@ class Matrix extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $message, $body);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

@@ -78,7 +78,7 @@ class Validator
     /**
      * Run validations. An empty array will run all default validations.
      *
-     * @param  array  $validation_groups  selected validation groups to run
+     * @param  array<mixed>  $validation_groups  selected validation groups to run
      * @param  bool  $print_group_status  print out group status
      */
     public function validate(array $validation_groups = [], bool $print_group_status = false): void
@@ -267,7 +267,7 @@ class Validator
      * @param  array  $output  will hold the output of the command
      * @param  int  $code  will hold the return code from the command
      *
-     * @param-out array $output
+     * @param-out array<mixed> $output
      * @param-out int $code
      */
     public function execAsUser(string $command, ?array &$output = null, ?int &$code = null): void
@@ -326,6 +326,7 @@ class Validator
         };
     }
 
+    /** @return array<mixed> */
     public function toArray(): array
     {
         return array_map(function (array $results, string $group) {

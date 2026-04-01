@@ -37,6 +37,7 @@ abstract class TableController extends PaginatedAjaxController
     /** @var mixed */
     protected $model;
 
+    /** @return array<mixed> */
     protected function sortFields($request)
     {
         if (isset($this->model)) {
@@ -156,7 +157,7 @@ abstract class TableController extends PaginatedAjaxController
     /**
      * Get headers for CSV export
      *
-     * @return array
+     * @return array<mixed>
      */
     protected function getExportHeaders()
     {
@@ -166,7 +167,7 @@ abstract class TableController extends PaginatedAjaxController
     /**
      * Get the visible columns for this table
      *
-     * @return array
+     * @return array<mixed>
      */
     protected function visibleColumns()
     {
@@ -184,7 +185,7 @@ abstract class TableController extends PaginatedAjaxController
      * Format a row for CSV export
      *
      * @param  mixed  $item
-     * @return array
+     * @return array<mixed>
      */
     protected function formatExportRow($item)
     {
@@ -207,7 +208,7 @@ abstract class TableController extends PaginatedAjaxController
      * Generate CSV response from data
      *
      * @param  \Illuminate\Support\Collection  $data
-     * @param  array  $headers
+     * @param  array<mixed>  $headers
      * @param  string  $filename
      * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */

@@ -52,6 +52,7 @@ class SlasController implements DeviceTab
         return __('SLAs');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [];

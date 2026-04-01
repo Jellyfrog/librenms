@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Cache;
 
 trait RuntimeClassCache
 {
-    /** @var array */
+    /** @var array<mixed> */
     private $runtimeCache = [];
 
     /** @var int Setting this installs the data in the external cache to be shared across instances */

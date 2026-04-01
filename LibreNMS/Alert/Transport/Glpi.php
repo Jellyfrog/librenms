@@ -32,6 +32,7 @@ class Glpi extends Transport
 {
     protected string $name = 'GLPI';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         // Connect to the API with app/user tokens
@@ -198,6 +199,7 @@ class Glpi extends Transport
             $alert_data['msg'], $data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

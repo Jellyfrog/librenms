@@ -36,6 +36,7 @@ use LibreNMS\Util\Mac;
 
 class PortNacController extends TableController
 {
+    /** @return array<mixed> */
     public function rules()
     {
         return [
@@ -44,11 +45,13 @@ class PortNacController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     public function searchFields($request)
     {
         return ['username', 'ip_address', 'mac_address'];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request)
     {
         return [
@@ -93,7 +96,7 @@ class PortNacController extends TableController
     /**
      * @param  string  $search
      * @param  Builder  $query
-     * @param  array  $fields
+     * @param  array<mixed>  $fields
      * @return Builder|\Illuminate\Database\Query\Builder
      */
     protected function search($search, $query, $fields = [])
@@ -130,6 +133,7 @@ class PortNacController extends TableController
 
     /**
      * @param  PortsNac  $nac
+     * @return array<mixed>
      */
     public function formatItem($nac)
     {
@@ -166,7 +170,7 @@ class PortNacController extends TableController
      * Get the OUI list for a specific vendor
      *
      * @param  string  $vendor
-     * @return array
+     * @return array<mixed>
      */
     protected function ouisFromVendor(string $vendor): array
     {
@@ -178,6 +182,7 @@ class PortNacController extends TableController
 
     /**
      * filter $query from vendor OUIs
+     * @param array<mixed> $vendor_ouis
      */
     protected function queryByOui(array $vendor_ouis, Builder $query): Builder
     {

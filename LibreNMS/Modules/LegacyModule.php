@@ -40,6 +40,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class LegacyModule implements Module
 {
+    /** @var array<mixed> */
     private array $module_deps = [
         'arp-table' => ['ports'],
         'bgp-peers' => ['ports', 'vrf', 'ipv4-addresses', 'ipv6-addresses'],
@@ -51,6 +52,7 @@ class LegacyModule implements Module
 
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function dependencies(): array
     {
@@ -118,6 +120,7 @@ class LegacyModule implements Module
 
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function dump(Device $device, string $type): ?array
     {
@@ -191,6 +194,7 @@ class LegacyModule implements Module
         return $data;
     }
 
+    /** @return array<mixed> */
     private function moduleDumpDefinition(): array
     {
         static $def;
@@ -203,6 +207,7 @@ class LegacyModule implements Module
         return $def[$this->name] ?? [];
     }
 
+    /** @return array<mixed> */
     private function collectComponents(int $device_id): array
     {
         $components = (new Component())->getComponents($device_id)[$device_id] ?? [];

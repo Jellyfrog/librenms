@@ -32,6 +32,7 @@ use Illuminate\Http\Request;
 class EventlogController extends WidgetController
 {
     protected string $name = 'eventlog';
+    /** @var array<mixed> */
     protected $defaults = [
         'title' => null,
         'device' => null,

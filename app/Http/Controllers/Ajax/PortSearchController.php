@@ -54,7 +54,7 @@ class PortSearchController extends SearchController
 
     /**
      * @param  Port  $port
-     * @return array
+     * @return array<mixed>
      */
     public function formatItem($port): array
     {

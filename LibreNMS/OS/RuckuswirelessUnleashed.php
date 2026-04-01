@@ -12,6 +12,7 @@ class RuckuswirelessUnleashed extends OS implements
     WirelessClientsDiscovery,
     WirelessApCountDiscovery
 {
+    /** @return array<mixed> */
     public function discoverWirelessClients()
     {
         $oid = '.1.3.6.1.4.1.25053.1.15.1.1.1.15.2.0'; //RUCKUS-UNLEASHED-SYSTEM-MIB::ruckusUnleashedSystemStatsNumSta.0
@@ -21,6 +22,7 @@ class RuckuswirelessUnleashed extends OS implements
         ];
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessApCount()
     {
         $oid = '.1.3.6.1.4.1.25053.1.15.1.1.1.15.1.0'; //RUCKUS-UNLEASHED-SYSTEM-MIB:: ruckusUnleashedSystemStatsNumAP.0

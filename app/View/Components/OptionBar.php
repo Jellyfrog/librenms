@@ -18,7 +18,7 @@ class OptionBar extends Component
      *   'name' => ['text' => 'Display Text', 'link' => 'https://...'],
      * ]
      *
-     * @var array
+     * @var array<mixed>
      */
     public $options;
 
@@ -26,7 +26,7 @@ class OptionBar extends Component
      * Create a new component instance.
      *
      * @param  string  $name
-     * @param  array  $options
+     * @param  array<mixed>  $options
      * @param  mixed  $selected
      */
     public function __construct(string $name = '', array $options = [], /**

@@ -65,6 +65,7 @@ class ShowConfigController extends Controller implements DeviceTab
         return __('Config');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [

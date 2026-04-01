@@ -84,6 +84,7 @@ class LdapAuthorizationAuthorizer extends AuthorizerBase
         }
     }
 
+    /** @param array<mixed> $credentials */
     public function authenticate($credentials)
     {
         if (isset($credentials['username']) && $this->userExists($credentials['username'])) {
@@ -199,6 +200,7 @@ class LdapAuthorizationAuthorizer extends AuthorizerBase
         return $user_id;
     }
 
+    /** @return array<mixed>|false */
     public function getUser($user_id)
     {
         $uid_attr = strtolower(LibrenmsConfig::get('auth_ldap_uid_attribute', 'uidnumber'));

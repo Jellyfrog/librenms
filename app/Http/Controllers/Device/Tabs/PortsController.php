@@ -44,7 +44,9 @@ use LibreNMS\Interfaces\UI\DeviceTab;
 class PortsController implements DeviceTab
 {
     private bool $detail = true;
+    /** @var array<mixed> */
     private array $settings = [];
+    /** @var array<mixed> */
     private array $defaults = [
         'perPage' => 32,
         'sort' => 'ifIndex',
@@ -75,6 +77,7 @@ class PortsController implements DeviceTab
         return __('Ports');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         Validator::validate($request->all(), [
@@ -118,6 +121,7 @@ class PortsController implements DeviceTab
         ], $data);
     }
 
+    /** @return array<mixed> */
     private function portData(Device $device, Request $request): array
     {
         $relationships = ['groups', 'ipv4', 'ipv6', 'vlans', 'adsl', 'vdsl'];
@@ -162,6 +166,7 @@ class PortsController implements DeviceTab
         return $data;
     }
 
+    /** @return array<mixed> */
     public function findPortNeighbors(Port $port): array
     {
         // only do for detail
@@ -242,6 +247,7 @@ class PortsController implements DeviceTab
         return $neighbors;
     }
 
+    /** @param array<mixed> $neighbors */
     private function addPortNeighbor(array &$neighbors, string $type, int $port_id): void
     {
         if (empty($neighbors[$port_id])) {
@@ -253,6 +259,7 @@ class PortsController implements DeviceTab
         $neighbors[$port_id][$type] = 1;
     }
 
+    /** @return array<mixed> */
     private function graphData(Device $device, Request $request): array
     {
         return [
@@ -261,6 +268,7 @@ class PortsController implements DeviceTab
         ];
     }
 
+    /** @return array<mixed> */
     private function transceiversData(Device $device): array
     {
         $device->load(['transceivers.port']);
@@ -270,6 +278,7 @@ class PortsController implements DeviceTab
         ];
     }
 
+    /** @return array<mixed> */
     private function xdslData(Device $device): array
     {
         $device->portsAdsl->load('port');
@@ -281,6 +290,7 @@ class PortsController implements DeviceTab
         ];
     }
 
+    /** @return array<mixed> */
     private function linksData(Device $device): array
     {
         $device->links->load(['port', 'remotePort', 'remoteDevice']);
@@ -288,11 +298,13 @@ class PortsController implements DeviceTab
         return ['links' => $device->links];
     }
 
+    /** @return array<mixed> */
     private function portSecurityData(Device $device): array
     {
         return [];
     }
 
+    /** @return array<mixed> */
     private function getTabs(Device $device): array
     {
         $tabs = [
@@ -391,6 +403,7 @@ class PortsController implements DeviceTab
         }
     }
 
+    /** @param array<mixed> $relationships */
     private function getFilteredPortsQuery(Device $device, array $relationships = [], ?Request $request = null): Builder
     {
         $orderBy = match ($this->settings['sort']) {
@@ -440,6 +453,7 @@ class PortsController implements DeviceTab
         return $request->route('vars', LibrenmsConfig::get('ports_page_default')); // fourth segment is called vars to handle legacy urls
     }
 
+    /** @return array<mixed> */
     private function pageLinks(Request $request): array
     {
         $disabled = $this->settings['disabled'];

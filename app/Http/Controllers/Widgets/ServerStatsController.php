@@ -33,6 +33,7 @@ use Illuminate\View\View;
 class ServerStatsController extends WidgetController
 {
     protected string $name = 'server-stats';
+    /** @var array<mixed> */
     protected $defaults = [
         'title' => null,
         'columnsize' => 3,
@@ -83,6 +84,7 @@ class ServerStatsController extends WidgetController
         return view('widgets.settings.server-stats', $settings);
     }
 
+    /** @return array<mixed> */
     public function getSettings($settingsView = false): array
     {
         $settings = parent::getSettings($settingsView);

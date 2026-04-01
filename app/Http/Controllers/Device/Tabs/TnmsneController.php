@@ -53,6 +53,7 @@ class TnmsneController implements DeviceTab
         return __('Hardware');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [];

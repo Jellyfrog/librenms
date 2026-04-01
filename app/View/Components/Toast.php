@@ -10,10 +10,12 @@ use Illuminate\View\Component;
 
 class Toast extends Component
 {
+    /** @var array<mixed> */
     public array $purifier_config = [
         'HTML.Allowed' => 'a[href],b,i,ul,ol,li,h1,h2,h3,h4,br,p,pre',
         'URI.DisableExternal' => true,
     ];
+    /** @var array<mixed> */
     public ?array $toasts;
 
     /**

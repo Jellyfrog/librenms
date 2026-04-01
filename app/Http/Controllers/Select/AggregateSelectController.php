@@ -74,7 +74,7 @@ abstract class AggregateSelectController extends SelectController
 
     /**
      * @param  array{text: string, controller: SelectController, prefix: string, items: Paginator}|Model  $group
-     * @return array
+     * @return array<mixed>
      */
     public function formatItem($group): array
     {

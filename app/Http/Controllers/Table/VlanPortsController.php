@@ -10,6 +10,7 @@ use LibreNMS\Util\Url;
 
 class VlanPortsController extends TableController
 {
+    /** @return array<mixed> */
     protected function searchFields(Request $request): array
     {
         return [
@@ -19,6 +20,7 @@ class VlanPortsController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request): array
     {
         return [
@@ -61,6 +63,7 @@ class VlanPortsController extends TableController
             ]);
     }
 
+    /** @param array<mixed> $fields */
     protected function search($search, $query, $fields)
     {
         if ($search) {
@@ -73,6 +76,7 @@ class VlanPortsController extends TableController
 
     /**
      * @param  Port  $model
+     * @return array<mixed>
      */
     public function formatItem($model): array
     {

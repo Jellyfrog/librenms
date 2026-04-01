@@ -34,6 +34,7 @@ use Illuminate\View\View;
 class TopInterfacesController extends WidgetController
 {
     protected string $name = 'top-interfaces';
+    /** @var array<mixed> */
     protected $defaults = [
         'interface_count' => 5,
         'time_interval' => 15,

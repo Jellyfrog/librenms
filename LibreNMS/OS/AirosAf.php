@@ -46,7 +46,7 @@ class AirosAf extends OS implements
      * Discover wireless distance.  This is in Kilometers. Type is distance.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessDistance()
     {
@@ -61,7 +61,7 @@ class AirosAf extends OS implements
      * Discover wireless frequency.  This is in GHz. Type is frequency.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessFrequency()
     {
@@ -92,7 +92,7 @@ class AirosAf extends OS implements
      * Discover wireless tx or rx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessPower()
     {
@@ -111,7 +111,7 @@ class AirosAf extends OS implements
      * Discover wireless rate. This is in Mbps. Type is rate.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessRate()
     {

@@ -40,7 +40,7 @@ class Ptp800 extends OS implements
      * Discover wireless tx or rx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessPower()
     {
@@ -77,7 +77,7 @@ class Ptp800 extends OS implements
      * Discover wireless rate. This is in bps. Type is rate.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessRate()
     {

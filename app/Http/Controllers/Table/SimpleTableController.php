@@ -46,7 +46,7 @@ abstract class SimpleTableController extends Controller
      * @param  Request  $request
      * @param  array  $rules
      * @param  array  $messages
-     * @param  array  $customAttributes
+     * @param  array<mixed>  $customAttributes
      * @return array
      */
     public function validate(Request $request, array $rules = [], array $messages = [], array $customAttributes = [])
@@ -57,7 +57,7 @@ abstract class SimpleTableController extends Controller
     }
 
     /**
-     * @param  array|Collection  $rows
+     * @param  array<mixed>|Collection  $rows
      * @param  int  $page
      * @param  int  $currentCount
      * @param  int  $total

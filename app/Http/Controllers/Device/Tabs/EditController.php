@@ -51,6 +51,7 @@ class EditController implements \LibreNMS\Interfaces\UI\DeviceTab
         return __('Edit');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [];

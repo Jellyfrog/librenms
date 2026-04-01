@@ -123,6 +123,7 @@ class ReportDevices extends LnmsCommand
         return new SyntheticDeviceField($field, [$field]);
     }
 
+    /** @return array<mixed> */
     protected function getRelationships(): array
     {
         $relationships = Device::definedRelations();
@@ -134,6 +135,7 @@ class ReportDevices extends LnmsCommand
         return $relationships;
     }
 
+    /** @return array<mixed> */
     protected function getSyntheticFields(): array
     {
         return [
@@ -184,6 +186,7 @@ class ReportDevices extends LnmsCommand
         return 0;
     }
 
+    /** @param array<mixed> $headers */
     protected function printReport(array $headers, array|Collection $rows): void
     {
         $output = $this->option('output');

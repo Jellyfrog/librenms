@@ -40,7 +40,7 @@ class WirelessSensor
      *
      * @param  WirelessSensorType  $type  Class of this sensor, must be a supported class
      * @param  int  $device_id  the device_id of the device that owns this sensor
-     * @param  array|string  $oids  an array or single oid that contains the data for this sensor
+     * @param  array<mixed>|string  $oids  an array or single oid that contains the data for this sensor
      * @param  string  $subtype  the type of sensor an additional identifier to separate out sensors of the same class, generally this is the os name
      * @param  int|string  $index  the index of this sensor, must be stable, generally the index of the oid
      * @param  string  $description  A user visible description of this sensor, may be truncated in some places (like graphs)

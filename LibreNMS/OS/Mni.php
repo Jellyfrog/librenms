@@ -20,7 +20,7 @@ class Mni extends OS implements
      * Discover wireless tx or rx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessPower(): array
     {
@@ -60,7 +60,7 @@ class Mni extends OS implements
      * Discover wireless rate. This is in bps. Type is rate.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessRate(): array
     {
@@ -83,6 +83,7 @@ class Mni extends OS implements
         ];
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessCapacity(): array
     {
         return \SnmpQuery::walk('MNI-PROTEUS-AMT-MIB::mnPrPerfBaseLinkCapMbps')
@@ -98,6 +99,7 @@ class Mni extends OS implements
             ))->all();
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessFrequency(): array
     {
         return \SnmpQuery::walk('MNI-PROTEUS-AMT-MIB::mnPrRadStatODUFreqBand')

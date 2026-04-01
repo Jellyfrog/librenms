@@ -49,6 +49,7 @@ class Core implements Module
 {
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function dependencies(): array
     {
@@ -136,6 +137,7 @@ class Core implements Module
 
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function dump(Device $device, string $type): ?array
     {
@@ -210,7 +212,7 @@ class Core implements Module
      * Appending _except to any condition will invert the match.
      *
      * @param  Device  $device
-     * @param  array  $array  Array of items, keys should be sysObjectID, sysDescr, or sysDescr_regex
+     * @param  array<mixed>  $array  Array of items, keys should be sysObjectID, sysDescr, or sysDescr_regex
      * @param  string|array  $mibdir  MIB directory for evaluated OS
      * @return bool the result (all items passed return true)
      */
@@ -306,6 +308,7 @@ class Core implements Module
         }
     }
 
+    /** @param array<mixed> $def */
     protected static function discoveryIsSlow(array $def): bool
     {
         foreach ($def['discovery'] as $item) {

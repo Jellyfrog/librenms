@@ -184,7 +184,7 @@ abstract class IP implements \Stringable
     /**
      * Check if this IP is in one of multiple networks
      *
-     * @param  array  $networks
+     * @param  array<mixed>  $networks
      * @return bool
      */
     public function inNetworks($networks)

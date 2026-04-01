@@ -32,6 +32,7 @@ class PollDevice implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private ?Device $device = null;
+    /** @var array<mixed> */
     private ?array $deviceArray = null;
     /**
      * @var OS|OS\Generic

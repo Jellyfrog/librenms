@@ -34,6 +34,7 @@ use LibreNMS\Enum\WirelessSensorType;
 
 class WirelessSensorController extends SensorsController
 {
+    /** @return array<mixed> */
     protected function rules(): array
     {
         return [

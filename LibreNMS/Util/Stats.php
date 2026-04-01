@@ -47,6 +47,7 @@ class Stats
         }
     }
 
+    /** @return array<mixed> */
     public function dump(): array
     {
         return $this->collectData();
@@ -79,6 +80,7 @@ class Stats
         }
     }
 
+    /** @return array<mixed> */
     private function collectData(): array
     {
         return [
@@ -100,6 +102,7 @@ class Stats
         return $uuid;
     }
 
+    /** @return array<mixed> */
     private function collectStats(): array
     {
         $version = Version::get();
@@ -186,7 +189,7 @@ class Stats
 
     /**
      * @param  Builder|string  $table
-     * @param  array  $groups
+     * @param  array<mixed>  $groups
      * @return Collection
      */
     private function selectTotal($table, array $groups = []): Collection

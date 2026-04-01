@@ -39,9 +39,12 @@ use Illuminate\View\Component;
 
 class PageLinks extends Component
 {
+    /** @var array<mixed> */
     public array $primaryDeviceLink;
+    /** @var array<mixed> */
     public array $deviceLinks;
 
+    /** @param array<mixed> $dropdownLinks */
     public function __construct(
         public readonly Device $device,
         public readonly string $currentTab = '',
@@ -56,6 +59,7 @@ class PageLinks extends Component
         unset($this->deviceLinks[$primary_device_link_name], $primary_device_link_name);
     }
 
+    /** @return array<mixed> */
     private function deviceLinkMenu(Device $device, string $currentTab): array
     {
         $device_links = [];

@@ -31,6 +31,7 @@ use LibreNMS\Util\Http;
 
 class Slack extends Transport
 {
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $slack_opts = $this->parseUserOptions($this->config['slack-options'] ?? '');
@@ -75,6 +76,7 @@ class Slack extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $slack_msg, $data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

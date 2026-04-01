@@ -32,6 +32,7 @@ use Illuminate\View\View;
 class AlertsController extends WidgetController
 {
     protected string $name = 'alerts';
+    /** @var array<mixed> */
     protected $defaults = [
         'title' => null,
         'device' => null,

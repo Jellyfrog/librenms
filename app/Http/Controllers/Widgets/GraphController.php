@@ -44,6 +44,7 @@ use LibreNMS\Util\Time;
 class GraphController extends WidgetController
 {
     protected string $name = 'generic-graph';
+    /** @var array<mixed> */
     protected $defaults = [
         'title' => null,
         'refresh' => 60,
@@ -304,6 +305,7 @@ class GraphController extends WidgetController
         return false; // non-custom aggregate types require no additional settings
     }
 
+    /** @return array<mixed> */
     public function getSettings($settingsView = false): array
     {
         if (is_null($this->settings)) {

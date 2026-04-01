@@ -33,6 +33,7 @@ use LibreNMS\Enum\MaintenanceBehavior;
 
 class AlertScheduleController extends TableController
 {
+    /** @var array<mixed> */
     protected $default_sort = ['title' => 'asc', 'start' => 'asc'];
 
     protected function baseQuery($request)
@@ -40,11 +41,13 @@ class AlertScheduleController extends TableController
         return AlertSchedule::query();
     }
 
+    /** @return array<mixed> */
     protected function searchFields($request)
     {
         return['title', 'start', 'end'];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request)
     {
         return [
@@ -63,7 +66,7 @@ class AlertScheduleController extends TableController
 
     /**
      * @param  AlertSchedule  $schedule
-     * @return array
+     * @return array<mixed>
      */
     public function formatItem($schedule)
     {

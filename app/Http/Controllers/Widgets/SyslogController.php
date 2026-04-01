@@ -33,6 +33,7 @@ use Illuminate\View\View;
 class SyslogController extends WidgetController
 {
     protected string $name = 'syslog';
+    /** @var array<mixed> */
     protected $defaults = [
         'title' => null,
         'device' => null,

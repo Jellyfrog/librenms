@@ -37,6 +37,7 @@ use LibreNMS\Util\Url;
 
 class PortsController extends TableController
 {
+    /** @return array<mixed> */
     protected function rules()
     {
         return [
@@ -55,6 +56,7 @@ class PortsController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function filterFields($request)
     {
         return [
@@ -70,6 +72,7 @@ class PortsController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request)
     {
         return [
@@ -130,7 +133,7 @@ class PortsController extends TableController
 
     /**
      * @param  Port  $port
-     * @return array
+     * @return array<mixed>
      */
     public function formatItem($port)
     {
@@ -164,7 +167,7 @@ class PortsController extends TableController
     /**
      * Get headers for CSV export
      *
-     * @return array
+     * @return array<mixed>
      */
     protected function getExportHeaders()
     {
@@ -195,7 +198,7 @@ class PortsController extends TableController
      * Format a row for CSV export
      *
      * @param  Port  $port
-     * @return array
+     * @return array<mixed>
      */
     protected function formatExportRow($port)
     {

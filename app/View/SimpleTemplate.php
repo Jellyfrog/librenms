@@ -35,6 +35,7 @@ class SimpleTemplate implements \Stringable
     /** @var ?callable */
     private $callback = null;
 
+    /** @param array<mixed> $variables */
     public function __construct(
         private readonly string $template,
         private array $variables = []
@@ -74,6 +75,7 @@ class SimpleTemplate implements \Stringable
 
     /**
      * Create and parse a simple template
+     * @param array<mixed> $variables
      */
     public static function parse(string $template, array $variables): string
     {
@@ -101,6 +103,7 @@ class SimpleTemplate implements \Stringable
 
     /**
      * Parse function arguments from string
+     * @return array<mixed>
      */
     private function parseArguments(string $argsString): array
     {
@@ -174,6 +177,7 @@ class SimpleTemplate implements \Stringable
 
     /**
      * Execute a specific filter on a value - Twig-compatible filters only
+     * @param array<mixed> $args
      */
     private function executeFilter(string $value, string $filterName, array $args): string
     {
@@ -212,6 +216,7 @@ class SimpleTemplate implements \Stringable
         };
     }
 
+    /** @param array<mixed> $args */
     private function sliceFilter(string $value, array $args): string
     {
         $start = $args[0] ?? 0;
@@ -224,6 +229,7 @@ class SimpleTemplate implements \Stringable
         return substr($value, $start, $length) ?: $value;
     }
 
+    /** @param array<mixed> $args */
     private function escapeFilter(string $value, array $args): string
     {
         $strategy = $args[0] ?? 'html';
@@ -241,6 +247,7 @@ class SimpleTemplate implements \Stringable
         return preg_replace('/[^a-zA-Z0-9\-_]/', '\\\\$0', $value);
     }
 
+    /** @param array<mixed> $args */
     private function numberFormatFilter(string $value, array $args): string
     {
         $decimals = $args[0] ?? 0;
@@ -250,6 +257,7 @@ class SimpleTemplate implements \Stringable
         return number_format((float) $value, $decimals, $decimalPoint, $thousandsSep);
     }
 
+    /** @param array<mixed> $args */
     private function dateFilter(string $value, array $args): string
     {
         $format = $args[0] ?? 'F j, Y H:i'; // Twig's default format

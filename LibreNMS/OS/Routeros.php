@@ -83,7 +83,7 @@ class Routeros extends OS implements
     /**
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessCcq()
     {
@@ -141,7 +141,7 @@ class Routeros extends OS implements
     /**
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessClients()
     {
@@ -168,7 +168,7 @@ class Routeros extends OS implements
      * Discover wireless frequency.  This is in MHz. Type is frequency.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessFrequency()
     {
@@ -227,7 +227,7 @@ class Routeros extends OS implements
      * Discover wireless Rssi.  This is in Dbm. Type is Dbm.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessRssi()
     {
@@ -253,7 +253,7 @@ class Routeros extends OS implements
      * Discover wireless Quality.  This is in Dbm. Type is Dbm.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessQuality()
     {
@@ -278,7 +278,7 @@ class Routeros extends OS implements
     /**
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessNoiseFloor()
     {
@@ -306,7 +306,7 @@ class Routeros extends OS implements
      * Discover wireless rate. This is in bps. Type is rate.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessRate()
     {
@@ -386,7 +386,7 @@ class Routeros extends OS implements
      * Discover wireless distance.  This is in Kilometers. Type is distance.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessDistance()
     {
@@ -414,7 +414,7 @@ class Routeros extends OS implements
      * Discover LTE RSRQ.  This is in Dbm. Type is Dbm.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessRsrq()
     {
@@ -441,7 +441,7 @@ class Routeros extends OS implements
      * Discover LTE RSRP.  This is in Dbm. Type is Dbm.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessRsrp()
     {
@@ -468,7 +468,7 @@ class Routeros extends OS implements
      * Discover LTE SINR.  This is in Dbm. Type is Dbm.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessSinr()
     {

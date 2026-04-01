@@ -55,7 +55,7 @@ class AlertUtil
      * Get the transport for a given alert_id
      *
      * @param  int  $alert_id
-     * @return array
+     * @return array<mixed>
      */
     public static function getAlertTransports($alert_id)
     {
@@ -68,7 +68,7 @@ class AlertUtil
     /**
      * Returns the default transports
      *
-     * @return array
+     * @return array<mixed>
      */
     public static function getDefaultAlertTransports()
     {
@@ -80,7 +80,7 @@ class AlertUtil
     /**
      * Find contacts for alert
      *
-     * @param  array  $results  Rule-Result
+     * @param  array<mixed>  $results  Rule-Result
      * @return array
      */
     public static function getContacts($results)
@@ -149,11 +149,13 @@ class AlertUtil
         return $tmp_contacts;
     }
 
+    /** @param array<mixed> $roles */
     public static function findContactsRoles(array $roles): array
     {
         return User::role($roles)->whereNot('email', '')->pluck('realname', 'email')->toArray();
     }
 
+    /** @param array<mixed> $results */
     public static function findContactsSysContact(array $results): array
     {
         $contacts = [];
@@ -169,6 +171,7 @@ class AlertUtil
         return $contacts;
     }
 
+    /** @param array<mixed> $results */
     public static function findContactsOwners(array $results): array
     {
         return User::whereNot('email', '')->where(function (Builder $query) use ($results): void {

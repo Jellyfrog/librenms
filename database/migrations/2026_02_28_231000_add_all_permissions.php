@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
+    /** @var array<mixed> */
     private array $permissions = [
         'alert.delete',
         'alert.detail',

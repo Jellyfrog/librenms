@@ -32,6 +32,7 @@ use Illuminate\View\View;
 class NotesController extends WidgetController
 {
     protected string $name = 'notes';
+    /** @var array<mixed> */
     protected $defaults = [
         'title' => null,
         'notes' => null,

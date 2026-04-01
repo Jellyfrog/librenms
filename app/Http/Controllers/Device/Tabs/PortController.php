@@ -52,6 +52,7 @@ class PortController implements DeviceTab
         return __('Port');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [];

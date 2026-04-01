@@ -12,6 +12,7 @@ use LibreNMS\OS;
 
 class HarmonyEnhanced extends OS implements WirelessRssiDiscovery, WirelessSnrDiscovery, WirelessPowerDiscovery, WirelessErrorsDiscovery
 {
+    /** @return array<mixed> */
     public function discoverWirelessRssi()
     {
         $oids = snmpwalk_cache_oid($this->getDeviceArray(), 'mwrEmcRadioRSL', [], 'MWR-RADIO-MC-MIB', null, '-Ob');
@@ -31,6 +32,7 @@ class HarmonyEnhanced extends OS implements WirelessRssiDiscovery, WirelessSnrDi
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessSnr()
     {
         $oids = snmpwalk_cache_oid($this->getDeviceArray(), 'mwrEmcRadioSNR', [], 'MWR-RADIO-MC-MIB', null, '-Ob');
@@ -50,6 +52,7 @@ class HarmonyEnhanced extends OS implements WirelessRssiDiscovery, WirelessSnrDi
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessPower()
     {
         $oids = snmpwalk_cache_oid($this->getDeviceArray(), 'mwrEmcRadioActualTxPower', [], 'MWR-RADIO-MC-MIB', null, '-Ob');
@@ -69,6 +72,7 @@ class HarmonyEnhanced extends OS implements WirelessRssiDiscovery, WirelessSnrDi
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessErrors()
     {
         $oids = snmpwalk_cache_oid($this->getDeviceArray(), 'mwrEmcRadioRxErrsFrames', [], 'MWR-RADIO-MC-MIB', null, '-Ob');

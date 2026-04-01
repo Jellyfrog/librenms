@@ -49,13 +49,16 @@ class ModuleTestHelper
     private readonly string $snmprec_dir;
     private readonly string $json_dir;
     private readonly string $file_name;
+    /** @var array<mixed> */
     private array $discovery_module_output = [];
+    /** @var array<mixed> */
     private array $poller_module_output = [];
     private string $discovery_output;
     private string $poller_output;
 
     // Definitions
     // ignore these when dumping all modules
+    /** @var array<mixed> */
     private array $exclude_from_all = ['arp-table', 'availability', 'fdb-table'];
 
     /**
@@ -169,6 +172,7 @@ class ModuleTestHelper
         }
     }
 
+    /** @return array<mixed> */
     private function collectOids(int $device_id): array
     {
         global $device;
@@ -315,7 +319,7 @@ class ModuleTestHelper
      * Generate a module list.  Try to take dependencies into account.
      * Probably needs to be more robust
      *
-     * @param  array  $modules
+     * @param  array<mixed>  $modules
      * @return array<string, bool|string[]>
      *
      * @throws InvalidModuleException
@@ -355,6 +359,7 @@ class ModuleTestHelper
         }
     }
 
+    /** @return array<mixed> */
     private function convertSnmpToSnmprec(SnmpResponse $snmp_data): array
     {
         $result = [];
@@ -438,6 +443,7 @@ class ModuleTestHelper
         };
     }
 
+    /** @param array<mixed> $data */
     private function saveSnmprec(array $data, ?string $context = null, bool $write = true, bool $prefer_new = false): void
     {
         $filename = $this->snmprec_file;
@@ -481,6 +487,7 @@ class ModuleTestHelper
         }
     }
 
+    /** @param array<mixed> $snmprec_data */
     private function indexSnmprec(array $snmprec_data): array
     {
         $result = [];
@@ -495,6 +502,7 @@ class ModuleTestHelper
         return $result;
     }
 
+    /** @param array<mixed> $data */
     private function cleanSnmprecData(array &$data): void
     {
         $private_oid = [
@@ -530,6 +538,7 @@ class ModuleTestHelper
      * Save the dumped data to tests/data/<os>.json
      *
      * @throws FileNotFoundException
+     * @return array<mixed>
      */
     public function generateTestData(string $snmpSimIp, int $snmpSimPort, bool $noSave = false): ?array
     {
@@ -695,7 +704,7 @@ class ModuleTestHelper
     /**
      * @param  string  $output  poller or discovery output
      * @param  string  $type  poller|disco identified by "#### Load disco module" string
-     * @return array
+     * @return array<mixed>
      */
     private function extractModuleOutput(string $output, string $type): array
     {
@@ -728,7 +737,7 @@ class ModuleTestHelper
      * @param  int  $device_id  The test device id
      * @param  string[]  $modules  to capture data for (should be a list of modules that were actually run)
      * @param  string  $type  a key to store the data under the module key (usually discovery or poller)
-     * @return array The dumped data keyed by module -> table
+     * @return array<mixed> The dumped data keyed by module -> table
      */
     public function dumpDb(int $device_id, array $modules, string $type): array
     {
@@ -750,6 +759,7 @@ class ModuleTestHelper
         return $data;
     }
 
+    /** @param array<mixed> $data */
     private function dumpToArray(iterable $data): array
     {
         $output = [];
@@ -796,6 +806,7 @@ class ModuleTestHelper
         return $this->poller_output;
     }
 
+    /** @return array<mixed> */
     public function getTestData(): array
     {
         return json_decode(file_get_contents($this->json_file), true);

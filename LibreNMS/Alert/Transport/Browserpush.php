@@ -35,6 +35,7 @@ class Browserpush extends Transport
 {
     protected string $name = 'Browser Push';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $users = User::when($this->config['user'] ?? 0, fn ($query, $user_id) => $query->where('user_id', $user_id))->get();
@@ -48,6 +49,7 @@ class Browserpush extends Transport
         return true;
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         $users = [__('All Users') => 0];

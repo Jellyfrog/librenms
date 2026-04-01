@@ -33,6 +33,7 @@ use LibreNMS\Util\Url;
 
 class DiskioController extends TableController
 {
+    /** @return array<mixed> */
     protected function sortFields($request): array
     {
         return [
@@ -41,6 +42,7 @@ class DiskioController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function searchFields(Request $request): array
     {
         return [
@@ -60,6 +62,7 @@ class DiskioController extends TableController
 
     /**
      * @param  UcdDiskio  $diskio
+     * @return array<mixed>
      */
     public function formatItem($diskio): array
     {

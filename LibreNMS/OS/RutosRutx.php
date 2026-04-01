@@ -41,6 +41,7 @@ class RutosRutx extends OS implements
     WirelessSinrDiscovery,
     WirelessCellDiscovery
 {
+    /** @return array<mixed> */
     public function discoverWirelessRssi(): array
     {
         $data = $this->getCacheTable('TELTONIKA-RUTX-MIB::modemTable');
@@ -61,6 +62,7 @@ class RutosRutx extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRsrp(): array
     {
         $data = $this->getCacheTable('TELTONIKA-RUTX-MIB::modemTable');
@@ -81,6 +83,7 @@ class RutosRutx extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRsrq(): array
     {
         $data = $this->getCacheTable('TELTONIKA-RUTX-MIB::modemTable');
@@ -101,6 +104,7 @@ class RutosRutx extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessSinr(): array
     {
         $data = $this->getCacheTable('TELTONIKA-RUTX-MIB::modemTable');
@@ -121,6 +125,7 @@ class RutosRutx extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessCell(): array
     {
         $data = $this->getCacheTable('TELTONIKA-RUTX-MIB::modemTable');

@@ -33,7 +33,7 @@ interface Geocoder
      * If unsuccessful, the returned array will be empty
      *
      * @param  string  $address
-     * @return array ['lat' => 0, 'lng' => 0]
+     * @return array<mixed> ['lat' => 0, 'lng' => 0]
      */
     public function getCoordinates($address);
 }

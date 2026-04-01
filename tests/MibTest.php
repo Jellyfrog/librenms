@@ -128,7 +128,7 @@ final class MibTest extends TestCase
      * Get a list of all mib files with the name of the mib.
      * Called for each test that uses it before class setup.
      *
-     * @return array path, filename, mib_name
+     * @return array<mixed> path, filename, mib_name
      */
     public static function mibFiles(): array
     {
@@ -152,7 +152,7 @@ final class MibTest extends TestCase
     /**
      * List all directories inside the mib directory
      *
-     * @return array
+     * @return array<mixed>
      */
     public static function mibDirs(): array
     {

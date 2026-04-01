@@ -86,6 +86,7 @@ trait SyncsModels
      * Sync a sub-group of models to the database
      *
      * @param  Collection<Keyable>  $models
+     * @param array<mixed> $where
      */
     public function syncModelsByGroup(Device $device, string $relationship, Collection $models, array $where): Collection
     {

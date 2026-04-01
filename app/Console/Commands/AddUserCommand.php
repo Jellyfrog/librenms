@@ -132,6 +132,7 @@ class AddUserCommand extends LnmsCommand
         return 0;
     }
 
+    /** @return array<mixed> */
     private function usernameRules(): array
     {
         return [
@@ -142,6 +143,7 @@ class AddUserCommand extends LnmsCommand
         ];
     }
 
+    /** @return array<mixed> */
     private function passwordRules(): array
     {
         return [
@@ -150,6 +152,7 @@ class AddUserCommand extends LnmsCommand
         ];
     }
 
+    /** @param array<mixed> $roles */
     private function makeUser(
         string $username,
         string $password,

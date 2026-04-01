@@ -39,6 +39,7 @@ class RipeApi extends BaseApi
      * Get whois info
      *
      * @throws ApiClientException
+     * @return array<mixed>
      */
     public function getWhois(string $resource): array
     {
@@ -65,6 +66,7 @@ class RipeApi extends BaseApi
 
     /**
      * @throws ApiClientException
+     * @param array<mixed> $options
      */
     private function makeApiCall(string $uri, array $options): mixed
     {

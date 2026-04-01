@@ -36,7 +36,7 @@ class Proc
      */
     private $_process;
     /**
-     * @var array array of process pipes [stdin,stdout,stderr]
+     * @var array<mixed> array of process pipes [stdin,stdout,stderr]
      */
     private $_pipes;
 
@@ -55,7 +55,7 @@ class Proc
      * Most arguments match proc_open()
      *
      * @param  string  $cmd  the command to execute
-     * @param  array  $descriptorspec  the definition of pipes to initialize
+     * @param  array<mixed>  $descriptorspec  the definition of pipes to initialize
      * @param  string|null  $cwd  working directory to change to
      * @param  array|null  $env  array of environment variables to set
      * @param  bool  $blocking  set the output pipes to blocking (default: false)
@@ -114,7 +114,7 @@ class Proc
      * If the command isn't terminated with a newline, add one
      *
      * @param  string  $command
-     * @return array
+     * @return array<mixed>
      */
     public function sendCommand($command)
     {
@@ -139,7 +139,7 @@ class Proc
      * If this process is set to synchronous, wait for output
      *
      * @param  int  $timeout  time to wait for output, only applies if this process is synchronous
-     * @return array [stdout, stderr]
+     * @return array<mixed> [stdout, stderr]
      */
     public function getOutput($timeout = 15)
     {
@@ -244,7 +244,7 @@ class Proc
      * Get the status of this process
      * see proc_get_status()
      *
-     * @return array status array
+     * @return array<mixed> status array
      */
     public function getStatus()
     {

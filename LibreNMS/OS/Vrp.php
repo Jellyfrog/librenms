@@ -428,7 +428,7 @@ class Vrp extends OS implements
      * Discover processors.
      * Returns an array of LibreNMS\Device\Processor objects that have been discovered
      *
-     * @return array Processors
+     * @return array<mixed> Processors
      */
     public function discoverProcessors()
     {
@@ -532,6 +532,7 @@ class Vrp extends OS implements
         return $nac;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessApCount()
     {
         $sensors = [];
@@ -550,6 +551,7 @@ class Vrp extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessClients()
     {
         $sensors = [];

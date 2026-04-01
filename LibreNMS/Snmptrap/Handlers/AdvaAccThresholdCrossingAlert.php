@@ -66,6 +66,7 @@ class AdvaAccThresholdCrossingAlert implements SnmptrapHandler
         return 'unknown';
     }
 
+    /** @return array<mixed> */
     public function getThresholds(): array
     {
         return [

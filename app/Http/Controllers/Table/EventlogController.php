@@ -35,6 +35,7 @@ use LibreNMS\Util\Url;
 
 class EventlogController extends TableController
 {
+    /** @return array<mixed> */
     public function rules()
     {
         return [
@@ -46,11 +47,13 @@ class EventlogController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     public function searchFields($request)
     {
         return ['message'];
     }
 
+    /** @return array<mixed> */
     protected function filterFields($request)
     {
         return [
@@ -59,6 +62,7 @@ class EventlogController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request)
     {
         return ['datetime', 'type', 'device_id', 'message', 'username'];
@@ -87,6 +91,7 @@ class EventlogController extends TableController
 
     /**
      * @param  Eventlog  $eventlog
+     * @return array<mixed>
      */
     public function formatItem($eventlog)
     {

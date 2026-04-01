@@ -32,6 +32,7 @@ class DiscoverDevice implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /** @var array<mixed> */
     private array $deviceArray;
     private ?Device $device = null;
 

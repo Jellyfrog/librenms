@@ -56,6 +56,7 @@ class ADAuthorizationAuthorizer extends MysqlAuthorizer
         }
     }
 
+    /** @param array<mixed> $credentials */
     public function authenticate($credentials)
     {
         if (isset($credentials['username']) && $this->userExists($credentials['username'])) {

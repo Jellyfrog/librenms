@@ -32,6 +32,7 @@ use Illuminate\Http\Request;
 
 class CustomMapController extends SelectController
 {
+    /** @return array<mixed> */
     protected function searchFields($request): array
     {
         return ['custom_map_id', 'name'];

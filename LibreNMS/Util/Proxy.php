@@ -44,6 +44,7 @@ class Proxy
         return getenv('https_proxy', local_only: true) ?: getenv('HTTPS_PROXY', local_only: true) ?: LibrenmsConfig::get('https_proxy', '');
     }
 
+    /** @return array<mixed> */
     public static function ignore(): array
     {
         // use local_only to avoid CVE-2016-5385

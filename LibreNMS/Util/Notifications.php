@@ -88,7 +88,7 @@ class Notifications
     /**
      * Pull notifications from remotes
      *
-     * @return array Notifications
+     * @return array<mixed> Notifications
      */
     protected static function fetch(): array
     {
@@ -121,6 +121,7 @@ class Notifications
         return Arr::sort($notifications, 'datetime');
     }
 
+    /** @param array<mixed> $feed */
     protected static function parseRss(array $feed): array
     {
         $obj = [];
@@ -142,7 +143,7 @@ class Notifications
     /**
      * Parse Atom
      *
-     * @param  array  $feed  Atom Object
+     * @param  array<mixed>  $feed  Atom Object
      * @return array Parsed Object
      */
     protected static function parseAtom(array $feed): array

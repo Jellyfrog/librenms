@@ -37,7 +37,7 @@ class EnvHelper
      * Set a setting in .env file.
      * Will only set non-empty unset variables
      *
-     * @param  array  $settings  KEY => value list of settings
+     * @param  array<mixed>  $settings  KEY => value list of settings
      * @param  array  $unset  Remove the given KEYS from the config
      * @param  string  $file
      * @return string
@@ -69,7 +69,7 @@ class EnvHelper
      * Will only set non-empty unset variables
      *
      * @param  string  $content
-     * @param  array  $settings  KEY => value list of settings
+     * @param  array<mixed>  $settings  KEY => value list of settings
      * @param  array  $unset  Remove the given KEYS from the config
      * @return string
      */
@@ -194,7 +194,7 @@ class EnvHelper
      *
      * @param  string  $env_name
      * @param  mixed  $default
-     * @param  array  $except  Ignore these values and return the unexploded string
+     * @param  array<mixed>  $except  Ignore these values and return the unexploded string
      * @return array|mixed
      */
     public static function parseArray($env_name, $default = null, $except = [''])

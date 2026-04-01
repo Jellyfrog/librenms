@@ -30,6 +30,7 @@ use App\Models\Location;
 
 class LocationController extends SelectController
 {
+    /** @return array<mixed> */
     protected function searchFields($request)
     {
         return ['location'];

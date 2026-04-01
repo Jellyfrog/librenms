@@ -14,7 +14,7 @@ class Graph extends Component
     const DEFAULT_NORMAL_HEIGHT = 150;
 
     /**
-     * @var array
+     * @var array<mixed>
      */
     public $vars;
     /**
@@ -46,7 +46,7 @@ class Graph extends Component
      * Create a new component instance.
      *
      * @param  string  $type
-     * @param  array  $vars
+     * @param  array<mixed>  $vars
      * @param  int|string  $from
      * @param  int|string  $to
      * @param  string  $legend

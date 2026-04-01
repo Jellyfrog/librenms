@@ -32,6 +32,7 @@ use LibreNMS\Enum\SyslogSeverity;
 
 class SyslogController extends TableController
 {
+    /** @return array<mixed> */
     public function rules()
     {
         return [
@@ -45,11 +46,13 @@ class SyslogController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     public function searchFields($request)
     {
         return ['msg'];
     }
 
+    /** @return array<mixed> */
     public function filterFields($request)
     {
         return [
@@ -59,6 +62,7 @@ class SyslogController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     public function sortFields($request)
     {
         return ['label', 'timestamp', 'level', 'device_id', 'program', 'msg', 'priority'];
@@ -95,6 +99,7 @@ class SyslogController extends TableController
 
     /**
      * @param  Syslog  $syslog
+     * @return array<mixed>
      */
     public function formatItem($syslog)
     {

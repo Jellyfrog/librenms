@@ -23,6 +23,7 @@ class CustomoidController extends SelectController
 
     /**
      * @param  Customoid  $customoid
+     * @return array<mixed>
      */
     public function formatItem($customoid)
     {

@@ -68,7 +68,7 @@ class Arubaos extends OS implements
      * Discover wireless client counts. Type is clients.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessClients()
     {
@@ -83,7 +83,7 @@ class Arubaos extends OS implements
      * Discover wireless AP counts. Type is ap-count.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessApCount(): array
     {
@@ -131,7 +131,7 @@ class Arubaos extends OS implements
      * Discover wireless frequency.  This is in MHz. Type is frequency.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessFrequency()
     {
@@ -143,7 +143,7 @@ class Arubaos extends OS implements
      * Discover wireless noise floor. This is in dBm/Hz. Type is noise-floor.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessNoiseFloor()
     {
@@ -155,7 +155,7 @@ class Arubaos extends OS implements
      * Discover wireless tx or rx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessPower()
     {
@@ -207,7 +207,7 @@ class Arubaos extends OS implements
      * Discover wireless utilization.  This is in %. Type is utilization.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessUtilization()
     {
@@ -219,7 +219,7 @@ class Arubaos extends OS implements
      * Poll wireless frequency as MHz
      * The returned array should be sensor_id => value pairs
      *
-     * @param  array  $sensors  Array of sensors needed to be polled
+     * @param  array<mixed>  $sensors  Array of sensors needed to be polled
      * @return array of polled data
      */
     public function pollWirelessFrequency(array $sensors)

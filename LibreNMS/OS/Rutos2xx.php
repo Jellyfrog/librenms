@@ -67,6 +67,7 @@ class Rutos2xx extends OS implements
         }
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessSnr()
     {
         $oid = '.1.3.6.1.4.1.48690.2.22.0'; // TELTONIKA-MIB::SINR.0
@@ -76,6 +77,7 @@ class Rutos2xx extends OS implements
         ];
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRssi()
     {
         $oid = '.1.3.6.1.4.1.48690.2.23.0'; // TELTONIKA-MIB::RSRP.0

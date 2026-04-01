@@ -11,6 +11,7 @@ use LibreNMS\Util\Url;
 
 class AlertLogController extends TableController
 {
+    /** @var array<mixed> */
     protected $default_sort = ['time_logged' => 'asc'];
 
     public function __construct(
@@ -18,6 +19,7 @@ class AlertLogController extends TableController
     ) {
     }
 
+    /** @return array<mixed> */
     protected function rules(): array
     {
         return [
@@ -29,6 +31,7 @@ class AlertLogController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request): array
     {
         return [
@@ -40,6 +43,7 @@ class AlertLogController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function searchFields(Request $request): array
     {
         return [
@@ -49,6 +53,7 @@ class AlertLogController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function filterFields(Request $request): array
     {
         return [
@@ -92,7 +97,7 @@ class AlertLogController extends TableController
      * Format alert log item for display
      *
      * @param  AlertLog  $model
-     * @return array
+     * @return array<mixed>
      */
     public function formatItem($model): array
     {
@@ -114,6 +119,7 @@ class AlertLogController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function getExportHeaders(): array
     {
         return [
@@ -129,6 +135,7 @@ class AlertLogController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function formatExportRow($item): array
     {
         return [

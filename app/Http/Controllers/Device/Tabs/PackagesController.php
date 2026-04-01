@@ -52,6 +52,7 @@ class PackagesController implements DeviceTab
         return __('Pkgs');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [];

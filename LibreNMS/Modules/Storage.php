@@ -43,6 +43,7 @@ class Storage implements Module
 {
     use SyncsModels;
 
+    /** @return array<mixed> */
     public function dependencies(): array
     {
         return [];
@@ -147,6 +148,7 @@ class Storage implements Module
         return $device->storage()->exists();
     }
 
+    /** @return array<mixed> */
     public function dump(Device $device, string $type): ?array
     {
         return [

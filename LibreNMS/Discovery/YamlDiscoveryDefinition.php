@@ -65,6 +65,7 @@ class YamlDiscoveryDefinition
         return $this;
     }
 
+    /** @return array<mixed> */
     public function getFields(): array
     {
         return $this->fields;
@@ -173,6 +174,7 @@ class YamlDiscoveryDefinition
         return $models;
     }
 
+    /** @param array<mixed> $yaml */
     private function preFetch(array $yaml): array
     {
         $data = $yaml['additional_oids'] ?? $yaml['pre-cache'] ?? [];
@@ -194,6 +196,7 @@ class YamlDiscoveryDefinition
         return $query->walk($data['oids'])->valuesByIndex();
     }
 
+    /** @param array<mixed> $modelAttributes */
     private function fillNumericOids(array &$modelAttributes, array $yaml, int|string $index): bool
     {
         $num_oid_found = false;

@@ -54,6 +54,7 @@ class Page extends PageHook
     // override the data function to add additional data to be accessed in the view
     // default just passes the stored data through
     // inside the blade, all variables will be named based on the key in the returned array
+    /** @return array<mixed> */
     public function data(): array
     {
         // run any calculations here

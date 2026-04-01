@@ -39,11 +39,13 @@ abstract class PageHook implements \LibreNMS\Interfaces\Plugins\Hooks\SinglePage
         return true;
     }
 
+    /** @return array<mixed> */
     public function data(): array
     {
         return [];
     }
 
+    /** @param array<mixed> $settings */
     final public function handle(string $pluginName, array $settings, Application $app): array
     {
         return array_merge([

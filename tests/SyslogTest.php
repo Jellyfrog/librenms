@@ -63,7 +63,7 @@ final class SyslogTest extends TestCase
      * Test an input line with the modified fields
      *
      * @param  string  $inputline  The line from the syslog daemon including the ||'s
-     * @param  array  $modified  of the modified fields, most likely containging the keys program and msg
+     * @param  array<mixed>  $modified  of the modified fields, most likely containging the keys program and msg
      * @return mixed
      */
     private function checkSyslog($inputline, $modified)

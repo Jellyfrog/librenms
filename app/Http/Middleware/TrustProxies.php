@@ -16,7 +16,7 @@ class TrustProxies extends Middleware
     /**
      * Get the trusted proxies.
      *
-     * @return array|string|null
+     * @return array<mixed>|string|null
      */
     protected function proxies()
     {

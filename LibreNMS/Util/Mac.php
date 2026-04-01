@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\DB;
 
 class Mac implements \Stringable
 {
+    /** @var array<mixed> */
     private array $mac = [];
 
     public function __construct(string $mac)
@@ -173,6 +174,7 @@ class Mac implements \Stringable
 
     /**
      * Get an array of the MAC address bytes
+     * @return array<mixed>
      */
     public function array(): array
     {

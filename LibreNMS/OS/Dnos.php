@@ -37,7 +37,7 @@ class Dnos extends OS implements ProcessorDiscovery
      * Discover processors.
      * Returns an array of LibreNMS\Device\Processor objects that have been discovered
      *
-     * @return array Processors
+     * @return array<mixed> Processors
      */
     public function discoverProcessors()
     {
@@ -96,7 +96,7 @@ class Dnos extends OS implements ProcessorDiscovery
     /**
      * Find processors and append them to the $processors array
      *
-     * @param  array  $processors
+     * @param  array<mixed>  $processors
      * @param  string  $oid  Textual OIDf
      * @param  string  $mib  MIB
      * @param  string  $num_oid  Numerical OID

@@ -32,6 +32,7 @@ class Googlechat extends Transport
 {
     protected string $name = 'Google Chat';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $data = ['text' => $alert_data['msg']];
@@ -44,6 +45,7 @@ class Googlechat extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $data['text'], $data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

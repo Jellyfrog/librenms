@@ -14,8 +14,10 @@ use LibreNMS\Util\Url;
 
 class PrinterSupplyController extends TableController
 {
+    /** @var array<mixed> */
     protected $default_sort = ['device_hostname' => 'asc', 'supply_descr' => 'asc'];
 
+    /** @return array<mixed> */
     protected function sortFields($request): array
     {
         return [
@@ -26,6 +28,7 @@ class PrinterSupplyController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function searchFields(Request $request): array
     {
         return [
@@ -50,6 +53,7 @@ class PrinterSupplyController extends TableController
 
     /**
      * @param  PrinterSupply  $supply
+     * @return array<mixed>
      */
     public function formatItem($supply): array
     {

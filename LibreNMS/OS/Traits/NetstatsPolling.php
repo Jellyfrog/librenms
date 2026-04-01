@@ -30,31 +30,37 @@ use SnmpQuery;
 
 trait NetstatsPolling
 {
+    /** @param array<mixed> $oids */
     public function pollIcmpNetstats(array $oids): array
     {
         return SnmpQuery::get($oids)->values();
     }
 
+    /** @param array<mixed> $oids */
     public function pollIpNetstats(array $oids): array
     {
         return SnmpQuery::get($oids)->values();
     }
 
+    /** @param array<mixed> $oids */
     public function pollSnmpNetstats(array $oids): array
     {
         return SnmpQuery::get($oids)->values();
     }
 
+    /** @param array<mixed> $oids */
     public function pollIpForwardNetstats(array $oids): array
     {
         return SnmpQuery::get($oids)->values();
     }
 
+    /** @param array<mixed> $oids */
     public function pollUdpNetstats(array $oids): array
     {
         return SnmpQuery::get($oids)->values();
     }
 
+    /** @param array<mixed> $oids */
     public function pollTcpNetstats(array $oids): array
     {
         return SnmpQuery::get($oids)->values();

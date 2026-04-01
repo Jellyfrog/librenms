@@ -55,7 +55,7 @@ class QueryBuilderFluentParser extends QueryBuilderParser
 
     /**
      * @param  Builder  $query
-     * @param  array  $rule
+     * @param  array<mixed>  $rule
      * @param  string  $parent_condition  AND or OR  (for root, this should be null)
      * @return Builder
      */
@@ -74,7 +74,7 @@ class QueryBuilderFluentParser extends QueryBuilderParser
 
     /**
      * @param  Builder  $query
-     * @param  array  $rule
+     * @param  array<mixed>  $rule
      * @param  string  $condition  AND or OR
      * @return Builder
      */
@@ -128,7 +128,7 @@ class QueryBuilderFluentParser extends QueryBuilderParser
     /**
      * Extract field, operator and value from the rule and expand macros and raw values
      *
-     * @param  array  $rule
+     * @param  array<mixed>  $rule
      * @return array [field, operator, value]
      */
     protected function expandRule($rule)

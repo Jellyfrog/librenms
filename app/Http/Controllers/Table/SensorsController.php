@@ -18,8 +18,10 @@ class SensorsController extends TableController
     /** @var mixed */
     protected $model = Sensor::class;
 
+    /** @var array<mixed> */
     protected $default_sort = ['device_hostname' => 'asc', 'sensor_descr' => 'asc'];
 
+    /** @return array<mixed> */
     protected function rules(): array
     {
         return [
@@ -29,6 +31,7 @@ class SensorsController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request): array
     {
         return [
@@ -40,6 +43,7 @@ class SensorsController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function searchFields(Request $request): array
     {
         return [
@@ -86,6 +90,7 @@ class SensorsController extends TableController
 
     /**
      * @param  Sensor|WirelessSensor  $sensor
+     * @return array<mixed>
      */
     public function formatItem($sensor): array
     {
@@ -130,7 +135,7 @@ class SensorsController extends TableController
     /**
      * Get headers for CSV export
      *
-     * @return array
+     * @return array<mixed>
      */
     protected function getExportHeaders()
     {
@@ -149,7 +154,7 @@ class SensorsController extends TableController
      * Format a row for CSV export
      *
      * @param  Sensor|WirelessSensor  $sensor
-     * @return array
+     * @return array<mixed>
      */
     protected function formatExportRow($sensor)
     {

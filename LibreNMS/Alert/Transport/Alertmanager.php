@@ -35,6 +35,7 @@ class Alertmanager extends Transport
 {
     protected string $name = 'Alert Manager';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $url = $this->config['alertmanager-url'];
@@ -116,6 +117,7 @@ class Alertmanager extends Transport
         return true;
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

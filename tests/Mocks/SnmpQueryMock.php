@@ -40,13 +40,16 @@ use Log;
 
 class SnmpQueryMock implements SnmpQueryInterface
 {
+    /** @var array<mixed> */
     private static ?array $cache = null;
     private Device $device;
     private string $context = '';
     private ?string $mibDir = null;
+    /** @var array<mixed> */
     private array $mibs = [];
     private bool $numeric = false;
     private bool $hideMib = false;
+    /** @var array<mixed> */
     private array $options = [];
     private bool $abort = false;
 
@@ -139,6 +142,7 @@ class SnmpQueryMock implements SnmpQueryInterface
         return $this;
     }
 
+    /** @param array<mixed> $options */
     public function options($options = []): SnmpQueryInterface
     {
         $this->options = $options === null ? [] : Arr::wrap($options);
@@ -149,6 +153,7 @@ class SnmpQueryMock implements SnmpQueryInterface
     /**
      * Set MIBs to use for this query. Base mibs are included by default.
      * They will be appended to existing mibs unless $append is set to false.
+     * @param array<mixed> $mibs
      */
     public function mibs(array $mibs, bool $append = true): SnmpQueryInterface
     {
@@ -164,6 +169,7 @@ class SnmpQueryMock implements SnmpQueryInterface
         return $this;
     }
 
+    /** @param mixed $oid */
     public function get($oid): SnmpResponse
     {
         $community = $this->community();
@@ -176,7 +182,7 @@ class SnmpQueryMock implements SnmpQueryInterface
     }
 
     /**
-     * @param  array|string  $oids
+     * @param  array<mixed>|string  $oids
      * @return SnmpResponse
      *
      * @throws Exception
@@ -209,6 +215,7 @@ class SnmpQueryMock implements SnmpQueryInterface
         return $response;
     }
 
+    /** @param mixed $oid */
     public function next($oid): SnmpResponse
     {
         $community = $this->community();
@@ -266,7 +273,7 @@ class SnmpQueryMock implements SnmpQueryInterface
      * Get all data of the specified $community from the snmprec cache
      *
      * @param  string  $community  snmp community to return
-     * @return array array of the data containing: [$oid][$type, $data]
+     * @return array<mixed> array of the data containing: [$oid][$type, $data]
      *
      * @throws Exception this $community is not cached
      */

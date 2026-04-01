@@ -106,6 +106,7 @@ class Ocnos extends OS implements EntityPhysicalDiscovery, TransceiverDiscovery
         return $inventory;
     }
 
+    /** @param array<mixed> $stack */
     private function describeChassis(array $stack): string
     {
         $description = $stack['IPI-CMM-CHASSIS-MIB::cmmStackUnitModelName'] ?? '';
@@ -134,6 +135,7 @@ class Ocnos extends OS implements EntityPhysicalDiscovery, TransceiverDiscovery
         return $description;
     }
 
+    /** @param array<mixed> $transceiver */
     private function describeTransceiver(array $transceiver): string
     {
         $description = $transceiver['IPI-CMM-CHASSIS-MIB::cmmTransType'] ?? '';

@@ -41,6 +41,7 @@ class ErrorReporting
     private const MAX_PROD_ERRORS = 4;
     private int $errorCount = 0;
     private ?bool $reportingEnabled = null;
+    /** @var array<mixed> */
     protected array $upgradable = [
         \LibreNMS\Exceptions\FilePermissionsException::class,
         \LibreNMS\Exceptions\DatabaseConnectException::class,
@@ -196,6 +197,7 @@ class ErrorReporting
         });
     }
 
+    /** @return array<mixed> */
     private static function findFirstNonVendorFrame(): array
     {
         foreach (debug_backtrace() as $trace) {

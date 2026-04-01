@@ -36,7 +36,7 @@ trait VxworksProcessorUsage
      * Returns an array of LibreNMS\Device\Processor objects that have been discovered
      *
      * @param  string  $oid  Custom OID to fetch from
-     * @return array Processors
+     * @return array<mixed> Processors
      * @param mixed $oid
      */
     public function discoverProcessors($oid = '.1.3.6.1.4.1.4413.1.1.1.1.4.9.0')
@@ -65,7 +65,7 @@ trait VxworksProcessorUsage
     /**
      * Poll processor data.  This can be implemented if custom polling is needed.
      *
-     * @param  array  $processors  Array of processor entries from the database that need to be polled
+     * @param  array<mixed>  $processors  Array of processor entries from the database that need to be polled
      * @return array of polled data
      */
     public function pollProcessors(array $processors)

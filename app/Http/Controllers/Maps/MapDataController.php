@@ -388,6 +388,7 @@ class MapDataController extends Controller
         return LibrenmsConfig::get("network_map_legend.$link_pct", '#000000');
     }
 
+    /** @return array<mixed> */
     protected function nodeDisabledStyle(): array
     {
         return [
@@ -402,6 +403,7 @@ class MapDataController extends Controller
         ];
     }
 
+    /** @return array<mixed> */
     protected function nodeHighlightStyle(): array
     {
         return [
@@ -415,6 +417,7 @@ class MapDataController extends Controller
         ];
     }
 
+    /** @return array<mixed> */
     protected function nodeDownStyle(): array
     {
         return [
@@ -430,6 +433,7 @@ class MapDataController extends Controller
         ];
     }
 
+    /** @return array<mixed> */
     protected function nodeUpStyle(): array
     {
         return [
@@ -440,7 +444,10 @@ class MapDataController extends Controller
         ];
     }
 
-    /** @param mixed $device */
+    /**
+     * @param mixed $device
+     * @return array<mixed>
+     */
     protected function deviceStyle($device, $highlight_node = 0): array
     {
         if ($device->disabled) {

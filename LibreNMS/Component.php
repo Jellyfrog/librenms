@@ -309,7 +309,7 @@ class Component
      * Get the component id for the first component in the array
      * Only set $device_id if using the array from getCompenents(), which is keyed by device_id
      *
-     * @param  array  $component_array
+     * @param  array<mixed>  $component_array
      * @param  int  $device_id
      * @return int the component id
      */

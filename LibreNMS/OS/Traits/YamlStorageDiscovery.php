@@ -36,6 +36,7 @@ use LibreNMS\Discovery\YamlDiscoveryDefinition;
 
 trait YamlStorageDiscovery
 {
+    /** @var array<mixed> */
     private array $storagePrefetch = [];
 
     public function discoverYamlStorage(): Collection

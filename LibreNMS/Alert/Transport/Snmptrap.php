@@ -37,6 +37,7 @@ class Snmptrap extends Transport
 {
     protected string $name = 'SNMP Trap';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $host = $this->config['snmptrap-destination-host'];
@@ -102,6 +103,7 @@ class Snmptrap extends Transport
      *   OID type value
      * where value may be a double-quoted string containing spaces.
      * Lines beginning with '#' are treated as comments and ignored.
+     * @return array<mixed>
      */
     private function parseVarbinds(string $msg): array
     {
@@ -164,6 +166,7 @@ class Snmptrap extends Transport
         return $tokens;
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

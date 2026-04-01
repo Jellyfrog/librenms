@@ -33,6 +33,7 @@ use Illuminate\View\View;
 class GraylogController extends WidgetController
 {
     protected string $name = 'graylog';
+    /** @var array<mixed> */
     protected $defaults = [
         'title' => null,
         'stream' => null,

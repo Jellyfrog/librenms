@@ -160,7 +160,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      * Bring together the probe lists
      *
      * @param  int  $probeCount  Number of processes to create
-     * @return array
+     * @return array<mixed>
      */
     public function assembleProbes($probeCount)
     {
@@ -182,7 +182,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      * @param  string  $probe  The first part of the probe name, e.g. 'lnmsFPing' or 'lnmsFPing6'
      * @param  string  $binary  Path to the relevant probe binary (i.e. the output of `which fping` or `which fping6`)
      * @param  int  $probeCount  Number of processes to create
-     * @return array
+     * @return array<mixed>
      */
     public function buildProbes($module, $defaultProbe, $probe, $binary, $probeCount)
     {
@@ -205,7 +205,7 @@ class SmokepingGenerateCommand extends LnmsCommand
     /**
      * Generate a header to append to the smokeping configuration file
      *
-     * @return array
+     * @return array<mixed>
      * @param mixed $compat
      */
     public function buildHeader($noHeader, $compat)
@@ -233,7 +233,7 @@ class SmokepingGenerateCommand extends LnmsCommand
     /**
      * Determine if a list of targets is needed, and write one if so
      *
-     * @param  array  $smokelist  A list of devices to create a a config block for
+     * @param  array<mixed>  $smokelist  A list of devices to create a a config block for
      * @return array
      * @param mixed $probeCount
      */
@@ -304,6 +304,7 @@ class SmokepingGenerateCommand extends LnmsCommand
      *
      * @param  array  ...$blocks  Blocks of smokeping configuration arranged in arrays of strings
      * @return int
+     * @param array<mixed> $blocks
      */
     private function render(...$blocks)
     {
@@ -317,7 +318,7 @@ class SmokepingGenerateCommand extends LnmsCommand
     /**
      * Build the configuration for a set of devices inside a type block
      *
-     * @param  array  $devices  A list of devices to create a a config block for
+     * @param  array<mixed>  $devices  A list of devices to create a a config block for
      * @return array
      * @param mixed $probeCount
      */

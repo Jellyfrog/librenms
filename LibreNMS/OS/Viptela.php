@@ -45,7 +45,7 @@ class Viptela extends OS implements ProcessorDiscovery, ProcessorPolling
      * Discover processors.
      * Returns an array of LibreNMS\Device\Processor objects that have been discovered
      *
-     * @return array Processor
+     * @return array<mixed> Processor
      */
     public function discoverProcessors()
     {
@@ -66,7 +66,7 @@ class Viptela extends OS implements ProcessorDiscovery, ProcessorPolling
     /**
      * Poll processor data.  This can be implemented if custom polling is needed.
      *
-     * @param  array  $processors  Array of processor entries from the database that need to be polled
+     * @param  array<mixed>  $processors  Array of processor entries from the database that need to be polled
      * @return array of polled data
      */
     public function pollProcessors(array $processors)

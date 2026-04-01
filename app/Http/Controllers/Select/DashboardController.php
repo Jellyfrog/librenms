@@ -30,6 +30,7 @@ use App\Models\Dashboard;
 
 class DashboardController extends SelectController
 {
+    /** @return array<mixed> */
     protected function searchFields($request)
     {
         return ['dashboard_name', 'username'];
@@ -53,7 +54,7 @@ class DashboardController extends SelectController
 
     /**
      * @param  object  $dashboard
-     * @return array
+     * @return array<mixed>
      */
     public function formatItem($dashboard): array
     {
@@ -63,6 +64,7 @@ class DashboardController extends SelectController
         ];
     }
 
+    /** @return array<mixed> */
     protected function prependItem(): array
     {
         return [

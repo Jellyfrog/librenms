@@ -36,6 +36,7 @@ use Illuminate\View\View;
 class TopErrorsController extends WidgetController
 {
     protected string $name = 'top-errors';
+    /** @var array<mixed> */
     protected $defaults = [
         'interface_count' => 5,
         'time_interval' => 15,

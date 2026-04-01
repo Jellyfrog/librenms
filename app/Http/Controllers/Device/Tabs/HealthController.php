@@ -52,6 +52,7 @@ class HealthController implements DeviceTab
         return __('Health');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [];

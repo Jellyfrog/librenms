@@ -146,7 +146,7 @@ class Epmp extends OS implements
      * Discover wireless bit/packet error ratio.  This is in percent. Type is error-ratio.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessRssi()
     {
@@ -170,7 +170,7 @@ class Epmp extends OS implements
      * Formula: SNR = Signal or Rx Power - Noise Floor
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessSnr()
     {
@@ -193,7 +193,7 @@ class Epmp extends OS implements
      * Discover wireless frequency.  This is in MHz. Type is frequency.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessFrequency()
     {
@@ -216,7 +216,7 @@ class Epmp extends OS implements
      * Discover wireless client counts. Type is clients.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessClients()
     {

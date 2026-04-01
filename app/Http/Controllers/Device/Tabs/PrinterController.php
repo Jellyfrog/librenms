@@ -52,6 +52,7 @@ class PrinterController implements DeviceTab
         return __('Printer');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [

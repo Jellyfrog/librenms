@@ -53,6 +53,7 @@ class ProcessesController implements DeviceTab
         return __('Processes');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [];

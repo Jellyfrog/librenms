@@ -30,6 +30,7 @@ use App\Models\DeviceGroup;
 
 class DeviceGroupController extends SelectController
 {
+    /** @return array<mixed> */
     protected function rules()
     {
         return [
@@ -37,6 +38,7 @@ class DeviceGroupController extends SelectController
         ];
     }
 
+    /** @return array<mixed> */
     protected function searchFields($request)
     {
         return ['name'];
@@ -51,6 +53,7 @@ class DeviceGroupController extends SelectController
 
     /**
      * @param  DeviceGroup  $device_group
+     * @return array<mixed>
      */
     public function formatItem($device_group)
     {

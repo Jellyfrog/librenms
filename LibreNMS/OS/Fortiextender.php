@@ -40,6 +40,7 @@ class Fortiextender extends OS implements
     WirelessRsrqDiscovery,
     WirelessRssiDiscovery
 {
+    /** @return array<mixed> */
     public function discoverWirelessSinr()
     {
         $sinr_group = snmpwalk_group($this->getDeviceArray(), 'fextInfoModemStatusSINR', 'FORTINET-FORTIEXTENDER-MIB', 1);
@@ -53,6 +54,7 @@ class Fortiextender extends OS implements
         return $sinr;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRsrp()
     {
         $rsrp_group = snmpwalk_group($this->getDeviceArray(), 'fextInfoModemStatusSINR', 'FORTINET-FORTIEXTENDER-MIB', 1);
@@ -66,6 +68,7 @@ class Fortiextender extends OS implements
         return $rsrp;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRsrq()
     {
         $rsrq_group = snmpwalk_group($this->getDeviceArray(), 'fextInfoModemStatusRSRQ', 'FORTINET-FORTIEXTENDER-MIB', 1);
@@ -79,6 +82,7 @@ class Fortiextender extends OS implements
         return $rsrq;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRssi()
     {
         $rsrq_group = snmpwalk_group($this->getDeviceArray(), 'fextInfoModemStatusRSSI', 'FORTINET-FORTIEXTENDER-MIB', 1);

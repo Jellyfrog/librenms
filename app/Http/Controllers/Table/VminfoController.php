@@ -32,11 +32,13 @@ use LibreNMS\Util\Url;
 
 class VminfoController extends TableController
 {
+    /** @return array<mixed> */
     public function searchFields($request)
     {
         return ['vmwVmDisplayName', 'vmwVmGuestOS', 'devices.hostname', 'devices.sysname'];
     }
 
+    /** @return array<mixed> */
     public function sortFields($request)
     {
         return ['vmwVmDisplayName', 'vmwVmGuestOS', 'vmwVmMemSize', 'vmwVmCpus', 'vmwVmState', 'hostname'];
@@ -61,6 +63,7 @@ class VminfoController extends TableController
 
     /**
      * @param  Vminfo  $vm
+     * @return array<mixed>
      */
     public function formatItem($vm)
     {

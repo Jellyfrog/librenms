@@ -60,7 +60,7 @@ class Teldat extends OS implements
     }
 
     /**
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessClients()
     {
@@ -107,7 +107,7 @@ class Teldat extends OS implements
      * Discover wireless RSSI (Received Signal Strength Indicator). This is in dBm. Type is rssi.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessRssi()
     {
@@ -143,7 +143,7 @@ class Teldat extends OS implements
      * Discover wireless SINR (Signal-to-Interference-plus-Noise Ratio). This is in dB. Type is sinr.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessSinr()
     {
@@ -179,7 +179,7 @@ class Teldat extends OS implements
      * Discover wireless RSRQ (Reference Signal Received Quality). This is in dB. Type is rsrq.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessRsrq()
     {
@@ -215,7 +215,7 @@ class Teldat extends OS implements
      * Discover wireless RSRP (Reference Signals Received Power). This is in dBm. Type is rsrp.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessRsrp()
     {
@@ -252,7 +252,7 @@ class Teldat extends OS implements
      * Discover wireless Cellular Cell Id. This is in cell number. Type is cellid.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessCell()
     {

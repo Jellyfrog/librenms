@@ -27,7 +27,7 @@ class PortLink extends Component
      */
     public $description;
     /**
-     * @var array|array[]
+     * @var array<mixed>|array[]
      */
     public $graphs;
     /**
@@ -39,6 +39,7 @@ class PortLink extends Component
      * Create a new component instance.
      *
      * @return void
+     * @param array<mixed> $graphs
      */
     public function __construct(Port $port, ?array $graphs = null, public bool $basic = false, array $vars = [])
     {
@@ -80,6 +81,7 @@ class PortLink extends Component
             : 'up';
     }
 
+    /** @param array<mixed> $vars */
     public function fillDefaultVars(array $vars): array
     {
         return array_map(fn ($graph_vars) => array_merge([

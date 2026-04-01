@@ -160,12 +160,14 @@ trait YamlOSDiscovery
     /**
      * @param mixed $numeric
      * @return mixed
+     * @param array<mixed> $oids
      */
     private function fetch(array $oids, $numeric)
     {
         return snmp_get_multi_oid($this->getDeviceArray(), $oids, $numeric ? '-OUQn' : '-OUQ');
     }
 
+    /** @param array<mixed> $os_yaml */
     private function replaceStringsInFields(Device $device, array $os_yaml): void
     {
         foreach ($this->osFields as $field) {

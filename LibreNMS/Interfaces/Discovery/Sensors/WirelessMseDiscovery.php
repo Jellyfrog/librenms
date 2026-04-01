@@ -32,7 +32,7 @@ interface WirelessMseDiscovery
      * Discover wireless MSE. Mean square error value in dB. Type is mse.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessMse();
 }

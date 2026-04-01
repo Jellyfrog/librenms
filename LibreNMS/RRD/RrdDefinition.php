@@ -94,6 +94,7 @@ class RrdDefinition implements \Stringable
         return implode(' ', $this->getArguments());
     }
 
+    /** @return array<mixed> */
     public function getArguments(): array
     {
         $def = [];

@@ -22,6 +22,7 @@ class Osticket extends Transport
 {
     protected string $name = 'osTicket';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $url = $this->config['os-url'];
@@ -53,6 +54,7 @@ class Osticket extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $alert_data['msg'], $protocol);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

@@ -42,6 +42,7 @@ class Vminfo implements \LibreNMS\Interfaces\Module
 
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function dependencies(): array
     {
@@ -109,6 +110,7 @@ class Vminfo implements \LibreNMS\Interfaces\Module
 
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function dump(Device $device, string $type): ?array
     {

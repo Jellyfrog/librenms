@@ -162,7 +162,7 @@ class BashCompletionCommand extends Command
      *
      * @param  InputDefinition  $command
      * @param  string  $partial
-     * @param  array  $prev_options  Previous words in the command
+     * @param  array<mixed>  $prev_options  Previous words in the command
      * @return Collection
      */
     private function completeOption($command, $partial, $prev_options)

@@ -35,6 +35,7 @@ class RoleController extends SelectController
 {
     protected ?string $idField = 'name';
 
+    /** @return array<mixed> */
     protected function searchFields(Request $request): array
     {
         return ['name'];
@@ -54,7 +55,7 @@ class RoleController extends SelectController
 
     /**
      * @param  Role  $role
-     * @return array
+     * @return array<mixed>
      */
     public function formatItem($role): array
     {

@@ -56,6 +56,7 @@ abstract class BaseDatastore implements DatastoreContract
         $this->stats->record($stat);
     }
 
+    /** @param array<mixed> $meta */
     protected function getDevice(array $meta): Device
     {
         if (isset($meta['device']) && $meta['device'] instanceof Device) {

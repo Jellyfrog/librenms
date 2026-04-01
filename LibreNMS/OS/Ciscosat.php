@@ -11,6 +11,7 @@ use LibreNMS\OS;
 
 class Ciscosat extends OS implements WirelessErrorsDiscovery, WirelessRssiDiscovery, WirelessSnrDiscovery
 {
+    /** @return array<mixed> */
     public function discoverWirelessErrors()
     {
         $oids = snmpwalk_cache_oid($this->getDeviceArray(), 'satSignalUncorErrCnt', [], 'CISCO-DMN-DSG-TUNING-MIB', null, '-Ob');
@@ -29,6 +30,7 @@ class Ciscosat extends OS implements WirelessErrorsDiscovery, WirelessRssiDiscov
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRssi()
     {
         $oids = snmpwalk_cache_oid($this->getDeviceArray(), 'satSignalLevel', [], 'CISCO-DMN-DSG-TUNING-MIB', null, '-Ob');
@@ -47,6 +49,7 @@ class Ciscosat extends OS implements WirelessErrorsDiscovery, WirelessRssiDiscov
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessSnr()
     {
         $sensors = [];

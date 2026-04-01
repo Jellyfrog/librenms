@@ -40,6 +40,7 @@ class SnmpResponse implements \Stringable
     public readonly string $raw;
 
     private ?string $errorMessage = null;
+    /** @var array<mixed> */
     private ?array $values = null;
 
     /**
@@ -92,6 +93,7 @@ class SnmpResponse implements \Stringable
      * If forceNumeric is set, force the search to use numeric oids even if textual oids are given
      *
      * @throws \LibreNMS\Exceptions\InvalidOidException
+     * @param array<mixed> $oids
      */
     public function value(array|string $oids = [], bool $forceNumeric = false): string
     {
@@ -138,6 +140,7 @@ class SnmpResponse implements \Stringable
         return '';
     }
 
+    /** @return array<mixed> */
     public function values(): array
     {
         if (isset($this->values)) {
@@ -184,6 +187,7 @@ class SnmpResponse implements \Stringable
     /**
      * Create a key to value pair for an OID
      * You may omit $oid if there is only one $oid in the walk
+     * @return array<mixed>
      */
     public function pluck(?string $oid = null): array
     {
@@ -205,6 +209,7 @@ class SnmpResponse implements \Stringable
      * Group values by index as specified by $index_count
      * Useful when dealing with numeric oids
      * (By default this counts from right to left, using a negative index count will count from left to right)
+     * @param array<mixed> $array
      */
     public function groupByIndex(int $index_count = 1, array &$array = []): array
     {
@@ -222,6 +227,7 @@ class SnmpResponse implements \Stringable
     /**
      * Separate the index from the OID name
      * Insert into array as index => oidName
+     * @param array<mixed> $array
      */
     public function valuesByIndex(array &$array = []): array
     {
@@ -236,6 +242,7 @@ class SnmpResponse implements \Stringable
         return $array;
     }
 
+    /** @param array<mixed> $array */
     public function table(int $group = 0, array &$array = []): array
     {
         foreach ($this->values() as $key => $value) {
@@ -322,6 +329,7 @@ class SnmpResponse implements \Stringable
         return $this->raw;
     }
 
+    /** @return array<mixed> */
     private function getOidParts(string $key): array
     {
         // table

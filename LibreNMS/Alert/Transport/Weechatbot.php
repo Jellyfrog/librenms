@@ -30,6 +30,7 @@ class Weechatbot extends Transport
 {
     protected string $name = 'Weechat Bot';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $pre = "{$this->config['bot-password']} ";
@@ -54,6 +55,7 @@ class Weechatbot extends Transport
         return true;
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

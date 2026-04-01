@@ -25,6 +25,7 @@ use LibreNMS\Util\Http;
 
 class Elasticsearch extends Transport
 {
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $es_host = $this->config['es-host'];
@@ -143,6 +144,7 @@ class Elasticsearch extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $data['message'] ?? '', $data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

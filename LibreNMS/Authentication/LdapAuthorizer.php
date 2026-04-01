@@ -15,6 +15,7 @@ class LdapAuthorizer extends AuthorizerBase
     /** @var mixed */
     private $userloginname = '';
 
+    /** @param array<mixed> $credentials */
     public function authenticate($credentials)
     {
         $connection = $this->getLdapConnection(true);
@@ -173,6 +174,7 @@ class LdapAuthorizer extends AuthorizerBase
         return -1;
     }
 
+    /** @return array<mixed> */
     public function getUser($user_id): false|array
     {
         $connection = $this->getLdapConnection();
@@ -232,6 +234,7 @@ class LdapAuthorizer extends AuthorizerBase
         return $username;
     }
 
+    /** @return array<mixed> */
     public function getGroupList(): array
     {
         $ldap_groups = [];
@@ -322,7 +325,7 @@ class LdapAuthorizer extends AuthorizerBase
     }
 
     /**
-     * @param  array  $entry  ldap entry array
+     * @param  array<mixed>  $entry  ldap entry array
      * @return array
      */
     private function ldapToUser(array $entry): array

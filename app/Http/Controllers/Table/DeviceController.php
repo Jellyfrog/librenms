@@ -44,6 +44,7 @@ class DeviceController extends TableController
     /** @var mixed */
     private $detailed; // display format is detailed
 
+    /** @return array<mixed> */
     protected function rules()
     {
         return [
@@ -64,16 +65,19 @@ class DeviceController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function filterFields($request)
     {
         return ['os', 'version', 'hardware', 'features', 'type', 'status' => 'state', 'disabled', 'disable_notify', 'ignore', 'location_id' => 'location', 'device_id' => 'device_id'];
     }
 
+    /** @return array<mixed> */
     protected function searchFields($request)
     {
         return ['sysName', 'hostname', 'display', 'hardware', 'os', 'locations.location', 'purpose', 'notes'];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request)
     {
         return [
@@ -149,7 +153,7 @@ class DeviceController extends TableController
 
     /**
      * @param  Device  $device
-     * @return array|\Illuminate\Database\Eloquent\Model|\Illuminate\Support\Collection
+     * @return array<mixed>|\Illuminate\Database\Eloquent\Model|\Illuminate\Support\Collection
      */
     public function formatItem($device)
     {
@@ -275,6 +279,7 @@ class DeviceController extends TableController
             : substr($location, 0, 32);
     }
 
+    /** @return array<mixed> */
     private function getActions(Device $device): array
     {
         $actions = [
@@ -344,7 +349,7 @@ class DeviceController extends TableController
     /**
      * Get headers for CSV export
      *
-     * @return array
+     * @return array<mixed>
      */
     protected function getExportHeaders()
     {
@@ -368,7 +373,7 @@ class DeviceController extends TableController
      * Format a row for CSV export
      *
      * @param  Device  $device
-     * @return array
+     * @return array<mixed>
      */
     protected function formatExportRow($device)
     {

@@ -45,6 +45,7 @@ use LibreNMS\Util\Validate;
 class TopDevicesController extends WidgetController
 {
     protected string $name = 'top-devices';
+    /** @var array<mixed> */
     protected $defaults = [
         'title' => null,
         'top_query' => 'traffic',
@@ -84,7 +85,7 @@ class TopDevicesController extends WidgetController
     }
 
     /**
-     * @param  array|string  $headers
+     * @param  array<mixed>|string  $headers
      * @param  Collection  $rows
      * @return array
      */
@@ -130,7 +131,7 @@ class TopDevicesController extends WidgetController
     /**
      * @param  Device  $device
      * @param  string  $graph_type
-     * @param  array  $graph_params
+     * @param  array<mixed>  $graph_params
      * @return array
      */
     private function standardRow($device, $graph_type, $graph_params = [])

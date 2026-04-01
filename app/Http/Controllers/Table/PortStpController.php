@@ -34,6 +34,7 @@ use LibreNMS\Util\Mac;
 
 class PortStpController extends TableController
 {
+    /** @return array<mixed> */
     public function rules()
     {
         return [
@@ -42,6 +43,7 @@ class PortStpController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function filterFields($request): array
     {
         return [
@@ -54,6 +56,7 @@ class PortStpController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request)
     {
         return [
@@ -79,6 +82,7 @@ class PortStpController extends TableController
 
     /**
      * @param  PortStp  $stpPort
+     * @return array<mixed>
      */
     public function formatItem($stpPort)
     {

@@ -73,7 +73,7 @@ class ArubaInstant extends OS implements
      * Discover processors.
      * Returns an array of LibreNMS\Device\Processor objects that have been discovered
      *
-     * @return array Processors
+     * @return array<mixed> Processors
      */
     public function discoverProcessors(): array
     {
@@ -91,7 +91,7 @@ class ArubaInstant extends OS implements
      * Discover wireless client counts. Type is clients.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessClients(): array
     {
@@ -145,7 +145,7 @@ class ArubaInstant extends OS implements
      * Discover wireless AP counts. Type is ap-count.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessApCount(): array
     {
@@ -165,7 +165,7 @@ class ArubaInstant extends OS implements
      * Discover wireless frequency.  This is in MHz. Type is frequency.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessFrequency(): array
     {
@@ -191,7 +191,7 @@ class ArubaInstant extends OS implements
      * Discover wireless noise floor. This is in dBm/Hz. Type is noise-floor.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessNoiseFloor(): array
     {
@@ -218,7 +218,7 @@ class ArubaInstant extends OS implements
      * Discover wireless tx or rx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessPower(): array
     {
@@ -244,7 +244,7 @@ class ArubaInstant extends OS implements
      * Discover wireless utilization.  This is in %. Type is utilization.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessUtilization(): array
     {
@@ -279,7 +279,7 @@ class ArubaInstant extends OS implements
      * Poll wireless frequency as MHz
      * The returned array should be sensor_id => value pairs
      *
-     * @param  array  $sensors  Array of sensors needed to be polled
+     * @param  array<mixed>  $sensors  Array of sensors needed to be polled
      * @return array of polled data
      */
     public function pollWirelessFrequency(array $sensors)
@@ -291,7 +291,7 @@ class ArubaInstant extends OS implements
      * Poll wireless clients
      * The returned array should be sensor_id => value pairs
      *
-     * @param  array  $sensors  Array of sensors needed to be polled
+     * @param  array<mixed>  $sensors  Array of sensors needed to be polled
      * @return array of polled data
      */
     public function pollWirelessClients(array $sensors)
@@ -323,7 +323,7 @@ class ArubaInstant extends OS implements
      * Poll AP Count
      * The returned array should be sensor_id => value pairs
      *
-     * @param  array  $sensors  Array of sensors needed to be polled
+     * @param  array<mixed>  $sensors  Array of sensors needed to be polled
      * @return array of polled data
      */
     public function pollWirelessApCount(array $sensors)

@@ -22,6 +22,7 @@ class RadiusAuthorizer extends MysqlAuthorizer
 
     protected Radius $radius;
 
+    /** @var array<mixed> */
     private array $roles = []; // temp cache of roles
 
     public function __construct()
@@ -29,6 +30,7 @@ class RadiusAuthorizer extends MysqlAuthorizer
         $this->radius = new Radius(LibrenmsConfig::get('radius.hostname'), LibrenmsConfig::get('radius.secret'), LibrenmsConfig::get('radius.suffix'), LibrenmsConfig::get('radius.timeout'), LibrenmsConfig::get('radius.port'));
     }
 
+    /** @param array<mixed> $credentials */
     public function authenticate($credentials)
     {
         if (empty($credentials['username'])) {
@@ -69,6 +71,7 @@ class RadiusAuthorizer extends MysqlAuthorizer
         return $this->roles[$username] ?? false;
     }
 
+    /** @return array<mixed> */
     private function getDefaultRoles(): array
     {
         // return roles or translate from the old radius.default_level

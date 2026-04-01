@@ -27,6 +27,7 @@ class Grafana extends Transport
 {
     protected string $name = 'Grafana Oncall';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $device = DeviceCache::get($alert_data['device_id']);
@@ -87,6 +88,7 @@ class Grafana extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $alert_data['msg'], $data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

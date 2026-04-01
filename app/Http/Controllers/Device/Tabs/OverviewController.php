@@ -53,6 +53,7 @@ class OverviewController implements DeviceTab
         return __('Overview');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [];

@@ -32,6 +32,7 @@ class Rocket extends Transport
 {
     protected string $name = 'Rocket Chat';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $rocket_opts = $this->parseUserOptions($this->config['rocket-options']);
@@ -61,6 +62,7 @@ class Rocket extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $rocket_msg, $data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

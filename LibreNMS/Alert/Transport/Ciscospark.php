@@ -23,6 +23,7 @@ class Ciscospark extends Transport
     // This is the total length minus 4 bytes for ellipses.
     private static int $MAX_MSG_SIZE = 7435;
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $room_id = $this->config['room-id'];
@@ -58,6 +59,7 @@ class Ciscospark extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $data['text'] ?? $data['markdown'], $data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

@@ -31,6 +31,7 @@ class OsController
         ]);
     }
 
+    /** @param array<mixed> $items */
     private function sortAndFilterBySimilarity(string $term, array $items): array
     {
         $term = strtolower($term);

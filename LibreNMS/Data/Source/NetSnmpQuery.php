@@ -77,11 +77,13 @@ class NetSnmpQuery implements SnmpQueryInterface
      */
     private array $mibDirs = [];
     private string $context = '';
+    /** @var array<mixed> */
     private array|string $options = [self::DEFAULT_FLAGS, '-Pu'];
     private Device $device;
     private bool $abort = false;
     private bool $cache = false;
     // defaults for net-snmp https://net-snmp.sourceforge.io/docs/man/snmpcmd.html
+    /** @var array<mixed> */
     private array $mibs = ['SNMPv2-TC', 'SNMPv2-MIB', 'IF-MIB', 'IP-MIB', 'TCP-MIB', 'UDP-MIB', 'NET-SNMP-VACM-MIB'];
 
     public function __construct()
@@ -148,6 +150,7 @@ class NetSnmpQuery implements SnmpQueryInterface
     /**
      * Set MIBs to use for this query. Base mibs are included by default.
      * They will be appended to existing mibs unless $append is set to false.
+     * @param array<mixed> $mibs
      */
     public function mibs(array $mibs, bool $append = true): SnmpQueryInterface
     {
@@ -232,7 +235,7 @@ class NetSnmpQuery implements SnmpQueryInterface
      * Calling with null will reset to the default options (-OQXUte).
      * Try to avoid setting options this way to keep the API generic.
      *
-     * @param  array|string|null  $options
+     * @param  array<mixed>|string|null  $options
      * @return $this
      */
     public function options($options = []): SnmpQueryInterface
@@ -248,7 +251,7 @@ class NetSnmpQuery implements SnmpQueryInterface
      * snmpget an OID
      * Commonly used to fetch a single or multiple explicit values.
      *
-     * @param  array|string  $oid
+     * @param  array<mixed>|string  $oid
      * @return SnmpResponse
      */
     public function get($oid): SnmpResponse
@@ -260,7 +263,7 @@ class NetSnmpQuery implements SnmpQueryInterface
      * snmpwalk an OID
      * Fetches all OIDs under a given OID, commonly used with tables.
      *
-     * @param  array|string  $oid
+     * @param  array<mixed>|string  $oid
      * @return SnmpResponse
      */
     public function walk($oid): SnmpResponse
@@ -272,7 +275,7 @@ class NetSnmpQuery implements SnmpQueryInterface
      * snmpnext for the given oid
      * snmpnext retrieves the first oid after the given oid.
      *
-     * @param  array|string  $oid
+     * @param  array<mixed>|string  $oid
      * @return SnmpResponse
      */
     public function next($oid): SnmpResponse
@@ -306,6 +309,7 @@ class NetSnmpQuery implements SnmpQueryInterface
         return $this->exec('snmptranslate', [$oid])->value();
     }
 
+    /** @param array<mixed> $oids */
     private function buildCli(string $command, array $oids): array
     {
         $cmd = $this->initCommand($command, $oids);
@@ -338,6 +342,7 @@ class NetSnmpQuery implements SnmpQueryInterface
         return array_merge($cmd, $oids);
     }
 
+    /** @param array<mixed> $cmd */
     private function buildAuth(array &$cmd): void
     {
         if ($this->device->snmpver === 'v3') {
@@ -366,6 +371,7 @@ class NetSnmpQuery implements SnmpQueryInterface
         }
     }
 
+    /** @param array<mixed> $oids */
     private function execMultiple(string $command, array $oids): SnmpResponse
     {
         $response = new SnmpResponse('');
@@ -385,6 +391,7 @@ class NetSnmpQuery implements SnmpQueryInterface
         return $response;
     }
 
+    /** @param array<mixed> $oids */
     private function exec(string $command, array $oids): SnmpResponse
     {
         // use runtime(array) cache if requested. The 'null' driver will simply return the value without caching
@@ -433,6 +440,7 @@ class NetSnmpQuery implements SnmpQueryInterface
         });
     }
 
+    /** @param array<mixed> $oids */
     private function initCommand(string $binary, array $oids): array
     {
         if ($binary == 'snmpwalk') {
@@ -522,6 +530,7 @@ class NetSnmpQuery implements SnmpQueryInterface
         Log::debug($error);
     }
 
+    /** @param array<mixed> $oids */
     private function limitOids(array $oids): array
     {
         // get max oids per query device attrib > os setting > global setting
@@ -535,11 +544,13 @@ class NetSnmpQuery implements SnmpQueryInterface
         return [$oids]; // wrap in array for execMultiple so they are all done at once
     }
 
+    /** @param array<mixed> $oid */
     private function parseOid(array|string $oid): array
     {
         return is_string($oid) ? explode(' ', $oid) : $oid;
     }
 
+    /** @param array<mixed> $oids */
     private function getCacheKey(string $type, array $oids): string
     {
         $oids = implode(',', $oids);

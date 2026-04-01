@@ -24,6 +24,7 @@ class Merakimr extends OS implements
     WirelessFrequencyDiscovery,
     WirelessFrequencyPolling
 {
+    /** @return array<mixed> */
     public function discoverWirelessFrequency()
     {
         $mrRadioChannelOper = $this->getCacheByIndex('dot11CurrentChannel', 'IEEE802dot11-MIB');
@@ -48,6 +49,7 @@ class Merakimr extends OS implements
         return $sensors;
     }
 
+    /** @param array<mixed> $sensors */
     public function pollWirelessFrequency(array $sensors)
     {
         return $this->pollWirelessChannelAsFrequency($sensors);

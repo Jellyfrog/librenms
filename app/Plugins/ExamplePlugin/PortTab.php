@@ -16,6 +16,7 @@ class PortTab extends PortTabHook
     // override the data function to add additional data to be accessed in the view
     // title is a required attribute and will be shown above your returned html from your blade file
     // inside the blade, all variables will be named based on the key in the returned array
+    /** @return array<mixed> */
     public function data(\App\Models\Port $port): array
     {
         // run any calculations here

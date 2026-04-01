@@ -84,6 +84,7 @@ class MaintenanceFetchOuis extends LnmsCommand
         }
     }
 
+    /** @return array<mixed> */
     private function buildOuiList(string $csv_data): array
     {
         $ouis = [];

@@ -40,6 +40,7 @@ class IcrOs extends OS implements
     WirelessRsrqDiscovery,
     WirelessSinrDiscovery
 {
+    /** @param array<mixed> $nums */
     private function runWirelessSensor(string $miboid, WirelessSensorType $type, array $nums): array
     {
         $sensors = [];
@@ -60,21 +61,25 @@ class IcrOs extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRssi()
     {
         return $this->runWirelessSensor('.1.3.6.1.4.1.30140.4', WirelessSensorType::Rssi, [30, 130]);
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRsrp()
     {
         return $this->runWirelessSensor('.1.3.6.1.4.1.30140.4', WirelessSensorType::Rsrp, [32, 132]);
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRsrq()
     {
         return $this->runWirelessSensor('.1.3.6.1.4.1.30140.4', WirelessSensorType::Rsrq, [33, 133]);
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessSinr()
     {
         return $this->runWirelessSensor('.1.3.6.1.4.1.30140.4', WirelessSensorType::Sinr, [41, 141]);

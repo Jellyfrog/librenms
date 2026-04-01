@@ -44,7 +44,7 @@ final class QueryBuilderTest extends TestCase
 
     /**
      * @param  string  $legacy
-     * @param  array  $builder
+     * @param  array<mixed>  $builder
      * @param  string  $display
      * @param  string  $sql
      * @param mixed $query
@@ -61,6 +61,7 @@ final class QueryBuilderTest extends TestCase
         $this->assertEquals($query[1], $qbq->getBindings(), 'Fluent bindings do not match');
     }
 
+    /** @return array<mixed> */
     public static function loadQueryData(): array
     {
         $base = LibrenmsConfig::get('install_dir');

@@ -36,7 +36,7 @@ class ValidationResult
     public const INFO = 3;
     /** @var string */
     private $list_description = '';
-    /** @var array */
+    /** @var array<mixed> */
     private $list;
     /** @var string|null */
     private $fixer;
@@ -47,6 +47,7 @@ class ValidationResult
      * @param  string  $message  The message to describe this result
      * @param  int  $status  The status of this result FAILURE, WARNING, or SUCCESS
      * @param  string|null  $fix  a suggested fix to highlight for the user
+     * @param array<mixed> $fix
      */
     public function __construct(private readonly string $message, private readonly int $status, private string|array|null $fix = null)
     {
@@ -120,11 +121,13 @@ class ValidationResult
         return ! empty($this->list);
     }
 
+    /** @return array<mixed> */
     public function getList(): ?array
     {
         return $this->list;
     }
 
+    /** @param array<mixed> $list */
     public function setList(string $description, array $list): ValidationResult
     {
         if (is_array(current($list))) {
@@ -143,7 +146,7 @@ class ValidationResult
     }
 
     /**
-     * @return string|array|null
+     * @return string|array<mixed>|null
      */
     public function getFix()
     {
@@ -154,7 +157,7 @@ class ValidationResult
      * The commands (generally) to fix the issue.
      * If there are multiple, use an array.
      *
-     * @param  string|array  $fix
+     * @param  string|array<mixed>  $fix
      * @return ValidationResult $this
      */
     public function setFix($fix): ValidationResult
@@ -206,6 +209,7 @@ class ValidationResult
         return $this->list_description;
     }
 
+    /** @return array<mixed> */
     public function toArray(): array
     {
         $resultStatus = $this->getStatus();

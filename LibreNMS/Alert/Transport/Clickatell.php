@@ -30,6 +30,7 @@ use LibreNMS\Util\Http;
 
 class Clickatell extends Transport
 {
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $url = 'https://platform.clickatell.com/messages/http/send';
@@ -48,6 +49,7 @@ class Clickatell extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $alert_data['title'], $params);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

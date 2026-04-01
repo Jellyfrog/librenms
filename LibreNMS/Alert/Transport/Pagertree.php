@@ -38,6 +38,7 @@ class Pagertree extends Transport
 {
     protected string $name = 'PagerTree';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $event_type = match ($alert_data['state']) {
@@ -72,6 +73,7 @@ class Pagertree extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $event['Description'], $event);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

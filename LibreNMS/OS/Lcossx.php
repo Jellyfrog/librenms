@@ -36,7 +36,10 @@ class Lcossx extends OS implements ProcessorDiscovery, ProcessorPolling
     private string $procOid = '1.3.6.1.4.1.2356.14.1.1.1.24.0';
 
     // OID string value example: 100ms:87%, 1s:49%, 10s:42%
-    /** @return mixed */
+    /**
+     * @return mixed
+     * @param array<mixed> $input
+     */
     private function convertProcessorData(array $input)
     {
         $data = [];
@@ -51,6 +54,7 @@ class Lcossx extends OS implements ProcessorDiscovery, ProcessorPolling
         return $data;
     }
 
+    /** @return array<mixed> */
     public function discoverProcessors()
     {
         $data = snmpwalk_array_num($this->getDeviceArray(), $this->procOid);
@@ -77,6 +81,7 @@ class Lcossx extends OS implements ProcessorDiscovery, ProcessorPolling
         return $processors;
     }
 
+    /** @param array<mixed> $processors */
     public function pollProcessors(array $processors)
     {
         $data = snmpwalk_array_num($this->getDeviceArray(), $this->procOid);

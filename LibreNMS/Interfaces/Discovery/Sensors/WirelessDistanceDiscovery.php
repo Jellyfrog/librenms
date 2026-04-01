@@ -32,7 +32,7 @@ interface WirelessDistanceDiscovery
      * Discover wireless distance.  This is in Kilometers. Type is distance.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessDistance();
 }

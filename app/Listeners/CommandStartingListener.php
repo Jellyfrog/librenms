@@ -34,6 +34,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CommandStartingListener
 {
+    /** @var array<mixed> */
     private array $skip_user_check = [
         'list:bash-completion',
     ];

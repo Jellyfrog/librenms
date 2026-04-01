@@ -28,6 +28,7 @@ namespace LibreNMS\Exceptions;
 
 class AlertTransportDeliveryException extends \Exception
 {
+    /** @param array<mixed> $data */
     public function __construct(
         array $data,
         int $code = 0,

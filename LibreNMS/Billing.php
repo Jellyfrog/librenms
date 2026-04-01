@@ -22,7 +22,10 @@ class Billing
         return Number::formatBase($value, LibrenmsConfig::get('billing.base'), 2, 0, '');
     }
 
-    /** @param mixed $dayofmonth */
+    /**
+     * @param mixed $dayofmonth
+     * @return array<mixed>
+     */
     public static function getDates($dayofmonth, $months = 0): array
     {
         $dayofmonth = Str::padLeft($dayofmonth, 2, '0');
@@ -100,7 +103,10 @@ class Billing
         return (int) $value;
     }
 
-    /** @param mixed $bill_id */
+    /**
+     * @param mixed $bill_id
+     * @return array<mixed>
+     */
     public static function getLastPortCounter($port_id, $bill_id): array
     {
         $return = [];
@@ -119,7 +125,10 @@ class Billing
         return $return;
     }
 
-    /** @param mixed $bill_id */
+    /**
+     * @param mixed $bill_id
+     * @return array<mixed>
+     */
     public static function getLastMeasurement($bill_id): array
     {
         $return = [];
@@ -164,7 +173,10 @@ class Billing
         return round($sum_data[$measurement_95th]['rate'], 2);
     }
 
-    /** @param mixed $bill_id */
+    /**
+     * @param mixed $bill_id
+     * @return array<mixed>
+     */
     public static function getRates($bill_id, $datefrom, $dateto, $dir_95th): array
     {
         $data = [];
@@ -212,7 +224,10 @@ class Billing
         return $sum;
     }
 
-    /** @param mixed $bill_id */
+    /**
+     * @param mixed $bill_id
+     * @return array<mixed>
+     */
     public static function getPeriod($bill_id, $datefrom, $dateto): array
     {
         $ptot = dbFetchRow('SELECT SUM(period) as `period`, MAX(in_delta) as `peak_in`, MAX(out_delta) as `peak_out`  FROM bill_data WHERE bill_id = ? AND timestamp > ? AND timestamp <= ?', [$bill_id, $datefrom, $dateto]);
@@ -220,7 +235,10 @@ class Billing
         return $ptot;
     }
 
-    /** @param mixed $bill_hist_id */
+    /**
+     * @param mixed $bill_hist_id
+     * @return array<mixed>
+     */
     public static function getHistoryBitsGraphData($bill_id, $bill_hist_id, $reducefactor): ?array
     {
         $histrow = dbFetchRow('SELECT UNIX_TIMESTAMP(bill_datefrom) as `from`, UNIX_TIMESTAMP(bill_dateto) AS `to`, rate_95th, rate_average, bill_type FROM bill_history WHERE bill_id = ? AND bill_hist_id = ?', [$bill_id, $bill_hist_id]);
@@ -239,7 +257,10 @@ class Billing
         return $graph_data;
     }
 
-    /** @param mixed $bill_id */
+    /**
+     * @param mixed $bill_id
+     * @return array<mixed>
+     */
     public static function getBitsGraphData($bill_id, $from, $to, $reducefactor): array
     {
         $i = '0';
@@ -342,7 +363,10 @@ class Billing
         return $result;
     }
 
-    /** @param mixed $bill_id */
+    /**
+     * @param mixed $bill_id
+     * @return array<mixed>
+     */
     public static function getHistoricTransferGraphData($bill_id): array
     {
         $i = '0';
@@ -397,7 +421,10 @@ class Billing
         ];
     }
 
-    /** @param mixed $bill_hist_id */
+    /**
+     * @param mixed $bill_hist_id
+     * @return array<mixed>
+     */
     public static function getBandwidthGraphData($bill_id, $bill_hist_id, $from, $to, $imgtype): ?array
     {
         if (is_numeric($bill_hist_id)) {

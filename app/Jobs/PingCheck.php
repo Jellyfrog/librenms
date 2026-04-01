@@ -60,7 +60,7 @@ class PingCheck implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param  array  $groups  List of distributed poller groups to check
+     * @param  array<mixed>  $groups  List of distributed poller groups to check
      */
     public function __construct(private array $groups = [])
     {
@@ -101,6 +101,7 @@ class PingCheck implements ShouldQueue
 
     /**
      * Get an ordered list of hostnames that we need to ping starting from devices with no parents
+     * @return array<mixed>
      */
     private function orderHostnames(Collection $devices): array
     {

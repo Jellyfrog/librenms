@@ -32,7 +32,7 @@ interface WirelessNoiseFloorDiscovery
      * Discover wireless noise floor. This is in dBm/Hz. Type is noise-floor.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessNoiseFloor();
 }

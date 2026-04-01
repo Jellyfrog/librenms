@@ -28,6 +28,7 @@ class Vminfo extends DeviceRelatedModel implements Keyable
         'vmwVmState',
     ];
 
+    /** @return array<mixed> */
     public function getStateLabelAttribute(): array
     {
         return Html::powerStateLabel($this->vmwVmState);

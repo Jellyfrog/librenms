@@ -34,6 +34,7 @@ use Illuminate\View\View;
 class CustomMapController extends WidgetController
 {
     protected string $name = 'custom-map';
+    /** @var array<mixed> */
     protected $defaults = [
         'title' => null,
         'custom_map' => null,

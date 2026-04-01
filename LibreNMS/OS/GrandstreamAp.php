@@ -32,6 +32,7 @@ class GrandstreamAp extends OS implements
         $device->hardware = $response['GRANDSTREAM-GWN-PRODUCTS-AP-MIB::gwnDeviceModel.0'] ?: null;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessClients(): array
     {
         $sensors = [];
@@ -81,7 +82,7 @@ class GrandstreamAp extends OS implements
      * The returned array should be sensor_id => value pairs
      *
      * @param  Sensor[]  $sensors  Array of sensors needed to be polled
-     * @return array of polled data
+     * @return array<mixed> of polled data
      */
     public function pollWirelessClients(array $sensors): array
     {
@@ -98,6 +99,7 @@ class GrandstreamAp extends OS implements
         return $data;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessChannel(): array
     {
         $sensors = [];
@@ -126,7 +128,7 @@ class GrandstreamAp extends OS implements
      * Discover wireless tx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessPower(): array
     {

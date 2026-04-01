@@ -56,6 +56,7 @@ class Bats extends OS implements
         ]);
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessSnr()
     {
         $oid = '.1.3.6.1.4.1.37069.1.2.5.3.0';
@@ -65,6 +66,7 @@ class Bats extends OS implements
         ];
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRssi()
     {
         $oid = '.1.3.6.1.4.1.37069.1.2.4.3.0';

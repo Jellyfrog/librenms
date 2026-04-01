@@ -39,6 +39,7 @@ class OutagesController extends TableController
     /** @var mixed */
     protected $model = DeviceOutage::class;
 
+    /** @return array<mixed> */
     public function rules(): array
     {
         return [
@@ -49,6 +50,7 @@ class OutagesController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function filterFields($request): array
     {
         return [
@@ -56,6 +58,7 @@ class OutagesController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request): array
     {
         return ['going_down', 'up_again', 'device_id'];
@@ -109,6 +112,7 @@ class OutagesController extends TableController
 
     /**
      * @param  DeviceOutage  $outage
+     * @return array<mixed>
      */
     public function formatItem($outage): array
     {
@@ -158,7 +162,7 @@ class OutagesController extends TableController
     /**
      * Get headers for CSV export
      *
-     * @return array
+     * @return array<mixed>
      */
     protected function getExportHeaders(): array
     {
@@ -174,7 +178,7 @@ class OutagesController extends TableController
      * Format a row for CSV export
      *
      * @param  DeviceOutage  $outage
-     * @return array
+     * @return array<mixed>
      */
     protected function formatExportRow($outage): array
     {

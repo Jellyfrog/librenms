@@ -24,7 +24,7 @@ class AirosAf60 extends OS implements
      * Discover wireless frequency.  This is in GHz. Type is frequency.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessFrequency()
     {
@@ -35,6 +35,7 @@ class AirosAf60 extends OS implements
         ];
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessDistance()
     {
         $sensors = [];
@@ -48,6 +49,7 @@ class AirosAf60 extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRate()
     {
         $sensors = [];
@@ -63,6 +65,7 @@ class AirosAf60 extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRssi()
     {
         $sensors = [];
@@ -78,6 +81,7 @@ class AirosAf60 extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessSnr()
     {
         $sensors = [];

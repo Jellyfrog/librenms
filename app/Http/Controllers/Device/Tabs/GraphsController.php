@@ -52,6 +52,7 @@ class GraphsController implements DeviceTab
         return __('Graphs');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [];

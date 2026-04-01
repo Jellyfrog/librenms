@@ -133,6 +133,7 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
         return $proc;
     }
 
+    /** @param array<mixed> $data */
     public static function fromYaml(OS $os, $index, array $data)
     {
         $precision = empty($data['precision']) ? 1 : $data['precision'];
@@ -304,7 +305,7 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
     /**
      * Get an array of this sensor with fields that line up with the database.
      *
-     * @param  array  $exclude  exclude columns
+     * @param  array<mixed>  $exclude  exclude columns
      * @return array
      */
     public function toArray($exclude = [])

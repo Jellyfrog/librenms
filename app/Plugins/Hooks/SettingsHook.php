@@ -39,6 +39,7 @@ abstract class SettingsHook implements \LibreNMS\Interfaces\Plugins\Hooks\Settin
         return true;
     }
 
+    /** @param array<mixed> $settings */
     public function data(array $settings): array
     {
         return [
@@ -46,6 +47,7 @@ abstract class SettingsHook implements \LibreNMS\Interfaces\Plugins\Hooks\Settin
         ];
     }
 
+    /** @param array<mixed> $settings */
     final public function handle(string $pluginName, array $settings, Application $app): array
     {
         return array_merge([

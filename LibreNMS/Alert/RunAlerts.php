@@ -90,7 +90,7 @@ class RunAlerts
     /**
      * Describe Alert
      *
-     * @param  array  $alert  Alert-Result from DB
+     * @param  array<mixed>  $alert  Alert-Result from DB
      * @return array|bool|string
      */
     public function describeAlert($alert)
@@ -269,7 +269,7 @@ class RunAlerts
     /**
      * Issue Alert-Object
      *
-     * @param  array  $alert
+     * @param  array<mixed>  $alert
      * @return bool
      */
     public function issueAlert($alert)
@@ -394,7 +394,7 @@ class RunAlerts
     /**
      * Extract the fields that are used to identify the elements in the array of a "fault"
      *
-     * @param  array  $element
+     * @param  array<mixed>  $element
      * @return array
      */
     private function extractIdFieldsForFault($element)
@@ -407,7 +407,7 @@ class RunAlerts
     /**
      * Generate a comparison key for an element based on the fields that identify it for a "fault"
      *
-     * @param  array  $element
+     * @param  array<mixed>  $element
      * @param  array  $idFields
      * @return string
      */
@@ -425,7 +425,7 @@ class RunAlerts
      * Find new elements in the array for faults
      * PHP array_diff is not working well for it
      *
-     * @param  array  $array1
+     * @param  array<mixed>  $array1
      * @param  array  $array2
      * @return array [$added, $removed]
      */
@@ -630,7 +630,7 @@ class RunAlerts
     /**
      * Run external transports
      *
-     * @param  array  $obj  Alert-Array
+     * @param  array<mixed>  $obj  Alert-Array
      * @return void
      */
     public function extTransports($obj)

@@ -32,7 +32,7 @@ interface WirelessCellDiscovery
      * Discover Wireless Cell in cell number. Type is cell.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessCell();
 }

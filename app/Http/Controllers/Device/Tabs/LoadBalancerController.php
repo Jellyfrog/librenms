@@ -99,6 +99,7 @@ class LoadBalancerController implements DeviceTab
         return __('Load Balancer');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [

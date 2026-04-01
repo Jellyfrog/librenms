@@ -52,7 +52,7 @@ class Ewc extends OS implements
      * Discover wireless AP count.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessApCount()
     {
@@ -93,7 +93,7 @@ class Ewc extends OS implements
     /**
      * Returns an array of LibreNMS\Device\Sensor objects
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessClients()
     {
@@ -147,7 +147,7 @@ class Ewc extends OS implements
      * Discover wireless bit errors.  This is in total bits. Type is errors.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessErrors()
     {
@@ -174,7 +174,7 @@ class Ewc extends OS implements
      * Discover wireless frequency.  This is in MHz. Type is frequency.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessFrequency()
     {
@@ -201,7 +201,7 @@ class Ewc extends OS implements
      * Discover wireless noise floor.  This is in dBm. Type is noise-floor.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessNoiseFloor()
     {
@@ -235,7 +235,7 @@ class Ewc extends OS implements
      * Discover wireless RSSI (Received Signal Strength Indicator). This is in dBm. Type is rssi
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessRssi()
     {
@@ -262,7 +262,7 @@ class Ewc extends OS implements
      * Discover wireless SNR.  This is in dB. Type is snr.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessSnr()
     {
@@ -289,7 +289,7 @@ class Ewc extends OS implements
      * Discover wireless utilization.  This is in %. Type is utilization.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessUtilization()
     {

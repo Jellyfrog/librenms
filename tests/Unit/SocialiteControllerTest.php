@@ -39,7 +39,7 @@ final class SocialiteControllerTest extends TestCase
      * @param  string  $provider  The Socialite provider name (e.g. 'okta' or 'saml2')
      * @param  array  $rawAttributes  The simulated raw user data from getRaw().
      * @param  array  $expectedRoles  The roles expected to be passed to syncRoles() - the expected returns
-     * @param  array  $claimMap  A map of claim-values to roles (config for auth.socialite.claims).
+     * @param  array<mixed>  $claimMap  A map of claim-values to roles (config for auth.socialite.claims).
      * @param  array  $scopes  Optional scopes config; defaults to ['groups'].
      * @return bool The return value from setRolesFromClaim().
      */
@@ -146,6 +146,7 @@ final class SocialiteControllerTest extends TestCase
                 return 'http://schemas.microsoft.com/ws/2008/06/identity/claims/groups';
             }
 
+            /** @return array<mixed> */
             public function getAllAttributeValues(): array
             {
                 return ['G_librenms_admins'];
@@ -174,6 +175,7 @@ final class SocialiteControllerTest extends TestCase
                 return 'http://schemas.microsoft.com/ws/2008/06/identity/claims/groups';
             }
 
+            /** @return array<mixed> */
             public function getAllAttributeValues(): array
             {
                 return ['G_librenms_users'];

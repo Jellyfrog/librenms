@@ -71,6 +71,7 @@ class AlertMapController extends WidgetController
         return view('widgets.settings.alert-map', $this->getSettings(true));
     }
 
+    /** @return array<mixed> */
     private function getAlerts(): array
     {
         $settings = $this->getSettings();
@@ -124,6 +125,7 @@ class AlertMapController extends WidgetController
         return [$data, $totals];
     }
 
+    /** @param array<mixed> $data */
     private function sort(array &$data, string $order_by): void
     {
         match ($order_by) {
@@ -149,6 +151,7 @@ class AlertMapController extends WidgetController
         };
     }
 
+    /** @param array<mixed> $alert_severities */
     private function getDeviceTooltip(Device $device, array $alert_severities): string
     {
         $tooltip = $device->displayName();
@@ -166,6 +169,7 @@ class AlertMapController extends WidgetController
         return $tooltip;
     }
 
+    /** @return array<mixed> */
     private function parseDeviceSeverity(Device $device, string $severity, bool $compact = false): array
     {
         if ($device->disabled) {
@@ -183,6 +187,7 @@ class AlertMapController extends WidgetController
         return ['critical', $compact ? 'alert-map-compact-critical' : 'label-danger'];
     }
 
+    /** @return array<mixed> */
     private function getDeviceAlerts(Device $device): array
     {
         $worst_severity = 'ok';

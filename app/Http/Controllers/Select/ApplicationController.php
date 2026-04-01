@@ -30,6 +30,7 @@ use App\Models\Application;
 
 class ApplicationController extends SelectController
 {
+    /** @return array<mixed> */
     protected function rules()
     {
         return [
@@ -58,6 +59,7 @@ class ApplicationController extends SelectController
 
     /**
      * @param  Application  $app
+     * @return array<mixed>
      */
     public function formatItem($app)
     {

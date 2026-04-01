@@ -52,6 +52,7 @@ class AlertsController implements DeviceTab
         return __('Alerts');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [];

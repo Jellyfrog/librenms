@@ -35,13 +35,14 @@ class LocationController extends TableController
      * Defines search fields will be searched in order
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return array
+     * @return array<mixed>
      */
     public function searchFields($request)
     {
         return ['location'];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request)
     {
         return [
@@ -67,7 +68,7 @@ class LocationController extends TableController
 
     /**
      * @param  Location  $location
-     * @return array|\Illuminate\Database\Eloquent\Model|\Illuminate\Support\Collection
+     * @return array<mixed>|\Illuminate\Database\Eloquent\Model|\Illuminate\Support\Collection
      */
     public function formatItem($location)
     {

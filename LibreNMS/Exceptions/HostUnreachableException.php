@@ -65,7 +65,7 @@ class HostUnreachableException extends \Exception
     /**
      * Get the reasons
      *
-     * @return array
+     * @return array<mixed>
      */
     public function getReasons()
     {

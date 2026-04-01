@@ -39,7 +39,7 @@ abstract class WidgetController extends Controller
 {
     protected string $name = 'widget'; // used for route, view, and translation paths
 
-    /** @var array Set default values for settings */
+    /** @var array<mixed> Set default values for settings */
     protected $defaults = [];
 
     /** @var mixed */
@@ -117,7 +117,7 @@ abstract class WidgetController extends Controller
      * Get the settings (with defaults applied)
      *
      * @param  bool  $settingsView
-     * @return array
+     * @return array<mixed>
      */
     public function getSettings($settingsView = false): array
     {
@@ -143,7 +143,7 @@ abstract class WidgetController extends Controller
     /**
      * @param  View|string  $view
      * @param  string  $title
-     * @param  array  $settings
+     * @param  array<mixed>  $settings
      * @param  string  $status
      * @return JsonResponse
      */

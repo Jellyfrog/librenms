@@ -78,7 +78,7 @@ class Trap
      * Find all oids that match the given string
      *
      * @param  string|string[]  $search
-     * @return array
+     * @return array<mixed>
      */
     public function findOids(array|string $search): array
     {

@@ -26,6 +26,7 @@ class Signalwire extends Transport
 {
     protected string $name = 'SignalWire';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $url = 'https://' . $this->config['signalwire-spaceUrl'] . '.signalwire.com/api/laml/2010-04-01/Accounts/' . $this->config['signalwire-project-id'] . '/Messages.json';
@@ -47,6 +48,7 @@ class Signalwire extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $alert_data['title'], $data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

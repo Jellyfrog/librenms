@@ -26,7 +26,7 @@ interface DiscoveryItem
      *
      * @param  OS  $os
      * @param  int  $index  the index of the current entry
-     * @param  array  $data
+     * @param  array<mixed>  $data
      * @return static
      */
     public static function fromYaml(OS $os, $index, array $data);

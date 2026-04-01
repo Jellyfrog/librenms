@@ -14,8 +14,10 @@ class ProcessorsController extends TableController
     /** @var mixed */
     protected $model = Processor::class;
 
+    /** @var array<mixed> */
     protected $default_sort = ['device_hostname' => 'asc', 'processor_descr' => 'asc'];
 
+    /** @return array<mixed> */
     protected function rules(): array
     {
         return [
@@ -23,6 +25,7 @@ class ProcessorsController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request): array
     {
         return [
@@ -32,6 +35,7 @@ class ProcessorsController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function searchFields(Request $request): array
     {
         return [
@@ -56,6 +60,7 @@ class ProcessorsController extends TableController
 
     /**
      * @param  Processor  $processor
+     * @return array<mixed>
      */
     public function formatItem($processor): array
     {
@@ -94,7 +99,7 @@ class ProcessorsController extends TableController
     /**
      * Get headers for CSV export
      *
-     * @return array
+     * @return array<mixed>
      */
     protected function getExportHeaders()
     {
@@ -109,7 +114,7 @@ class ProcessorsController extends TableController
      * Format a row for CSV export
      *
      * @param  Processor  $processor
-     * @return array
+     * @return array<mixed>
      */
     protected function formatExportRow($processor)
     {

@@ -186,6 +186,7 @@ final class OSDiscoveryTest extends TestCase
 
     /**
      * Provides a list of OS to generate tests.
+     * @return array<mixed>
      */
     public static function osProvider(): array
     {

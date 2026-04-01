@@ -25,6 +25,7 @@ use LibreNMS\Exceptions\AlertTransportDeliveryException;
 
 class Splunk extends Transport
 {
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $splunk_host = empty($this->config['Splunk-host']) ? '127.0.0.1' : $this->config['Splunk-host'];
@@ -85,6 +86,7 @@ class Splunk extends Transport
         return true;
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

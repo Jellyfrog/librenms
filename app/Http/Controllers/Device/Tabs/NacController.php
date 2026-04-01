@@ -52,6 +52,7 @@ class NacController implements DeviceTab
         return __('NAC');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [];

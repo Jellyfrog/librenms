@@ -39,6 +39,7 @@ use Symfony\Component\Yaml\Yaml;
 #[Group('yaml')]
 final class YamlSchemaTest extends TestCase
 {
+    /** @var array<mixed> */
     private array $excluded = [
         '/os_detection/default.yaml',
         '/os_detection/generic.yaml',
@@ -90,7 +91,10 @@ final class YamlSchemaTest extends TestCase
         $this->assertEmpty($errors, implode("\n", $errors) . "\nFiles with errors: $count\n\n");
     }
 
-    /** @param mixed $pattern */
+    /**
+     * @param mixed $pattern
+     * @return array<mixed>
+     */
     private function listFiles($pattern): array
     {
         return collect(glob($pattern))

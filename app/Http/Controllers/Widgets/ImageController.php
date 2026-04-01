@@ -33,6 +33,7 @@ use Illuminate\View\View;
 class ImageController extends WidgetController
 {
     protected string $name = 'generic-image';
+    /** @var array<mixed> */
     protected $defaults = [
         'title' => null,
         'image_url' => null,
@@ -63,6 +64,7 @@ class ImageController extends WidgetController
         return view('widgets.generic-image', $data);
     }
 
+    /** @return array<mixed> */
     public function getSettings($settingsView = false): array
     {
         if (is_null($this->settings)) {

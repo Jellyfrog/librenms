@@ -257,7 +257,7 @@ class Pmp extends OS implements
      * Discover wireless bit/packet error ratio.  This is in percent. Type is error-ratio.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessRssi()
     {
@@ -281,7 +281,7 @@ class Pmp extends OS implements
      * Formula: SNR = Signal or Rx Power - Noise Floor
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessSnr()
     {
@@ -319,7 +319,7 @@ class Pmp extends OS implements
      * Discover wireless frequency.  This is in MHz. Type is frequency.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessFrequency()
     {
@@ -344,7 +344,7 @@ class Pmp extends OS implements
      * Discover wireless utilization.  This is in %. Type is utilization.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessUtilization()
     {
@@ -449,7 +449,7 @@ class Pmp extends OS implements
      * Discover wireless SSR.  This is in dB. Type is ssr.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessSsr()
     {
@@ -520,7 +520,7 @@ class Pmp extends OS implements
      * Discover wireless client counts. Type is clients.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessClients()
     {
@@ -543,7 +543,7 @@ class Pmp extends OS implements
      * Discover wireless bit errors.  This is in total bits. Type is errors.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessErrors()
     {

@@ -54,6 +54,7 @@ class VlansController implements DeviceTab
         return __('VLANs');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         // Validate filter inputs

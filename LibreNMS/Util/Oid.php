@@ -92,6 +92,7 @@ class Oid implements \Stringable
         return $this->isNumeric() || $this->isFullTextualOid();
     }
 
+    /** @param array<mixed> $oids */
     public static function hasNumeric(array $oids): bool
     {
         foreach ($oids as $oid) {

@@ -34,6 +34,7 @@ use LibreNMS\Util\Url;
 
 class MacSearchController extends TableController
 {
+    /** @return array<mixed> */
     protected function rules()
     {
         return [
@@ -43,6 +44,7 @@ class MacSearchController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request)
     {
         return [
@@ -70,7 +72,7 @@ class MacSearchController extends TableController
 
     /**
      * @param  Port  $model
-     * @return array
+     * @return array<mixed>
      */
     public function formatItem($model): array
     {

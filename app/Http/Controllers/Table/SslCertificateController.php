@@ -10,11 +10,13 @@ class SslCertificateController extends TableController
     /** @var mixed */
     protected $model = SslCertificate::class;
 
+    /** @return array<mixed> */
     public function searchFields(Request $request): array
     {
         return ['host', 'subject', 'issuer'];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request)
     {
         return [

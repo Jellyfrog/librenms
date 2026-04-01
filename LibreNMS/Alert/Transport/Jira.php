@@ -25,6 +25,7 @@ class Jira extends Transport
 {
     protected string $name = 'Jira';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $webhook_on = $this->config['enable-webhook'] ?? false;
@@ -92,6 +93,7 @@ class Jira extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $description, $data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

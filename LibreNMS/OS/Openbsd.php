@@ -103,6 +103,7 @@ class Openbsd extends Unix implements OSPolling
         ]);
     }
 
+    /** @param array<mixed> $oids */
     private function graphOID(string $graphName, DataStorageInterface $datastore, array $oids, string $type = 'COUNTER'): void
     {
         $rrd_def = RrdDefinition::make();

@@ -32,6 +32,7 @@ class Zenduty extends Transport
 {
     protected string $name = 'Zenduty';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $url = $this->config['zenduty-url'];
@@ -106,6 +107,7 @@ class Zenduty extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $data['message'], $data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

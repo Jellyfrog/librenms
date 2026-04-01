@@ -85,6 +85,7 @@ class Fping
         return $response;
     }
 
+    /** @param array<mixed> $hosts */
     public function bulkPing(array $hosts, callable $callback): void
     {
         $process = app()->make(Process::class, ['command' => [

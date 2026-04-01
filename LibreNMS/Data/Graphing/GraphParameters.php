@@ -35,6 +35,7 @@ use LibreNMS\Util\Time;
 
 class GraphParameters implements \Stringable
 {
+    /** @var array<mixed> */
     public readonly array $visibleElements;
 
     public string $title = '';
@@ -85,6 +86,7 @@ class GraphParameters implements \Stringable
     private const MEDIUM_SMALL = 300;
     private const MEDIUM = 350;
 
+    /** @param array<mixed> $vars */
     public function __construct(array $vars)
     {
         $this->imageFormat = ImageFormat::forGraph($vars['graph_type'] ?? null);
@@ -131,6 +133,7 @@ class GraphParameters implements \Stringable
         return $this->visibleElements[$element] ?? true;
     }
 
+    /** @return array<mixed> */
     public function all(): array
     {
         $variables = get_object_vars($this);
@@ -144,6 +147,7 @@ class GraphParameters implements \Stringable
         return $variables;
     }
 
+    /** @return array<mixed> */
     public function toRrdOptions(): array
     {
         $options = ['--start', $this->from, '--end', $this->to, '--width', $this->width, '--height', $this->height];
@@ -253,6 +257,7 @@ class GraphParameters implements \Stringable
         return $this->user_title ?? $this->title ?: $this->defaultTitle();
     }
 
+    /** @return array<mixed> */
     private function graphColors(): array
     {
         $style = $this->style ?: session('applied_site_style');
@@ -281,6 +286,7 @@ class GraphParameters implements \Stringable
         return $colors;
     }
 
+    /** @return array<mixed> */
     private function extractType(string $type): array
     {
         preg_match('/^(?P<type>[A-Za-z0-9]+)_(?P<subtype>.+)/', $type, $graphtype);

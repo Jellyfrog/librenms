@@ -67,7 +67,7 @@ class Iosxe extends Ciscowlc implements
     /**
      * Array of shortened ISIS codes
      *
-     * @var array
+     * @var array<mixed>
      */
     protected $isis_codes = [
         'l1IntermediateSystem' => 'L1',

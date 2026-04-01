@@ -14,6 +14,7 @@ use LibreNMS\Util\Http;
 
 class Alertops extends Transport
 {
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $url = $this->config['alertops-url'];
@@ -60,6 +61,7 @@ class Alertops extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), '', $alert_data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

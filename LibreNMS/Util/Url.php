@@ -66,7 +66,7 @@ class Url
     /**
      * @param  Device|null  $device
      * @param  string|null  $text
-     * @param  array  $vars
+     * @param  array<mixed>  $vars
      * @param  int  $start
      * @param  int  $end
      * @param  int  $escape_text
@@ -259,7 +259,7 @@ class Url
 
     /**
      * @param  int|Device  $device
-     * @param  array  $vars
+     * @param  array<mixed>  $vars
      * @return string
      */
     public static function deviceUrl($device, $vars = [])
@@ -358,7 +358,7 @@ class Url
      * Generate url parameters to append to url
      * $prefix will only be prepended if there are parameters
      *
-     * @param  array  $vars
+     * @param  array<mixed>  $vars
      * @param  string  $prefix
      * @return string
      */
@@ -375,7 +375,7 @@ class Url
     }
 
     /**
-     * @param  array|string  $args
+     * @param  array<mixed>|string  $args
      */
     public static function forExternalGraph($args): string
     {
@@ -388,13 +388,14 @@ class Url
         return LaravelUrl::signedRoute('graph', $args);
     }
 
+    /** @param array<mixed> $args */
     public static function graphPageUrl(string $type, array $args = []): string
     {
         return url('graphs', ['type' => $type, ...$args]);
     }
 
     /**
-     * @param  array  $args
+     * @param  array<mixed>  $args
      * @return string
      */
     public static function graphTag($args)
@@ -668,6 +669,7 @@ class Url
 
     /**
      * Parse variables from legacy path /key=value/key=value or regular get/post variables
+     * @return array<mixed>
      */
     public static function parseLegacyPathVars(?string $path = null): array
     {

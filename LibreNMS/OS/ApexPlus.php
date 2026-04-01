@@ -24,6 +24,7 @@ class ApexPlus extends OS implements
     WirelessRateDiscovery,
     WirelessErrorRateDiscovery
 {
+    /** @return array<mixed> */
     public function discoverWirelessRssi()
     {
         // GIGA-PLUS-MIB::rfRSSIInt
@@ -41,6 +42,7 @@ class ApexPlus extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessFrequency()
     {
         // GIGA-PLUS-MIB::rfTxFrequencyInt, rfRxFrequencyInt
@@ -67,6 +69,7 @@ class ApexPlus extends OS implements
         ];
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessMse()
     {
         // GIGA-PLUS-MIB::modemMSEInt
@@ -84,6 +87,7 @@ class ApexPlus extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRate()
     {
         // GIGA-PLUS-MIB::rfSpeedInt
@@ -101,6 +105,7 @@ class ApexPlus extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessErrorRate()
     {
         // GIGA-PLUS-MIB::modemBER

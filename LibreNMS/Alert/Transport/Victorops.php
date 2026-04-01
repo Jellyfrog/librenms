@@ -34,6 +34,7 @@ class Victorops extends Transport
 {
     protected string $name = 'Splunk On-Call';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $url = $this->config['victorops-url'];
@@ -67,6 +68,7 @@ class Victorops extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $alert_data['msg'], $protocol);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

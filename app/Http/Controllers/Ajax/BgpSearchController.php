@@ -51,7 +51,7 @@ class BgpSearchController extends SearchController
 
     /**
      * @param  BgpPeer  $peer
-     * @return array
+     * @return array<mixed>
      */
     public function formatItem($peer): array
     {

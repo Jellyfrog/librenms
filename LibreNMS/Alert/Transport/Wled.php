@@ -9,6 +9,7 @@ use LibreNMS\Util\Http;
 
 class Wled extends Transport
 {
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $host = $this->config['wled-host'];
@@ -40,6 +41,7 @@ class Wled extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), '', $data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

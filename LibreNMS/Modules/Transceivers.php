@@ -40,6 +40,7 @@ class Transceivers implements Module
 {
     use SyncsModels;
 
+    /** @return array<mixed> */
     public function dependencies(): array
     {
         return ['ports'];
@@ -81,6 +82,7 @@ class Transceivers implements Module
         return $device->transceivers()->delete();
     }
 
+    /** @return array<mixed> */
     public function dump(Device $device, string $type): ?array
     {
         if ($type == 'poller') {

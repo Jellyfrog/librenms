@@ -59,7 +59,7 @@ class Siklu extends OS implements
      * Discover wireless frequency.  This is in GHz. Type is frequency.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessFrequency()
     {
@@ -74,7 +74,7 @@ class Siklu extends OS implements
      * Discover wireless tx or rx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessPower()
     {
@@ -89,7 +89,7 @@ class Siklu extends OS implements
      * Discover wireless RSSI (Received Signal Strength Indicator). This is in dBm. Type is rssi.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessRssi()
     {
@@ -104,7 +104,7 @@ class Siklu extends OS implements
      * Discover wireless SNR.  This is in dB. Type is snr.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessSnr()
     {

@@ -47,7 +47,7 @@ class Graph
     /**
      * Convenience helper to specify desired image output
      *
-     * @param  array|string  $vars
+     * @param  array<mixed>|string  $vars
      * @param  int  $flags
      * @return string
      */
@@ -76,7 +76,7 @@ class Graph
      * Fetch a GraphImage based on the given $vars
      * Catches errors generated and always returns GraphImage
      *
-     * @param  array|string  $vars
+     * @param  array<mixed>|string  $vars
      * @return GraphImage
      */
     public static function getImage($vars): GraphImage
@@ -95,7 +95,7 @@ class Graph
     /**
      * Fetch a GraphImage based on the given $vars
      *
-     * @param  array|string  $vars
+     * @param  array<mixed>|string  $vars
      * @return GraphImage
      *
      * @throws RrdGraphException
@@ -189,6 +189,7 @@ class Graph
         }
     }
 
+    /** @return array<mixed> */
     public static function getTypes(): array
     {
         return ['device', 'port', 'application', 'munin', 'service'];
@@ -199,7 +200,7 @@ class Graph
      *
      * @param  string  $type
      * @param  Device  $device
-     * @return array
+     * @return array<mixed>
      */
     public static function getSubtypes($type, $device = null): array
     {
@@ -243,6 +244,7 @@ class Graph
         return LibrenmsConfig::get("graph_types.$type.$subtype.section") == 'mib';
     }
 
+    /** @return array<mixed> */
     public static function getOverviewGraphsForDevice(Device $device): array
     {
         if ($device->snmp_disable) {

@@ -61,6 +61,7 @@ interface SnmpQueryInterface
     /**
      * Set MIBs to use for this query. Base mibs are included by default.
      * They will be appended to existing mibs unless $append is set to false.
+     * @param array<mixed> $mibs
      */
     public function mibs(array $mibs, bool $append = true): SnmpQueryInterface;
 
@@ -102,7 +103,7 @@ interface SnmpQueryInterface
      * This will override other options set such as setting numeric.  Call with no options to reset to default.
      * Try to avoid setting options this way to keep the API generic.
      *
-     * @param  array|string|null  $options
+     * @param  array<mixed>|string|null  $options
      * @return $this
      */
     public function options($options = []): SnmpQueryInterface;
@@ -111,7 +112,7 @@ interface SnmpQueryInterface
      * snmpget an OID
      * Commonly used to fetch a single or multiple explicit values.
      *
-     * @param  array|string  $oid
+     * @param  array<mixed>|string  $oid
      * @return SnmpResponse
      */
     public function get($oid): SnmpResponse;
@@ -120,7 +121,7 @@ interface SnmpQueryInterface
      * snmpwalk an OID
      * Fetches all OIDs under a given OID, commonly used with tables.
      *
-     * @param  array|string  $oid
+     * @param  array<mixed>|string  $oid
      * @return SnmpResponse
      */
     public function walk($oid): SnmpResponse;
@@ -129,7 +130,7 @@ interface SnmpQueryInterface
      * snmpnext for the given oid
      * snmpnext retrieves the first oid after the given oid.
      *
-     * @param  array|string  $oid
+     * @param  array<mixed>|string  $oid
      * @return SnmpResponse
      */
     public function next($oid): SnmpResponse;

@@ -32,6 +32,7 @@ use Illuminate\Http\Request;
 
 class CustomMapMenuGroupController extends SelectController
 {
+    /** @return array<mixed> */
     protected function searchFields($request): array
     {
         return ['menu_group'];

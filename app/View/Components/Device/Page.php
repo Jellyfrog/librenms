@@ -43,6 +43,7 @@ class Page extends Component
     public string $typeText = '';
     public string $pagetitle;
 
+    /** @param array<mixed> $dropdownLinks */
     public function __construct(
         public readonly Device $device,
         public readonly array $dropdownLinks = [],
@@ -55,6 +56,7 @@ class Page extends Component
         $this->populateTypeFields();
     }
 
+    /** @return array<mixed> */
     public function overviewGraphs(): array
     {
         $graph_array = [

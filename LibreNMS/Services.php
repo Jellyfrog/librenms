@@ -37,7 +37,7 @@ class Services
     /**
      * List all available services from nagios plugins directory
      *
-     * @return array
+     * @return array<mixed>
      */
     public static function list()
     {
@@ -58,7 +58,7 @@ class Services
      *
      * Mirrors the legacy global add_service() helper.
      *
-     * @param  array|int|\App\Models\Device  $device
+     * @param  array<mixed>|int|\App\Models\Device  $device
      * @param mixed $template_id
      * @return mixed
      */
@@ -91,7 +91,7 @@ class Services
     /**
      * Discover (auto-add) a service for a device if it does not already exist.
      *
-     * @param  array|int|\App\Models\Device  $device
+     * @param  array<mixed>|int|\App\Models\Device  $device
      */
     public static function discover($device, string $service): bool
     {

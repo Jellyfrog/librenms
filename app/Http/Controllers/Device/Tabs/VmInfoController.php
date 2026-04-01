@@ -52,6 +52,7 @@ class VmInfoController implements DeviceTab
         return __('Virtual Machines');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [

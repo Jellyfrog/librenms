@@ -70,6 +70,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
         $device->features = $num_radios . ' radios in unit';
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessXpi()
     {
         $ifNames = $this->getCacheByIndex('ifName', 'IF-MIB');
@@ -95,6 +96,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessFrequency()
     {
         $sensors = [];
@@ -140,7 +142,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
      * Discover wireless rate. This is in bps. Type is rate.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessRate()
     {
@@ -183,7 +185,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
      * Discover wireless bit errors.  This is in total bits. Type is errors.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessErrors()
     {
@@ -211,7 +213,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
      * Discover wireless MSE. Mean square error value in dB. Type is mse.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessMse()
     {
@@ -242,7 +244,7 @@ class Ceraos extends OS implements OSDiscovery, WirelessXpiDiscovery, WirelessFr
      * Discover wireless tx or rx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessPower()
     {

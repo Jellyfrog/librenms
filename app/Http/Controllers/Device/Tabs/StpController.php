@@ -53,6 +53,7 @@ class StpController implements DeviceTab
         return __('STP');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         $stpInstances = $device->stpInstances->sortBy('vlan');

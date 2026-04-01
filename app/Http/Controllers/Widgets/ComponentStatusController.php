@@ -34,6 +34,7 @@ use Illuminate\View\View;
 class ComponentStatusController extends WidgetController
 {
     protected string $name = 'component-status';
+    /** @var array<mixed> */
     protected $defaults = [
         'device_group' => null,
     ];

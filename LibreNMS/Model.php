@@ -11,7 +11,10 @@ abstract class Model
     /** @var mixed */
     protected static $primaryKey = 'id';
 
-    /** @return mixed */
+    /**
+     * @return mixed
+     * @param array<mixed> $data
+     */
     public static function create(array $data)
     {
         $instance = new static();
@@ -20,7 +23,10 @@ abstract class Model
         return $instance;
     }
 
-    /** @return mixed */
+    /**
+     * @return mixed
+     * @param array<mixed> $data
+     */
     protected function fill(array $data = [])
     {
         foreach ($data as $field => $value) {
@@ -36,7 +42,7 @@ abstract class Model
      * @param  int  $device_id
      * @param  array  $models
      * @param  array  $unique_fields  fields to search for an existing entry
-     * @param  array  $ignored_update_fields  Don't compare these field when updating
+     * @param  array<mixed>  $ignored_update_fields  Don't compare these field when updating
      * @return mixed
      */
     final public static function sync($device_id, array $models, $unique_fields = [], $ignored_update_fields = [])
@@ -58,7 +64,7 @@ abstract class Model
      * Remove invalid Models.  Passing an empty array will remove all models related to $device_id
      *
      * @param  int  $device_id
-     * @param  array  $model_ids  valid Model ids
+     * @param  array<mixed>  $model_ids  valid Model ids
      * @return mixed
      */
     protected static function clean($device_id, $model_ids)
@@ -87,7 +93,7 @@ abstract class Model
      * Save this Model to the database.
      *
      * @param  array  $unique_fields  fields to search for an existing entry
-     * @param  array  $ignored_update_fields  Don't compare these field when updating
+     * @param  array<mixed>  $ignored_update_fields  Don't compare these field when updating
      * @return int the id of this model in the database
      */
     final public function save($unique_fields = [], $ignored_update_fields = [])
@@ -120,7 +126,7 @@ abstract class Model
      * Fetch the sensor from the database.
      * If it doesn't exist, returns null.
      *
-     * @param  array  $unique_fields  fields to search for an existing entry
+     * @param  array<mixed>  $unique_fields  fields to search for an existing entry
      * @return array|null
      */
     protected function fetch($unique_fields = [])
@@ -165,7 +171,7 @@ abstract class Model
     /**
      * Convert this Model to an array with fields that match the database
      *
-     * @param  array  $exclude  Exclude the listed fields
+     * @param  array<mixed>  $exclude  Exclude the listed fields
      * @return array
      */
     abstract public function toArray($exclude = []);

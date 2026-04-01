@@ -37,7 +37,7 @@ abstract class PaginatedAjaxController extends Controller
     /**
      * Default sort, column => direction
      *
-     * @var array
+     * @var array<mixed>
      */
     protected $default_sort = [];
 
@@ -65,7 +65,7 @@ abstract class PaginatedAjaxController extends Controller
     /**
      * Defines validation rules (will override base validation rules for select2 responses too)
      *
-     * @return array
+     * @return array<mixed>
      */
     protected function rules()
     {
@@ -76,7 +76,7 @@ abstract class PaginatedAjaxController extends Controller
      * Defines search fields. They will be searched in order.
      *
      * @param  Request  $request
-     * @return array
+     * @return array<mixed>
      */
     protected function searchFields(Request $request)
     {
@@ -87,7 +87,7 @@ abstract class PaginatedAjaxController extends Controller
      * Defines filter fields.  Request and table fields must match.
      *
      * @param  Request  $request
-     * @return array
+     * @return array<mixed>
      */
     protected function filterFields(Request $request)
     {
@@ -98,7 +98,7 @@ abstract class PaginatedAjaxController extends Controller
      * Defines sortable fields.  The incoming sort field should be the key, the sql column or DB::raw() should be the value
      *
      * @param  Request  $request
-     * @return array
+     * @return array<mixed>
      */
     protected function sortFields(Request $request)
     {
@@ -109,7 +109,7 @@ abstract class PaginatedAjaxController extends Controller
      * Format an item for display.  Default is pass-through
      *
      * @param  Model  $model
-     * @return array|Collection|Model
+     * @return array<mixed>|Collection|Model
      */
     public function formatItem($model)
     {
@@ -119,7 +119,7 @@ abstract class PaginatedAjaxController extends Controller
     /**
      * @param  string  $search
      * @param  Builder  $query
-     * @param  array  $fields
+     * @param  array<mixed>  $fields
      * @return Builder
      */
     protected function search($search, $query, $fields)
@@ -148,7 +148,7 @@ abstract class PaginatedAjaxController extends Controller
     /**
      * @param  Request  $request
      * @param  Builder  $query
-     * @param  array  $fields
+     * @param  array<mixed>  $fields
      * @return Builder
      */
     protected function filter($request, $query, $fields)
@@ -205,7 +205,7 @@ abstract class PaginatedAjaxController extends Controller
      * @param  Request  $request
      * @param  array  $rules
      * @param  array  $messages
-     * @param  array  $customAttributes
+     * @param  array<mixed>  $customAttributes
      * @return array
      */
     public function validate(Request $request, array $rules = [], array $messages = [], array $customAttributes = [])

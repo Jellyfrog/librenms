@@ -24,11 +24,13 @@ use LibreNMS\Exceptions\AlertTransportDeliveryException;
 
 class Syslog extends Transport
 {
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         return $this->contactSyslog($alert_data);
     }
 
+    /** @param array<mixed> $alert_data */
     public function contactSyslog(array $alert_data): bool
     {
         $syslog_host = '127.0.0.1';
@@ -116,6 +118,7 @@ class Syslog extends Transport
         return true;
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

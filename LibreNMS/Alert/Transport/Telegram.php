@@ -38,6 +38,7 @@ class Telegram extends Transport
     /** @var mixed */
     private $message = [];
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $url_send_message = self::BASE_URL . "{$this->config['telegram-token']}/sendMessage";
@@ -109,6 +110,7 @@ class Telegram extends Transport
         );
     }
 
+    /** @return array<mixed> */
     private function embedGraphs(): array
     {
         $regex = '#<img class="librenms-graph" src="(.*?)"\s*/>#';
@@ -122,6 +124,7 @@ class Telegram extends Transport
         return $this->message;
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

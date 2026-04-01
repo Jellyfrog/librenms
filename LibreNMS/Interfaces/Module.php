@@ -35,6 +35,7 @@ interface Module
 {
     /**
      * An array of all modules this module depends on
+     * @return array<mixed>
      */
     public function dependencies(): array;
 
@@ -87,6 +88,7 @@ interface Module
      * Module may return null if testing is not supported or required.
      *
      * @param  string  $type  Type is either discovery or poller
+     * @return array<mixed>
      */
     public function dump(Device $device, string $type): ?array;
 }

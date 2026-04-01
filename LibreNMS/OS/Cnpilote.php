@@ -44,7 +44,7 @@ class Cnpilote extends OS implements
      * Discover wireless client counts. Type is clients.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessClients()
     {
@@ -60,7 +60,7 @@ class Cnpilote extends OS implements
      * Formula: SNR = Signal or Rx Power - Noise Floor
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessSnr()
     {
@@ -75,7 +75,7 @@ class Cnpilote extends OS implements
      * Discover wireless tx or rx power. This is in dBm. Type is power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessPower()
     {
@@ -90,7 +90,7 @@ class Cnpilote extends OS implements
      * Discover wireless noise floor. This is in dBm/Hz. Type is noise-floor.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessNoiseFloor()
     {

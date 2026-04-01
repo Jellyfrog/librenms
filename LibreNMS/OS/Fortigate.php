@@ -78,6 +78,7 @@ class Fortigate extends OS implements
         }
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessClients()
     {
         $oid = '.1.3.6.1.4.1.12356.101.14.2.7.0';
@@ -87,6 +88,7 @@ class Fortigate extends OS implements
         ];
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessApCount()
     {
         $oid = '.1.3.6.1.4.1.12356.101.14.2.5.0';

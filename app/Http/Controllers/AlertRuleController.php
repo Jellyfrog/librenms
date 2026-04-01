@@ -144,6 +144,7 @@ class AlertRuleController extends Controller
         return $maps;
     }
 
+    /** @return array<mixed> */
     private function formatTransports(AlertRule $alertRule): array
     {
         $transports = [];
@@ -204,6 +205,7 @@ class AlertRuleController extends Controller
         $alertRule->extra = array_merge($alertRule->extra ?? [], $extra);
     }
 
+    /** @param array<mixed> $maps */
     private function syncMaps(array $maps, AlertRule $alertRule): void
     {
         $deviceIds = [];
@@ -223,6 +225,7 @@ class AlertRuleController extends Controller
         $alertRule->locations()->sync($locationIds);
     }
 
+    /** @param array<mixed> $transports */
     private function syncTransports(array $transports, AlertRule $alertRule): void
     {
         $transportIds = [];

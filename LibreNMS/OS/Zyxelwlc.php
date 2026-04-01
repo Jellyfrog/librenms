@@ -25,6 +25,7 @@ use LibreNMS\OS\Shared\Zyxel;
 
 class Zyxelwlc extends Zyxel implements WirelessApCountDiscovery, WirelessClientsDiscovery
 {
+    /** @return array<mixed> */
     public function discoverWirelessClients()
     {
         $oid = '.1.3.6.1.4.1.890.1.15.3.3.1.4.0'; //    ZYXEL-ES-CAPWAP::capwapTotalStation
@@ -43,6 +44,7 @@ class Zyxelwlc extends Zyxel implements WirelessApCountDiscovery, WirelessClient
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessApCount()
     {
         $oid = '.1.3.6.1.4.1.890.1.15.3.3.1.1.0'; //  ZYXEL-ES-CAPWAP::capwapOnlineAP

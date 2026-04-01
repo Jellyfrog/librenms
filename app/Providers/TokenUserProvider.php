@@ -58,7 +58,7 @@ class TokenUserProvider extends LegacyUserProvider implements UserProvider
     /**
      * Retrieve a user by the given credentials.
      *
-     * @param  array  $credentials
+     * @param  array<mixed>  $credentials
      * @return Authenticatable|null
      */
     public function retrieveByCredentials(array $credentials)
@@ -90,7 +90,7 @@ class TokenUserProvider extends LegacyUserProvider implements UserProvider
      * Validate a user against the given credentials.
      *
      * @param  Authenticatable  $user
-     * @param  array  $credentials
+     * @param  array<mixed>  $credentials
      * @return bool
      */
     public function validateCredentials(Authenticatable $user, array $credentials)

@@ -40,6 +40,7 @@ abstract class DeviceOverviewHook implements \LibreNMS\Interfaces\Plugins\Hooks\
         return true;
     }
 
+    /** @return array<mixed> */
     public function data(Device $device): array
     {
         return [
@@ -48,6 +49,7 @@ abstract class DeviceOverviewHook implements \LibreNMS\Interfaces\Plugins\Hooks\
         ];
     }
 
+    /** @param array<mixed> $settings */
     final public function handle(string $pluginName, array $settings, Device $device, Application $app): \Illuminate\Contracts\View\View
     {
         return view(Str::start($this->view, "$pluginName::"), $app->call($this->data(...), [

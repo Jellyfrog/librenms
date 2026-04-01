@@ -47,6 +47,7 @@ class ServiceController extends SelectController
 
     /**
      * @param  Service  $service
+     * @return array<mixed>
      */
     public function formatItem($service)
     {

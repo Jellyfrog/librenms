@@ -31,7 +31,7 @@ class SyslogController extends SelectController
     /**
      * Defines validation rules (will override base validation rules for select2 responses too)
      *
-     * @return array
+     * @return array<mixed>
      */
     protected function rules()
     {
@@ -45,7 +45,7 @@ class SyslogController extends SelectController
      * Defines search fields will be searched in order
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return array
+     * @return array<mixed>
      */
     protected function searchFields($request)
     {

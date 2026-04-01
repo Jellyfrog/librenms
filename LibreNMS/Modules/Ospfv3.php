@@ -51,6 +51,7 @@ class Ospfv3 implements Module
 
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function dependencies(): array
     {
@@ -242,6 +243,7 @@ class Ospfv3 implements Module
 
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function dump(Device $device, string $type): ?array
     {
@@ -264,6 +266,7 @@ class Ospfv3 implements Module
         ];
     }
 
+    /** @param array<mixed> $ospf_nbr */
     protected function parseNeighborAddress(array $ospf_nbr): IP|string
     {
         if (empty($ospf_nbr['ospfv3NbrAddress'])) {
@@ -279,6 +282,7 @@ class Ospfv3 implements Module
 
     /**
      * create a new area model if $data is null fetch values with individual gets
+     * @param array<mixed> $data
      */
     private function createArea(int $ospfv3AreaId, Ospfv3Instance $instance, array $data): Ospfv3Area
     {
@@ -291,6 +295,7 @@ class Ospfv3 implements Module
         return $ospf_area;
     }
 
+    /** @param array<mixed> $data */
     private function createPort(int $ospfv3IfIndex, int $ospfv3IfInstId, Ospfv3Instance $instance, Collection $ospf_areas, array $data): Ospfv3Port
     {
         $ospf_port = new Ospfv3Port($data);
@@ -319,6 +324,7 @@ class Ospfv3 implements Module
         return $ospf_port;
     }
 
+    /** @param array<mixed> $data */
     private function createNeighbor(int $ospfv3NbrIfIndex, int $ospfv3NbrIfInstId, int $ospfv3NbrRtrId, Ospfv3Instance $instance, array $data): Ospfv3Nbr
     {
         $ospf_nbr = new Ospfv3Nbr($data);

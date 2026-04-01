@@ -47,6 +47,7 @@ class MuninPluginController extends SelectController
 
     /**
      * @param  MuninPlugin  $munin_plugin
+     * @return array<mixed>
      */
     public function formatItem($munin_plugin)
     {

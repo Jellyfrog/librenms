@@ -32,6 +32,7 @@ class Irc extends Transport
 {
     protected string $name = 'IRC';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $container_dir = '/data';
@@ -55,6 +56,7 @@ class Irc extends Transport
         throw new AlertTransportDeliveryException($alert_data, 0, 'fifo does not exist', $alert_data['msg'], $alert_data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

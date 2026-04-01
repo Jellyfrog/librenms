@@ -217,7 +217,7 @@ class DeviceObserver
      *
      * @param  Device  $device
      * @param  string  $relationName  parents or children
-     * @param  array  $pivotIds  list of pivot ids
+     * @param  array<mixed>  $pivotIds  list of pivot ids
      * @param  array  $pivotIdsAttributes  additional pivot attributes
      * @return void
      */

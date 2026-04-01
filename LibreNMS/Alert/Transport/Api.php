@@ -34,6 +34,7 @@ class Api extends Transport
 {
     protected string $name = 'API';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $request_body = $this->config['api-body'];
@@ -86,6 +87,7 @@ class Api extends Transport
         ]);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

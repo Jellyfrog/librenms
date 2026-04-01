@@ -50,7 +50,7 @@ abstract class SearchController
 
     /**
      * @param  \Illuminate\Database\Eloquent\Model  $item
-     * @return array
+     * @return array<mixed>
      */
     abstract public function formatItem($item): array;
 }

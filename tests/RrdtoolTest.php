@@ -95,6 +95,7 @@ final class RrdtoolTest extends TestCase
         $this->buildCommandProxy('create', __FILE__, ['o']);
     }
 
+    /** @param array<mixed> $options */
     private function buildCommandProxy(string $command, string $filename, array $options): array
     {
         $mock = $this->mock(Rrd::class)->makePartial(); // avoid constructor

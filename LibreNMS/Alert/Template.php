@@ -38,7 +38,7 @@ class Template
     /**
      * Get the template details
      *
-     * @param  array|null  $obj
+     * @param  array<mixed>|null  $obj
      * @return mixed
      */
     public function getTemplate($obj = null)
@@ -78,7 +78,7 @@ class Template
     /**
      * Parse Blade body
      *
-     * @param  array  $data
+     * @param  array<mixed>  $data
      * @return string
      */
     public function bladeBody($data)
@@ -94,7 +94,7 @@ class Template
     /**
      * Parse Blade title
      *
-     * @param  array  $data
+     * @param  array<mixed>  $data
      * @return string
      */
     public function bladeTitle($data)

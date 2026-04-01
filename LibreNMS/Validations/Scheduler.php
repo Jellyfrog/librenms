@@ -55,7 +55,7 @@ class Scheduler extends BaseValidation
 
     /**
      * @param  Validator  $validator
-     * @return array
+     * @return array<mixed>
      */
     private function generateCommands(Validator $validator): array
     {

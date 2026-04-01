@@ -32,6 +32,7 @@ class Smsfeedback extends Transport
 {
     protected string $name = 'SMSfeedback';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $url = 'http://api.smsfeedback.ru/messages/v2/send/';
@@ -52,6 +53,7 @@ class Smsfeedback extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $alert_data['title'], $params);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

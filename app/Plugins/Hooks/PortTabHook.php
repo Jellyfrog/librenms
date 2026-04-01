@@ -41,6 +41,7 @@ abstract class PortTabHook implements \LibreNMS\Interfaces\Plugins\Hooks\PortTab
         return true;
     }
 
+    /** @return array<mixed> */
     public function data(Port $port): array
     {
         return [
@@ -49,6 +50,7 @@ abstract class PortTabHook implements \LibreNMS\Interfaces\Plugins\Hooks\PortTab
         ];
     }
 
+    /** @param array<mixed> $settings */
     final public function handle(string $pluginName, Port $port, array $settings, Application $app): \Illuminate\Contracts\View\View
     {
         return view(Str::start($this->view, "$pluginName::"), $app->call($this->data(...), [

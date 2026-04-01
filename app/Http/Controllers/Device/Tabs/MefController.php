@@ -52,6 +52,7 @@ class MefController implements DeviceTab
         return __('Metro Ethernet');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [];

@@ -15,6 +15,7 @@ class RrdProcess
     private readonly string $rrdcached;
     private readonly string $rrd_dir;
     private readonly string $rrdtool_exec;
+    /** @var array<mixed> */
     private array $env = [];
     private readonly InputStream $input;
 

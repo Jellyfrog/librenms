@@ -37,6 +37,7 @@ use LibreNMS\Util\Url;
 
 class MempoolsController extends TableController
 {
+    /** @return array<mixed> */
     protected function rules(): array
     {
         return [
@@ -44,11 +45,13 @@ class MempoolsController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function searchFields($request)
     {
         return ['hostname', 'display', 'mempool_descr'];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request)
     {
         return ['mempool_descr', 'mempool_perc', 'mempool_used', 'hostname'];
@@ -83,6 +86,7 @@ class MempoolsController extends TableController
 
     /**
      * @param  Device|Mempool  $mempool
+     * @return array<mixed>
      */
     public function formatItem($mempool)
     {
@@ -155,7 +159,7 @@ class MempoolsController extends TableController
     /**
      * Get headers for CSV export
      *
-     * @return array
+     * @return array<mixed>
      */
     protected function getExportHeaders()
     {
@@ -175,7 +179,7 @@ class MempoolsController extends TableController
      * Format a row for CSV export
      *
      * @param  Mempool  $mempool
-     * @return array
+     * @return array<mixed>
      */
     protected function formatExportRow($mempool)
     {

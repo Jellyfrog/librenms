@@ -34,6 +34,7 @@ class Hipchat extends Transport
 {
     protected string $name = 'HipChat';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $options = $this->parseUserOptions($this->config['hipchat-options']);
@@ -92,6 +93,7 @@ class Hipchat extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $data['message'], $data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

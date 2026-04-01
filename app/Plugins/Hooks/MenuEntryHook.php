@@ -39,11 +39,13 @@ abstract class MenuEntryHook implements \LibreNMS\Interfaces\Plugins\Hooks\MenuE
         return true;
     }
 
+    /** @return array<mixed> */
     public function data(): array
     {
         return [];
     }
 
+    /** @param array<mixed> $settings */
     final public function handle(string $pluginName, array $settings, Application $app): array
     {
         return [Str::start($this->view, "$pluginName::"), $app->call($this->data(...), [

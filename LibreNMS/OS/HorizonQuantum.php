@@ -18,6 +18,7 @@ class HorizonQuantum extends OS implements
     WirelessErrorsDiscovery,
     WirelessRateDiscovery
 {
+    /** @return array<mixed> */
     public function discoverWirelessSnr()
     {
         $index = snmpwalk_group($this->getDeviceArray(), 'hzQtmModemIndex', 'DRAGONWAVE-HORIZON-QUANTUM-MIB');
@@ -42,6 +43,7 @@ class HorizonQuantum extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessPower()
     {
         $index = snmpwalk_group($this->getDeviceArray(), 'hzQtmRadioIndex', 'DRAGONWAVE-HORIZON-QUANTUM-MIB');
@@ -66,6 +68,7 @@ class HorizonQuantum extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRssi()
     {
         $index = snmpwalk_group($this->getDeviceArray(), 'hzQtmModemIndex', 'DRAGONWAVE-HORIZON-QUANTUM-MIB');
@@ -90,6 +93,7 @@ class HorizonQuantum extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessErrors()
     {
         $index = snmpwalk_group($this->getDeviceArray(), 'hzQtmWirelessEnetPortIndex', 'DRAGONWAVE-HORIZON-QUANTUM-MIB');
@@ -111,6 +115,7 @@ class HorizonQuantum extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRate()
     {
         $sensors = [];

@@ -9,7 +9,7 @@ abstract class Page extends BasePage
     /**
      * Get the global element shortcuts for the site.
      *
-     * @return array
+     * @return array<mixed>
      */
     public static function siteElements()
     {

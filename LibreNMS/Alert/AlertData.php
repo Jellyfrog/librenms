@@ -42,6 +42,7 @@ class AlertData extends \Illuminate\Support\Collection
         return "$name is not a valid \$alert data name";
     }
 
+    /** @param array<mixed> $faults */
     public static function testData(Device $device, array $faults = []): array
     {
         return [

@@ -40,6 +40,7 @@ class EricssonTn extends OS implements
     WirelessPowerDiscovery,
     WirelessRateDiscovery
 {
+    /** @return array<mixed> */
     public function discoverWirelessMSE()
     {
         $sensors = [];
@@ -63,6 +64,7 @@ class EricssonTn extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRate()
     {
         $sensors = [];
@@ -86,6 +88,7 @@ class EricssonTn extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessFrequency()
     {
         $sensors = [];
@@ -123,6 +126,7 @@ class EricssonTn extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessPower()
     {
         $sensors = [];

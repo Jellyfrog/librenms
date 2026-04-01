@@ -11,6 +11,7 @@ use SnmpQuery;
 class SnmpTranslate extends SnmpFetch
 {
     protected $name = 'snmp:translate';
+    /** @var array<mixed> */
     protected array $oids;
 
     public function __construct()

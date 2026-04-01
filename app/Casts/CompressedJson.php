@@ -11,6 +11,7 @@ class CompressedJson implements CastsAttributes
      * Cast the given value.
      *
      * @param  array<string, mixed>  $attributes
+     * @return array<mixed>
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): array
     {

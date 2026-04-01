@@ -52,6 +52,7 @@ class ServicesController implements DeviceTab
         return __('Services');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [];

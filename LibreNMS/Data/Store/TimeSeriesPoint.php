@@ -28,12 +28,14 @@ namespace LibreNMS\Data\Store;
 
 class TimeSeriesPoint
 {
+    /** @param array<mixed> $data */
     public function __construct(
         public readonly int $timestamp,
         public readonly array $data,
     ) {
     }
 
+    /** @return array<mixed> */
     public function ds(): array
     {
         return array_keys($this->data);

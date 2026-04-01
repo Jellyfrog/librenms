@@ -21,6 +21,7 @@ class Msteams extends Transport
 {
     protected string $name = 'Microsoft Teams';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $url = $this->config['msteam-url'];
@@ -95,6 +96,7 @@ class Msteams extends Transport
             || str_contains($url, '.webhook.office.com');
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

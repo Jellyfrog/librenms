@@ -222,6 +222,7 @@ class Alaxala extends OS implements MempoolsDiscovery, ProcessorDiscovery
         }
     }
 
+    /** @return array<mixed> */
     public function discoverProcessors()
     {
         $device = $this->getDevice();
@@ -626,6 +627,7 @@ class Alaxala extends OS implements MempoolsDiscovery, ProcessorDiscovery
         return collect();
     }
 
+    /** @param array<mixed> $oids */
     private function firstSnmpValue(Device $device, array $oids, string $mib, bool $enumStrings = false): ?string
     {
         $result = $this->firstSnmpValueWithOid($device, $oids, $mib, $enumStrings);
@@ -650,6 +652,7 @@ class Alaxala extends OS implements MempoolsDiscovery, ProcessorDiscovery
         return null;
     }
 
+    /** @param array<mixed> $oids */
     private function firstSnmpValueWithOid(Device $device, array $oids, string $mib, bool $enumStrings = false): ?array
     {
         foreach ($oids as $oid) {

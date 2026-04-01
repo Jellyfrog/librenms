@@ -28,6 +28,7 @@ namespace LibreNMS\Discovery\Yaml;
 
 class LiteralField extends YamlDiscoveryField
 {
+    /** @param array<mixed> $data */
     public function calculateValue(array $yaml, array $data, string $index, int $count): void
     {
         $this->value = $yaml[$this->key] ?? $this->default;

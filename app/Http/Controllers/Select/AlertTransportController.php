@@ -33,6 +33,7 @@ use Illuminate\Http\Request;
 
 class AlertTransportController extends SelectController
 {
+    /** @return array<mixed> */
     protected function searchFields(Request $request)
     {
         return ['transport_type', 'transport_name'];
@@ -46,7 +47,10 @@ class AlertTransportController extends SelectController
             ->orderBy('transport_name');
     }
 
-    /** @param  AlertTransport  $model */
+    /**
+     * @param  AlertTransport  $model
+     * @return array<mixed>
+     */
     public function formatItem($model): array
     {
         return [

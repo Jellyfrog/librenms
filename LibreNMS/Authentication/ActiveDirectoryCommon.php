@@ -185,7 +185,7 @@ trait ActiveDirectoryCommon
      *
      * @internal
      *
-     * @param  array  $entry
+     * @param  array<mixed>  $entry
      * @return array
      */
     protected function userFromAd($entry)
@@ -200,6 +200,7 @@ trait ActiveDirectoryCommon
         ];
     }
 
+    /** @return array<mixed> */
     public function getUser($user_id): array
     {
         $connection = $this->getConnection();

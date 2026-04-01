@@ -37,9 +37,9 @@ use Symfony\Component\Yaml\Yaml;
 
 class CheckSchemaStructure implements Validation, ValidationFixer
 {
-    /** @var array */
+    /** @var array<mixed> */
     private $descriptions = [];
-    /** @var array */
+    /** @var array<mixed> */
     private $schema_update = [];
     /** @var string */
     private $schema_file;
@@ -201,6 +201,7 @@ class CheckSchemaStructure implements Validation, ValidationFixer
         }
     }
 
+    /** @param array<mixed> $table_schema */
     private function addTableSql(string $table, array $table_schema): string
     {
         $columns = array_map($this->columnToSql(...), $table_schema['Columns']);
@@ -211,6 +212,7 @@ class CheckSchemaStructure implements Validation, ValidationFixer
         return "CREATE TABLE `$table` ($def);";
     }
 
+    /** @param array<mixed> $schema */
     private function addColumnSql(string $table, array $schema, ?string $previous_column, bool $primary = false): string
     {
         $sql = "ALTER TABLE `$table` ADD " . $this->columnToSql($schema);
@@ -226,6 +228,7 @@ class CheckSchemaStructure implements Validation, ValidationFixer
         return $sql . ';';
     }
 
+    /** @param array<mixed> $column_schema */
     private function updateTableSql(string $table, string $column, array $column_schema): string
     {
         return "ALTER TABLE `$table` CHANGE `$column` " . $this->columnToSql($column_schema) . ';';
@@ -236,11 +239,13 @@ class CheckSchemaStructure implements Validation, ValidationFixer
         return "ALTER TABLE `$table` DROP `$column`;";
     }
 
+    /** @param array<mixed> $index_schema */
     private function addIndexSql(string $table, array $index_schema): string
     {
         return "ALTER TABLE `$table` ADD " . $this->indexToSql($index_schema) . ';';
     }
 
+    /** @param array<mixed> $index_schema */
     private function updateIndexSql(string $table, string $name, array $index_schema): string
     {
         return "ALTER TABLE `$table` DROP INDEX `$name`, " . $this->indexToSql($index_schema) . ';';
@@ -259,7 +264,7 @@ class CheckSchemaStructure implements Validation, ValidationFixer
     /**
      * Generate an SQL segment to create the column based on data from Schema::dump()
      *
-     * @param  array  $column_data  The array of data for the column
+     * @param  array<mixed>  $column_data  The array of data for the column
      * @return string sql fragment, for example: "`ix_id` int(10) unsigned NOT NULL"
      */
     private function columnToSql(array $column_data): string
@@ -290,7 +295,7 @@ class CheckSchemaStructure implements Validation, ValidationFixer
     /**
      * Generate an SQL segment to create the index based on data from Schema::dump()
      *
-     * @param  array  $index_data  The array of data for the index
+     * @param  array<mixed>  $index_data  The array of data for the index
      * @return string sql fragment, for example: "PRIMARY KEY (`device_id`)"
      */
     private function indexToSql(array $index_data): string
@@ -308,6 +313,7 @@ class CheckSchemaStructure implements Validation, ValidationFixer
         return sprintf($index, $columns);
     }
 
+    /** @param array<mixed> $constraint */
     private function addConstraintSql(string $table, array $constraint): string
     {
         $sql = "ALTER TABLE `$table` ADD CONSTRAINT `{$constraint['name']}` FOREIGN KEY (`{$constraint['foreign_key']}`) ";

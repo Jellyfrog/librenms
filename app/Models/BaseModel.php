@@ -103,6 +103,7 @@ abstract class BaseModel extends Model
         return $query->whereIntegerInRaw("$table.bill_id", \Permissions::billsForUser($user));
     }
 
+    /** @return array<mixed> */
     public static function definedRelations(): array
     {
         $reflector = new \ReflectionClass(static::class);

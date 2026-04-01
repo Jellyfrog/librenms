@@ -39,6 +39,7 @@ class RoutesTablesController extends TableController
     /** @var mixed */
     protected $ipCache = [];
 
+    /** @return array<mixed> */
     protected function rules()
     {
         return [
@@ -47,6 +48,7 @@ class RoutesTablesController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function filterFields($request)
     {
         return [
@@ -55,6 +57,7 @@ class RoutesTablesController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request)
     {
         return [
@@ -118,7 +121,7 @@ class RoutesTablesController extends TableController
     /**
      * @param  string  $search
      * @param  Builder  $query
-     * @param  array  $fields
+     * @param  array<mixed>  $fields
      * @return Builder|\Illuminate\Database\Query\Builder
      */
     protected function search($search, $query, $fields = [])
@@ -168,6 +171,7 @@ class RoutesTablesController extends TableController
 
     /**
      * @param  Route  $route_entry
+     * @return array<mixed>
      */
     public function formatItem($route_entry)
     {

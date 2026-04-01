@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputOption;
 abstract class SnmpFetch extends LnmsCommand
 {
     protected string $type;
+    /** @var array<mixed> */
     protected array $oids;
     protected ?bool $numeric = null;
     private string $outputFormat;
@@ -118,6 +119,7 @@ abstract class SnmpFetch extends LnmsCommand
         return $return;
     }
 
+    /** @param array<mixed> $data */
     protected function printYamlLike(array $data, int $indent = 0): void
     {
         foreach ($data as $key => $item) {
@@ -133,6 +135,7 @@ abstract class SnmpFetch extends LnmsCommand
         }
     }
 
+    /** @param array<mixed> $data */
     protected function printYamlCombinedKey(array $data, string $carry = ''): void
     {
         // we found the full key, print it

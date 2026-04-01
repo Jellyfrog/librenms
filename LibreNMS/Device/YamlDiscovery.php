@@ -43,7 +43,7 @@ class YamlDiscovery
     /**
      * @param  OS  $os
      * @param  DiscoveryItem|string  $class
-     * @param  array  $yaml_data
+     * @param  array<mixed>  $yaml_data
      * @return array
      */
     public static function discover(OS $os, $class, $yaml_data)
@@ -126,7 +126,7 @@ class YamlDiscovery
     /**
      * @param  string  $name  The oid of the value we are searching for
      * @param  int|string  $index  The index of the current entity we are searching from
-     * @param  array  $discovery_data  The yaml discovery data
+     * @param  array<mixed>  $discovery_data  The yaml discovery data
      * @param  int  $count  The count of where we are in the discovery data
      * @param  array  $pre_cache  Data that has been previously fetched (should contain all snmp data)
      * @param  int|string|null  $value  The current value of the data that we might need to transform (or return as is)
@@ -147,7 +147,7 @@ class YamlDiscovery
 
     /**
      * @param  OS  $os  OS/device we are working on
-     * @param  array  $data  Array derived from YAML
+     * @param  array<mixed>  $data  Array derived from YAML
      * @return string
      *
      * @throws \LibreNMS\Exceptions\InvalidOidException
@@ -177,7 +177,7 @@ class YamlDiscovery
      * @param  string  $name  Name of the field in yaml
      * @param  string  $index  index in the snmp table
      * @param  int  $count  current count of snmp table entries
-     * @param  array  $def  yaml definition
+     * @param  array<mixed>  $def  yaml definition
      * @param  array  $pre_cache  snmp data fetched from device
      * @return mixed|string|string[]|null
      */
@@ -245,7 +245,7 @@ class YamlDiscovery
      *
      * @param  string  $name  The name of the field from the discovery data or just an oid
      * @param  string|int  $index  The index of the current sensor
-     * @param  array  $discovery_data  The discovery data for the current sensor
+     * @param  array<mixed>  $discovery_data  The discovery data for the current sensor
      * @param  array  $pre_fetched  all pre-fetched snmp data
      * @param  mixed  $default  The default value to return if data is not found
      * @return mixed
@@ -331,6 +331,7 @@ class YamlDiscovery
         return $default;
     }
 
+    /** @return array<mixed> */
     public static function preCache(OS $os): array
     {
         // Pre-cache data for later use
@@ -408,7 +409,7 @@ class YamlDiscovery
      * @param  mixed  $value
      * @param  int|string  $index
      * @param  array  $yaml_item_data  The data key from this item
-     * @param  array  $group_options  The options key from this group of items
+     * @param  array<mixed>  $group_options  The options key from this group of items
      * @param  array  $pre_fetched  The pre-fetched data array
      * @return bool
      */

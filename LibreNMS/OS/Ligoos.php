@@ -38,6 +38,7 @@ class Ligoos extends OS implements
     WirelessNoiseFloorDiscovery,
     WirelessQualityDiscovery
 {
+    /** @return array<mixed> */
     public function discoverWirelessClients()
     {
         $sensors = [];
@@ -59,6 +60,7 @@ class Ligoos extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessFrequency()
     {
         $sensors = [];
@@ -80,6 +82,7 @@ class Ligoos extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessNoiseFloor()
     {
         $sensors = [];
@@ -101,6 +104,7 @@ class Ligoos extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessQuality()
     {
         $sensors = [];

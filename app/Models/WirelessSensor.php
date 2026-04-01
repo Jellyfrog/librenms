@@ -125,6 +125,7 @@ class WirelessSensor extends DeviceRelatedModel implements Keyable
         return "{$this->sensor_class->value}-$this->sensor_type-$this->sensor_index";
     }
 
+    /** @param array<mixed> $values */
     public function fillValue(array $values): self
     {
         if (empty($values)) {

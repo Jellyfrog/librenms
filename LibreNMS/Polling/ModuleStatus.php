@@ -30,6 +30,7 @@ use App\Models\Device;
 
 class ModuleStatus implements \Stringable
 {
+    /** @param array<mixed> $submodules */
     public function __construct(
         public ?bool $global,
         public ?bool $os = null,

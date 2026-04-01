@@ -34,7 +34,7 @@ trait CompletesPluginArgument
      * @param  string  $name
      * @param  string  $value
      * @param  string  $previous
-     * @return array|false
+     * @return array<mixed>|false
      */
     public function completeArgument($name, $value, $previous)
     {

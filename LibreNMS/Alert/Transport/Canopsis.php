@@ -9,6 +9,7 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 class Canopsis extends Transport
 {
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         // Configurations
@@ -64,6 +65,7 @@ class Canopsis extends Transport
         return true;
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

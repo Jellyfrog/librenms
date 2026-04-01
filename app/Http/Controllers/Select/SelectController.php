@@ -106,7 +106,7 @@ abstract class SelectController extends PaginatedAjaxController
      * If only one value is in the model attributes, that is the id and text.
      *
      * @param  Model  $model
-     * @return array
+     * @return array<mixed>
      */
     public function formatItem($model)
     {
@@ -126,6 +126,7 @@ abstract class SelectController extends PaginatedAjaxController
         ];
     }
 
+    /** @return array<mixed> */
     protected function prependItem(): ?array
     {
         return null;

@@ -9,6 +9,7 @@ use LibreNMS\Util\Url;
 
 class VlanDevicesController extends TableController
 {
+    /** @return array<mixed> */
     protected function sortFields($request)
     {
         return [
@@ -53,6 +54,7 @@ class VlanDevicesController extends TableController
 
     /**
      * @param  Device  $model
+     * @return array<mixed>
      */
     public function formatItem($model): array
     {

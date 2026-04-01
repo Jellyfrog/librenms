@@ -106,7 +106,7 @@ class Dns implements Geocoder
 
     /**
      * @param  string  $hostname
-     * @return array
+     * @return array<mixed>
      */
     public function getCoordinates($hostname): array
     {

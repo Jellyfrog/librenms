@@ -58,6 +58,7 @@ class Xdsl implements Module
 
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function dependencies(): array
     {
@@ -121,6 +122,7 @@ class Xdsl implements Module
 
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function dump(Device $device, string $type): ?array
     {
@@ -222,6 +224,7 @@ class Xdsl implements Module
         return $this->syncModels($os->getDevice(), 'portsVdsl', $vdslPorts);
     }
 
+    /** @param array<mixed> $data */
     private function storeAdsl(PortAdsl $port, array $data, int $ifIndex, OS $os, DataStorageInterface $datastore): void
     {
         $rrd_def = RrdDefinition::make()
@@ -282,6 +285,7 @@ class Xdsl implements Module
         ], $fields);
     }
 
+    /** @param array<mixed> $data */
     private function storeVdsl(PortVdsl $port, array $data, int $ifIndex, OS $os, DataStorageInterface $datastore): void
     {
         // Attainable

@@ -32,7 +32,7 @@ interface WirelessErrorsDiscovery
      * Discover wireless bit errors.  This is in total bits. Type is errors.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessErrors();
 }

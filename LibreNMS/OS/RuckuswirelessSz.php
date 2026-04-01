@@ -40,6 +40,7 @@ class RuckuswirelessSz extends OS implements
         }
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessClients(): array
     {
         // clients - Discover Per SSID Client Count
@@ -76,6 +77,7 @@ class RuckuswirelessSz extends OS implements
 
     // ap-count - Discover System Connected APs
 
+    /** @return array<mixed> */
     public function discoverWirelessApCount(): array
     {
         $apconnected = SnmpQuery::walk('RUCKUS-CTRL-MIB::ruckusCtrlSystemNodeNumApConnected')->table(1);

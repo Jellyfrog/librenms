@@ -7,6 +7,7 @@ use Illuminate\View\View;
 
 class Submenu extends Component
 {
+    /** @param array<mixed> $menu */
     public function __construct(
         public string $title,
         public array $menu,

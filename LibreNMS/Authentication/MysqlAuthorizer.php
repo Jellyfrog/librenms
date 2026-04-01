@@ -15,6 +15,7 @@ class MysqlAuthorizer extends AuthorizerBase
     /** @var mixed */
     protected static $CAN_UPDATE_PASSWORDS = true;
 
+    /** @param array<mixed> $credentials */
     public function authenticate($credentials)
     {
         $username = $credentials['username'] ?? null;
@@ -73,6 +74,7 @@ class MysqlAuthorizer extends AuthorizerBase
         return User::thisAuth()->where('username', $username)->value('user_id');
     }
 
+    /** @return array<mixed>|false */
     public function getUser($user_id)
     {
         $user = User::find($user_id);

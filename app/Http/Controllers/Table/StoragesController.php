@@ -15,8 +15,10 @@ class StoragesController extends TableController
     /** @var mixed */
     protected $model = Storage::class;
 
+    /** @var array<mixed> */
     protected $default_sort = ['device_hostname' => 'asc', 'storage_descr' => 'asc'];
 
+    /** @return array<mixed> */
     protected function rules(): array
     {
         return [
@@ -24,6 +26,7 @@ class StoragesController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request): array
     {
         return [
@@ -34,6 +37,7 @@ class StoragesController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function searchFields(Request $request): array
     {
         return [
@@ -58,6 +62,7 @@ class StoragesController extends TableController
 
     /**
      * @param  Storage  $storage
+     * @return array<mixed>
      */
     public function formatItem($storage): array
     {
@@ -91,6 +96,7 @@ class StoragesController extends TableController
         ];
     }
 
+    /** @param array<mixed> $graph_array */
     private function usageBar(Storage $storage, array $graph_array): string
     {
         $storage_size = Number::formatBi($storage->storage_size);
@@ -105,7 +111,7 @@ class StoragesController extends TableController
     /**
      * Get headers for CSV export
      *
-     * @return array
+     * @return array<mixed>
      */
     protected function getExportHeaders()
     {
@@ -121,7 +127,7 @@ class StoragesController extends TableController
      * Format a row for CSV export
      *
      * @param  Storage  $storage
-     * @return array
+     * @return array<mixed>
      */
     protected function formatExportRow($storage)
     {

@@ -32,6 +32,7 @@ class Smseagle extends Transport
 {
     protected string $name = 'SMSEagle';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $url = $this->config['smseagle-url'] . '/http_api/send_sms';
@@ -61,6 +62,7 @@ class Smseagle extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $params['message'], $params);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

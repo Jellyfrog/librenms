@@ -30,7 +30,7 @@ class LoginPage extends Page
     /**
      * Get the element shortcuts for the page.
      *
-     * @return array
+     * @return array<mixed>
      */
     public function elements()
     {

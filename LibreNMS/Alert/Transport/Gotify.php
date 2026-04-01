@@ -31,6 +31,7 @@ use LibreNMS\Util\Http;
 
 class Gotify extends Transport
 {
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $url = "{$this->config['gotify-server-url']}/message";
@@ -107,6 +108,7 @@ class Gotify extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $alert_data['msg'], $data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

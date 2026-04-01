@@ -291,6 +291,7 @@ class CustomMapController extends Controller
 
     /**
      * Get a list of all available node images with a label.
+     * @return array<mixed>
      */
     private function listNodeImages(): array
     {
@@ -317,6 +318,7 @@ class CustomMapController extends Controller
 
     /**
      * Return the legend config
+     * @return array<mixed>
      */
     private function legendConfig(CustomMap $map): array
     {
@@ -335,6 +337,7 @@ class CustomMapController extends Controller
 
     /**
      * Return the default legend colours
+     * @return array<mixed>
      */
     private function getDefaultLegendColours(): ?array
     {

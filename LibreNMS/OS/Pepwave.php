@@ -44,6 +44,7 @@ class Pepwave extends OS implements
     WirelessRssiDiscovery,
     WirelessSinrDiscovery
 {
+    /** @return array<mixed> */
     public function discoverWirelessClients()
     {
         $oid = '.1.3.6.1.4.1.27662.4.1.1.7.0';
@@ -53,6 +54,7 @@ class Pepwave extends OS implements
         ];
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRssi()
     {
         $data = snmpwalk_group($this->getDeviceArray(), 'cellularSignalRssi', 'CELLULAR');
@@ -66,6 +68,7 @@ class Pepwave extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessSnr()
     {
         $data = snmpwalk_group($this->getDeviceArray(), 'cellularSignalSnr', 'CELLULAR');
@@ -79,6 +82,7 @@ class Pepwave extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessSinr()
     {
         $data = snmpwalk_group($this->getDeviceArray(), 'cellularSignalSinr', 'CELLULAR');
@@ -92,6 +96,7 @@ class Pepwave extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRsrp()
     {
         $data = snmpwalk_group($this->getDeviceArray(), 'cellularSignalRsrp', 'CELLULAR');
@@ -105,6 +110,7 @@ class Pepwave extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRsrq()
     {
         $data = snmpwalk_group($this->getDeviceArray(), 'cellularSignalRsrq', 'CELLULAR');

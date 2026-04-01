@@ -33,6 +33,7 @@ class Signl4 extends Transport
 {
     protected string $name = 'SIGNL4';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $url = $this->config['signl4-url'];
@@ -60,6 +61,7 @@ class Signl4 extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), '', $alert_data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

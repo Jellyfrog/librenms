@@ -52,6 +52,7 @@ class AppsController implements DeviceTab
         return __('Apps');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [];

@@ -59,16 +59,19 @@ class SNMPCapabilities
         return self::$aes256;
     }
 
+    /** @return array<mixed> */
     public static function supportedAuthAlgorithms(): array
     {
         return array_keys(array_filter(self::authAlgorithms()));
     }
 
+    /** @return array<mixed> */
     public static function supportedCryptoAlgorithms(): array
     {
         return array_keys(array_filter(self::cryptoAlgoritms()));
     }
 
+    /** @return array<mixed> */
     public static function authAlgorithms(): array
     {
         $sha2 = self::supportsSHA2();
@@ -83,6 +86,7 @@ class SNMPCapabilities
         ];
     }
 
+    /** @return array<mixed> */
     public static function cryptoAlgoritms(): array
     {
         $aes256 = self::supportsAES256();

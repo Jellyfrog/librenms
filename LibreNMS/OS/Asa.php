@@ -29,21 +29,25 @@ namespace LibreNMS\OS;
 class Asa extends Shared\Cisco
 {
     // disable unsupported netstats
+    /** @param array<mixed> $oids */
     public function pollIcmpNetstats(array $oids): array
     {
         return [];
     }
 
+    /** @param array<mixed> $oids */
     public function pollIpNetstats(array $oids): array
     {
         return [];
     }
 
+    /** @param array<mixed> $oids */
     public function pollUdpNetstats(array $oids): array
     {
         return [];
     }
 
+    /** @param array<mixed> $oids */
     public function pollTcpNetstats(array $oids): array
     {
         return [];

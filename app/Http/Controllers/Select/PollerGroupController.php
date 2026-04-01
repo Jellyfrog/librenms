@@ -30,6 +30,7 @@ use App\Models\PollerGroup;
 
 class PollerGroupController extends SelectController
 {
+    /** @return array<mixed> */
     protected function searchFields($request)
     {
         return ['group_name', 'descr'];
@@ -40,6 +41,7 @@ class PollerGroupController extends SelectController
         return PollerGroup::query()->select(['id', 'group_name']);
     }
 
+    /** @return array<mixed> */
     protected function prependItem(): array
     {
         return [

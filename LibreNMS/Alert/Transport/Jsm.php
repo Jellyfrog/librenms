@@ -10,6 +10,7 @@ class Jsm extends Transport
 {
     protected string $name = 'Jira Service Management';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $url = $this->config['jsm-url'];
@@ -23,6 +24,7 @@ class Jsm extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), '', $alert_data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

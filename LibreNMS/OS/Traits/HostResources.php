@@ -105,7 +105,7 @@ trait HostResources
      * Discover processors.
      * Returns an array of LibreNMS\Device\Processor objects that have been discovered
      *
-     * @return array Processors
+     * @return array<mixed> Processors
      */
     public function discoverProcessors()
     {
@@ -299,6 +299,7 @@ trait HostResources
         return true;
     }
 
+    /** @param array<mixed> $data */
     protected function fixBadData(array &$data): void
     {
         foreach ($data as $index => $entry) {

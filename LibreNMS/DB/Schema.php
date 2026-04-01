@@ -118,7 +118,7 @@ class Schema
     /**
      * Get a list of all tables.
      *
-     * @return array
+     * @return array<mixed>
      */
     public function getTables()
     {
@@ -129,7 +129,7 @@ class Schema
      * Return all columns for the given table
      *
      * @param  string  $table
-     * @return array
+     * @return array<mixed>
      */
     public function getColumns($table)
     {
@@ -188,7 +188,7 @@ class Schema
      *
      * @param  string  $target
      * @param  string  $start  Default: devices
-     * @return array|false list of tables in path order, or false if no path is found
+     * @return array<mixed>|false list of tables in path order, or false if no path is found
      */
     public function findRelationshipPath($target, $start = 'devices')
     {
@@ -207,6 +207,7 @@ class Schema
     /**
      * @param mixed $history
      * @return mixed
+     * @param array<mixed> $tables
      */
     private function findPathRecursive(array $tables, $target, $history = [])
     {
@@ -334,7 +335,7 @@ class Schema
      * Each entry in the Indexes array contains these keys: Name, Columns(array), Unique
      *
      * @param  string  $connection  use a specific connection
-     * @return array
+     * @return array<mixed>
      */
     public static function dump($connection = null)
     {

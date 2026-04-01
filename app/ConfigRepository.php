@@ -42,8 +42,11 @@ use Symfony\Component\Yaml\Yaml;
 
 class ConfigRepository
 {
+    /** @var array<mixed> */
     private array $config;
+    /** @var array<mixed> */
     private ?array $fping4_cmd = null;
+    /** @var array<mixed> */
     private ?array $fping6_cmd = null;
 
     /**
@@ -74,7 +77,7 @@ class ConfigRepository
     /**
      * Get the config setting definitions
      *
-     * @return array
+     * @return array<mixed>
      */
     public function getDefinitions(): array
     {
@@ -84,7 +87,7 @@ class ConfigRepository
     /**
      * Load the user config from config.php
      *
-     * @param  array  $config  (this should be $this->config)
+     * @param  array<mixed>  $config  (this should be $this->config)
      */
     private function loadUserConfigFile(&$config): void
     {
@@ -119,7 +122,7 @@ class ConfigRepository
      * Unset a config setting
      * or multiple
      *
-     * @param  string|array  $key
+     * @param  string|array<mixed>  $key
      */
     public function forget($key): void
     {
@@ -131,7 +134,7 @@ class ConfigRepository
      * fall back to the global config setting prefixed by $global_prefix
      * The key must be the same for the global setting and the device setting.
      *
-     * @param  array  $device  Device array
+     * @param  array<mixed>  $device  Device array
      * @param  string  $key  Name of setting to fetch
      * @param  string  $global_prefix  specify where the global setting lives in the global config
      * @param  mixed  $default  will be returned if the setting is not set on the device or globally
@@ -175,7 +178,7 @@ class ConfigRepository
      * @param  string|null  $os  The os name
      * @param  string  $key  period separated config variable name
      * @param  string  $global_prefix  prefix for global setting
-     * @param  array  $default  optional array to return if the setting is not set
+     * @param  array<mixed>  $default  optional array to return if the setting is not set
      * @return array
      */
     public function getCombined(?string $os, string $key, string $global_prefix = '', array $default = []): array
@@ -307,7 +310,7 @@ class ConfigRepository
     /**
      * Get the full configuration array
      *
-     * @return array
+     * @return array<mixed>
      */
     public function getAll(): array
     {
@@ -497,7 +500,7 @@ class ConfigRepository
      *
      * @param  string  $key
      * @param  string  $value  value to set to key or vsprintf() format string for values below
-     * @param  array  $format_values  array of keys to send to vsprintf()
+     * @param  array<mixed>  $format_values  array of keys to send to vsprintf()
      */
     private function setDefault($key, $value, $format_values = []): void
     {
@@ -605,6 +608,7 @@ class ConfigRepository
 
     /**
      * Get the fping command for a given address family
+     * @return array<mixed>
      */
     public function fpingCommand(AddressFamily $af): array
     {

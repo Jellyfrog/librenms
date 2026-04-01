@@ -58,6 +58,7 @@ class Rrd extends BaseDatastore
     /** @var string */
     private $rrdcached;
 
+    /** @var array<mixed> */
     private array $rra;
     /** @var int */
     private $step;
@@ -219,7 +220,7 @@ class Rrd extends BaseDatastore
      * Where $options is an array, each entry which is not a number is replaced with "U"
      *
      * @param  string  $filename
-     * @param  array  $data
+     * @param  array<mixed>  $data
      * @return array
      *
      * @throws RrdException
@@ -334,7 +335,7 @@ class Rrd extends BaseDatastore
      *
      * @param  Device  $device  Device model
      * @param  string|array  $oldname  RRD name array as used with rrd_name()
-     * @param  string|array  $newname  RRD name array as used with rrd_name()
+     * @param  string|array<mixed>  $newname  RRD name array as used with rrd_name()
      * @return bool indicating rename success or failure
      */
     public function renameFile(Device $device, $oldname, $newname): bool
@@ -361,7 +362,7 @@ class Rrd extends BaseDatastore
      * Generates a filename based on the hostname (or IP) and some extra items
      *
      * @param  string  $host  Host name
-     * @param  array|string  $extra  Components of RRD filename - will be separated with "-", or a pre-formed rrdname
+     * @param  array<mixed>|string  $extra  Components of RRD filename - will be separated with "-", or a pre-formed rrdname
      * @param  string  $extension  File extension (default is .rrd)
      * @return string the name of the rrd file for $host's $extra component
      */
@@ -392,7 +393,7 @@ class Rrd extends BaseDatastore
      *
      * @param  string  $command  create, update, updatev, graph, graphv, dump, restore, fetch, tune, first, last, lastupdate, info, resize, xport, flushcached
      * @param  string  $filename  The full patth to the rrd file
-     * @param  array  $options  rrdtool command options
+     * @param  array<mixed>  $options  rrdtool command options
      * @return array the output of stdout and stderr in an array
      *
      * @throws Exception thrown when the rrdtool process(s) cannot be started
@@ -451,7 +452,7 @@ class Rrd extends BaseDatastore
      *
      * @param  string  $command  The base rrdtool command.  Usually create, update, last.
      * @param  string  $filename  The full path to the rrd file
-     * @param  array  $options  Options for the command possibly including the rrd definition
+     * @param  array<mixed>  $options  Options for the command possibly including the rrd definition
      * @return array returns a full command array ready to be used by rrdtool
      *
      * @throws FileExistsException if rrdtool <1.4.3 and the rrd file exists locally
@@ -509,7 +510,7 @@ class Rrd extends BaseDatastore
     /**
      * Get array of rrd files for specific application.
      *
-     * @param  array  $device  device for which we get the rrd's
+     * @param  array<mixed>  $device  device for which we get the rrd's
      * @param  int  $app_id  application id on the device
      * @param  string  $app_name  name of app to be searched
      * @param  string  $category  which category of graphs are searched
@@ -586,7 +587,7 @@ class Rrd extends BaseDatastore
      * Graphs are a single command per run, so this just runs rrdtool
      *
      * @param  array  $options
-     * @param  array|null  $env
+     * @param  array<mixed>|null  $env
      * @return string
      *
      * @throws RrdGraphException

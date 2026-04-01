@@ -37,6 +37,7 @@ use Spatie\Permission\Models\Role;
 
 class Mail extends Transport
 {
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $emails = match ($this->config['mail-contact'] ?? '') {
@@ -70,6 +71,7 @@ class Mail extends Transport
         }
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         $roles = ['None' => ''];

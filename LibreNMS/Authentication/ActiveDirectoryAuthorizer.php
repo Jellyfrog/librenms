@@ -23,6 +23,7 @@ class ActiveDirectoryAuthorizer extends AuthorizerBase
     /** @var mixed */
     protected $is_bound = false; // this variable tracks if bind has been called so we don't call it multiple times
 
+    /** @param array<mixed> $credentials */
     public function authenticate($credentials)
     {
         $this->connect();

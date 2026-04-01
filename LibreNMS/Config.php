@@ -34,7 +34,7 @@ class Config
     /**
      * Get the config setting definitions
      *
-     * @return array
+     * @return array<mixed>
      */
     public static function getDefinitions(): array
     {
@@ -57,7 +57,7 @@ class Config
      * Unset a config setting
      * or multiple
      *
-     * @param  string|array  $key
+     * @param  string|array<mixed>  $key
      */
     public static function forget($key): void
     {
@@ -69,7 +69,7 @@ class Config
      * fall back to the global config setting prefixed by $global_prefix
      * The key must be the same for the global setting and the device setting.
      *
-     * @param  array  $device  Device array
+     * @param  array<mixed>  $device  Device array
      * @param  string  $key  Name of setting to fetch
      * @param  string  $global_prefix  specify where the global setting lives in the global config
      * @param  mixed  $default  will be returned if the setting is not set on the device or globally
@@ -101,7 +101,7 @@ class Config
      * @param  string|null  $os  The os name
      * @param  string  $key  period separated config variable name
      * @param  string  $global_prefix  prefix for global setting
-     * @param  array  $default  optional array to return if the setting is not set
+     * @param  array<mixed>  $default  optional array to return if the setting is not set
      * @return array
      */
     public static function getCombined(?string $os, string $key, string $global_prefix = '', array $default = []): array
@@ -168,7 +168,7 @@ class Config
     /**
      * Get the full configuration array
      *
-     * @return array
+     * @return array<mixed>
      */
     public static function getAll(): array
     {

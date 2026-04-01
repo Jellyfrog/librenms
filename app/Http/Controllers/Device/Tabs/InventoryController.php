@@ -70,6 +70,7 @@ class InventoryController implements DeviceTab
         return __('Inventory');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [

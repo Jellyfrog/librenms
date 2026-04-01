@@ -33,6 +33,7 @@ use Illuminate\View\Component;
 
 class EditTabs extends Component
 {
+    /** @var array<mixed> */
     public array $tabs;
     public string $tab;
 

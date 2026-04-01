@@ -213,6 +213,7 @@ final class StringHelperBitsToIndicesTest extends TestCase
         $this->assertEquals([1, 17, 25], $result);
     }
 
+    /** @param array<mixed> $expected */
     #[DataProvider('hexDataProvider')]
     public function testWithDataProvider(string $hex, array $expected): void
     {
@@ -220,6 +221,7 @@ final class StringHelperBitsToIndicesTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /** @return array<mixed> */
     public static function hexDataProvider(): array
     {
         return [

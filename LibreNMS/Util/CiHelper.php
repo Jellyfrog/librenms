@@ -31,19 +31,26 @@ use Symfony\Component\Process\Process;
 
 class CiHelper
 {
+    /** @var array<mixed> */
     private ?array $changed = null;
+    /** @var array<mixed> */
     private ?array $os = null;
+    /** @var array<mixed> */
     private array $unitEnv = [];
+    /** @var array<mixed> */
     private array $duskEnv = ['APP_ENV' => 'testing'];
+    /** @var array<mixed> */
     private ?array $excludedPhpunitGroups = null;
     private ?Snmpsim $snmpsim = null;
 
+    /** @var array<mixed> */
     private array $completedChecks = [
         'lint' => false,
         'style' => false,
         'unit' => false,
         'web' => false,
     ];
+    /** @var array<mixed> */
     private array $ciDefaults = [
         'quiet' => [
             'lint' => true,
@@ -52,6 +59,7 @@ class CiHelper
             'web' => false,
         ],
     ];
+    /** @var array<mixed> */
     private array $flags = [
         'lint_enable' => true,
         'style_enable' => true,
@@ -105,6 +113,7 @@ class CiHelper
         $this->unitEnv['SNMPSIM'] = '127.1.6.2:1162';
     }
 
+    /** @param array<mixed> $modules */
     public function setModules(array $modules): void
     {
         $this->unitEnv['TEST_MODULES'] = implode(',', $modules);
@@ -113,6 +122,7 @@ class CiHelper
         $this->enableSnmpsim();
     }
 
+    /** @param array<mixed> $os */
     public function setOS(array $os): void
     {
         $this->os = $os;
@@ -121,6 +131,7 @@ class CiHelper
         $this->enableSnmpsim();
     }
 
+    /** @param array<mixed> $flags */
     public function setFlags(array $flags): void
     {
         foreach (array_intersect_key($flags, $this->flags) as $key => $value) {
@@ -128,6 +139,7 @@ class CiHelper
         }
     }
 
+    /** @param array<mixed> $groups */
     public function setExcludedPhpunitGroups(array $groups): void
     {
         $this->excludedPhpunitGroups = $groups;
@@ -381,7 +393,7 @@ class CiHelper
      * Run a check command
      *
      * @param  string  $name  name for status output
-     * @param  array  $command
+     * @param  array<mixed>  $command
      * @param  bool  $silence  silence the status ouput (still shows error output)
      * @param  array  $env  environment to set
      * @return int

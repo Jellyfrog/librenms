@@ -12,6 +12,7 @@ class Fortiwlc extends OS implements
     WirelessClientsDiscovery,
     WirelessApCountDiscovery
 {
+    /** @return array<mixed> */
     public function discoverWirelessClients()
     {
         $oid = '.1.3.6.1.4.1.15983.1.1.3.1.13.11.0'; //MERU-GLOBAL-STATISTIC-MIB::mwSystemGeneralTotalWirelessStations.0
@@ -21,6 +22,7 @@ class Fortiwlc extends OS implements
         ];
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessApCount()
     {
         $oid = '.1.3.6.1.4.1.15983.1.1.3.1.13.9.0'; //MERU-GLOBAL-STATISTICS-MIB::mwSystemGeneralTotalOnlineAps.0

@@ -32,6 +32,7 @@ class Playsms extends Transport
 {
     protected string $name = 'playSMS';
 
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $to = preg_split('/([,\r\n]+)/', (string) $this->config['playsms-mobiles']);
@@ -58,6 +59,7 @@ class Playsms extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $data['msg'], $data);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

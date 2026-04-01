@@ -43,6 +43,7 @@ class PrinterSupplies implements Module
 
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function dependencies(): array
     {
@@ -155,6 +156,7 @@ class PrinterSupplies implements Module
 
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function dump(Device $device, string $type): ?array
     {
@@ -278,7 +280,7 @@ class PrinterSupplies implements Module
     }
 
     /**
-     * @param  array  $device
+     * @param  array<mixed>  $device
      * @param  int|string  $raw_value  The value returned from snmp
      * @param  int  $capacity  the normalized capacity
      * @return int|float|bool the toner level as a percentage

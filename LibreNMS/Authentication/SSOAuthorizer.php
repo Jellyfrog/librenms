@@ -48,6 +48,7 @@ class SSOAuthorizer extends MysqlAuthorizer
     /** @var mixed */
     protected static $AUTH_IS_EXTERNAL = true;
 
+    /** @param array<mixed> $credentials */
     public function authenticate($credentials)
     {
         if (empty($credentials['username'])) {

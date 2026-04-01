@@ -28,6 +28,7 @@ class Fortiap extends OS implements
     WirelessFrequencyPolling,
     WirelessPowerDiscovery
 {
+    /** @return array<mixed> */
     public function discoverWirelessClients()
     {
         $fapVapStaInfoCounts = snmpwalk_cache_oid($this->getDeviceArray(), 'fapVapStaInfoCount', [], 'FORTINET-FORTIAP-MIB');
@@ -71,6 +72,7 @@ class Fortiap extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessFrequency()
     {
         $fapRadioChannelOper = $this->getCacheByIndex('fapRadioChannelOper', 'FORTINET-FORTIAP-MIB');
@@ -92,11 +94,13 @@ class Fortiap extends OS implements
         return $sensors;
     }
 
+    /** @param array<mixed> $sensors */
     public function pollWirelessFrequency(array $sensors)
     {
         return $this->pollWirelessChannelAsFrequency($sensors);
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessPower()
     {
         $fapRadioTxPowerOper = $this->getCacheByIndex('fapRadioTxPowerOper', 'FORTINET-FORTIAP-MIB');

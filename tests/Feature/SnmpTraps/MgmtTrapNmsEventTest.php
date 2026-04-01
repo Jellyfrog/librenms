@@ -113,6 +113,7 @@ EKINOPS-MGNT2-NMS-MIB::mgnt2EventLogChassisId {{ ip }}",
         );
     }
 
+    /** @return array<mixed> */
     public static function genEkiEvent(): array
     {
         return [

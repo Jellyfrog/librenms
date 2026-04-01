@@ -51,6 +51,7 @@ class CaptureController implements \LibreNMS\Interfaces\UI\DeviceTab
         return __('Capture');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [];

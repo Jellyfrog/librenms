@@ -80,7 +80,7 @@ class DeviceSearchController extends SearchController
 
     /**
      * @param  Device  $device
-     * @return array
+     * @return array<mixed>
      */
     public function formatItem($device): array
     {

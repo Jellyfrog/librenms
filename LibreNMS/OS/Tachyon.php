@@ -44,6 +44,7 @@ class Tachyon extends OS implements
 {
     /**
      * Discover wireless clients.
+     * @return array<mixed>
      */
     public function discoverWirelessClients()
     {
@@ -67,6 +68,7 @@ class Tachyon extends OS implements
 
     /**
      * Discover wireless frequency.
+     * @return array<mixed>
      */
     public function discoverWirelessFrequency()
     {
@@ -96,7 +98,7 @@ class Tachyon extends OS implements
      * Discover wireless TX power.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessPower()
     {
@@ -126,7 +128,7 @@ class Tachyon extends OS implements
      * Discover wireless RX RSSI.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessRssi()
     {
@@ -157,7 +159,7 @@ class Tachyon extends OS implements
      * Discover wireless TX/RX rates.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessRate()
     {
@@ -202,7 +204,7 @@ class Tachyon extends OS implements
      * Discover wireless link distance.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessDistance()
     {
@@ -233,7 +235,7 @@ class Tachyon extends OS implements
      * Discover wireless SNR.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered.
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessSnr()
     {

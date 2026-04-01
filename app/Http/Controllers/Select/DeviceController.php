@@ -33,6 +33,7 @@ class DeviceController extends SelectController
     /** @var mixed */
     private $id = 'device_id';
 
+    /** @return array<mixed> */
     protected function rules()
     {
         return [
@@ -43,6 +44,7 @@ class DeviceController extends SelectController
         ];
     }
 
+    /** @return array<mixed> */
     protected function searchFields($request)
     {
         return ['hostname', 'sysName'];
@@ -71,6 +73,7 @@ class DeviceController extends SelectController
             ->orderBy('hostname');
     }
 
+    /** @return array<mixed> */
     public function formatItem($device)
     {
         /** @var Device $device */

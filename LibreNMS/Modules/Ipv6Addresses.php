@@ -27,6 +27,7 @@ class Ipv6Addresses implements Module
 
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function dependencies(): array
     {
@@ -125,6 +126,7 @@ class Ipv6Addresses implements Module
 
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function dump(Device $device, string $type): ?array
     {
@@ -231,6 +233,7 @@ class Ipv6Addresses implements Module
         return IPv6::fromHexString($cleanHexIp);
     }
 
+    /** @param array<mixed> $snmpRowData */
     private function parsePrefixLen(array $snmpRowData, string $ipAddressAddrType, IP $ip): int
     {
         $prefix = $snmpRowData['IP-MIB::ipAddressPrefix'] ?? '';

@@ -65,7 +65,7 @@ interface DeviceTab
      *
      * @param  Device  $device
      * @param  Request  $request
-     * @return array
+     * @return array<mixed>
      */
     public function data(Device $device, Request $request): array;
 }

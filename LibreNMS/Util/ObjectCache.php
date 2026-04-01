@@ -132,7 +132,7 @@ class ObjectCache
 
     /**
      * @param  int  $device_id  device id of the device to get counts for, 0 means all
-     * @param  array  $fields  array of counts to get. Valid options: total, up, down, ignored, shutdown, disabled, deleted, errored, pseudowire
+     * @param  array<mixed>  $fields  array of counts to get. Valid options: total, up, down, ignored, shutdown, disabled, deleted, errored, pseudowire
      * @return mixed
      */
     public static function portCounts($fields = ['total'], $device_id = 0)
@@ -171,7 +171,7 @@ class ObjectCache
     }
 
     /**
-     * @param  array  $fields  array of counts to get. Valid options: total, up, down, ignored, disabled
+     * @param  array<mixed>  $fields  array of counts to get. Valid options: total, up, down, ignored, disabled
      * @return array
      */
     public static function deviceCounts($fields = ['total'])
@@ -205,7 +205,7 @@ class ObjectCache
     }
 
     /**
-     * @param  array  $fields  array of counts to get. Valid options: total, ok, warning, critical, ignored, disabled
+     * @param  array<mixed>  $fields  array of counts to get. Valid options: total, ok, warning, critical, ignored, disabled
      * @return array
      * @param mixed $device_id
      */
@@ -242,7 +242,7 @@ class ObjectCache
     }
 
     /**
-     * @param  array  $fields  array of counts to get. Valid options: total, ok, critical, disable_notify
+     * @param  array<mixed>  $fields  array of counts to get. Valid options: total, ok, critical, disable_notify
      * @return array
      * @param mixed $device_id
      */

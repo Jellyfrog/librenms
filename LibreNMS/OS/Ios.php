@@ -99,6 +99,7 @@ class Ios extends Cisco implements
         return $sensors;
     }
 
+    /** @param array<mixed> $data */
     private function mapToEntPhysical(array &$data): array
     {
         // try DB first

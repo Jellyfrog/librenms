@@ -74,6 +74,7 @@ class NetflowController implements DeviceTab
         return __('Netflow');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [

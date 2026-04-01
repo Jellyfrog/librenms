@@ -31,6 +31,7 @@ use Illuminate\Http\Request;
 
 class TnmsneController extends TableController
 {
+    /** @return array<mixed> */
     protected function rules()
     {
         return [
@@ -38,6 +39,7 @@ class TnmsneController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request)
     {
         return [
@@ -50,6 +52,7 @@ class TnmsneController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function searchFields(Request $request)
     {
         return [
@@ -62,6 +65,7 @@ class TnmsneController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function filterFields(Request $request)
     {
         return ['device_id'];
@@ -77,7 +81,7 @@ class TnmsneController extends TableController
 
     /**
      * @param  TnmsneInfo  $tnmsne
-     * @return array
+     * @return array<mixed>
      */
     public function formatItem($tnmsne)
     {

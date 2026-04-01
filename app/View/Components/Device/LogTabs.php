@@ -34,6 +34,7 @@ use Illuminate\View\Component;
 
 class LogTabs extends Component
 {
+    /** @var array<mixed> */
     public array $tabs = [];
 
     public function __construct(

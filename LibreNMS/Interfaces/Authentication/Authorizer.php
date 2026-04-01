@@ -10,7 +10,7 @@ interface Authorizer
      * Authenticate the user and password.
      * Some Authorizer methods may only check username.
      *
-     * @param  array  $credentials
+     * @param  array<mixed>  $credentials
      * @return true throws an Exception on failure
      *
      * @throws AuthenticationException thrown if the username or password is invalid
@@ -46,7 +46,7 @@ interface Authorizer
      * can_modify_passwd
      *
      * @param  int  $user_id
-     * @return array|false
+     * @return array<mixed>|false
      */
     public function getUser($user_id);
 

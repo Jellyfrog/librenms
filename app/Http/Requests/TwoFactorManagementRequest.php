@@ -30,6 +30,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class TwoFactorManagementRequest extends FormRequest
 {
+    /** @return array<mixed> */
     public function rules(): array
     {
         return [];

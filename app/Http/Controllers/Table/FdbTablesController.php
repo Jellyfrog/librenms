@@ -43,6 +43,7 @@ class FdbTablesController extends TableController
     /** @var mixed */
     protected $macCountCache = [];
 
+    /** @return array<mixed> */
     protected function rules()
     {
         return [
@@ -53,6 +54,7 @@ class FdbTablesController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function filterFields($request)
     {
         return [
@@ -77,7 +79,7 @@ class FdbTablesController extends TableController
     /**
      * @param  string  $search
      * @param  Builder  $query
-     * @param  array  $fields
+     * @param  array<mixed>  $fields
      * @return Builder|\Illuminate\Database\Query\Builder
      */
     protected function search($search, $query, $fields = [])
@@ -159,6 +161,7 @@ class FdbTablesController extends TableController
 
     /**
      * @param  PortsFdb  $fdb_entry
+     * @return array<mixed>
      */
     public function formatItem($fdb_entry)
     {
@@ -283,7 +286,7 @@ class FdbTablesController extends TableController
      * Get the OUI list for a specific vendor
      *
      * @param  string  $vendor
-     * @return array
+     * @return array<mixed>
      */
     protected function ouisFromVendor(string $vendor): array
     {
@@ -295,6 +298,7 @@ class FdbTablesController extends TableController
 
     /**
      * Get all port ids from vendor OUIs
+     * @param array<mixed> $vendor_ouis
      */
     protected function findPortsByOui(array $vendor_ouis, Builder $query): Builder
     {

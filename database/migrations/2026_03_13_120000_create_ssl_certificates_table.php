@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /** @var array<mixed> */
     private array $permissions = [
         'ssl-certificate.create',
         'ssl-certificate.delete',

@@ -72,6 +72,7 @@ return new class extends Migration
         }
     }
 
+    /** @param array<mixed> $rolesByUserId */
     private function getLevel(array $rolesByUserId, int $user_id): int
     {
         if (! isset($rolesByUserId[$user_id])) {

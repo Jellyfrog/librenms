@@ -32,7 +32,7 @@ interface WirelessRsrqDiscovery
      * Discover wireless RSRQ (Quality of the received signal,). This is in dB. Type is rsrq.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array
+     * @return array<mixed>
      */
     public function discoverWirelessRsrq();
 }

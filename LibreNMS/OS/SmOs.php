@@ -30,6 +30,7 @@ class SmOs extends OS implements
     /** @var mixed */
     private $linkLabels;
 
+    /** @return array<mixed> */
     public function discoverWirelessRate()
     {
         $oids = snmpwalk_group($this->getDeviceArray(), 'linkTxETHCapacity', 'SIAE-RADIO-SYSTEM-MIB', 2);
@@ -126,6 +127,7 @@ class SmOs extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessRssi()
     {
         $sensors[] = new WirelessSensor(
@@ -140,6 +142,7 @@ class SmOs extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessPower()
     {
         $oids = snmpwalk_cache_oid($this->getDeviceArray(), 'radioPrx', [], 'SIAE-RADIO-SYSTEM-MIB');
@@ -174,6 +177,7 @@ class SmOs extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessFrequency()
     {
         $oids = snmpwalk_cache_oid($this->getDeviceArray(), 'radioTxFrequency', [], 'SIAE-RADIO-SYSTEM-MIB');
@@ -208,6 +212,7 @@ class SmOs extends OS implements
         return $sensors;
     }
 
+    /** @return array<mixed> */
     public function discoverWirelessMse()
     {
         $oids = snmpwalk_cache_oid($this->getDeviceArray(), 'radioNormalizedMse', [], 'SIAE-RADIO-SYSTEM-MIB');
@@ -232,7 +237,7 @@ class SmOs extends OS implements
      * Discover wireless SNR.  This is in dB. Type is snr.
      * Returns an array of LibreNMS\Device\Sensor objects that have been discovered
      *
-     * @return array Sensors
+     * @return array<mixed> Sensors
      */
     public function discoverWirelessSnr()
     {

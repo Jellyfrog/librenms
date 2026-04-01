@@ -192,7 +192,7 @@ class Device extends BaseModel
      * Get VRF contexts to poll.
      * If no contexts are found, return the default context ''
      *
-     * @return array
+     * @return array<mixed>
      */
     public function getVrfContexts(): array
     {

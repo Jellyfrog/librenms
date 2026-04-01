@@ -314,6 +314,7 @@ class CustomMapDataController extends Controller
         return Number::formatSi($rate, 2, 3, 'bps');
     }
 
+    /** @param array<mixed> $colours */
     private function fixedColour(array $colours, float $pct): string
     {
         $last_colour = 'black';
@@ -358,12 +359,14 @@ class CustomMapDataController extends Controller
         return (strlen((string) $speed) - 5) / 2.0;
     }
 
+    /** @param array<mixed> $node_data_array */
     protected function setNodeDisabledStyle(array &$node_data_array): void
     {
         $node_data_array['colour_bg_view'] = LibrenmsConfig::get('network_map_legend.di.border');
         $node_data_array['colour_bdr_view'] = LibrenmsConfig::get('network_map_legend.di.node');
     }
 
+    /** @param array<mixed> $node_data_array */
     protected function setNodeWarningStyle(array &$node_data_array, Request $request): void
     {
         $node_data_array['colour_bg_view'] = LibrenmsConfig::get('network_map_legend.wn.node');
@@ -374,6 +377,7 @@ class CustomMapDataController extends Controller
         }
     }
 
+    /** @param array<mixed> $node_data_array */
     protected function setNodeDownStyle(array &$node_data_array, Request $request): void
     {
         $node_data_array['colour_bg_view'] = LibrenmsConfig::get('network_map_legend.dn.node');
@@ -384,6 +388,7 @@ class CustomMapDataController extends Controller
         }
     }
 
+    /** @param array<mixed> $node_data_array */
     protected function setNodeUpStyle(array &$node_data_array, CustomMapNode $node): void
     {
         $node_data_array['colour_bg_view'] = $node->colour_bg;

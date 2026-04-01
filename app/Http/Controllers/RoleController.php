@@ -83,6 +83,7 @@ class RoleController
         return redirect()->route('roles.index');
     }
 
+    /** @param array<mixed> $permissions */
     private function ensurePermissionsExist(array $permissions): void
     {
         foreach ($permissions as $permission) {
@@ -90,6 +91,7 @@ class RoleController
         }
     }
 
+    /** @return array<mixed> */
     private function getPermissionData(): array
     {
         $permissionsFile = resource_path('definitions/permissions.yaml');

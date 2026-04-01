@@ -29,11 +29,13 @@ use LibreNMS\Exceptions\AlertTransportDeliveryException;
 
 class Dummy extends Transport
 {
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         throw new AlertTransportDeliveryException($alert_data, 0, 'Dummy transport always fails', $alert_data['msg']);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [

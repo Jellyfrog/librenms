@@ -75,6 +75,7 @@ class RoutingController implements DeviceTab
         return __('Routing');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [

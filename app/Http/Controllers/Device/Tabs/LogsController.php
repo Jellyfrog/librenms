@@ -52,6 +52,7 @@ class LogsController implements DeviceTab
         return __('Logs');
     }
 
+    /** @return array<mixed> */
     public function data(Device $device, Request $request): array
     {
         return [];

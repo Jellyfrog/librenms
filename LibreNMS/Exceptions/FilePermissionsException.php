@@ -78,7 +78,7 @@ class FilePermissionsException extends \Exception implements UpgradeableExceptio
 
     /**
      * @param  string  $log_file
-     * @return array
+     * @return array<mixed>
      */
     private function generateCommands($log_file): array
     {

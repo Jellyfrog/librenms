@@ -97,6 +97,7 @@ class ComposerHelper
         );
     }
 
+    /** @return array<mixed> */
     public static function getPlugins(): array
     {
         $plugins = is_file('composer.plugins.json') ?

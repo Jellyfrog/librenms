@@ -194,7 +194,7 @@ class QueryBuilderFilter implements \JsonSerializable
      * Get the filter for a specific item
      *
      * @param  string  $id
-     * @return array|null
+     * @return array<mixed>|null
      */
     public function getFilter($id)
     {

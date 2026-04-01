@@ -36,6 +36,7 @@ use SnmpQuery;
 
 trait BridgeMib
 {
+    /** @var array<mixed> */
     private ?array $ifIndexToBridgePort = null;
 
     public function discoverStpInstances(?string $vlan = null): Collection

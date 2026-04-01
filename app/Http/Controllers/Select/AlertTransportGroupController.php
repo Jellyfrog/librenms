@@ -32,6 +32,7 @@ use Illuminate\Http\Request;
 
 class AlertTransportGroupController extends SelectController
 {
+    /** @return array<mixed> */
     protected function searchFields(Request $request): array
     {
         return ['transport_group_name'];

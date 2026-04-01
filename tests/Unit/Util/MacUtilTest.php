@@ -46,6 +46,7 @@ final class MacUtilTest extends TestCase
         $this->assertEquals($to, Mac::parse($from)->hex());
     }
 
+    /** @return array<mixed> */
     public static function validMacProvider(): array
     {
         return [

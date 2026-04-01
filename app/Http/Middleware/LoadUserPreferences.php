@@ -51,7 +51,7 @@ class LoadUserPreferences
      * Load all preferences at once if we need to query the database
      *
      * @param  Request  $request
-     * @param  array  $preferences
+     * @param  array<mixed>  $preferences
      * @return mixed
      */
     private function loadPreferences($request, $preferences)

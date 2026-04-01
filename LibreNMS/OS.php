@@ -117,6 +117,7 @@ class OS implements
 
     /**
      * OS constructor. Not allowed to be created directly.  Use OS::make()
+     * @param array<mixed> $device
      */
     protected function __construct(array &$device)
     {
@@ -127,7 +128,7 @@ class OS implements
     /**
      * Get the device array that owns this OS instance
      *
-     * @return array
+     * @return array<mixed>
      */
     public function &getDeviceArray()
     {
@@ -197,7 +198,7 @@ class OS implements
      * @param  string  $oid  textual oid
      * @param  string  $mib  mib for this oid
      * @param  string  $snmpflags  snmpflags for this oid
-     * @return array|null array indexed by the snmp index with the value as the data returned by snmp
+     * @return array<mixed>|null array indexed by the snmp index with the value as the data returned by snmp
      */
     public function getCacheByIndex($oid, $mib = null, $snmpflags = '-OQUs')
     {
@@ -223,7 +224,7 @@ class OS implements
      * @param  string  $oid  textual oid
      * @param  string  $mib  mib for this oid (optional)
      * @param  int  $depth  depth for snmpwalk_group (optional)
-     * @return array|null array indexed by the snmp index with the value as the data returned by snmp
+     * @return array<mixed>|null array indexed by the snmp index with the value as the data returned by snmp
      */
     public function getCacheTable($oid, $mib = null, $depth = 1)
     {
@@ -255,6 +256,7 @@ class OS implements
      * OS Factory, returns an instance of the OS for this device
      * If no specific OS is found, Try the OS group.
      * Otherwise, returns Generic
+     * @param array<mixed> $device
      */
     public static function make(array &$device): OS
     {
@@ -304,7 +306,7 @@ class OS implements
     /**
      * Poll a channel based OID, but return data in MHz
      *
-     * @param  array  $sensors
+     * @param  array<mixed>  $sensors
      * @param  callable  $callback  Function to modify the value before converting it to a frequency
      * @return array
      */
@@ -341,7 +343,7 @@ class OS implements
      * Discover processors.
      * Returns an array of LibreNMS\Device\Processor objects that have been discovered
      *
-     * @return array Processors
+     * @return array<mixed> Processors
      */
     public function discoverProcessors()
     {

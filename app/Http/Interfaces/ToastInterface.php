@@ -35,26 +35,31 @@ class ToastInterface
     ) {
     }
 
+    /** @param array<mixed> $options */
     public function info(string $title, ?string $message = null, ?array $options = null): static
     {
         return $this->message('info', $title, $message, $options);
     }
 
+    /** @param array<mixed> $options */
     public function success(string $title, ?string $message = null, ?array $options = null): static
     {
         return $this->message('success', $title, $message, $options);
     }
 
+    /** @param array<mixed> $options */
     public function error(string $title, ?string $message = null, ?array $options = null): static
     {
         return $this->message('error', $title, $message, $options);
     }
 
+    /** @param array<mixed> $options */
     public function warning(string $title, ?string $message = null, ?array $options = null): static
     {
         return $this->message('warning', $title, $message, $options);
     }
 
+    /** @param array<mixed> $options */
     public function message(string $level, string $title, ?string $message = null, ?array $options = null): static
     {
         $notifications = $this->session->get('toasts', []);

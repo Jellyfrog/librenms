@@ -36,6 +36,7 @@ class InventoryController extends TableController
     /** @var mixed */
     protected $model = EntPhysical::class;
 
+    /** @return array<mixed> */
     public function rules()
     {
         return [
@@ -46,6 +47,7 @@ class InventoryController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function filterFields($request)
     {
         return [
@@ -53,11 +55,13 @@ class InventoryController extends TableController
         ];
     }
 
+    /** @return array<mixed> */
     protected function searchFields($request)
     {
         return ['entPhysicalDescr', 'entPhysicalModelName', 'entPhysicalSerialNum'];
     }
 
+    /** @return array<mixed> */
     protected function sortFields($request)
     {
         return [
@@ -85,7 +89,7 @@ class InventoryController extends TableController
 
     /**
      * @param  EntPhysical  $entPhysical
-     * @return array|Model|Collection
+     * @return array<mixed>|Model|Collection
      */
     public function formatItem($entPhysical)
     {
@@ -101,7 +105,7 @@ class InventoryController extends TableController
     /**
      * Get headers for CSV export
      *
-     * @return array
+     * @return array<mixed>
      */
     protected function getExportHeaders()
     {
@@ -118,7 +122,7 @@ class InventoryController extends TableController
      * Format a row for CSV export
      *
      * @param  EntPhysical  $entPhysical
-     * @return array
+     * @return array<mixed>
      */
     protected function formatExportRow($entPhysical)
     {

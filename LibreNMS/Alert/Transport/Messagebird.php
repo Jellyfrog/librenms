@@ -39,6 +39,7 @@ use LibreNMS\Util\Http;
 
 class Messagebird extends Transport
 {
+    /** @param array<mixed> $alert_data */
     public function deliverAlert(array $alert_data): bool
     {
         $messagebird_msg = mb_strimwidth((string) $alert_data['msg'], 0, $this->config['messagebird-limit'] - 3, '...');
@@ -62,6 +63,7 @@ class Messagebird extends Transport
         throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $messagebird_msg, $fields);
     }
 
+    /** @return array<mixed> */
     public static function configTemplate(): array
     {
         return [
