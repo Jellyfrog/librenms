@@ -50,6 +50,7 @@ abstract class DeviceSummaryController extends WidgetController
         return view("widgets.$this->name", $this->getData($request));
     }
 
+    /** @return mixed */
     protected function getData(Request $request)
     {
         $data = $this->getSettings();

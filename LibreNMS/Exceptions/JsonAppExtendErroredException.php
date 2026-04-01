@@ -12,11 +12,13 @@ class JsonAppExtendErroredException extends JsonAppException
         parent::__construct($message, $code, $previous);
     }
 
+    /** @return mixed */
     public function getOutput()
     {
         return $this->output;
     }
 
+    /** @return mixed */
     public function getParsedJson()
     {
         return $this->parsed_json;

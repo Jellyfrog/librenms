@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Validator;
 
 class PortController extends Controller
 {
+    /** @return mixed */
     public function update(\Illuminate\Http\Request $request, Port $port)
     {
         $validated = Validator::make($request->json()->all(), [

@@ -56,13 +56,19 @@ class Plugin extends BaseModel
         return $query->where('plugin_active', 1);
     }
 
-    /** @param mixed $query */
+    /**
+     * @param mixed $query
+     * @return mixed
+     */
     public function scopeVersionOne($query)
     {
         return $query->where('version', 1);
     }
 
-    /** @param mixed $query */
+    /**
+     * @param mixed $query
+     * @return mixed
+     */
     public function scopeVersionTwo($query)
     {
         return $query->where('version', 2);

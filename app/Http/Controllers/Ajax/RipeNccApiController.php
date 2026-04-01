@@ -33,6 +33,7 @@ use LibreNMS\Exceptions\ApiClientException;
 
 class RipeNccApiController extends Controller
 {
+    /** @return mixed */
     public function raw(Request $request, RipeApi $api)
     {
         $this->validate($request, [

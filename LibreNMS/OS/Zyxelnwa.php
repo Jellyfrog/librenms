@@ -75,6 +75,7 @@ class Zyxelnwa extends Zyxel implements OSDiscovery, WirelessClientsDiscovery, W
         };
     }
 
+    /** @return mixed */
     private function getWlanRadioTable()
     {
         return \SnmpQuery::cache()

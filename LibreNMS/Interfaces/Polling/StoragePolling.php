@@ -34,6 +34,7 @@ interface StoragePolling
      * Poll Storage data for Storage in database.
      *
      * @param  Collection  $storages
+     * @return mixed
      */
     public function pollStorage(Collection $storages);
 }

@@ -34,7 +34,10 @@ class PortGroup extends BaseModel
     public $timestamps = false;
     protected $fillable = ['name', 'desc'];
 
-    /** @param mixed $query */
+    /**
+     * @param mixed $query
+     * @return mixed
+     */
     public function scopeHasAccess($query, User $user)
     {
         if (Gate::allows('viewAll', PortGroup::class)) {

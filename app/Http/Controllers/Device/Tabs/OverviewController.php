@@ -58,7 +58,10 @@ class OverviewController implements DeviceTab
         return [];
     }
 
-    /** @param mixed $graph */
+    /**
+     * @param mixed $graph
+     * @return mixed
+     */
     public static function setGraphWidth($graph = [])
     {
         // possibly the wrong spot for this

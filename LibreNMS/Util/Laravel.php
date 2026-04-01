@@ -32,6 +32,7 @@ use Symfony\Component\HttpFoundation\HeaderBag;
 
 class Laravel
 {
+    /** @return mixed */
     public static function bootCli()
     {
         // make sure Laravel isn't already booted
@@ -51,6 +52,7 @@ class Laravel
      * Boot Laravel in a non-Laravel web script
      *
      * @param  bool  $authenticate  Use session+db to authenticate user (does not authorize)
+     * @return mixed
      */
     public static function bootWeb($authenticate = false)
     {
@@ -73,6 +75,7 @@ class Laravel
 //        $response->send(); // don't send response, legacy code will
     }
 
+    /** @return mixed */
     public static function isBooted()
     {
         return function_exists('app') && ! empty(app()->isAlias(\Illuminate\Foundation\Application::class)) && app()->isBooted();
@@ -96,6 +99,7 @@ class Laravel
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  bool  $auth
+     * @return mixed
      */
     private static function rewriteDummyHeaders($request, $auth)
     {

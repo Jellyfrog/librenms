@@ -73,6 +73,7 @@ class ShowConfigController extends Controller implements DeviceTab
         ];
     }
 
+    /** @return mixed */
     private function oxidizedEnabled(Device $device)
     {
         return LibrenmsConfig::get('oxidized.enabled') === true
@@ -82,6 +83,7 @@ class ShowConfigController extends Controller implements DeviceTab
                 && ! in_array($device->os, LibrenmsConfig::get('oxidized.ignore_os', []));
     }
 
+    /** @return mixed */
     private function getRancidPath()
     {
         if (is_null($this->rancidPath)) {
@@ -91,6 +93,7 @@ class ShowConfigController extends Controller implements DeviceTab
         return $this->rancidPath;
     }
 
+    /** @return mixed */
     private function getRancidConfigFile()
     {
         if (is_null($this->rancidFile)) {
@@ -100,6 +103,7 @@ class ShowConfigController extends Controller implements DeviceTab
         return $this->rancidFile;
     }
 
+    /** @return mixed */
     private function findRancidConfigFile()
     {
         if (LibrenmsConfig::has('rancid_configs') && ! is_array(LibrenmsConfig::get('rancid_configs'))) {

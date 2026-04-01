@@ -14,6 +14,7 @@ class LocationController extends Controller
         $this->authorizeResource(Location::class);
     }
 
+    /** @return mixed */
     public function index()
     {
         $data = [

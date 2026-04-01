@@ -134,7 +134,10 @@ class DevSimulate extends LnmsCommand
         });
     }
 
-    /** @param mixed $name */
+    /**
+     * @param mixed $name
+     * @return mixed
+     */
     public function completeArgument($name, $value)
     {
         if ($name == 'file') {

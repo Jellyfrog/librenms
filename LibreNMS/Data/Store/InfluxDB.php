@@ -150,6 +150,7 @@ class InfluxDB extends BaseDatastore
 
     /**
      * Flush the batch to InfluxDB
+     * @return mixed
      */
     public function flushBatch()
     {
@@ -194,7 +195,10 @@ class InfluxDB extends BaseDatastore
         return @$client->selectDB($db);
     }
 
-    /** @param mixed $data */
+    /**
+     * @param mixed $data
+     * @return mixed
+     */
     private function forceType($data)
     {
         /*

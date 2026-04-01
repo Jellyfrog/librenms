@@ -151,6 +151,7 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
         );
     }
 
+    /** @return mixed */
     public static function runDiscovery(OS $os)
     {
         // check yaml first
@@ -180,6 +181,7 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
         echo PHP_EOL;
     }
 
+    /** @return mixed */
     public static function poll(OS $os)
     {
         $processors = dbFetchRows('SELECT * FROM processors WHERE device_id=?', [$os->getDeviceId()]);
@@ -215,7 +217,10 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
         }
     }
 
-    /** @param mixed $processors */
+    /**
+     * @param mixed $processors
+     * @return mixed
+     */
     private static function pollProcessors(OS $os, $processors)
     {
         if (empty($processors)) {
@@ -250,7 +255,10 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
         return $results;
     }
 
-    /** @param mixed $data */
+    /**
+     * @param mixed $data
+     * @return mixed
+     */
     private static function processData($data, $precision)
     {
         if (preg_match('/([0-9]{1,5}(\.[0-9]+)?)/', (string) $data, $matches) !== 1) {
@@ -268,6 +276,7 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
         return $value;
     }
 
+    /** @return mixed */
     public static function processYaml(OS $os)
     {
         $discovery = $os->getDiscovery('processors');
@@ -319,6 +328,7 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
 
     /**
      * @param  static  $processor
+     * @return mixed
      */
     public static function onCreate($processor)
     {
@@ -330,6 +340,7 @@ class Processor extends Model implements DiscoveryModule, PollerModule, Discover
 
     /**
      * @param  static  $processor
+     * @return mixed
      */
     public static function onDelete($processor)
     {

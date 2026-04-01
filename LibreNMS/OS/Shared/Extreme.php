@@ -36,6 +36,7 @@ class Extreme extends \LibreNMS\OS
         $device->hardware = $this->getHardware() ?: $device->hardware;
     }
 
+    /** @return mixed */
     protected function getHardware()
     {
         $hardware = [

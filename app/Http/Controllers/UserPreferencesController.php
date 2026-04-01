@@ -135,6 +135,7 @@ class UserPreferencesController extends Controller
         return response()->json(['status' => 'success']);
     }
 
+    /** @return mixed */
     private function getValidLocales()
     {
         return array_reduce(glob(base_path('lang') . '/*', GLOB_ONLYDIR), function ($locales, $locale) {
@@ -146,6 +147,7 @@ class UserPreferencesController extends Controller
         }, []);
     }
 
+    /** @return mixed */
     private function getValidStyles()
     {
         $definitions = new DynamicConfig();
@@ -153,7 +155,10 @@ class UserPreferencesController extends Controller
         return $definitions->get('site_style')->getOptions();
     }
 
-    /** @param mixed $preference */
+    /**
+     * @param mixed $preference
+     * @return mixed
+     */
     private function updatePreference($preference, $value)
     {
         if ($value == 'default') {

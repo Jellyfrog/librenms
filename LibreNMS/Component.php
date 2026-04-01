@@ -50,7 +50,10 @@ class Component
         'error' => '',
     ];
 
-    /** @param mixed $device_id */
+    /**
+     * @param mixed $device_id
+     * @return mixed
+     */
     public function getComponentCount($device_id = null)
     {
         $counts = \App\Models\Component::query()->when($device_id, fn ($query, $device_id) => $query->where('device_id', $device_id))->selectRaw('type, count(*) as count')->groupBy('type')->pluck('count', 'type');
@@ -58,7 +61,10 @@ class Component
         return $counts->isEmpty() ? false : $counts->all();
     }
 
-    /** @param mixed $TYPE */
+    /**
+     * @param mixed $TYPE
+     * @return mixed
+     */
     public function getComponentType($TYPE = null)
     {
         if (is_null($TYPE)) {
@@ -78,7 +84,10 @@ class Component
         }
     }
 
-    /** @param mixed $device_id */
+    /**
+     * @param mixed $device_id
+     * @return mixed
+     */
     public function getComponents($device_id = null, $options = [])
     {
         $query = \App\Models\Component::query()
@@ -121,7 +130,10 @@ class Component
             ->merge($component->only(array_keys($this->reserved)))))->toArray();
     }
 
-    /** @param mixed $device */
+    /**
+     * @param mixed $device
+     * @return mixed
+     */
     public function getComponentStatus($device = null)
     {
         $sql_query = 'SELECT status, count(status) as count FROM component WHERE';
@@ -157,7 +169,10 @@ class Component
         return $count;
     }
 
-    /** @param mixed $component_id */
+    /**
+     * @param mixed $component_id
+     * @return mixed
+     */
     public function getComponentStatusLog($component_id, $start, $end)
     {
         if (($component_id == null) || ($start == null) || ($end == null)) {
@@ -190,7 +205,10 @@ class Component
         return $return;
     }
 
-    /** @param mixed $device_id */
+    /**
+     * @param mixed $device_id
+     * @return mixed
+     */
     public function createComponent($device_id, $type)
     {
         $component = \App\Models\Component::create(['device_id' => $device_id, 'type' => $type]);
@@ -202,7 +220,10 @@ class Component
         return [$component->id => $component->only(array_keys($this->reserved))];
     }
 
-    /** @param mixed $component_id */
+    /**
+     * @param mixed $component_id
+     * @return mixed
+     */
     public function createStatusLogEntry($component_id, $status, $message)
     {
         try {
@@ -214,14 +235,20 @@ class Component
         return 0;
     }
 
-    /** @param mixed $id */
+    /**
+     * @param mixed $id
+     * @return mixed
+     */
     public function deleteComponent($id)
     {
         // Delete a component from the database.
         return \App\Models\Component::destroy($id);
     }
 
-    /** @param mixed $device_id */
+    /**
+     * @param mixed $device_id
+     * @return mixed
+     */
     public function setComponentPrefs($device_id, $updated)
     {
         $updated = Arr::wrap($updated);

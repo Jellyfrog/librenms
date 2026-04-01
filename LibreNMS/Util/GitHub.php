@@ -122,6 +122,7 @@ class GitHub
 
     /**
      * Get a single pull request information
+     * @return mixed
      */
     public function getPullRequest()
     {
@@ -134,6 +135,7 @@ class GitHub
      *
      * @param  string  $date
      * @param  string  $after
+     * @return mixed
      */
     public function getPullRequests($date, $after = null)
     {
@@ -218,6 +220,7 @@ GRAPHQL;
 
     /**
      * Build the data for the change log.
+     * @return mixed
      */
     public function buildChangeLog()
     {
@@ -265,6 +268,7 @@ GRAPHQL;
      *
      * @param  array  $user
      * @param  string  $type
+     * @return mixed
      */
     private function recordUserInfo($user, $type = 'changelog_users')
     {
@@ -281,6 +285,7 @@ GRAPHQL;
 
     /**
      * Format the change log into Markdown.
+     * @return mixed
      */
     public function formatChangeLog()
     {
@@ -328,6 +333,7 @@ GRAPHQL;
 
     /**
      * Update the specified file with the new Change log info.
+     * @return mixed
      */
     public function writeChangeLog()
     {
@@ -385,6 +391,7 @@ GRAPHQL;
      * @param  bool  $write
      *
      * @throws Exception
+     * @return mixed
      */
     public function createChangelog($write = true)
     {
@@ -409,6 +416,7 @@ GRAPHQL;
         }
     }
 
+    /** @return mixed */
     private function pushVersionBump()
     {
         $version_file = 'LibreNMS/Util/Version.php';

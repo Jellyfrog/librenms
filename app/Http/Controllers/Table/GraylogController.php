@@ -48,6 +48,7 @@ class GraylogController extends SimpleTableController
         $this->timezone = $timezone ? new DateTimeZone($timezone) : null;
     }
 
+    /** @return mixed */
     public function __invoke(Request $request, GraylogApi $api)
     {
         if (! $api->isConfigured()) {
@@ -102,7 +103,10 @@ class GraylogController extends SimpleTableController
         ], 500);
     }
 
-    /** @param mixed $message */
+    /**
+     * @param mixed $message
+     * @return mixed
+     */
     private function formatMessage($message)
     {
         if ($this->timezone) {
@@ -130,7 +134,10 @@ class GraylogController extends SimpleTableController
         ];
     }
 
-    /** @param mixed $severity */
+    /**
+     * @param mixed $severity
+     * @return mixed
+     */
     private function severityLabel($severity)
     {
         $map = [

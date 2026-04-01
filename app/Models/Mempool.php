@@ -123,7 +123,10 @@ class Mempool extends DeviceRelatedModel implements Keyable
         return $this;
     }
 
-    /** @param mixed $percent */
+    /**
+     * @param mixed $percent
+     * @return mixed
+     */
     public function setMempoolPercAttribute($percent)
     {
         $this->attributes['mempool_perc'] = is_numeric($percent) ? round($percent) : null;

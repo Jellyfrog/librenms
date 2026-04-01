@@ -52,6 +52,7 @@ class LoadUserPreferences
      *
      * @param  Request  $request
      * @param  array  $preferences
+     * @return mixed
      */
     private function loadPreferences($request, $preferences)
     {
@@ -65,6 +66,7 @@ class LoadUserPreferences
      * @param  Request  $request
      * @param  string  $pref
      * @param  callable  $callable
+     * @return mixed
      */
     private function setPreference($request, $pref, $callable)
     {

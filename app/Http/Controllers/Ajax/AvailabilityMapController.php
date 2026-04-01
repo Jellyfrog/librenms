@@ -31,6 +31,7 @@ use Illuminate\Http\Request;
 
 class AvailabilityMapController extends Controller
 {
+    /** @return mixed */
     public function setView(Request $request)
     {
         $this->validate($request, [
@@ -40,6 +41,7 @@ class AvailabilityMapController extends Controller
         return $this->setSessionValue($request, 'map_view');
     }
 
+    /** @return mixed */
     public function setGroup(Request $request)
     {
         $this->validate($request, [

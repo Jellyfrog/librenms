@@ -231,6 +231,7 @@ class RunAlerts
         return $obj;
     }
 
+    /** @return mixed */
     public function clearStaleAlerts()
     {
         $sql = 'SELECT `alerts`.`id` AS `alert_id`, `devices`.`hostname` AS `hostname` FROM `alerts` LEFT JOIN `devices` ON `alerts`.`device_id`=`devices`.`device_id`  RIGHT JOIN `alert_rules` ON `alerts`.`rule_id`=`alert_rules`.`id` WHERE `alerts`.`state`!=' . AlertState::CLEAR . ' AND `devices`.`hostname` IS NULL';
@@ -460,7 +461,10 @@ class RunAlerts
         return [$added_elements, $removed_elements];
     }
 
-    /** @param mixed $where */
+    /**
+     * @param mixed $where
+     * @return mixed
+     */
     public function loadAlerts($where)
     {
         $alerts = [];
@@ -682,7 +686,10 @@ class RunAlerts
     }
 
     // Log alert event
-    /** @param mixed $obj */
+    /**
+     * @param mixed $obj
+     * @return mixed
+     */
     public function alertLog($result, $obj, $transport)
     {
         $prefix = [

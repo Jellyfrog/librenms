@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 
 class OutagesController extends Controller
 {
+    /** @return mixed */
     public function index(Request $request)
     {
         $request->validate([

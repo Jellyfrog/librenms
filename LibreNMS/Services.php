@@ -60,6 +60,7 @@ class Services
      *
      * @param  array|int|\App\Models\Device  $device
      * @param mixed $template_id
+     * @return mixed
      */
     public static function addService($device, string $type, string $desc, string $ip = '', string $param = '', int $ignore = 0, int $disabled = 0, $template_id = '', string $name = '')
     {

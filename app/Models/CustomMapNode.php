@@ -42,7 +42,10 @@ class CustomMapNode extends BaseModel
                 ->whereRelation('device', fn ($q) => $q->isDown())->exists();
     }
 
-    /** @param mixed $query */
+    /**
+     * @param mixed $query
+     * @return mixed
+     */
     public function scopeHasAccess($query, User $user)
     {
         return $this->hasDeviceAccess($query, $user);

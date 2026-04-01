@@ -186,7 +186,10 @@ class AlertUtil
         })->pluck('realname', 'email')->all();
     }
 
-    /** @param mixed $device_id */
+    /**
+     * @param mixed $device_id
+     * @return mixed
+     */
     public static function getRules($device_id)
     {
         $query = 'SELECT DISTINCT a.* FROM alert_rules a

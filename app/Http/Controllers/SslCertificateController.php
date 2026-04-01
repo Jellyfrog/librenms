@@ -16,6 +16,7 @@ class SslCertificateController extends Controller
 
     /**
      * Display a listing of SSL certificates.
+     * @return mixed
      */
     public function index()
     {
@@ -26,6 +27,7 @@ class SslCertificateController extends Controller
 
     /**
      * Show the form for adding a new certificate.
+     * @return mixed
      */
     public function create()
     {
@@ -40,6 +42,7 @@ class SslCertificateController extends Controller
 
     /**
      * Store a newly added certificate (fetch from host and save).
+     * @return mixed
      */
     public function store(Request $request)
     {
@@ -82,6 +85,7 @@ class SslCertificateController extends Controller
 
     /**
      * Display the specified SSL certificate.
+     * @return mixed
      */
     public function show(SslCertificate $ssl_certificate)
     {
@@ -93,6 +97,7 @@ class SslCertificateController extends Controller
 
     /**
      * Update the specified SSL certificate (e.g. toggle disabled).
+     * @return mixed
      */
     public function update(Request $request, SslCertificate $ssl_certificate)
     {
@@ -116,6 +121,7 @@ class SslCertificateController extends Controller
 
     /**
      * Soft delete the specified SSL certificate.
+     * @return mixed
      */
     public function destroy(Request $request, SslCertificate $ssl_certificate)
     {

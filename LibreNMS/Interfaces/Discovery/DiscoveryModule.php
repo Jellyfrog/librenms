@@ -30,5 +30,6 @@ use LibreNMS\OS;
 
 interface DiscoveryModule
 {
+    /** @return mixed */
     public static function runDiscovery(OS $os);
 }

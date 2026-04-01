@@ -44,6 +44,7 @@ class RrdDefinition implements \Stringable
 
     /**
      * Make a new empty RrdDefinition
+     * @return mixed
      */
     public static function make()
     {

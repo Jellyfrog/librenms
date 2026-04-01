@@ -25,7 +25,10 @@ return new class extends Migration
         $this->migrateCharsetTo('utf8', 'utf8_unicode_ci');
     }
 
-    /** @param mixed $charset */
+    /**
+     * @param mixed $charset
+     * @return mixed
+     */
     protected function migrateCharsetTo($charset, $collation)
     {
         if (LibreNMS\DB\Eloquent::getDriver() != 'mysql') {

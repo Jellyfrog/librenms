@@ -109,6 +109,7 @@ class Notification extends Model
      * Get all sticky notifications
      *
      * @param  Builder<Notification>  $query
+     * @return mixed
      */
     public function scopeIsSticky(Builder $query)
     {

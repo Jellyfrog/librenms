@@ -49,6 +49,7 @@ class PollerGroup extends Model
         });
     }
 
+    /** @return mixed */
     public static function list()
     {
         return self::query()->pluck('group_name', 'id')->prepend(__('General'), 0);

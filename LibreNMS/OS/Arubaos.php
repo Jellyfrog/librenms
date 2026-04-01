@@ -163,13 +163,19 @@ class Arubaos extends OS implements
         return $this->discoverInstantRadio(WirelessSensorType::Power, 'aiRadioTransmitPower', 'Radio %s: Tx Power');
     }
 
-    /** @param mixed $channel */
+    /**
+     * @param mixed $channel
+     * @return mixed
+     */
     protected function decodeChannel($channel)
     {
         return Number::cast($channel) & 255; // mask off the channel width information
     }
 
-    /** @param mixed $desc */
+    /**
+     * @param mixed $desc
+     * @return mixed
+     */
     private function discoverInstantRadio(WirelessSensorType $type, $oid, $desc = 'Radio %s')
     {
         $data = SnmpQuery::numeric()->walk("AI-AP-MIB::$oid")->groupByIndex(1); // group by radio index

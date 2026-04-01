@@ -39,6 +39,7 @@ use Session;
 
 class TwoFactorController extends Controller
 {
+    /** @return mixed */
     public function verifyTwoFactor(Request $request, ToastInterface $toast)
     {
         $this->validate($request, [
@@ -66,6 +67,7 @@ class TwoFactorController extends Controller
         return redirect()->intended();
     }
 
+    /** @return mixed */
     public function showTwoFactorForm(Request $request)
     {
         $user = $request->user();

@@ -31,7 +31,10 @@ use App\Models\Device;
 
 class Rewrite
 {
-    /** @param mixed $type */
+    /**
+     * @param mixed $type
+     * @return mixed
+     */
     public static function normalizeIfType($type)
     {
         $rewrite_iftype = [
@@ -56,7 +59,10 @@ class Rewrite
         return $rewrite_iftype[$type] ?? $type;
     }
 
-    /** @param mixed $type */
+    /**
+     * @param mixed $type
+     * @return mixed
+     */
     public static function shortenIfType($type)
     {
         return str_ireplace(
@@ -80,7 +86,10 @@ class Rewrite
         );
     }
 
-    /** @param mixed $name */
+    /**
+     * @param mixed $name
+     * @return mixed
+     */
     public static function normalizeIfName($name)
     {
         $rewrite_ifname = [
@@ -184,7 +193,10 @@ class Rewrite
         return $device['hardware'] ?? '';
     }
 
-    /** @param mixed $location */
+    /**
+     * @param mixed $location
+     * @return mixed
+     */
     public static function location($location)
     {
         $location = str_replace(["\n", '"'], '', $location);
@@ -226,7 +238,10 @@ class Rewrite
         };
     }
 
-    /** @param mixed $guest_id */
+    /**
+     * @param mixed $guest_id
+     * @return mixed
+     */
     public static function vmwareGuest($guest_id)
     {
         $guests = [

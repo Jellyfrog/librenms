@@ -38,12 +38,16 @@ class Printer extends \LibreNMS\OS
         $device->serial = $device->serial ?? $this->getSerial() ?: null;
     }
 
+    /** @return mixed */
     protected function getSerial()
     {
         return snmp_get($this->getDeviceArray(), 'prtGeneralSerialNumber.1', '-Oqv', 'Printer-MIB');
     }
 
-    /** @param mixed $data */
+    /**
+     * @param mixed $data
+     * @return mixed
+     */
     protected function parseDeviceId($data)
     {
         $vars = [];

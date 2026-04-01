@@ -50,6 +50,7 @@ class Php extends BaseValidation
         $this->checkTimezone($validator);
     }
 
+    /** @return mixed */
     private function checkVersion(Validator $validator)
     {
         // if update is not set to false and version is min or newer
@@ -64,6 +65,7 @@ class Php extends BaseValidation
         }
     }
 
+    /** @return mixed */
     private function checkExtensions(Validator $validator)
     {
         $required_modules = ['mysqlnd', 'mbstring', 'pcre', 'curl', 'xml', 'gd', 'sockets', 'dom'];
@@ -88,6 +90,7 @@ class Php extends BaseValidation
         }
     }
 
+    /** @return mixed */
     private function checkFunctions(Validator $validator)
     {
         $disabled_functions = explode(',', ini_get('disable_functions'));
@@ -116,6 +119,7 @@ class Php extends BaseValidation
         }
     }
 
+    /** @return mixed */
     private function checkTimezone(Validator $validator)
     {
         // collect data

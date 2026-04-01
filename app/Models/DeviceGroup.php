@@ -72,6 +72,7 @@ class DeviceGroup extends BaseModel
 
     /**
      * Update devices included in this group (dynamic only)
+     * @return mixed
      */
     public function updateDevices()
     {
@@ -93,7 +94,10 @@ class DeviceGroup extends BaseModel
 
     // ---- Query Scopes ----
 
-    /** @param mixed $query */
+    /**
+     * @param mixed $query
+     * @return mixed
+     */
     public function scopeHasAccess($query, User $user)
     {
         if (Gate::allows('viewAll', DeviceGroup::class)) {
@@ -103,7 +107,10 @@ class DeviceGroup extends BaseModel
         return $query->whereIntegerInRaw('id', Permissions::deviceGroupsForUser($user));
     }
 
-    /** @param mixed $query */
+    /**
+     * @param mixed $query
+     * @return mixed
+     */
     public function scopeInServiceTemplate($query, $serviceTemplate)
     {
         return $query->whereIn(
@@ -115,7 +122,10 @@ class DeviceGroup extends BaseModel
         );
     }
 
-    /** @param mixed $query */
+    /**
+     * @param mixed $query
+     * @return mixed
+     */
     public function scopeNotInServiceTemplate($query, $serviceTemplate)
     {
         return $query->whereNotIn(

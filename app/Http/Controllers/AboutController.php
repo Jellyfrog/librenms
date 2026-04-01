@@ -61,6 +61,7 @@ use LibreNMS\Util\Version;
 
 class AboutController extends Controller
 {
+    /** @return mixed */
     public function index(Request $request)
     {
         $version = Version::get();

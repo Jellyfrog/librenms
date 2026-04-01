@@ -137,6 +137,7 @@ class DeviceController extends TableController
         return $value;
     }
 
+    /** @return mixed */
     private function isDetailed()
     {
         if (is_null($this->detailed)) {

@@ -40,19 +40,28 @@ class Component extends DeviceRelatedModel
 
     // ---- Accessors/Mutators ----
 
-    /** @param mixed $status */
+    /**
+     * @param mixed $status
+     * @return mixed
+     */
     public function setStatusAttribute($status)
     {
         $this->attributes['status'] = (int) $status;
     }
 
-    /** @param mixed $disabled */
+    /**
+     * @param mixed $disabled
+     * @return mixed
+     */
     public function setDisabledAttribute($disabled)
     {
         $this->attributes['disabled'] = (int) $disabled;
     }
 
-    /** @param mixed $ignore */
+    /**
+     * @param mixed $ignore
+     * @return mixed
+     */
     public function setIgnoreAttribute($ignore)
     {
         $this->attributes['ignore'] = (int) $ignore;

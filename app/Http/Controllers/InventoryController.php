@@ -41,6 +41,7 @@ class InventoryController extends Controller
         ]);
     }
 
+    /** @return mixed */
     public function purge()
     {
         EntPhysical::whereDoesntHave('device')->delete();

@@ -41,6 +41,7 @@ class Checks
 {
     /**
      * Post boot Toast messages
+     * @return mixed
      */
     public static function postAuth()
     {

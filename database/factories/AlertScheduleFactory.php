@@ -19,6 +19,7 @@ class AlertScheduleFactory extends Factory
         ];
     }
 
+    /** @return mixed */
     public function recurring()
     {
         return $this->state(function () {

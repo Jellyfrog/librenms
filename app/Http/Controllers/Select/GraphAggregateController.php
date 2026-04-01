@@ -40,6 +40,7 @@ class GraphAggregateController extends Controller
         'term' => 'nullable|string',
     ];
 
+    /** @return mixed */
     public function __invoke(Request $request)
     {
         $this->validate($request, $this->rules);

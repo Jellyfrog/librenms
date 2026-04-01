@@ -34,6 +34,7 @@ interface QosPolling
      * Poll Qos data
      *
      * @param  Collection<int, \App\Models\Qos>  $qos
+     * @return mixed
      */
     public function pollQos(Collection $qos);
 }

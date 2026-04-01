@@ -114,6 +114,7 @@ class MempoolsController extends TableController
         ];
     }
 
+    /** @return mixed */
     private function miniGraph(Mempool $mempool)
     {
         $graph = [
@@ -129,6 +130,7 @@ class MempoolsController extends TableController
         return Url::overlibLink($link, Url::graphTag($graph), Url::graphTag(['height' => 150, 'width' => 400] + $graph));
     }
 
+    /** @return mixed */
     private function barLink(Mempool $mempool)
     {
         $graph = [

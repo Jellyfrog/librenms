@@ -28,11 +28,13 @@ namespace LibreNMS\OS\Traits;
 
 trait ServerHardware
 {
+    /** @return mixed */
     protected function discoverServerHardware()
     {
         $this->discoverDellHardware() || $this->discoverHpHardware() || $this->discoverSupermicroHardware();
     }
 
+    /** @return mixed */
     protected function discoverDellHardware()
     {
         // Detect Dell hardware via OpenManage SNMP
@@ -55,6 +57,7 @@ trait ServerHardware
         return true;
     }
 
+    /** @return mixed */
     protected function discoverHpHardware()
     {
         $hw = snmp_get_multi_oid($this->getDeviceArray(), [
@@ -73,6 +76,7 @@ trait ServerHardware
         return true;
     }
 
+    /** @return mixed */
     protected function discoverSupermicroHardware()
     {
         // Detect Supermicro hardware via Supermicro SuperDoctor 5

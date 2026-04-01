@@ -64,7 +64,10 @@ class ApiToken extends BaseModel
         return User::find(self::idFromToken($token));
     }
 
-    /** @param mixed $description */
+    /**
+     * @param mixed $description
+     * @return mixed
+     */
     public static function generateToken(User $user, $description = '')
     {
         $token = new static;
@@ -90,7 +93,10 @@ class ApiToken extends BaseModel
 
     // ---- Query scopes ----
 
-    /** @param mixed $query */
+    /**
+     * @param mixed $query
+     * @return mixed
+     */
     public function scopeIsEnabled($query)
     {
         return $query->where('disabled', 0);

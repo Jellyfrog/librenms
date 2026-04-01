@@ -35,6 +35,7 @@ use Illuminate\Support\Facades\Cache;
 
 class CustomMapBackgroundController extends Controller
 {
+    /** @return mixed */
     public function get(CustomMap $map)
     {
         $this->authorize('view', $map);
@@ -61,6 +62,7 @@ class CustomMapBackgroundController extends Controller
         ]);
     }
 
+    /** @return mixed */
     public function save(FormRequest $request, CustomMap $map)
     {
         $this->authorize('update', $map);

@@ -63,7 +63,10 @@ class ActiveDirectoryAuthorizer extends AuthorizerBase
         throw new AuthenticationException(ldap_error($this->ldap_connection));
     }
 
-    /** @param mixed $groupname */
+    /**
+     * @param mixed $groupname
+     * @return mixed
+     */
     protected function userInGroup($username, $groupname)
     {
         $connection = $this->getConnection();
@@ -194,6 +197,7 @@ class ActiveDirectoryAuthorizer extends AuthorizerBase
 
     /**
      * Bind to AD with the bind user if available, otherwise anonymous bind
+     * @return mixed
      */
     protected function init()
     {
@@ -205,6 +209,7 @@ class ActiveDirectoryAuthorizer extends AuthorizerBase
         $this->bind();
     }
 
+    /** @return mixed */
     protected function connect()
     {
         if ($this->ldap_connection) {
@@ -243,7 +248,10 @@ class ActiveDirectoryAuthorizer extends AuthorizerBase
         }
     }
 
-    /** @param mixed $credentials */
+    /**
+     * @param mixed $credentials
+     * @return mixed
+     */
     public function bind($credentials = [])
     {
         if (! $this->ldap_connection) {

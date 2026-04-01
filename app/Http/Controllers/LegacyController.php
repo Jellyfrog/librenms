@@ -12,6 +12,7 @@ use LibreNMS\Util\Debug;
 
 class LegacyController extends Controller
 {
+    /** @return mixed */
     public function index(Request $request, Session $session)
     {
         Checks::postAuth();
@@ -81,6 +82,7 @@ class LegacyController extends Controller
         ]);
     }
 
+    /** @return mixed */
     public function dummy()
     {
         return 'Dummy page';

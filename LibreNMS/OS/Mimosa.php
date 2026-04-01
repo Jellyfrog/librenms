@@ -133,7 +133,10 @@ class Mimosa extends OS implements
         return $sensors;
     }
 
-    /** @param mixed $polarization */
+    /**
+     * @param mixed $polarization
+     * @return mixed
+     */
     private function getPolarization($polarization)
     {
         return $polarization == 'horizontal' ? 'Horiz.' : 'Vert.';

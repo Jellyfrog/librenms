@@ -33,6 +33,7 @@ use LibreNMS\Util\Graph;
 
 class DevicePopupController
 {
+    /** @return mixed */
     public function __invoke(Device $device)
     {
         if (! LibrenmsConfig::get('web_mouseover', true)) {

@@ -31,7 +31,10 @@ use LibreNMS\Enum\WirelessSensorType;
 
 trait CiscoCellular
 {
-    /** @param mixed $index */
+    /**
+     * @param mixed $index
+     * @return mixed
+     */
     public function profileApn($index)
     {
         $cwceLteProfileApn = snmpwalk_cache_oid($this->getDeviceArray(), 'cwceLteProfileApn', [], 'CISCO-WAN-CELL-EXT-MIB');

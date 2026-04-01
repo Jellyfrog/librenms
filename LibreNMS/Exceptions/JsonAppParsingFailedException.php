@@ -12,6 +12,7 @@ class JsonAppParsingFailedException extends JsonAppException
         parent::__construct($message, $code, $previous);
     }
 
+    /** @return mixed */
     public function getOutput()
     {
         return $this->output;

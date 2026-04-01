@@ -18,6 +18,7 @@ interface DataStorageInterface
      * @param  array  $tags  tags for the data (or to control rrdtool)
      * @param  array|mixed  $fields  The data to update in an associative array, the order must be consistent with rrd_def,
      *                               single values are allowed and will be paired with $measurement
+     * @return mixed
      */
     public function put($device, $measurement, $tags, $fields);
 }

@@ -224,6 +224,7 @@ class Plugins
         return count(self::$plugins);
     }
 
+    /** @return mixed */
     public static function scanNew()
     {
         $countInstalled = 0;
@@ -243,6 +244,7 @@ class Plugins
         return $countInstalled;
     }
 
+    /** @return mixed */
     public static function scanRemoved()
     {
         $countRemoved = 0;

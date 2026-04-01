@@ -50,6 +50,7 @@ class ObjectCache
     /** @var mixed */
     private static $cache_time = 300;
 
+    /** @return mixed */
     public static function applications()
     {
         return Cache::remember('ObjectCache:applications_list:' . auth()->id(), self::$cache_time, function () {
@@ -65,6 +66,7 @@ class ObjectCache
         });
     }
 
+    /** @return mixed */
     public static function routing()
     {
         return Cache::remember('ObjectCache:routing_counts:' . auth()->id(), self::$cache_time, function () {
@@ -83,6 +85,7 @@ class ObjectCache
         });
     }
 
+    /** @return mixed */
     public static function sensors()
     {
         return Cache::remember('ObjectCache:sensor_list:' . auth()->id(), self::$cache_time, function () {
@@ -142,7 +145,10 @@ class ObjectCache
         return $result;
     }
 
-    /** @param mixed $device_id */
+    /**
+     * @param mixed $device_id
+     * @return mixed
+     */
     private static function getPortCount($field, $device_id)
     {
         return Cache::remember("ObjectCache:port_{$field}_count:$device_id:" . auth()->id(), self::$cache_time, function () use ($field, $device_id) {
@@ -178,7 +184,10 @@ class ObjectCache
         return $result;
     }
 
-    /** @param mixed $field */
+    /**
+     * @param mixed $field
+     * @return mixed
+     */
     private static function getDeviceCount($field)
     {
         return Cache::remember("ObjectCache:device_{$field}_count:" . auth()->id(), self::$cache_time, function () use ($field) {
@@ -210,7 +219,10 @@ class ObjectCache
         return $result;
     }
 
-    /** @param mixed $device_id */
+    /**
+     * @param mixed $device_id
+     * @return mixed
+     */
     private static function getServiceCount($field, $device_id)
     {
         return Cache::remember("ObjectCache:service_{$field}_count:$device_id:" . auth()->id(), self::$cache_time, function () use ($field, $device_id) {
@@ -244,7 +256,10 @@ class ObjectCache
         return $result;
     }
 
-    /** @param mixed $device_id */
+    /**
+     * @param mixed $device_id
+     * @return mixed
+     */
     private static function getSensorCount($field, $device_id)
     {
         return Cache::remember("ObjectCache:sensor_{$field}_count:$device_id:" . auth()->id(), self::$cache_time, function () use ($field, $device_id) {

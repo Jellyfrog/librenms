@@ -39,6 +39,7 @@ class FinalizeController extends InstallationController implements InstallerStep
     /** @var mixed */
     protected $step = 'finish';
 
+    /** @return mixed */
     public function index()
     {
         if (! $this->initInstallStep()) {
@@ -103,6 +104,7 @@ class FinalizeController extends InstallationController implements InstallerStep
         ]);
     }
 
+    /** @return mixed */
     private function writeEnvFile()
     {
         $env = EnvHelper::writeEnv(
@@ -120,6 +122,7 @@ class FinalizeController extends InstallationController implements InstallerStep
         return $env;
     }
 
+    /** @return mixed */
     private function envVars()
     {
         $this->configureDatabase();
@@ -139,6 +142,7 @@ class FinalizeController extends InstallationController implements InstallerStep
 
     /**
      * @throws FileWriteFailedException
+     * @return mixed
      */
     private function writeConfigFile()
     {
@@ -152,11 +156,13 @@ class FinalizeController extends InstallationController implements InstallerStep
         }
     }
 
+    /** @return mixed */
     private function getConfigFileContents()
     {
         return file_get_contents(base_path('config.php.default'));
     }
 
+    /** @return mixed */
     private function getEnvFileContents()
     {
         return EnvHelper::setEnv(

@@ -38,6 +38,7 @@ class Ftos extends Dnos
         $device->hardware = $this->getHardware();
     }
 
+    /** @return mixed */
     protected function getHardware()
     {
         $hardware = [

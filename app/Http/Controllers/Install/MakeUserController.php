@@ -38,6 +38,7 @@ class MakeUserController extends InstallationController implements InstallerStep
     /** @var mixed */
     protected $step = 'user';
 
+    /** @return mixed */
     public function index(Request $request)
     {
         if (! $this->initInstallStep()) {
@@ -61,6 +62,7 @@ class MakeUserController extends InstallationController implements InstallerStep
         ]));
     }
 
+    /** @return mixed */
     public function create(Request $request)
     {
         $this->validate($request, [

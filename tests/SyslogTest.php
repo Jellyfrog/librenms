@@ -32,7 +32,10 @@ final class SyslogTest extends TestCase
     // $SOURCEIP||$FACILITY||$PRIORITY||$LEVEL||$TAG||$YEAR-$MONTH-$DAY $HOUR:$MIN:$SEC||$MSG||$PROGRAM
     // There add an IP for each OS you want to test and use that in the input file
 
-    /** @param mixed $line */
+    /**
+     * @param mixed $line
+     * @return mixed
+     */
     private function fillLine($line)
     {
         $entry = [];
@@ -41,7 +44,10 @@ final class SyslogTest extends TestCase
         return $entry;
     }
 
-    /** @param mixed $line */
+    /**
+     * @param mixed $line
+     * @return mixed
+     */
     private function createData($line, $resultDelta)
     {
         $entry = $this->fillLine($line);
@@ -58,6 +64,7 @@ final class SyslogTest extends TestCase
      *
      * @param  string  $inputline  The line from the syslog daemon including the ||'s
      * @param  array  $modified  of the modified fields, most likely containging the keys program and msg
+     * @return mixed
      */
     private function checkSyslog($inputline, $modified)
     {

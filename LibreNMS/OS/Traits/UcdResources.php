@@ -158,7 +158,10 @@ trait UcdResources
         });
     }
 
-    /** @param mixed $data */
+    /**
+     * @param mixed $data
+     * @return mixed
+     */
     private function oidValid($data, $oid)
     {
         return isset($data[0][$oid]) && $data[0][$oid] !== 'NULL';

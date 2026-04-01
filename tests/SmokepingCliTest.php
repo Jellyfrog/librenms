@@ -363,7 +363,10 @@ final class SmokepingCliTest extends DBTestCase
         $this->assertEquals($this->canonicalise($new), $this->canonicalise($old));
     }
 
-    /** @param mixed $data */
+    /**
+     * @param mixed $data
+     * @return mixed
+     */
     public function legacyAlgo($data)
     {
         // This is the code taken from the old gen_smokeping script, with echos and sql queries replaced
@@ -390,7 +393,10 @@ final class SmokepingCliTest extends DBTestCase
         return implode('', $lines);
     }
 
-    /** @param mixed $input */
+    /**
+     * @param mixed $input
+     * @return mixed
+     */
     public function canonicalise($input)
     {
         $input = explode(PHP_EOL, (string) $input);

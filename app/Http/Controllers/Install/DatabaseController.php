@@ -43,6 +43,7 @@ class DatabaseController extends InstallationController implements InstallerStep
     /** @var mixed */
     protected $step = 'database';
 
+    /** @return mixed */
     public function index(Request $request)
     {
         if (! $this->initInstallStep()) {
@@ -56,6 +57,7 @@ class DatabaseController extends InstallationController implements InstallerStep
         return view('install.database', $this->formatData($data));
     }
 
+    /** @return mixed */
     public function test(Request $request)
     {
         Eloquent::setConnection(
@@ -98,6 +100,7 @@ class DatabaseController extends InstallationController implements InstallerStep
         ]);
     }
 
+    /** @return mixed */
     public function migrate(Request $request)
     {
         $response = new StreamedResponse(function (): void {

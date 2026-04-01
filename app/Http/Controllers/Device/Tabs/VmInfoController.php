@@ -59,6 +59,7 @@ class VmInfoController implements DeviceTab
         ];
     }
 
+    /** @return mixed */
     private static function getVms(Device $device)
     {
         return $device->vminfo()

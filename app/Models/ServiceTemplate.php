@@ -93,6 +93,7 @@ class ServiceTemplate extends BaseModel
 
     /**
      * Update devices included in this template (dynamic only)
+     * @return mixed
      */
     public function updateDevices()
     {

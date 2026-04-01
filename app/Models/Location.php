@@ -77,6 +77,7 @@ class Location extends Model
     /**
      * Check if the coordinates are valid
      * Even though 0,0 is a valid coordinate, we consider it invalid for ease
+     * @return mixed
      */
     public function coordinatesValid()
     {
@@ -127,6 +128,7 @@ class Location extends Model
             . ($withCoords && $this->coordinatesValid() ? " [$this->lat,$this->lng]" : '');
     }
 
+    /** @return mixed */
     protected function parseCoordinates()
     {
         if (preg_match($this->location_regex, $this->location, $parsed)) {
@@ -138,6 +140,7 @@ class Location extends Model
         return false;
     }
 
+    /** @return mixed */
     protected function fetchCoordinates()
     {
         try {
@@ -176,7 +179,10 @@ class Location extends Model
         return $query->whereIntegerInRaw('id', $ids);
     }
 
-    /** @param mixed $deviceGroup */
+    /**
+     * @param mixed $deviceGroup
+     * @return mixed
+     */
     public function scopeInDeviceGroup($query, $deviceGroup)
     {
         return $query->whereHas('devices.groups', function ($query) use ($deviceGroup): void {

@@ -127,6 +127,7 @@ class Proc
      * Send data to stdin
      *
      * @param  string  $data  the string to send
+     * @return mixed
      */
     public function sendInput($data)
     {
@@ -155,6 +156,7 @@ class Proc
 
     /**
      * Close all pipes for this process
+     * @return mixed
      */
     private function closePipes()
     {
@@ -202,6 +204,7 @@ class Proc
      * @param  int  $signal  the signal to send
      *
      * @throws Exception
+     * @return mixed
      */
     public function terminate($timeout = 3000, $signal = 15)
     {
@@ -296,6 +299,7 @@ class Proc
      * or you could end up blocking until the getOutput timeout expires
      *
      * @param  bool  $synchronous
+     * @return mixed
      */
     public function setSynchronous($synchronous)
     {

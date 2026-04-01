@@ -30,5 +30,6 @@ use LibreNMS\OS;
 
 interface PollerModule
 {
+    /** @return mixed */
     public static function poll(OS $os);
 }

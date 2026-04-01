@@ -33,6 +33,7 @@ use App\Models\UserPref;
 
 class TwoFactorManagementController extends Controller
 {
+    /** @return mixed */
     public function unlock(TwoFactorManagementRequest $request, User $user)
     {
         $twofactor = UserPref::getPref($user, 'twofactor');
@@ -45,6 +46,7 @@ class TwoFactorManagementController extends Controller
         return response()->json(['error' => __('Failed to unlock Two-Factor.')]);
     }
 
+    /** @return mixed */
     public function destroy(TwoFactorManagementRequest $request, User $user)
     {
         if (UserPref::forgetPref($user, 'twofactor')) {

@@ -132,21 +132,25 @@ class DynamicConfigItem implements \ArrayAccess
         return false;
     }
 
+    /** @return mixed */
     public function getGroup()
     {
         return $this->group;
     }
 
+    /** @return mixed */
     public function getSection()
     {
         return $this->section;
     }
 
+    /** @return mixed */
     public function getValue()
     {
         return $this->value;
     }
 
+    /** @return mixed */
     public function getOptions()
     {
         return array_reduce($this->options, function ($result, $option) {
@@ -158,21 +162,25 @@ class DynamicConfigItem implements \ArrayAccess
         }, []);
     }
 
+    /** @return mixed */
     public function isHidden()
     {
         return $this->hidden;
     }
 
+    /** @return mixed */
     public function isRequired()
     {
         return $this->required;
     }
 
+    /** @return mixed */
     public function getType()
     {
         return $this->type;
     }
 
+    /** @return mixed */
     public function hasDescription()
     {
         $key = $this->descriptionTranslationKey();
@@ -180,6 +188,7 @@ class DynamicConfigItem implements \ArrayAccess
         return __($key) !== $key;
     }
 
+    /** @return mixed */
     public function hasHelp()
     {
         $key = $this->helpTranslationKey();
@@ -187,16 +196,19 @@ class DynamicConfigItem implements \ArrayAccess
         return __($key) !== $key;
     }
 
+    /** @return mixed */
     public function hasUnits()
     {
         return isset($this->units);
     }
 
+    /** @return mixed */
     public function getUnits()
     {
         return $this->hasUnits() ? __($this->units) : '';
     }
 
+    /** @return mixed */
     public function getDescription()
     {
         $key = $this->descriptionTranslationKey();
@@ -205,12 +217,16 @@ class DynamicConfigItem implements \ArrayAccess
         return $trans === $key ? $this->name : $trans;
     }
 
+    /** @return mixed */
     public function getHelp()
     {
         return __($this->helpTranslationKey());
     }
 
-    /** @param mixed $fields */
+    /**
+     * @param mixed $fields
+     * @return mixed
+     */
     public function only($fields = [])
     {
         $array = [];
@@ -222,11 +238,13 @@ class DynamicConfigItem implements \ArrayAccess
         return $array;
     }
 
+    /** @return mixed */
     public function toArray()
     {
         return get_object_vars($this);
     }
 
+    /** @return mixed */
     public function isValid()
     {
         return ($this->group == '' || $this->type) && ! $this->hidden && ! $this->disabled;
@@ -265,28 +283,37 @@ class DynamicConfigItem implements \ArrayAccess
         unset($this->$offset);
     }
 
+    /** @return mixed */
     public function getName()
     {
         return $this->name;
     }
 
+    /** @return mixed */
     private function descriptionTranslationKey()
     {
         return "settings.settings.$this->name.description";
     }
 
+    /** @return mixed */
     private function helpTranslationKey()
     {
         return "settings.settings.$this->name.help";
     }
 
-    /** @param mixed $option */
+    /**
+     * @param mixed $option
+     * @return mixed
+     */
     private function optionTranslationKey($option)
     {
         return "settings.settings.$this->name.options.$option";
     }
 
-    /** @param mixed $value */
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
     private function buildValidator($value)
     {
         return Validator::make(['value' => $value], $this->validate);

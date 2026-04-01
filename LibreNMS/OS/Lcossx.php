@@ -36,6 +36,7 @@ class Lcossx extends OS implements ProcessorDiscovery, ProcessorPolling
     private string $procOid = '1.3.6.1.4.1.2356.14.1.1.1.24.0';
 
     // OID string value example: 100ms:87%, 1s:49%, 10s:42%
+    /** @return mixed */
     private function convertProcessorData(array $input)
     {
         $data = [];

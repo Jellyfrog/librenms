@@ -14,7 +14,10 @@ use LibreNMS\Util\Url;
 
 class DeviceController
 {
-    /** @param mixed $current_tab */
+    /**
+     * @param mixed $current_tab
+     * @return mixed
+     */
     public function index(Request $request, $device, $current_tab = 'overview', $vars = '')
     {
         $device = str_replace('device=', '', $device);
@@ -60,7 +63,10 @@ class DeviceController
         return view('device.tabs.legacy', $data_array);
     }
 
-    /** @param mixed $data */
+    /**
+     * @param mixed $data
+     * @return mixed
+     */
     private function renderLegacyTab($tab, Device $device, $data)
     {
         ob_start();

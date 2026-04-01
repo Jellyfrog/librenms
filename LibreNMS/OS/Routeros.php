@@ -559,7 +559,10 @@ class Routeros extends OS implements
         return $qos;
     }
 
-    /** @param mixed $qos */
+    /**
+     * @param mixed $qos
+     * @return mixed
+     */
     public function setQosParents($qos)
     {
         $qos->each(function (Qos $thisQos, int $key) use ($qos): void {
@@ -588,6 +591,7 @@ class Routeros extends OS implements
         });
     }
 
+    /** @return mixed */
     public function pollQos($qos)
     {
         $poll_time = time();

@@ -39,11 +39,13 @@ class Smokeping
     {
     }
 
+    /** @return mixed */
     public static function make(Device $device)
     {
         return new static($device);
     }
 
+    /** @return mixed */
     public function getFiles()
     {
         if (is_null($this->files) && LibrenmsConfig::has('smokeping.dir')) {
@@ -68,6 +70,7 @@ class Smokeping
         return $this->files;
     }
 
+    /** @return mixed */
     public function findFiles()
     {
         $this->files = null;
@@ -75,7 +78,10 @@ class Smokeping
         return $this->getFiles();
     }
 
-    /** @param mixed $file */
+    /**
+     * @param mixed $file
+     * @return mixed
+     */
     public function generateFileName($file = '')
     {
         if (LibrenmsConfig::get('smokeping.integration') === true) {
@@ -85,7 +91,10 @@ class Smokeping
         }
     }
 
-    /** @param mixed $direction */
+    /**
+     * @param mixed $direction
+     * @return mixed
+     */
     public function otherGraphs($direction)
     {
         $remote = $direction == 'in' ? 'src' : 'dest';
@@ -112,22 +121,28 @@ class Smokeping
         return $data;
     }
 
+    /** @return mixed */
     public function hasGraphs()
     {
         return $this->hasInGraph() || $this->hasOutGraph();
     }
 
+    /** @return mixed */
     public function hasInGraph()
     {
         return ! empty($this->getFiles()['in'][$this->device->hostname]);
     }
 
+    /** @return mixed */
     public function hasOutGraph()
     {
         return ! empty($this->getFiles()['out'][$this->device->hostname]);
     }
 
-    /** @param mixed $name */
+    /**
+     * @param mixed $name
+     * @return mixed
+     */
     private function filenameToHostname($name)
     {
         if (LibrenmsConfig::get('smokeping.integration') === true) {

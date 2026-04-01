@@ -52,6 +52,7 @@ final class AuthSSOTest extends DBTestCase
     }
 
     // Set up an SSO config for tests
+    /** @return mixed */
     public function basicConfig()
     {
         LibrenmsConfig::set('sso.mode', 'env');
@@ -72,6 +73,7 @@ final class AuthSSOTest extends DBTestCase
     }
 
     // Set up $_SERVER in env mode
+    /** @return mixed */
     public function basicEnvironmentEnv()
     {
         unset($_SERVER);
@@ -86,6 +88,7 @@ final class AuthSSOTest extends DBTestCase
     }
 
     // Set up $_SERVER in header mode
+    /** @return mixed */
     public function basicEnvironmentHeader()
     {
         unset($_SERVER);
@@ -99,6 +102,7 @@ final class AuthSSOTest extends DBTestCase
         $_SERVER['HTTP_DISPLAYNAME'] = 'Test User';
     }
 
+    /** @return mixed */
     public function makeUser()
     {
         $user = Str::random();

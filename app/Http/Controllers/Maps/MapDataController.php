@@ -42,6 +42,7 @@ use Illuminate\Support\Facades\Log;
 
 class MapDataController extends Controller
 {
+    /** @return mixed */
     protected static function geoLinks(Request $request)
     {
         $user = $request->user();
@@ -104,6 +105,7 @@ class MapDataController extends Controller
             ->groupBy(fn (Link $i) => $i->device->location->lat . '.' . $i->device->location->lng . '.' . $i->remoteDevice->location->lat . '.' . $i->remoteDevice->location->lng);
     }
 
+    /** @return mixed */
     protected static function portsWithLinks(Request $request, string $remote_port_attr)
     {
         $user = $request->user();
@@ -270,6 +272,7 @@ class MapDataController extends Controller
         return $linkQuery->get();
     }
 
+    /** @return mixed */
     protected static function deviceList(Request $request)
     {
         $group_id = $request->group;

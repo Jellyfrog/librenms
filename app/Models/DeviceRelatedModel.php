@@ -36,13 +36,19 @@ class DeviceRelatedModel extends BaseModel
 {
     // ---- Query Scopes ----
 
-    /** @param mixed $query */
+    /**
+     * @param mixed $query
+     * @return mixed
+     */
     public function scopeHasAccess($query, User $user)
     {
         return $this->hasDeviceAccess($query, $user);
     }
 
-    /** @param mixed $deviceGroup */
+    /**
+     * @param mixed $deviceGroup
+     * @return mixed
+     */
     public function scopeInDeviceGroup($query, $deviceGroup)
     {
         // Build the list of device IDs in SQL

@@ -692,6 +692,7 @@ class Cisco extends OS implements
         return $instances;
     }
 
+    /** @return mixed */
     protected function getMainSerial()
     {
         $serial_output = SnmpQuery::mibs(['ENTITY-MIB', 'OLD-CISCO-CHASSIS-MIB'])->hideMib()->get([
@@ -881,7 +882,10 @@ class Cisco extends OS implements
         return $qos;
     }
 
-    /** @param mixed $qos */
+    /**
+     * @param mixed $qos
+     * @return mixed
+     */
     public function setQosParents($qos)
     {
         $qos->each(function (Qos $thisQos, int $key) use ($qos): void {
@@ -904,6 +908,7 @@ class Cisco extends OS implements
         });
     }
 
+    /** @return mixed */
     public function pollQos($qos)
     {
         $poll_time = time();

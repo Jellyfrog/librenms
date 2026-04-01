@@ -21,6 +21,7 @@ class PollerController extends Controller
         $this->rrdstep = LibrenmsConfig::get('rrd.step');
     }
 
+    /** @return mixed */
     public function logTab(Request $request)
     {
         $this->authorize('viewAny', PollerCluster::class);
@@ -31,6 +32,7 @@ class PollerController extends Controller
         ]);
     }
 
+    /** @return mixed */
     public function groupsTab()
     {
         $this->authorize('viewAny', PollerGroup::class);
@@ -43,6 +45,7 @@ class PollerController extends Controller
         ]);
     }
 
+    /** @return mixed */
     public function pollerTab()
     {
         $this->authorize('viewAny', PollerCluster::class);
@@ -54,6 +57,7 @@ class PollerController extends Controller
         ]);
     }
 
+    /** @return mixed */
     public function settingsTab()
     {
         $this->authorize('update', PollerCluster::class);
@@ -66,6 +70,7 @@ class PollerController extends Controller
         ]);
     }
 
+    /** @return mixed */
     public function performanceTab()
     {
         $this->authorize('viewAny', PollerCluster::class);
@@ -73,7 +78,10 @@ class PollerController extends Controller
         return view('poller.performance', ['current_tab' => 'performance']);
     }
 
-    /** @param mixed $last */
+    /**
+     * @param mixed $last
+     * @return mixed
+     */
     protected function pollerStatus($poller, $last)
     {
         $since_last_poll = (int) Carbon::parse($last)->diffInSeconds(null, true);
@@ -84,17 +92,22 @@ class PollerController extends Controller
         return $poller;
     }
 
+    /** @return mixed */
     private function poller()
     {
         return Poller::query()->orderBy('poller_name')->get()->map(fn ($poller) => $this->pollerStatus($poller, $poller->last_polled));
     }
 
+    /** @return mixed */
     private function pollerCluster()
     {
         return PollerCluster::with('stats')->orderBy('poller_name')->get()->map(fn ($poller) => $this->pollerStatus($poller, $poller->last_report));
     }
 
-    /** @param mixed $seconds */
+    /**
+     * @param mixed $seconds
+     * @return mixed
+     */
     private function checkTimeSinceLastPoll($seconds)
     {
         if ($seconds >= $this->rrdstep) {

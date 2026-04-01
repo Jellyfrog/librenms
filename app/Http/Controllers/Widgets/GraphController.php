@@ -272,7 +272,10 @@ class GraphController extends WidgetController
         return view('widgets.graph', $data);
     }
 
-    /** @param mixed $summarize */
+    /**
+     * @param mixed $summarize
+     * @return mixed
+     */
     private function getGraphType($summarize = true)
     {
         $graph_type = $this->getSettings()['graph_type'];
@@ -290,6 +293,7 @@ class GraphController extends WidgetController
         return $type;
     }
 
+    /** @return mixed */
     private function hasInvalidSettings()
     {
         $raw_type = $this->getGraphType(false);
@@ -332,7 +336,10 @@ class GraphController extends WidgetController
         return $this->settings;
     }
 
-    /** @param mixed $key */
+    /**
+     * @param mixed $key
+     * @return mixed
+     */
     private function convertLegacySettingId($setting, $key)
     {
         if ($setting && ! is_numeric($setting)) {

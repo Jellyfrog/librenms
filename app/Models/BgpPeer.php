@@ -56,6 +56,7 @@ class BgpPeer extends DeviceRelatedModel
     ];
     // ---- Query scopes ----
 
+    /** @return mixed */
     public function scopeInAlarm(Builder $query)
     {
         return $query->where(function (Builder $query): void {

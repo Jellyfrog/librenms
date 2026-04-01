@@ -7,6 +7,7 @@ use App\Models\AlertRule;
 
 class AlertRuleTemplateController extends Controller
 {
+    /** @return mixed */
     public function template(int $template_id)
     {
         $collection = $this->templatesCollection();
@@ -28,6 +29,7 @@ class AlertRuleTemplateController extends Controller
         ]);
     }
 
+    /** @return mixed */
     public function rule(AlertRule $alertRule)
     {
         return response()->json([

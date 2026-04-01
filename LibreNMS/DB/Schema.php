@@ -104,6 +104,7 @@ class Schema
         return reset($columns);
     }
 
+    /** @return mixed */
     public function getSchema()
     {
         if (! isset($this->schema)) {
@@ -203,7 +204,10 @@ class Schema
         return $all[$target] ?? false;
     }
 
-    /** @param mixed $history */
+    /**
+     * @param mixed $history
+     * @return mixed
+     */
     private function findPathRecursive(array $tables, $target, $history = [])
     {
         $relationships = $this->getTableRelationships();
@@ -250,6 +254,7 @@ class Schema
         return false;
     }
 
+    /** @return mixed */
     public function getTableRelationships()
     {
         if (! isset($this->relationships)) {
@@ -280,7 +285,10 @@ class Schema
         return $this->relationships;
     }
 
-    /** @param mixed $key */
+    /**
+     * @param mixed $key
+     * @return mixed
+     */
     public function getTableFromKey($key)
     {
         if (Str::endsWith($key, '_id')) {
@@ -308,7 +316,10 @@ class Schema
         return null;
     }
 
-    /** @param mixed $column */
+    /**
+     * @param mixed $column
+     * @return mixed
+     */
     public function columnExists($table, $column)
     {
         return in_array($column, $this->getColumns($table));

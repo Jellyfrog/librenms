@@ -60,6 +60,7 @@ class ComposerHelper
         }
     }
 
+    /** @return mixed */
     public static function preInstall(Event $event)
     {
     }

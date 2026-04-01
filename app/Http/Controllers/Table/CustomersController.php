@@ -113,7 +113,10 @@ class CustomersController extends TableController
         ];
     }
 
-    /** @param mixed $customer */
+    /**
+     * @param mixed $customer
+     * @return mixed
+     */
     private function getGraphRow($customer)
     {
         $graph_array = [
@@ -135,6 +138,7 @@ class CustomersController extends TableController
         ];
     }
 
+    /** @return mixed */
     private function getTypeStrings()
     {
         return Arr::wrap(LibrenmsConfig::get('customers_descr', ['cust']));

@@ -118,6 +118,7 @@ class Graphite extends BaseDatastore
      * @param  string  $metric
      * @param  mixed  $value
      * @param  mixed  $timestamp
+     * @return mixed
      */
     private function writeData($metric, $value, $timestamp)
     {

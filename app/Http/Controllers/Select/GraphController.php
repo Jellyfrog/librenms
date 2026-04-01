@@ -44,6 +44,7 @@ class GraphController extends Controller
         'device' => 'nullable|int',
     ];
 
+    /** @return mixed */
     public function __invoke(Request $request)
     {
         $this->validate($request, $this->rules);
@@ -105,7 +106,10 @@ class GraphController extends Controller
         ]);
     }
 
-    /** @param mixed $graph */
+    /**
+     * @param mixed $graph
+     * @return mixed
+     */
     private function formatGraph($top, $graph)
     {
         $text = $graph;

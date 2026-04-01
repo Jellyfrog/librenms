@@ -11,6 +11,7 @@ abstract class Model
     /** @var mixed */
     protected static $primaryKey = 'id';
 
+    /** @return mixed */
     public static function create(array $data)
     {
         $instance = new static();
@@ -19,6 +20,7 @@ abstract class Model
         return $instance;
     }
 
+    /** @return mixed */
     protected function fill(array $data = [])
     {
         foreach ($data as $field => $value) {
@@ -35,6 +37,7 @@ abstract class Model
      * @param  array  $models
      * @param  array  $unique_fields  fields to search for an existing entry
      * @param  array  $ignored_update_fields  Don't compare these field when updating
+     * @return mixed
      */
     final public static function sync($device_id, array $models, $unique_fields = [], $ignored_update_fields = [])
     {
@@ -56,6 +59,7 @@ abstract class Model
      *
      * @param  int  $device_id
      * @param  array  $model_ids  valid Model ids
+     * @return mixed
      */
     protected static function clean($device_id, $model_ids)
     {
@@ -175,6 +179,7 @@ abstract class Model
 
     /**
      * @param  static  $model
+     * @return mixed
      */
     public static function onDelete($model)
     {
@@ -185,6 +190,7 @@ abstract class Model
 
     /**
      * @param  static  $model
+     * @return mixed
      */
     public static function onCreate($model)
     {
@@ -195,6 +201,7 @@ abstract class Model
 
     /**
      * @param  static  $model
+     * @return mixed
      */
     public static function onUpdate($model)
     {
@@ -203,6 +210,7 @@ abstract class Model
         }
     }
 
+    /** @return mixed */
     public static function onNoUpdate()
     {
         if (app()->runningInConsole()) {

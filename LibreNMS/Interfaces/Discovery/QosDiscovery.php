@@ -40,6 +40,7 @@ interface QosDiscovery
     /**
      * Set QoS Parents given the output of discoverQos() after saving.
      * This ensures that all QoS objects have IDs
+     * @return mixed
      */
     public function setQosParents(Collection $qos);
 }

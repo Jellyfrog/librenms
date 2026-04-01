@@ -155,7 +155,10 @@ class SetConfigCommand extends LnmsCommand
         return null;
     }
 
-    /** @param mixed $parent */
+    /**
+     * @param mixed $parent
+     * @return mixed
+     */
     private function erase($setting, $parent = null)
     {
         if ($parent) {
@@ -193,7 +196,10 @@ class SetConfigCommand extends LnmsCommand
         return array_keys($array) === range(0, count($array) - 1);
     }
 
-    /** @param mixed $data */
+    /**
+     * @param mixed $data
+     * @return mixed
+     */
     private function forgetWithIndex(&$data, $matches)
     {
         // detect sequentially numeric indexed array so we can re-index the array
@@ -210,6 +216,7 @@ class SetConfigCommand extends LnmsCommand
      * @param  mixed  $value
      *
      * @throws ValidationException
+     * @return mixed
      */
     private function validateOsSetting(string $os, string $setting, $value)
     {

@@ -39,7 +39,10 @@ class UserPref extends BaseModel
     protected $fillable = ['user_id', 'pref', 'value'];
 
     // ---- Helper Functions ----
-    /** @param mixed $pref */
+    /**
+     * @param mixed $pref
+     * @return mixed
+     */
     public static function getPref(User $user, $pref)
     {
         if ($user->relationLoaded('preferences')) {
@@ -49,13 +52,19 @@ class UserPref extends BaseModel
         return $user->preferences()->where('pref', $pref)->value('value');
     }
 
-    /** @param mixed $pref */
+    /**
+     * @param mixed $pref
+     * @return mixed
+     */
     public static function setPref(User $user, $pref, $value)
     {
         return UserPref::updateOrCreate(['user_id' => $user->user_id, 'pref' => $pref], ['value' => $value]);
     }
 
-    /** @param mixed $pref */
+    /**
+     * @param mixed $pref
+     * @return mixed
+     */
     public static function forgetPref(User $user, $pref)
     {
         return $user->preferences()->where('pref', $pref)->delete();
@@ -63,7 +72,10 @@ class UserPref extends BaseModel
 
     // ---- Accessors/Mutators ----
 
-    /** @param mixed $value */
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
     public function getValueAttribute($value)
     {
         $decoded = json_decode((string) $value, true);
@@ -74,7 +86,10 @@ class UserPref extends BaseModel
         return $value;
     }
 
-    /** @param mixed $value */
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
     public function setValueAttribute($value)
     {
         if (is_array($value)) {
@@ -86,7 +101,10 @@ class UserPref extends BaseModel
 
     // ---- Query Scopes ----
 
-    /** @param mixed $pref */
+    /**
+     * @param mixed $pref
+     * @return mixed
+     */
     public function scopePref($query, $pref)
     {
         return $query->where('pref', $pref);

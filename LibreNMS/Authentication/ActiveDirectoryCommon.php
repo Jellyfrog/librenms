@@ -31,13 +31,19 @@ use LDAP\Connection;
 
 trait ActiveDirectoryCommon
 {
-    /** @param mixed $sid */
+    /**
+     * @param mixed $sid
+     * @return mixed
+     */
     protected function getUseridFromSid($sid)
     {
         return preg_replace('/.*-(\d+)$/', '$1', (string) $sid);
     }
 
-    /** @param mixed $sid */
+    /**
+     * @param mixed $sid
+     * @return mixed
+     */
     protected function sidFromLdap($sid)
     {
         $sidUnpacked = unpack('H*hex', (string) $sid);
@@ -56,7 +62,10 @@ trait ActiveDirectoryCommon
         return 'S-' . $revLevel . '-' . $authIdent . '-' . implode('-', $subAuths);
     }
 
-    /** @param mixed $dn */
+    /**
+     * @param mixed $dn
+     * @return mixed
+     */
     protected function getCn($dn)
     {
         $dn = str_replace('\\,', '~C0mmA~', $dn);
@@ -65,7 +74,10 @@ trait ActiveDirectoryCommon
         return str_replace('~C0mmA~', ',', $matches[0][0]);
     }
 
-    /** @param mixed $samaccountname */
+    /**
+     * @param mixed $samaccountname
+     * @return mixed
+     */
     protected function getDn($samaccountname)
     {
         $link_identifier = $this->getConnection();
@@ -84,7 +96,10 @@ trait ActiveDirectoryCommon
         }
     }
 
-    /** @param mixed $username */
+    /**
+     * @param mixed $username
+     * @return mixed
+     */
     protected function userFilter($username)
     {
         // don't return disabled users
@@ -99,7 +114,10 @@ trait ActiveDirectoryCommon
         return $user_filter;
     }
 
-    /** @param mixed $groupname */
+    /**
+     * @param mixed $groupname
+     * @return mixed
+     */
     protected function groupFilter($groupname)
     {
         $group_filter = "(samaccountname=$groupname)";
@@ -112,7 +130,10 @@ trait ActiveDirectoryCommon
         return $group_filter;
     }
 
-    /** @param mixed $username */
+    /**
+     * @param mixed $username
+     * @return mixed
+     */
     protected function getFullname($username)
     {
         $connection = $this->getConnection();
@@ -133,6 +154,7 @@ trait ActiveDirectoryCommon
         return $membername;
     }
 
+    /** @return mixed */
     public function getGroupList()
     {
         $ldap_groups = [];

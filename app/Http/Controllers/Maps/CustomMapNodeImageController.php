@@ -46,6 +46,7 @@ class CustomMapNodeImageController extends Controller
         ]);
     }
 
+    /** @return mixed */
     public function show(CustomMapNodeImage $image)
     {
         // explicitly use file cache
@@ -124,6 +125,7 @@ class CustomMapNodeImageController extends Controller
                   ->header('Content-Type', 'text/plain');
     }
 
+    /** @return mixed */
     private function updateImage(FormRequest $request, CustomMapNodeImage $image)
     {
         if ($request->has('image')) {

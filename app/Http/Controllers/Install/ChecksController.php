@@ -35,6 +35,7 @@ class ChecksController extends InstallationController implements InstallerStep
     /** @var mixed */
     protected $step = 'checks';
 
+    /** @return mixed */
     public function index()
     {
         $this->initInstallStep();
@@ -54,6 +55,7 @@ class ChecksController extends InstallationController implements InstallerStep
         ]));
     }
 
+    /** @return mixed */
     private function moduleResults()
     {
         $results = [];
@@ -69,6 +71,7 @@ class ChecksController extends InstallationController implements InstallerStep
         return $results;
     }
 
+    /** @return mixed */
     private function checkPhpVersion()
     {
         return version_compare(PHP_VERSION, Php::PHP_MIN_VERSION, '>=');

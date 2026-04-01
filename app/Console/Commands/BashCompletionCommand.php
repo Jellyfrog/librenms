@@ -121,6 +121,7 @@ class BashCompletionCommand extends Command
         return false;
     }
 
+    /** @return mixed */
     private function parseOption(InputOption $def)
     {
         $opts = [];
@@ -198,7 +199,10 @@ class BashCompletionCommand extends Command
         return $options->filter(fn ($option) => empty($partial) || Str::startsWith($option, $partial));
     }
 
-    /** @param mixed $words */
+    /**
+     * @param mixed $words
+     * @return mixed
+     */
     private function getPreviousOptions($words)
     {
         return array_reduce($words, function ($result, $word) {

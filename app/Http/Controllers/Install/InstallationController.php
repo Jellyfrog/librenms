@@ -44,6 +44,7 @@ class InstallationController extends Controller
         'finish' => FinalizeController::class,
     ];
 
+    /** @return mixed */
     public function redirectToFirst()
     {
         $step = collect($this->filterActiveSteps())->keys()->first(null, 'checks');
@@ -51,6 +52,7 @@ class InstallationController extends Controller
         return redirect()->route("install.$step");
     }
 
+    /** @return mixed */
     public function redirectToIncomplete()
     {
         foreach ($this->filterActiveSteps() as $step => $controller) {
@@ -63,11 +65,13 @@ class InstallationController extends Controller
         return redirect()->route('install.checks');
     }
 
+    /** @return mixed */
     public function invalid()
     {
         abort(404);
     }
 
+    /** @return mixed */
     public function stepsCompleted()
     {
         return response()->json($this->stepStatus());
@@ -96,6 +100,7 @@ class InstallationController extends Controller
         return false;
     }
 
+    /** @return mixed */
     final protected function markStepComplete()
     {
         if (! $this->stepCompleted($this->step)) {
@@ -104,12 +109,16 @@ class InstallationController extends Controller
         }
     }
 
+    /** @return mixed */
     final protected function stepCompleted(string $step)
     {
         return (bool) session("install.$step");
     }
 
-    /** @param mixed $data */
+    /**
+     * @param mixed $data
+     * @return mixed
+     */
     final protected function formatData($data = [])
     {
         $data['steps'] = $this->hydrateControllers();
@@ -118,6 +127,7 @@ class InstallationController extends Controller
         return $data;
     }
 
+    /** @return mixed */
     protected function configureDatabase()
     {
         $db = session('db');
@@ -135,6 +145,7 @@ class InstallationController extends Controller
         }
     }
 
+    /** @return mixed */
     protected function filterActiveSteps()
     {
         if (is_string(config('librenms.install'))) {
@@ -144,6 +155,7 @@ class InstallationController extends Controller
         return $this->steps;
     }
 
+    /** @return mixed */
     protected function hydrateControllers()
     {
         $this->steps = array_map(fn ($class) => is_object($class) ? $class : app()->make($class), $this->steps);
@@ -151,6 +163,7 @@ class InstallationController extends Controller
         return $this->steps;
     }
 
+    /** @return mixed */
     private function stepStatus()
     {
         $this->hydrateControllers();

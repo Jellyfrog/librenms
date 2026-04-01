@@ -8,6 +8,7 @@ abstract class TestCase extends BaseTestCase
 {
     use SnmpsimHelpers;
 
+    /** @return mixed */
     public function dbSetUp()
     {
         if (getenv('DBTEST')) {
@@ -17,6 +18,7 @@ abstract class TestCase extends BaseTestCase
         }
     }
 
+    /** @return mixed */
     public function dbTearDown()
     {
         if (getenv('DBTEST')) {

@@ -63,6 +63,7 @@ class User extends Authenticatable
      * Helper function to hash passwords before setting
      *
      * @param  string  $password
+     * @return mixed
      */
     public function setPassword($password)
     {
@@ -120,7 +121,10 @@ class User extends Authenticatable
         });
     }
 
-    /** @param mixed $query */
+    /**
+     * @param mixed $query
+     * @return mixed
+     */
     public function scopeAdminOnly($query)
     {
         $query->role('admin');
@@ -128,36 +132,52 @@ class User extends Authenticatable
 
     // ---- Accessors/Mutators ----
 
-    /** @param mixed $realname */
+    /**
+     * @param mixed $realname
+     * @return mixed
+     */
     public function setRealnameAttribute($realname)
     {
         $this->attributes['realname'] = (string) $realname;
     }
 
-    /** @param mixed $descr */
+    /**
+     * @param mixed $descr
+     * @return mixed
+     */
     public function setDescrAttribute($descr)
     {
         $this->attributes['descr'] = (string) $descr;
     }
 
-    /** @param mixed $email */
+    /**
+     * @param mixed $email
+     * @return mixed
+     */
     public function setEmailAttribute($email)
     {
         $this->attributes['email'] = (string) $email;
     }
 
-    /** @param mixed $modify */
+    /**
+     * @param mixed $modify
+     * @return mixed
+     */
     public function setCanModifyPasswdAttribute($modify)
     {
         $this->attributes['can_modify_passwd'] = $modify ? 1 : 0;
     }
 
-    /** @param mixed $enable */
+    /**
+     * @param mixed $enable
+     * @return mixed
+     */
     public function setEnabledAttribute($enable)
     {
         $this->attributes['enabled'] = $enable ? 1 : 0;
     }
 
+    /** @return mixed */
     public function getDevicesAttribute()
     {
         // pseudo relation
@@ -185,6 +205,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Bill::class, 'bill_perms', 'user_id', 'bill_id');
     }
 
+    /** @return mixed */
     public function devices()
     {
         // pseudo relation
@@ -207,6 +228,7 @@ class User extends Authenticatable
         return $this->belongsToMany(DeviceGroup::class, 'devices_group_perms', 'user_id', 'device_group_id');
     }
 
+    /** @return mixed */
     public function ports()
     {
         if (Gate::allows('viewAll', Port::class)) {

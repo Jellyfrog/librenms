@@ -289,7 +289,10 @@ class SmOs extends OS implements
         });
     }
 
-    /** @param mixed $index */
+    /**
+     * @param mixed $index
+     * @return mixed
+     */
     public function getRadioLabel($index)
     {
         if (is_null($this->radioLabels)) {
@@ -299,7 +302,10 @@ class SmOs extends OS implements
         return $this->radioLabels[$index]['radioLabel'] ?? $index;
     }
 
-    /** @param mixed $index */
+    /**
+     * @param mixed $index
+     * @return mixed
+     */
     public function getLinkLabel($index)
     {
         if (is_null($this->linkLabels)) {

@@ -118,7 +118,10 @@ trait YamlOSDiscovery
         ]);
     }
 
-    /** @param mixed $data */
+    /**
+     * @param mixed $data
+     * @return mixed
+     */
     private function findFirst($data, $oids, $numeric = false)
     {
         foreach (Arr::wrap($oids) as $oid) {
@@ -135,7 +138,10 @@ trait YamlOSDiscovery
         return null;
     }
 
-    /** @param mixed $regexes */
+    /**
+     * @param mixed $regexes
+     * @return mixed
+     */
     private function parseRegex($regexes, $subject)
     {
         $device = $this->getDevice();
@@ -151,7 +157,10 @@ trait YamlOSDiscovery
         }
     }
 
-    /** @param mixed $numeric */
+    /**
+     * @param mixed $numeric
+     * @return mixed
+     */
     private function fetch(array $oids, $numeric)
     {
         return snmp_get_multi_oid($this->getDeviceArray(), $oids, $numeric ? '-OUQn' : '-OUQ');

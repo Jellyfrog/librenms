@@ -31,7 +31,10 @@ use Illuminate\Http\Request;
 
 class PollerSettingsController extends Controller
 {
-    /** @param mixed $id */
+    /**
+     * @param mixed $id
+     * @return mixed
+     */
     public function update(Request $request, $id, $setting)
     {
         $poller = PollerCluster::findOrFail($id);
@@ -48,7 +51,10 @@ class PollerSettingsController extends Controller
         return response()->json(['value' => $poller->$setting]);
     }
 
-    /** @param mixed $id */
+    /**
+     * @param mixed $id
+     * @return mixed
+     */
     public function destroy($id, $setting)
     {
         $poller = PollerCluster::findOrFail($id);

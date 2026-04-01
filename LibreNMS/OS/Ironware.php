@@ -38,6 +38,7 @@ class Ironware extends Foundry
         $this->rewriteHardware();
     }
 
+    /** @return mixed */
     private function rewriteHardware()
     {
         $rewrite_ironware_hardware = [

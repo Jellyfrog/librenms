@@ -46,6 +46,7 @@ class HostUnreachableException extends \Exception
      *
      * @param  string  $snmpVersion
      * @param  string  $credentials
+     * @return mixed
      */
     public function addReason(string $snmpVersion, string $credentials)
     {

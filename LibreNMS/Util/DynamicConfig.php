@@ -80,6 +80,7 @@ class DynamicConfig
         return $this->definitions->pluck('group')->unique()->filter()->prepend('global');
     }
 
+    /** @return mixed */
     public function getSections()
     {
         /** @var Collection $sections */
@@ -106,7 +107,10 @@ class DynamicConfig
         return $grouped;
     }
 
-    /** @param mixed $group */
+    /**
+     * @param mixed $group
+     * @return mixed
+     */
     public function getByGroup($group, $subgroup = null)
     {
         return $this->definitions->filter(function ($item) use ($group, $subgroup) {

@@ -74,49 +74,64 @@ class AlertSchedule extends Model
 
     // ---- Accessors/Mutators ----
 
+    /** @return mixed */
     public function getRecurringDayAttribute()
     {
         return explode(',', str_replace(array_values($this->days), array_keys($this->days), $this->attributes['recurring_day']));
     }
 
-    /** @param mixed $days */
+    /**
+     * @param mixed $days
+     * @return mixed
+     */
     public function setRecurringDayAttribute($days)
     {
         $this->attributes['recurring_day'] = is_array($days) ? implode(',', $days) : $days;
     }
 
+    /** @return mixed */
     public function getStartAttribute()
     {
         return Date::parse($this->attributes['start'], 'UTC')->tz($this->timezone);
     }
 
-    /** @param mixed $start */
+    /**
+     * @param mixed $start
+     * @return mixed
+     */
     public function setStartAttribute($start)
     {
         $this->attributes['start'] = $this->fromDateTime(Date::parse($start)->tz('UTC'));
     }
 
+    /** @return mixed */
     public function getEndAttribute()
     {
         return Date::parse($this->attributes['end'], 'UTC')->tz($this->timezone);
     }
 
-    /** @param mixed $end */
+    /**
+     * @param mixed $end
+     * @return mixed
+     */
     public function setEndAttribute($end)
     {
         $this->attributes['end'] = $this->fromDateTime(Date::parse($end)->tz('UTC'));
     }
 
+    /** @return mixed */
     public function getStartRecurringDtAttribute()
     {
         return $this->start->toDateString();
     }
 
+    /** @return mixed */
     public function getStartRecurringHrAttribute()
     {
         return $this->start->toTimeString('minute');
     }
 
+    /** @return mixed */
     public function getEndRecurringDtAttribute()
     {
         $end = $this->end;
@@ -124,30 +139,43 @@ class AlertSchedule extends Model
         return $end->year == '9000' ? null : $end->toDateString();
     }
 
+    /** @return mixed */
     public function getEndRecurringHrAttribute()
     {
         return $this->end->toTimeString('minute');
     }
 
-    /** @param mixed $date */
+    /**
+     * @param mixed $date
+     * @return mixed
+     */
     public function setStartRecurringDtAttribute($date)
     {
         $this->start = $this->start->setDateFrom(Date::parse($date, $this->timezone));
     }
 
-    /** @param mixed $time */
+    /**
+     * @param mixed $time
+     * @return mixed
+     */
     public function setStartRecurringHrAttribute($time)
     {
         $this->start = $this->start->setTimeFrom(Date::parse($time, $this->timezone));
     }
 
-    /** @param mixed $date */
+    /**
+     * @param mixed $date
+     * @return mixed
+     */
     public function setEndRecurringDtAttribute($date)
     {
         $this->end = $this->end->setDateFrom(Date::parse($date ?: '9000-09-09', $this->timezone));
     }
 
-    /** @param mixed $time */
+    /**
+     * @param mixed $time
+     * @return mixed
+     */
     public function setEndRecurringHrAttribute($time)
     {
         $this->end = $this->end->setTimeFrom(Date::parse($time, $this->timezone));
@@ -183,7 +211,10 @@ class AlertSchedule extends Model
 
     // ---- Query scopes ----
 
-    /** @param mixed $query */
+    /**
+     * @param mixed $query
+     * @return mixed
+     */
     public function scopeIsActive($query)
     {
         return $query->where(function ($query): void {

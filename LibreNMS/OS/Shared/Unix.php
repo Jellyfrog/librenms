@@ -79,6 +79,7 @@ class Unix extends \LibreNMS\OS implements MempoolsDiscovery
         $this->discoverExtends($device);
     }
 
+    /** @return mixed */
     protected function discoverExtends(Device $device)
     {
         // Distro "extend" support

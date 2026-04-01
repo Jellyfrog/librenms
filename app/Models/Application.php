@@ -49,11 +49,13 @@ class Application extends DeviceRelatedModel
 
     // ---- Helper Functions ----
 
+    /** @return mixed */
     public function displayName()
     {
         return StringHelpers::niceCase($this->app_type);
     }
 
+    /** @return mixed */
     public function getShowNameAttribute()
     {
         return $this->displayName();

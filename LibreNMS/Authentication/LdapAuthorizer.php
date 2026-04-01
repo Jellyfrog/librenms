@@ -204,7 +204,10 @@ class LdapAuthorizer extends AuthorizerBase
         return false;
     }
 
-    /** @param mixed $username */
+    /**
+     * @param mixed $username
+     * @return mixed
+     */
     protected function getMembername($username)
     {
         $type = LibrenmsConfig::get('auth_ldap_groupmembertype');

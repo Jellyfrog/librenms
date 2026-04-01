@@ -158,6 +158,7 @@ class OS implements
      * Enable a graph for this device
      *
      * @param  string  $name
+     * @return mixed
      */
     public function enableGraph($name)
     {
@@ -178,6 +179,7 @@ class OS implements
         $device->graphs()->saveMany($graphs->diff($device->graphs->pluck('graph'))->map(fn ($graph) => new DeviceGraph(['graph' => $graph])));
     }
 
+    /** @return mixed */
     public function preCache()
     {
         if (is_null($this->pre_cache)) {
@@ -285,6 +287,7 @@ class OS implements
         return new Generic($device);
     }
 
+    /** @return mixed */
     public function getName()
     {
         if (isset($this->device['os'])) {
@@ -382,7 +385,10 @@ class OS implements
         return $this->discoverUcdStorage();
     }
 
-    /** @param mixed $module */
+    /**
+     * @param mixed $module
+     * @return mixed
+     */
     public function getDiscovery($module = null)
     {
         if (! array_key_exists('dynamic_discovery', $this->device)) {

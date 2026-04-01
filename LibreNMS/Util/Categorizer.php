@@ -41,17 +41,20 @@ class Categorizer
         $this->skippable = (fn ($item) => false);
     }
 
+    /** @return mixed */
     public function addCategory(string $category, callable $function)
     {
         $this->categories[$category] = $function;
         $this->categorized[$category] = [];
     }
 
+    /** @return mixed */
     public function setSkippable(callable $function)
     {
         $this->skippable = $function;
     }
 
+    /** @return mixed */
     public function categorize()
     {
         foreach ($this->items as $item) {

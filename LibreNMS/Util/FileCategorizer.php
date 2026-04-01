@@ -64,6 +64,7 @@ class FileCategorizer extends Categorizer
         });
     }
 
+    /** @return mixed */
     public function categorize()
     {
         // This can't be a normal addCategory() function since it returns multiple results
@@ -83,7 +84,10 @@ class FileCategorizer extends Categorizer
         return $this->categorized;
     }
 
-    /** @param mixed $os */
+    /**
+     * @param mixed $os
+     * @return mixed
+     */
     private function validateOs($os)
     {
         return file_exists("resources/definitions/os_detection/$os.yaml") ? $os : null;
@@ -130,7 +134,10 @@ class FileCategorizer extends Categorizer
         }
     }
 
-    /** @param mixed $file */
+    /**
+     * @param mixed $file
+     * @return mixed
+     */
     private function osFromFile($file)
     {
         if (Str::startsWith($file, 'resources/definitions/os_')) {

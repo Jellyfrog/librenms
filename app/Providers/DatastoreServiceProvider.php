@@ -71,11 +71,13 @@ class DatastoreServiceProvider extends ServiceProvider
         $this->registerKafka();
     }
 
+    /** @return mixed */
     public function registerInflux()
     {
         $this->app->singleton(\InfluxDB\Database::class, fn ($app) => \LibreNMS\Data\Store\InfluxDB::createFromConfig());
     }
 
+    /** @return mixed */
     public function registerKafka()
     {
         $this->app->singleton(\RdKafka\Producer::class, fn ($app) => \LibreNMS\Data\Store\Kafka::getClient());

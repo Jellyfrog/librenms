@@ -138,6 +138,7 @@ final class OSDiscoveryTest extends TestCase
      *
      * @param  string  $expected_os  The os we should get back from getHostOS()
      * @param  string  $filename  the name of the snmprec file to use
+     * @return mixed
      */
     private function checkOS($expected_os, $filename = null)
     {
