@@ -71,6 +71,7 @@ class ReportDevices extends LnmsCommand
         return 0;
     }
 
+    /** @return Collection<int, array> */
     protected function fetchDeviceData($fields): Collection
     {
         $columns = $fields->pluck('columns')->flatten()->all();
@@ -183,6 +184,7 @@ class ReportDevices extends LnmsCommand
         return 0;
     }
 
+    /** @param  array|Collection<int, array>  $rows */
     protected function printReport(array $headers, array|Collection $rows): void
     {
         $output = $this->option('output');
@@ -245,6 +247,7 @@ class ReportDevices extends LnmsCommand
         }
     }
 
+    /** @return Collection<int, string>|null */
     public function completeOptionValue(DynamicInputOption $option, string $current): ?Collection
     {
         if ($option->getName() == 'fields') {

@@ -103,6 +103,7 @@ class PollerController extends Controller
         return 'success';
     }
 
+    /** @return Collection<int, array<string, mixed>> */
     private function pollerSettings($pollers): Collection
     {
         $groups = PollerGroup::list();

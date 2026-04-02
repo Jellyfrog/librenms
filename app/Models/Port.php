@@ -397,6 +397,7 @@ class Port extends DeviceRelatedModel
         return $this->hasMany(Link::class, 'remote_port_id');
     }
 
+    /** @return \Illuminate\Support\Collection<int, \App\Models\Link> */
     public function allLinks(): \Illuminate\Support\Collection
     {
         return $this->links->merge($this->remoteLinks);
