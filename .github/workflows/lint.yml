@@ -78,6 +78,22 @@ jobs:
       - name: Composer dump
         run: composer dump --strict-psr --strict-ambiguous --no-interaction --no-scripts
 
+      - name: Find new PHP files
+        if: github.event_name == 'pull_request'
+        id: new-files
+        run: |
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          git fetch --shallow-exclude="$BASE_SHA" origin
+
+          NEW_FILES=$(git diff --diff-filter=A --name-only "$BASE_SHA" HEAD -- '*.php')
+          echo "Discovered new PHP files:"
+          echo "$NEW_FILES"
+          echo "files=$(echo "$NEW_FILES" | tr '\n' ' ')" >> "$GITHUB_OUTPUT"
+
+      - name: Run PHPStan (New files, level 8)
+        if: github.event_name == 'pull_request' && steps.new-files.outputs.files != ''
+        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --level=8 ${{ steps.new-files.outputs.files }}
+
       - name: Run PHPStan
         run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G
 
