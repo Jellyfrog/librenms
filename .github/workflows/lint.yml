@@ -53,6 +53,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v5
         with:
+          fetch-depth: 2
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*
@@ -82,11 +83,7 @@ jobs:
         if: github.event_name == 'pull_request'
         id: new-files
         run: |
-          # Deepen by 1 to fetch the merge commit's parents (base tip + PR head)
-          git fetch --deepen=1 origin
-
           # HEAD is the PR merge commit, HEAD~1 is its first parent (base branch tip)
-          # Diffing these two trees shows exactly what the PR introduces
           NEW_FILES=$(git diff --diff-filter=A --name-only HEAD~1 HEAD -- '*.php')
           echo "Discovered new PHP files:"
           echo "$NEW_FILES"
