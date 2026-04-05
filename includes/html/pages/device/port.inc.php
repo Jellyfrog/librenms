@@ -9,8 +9,8 @@ use App\Models\PortVdsl;
 use App\Models\PortVlan;
 use App\Models\Sensor;
 use App\Plugins\Hooks\PortTabHook;
-use LibreNMS\Enum\IfOperStatus;
 use Illuminate\Support\Facades\Gate;
+use LibreNMS\Enum\IfOperStatus;
 use LibreNMS\Util\Rewrite;
 use LibreNMS\Util\Url;
 
