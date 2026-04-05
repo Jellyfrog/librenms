@@ -84,10 +84,9 @@ jobs:
         id: new-files
         run: |
           # HEAD is the PR merge commit, HEAD~1 is its first parent (base branch tip)
-          NEW_FILES=$(git diff --diff-filter=A --name-only HEAD~1 HEAD -- '*.php')
-          echo "Discovered new PHP files:"
-          echo "$NEW_FILES"
-          echo "files=$(echo "$NEW_FILES" | tr '\n' ' ')" >> "$GITHUB_OUTPUT"
+          NEW_FILES=$(git diff --diff-filter=A --name-only HEAD~1 HEAD -- '*.php' | xargs)
+          echo "Discovered new PHP files: $NEW_FILES"
+          echo "files=$NEW_FILES" >> "$GITHUB_OUTPUT"
 
       - name: Run PHPStan (New files, level 8)
         if: github.event_name == 'pull_request' && steps.new-files.outputs.files != ''
