@@ -77,7 +77,7 @@
         });
         var ajax_url = "{{ url('/ajax') }}";
     </script>
-    <script src="{{ asset('js/librenms.js?ver=14012026') }}"></script>
+    <script src="{{ asset('js/librenms.js?ver=02032026') }}"></script>
     <script type="text/javascript" src="{{ asset('js/overlib_mini.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/toastr.min.js?ver=05072021') }}"></script>
     <script type="text/javascript" src="{{ asset('js/boot.js?ver=10272021') }}"></script>
@@ -94,16 +94,19 @@
                 applySiteStyle(event.matches ? 'dark' : 'light');
             }
         });
+        window.tz = undefined;
     </script>
     @auth
-        @if(session('preferences.timezone_static') == null || ! session('preferences.timezone_static'))
         <script>
+        @if(session('preferences.timezone_static') === null || ! session('preferences.timezone_static'))
             var tz = window.Intl.DateTimeFormat().resolvedOptions().timeZone;
             if(tz !== '{{ session('preferences.timezone') }}') {
                 updateTimezone(tz, false);
             }
-        </script>
+        @else
+            window.tz = '{{ session('preferences.timezone') }}';
         @endif
+        </script>
         <script src="{{ asset('js/register-service-worker.js') }}" defer></script>
     @endauth
     @yield('javascript')
@@ -118,7 +121,7 @@
     </script>
 @endif
 
-@if(Request::get('bare') == 'yes')
+@if(request()->input('bare') == 'yes')
     <style>body { padding-top: 0 !important; padding-bottom: 0 !important; }</style>
 @elseif($show_menu)
     @include('layouts.menu')
