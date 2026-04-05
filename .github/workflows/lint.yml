@@ -82,10 +82,9 @@ jobs:
         if: github.event_name == 'pull_request'
         id: new-files
         run: |
-          BASE_SHA="${{ github.event.pull_request.base.sha }}"
-          git fetch --depth=1 origin "$BASE_SHA"
+          git fetch --deepen=1 origin
 
-          NEW_FILES=$(git diff --diff-filter=A --name-only "$BASE_SHA" HEAD -- '*.php')
+          NEW_FILES=$(git diff --diff-filter=A --name-only HEAD~1 HEAD -- '*.php')
           echo "Discovered new PHP files:"
           echo "$NEW_FILES"
           echo "files=$(echo "$NEW_FILES" | tr '\n' ' ')" >> "$GITHUB_OUTPUT"
