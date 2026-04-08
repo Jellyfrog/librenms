@@ -35,8 +35,60 @@ parameters:
 
     checkModelProperties: true
 
+    checkUnusedViews: true
+
     ignoreErrors:
         - '#Unsafe usage of new static#'
+
+        # Views used as Blade components (<x-component-name> syntax)
+        -
+            identifier: larastan.unusedViews
+            path: resources/views/components/*
+
+        # Device tab views loaded dynamically via view('device.tabs.' . $tab) in DeviceController
+        -
+            identifier: larastan.unusedViews
+            path: resources/views/device/tabs/*
+
+        # Device overview views loaded dynamically from includes/html/pages/device/overview/*.inc.php
+        -
+            identifier: larastan.unusedViews
+            path: resources/views/device/overview/*
+
+        # Widget views loaded dynamically via view("widgets.$this->name") in WidgetController
+        -
+            identifier: larastan.unusedViews
+            path: resources/views/widgets/*
+
+        # Sensor views loaded dynamically via a mapping in SensorController
+        -
+            identifier: larastan.unusedViews
+            path: resources/views/sensor/*
+
+        # Alert template layout extended by user-created alert templates
+        -
+            identifier: larastan.unusedViews
+            path: resources/views/alerts/templates/default.blade.php
+
+        # Loaded dynamically in DenyDemoUser middleware
+        -
+            identifier: larastan.unusedViews
+            path: resources/views/auth/deny-demo.blade.php
+
+        # Loaded dynamically in RealtimeGraphController
+        -
+            identifier: larastan.unusedViews
+            path: resources/views/graphs/realtime.blade.php
+
+        # Loaded dynamically in LegacyController
+        -
+            identifier: larastan.unusedViews
+            path: resources/views/layouts/legacy_page.blade.php
+
+        # Loaded dynamically in PluginPageController and PluginSettingsController
+        -
+            identifier: larastan.unusedViews
+            path: resources/views/plugins/missing.blade.php
 
     parallel:
         processTimeout: 300.0
