@@ -1,0 +1,2947 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Translation "All Users" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: LibreNMS/Alert/Transport/Browserpush.php
+
+		-
+			message: '#^Called \[toArray\(\)\] on an Enumerable which does not contain any Arrayables\.$#'
+			identifier: larastan.unnecessaryEnumerableToArrayCall
+			count: 1
+			path: LibreNMS/Validations/Poller/CheckDispatcherService.php
+
+		-
+			message: '#^Called \[toArray\(\)\] on an Enumerable which does not contain any Arrayables\.$#'
+			identifier: larastan.unnecessaryEnumerableToArrayCall
+			count: 1
+			path: app/Console/Commands/GetConfigCommand.php
+
+		-
+			message: '#^Translation "Device spec to discover\: device_id, hostname, or all" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Console/Commands/MaintenanceDiscoverSslCertificates.php
+
+		-
+			message: '#^Translation "Certificate ID to refresh \(omit to refresh all enabled\)" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Console/Commands/MaintenanceRefreshSslCertificates.php
+
+		-
+			message: '#^Called \[toArray\(\)\] on an Enumerable which does not contain any Arrayables\.$#'
+			identifier: larastan.unnecessaryEnumerableToArrayCall
+			count: 1
+			path: app/Console/Commands/SetConfigCommand.php
+
+		-
+			message: '#^Do not use Auth\:\:user\(\) in a class that has access to the request\. Use \$request\-\>user\(\) instead\.$#'
+			identifier: larastan.noAuthFacadeInRequestScope
+			count: 1
+			path: app/Http/Controllers/Auth/SocialiteController.php
+
+		-
+			message: '#^Do not use auth\(\)\-\>user\(\) in a class that has access to the request\. Use \$request\-\>user\(\) instead\.$#'
+			identifier: larastan.noAuthHelperInRequestScope
+			count: 1
+			path: app/Http/Controllers/Auth/TwoFactorController.php
+
+		-
+			message: '#^Do not use Auth\:\:user\(\) in a class that has access to the request\. Use \$request\-\>user\(\) instead\.$#'
+			identifier: larastan.noAuthFacadeInRequestScope
+			count: 2
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Translation "Device record update error" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/EditDeviceController.php
+
+		-
+			message: '#^Translation "Device record updated" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/EditDeviceController.php
+
+		-
+			message: '#^Translation "Device record updated" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/EditMiscController.php
+
+		-
+			message: '#^Translation "Access Points" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/AccessPointsController.php
+
+		-
+			message: '#^Translation "Capture" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/CaptureController.php
+
+		-
+			message: '#^Translation "CollectD" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/CollectdController.php
+
+		-
+			message: '#^Translation "Load Balancer" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/LoadBalancerController.php
+
+		-
+			message: '#^Translation "Metro Ethernet" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/MefController.php
+
+		-
+			message: '#^Translation "Munin" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/MuninController.php
+
+		-
+			message: '#^Translation "NAC" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/NacController.php
+
+		-
+			message: '#^Translation "Netflow" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/NetflowController.php
+
+		-
+			message: '#^Translation "Pkgs" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/PackagesController.php
+
+		-
+			message: '#^Do not use Auth\:\:user\(\) in a class that has access to the request\. Use \$request\-\>user\(\) instead\.$#'
+			identifier: larastan.noAuthFacadeInRequestScope
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/PortsController.php
+
+		-
+			message: '#^Translation "Errors" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/PortsController.php
+
+		-
+			message: '#^Translation "Mini" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 5
+			path: app/Http/Controllers/Device/Tabs/PortsController.php
+
+		-
+			message: '#^Translation "Packets \(Unicast\)" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/PortsController.php
+
+		-
+			message: '#^Translation "Port Security" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/PortsController.php
+
+		-
+			message: '#^Translation "Printer" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/PrinterController.php
+
+		-
+			message: '#^Translation "Processes" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/ProcessesController.php
+
+		-
+			message: '#^Translation "QoS" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/QosController.php
+
+		-
+			message: '#^Translation "Config" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/ShowConfigController.php
+
+		-
+			message: '#^Translation "SLAs" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/SlasController.php
+
+		-
+			message: '#^Translation "STP" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/StpController.php
+
+		-
+			message: '#^Translation "Hardware" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/TnmsneController.php
+
+		-
+			message: '#^Translation "VLANs" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Device/Tabs/VlansController.php
+
+		-
+			message: '#^Translation "Device Group \:name created" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/DeviceGroupController.php
+
+		-
+			message: '#^Translation "Device Group \:name deleted" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/DeviceGroupController.php
+
+		-
+			message: '#^Translation "Device Group \:name still has Service Templates associated with it\. Please remove or update the Service Template accordingly" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/DeviceGroupController.php
+
+		-
+			message: '#^Translation "Device Group \:name updated" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/DeviceGroupController.php
+
+		-
+			message: '#^Translation "Failed to save" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/DeviceGroupController.php
+
+		-
+			message: '#^Translation "No changes made" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/DeviceGroupController.php
+
+		-
+			message: '#^Translation "Rules resulted in invalid query\: " has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/DeviceGroupController.php
+
+		-
+			message: '#^Do not use Auth\:\:check\(\) in a class that has access to the request\. Use \$request\-\>user\(\) \!\=\= null instead\.$#'
+			identifier: larastan.noAuthFacadeInRequestScope
+			count: 1
+			path: app/Http/Controllers/GraphController.php
+
+		-
+			message: '#^Do not use Auth\:\:user\(\) in a class that has access to the request\. Use \$request\-\>user\(\) instead\.$#'
+			identifier: larastan.noAuthFacadeInRequestScope
+			count: 6
+			path: app/Http/Controllers/OverviewController.php
+
+		-
+			message: '#^Translation "Failed to save" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/PortGroupController.php
+
+		-
+			message: '#^Translation "Port Group \:name created" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/PortGroupController.php
+
+		-
+			message: '#^Translation "Port Group \:name deleted" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/PortGroupController.php
+
+		-
+			message: '#^Translation "Port Group \:name updated" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/PortGroupController.php
+
+		-
+			message: '#^Translation "Port Security" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Search/PortSecuritySearchController.php
+
+		-
+			message: '#^Translation "No Default Dashboard" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Select/DashboardController.php
+
+		-
+			message: '#^Translation "read\-only" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Select/DashboardController.php
+
+		-
+			message: '#^Translation "read\-write" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Select/DashboardController.php
+
+		-
+			message: '#^Translation "General" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Select/PollerGroupController.php
+
+		-
+			message: '#^Translation "Error" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/SensorController.php
+
+		-
+			message: '#^Translation "No Graphs" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/SensorController.php
+
+		-
+			message: '#^Translation "Unknown" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/SensorController.php
+
+		-
+			message: '#^Translation "Service \:name created" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/ServiceController.php
+
+		-
+			message: '#^Translation "All Service Templates have been applied" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 3
+			path: app/Http/Controllers/ServiceTemplateController.php
+
+		-
+			message: '#^Translation "Failed to save" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/ServiceTemplateController.php
+
+		-
+			message: '#^Translation "No changes made" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/ServiceTemplateController.php
+
+		-
+			message: '#^Translation "Rules resulted in invalid query\: " has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/ServiceTemplateController.php
+
+		-
+			message: '#^Translation "Service Template \:name created" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/ServiceTemplateController.php
+
+		-
+			message: '#^Translation "Service Template \:name deleted, Services removed" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/ServiceTemplateController.php
+
+		-
+			message: '#^Translation "Service Template \:name updated" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/ServiceTemplateController.php
+
+		-
+			message: '#^Translation "Certificate updated\." has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/SslCertificateController.php
+
+		-
+			message: '#^Translation "Failed to fetch certificate\: \:error" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/SslCertificateController.php
+
+		-
+			message: '#^Translation "SSL certificate added for \:host\." has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/SslCertificateController.php
+
+		-
+			message: '#^Translation "SSL certificate deleted\." has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/SslCertificateController.php
+
+		-
+			message: '#^Translation "You may only assign certificates to devices you can access\." has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/SslCertificateController.php
+
+		-
+			message: '#^Translation "No" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Table/AlertScheduleController.php
+
+		-
+			message: '#^Translation "Yes" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Table/AlertScheduleController.php
+
+		-
+			message: '#^Translation "Expired" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Table/SslCertificateController.php
+
+		-
+			message: '#^Translation "Expires soon" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Table/SslCertificateController.php
+
+		-
+			message: '#^Translation "Valid" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Table/SslCertificateController.php
+
+		-
+			message: '#^Translation "days" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 3
+			path: app/Http/Controllers/Table/SslCertificateController.php
+
+		-
+			message: '#^Do not use Auth\:\:user\(\) in a class that has access to the request\. Use \$request\-\>user\(\) instead\.$#'
+			identifier: larastan.noAuthFacadeInRequestScope
+			count: 1
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Translation "Cleared timezone for \:username" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Translation "Updated timezone for \:username" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Translation "Custom OID does not exist" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Widgets/GraphController.php
+
+		-
+			message: '#^Translation "Service does not exist" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/Widgets/GraphController.php
+
+		-
+			message: '#^Translation "No Graphs" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/Controllers/WirelessSensorController.php
+
+		-
+			message: '#^Do not use Auth\:\:check\(\) in a class that has access to the request\. Use \$request\-\>user\(\) \!\=\= null instead\.$#'
+			identifier: larastan.noAuthFacadeInRequestScope
+			count: 1
+			path: app/Http/Middleware/AuthenticateGraph.php
+
+		-
+			message: '#^Do not use auth\(\)\-\>check\(\) in a class that has access to the request\. Use \$request\-\>user\(\) \!\=\= null instead\.$#'
+			identifier: larastan.noAuthHelperInRequestScope
+			count: 1
+			path: app/Http/Middleware/LoadUserPreferences.php
+
+		-
+			message: '#^Do not use auth\(\)\-\>check\(\) in a class that has access to the request\. Use \$request\-\>user\(\) \!\=\= null instead\.$#'
+			identifier: larastan.noAuthHelperInRequestScope
+			count: 1
+			path: app/Http/Middleware/VerifyTwoFactor.php
+
+		-
+			message: '#^Do not use Auth\:\:check\(\) in a class that has access to the request\. Use \$request\-\>user\(\) \!\=\= null instead\.$#'
+			identifier: larastan.noAuthFacadeInRequestScope
+			count: 1
+			path: app/Http/Middleware/VerifyUserEnabled.php
+
+		-
+			message: '#^Do not use Auth\:\:user\(\) in a class that has access to the request\. Use \$request\-\>user\(\) instead\.$#'
+			identifier: larastan.noAuthFacadeInRequestScope
+			count: 1
+			path: app/Http/Middleware/VerifyUserEnabled.php
+
+		-
+			message: '#^Called \[toArray\(\)\] on an Enumerable which does not contain any Arrayables\.$#'
+			identifier: larastan.unnecessaryEnumerableToArrayCall
+			count: 1
+			path: app/Http/Requests/AlertRuleRequest.php
+
+		-
+			message: '#^Do not use auth\(\)\-\>user\(\) in a class that has access to the request\. Use \$this\-\>user\(\) instead\.$#'
+			identifier: larastan.noAuthHelperInRequestScope
+			count: 1
+			path: app/Http/Requests/TwoFactorManagementRequest.php
+
+		-
+			message: '#^Translation "Custom Maps" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Http/ViewComposers/MenuComposer.php
+
+		-
+			message: '#^Called \[toArray\(\)\] on an Enumerable which does not contain any Arrayables\.$#'
+			identifier: larastan.unnecessaryEnumerableToArrayCall
+			count: 1
+			path: app/Listeners/MarkNotificationsRead.php
+
+		-
+			message: '#^Local query scope method ''scopeInAlarm'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/BgpPeer.php
+
+		-
+			message: '#^Local query scope method ''scopeHasAccess'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/Bill.php
+
+		-
+			message: '#^Local query scope method ''scopeCurrent'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/BillHistory.php
+
+		-
+			message: '#^Local query scope method ''scopeHasAccess'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/BillRelatedModel.php
+
+		-
+			message: '#^Model accessor method ''error'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelAccessorMethod
+			count: 1
+			path: app/Models/Component.php
+
+		-
+			message: '#^Model accessor method ''label'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelAccessorMethod
+			count: 1
+			path: app/Models/Component.php
+
+		-
+			message: '#^Model accessor method ''type'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelAccessorMethod
+			count: 1
+			path: app/Models/Component.php
+
+		-
+			message: '#^Local query scope method ''scopeHasAccess'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/CustomMap.php
+
+		-
+			message: '#^Local query scope method ''scopeAllAvailable'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/Dashboard.php
+
+		-
+			message: '#^Local query scope method ''scopeCanPing'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/Device.php
+
+		-
+			message: '#^Local query scope method ''scopeWhereAttributeDisabled'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/Device.php
+
+		-
+			message: '#^Local query scope method ''scopeWhereDeviceSpec'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/Device.php
+
+		-
+			message: '#^Local query scope method ''scopeIsSticky'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/Notification.php
+
+		-
+			message: '#^Local query scope method ''scopeIsUnread'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/Notification.php
+
+		-
+			message: '#^Local query scope method ''scopeLimit'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/Notification.php
+
+		-
+			message: '#^Local query scope method ''scopeSource'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/Notification.php
+
+		-
+			message: '#^Local query scope method ''scopeIsActive'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/Poller.php
+
+		-
+			message: '#^Local query scope method ''scopeIsInactive'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/Poller.php
+
+		-
+			message: '#^Local query scope method ''scopeIsActive'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/PollerCluster.php
+
+		-
+			message: '#^Local query scope method ''scopeIsInactive'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/PollerCluster.php
+
+		-
+			message: '#^Translation "General" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/Models/PollerGroup.php
+
+		-
+			message: '#^Local query scope method ''scopeHasAccess'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/ServiceTemplate.php
+
+		-
+			message: '#^Local query scope method ''scopeIsDisabled'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/ServiceTemplate.php
+
+		-
+			message: '#^Local query scope method ''scopeGuessFromDevice'' should be declared as protected\.$#'
+			identifier: larastan.noPublicModelScopeMethod
+			count: 1
+			path: app/Models/Vminfo.php
+
+		-
+			message: '#^Translation "Components" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/View/Components/Device/EditTabs.php
+
+		-
+			message: '#^Translation "Custom OID" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/View/Components/Device/EditTabs.php
+
+		-
+			message: '#^Translation "Device Settings" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/View/Components/Device/EditTabs.php
+
+		-
+			message: '#^Translation "IPMI" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/View/Components/Device/EditTabs.php
+
+		-
+			message: '#^Translation "Icon" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/View/Components/Device/EditTabs.php
+
+		-
+			message: '#^Translation "Misc" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/View/Components/Device/EditTabs.php
+
+		-
+			message: '#^Translation "Modules" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/View/Components/Device/EditTabs.php
+
+		-
+			message: '#^Translation "Port Settings" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/View/Components/Device/EditTabs.php
+
+		-
+			message: '#^Translation "Event Log" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/View/Components/Device/LogTabs.php
+
+		-
+			message: '#^Translation "Graylog" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/View/Components/Device/LogTabs.php
+
+		-
+			message: '#^Translation "Syslog" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/View/Components/Device/LogTabs.php
+
+		-
+			message: '#^Translation "Capture" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/View/Components/Device/PageLinks.php
+
+		-
+			message: '#^Translation "IPMI" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/View/Components/Device/PageLinks.php
+
+		-
+			message: '#^Translation "SSH" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/View/Components/Device/PageLinks.php
+
+		-
+			message: '#^Translation "Telnet" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/View/Components/Device/PageLinks.php
+
+		-
+			message: '#^Translation "Web" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: app/View/Components/Device/PageLinks.php
+
+		-
+			message: '#^Translation "About" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/about/index.blade.php
+
+		-
+			message: '#^Translation "Entity\-MIB" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/about/index.blade.php
+
+		-
+			message: '#^Translation "GitHub" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/about/index.blade.php
+
+		-
+			message: '#^Translation "HR\-MIB" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/about/index.blade.php
+
+		-
+			message: '#^Translation "Laravel" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/about/index.blade.php
+
+		-
+			message: '#^Translation "LinkedIn" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/about/index.blade.php
+
+		-
+			message: '#^Translation "Merch Shop" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/about/index.blade.php
+
+		-
+			message: '#^Translation "PHP" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/about/index.blade.php
+
+		-
+			message: '#^Translation "Python" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/about/index.blade.php
+
+		-
+			message: '#^Translation "QoS Queues" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/about/index.blade.php
+
+		-
+			message: '#^Translation "RRDtool" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/about/index.blade.php
+
+		-
+			message: '#^Translation "See the \<a target\="_blank" href\="\:url"\>list of contributors\</a\> on GitHub\." has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/about/index.blade.php
+
+		-
+			message: '#^Translation "Twitter" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/about/index.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/alerts/templates/default.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/auth/deny-demo.blade.php
+
+		-
+			message: '#^Translation "You are logged in as a demo account, this page is not accessible to you" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/auth/deny-demo.blade.php
+
+		-
+			message: '#^Translation "Login with" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/auth/login-form.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/components/accordion/index.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/components/accordion/item.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/components/date-range-picker.blade.php
+
+		-
+			message: '#^Translation "Apply" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/date-range-picker.blade.php
+
+		-
+			message: '#^Translation "Now" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/date-range-picker.blade.php
+
+		-
+			message: '#^Translation "Logging" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/device/log-tabs.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/components/expandable.blade.php
+
+		-
+			message: '#^Translation "More" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/expandable.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/components/geo-map.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/components/graph-popup.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/components/icons/transceiver.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/components/input.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/components/linked-graph.blade.php
+
+		-
+			message: '#^Translation "Dropped Packets" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 2
+			path: resources/views/components/qos.blade.php
+
+		-
+			message: '#^Translation "No Buffer Drops" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/qos.blade.php
+
+		-
+			message: '#^Translation "Packet Drops" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/qos.blade.php
+
+		-
+			message: '#^Translation "Packets \(pre policy\)" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/qos.blade.php
+
+		-
+			message: '#^Translation "Traffic \(post policy\)" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/qos.blade.php
+
+		-
+			message: '#^Translation "Traffic \(pre policy\)" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/qos.blade.php
+
+		-
+			message: '#^Translation "Traffic Drops" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/qos.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/components/refresh-timer.blade.php
+
+		-
+			message: '#^Translation "Pause" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/refresh-timer.blade.php
+
+		-
+			message: '#^Translation "Refresh disabled" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/refresh-timer.blade.php
+
+		-
+			message: '#^Translation "Refresh in \:sec" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/refresh-timer.blade.php
+
+		-
+			message: '#^Translation "Refresh paused" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/refresh-timer.blade.php
+
+		-
+			message: '#^Translation "Resume" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/refresh-timer.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/components/select.blade.php
+
+		-
+			message: '#^Translation "Choose" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/select.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/components/tab.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/components/tabs.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/components/theme-toggle.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/components/transceiver.blade.php
+
+		-
+			message: '#^Translation "No" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/transceiver.blade.php
+
+		-
+			message: '#^Translation "Yes" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/components/transceiver.blade.php
+
+		-
+			message: '#^Translation "Rediscover Group" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device-group/index.blade.php
+
+		-
+			message: '#^Translation "Rediscover all Devices of Device Group" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device-group/index.blade.php
+
+		-
+			message: '#^Translation "delete Device Group" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device-group/index.blade.php
+
+		-
+			message: '#^Translation "edit Device Group" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device-group/index.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/overview/maps.blade.php
+
+		-
+			message: '#^Translation "Custom Maps" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/overview/maps.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/overview/transceivers.blade.php
+
+		-
+			message: '#^Translation "No graphs available for this device" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/popup.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/latency.blade.php
+
+		-
+			message: '#^Translation "ICMP Performance" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/latency.blade.php
+
+		-
+			message: '#^Translation "Smokeping" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 2
+			path: resources/views/device/tabs/latency.blade.php
+
+		-
+			message: '#^Translation "Graylog" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 2
+			path: resources/views/device/tabs/logs/graylog.blade.php
+
+		-
+			message: '#^Translation "Syslog" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 2
+			path: resources/views/device/tabs/logs/syslog.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/nac.blade.php
+
+		-
+			message: '#^Translation "Auth By" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/nac.blade.php
+
+		-
+			message: '#^Translation "Domain" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/nac.blade.php
+
+		-
+			message: '#^Translation "First seen" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/nac.blade.php
+
+		-
+			message: '#^Translation "Host Mode" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/nac.blade.php
+
+		-
+			message: '#^Translation "Last seen" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/nac.blade.php
+
+		-
+			message: '#^Translation "Mac Address" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/nac.blade.php
+
+		-
+			message: '#^Translation "NAC Authc" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/nac.blade.php
+
+		-
+			message: '#^Translation "NAC Authz" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/nac.blade.php
+
+		-
+			message: '#^Translation "NAC Method" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/nac.blade.php
+
+		-
+			message: '#^Translation "NAC" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/nac.blade.php
+
+		-
+			message: '#^Translation "Time Elapsed" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/nac.blade.php
+
+		-
+			message: '#^Translation "Time Left" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/nac.blade.php
+
+		-
+			message: '#^Translation "Timeout" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/nac.blade.php
+
+		-
+			message: '#^Translation "Vlan" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/nac.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/neighbours.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/notes.blade.php
+
+		-
+			message: '#^Translation "Device Notes" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/notes.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/ports.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/ports/arp.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/ports/basic.blade.php
+
+		-
+			message: '#^Translation "Index" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/ports/detail.blade.php
+
+		-
+			message: '#^Translation "Media" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/ports/detail.blade.php
+
+		-
+			message: '#^Translation "Per Page" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/ports/detail.blade.php
+
+		-
+			message: '#^Translation "Speed" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/ports/detail.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/ports/fdb.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/ports/graphs.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/ports/links.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/ports/mini_graphs.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/ports/nd.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/ports/portsecurity.blade.php
+
+		-
+			message: '#^Translation "Current MACs" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/ports/portsecurity.blade.php
+
+		-
+			message: '#^Translation "Last MAC" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/ports/portsecurity.blade.php
+
+		-
+			message: '#^Translation "Max MACs" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/ports/portsecurity.blade.php
+
+		-
+			message: '#^Translation "Sticky" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/ports/portsecurity.blade.php
+
+		-
+			message: '#^Translation "Violation Action" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/ports/portsecurity.blade.php
+
+		-
+			message: '#^Translation "Violations" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/ports/portsecurity.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/ports/qos.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/ports/transceivers.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/ports/xdsl.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/qos.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/stp.blade.php
+
+		-
+			message: '#^Translation "No" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/stp.blade.php
+
+		-
+			message: '#^Translation "Yes" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/stp.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/vlans.blade.php
+
+		-
+			message: '#^Translation "VLAN Name" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/vlans.blade.php
+
+		-
+			message: '#^Translation "VLAN Number" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/vlans.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/device/tabs/vm.blade.php
+
+		-
+			message: '#^Translation "VM Name" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/device/tabs/vm.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/graphs/realtime.blade.php
+
+		-
+			message: '#^Translation "Please include this Error\-ID when reporting problems\:" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/error.blade.php
+
+		-
+			message: '#^Translation "install\.\$name\.title" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/install.blade.php
+
+		-
+			message: '#^Translation "install\.\$step\.title" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/install.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/layouts/legacy_page.blade.php
+
+		-
+			message: '#^Translation "API" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "Alerted BGP \:alert_count" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "Alerts \:port_count" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "Custom Map Groups" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "Custom Node Image Manager" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "Edit Current Map" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "Graylog" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "L2TP" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "No Devices" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "Oxidized" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "Pause" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "PeeringDB" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "Port Security" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "RIPE NCC API" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "Refresh" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "SSL Certificates" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "Smokeping" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "VLANs" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/layouts/menu.blade.php
+
+		-
+			message: '#^Translation "Custom Maps" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 2
+			path: resources/views/map/custom-list.blade.php
+
+		-
+			message: '#^Translation "Clone" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/map/custom-manage.blade.php
+
+		-
+			message: '#^Translation "Clone" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/map/custom-map-clone-modal.blade.php
+
+		-
+			message: '#^Translation "Confirm" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/map/custom-map-list-modal.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/map/custom-new.blade.php
+
+		-
+			message: '#^Translation "Device Dependency Map" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/map/device-dependency.blade.php
+
+		-
+			message: '#^Translation "Highlight All Child Devices" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/map/device-dependency.blade.php
+
+		-
+			message: '#^Translation "Geographical Map" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/map/fullscreen.blade.php
+
+		-
+			message: '#^Translation "Network Map" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/map/netmap.blade.php
+
+		-
+			message: '#^Translation "Auth By" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/nac.blade.php
+
+		-
+			message: '#^Translation "Domain" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/nac.blade.php
+
+		-
+			message: '#^Translation "First seen" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/nac.blade.php
+
+		-
+			message: '#^Translation "Host Mode" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/nac.blade.php
+
+		-
+			message: '#^Translation "Last seen" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/nac.blade.php
+
+		-
+			message: '#^Translation "Mac Address" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/nac.blade.php
+
+		-
+			message: '#^Translation "NAC Authc" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/nac.blade.php
+
+		-
+			message: '#^Translation "NAC Authz" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/nac.blade.php
+
+		-
+			message: '#^Translation "NAC Method" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/nac.blade.php
+
+		-
+			message: '#^Translation "NAC" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 2
+			path: resources/views/nac.blade.php
+
+		-
+			message: '#^Translation "Time Elapsed" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/nac.blade.php
+
+		-
+			message: '#^Translation "Time Left" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/nac.blade.php
+
+		-
+			message: '#^Translation "Timeout" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/nac.blade.php
+
+		-
+			message: '#^Translation "Vlan" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/nac.blade.php
+
+		-
+			message: '#^Translation "Current" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/outages/index.blade.php
+
+		-
+			message: '#^Translation "Previous" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/outages/index.blade.php
+
+		-
+			message: '#^Translation "Syslog entries" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/overview/simple.blade.php
+
+		-
+			message: '#^Translation "Disable" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/plugins/admin.blade.php
+
+		-
+			message: '#^Translation "Page" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/plugins/admin.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/plugins/missing.blade.php
+
+		-
+			message: '#^Translation "Poller Group" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/poller/log.blade.php
+
+		-
+			message: '#^Translation "Poller Log" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/poller/log.blade.php
+
+		-
+			message: '#^Translation "Poller Performance" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/poller/performance.blade.php
+
+		-
+			message: '#^Translation "An error occurred deleting this poller\." has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/poller/poller.blade.php
+
+		-
+			message: '#^Translation "Consumed/Maximum" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/poller/poller.blade.php
+
+		-
+			message: '#^Translation "Devices Actioned" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/poller/poller.blade.php
+
+		-
+			message: '#^Translation "Devices Pending" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/poller/poller.blade.php
+
+		-
+			message: '#^Translation "Groups Served" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/poller/poller.blade.php
+
+		-
+			message: '#^Translation "Last Interval" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/poller/poller.blade.php
+
+		-
+			message: '#^Translation "Please confirm that you would like to delete this poller\." has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/poller/poller.blade.php
+
+		-
+			message: '#^Translation "Worker Seconds" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/poller/poller.blade.php
+
+		-
+			message: '#^Translation "Workers" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/poller/poller.blade.php
+
+		-
+			message: '#^Translation "Poller Settings" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/poller/settings.blade.php
+
+		-
+			message: '#^Translation "Create Port Group" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 2
+			path: resources/views/port-group/create.blade.php
+
+		-
+			message: '#^Translation "Edit Port Group" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 2
+			path: resources/views/port-group/edit.blade.php
+
+		-
+			message: '#^Translation "New Port Group" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/port-group/index.blade.php
+
+		-
+			message: '#^Translation "The port group could not be deleted" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/port-group/index.blade.php
+
+		-
+			message: '#^Translation "delete Port Group" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/port-group/index.blade.php
+
+		-
+			message: '#^Translation "edit Port Group" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/port-group/index.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/port/transceiver.blade.php
+
+		-
+			message: '#^Translation "Permissions" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/roles/index.blade.php
+
+		-
+			message: '#^Translation "Role" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/roles/index.blade.php
+
+		-
+			message: '#^Translation "Current MACs" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/search/portsecurity.blade.php
+
+		-
+			message: '#^Translation "Last MAC" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/search/portsecurity.blade.php
+
+		-
+			message: '#^Translation "Max MACs" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/search/portsecurity.blade.php
+
+		-
+			message: '#^Translation "Port Security" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 2
+			path: resources/views/search/portsecurity.blade.php
+
+		-
+			message: '#^Translation "Sticky" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/search/portsecurity.blade.php
+
+		-
+			message: '#^Translation "Violation Action" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/search/portsecurity.blade.php
+
+		-
+			message: '#^Translation "Violations" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/search/portsecurity.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/sensor/diskio.blade.php
+
+		-
+			message: '#^Translation "Ops" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/sensor/diskio.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/sensor/index.blade.php
+
+		-
+			message: '#^Translation "Current" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/sensor/index.blade.php
+
+		-
+			message: '#^Translation "High Limit" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/sensor/index.blade.php
+
+		-
+			message: '#^Translation "Low Limit" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/sensor/index.blade.php
+
+		-
+			message: '#^Translation "Sensor" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/sensor/index.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/sensor/mempool.blade.php
+
+		-
+			message: '#^Translation "Used" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/sensor/mempool.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/sensor/printer-supply.blade.php
+
+		-
+			message: '#^Translation "Descr" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/sensor/printer-supply.blade.php
+
+		-
+			message: '#^Translation "Supply" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/sensor/printer-supply.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/sensor/processor.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/sensor/storage.blade.php
+
+		-
+			message: '#^Translation "Used" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/sensor/storage.blade.php
+
+		-
+			message: '#^Translation "Create Service Template" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 2
+			path: resources/views/service-template/create.blade.php
+
+		-
+			message: '#^Translation "Define Device Rules" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/service-template/form.blade.php
+
+		-
+			message: '#^Translation "Disable polling and alerting" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/service-template/form.blade.php
+
+		-
+			message: '#^Translation "Ignore alert tag" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/service-template/form.blade.php
+
+		-
+			message: '#^Translation "Apply" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/service-template/index.blade.php
+
+		-
+			message: '#^Translation "Are you sure you want to create Services for " has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/service-template/index.blade.php
+
+		-
+			message: '#^Translation "Modified" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 2
+			path: resources/views/service-template/index.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/settings/search.blade.php
+
+		-
+			message: '#^Translation "Search Settings" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/settings/search.blade.php
+
+		-
+			message: '#^Translation "Add Certificate" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/create.blade.php
+
+		-
+			message: '#^Translation "Add SSL Certificate" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 2
+			path: resources/views/ssl-certificates/create.blade.php
+
+		-
+			message: '#^Translation "Host" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/create.blade.php
+
+		-
+			message: '#^Translation "The certificate must be linked to a device\." has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/create.blade.php
+
+		-
+			message: '#^Translation "You have no devices you can assign this certificate to\." has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/create.blade.php
+
+		-
+			message: '#^Translation "Add Certificate" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/index.blade.php
+
+		-
+			message: '#^Translation "Certificate deleted" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/index.blade.php
+
+		-
+			message: '#^Translation "Certificate enabled" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/index.blade.php
+
+		-
+			message: '#^Translation "Certificate paused" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/index.blade.php
+
+		-
+			message: '#^Translation "Days Until Expiry" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/index.blade.php
+
+		-
+			message: '#^Translation "Delete this certificate\?" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/index.blade.php
+
+		-
+			message: '#^Translation "Failed to delete certificate" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/index.blade.php
+
+		-
+			message: '#^Translation "Failed to enable certificate" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/index.blade.php
+
+		-
+			message: '#^Translation "Failed to pause certificate" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/index.blade.php
+
+		-
+			message: '#^Translation "Host" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/index.blade.php
+
+		-
+			message: '#^Translation "Issuer" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/index.blade.php
+
+		-
+			message: '#^Translation "Pause" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/index.blade.php
+
+		-
+			message: '#^Translation "SSL Certificates" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 2
+			path: resources/views/ssl-certificates/index.blade.php
+
+		-
+			message: '#^Translation "Subject" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/index.blade.php
+
+		-
+			message: '#^Translation "Valid Until" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/index.blade.php
+
+		-
+			message: '#^Translation "View" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/index.blade.php
+
+		-
+			message: '#^Translation "Authority Key Identifier" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Back to list" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Basic Constraints" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Certificate Version" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Days Until Expiry" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Delete this certificate\?" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Expired" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Expires soon" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Extended Key Usage" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Fingerprint" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Host" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Issuer Country" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Issuer Organization" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Issuer" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Key Usage" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Last Checked" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "No" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Pause" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Paused" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "SSL Certificate" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 2
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Self Signed" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Serial Number \(Hex\)" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Serial Number" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Signature Algorithm" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Subject Alternative Names" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Subject Key Identifier" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Subject" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Valid From" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Valid Until" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Valid" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "Yes" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "days" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 3
+			path: resources/views/ssl-certificates/show.blade.php
+
+		-
+			message: '#^Translation "2FA" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/user/index.blade.php
+
+		-
+			message: '#^Translation "\<deleted\>" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/user/preferences.blade.php
+
+		-
+			message: '#^Translation "Celsius" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/user/preferences.blade.php
+
+		-
+			message: '#^Translation "Counter Based \(HOTP\)" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/user/preferences.blade.php
+
+		-
+			message: '#^Translation "Counter" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/user/preferences.blade.php
+
+		-
+			message: '#^Translation "Fahrenheit" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/user/preferences.blade.php
+
+		-
+			message: '#^Translation "Global Viewing Access" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/user/preferences.blade.php
+
+		-
+			message: '#^Translation "Manual" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/user/preferences.blade.php
+
+		-
+			message: '#^Translation "No access\!" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/user/preferences.blade.php
+
+		-
+			message: '#^Translation "No roles\!" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/user/preferences.blade.php
+
+		-
+			message: '#^Translation "OAuth/SAML Authentication" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/user/preferences.blade.php
+
+		-
+			message: '#^Translation "QR" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/user/preferences.blade.php
+
+		-
+			message: '#^Translation "Register with" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/user/preferences.blade.php
+
+		-
+			message: '#^Translation "Secret Key" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/user/preferences.blade.php
+
+		-
+			message: '#^Translation "Temperature Units" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/user/preferences.blade.php
+
+		-
+			message: '#^Translation "Time Based \(TOTP\)" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/user/preferences.blade.php
+
+		-
+			message: '#^Translation "Go to page \:page" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/vendor/pagination/tailwind.blade.php
+
+		-
+			message: '#^Translation "Pagination Navigation" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/vendor/pagination/tailwind.blade.php
+
+		-
+			message: '#^Translation "of" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/vendor/pagination/tailwind.blade.php
+
+		-
+			message: '#^Translation "Cost" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/vlans/index.blade.php
+
+		-
+			message: '#^Translation "Domain" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/vlans/index.blade.php
+
+		-
+			message: '#^Translation "Local Name" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/vlans/index.blade.php
+
+		-
+			message: '#^Translation "Untagged" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/vlans/index.blade.php
+
+		-
+			message: '#^Translation "VLAN" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/vlans/index.blade.php
+
+		-
+			message: '#^Translation "Vlans" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/vlans/index.blade.php
+
+		-
+			message: '#^Translation "Host" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/vminfo.blade.php
+
+		-
+			message: '#^Translation "VM Name" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/vminfo.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/alertlog-stats.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/alertlog.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/alerts.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/device-summary-horiz.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/device-summary-vert.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/eventlog.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/graylog.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/placeholder.blade.php
+
+		-
+			message: '#^Translation "OK Devices" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/alert-map.blade.php
+
+		-
+			message: '#^Translation "OK" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/alertlog.blade.php
+
+		-
+			message: '#^Translation "Automatic uncollapse Alert if length below characters" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/alerts.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/settings/availability-map.blade.php
+
+		-
+			message: '#^Translation "Display totals" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/availability-map.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/settings/component-status.blade.php
+
+		-
+			message: '#^Translation "Custom Map" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/custom-map.blade.php
+
+		-
+			message: '#^Translation "Screenshot Mode" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/custom-map.blade.php
+
+		-
+			message: '#^Translation "Select Map" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/custom-map.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/settings/device-summary.blade.php
+
+		-
+			message: '#^Translation "Show Health" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/device-summary.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/settings/device-types.blade.php
+
+		-
+			message: '#^Translation "24h" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/eventlog.blade.php
+
+		-
+			message: '#^Translation "Hide messages older than" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/eventlog.blade.php
+
+		-
+			message: '#^Translation "Only show messages that contain" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/eventlog.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/settings/generic-image.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/settings/globe.blade.php
+
+		-
+			message: '#^Translation "Customoid" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/graph.blade.php
+
+		-
+			message: '#^Translation "Select a custom OID" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/graph.blade.php
+
+		-
+			message: '#^Translation "Select a service" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/graph.blade.php
+
+		-
+			message: '#^Translation "Select sensors of the same type \(e\.g\., all Power or all Temperature\)\. Type to search or scroll for more\." has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/graph.blade.php
+
+		-
+			message: '#^Translation "Service" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/graph.blade.php
+
+		-
+			message: '#^Translation "Stack sensors \(show aggregate total\)" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/graph.blade.php
+
+		-
+			message: '#^Translation "Type to search sensors\.\.\." has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/graph.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/settings/notes.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/settings/top-devices.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/settings/top-errors.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/settings/world-map.blade.php
+
+		-
+			message: '#^Translation "ie\. 5\.8" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/world-map.blade.php
+
+		-
+			message: '#^Translation "settings\.settings\.geoloc\.layer\.options\.Satellite" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/widgets/settings/world-map.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/sortable_table.blade.php
+
+		-
+			message: '#^This view is not used in the project\.$#'
+			identifier: larastan.unusedViews
+			count: 1
+			path: resources/views/widgets/syslog.blade.php
+
+		-
+			message: '#^Translation "Current" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/wireless-sensor/index.blade.php
+
+		-
+			message: '#^Translation "High Limit" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/wireless-sensor/index.blade.php
+
+		-
+			message: '#^Translation "Low Limit" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/wireless-sensor/index.blade.php
+
+		-
+			message: '#^Translation "Sensor" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: resources/views/wireless-sensor/index.blade.php
+
+		-
+			message: '#^Translation "Add the device as a ping only device if it replies to ping but not SNMP" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "CIDR notation network\(s\) to scan, can be ommited if ''nets'' config is set" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "Check for any pending alerts and deliver them via defined transports" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "Check if devices are up or down via icmp" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "Collect billing data" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "Delete all billing history" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "Device spec to poll\: device_id, hostname, wildcard, all" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "Do not update datastores \(RRD, InfluxDB, etc\)" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "How many IPs to scan at a time, more will increase the scan speed, but could overload your system" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "Network is required if ''nets'' is not set in the config" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "Only DNS resolved Devices" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "Optional List of distributed poller groups to poll" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "Print the legend" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "Rename a device, this can be used to change the hostname or IP of a device" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "Run billing calculations" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "Scan the network for hosts and try to add them to LibreNMS" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "The bill id to poll" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "The existing hostname, IP, or device id" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "The new hostname or IP" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 1
+			path: routes/console.php
+
+		-
+			message: '#^Translation "Update LibreNMS and run maintenance routines" has not been found\.$#'
+			identifier: larastan.missingTranslations
+			count: 2
+			path: routes/console.php

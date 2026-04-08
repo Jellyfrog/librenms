@@ -3,6 +3,7 @@ includes:
     - vendor/phpstan/phpstan-mockery/extension.neon
     - vendor/phpstan/phpstan-phpunit/extension.neon
     - vendor/phpstan/phpstan-phpunit/rules.neon
+    - phpstan-baseline.neon
 
 parameters:
     phpVersion:
@@ -34,6 +35,13 @@ parameters:
     checkInternalClassCaseSensitivity: true
 
     checkModelProperties: true
+    checkModelMethodVisibility: true
+    noUnnecessaryEnumerableToArrayCalls: true
+    checkOctaneCompatibility: true
+    checkUnusedViews: true
+    checkMissingTranslations: true
+    checkAuthCallsWhenInRequestScope: true
+    checkConfigTypes: true
 
     ignoreErrors:
         - '#Unsafe usage of new static#'
