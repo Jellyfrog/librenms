@@ -34,9 +34,13 @@ parameters:
     checkInternalClassCaseSensitivity: true
 
     checkModelProperties: true
+    checkMissingTranslations: true
 
     ignoreErrors:
         - '#Unsafe usage of new static#'
+        -
+            identifier: larastan.missingTranslations
+            message: '#Translation "install\.\$[a-z]+\.title" has not been found\.#'
 
     parallel:
         processTimeout: 300.0

@@ -1054,6 +1054,7 @@ return [
                 'options' => [
                     'Streets' => 'Streets',
                     'Sattelite' => 'Sattelite',
+                    'Satellite' => 'Satellite',
                     'Topography' => 'Topography',
                 ],
             ],
