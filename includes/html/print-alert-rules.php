@@ -59,7 +59,7 @@ if (isset($_POST['create-default'])) {
     foreach ($default_rules as $add_rule) {
         $extra = $default_extra;
         if (isset($add_rule['extra'])) {
-            $extra = array_replace($extra, json_decode($add_rule['extra'], true));
+            $extra = array_replace($extra, $add_rule['extra']);
         }
 
         $qb = QueryBuilderParser::fromJson($add_rule['builder']);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Facades\LibrenmsConfig;
 use App\Models\AlertRule;
+use Symfony\Component\Yaml\Yaml;
 
 class AlertRuleTemplateController extends Controller
 {
@@ -61,6 +62,6 @@ class AlertRuleTemplateController extends Controller
 
     public function templatesCollection(): array
     {
-        return json_decode(file_get_contents(resource_path('definitions/alert_rules.json')), true);
+        return Yaml::parseFile(resource_path('definitions/alert_rules.yaml'));
     }
 }

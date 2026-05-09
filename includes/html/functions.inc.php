@@ -22,6 +22,7 @@ use LibreNMS\Enum\ImageFormat;
 use LibreNMS\Util\Number;
 use LibreNMS\Util\Rewrite;
 use LibreNMS\Util\Url;
+use Symfony\Component\Yaml\Yaml;
 
 function toner2colour($descr, $percent)
 {
@@ -728,7 +729,7 @@ function file_download($filename, $content)
 
 function get_rules_from_json()
 {
-    return json_decode(file_get_contents(resource_path('definitions/alert_rules.json')), true);
+    return Yaml::parseFile(resource_path('definitions/alert_rules.yaml'));
 }
 
 function search_oxidized_config($search_in_conf_textbox)

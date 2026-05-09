@@ -1,0 +1,122 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "array",
+    "items": {
+        "$ref": "#/$defs/rule"
+    },
+    "$defs": {
+        "rule": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "severity": {
+                    "type": "string",
+                    "enum": ["ok", "warning", "critical"]
+                },
+                "default": {
+                    "type": "boolean"
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "extra": {
+                    "type": "object",
+                    "properties": {
+                        "mute": {"type": "boolean"},
+                        "count": {"type": "integer"},
+                        "delay": {"type": "integer"},
+                        "invert": {"type": "boolean"},
+                        "interval": {"type": "integer"},
+                        "recovery": {"type": "boolean"},
+                        "acknowledgement": {"type": "boolean"}
+                    },
+                    "additionalProperties": false
+                },
+                "builder": {
+                    "$ref": "#/$defs/group"
+                }
+            },
+            "additionalProperties": false,
+            "required": ["name", "builder"]
+        },
+        "group": {
+            "type": "object",
+            "properties": {
+                "condition": {
+                    "type": "string",
+                    "enum": ["AND", "OR"]
+                },
+                "rules": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "oneOf": [
+                            {"$ref": "#/$defs/group"},
+                            {"$ref": "#/$defs/leaf"}
+                        ]
+                    }
+                },
+                "valid": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": false,
+            "required": ["condition", "rules"]
+        },
+        "leaf": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "field": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "type": {
+                    "type": ["string", "null"],
+                    "enum": ["string", "integer", "double", "date", "time", "datetime", "boolean", null]
+                },
+                "input": {
+                    "type": "string",
+                    "enum": ["text", "number", "textarea", "radio", "checkbox", "select"]
+                },
+                "operator": {
+                    "type": "string",
+                    "enum": [
+                        "equal",
+                        "not_equal",
+                        "in",
+                        "not_in",
+                        "less",
+                        "less_or_equal",
+                        "greater",
+                        "greater_or_equal",
+                        "between",
+                        "not_between",
+                        "begins_with",
+                        "not_begins_with",
+                        "contains",
+                        "not_contains",
+                        "ends_with",
+                        "not_ends_with",
+                        "is_empty",
+                        "is_not_empty",
+                        "is_null",
+                        "is_not_null",
+                        "regex"
+                    ]
+                },
+                "value": {
+                    "type": ["string", "number", "boolean", "array", "null"]
+                }
+            },
+            "additionalProperties": false,
+            "required": ["id", "field", "type", "input", "operator", "value"]
+        }
+    }
+}

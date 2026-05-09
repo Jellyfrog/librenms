@@ -75,6 +75,13 @@ final class YamlSchemaTest extends TestCase
         $this->validateYamlFilesAgainstSchema(resource_path('definitions/os_discovery'), resource_path('definitions/schema/discovery_schema.json'));
     }
 
+    public function testAlertRulesSchema(): void
+    {
+        $error = $this->validateFileAgainstSchema(resource_path('definitions/alert_rules.yaml'), resource_path('definitions/schema/alert_rules_schema.json'));
+
+        $this->assertNull($error, (string) $error);
+    }
+
     private function validateYamlFilesAgainstSchema(string $dir, string $schema_file): void
     {
         $errors = [];
