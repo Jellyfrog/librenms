@@ -46,6 +46,7 @@ lib/
 lib64
 pyvenv.cfg
 
-/.phpunit.cache/storage/pail
+/.phpunit.cache
+/storage/pail
 /.nova
 /database/testing.sqlite

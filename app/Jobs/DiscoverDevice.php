@@ -131,7 +131,7 @@ EOH, $this->device->hostname, $os_group ? " ($os_group)" : '', $this->device->de
                 }
             } catch (Throwable $e) {
                 // Re-throw exception if we're in running tests
-                if (defined('PHPUNIT_RUNNING')) {
+                if (defined('PEST_RUNNING')) {
                     throw $e;
                 }
 
