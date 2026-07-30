@@ -21,41 +21,35 @@
  * @link       https://www.librenms.org
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use App\Models\Device;
 use App\Models\Port;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Enum\Severity;
-use LibreNMS\Tests\Traits\RequiresDatabase;
 
-final class HpicfBridgeLoopProtectLoopDetectedNotificationTest extends SnmpTrapTestCase
-{
-    use RequiresDatabase;
-    use DatabaseTransactions;
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-    /**
-     * Test HpicfBridgeLoopProtectLoopDetectedNotification.php handler
-     *
-     * @return void
-     */
-    public function testHpicfBridgeLoopProtectLoopDetectedNotification(): void
-    {
-        $device = Device::factory()->create();
-        $port = Port::factory()->make(['ifIndex' => '1', 'ifDescr' => 'A1']);
-        $device->ports()->save($port);
+// replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
+beforeEach(function () {
+    if (! getenv('DBTEST')) {
+        $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
+    }
+});
 
-        $this->assertTrapLogsMessage("$device->hostname
+
+test('hpicf bridge loop protect loop detected notification', function () {
+    $device = Device::factory()->create();
+    $port = Port::factory()->make(['ifIndex' => '1', 'ifDescr' => 'A1']);
+    $device->ports()->save($port);
+
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:44289->[1.1.1.1]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 82:19:24:56.09
 SNMPv2-MIB::snmpTrapOID.0 HP-ICF-BRIDGE::hpicfBridgeLoopProtectLoopDetectedNotification
 IF-MIB::ifIndex.$port->ifIndex $port->ifIndex
 HP-ICF-BRIDGE::hpicfBridgeLoopProtectPortLoopCount 1
 HP-ICF-BRIDGE::hpicfBridgeLoopProtectPortReceiverAction disableTx",
-            "Loop Detected $port->ifDescr (Count 1, Action disableTx)",
-            'Could not handle HP-ICF-BRIDGE::HpicfBridgeLoopProtectLoopDetectedNotification trap',
-            [Severity::Warning, 'loop', $port->ifDescr],
-            $device
-        );
-    }
-}
+        "Loop Detected $port->ifDescr (Count 1, Action disableTx)",
+        'Could not handle HP-ICF-BRIDGE::HpicfBridgeLoopProtectLoopDetectedNotification trap',
+        [Severity::Warning, 'loop', $port->ifDescr],
+        $device
+    );
+});

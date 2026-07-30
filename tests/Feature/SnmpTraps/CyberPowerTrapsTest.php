@@ -24,15 +24,13 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
 
-final class CyberPowerTrapsTest extends SnmpTrapTestCase
-{
-    public function testCpUpsOverload(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+
+test('cp ups overload', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -42,15 +40,14 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'The UPS has sensed an overload condition.',
-            'Could not handle CpUpsOverload trap',
-            [Severity::Error],
-        );
-    }
+        'The UPS has sensed an overload condition.',
+        'Could not handle CpUpsOverload trap',
+        [Severity::Error],
+    );
+});
 
-    public function testCpUpsDiagFailed(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp ups diag failed', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -60,15 +57,14 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'The UPS battery test failed.',
-            'Could not handle CpUpsDiagFailed trap',
-            [Severity::Error],
-        );
-    }
+        'The UPS battery test failed.',
+        'Could not handle CpUpsDiagFailed trap',
+        [Severity::Error],
+    );
+});
 
-    public function testCpUpsDischarged(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp ups discharged', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -78,14 +74,13 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'The UPS has started a runtime calibration process.',
-            'Could not handle CpUpsDischarged trap',
-        );
-    }
+        'The UPS has started a runtime calibration process.',
+        'Could not handle CpUpsDischarged trap',
+    );
+});
 
-    public function testCpUpsOnBattery(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp ups on battery', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -95,15 +90,14 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'Utility power failed, transfer to backup mode.',
-            'Could not handle CpUpsOnBattery trap',
-            [Severity::Warning],
-        );
-    }
+        'Utility power failed, transfer to backup mode.',
+        'Could not handle CpUpsOnBattery trap',
+        [Severity::Warning],
+    );
+});
 
-    public function testCpLowBattery(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp low battery', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -113,15 +107,14 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'The UPS battery capacity is low than threshold, soon to be exhausted.',
-            'Could not handle CpLowBattery trap',
-            [Severity::Warning],
-        );
-    }
+        'The UPS battery capacity is low than threshold, soon to be exhausted.',
+        'Could not handle CpLowBattery trap',
+        [Severity::Warning],
+    );
+});
 
-    public function testCpPowerRestored(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp power restored', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -131,15 +124,14 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'Utility power restored, return from backup mode.',
-            'Could not handle CpPowerRestored trap',
-            [Severity::Ok],
-        );
-    }
+        'Utility power restored, return from backup mode.',
+        'Could not handle CpPowerRestored trap',
+        [Severity::Ok],
+    );
+});
 
-    public function testCpUpsDiagPassed(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp ups diag passed', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -149,14 +141,13 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'The UPS battery test passed.',
-            'Could not handle CpUpsDiagPassed trap',
-        );
-    }
+        'The UPS battery test passed.',
+        'Could not handle CpUpsDiagPassed trap',
+    );
+});
 
-    public function testCpRtnLowBattery(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp rtn low battery', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -166,15 +157,14 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'The UPS has returned from a low battery condition.',
-            'Could not handle CpRtnLowBattery trap',
-            [Severity::Ok],
-        );
-    }
+        'The UPS has returned from a low battery condition.',
+        'Could not handle CpRtnLowBattery trap',
+        [Severity::Ok],
+    );
+});
 
-    public function testCpUpsTurnedOff(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp ups turned off', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -184,15 +174,14 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'The UPS has been turned off.',
-            'Could not handle CpUpsTurnedOff trap',
-            [Severity::Warning],
-        );
-    }
+        'The UPS has been turned off.',
+        'Could not handle CpUpsTurnedOff trap',
+        [Severity::Warning],
+    );
+});
 
-    public function testCpUpsSleeping(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp ups sleeping', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -202,15 +191,14 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'The UPS entered sleep mode. Output power will not be provided.',
-            'Could not handle CpUpsSleeping trap',
-            [Severity::Warning],
-        );
-    }
+        'The UPS entered sleep mode. Output power will not be provided.',
+        'Could not handle CpUpsSleeping trap',
+        [Severity::Warning],
+    );
+});
 
-    public function testCpUpsWokeUp(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp ups woke up', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -220,15 +208,14 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'The UPS woke up from sleep mode. Output power is being provided.',
-            'Could not handle CpUpsWokeUp trap',
-            [Severity::Ok],
-        );
-    }
+        'The UPS woke up from sleep mode. Output power is being provided.',
+        'Could not handle CpUpsWokeUp trap',
+        [Severity::Ok],
+    );
+});
 
-    public function testCpUpsRebootStarted(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp ups reboot started', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -238,15 +225,14 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'The UPS started reboot sequence.',
-            'Could not handle CpUpsRebootStarted trap',
-            [Severity::Warning],
-        );
-    }
+        'The UPS started reboot sequence.',
+        'Could not handle CpUpsRebootStarted trap',
+        [Severity::Warning],
+    );
+});
 
-    public function testCpUpsOverTemp(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp ups over temp', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -256,15 +242,14 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'The UPS inner temperature is too high.',
-            'Could not handle CpUpsOverTemp trap',
-            [Severity::Error],
-        );
-    }
+        'The UPS inner temperature is too high.',
+        'Could not handle CpUpsOverTemp trap',
+        [Severity::Error],
+    );
+});
 
-    public function testCpRtnOverTemp(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp rtn over temp', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -274,15 +259,14 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'The UPS over temperature condition cleared.',
-            'Could not handle CpRtnOverTemp trap',
-            [Severity::Ok],
-        );
-    }
+        'The UPS over temperature condition cleared.',
+        'Could not handle CpRtnOverTemp trap',
+        [Severity::Ok],
+    );
+});
 
-    public function testCpRtOverLoad(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp rt over load', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -292,15 +276,14 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'The UPS has returned from an overload condition.',
-            'Could not handle CpRtOverLoad trap',
-            [Severity::Ok],
-        );
-    }
+        'The UPS has returned from an overload condition.',
+        'Could not handle CpRtOverLoad trap',
+        [Severity::Ok],
+    );
+});
 
-    public function testCpRtnDischarged(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp rtn discharged', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -310,15 +293,14 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'The UPS runtime calibration completed.',
-            'Could not handle CpRtnDischarged trap',
-            [Severity::Ok],
-        );
-    }
+        'The UPS runtime calibration completed.',
+        'Could not handle CpRtnDischarged trap',
+        [Severity::Ok],
+    );
+});
 
-    public function testCpUpsChargerFailure(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp ups charger failure', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -328,15 +310,14 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'The battery charger is abnormal.',
-            'Could not handle CpUpsChargerFailure trap',
-            [Severity::Warning],
-        );
-    }
+        'The battery charger is abnormal.',
+        'Could not handle CpUpsChargerFailure trap',
+        [Severity::Warning],
+    );
+});
 
-    public function testCpRtnChargerFailure(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp rtn charger failure', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -346,15 +327,14 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'The charger returned from a failure condition.',
-            'Could not handle CpRtnChargerFailure trap',
-            [Severity::Ok],
-        );
-    }
+        'The charger returned from a failure condition.',
+        'Could not handle CpRtnChargerFailure trap',
+        [Severity::Ok],
+    );
+});
 
-    public function testCpUpsBatteryNotPresent(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cp ups battery not present', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 488:17:19:10.00
@@ -364,8 +344,7 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 "comstring"
 SNMPv2-MIB::snmpTrapEnterprise.0 CPS-MIB::cps
 TRAP,
-            'Battery is not present.',
-            'Could not handle CpUpsBatteryNotPresent trap',
-        );
-    }
-}
+        'Battery is not present.',
+        'Could not handle CpUpsBatteryNotPresent trap',
+    );
+});

@@ -24,18 +24,13 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Unit;
-
-use LibreNMS\Tests\TestCase;
 use LibreNMS\Validations\Rrd\CheckRrdVersion;
-use Storage;
 
-final class ValidationFixTest extends TestCase
-{
-    public function testRrdVersionFix(): void
-    {
-        Storage::fake('base');
-        Storage::disk('base')->put('config.php', <<<'EOF'
+uses(\LibreNMS\Tests\TestCase::class);
+
+test('rrd version fix', function () {
+    Storage::fake('base');
+    Storage::disk('base')->put('config.php', <<<'EOF'
 <?php
 $config['test'] = 'rrdtool_version';
 $config['rrdtool_version'] = '1.0';
@@ -43,17 +38,16 @@ $config["rrdtool_version"] = '1.1';
 # comment
 
 EOF
-        );
+    );
 
-        (new CheckRrdVersion())->fix();
+    (new CheckRrdVersion())->fix();
 
-        $actual = Storage::disk('base')->get('config.php');
-        $this->assertSame(<<<'EOF'
+    $actual = Storage::disk('base')->get('config.php');
+    expect($actual)->toBe(<<<'EOF'
 <?php
 $config['test'] = 'rrdtool_version';
 # comment
 
-EOF, $actual);
-        Storage::disk('base')->delete('config.php');
-    }
-}
+EOF);
+    Storage::disk('base')->delete('config.php');
+});

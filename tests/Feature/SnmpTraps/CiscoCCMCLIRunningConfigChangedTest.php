@@ -22,31 +22,19 @@
  * @author     Neil Lathwood <neil@configuration.co.uk>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
-use PHPUnit\Framework\Attributes\TestDox;
 
-#[TestDox('Cisco CCM CLI Running Config Changed Trap')]
-final class CiscoCCMCLIRunningConfigChangedTest extends SnmpTrapTestCase
-{
-    /**
-     * Test CiscoCCMCLIRunningConfigChanged trap handler
-     *
-     * @return void
-     */
-    #[TestDox('Cisco CCM CLI Running Config Changed')]
-    public function testCiscoCCMCLIRunningConfigChanged(): void
-    {
-        $this->assertTrapLogsMessage('{{ hostname }}
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+test('Cisco CCM CLI Running Config Changed', function () {
+    $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:49563->[10.0.0.1]:162]:
 DISMAN-EXPRESSION-MIB::sysUpTimeInstance = Timeticks: (498047044) 57 days, 15:27:50.44
 SNMPv2-MIB::snmpTrapOID.0 CISCO-CONFIG-MAN-MIB::ccmCLIRunningConfigChanged
 CISCO-CONFIG-MAN-MIB::ccmHistoryRunningLastChanged.0 = Timeticks: (498046440) 57 days, 15:27:44.40
 CISCO-CONFIG-MAN-MIB::ccmHistoryEventTerminalType.479 = INTEGER: notApplicable(1)',
-            'The running config was changed at system uptime = Timeticks: (498046440) 57 days, 15:27:44.40 from terminal type = INTEGER: notApplicable(1)',
-            'Could not handle CiscoCCMCLIRunningConfigChanged trap',
-            [Severity::Info],
-        );
-    }
-}
+        'The running config was changed at system uptime = Timeticks: (498046440) 57 days, 15:27:44.40 from terminal type = INTEGER: notApplicable(1)',
+        'Could not handle CiscoCCMCLIRunningConfigChanged trap',
+        [Severity::Info],
+    );
+});

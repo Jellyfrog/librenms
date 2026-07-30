@@ -22,30 +22,26 @@
  * @author     Neil Lathwood <neil@configuration.co.uk>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use App\Models\Device;
 use App\Models\Port;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Enum\IfOperStatus;
 use LibreNMS\Enum\Severity;
-use LibreNMS\Tests\Traits\RequiresDatabase;
-use PHPUnit\Framework\Attributes\TestDox;
 
-#[TestDox('Cisco cieLinkDown Trap')]
-final class CieLinkDownTest extends SnmpTrapTestCase
-{
-    use RequiresDatabase;
-    use DatabaseTransactions;
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-    #[TestDox('Cisco cieLinkDown')]
-    public function testCieLinkDown(): void
-    {
-        $device = Device::factory()->create();
-        $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up', 'ifDescr' => 'Ethernet1/42']);
-        $device->ports()->save($port);
+// replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
+beforeEach(function () {
+    if (! getenv('DBTEST')) {
+        $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
+    }
+});
 
-        $this->assertTrapLogsMessage("$device->hostname
+test('Cisco cieLinkDown', function () {
+    $device = Device::factory()->create();
+    $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up', 'ifDescr' => 'Ethernet1/42']);
+    $device->ports()->save($port);
+
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:49563->[10.0.0.1]:162
 DISMAN-EXPRESSION-MIB::sysUpTimeInstance = Timeticks: (494618324) 57 days, 5:56:23.24
 SNMPv2-MIB::snmpTrapOID.0 CISCO-IF-EXTENSION-MIB::cieLinkDown
@@ -54,20 +50,19 @@ IF-MIB::ifAdminStatus.$port->ifIndex up
 IF-MIB::ifOperStatus.$port->ifIndex down
 IF-MIB::ifName.$port->ifIndex Ethernet1/42
 IF-MIB::ifType.$port->ifIndex ethernetCsmacd",
-            [
-                "Cisco cieLinkDown Trap: $port->ifDescr AdminStatus: up, OperStatus: down",
-                "Interface went Down : $port->ifDescr (TRAP)",
-            ],
-            'Could not handle CieLinkDown trap',
-            [
-                [Severity::Error, 'interface', $port->port_id],
-                [Severity::Error, 'interface', $port->port_id],
-            ],
-            $device,
-        );
+        [
+            "Cisco cieLinkDown Trap: $port->ifDescr AdminStatus: up, OperStatus: down",
+            "Interface went Down : $port->ifDescr (TRAP)",
+        ],
+        'Could not handle CieLinkDown trap',
+        [
+            [Severity::Error, 'interface', $port->port_id],
+            [Severity::Error, 'interface', $port->port_id],
+        ],
+        $device,
+    );
 
-        $port = $port->fresh();
-        $this->assertEquals(IfOperStatus::Up, $port->ifAdminStatus);
-        $this->assertEquals(IfOperStatus::Down, $port->ifOperStatus);
-    }
-}
+    $port = $port->fresh();
+    expect($port->ifAdminStatus)->toEqual(IfOperStatus::Up);
+    expect($port->ifOperStatus)->toEqual(IfOperStatus::Down);
+});

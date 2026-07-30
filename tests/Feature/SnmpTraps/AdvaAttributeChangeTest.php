@@ -24,16 +24,10 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-use PHPUnit\Framework\Attributes\TestDox;
-
-final class AdvaAttributeChangeTest extends SnmpTrapTestCase
-{
-    #[TestDox('Syslog IP version modified')]
-    public function testSyslogIPVersionModified(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('Syslog IP version modified', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -43,15 +37,13 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 0B 28 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.150 150
 ADVA-MIB::neEventLogTimeStamp.150 2018-12-10,9:11:40.5,-6:0
 TRAP,
-            'Syslog server 1 IP version set to ipv6',
-            'Could not handle cmAttributeValueChangeTrap IP version modified',
-        );
-    }
+        'Syslog server 1 IP version set to ipv6',
+        'Could not handle cmAttributeValueChangeTrap IP version modified',
+    );
+});
 
-    #[TestDox('Syslog IPv6 addr modified')]
-    public function testSyslogIP6AddrModified(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('Syslog IPv6 addr modified', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -61,15 +53,13 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 0B 28 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.150 150
 ADVA-MIB::neEventLogTimeStamp.150 2018-12-10,9:11:40.5,-6:0
 TRAP,
-            'Syslog server 1 IP address changed to 2001:49d0:3c0c:0:0:0:0:1',
-            'Could not handle cmAttributeValueChangeTrap IPv6 address modified'
-        );
-    }
+        'Syslog server 1 IP address changed to 2001:49d0:3c0c:0:0:0:0:1',
+        'Could not handle cmAttributeValueChangeTrap IPv6 address modified'
+    );
+});
 
-    #[TestDox('Syslog IP addr modified')]
-    public function testSyslogIPAddrModified(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('Syslog IP addr modified', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -79,14 +69,13 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 0B 28 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.150 150
 ADVA-MIB::neEventLogTimeStamp.150 2018-12-10,9:11:40.5,-6:0
 TRAP,
-            'Syslog server 1 IP address changed to 192.168.1.1',
-            'Could not handle cmAttributeValueChangeTrap IPv4 address modified'
-        );
-    }
+        'Syslog server 1 IP address changed to 192.168.1.1',
+        'Could not handle cmAttributeValueChangeTrap IPv4 address modified'
+    );
+});
 
-    public function testSyslogPortModified(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('syslog port modified', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -96,14 +85,13 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 0B 28 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.150 150
 ADVA-MIB::neEventLogTimeStamp.150 2018-12-10,9:11:40.5,-6:0
 TRAP,
-            'Syslog server 1 port changed to 514',
-            'Could not handle cmAttributeValueChangeTrap port modified'
-        );
-    }
+        'Syslog server 1 port changed to 514',
+        'Could not handle cmAttributeValueChangeTrap port modified'
+    );
+});
 
-    public function testAclModified(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('acl modified', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -113,14 +101,13 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 11 16 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.155 155
 ADVA-MIB::neEventLogTimeStamp.155 2018-12-10,9:17:22.5,-6:0
 TRAP,
-            'ACL 5 modified',
-            'Could not handle cmAttributeValueChangeTrap ACL entry modified'
-        );
-    }
+        'ACL 5 modified',
+        'Could not handle cmAttributeValueChangeTrap ACL entry modified'
+    );
+});
 
-    public function testBannerModified(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('banner modified', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -130,14 +117,13 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 12 2B 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.157 157
 ADVA-MIB::neEventLogTimeStamp.157 2018-12-10,9:18:43.6,-6:0
 TRAP,
-            'MOTD/Banner modified',
-            'Could not handle cmAttributeValueChangeTrap banner modified'
-        );
-    }
+        'MOTD/Banner modified',
+        'Could not handle cmAttributeValueChangeTrap banner modified'
+    );
+});
 
-    public function testTimeSourceModified(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('time source modified', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -148,11 +134,11 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 1C 39 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.169 169
 ADVA-MIB::neEventLogTimeStamp.169 2018-12-10,9:28:57.1,-6:0
 TRAP,
-            'Time source set to ntp',
-            'Could not handle cmAttributeValueChangeTrap time source modified'
-        );
+        'Time source set to ntp',
+        'Could not handle cmAttributeValueChangeTrap time source modified'
+    );
 
-        $this->assertTrapLogsMessage(<<<'TRAP'
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -163,14 +149,13 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 1C 39 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.169 169
 ADVA-MIB::neEventLogTimeStamp.169 2018-12-10,9:28:57.1,-6:0
 TRAP,
-            'Time source set to local',
-            'Could not handle cmAttributeValueChangeTrap time source modified'
-        );
-    }
+        'Time source set to local',
+        'Could not handle cmAttributeValueChangeTrap time source modified'
+    );
+});
 
-    public function testTimeZoneModified(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('time zone modified', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -180,11 +165,11 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 14 21 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.158 158
 ADVA-MIB::neEventLogTimeStamp.158 2018-12-10,9:20:33.5,-6:0
 TRAP,
-            'Daylight Savings Time enabled',
-            'Could not handle cmAttributeValueChangeTrap DST enabled'
-        );
+        'Daylight Savings Time enabled',
+        'Could not handle cmAttributeValueChangeTrap DST enabled'
+    );
 
-        $this->assertTrapLogsMessage(<<<'TRAP'
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -194,11 +179,11 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 14 21 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.158 158
 ADVA-MIB::neEventLogTimeStamp.158 2018-12-10,9:20:33.5,-6:0
 TRAP,
-            'Daylight Savings Time disabled',
-            'Could not handle cmAttributeValueChangeTrap DST disabled'
-        );
+        'Daylight Savings Time disabled',
+        'Could not handle cmAttributeValueChangeTrap DST disabled'
+    );
 
-        $this->assertTrapLogsMessage(<<<'TRAP'
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -208,14 +193,13 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 0A 15 1E 00 2D 05 00 "
 ADVA-MIB::neEventLogIndex.160 160
 ADVA-MIB::neEventLogTimeStamp.160 2018-12-10,10:21:30.3,-5:0
 TRAP,
-            'UTC offset (timezone) change to -05:00',
-            'Could not handle cmAttributeValueChangeTrap UTC offset modified'
-        );
-    }
+        'UTC offset (timezone) change to -05:00',
+        'Could not handle cmAttributeValueChangeTrap UTC offset modified'
+    );
+});
 
-    public function testNtpModified(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('ntp modified', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -226,11 +210,11 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 1E 11 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.170 170
 ADVA-MIB::neEventLogTimeStamp.170 2018-12-10,9:30:17.0,-6:0
 TRAP,
-            'Primary NTP server IP changed to 192.168.2.2',
-            'Could not handle cmAttributeValueChangeTrap NTP primary server modified'
-        );
+        'Primary NTP server IP changed to 192.168.2.2',
+        'Could not handle cmAttributeValueChangeTrap NTP primary server modified'
+    );
 
-        $this->assertTrapLogsMessage(<<<'TRAP'
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -241,14 +225,13 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 1E 11 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.170 170
 ADVA-MIB::neEventLogTimeStamp.170 2018-12-10,9:30:17.0,-6:0
 TRAP,
-            'Backup NTP server IP changed to 192.168.2.1',
-            'Could not handle cmAttributeValueChangeTrap NTP backup server modified'
-        );
-    }
+        'Backup NTP server IP changed to 192.168.2.1',
+        'Could not handle cmAttributeValueChangeTrap NTP backup server modified'
+    );
+});
 
-    public function testAuthServerModified(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('auth server modified', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -262,15 +245,15 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 20 12 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.173 173
 ADVA-MIB::neEventLogTimeStamp.173 2018-12-10,9:32:18.1,-6:0
 TRAP,
-            [
-                'Authentication server 3 IP changed to 192.168.1.1',
-                'Authentication server 3 secret changed',
-                'Authentication server 3 enabled',
-            ],
-            'Could not handle cmAttributeValueChangeTrap authentication server modified'
-        );
+        [
+            'Authentication server 3 IP changed to 192.168.1.1',
+            'Authentication server 3 secret changed',
+            'Authentication server 3 enabled',
+        ],
+        'Could not handle cmAttributeValueChangeTrap authentication server modified'
+    );
 
-        $this->assertTrapLogsMessage(<<<'TRAP'
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -280,13 +263,12 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 20 12 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.173 173
 ADVA-MIB::neEventLogTimeStamp.173 2018-12-10,9:32:18.1,-6:0
 TRAP,
-            'Authentication server 3 disabled',
-            'Could not handle cmAttributeValueChangeTrap authentication server disabled');
-    }
+        'Authentication server 3 disabled',
+        'Could not handle cmAttributeValueChangeTrap authentication server disabled');
+});
 
-    public function testNeModified(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('ne modified', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -297,17 +279,16 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 22 17 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.175 175
 ADVA-MIB::neEventLogTimeStamp.175 2018-12-10,9:34:23.0,-6:0
 TRAP,
-            [
-                'Network Element name changed to adva-test-1',
-                'Network Element prompt changed to adva-test-1-prompt',
-            ],
-            'Could not handle cmAttributeValueChangeTrap network element modified'
-        );
-    }
+        [
+            'Network Element name changed to adva-test-1',
+            'Network Element prompt changed to adva-test-1-prompt',
+        ],
+        'Could not handle cmAttributeValueChangeTrap network element modified'
+    );
+});
 
-    public function testSnmpDyingGaspStateModified(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('snmp dying gasp state modified', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -317,10 +298,10 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 24 0E 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.177 177
 ADVA-MIB::neEventLogTimeStamp.177 2018-12-10,9:36:14.5,-6:0
 TRAP,
-            'SNMP Dying Gasp is enabled',
-            'Could not handle cmAttributeValueChangeTrap SNMP dying gasp enabled');
+        'SNMP Dying Gasp is enabled',
+        'Could not handle cmAttributeValueChangeTrap SNMP dying gasp enabled');
 
-        $this->assertTrapLogsMessage(<<<'TRAP'
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -330,13 +311,12 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 24 0E 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.177 177
 ADVA-MIB::neEventLogTimeStamp.177 2018-12-10,9:36:14.5,-6:0
 TRAP,
-            'SNMP Dying Gasp is disabled',
-            'Could not handle cmAttributeValueChangeTrap SNMP dying gasp disabled');
-    }
+        'SNMP Dying Gasp is disabled',
+        'Could not handle cmAttributeValueChangeTrap SNMP dying gasp disabled');
+});
 
-    public function testNetPortModified(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('net port modified', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -352,17 +332,17 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 29 31 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.188 188
 ADVA-MIB::neEventLogTimeStamp.188 2018-12-10,9:41:49.0,-6:0
 TRAP,
-            [
-                'Network Port 1-1-1-2 changed speed to speed-auto-100MB-full',
-                'Network Port 1-1-1-2 changed media to copper',
-                'Network Port 1-1-1-2 changed MDIX to crossed',
-                'Network Port 1-1-1-2 AutoDiagnostic disabled',
-                'Network Port 1-1-1-2 administrative state changed to in-service',
-                'Network Port 1-1-1-2 MTU changed to 9000 bytes',
-            ],
-            'Could not handle cmAttributeValueChangeTrap network port modified specific messages');
+        [
+            'Network Port 1-1-1-2 changed speed to speed-auto-100MB-full',
+            'Network Port 1-1-1-2 changed media to copper',
+            'Network Port 1-1-1-2 changed MDIX to crossed',
+            'Network Port 1-1-1-2 AutoDiagnostic disabled',
+            'Network Port 1-1-1-2 administrative state changed to in-service',
+            'Network Port 1-1-1-2 MTU changed to 9000 bytes',
+        ],
+        'Could not handle cmAttributeValueChangeTrap network port modified specific messages');
 
-        $this->assertTrapLogsMessage(<<<'TRAP'
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -372,13 +352,12 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 29 31 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.188 188
 ADVA-MIB::neEventLogTimeStamp.188 2018-12-10,9:41:49.0,-6:0
 TRAP,
-            'Network Port 1-1-1-2 modified',
-            'Could not handle cmAttributeValueChangeTrap network port modified generic message');
-    }
+        'Network Port 1-1-1-2 modified',
+        'Could not handle cmAttributeValueChangeTrap network port modified generic message');
+});
 
-    public function testAccPortModied(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('acc port modied', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -394,17 +373,17 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 2B 16 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.214 214
 ADVA-MIB::neEventLogTimeStamp.214 2018-12-10,9:43:22.3,-6:0
 TRAP,
-            [
-                'Access Port 1-1-1-4 changed speed to speed-auto-1000MB-full',
-                'Access Port 1-1-1-4 changed media to fiber',
-                'Access Port 1-1-1-4 changed MDIX to not-applicable',
-                'Access Port 1-1-1-4 AutoDiagnostic disabled',
-                'Access Port 1-1-1-4 administrative state changed to maintenance',
-                'Access Port 1-1-1-4 MTU changed to 9000 bytes',
-            ],
-            'Could not handle cmAttributeValueChangeTrap access port modified specific messages');
+        [
+            'Access Port 1-1-1-4 changed speed to speed-auto-1000MB-full',
+            'Access Port 1-1-1-4 changed media to fiber',
+            'Access Port 1-1-1-4 changed MDIX to not-applicable',
+            'Access Port 1-1-1-4 AutoDiagnostic disabled',
+            'Access Port 1-1-1-4 administrative state changed to maintenance',
+            'Access Port 1-1-1-4 MTU changed to 9000 bytes',
+        ],
+        'Could not handle cmAttributeValueChangeTrap access port modified specific messages');
 
-        $this->assertTrapLogsMessage(<<<'TRAP'
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -415,13 +394,12 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 2B 16 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.214 214
 ADVA-MIB::neEventLogTimeStamp.214 2018-12-10,9:43:22.3,-6:0
 TRAP,
-            'Access Port 1-1-1-4 modified',
-            'Could not handle cmAttributeValueChangeTrap access port modified gerneric messages');
-    }
+        'Access Port 1-1-1-4 modified',
+        'Could not handle cmAttributeValueChangeTrap access port modified gerneric messages');
+});
 
-    public function testAccFlowModified(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('acc flow modified', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -434,13 +412,12 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 07 1C 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.147 147
 ADVA-MIB::neEventLogTimeStamp.147 2018-12-10,9:7:28.1,-6:0
 TRAP,
-            'Access Flow 1-1-1-4-1 modified',
-            'Could not handle cmAttributeValueChangeTrap access flow modified');
-    }
+        'Access Flow 1-1-1-4-1 modified',
+        'Could not handle cmAttributeValueChangeTrap access flow modified');
+});
 
-    public function testLagModified(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('lag modified', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -450,13 +427,12 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 08 3A 2B 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.113 113
 ADVA-MIB::neEventLogTimeStamp.113 2018-12-10,8:58:43.7,-6:0
 TRAP,
-            'LAG 1 modified',
-            'Could not handle cmAttributeValueChangeTrap LAG modified');
-    }
+        'LAG 1 modified',
+        'Could not handle cmAttributeValueChangeTrap LAG modified');
+});
 
-    public function testQosFlowPolicerModfied(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('qos flow policer modfied', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -469,13 +445,12 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 2F 33 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.217 217
 ADVA-MIB::neEventLogTimeStamp.217 2018-12-10,9:47:51.0,-6:0
 TRAP,
-            'QoS on flow 1-1-1-3-1 modified',
-            'Could not handle cmAttributeValueChangeTrap QoS flow policer');
-    }
+        'QoS on flow 1-1-1-3-1 modified',
+        'Could not handle cmAttributeValueChangeTrap QoS flow policer');
+});
 
-    public function testQosShaperModified(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('qos shaper modified', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -486,13 +461,12 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 2F 33 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.218 218
 ADVA-MIB::neEventLogTimeStamp.218 2018-12-10,9:47:51.0,-6:0
 TRAP,
-            'QoS on flow 1-1-1-3-1 modified',
-            'Could not handle cmAttributeValueChangeTrap QoS shaper');
-    }
+        'QoS on flow 1-1-1-3-1 modified',
+        'Could not handle cmAttributeValueChangeTrap QoS shaper');
+});
 
-    public function testAccShaper(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('acc shaper', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -503,7 +477,6 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 09 07 1C 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.146 146
 ADVA-MIB::neEventLogTimeStamp.146 2018-12-10,9:7:28.1,-6:0
 TRAP,
-            'Shaper modified on access port 1-1-1-4-1 modified',
-            'Could not handle cmAttributeValueChangeTrap access port QoS shaper');
-    }
-}
+        'Shaper modified on access port 1-1-1-4-1 modified',
+        'Could not handle cmAttributeValueChangeTrap access port QoS shaper');
+});

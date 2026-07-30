@@ -21,15 +21,12 @@
  * @link       https://www.librenms.org
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
 
-final class ApcPduOutletTest extends SnmpTrapTestCase
-{
-    public function testOutletOff(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+test('outlet off', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 84:21:45:07.07
@@ -38,15 +35,14 @@ PowerNet-MIB::mtrapargsInteger.0 2
 PowerNet-MIB::mtrapargsString.0 \"An outlet has turned on. If the outlet number is 0, then all outlets have turned on.\"
 SNMPv2-MIB::snmpTrapEnterprise.0 PowerNet-MIB::apc
 TRAP,
-            'APC PDU: Outlet has turned off: 2',
-            'Could not handle outletOff trap',
-            [Severity::Warning],
-        );
-    }
+        'APC PDU: Outlet has turned off: 2',
+        'Could not handle outletOff trap',
+        [Severity::Warning],
+    );
+});
 
-    public function testOutletOn(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('outlet on', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 84:21:45:07.07
@@ -55,15 +51,14 @@ PowerNet-MIB::mtrapargsInteger.0 2
 PowerNet-MIB::mtrapargsString.0 \"An outlet has turned on. If the outlet number is 0, then all outlets have turned on.\"
 SNMPv2-MIB::snmpTrapEnterprise.0 PowerNet-MIB::apc
 TRAP,
-            'APC PDU: Outlet has been turned on: 2',
-            'Could not handle outletOn trap',
-            [Severity::Warning],
-        );
-    }
+        'APC PDU: Outlet has been turned on: 2',
+        'Could not handle outletOn trap',
+        [Severity::Warning],
+    );
+});
 
-    public function testOutletReboot(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('outlet reboot', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 84:21:45:07.07
@@ -72,9 +67,8 @@ PowerNet-MIB::mtrapargsInteger.0 2
 PowerNet-MIB::mtrapargsString.0 \"An outlet has rebooted. If the outlet number is 0, then all outlets have rebooted.\"
 SNMPv2-MIB::snmpTrapEnterprise.0 PowerNet-MIB::apc
 TRAP,
-            'APC PDU: Outlet has rebooted: 2',
-            'Could not handle outletReboot trap',
-            [Severity::Warning],
-        );
-    }
-}
+        'APC PDU: Outlet has rebooted: 2',
+        'Could not handle outletReboot trap',
+        [Severity::Warning],
+    );
+});

@@ -21,20 +21,12 @@
  * @link       https://www.librenms.org
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
 
-final class ApcDischargeClearedTest extends SnmpTrapTestCase
-{
-    /**
-     * Test ApcDischargeCleared handle
-     *
-     * @return void
-     */
-    public function testApcDischargeCleared(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+test('apc discharge cleared', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 SNMPv2-MIB::sysUpTime.0 0:0:44:22.50
@@ -42,9 +34,8 @@ SNMPv2-MIB::snmpTrapOID.0 PowerNet-MIB::dischargeCleared
 PowerNet-MIB::mtrapargsString "UPS: A discharged battery condition no longer exists."
 SNMPv2-MIB::snmpTrapEnterprise.0 PowerNet-MIB::apc
 TRAP,
-            'UPS: A discharged battery condition no longer exists.',
-            'Could not handle testApcDischargeCleared trap',
-            [Severity::Ok],
-        );
-    }
-}
+        'UPS: A discharged battery condition no longer exists.',
+        'Could not handle testApcDischargeCleared trap',
+        [Severity::Ok],
+    );
+});

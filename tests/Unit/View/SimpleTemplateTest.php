@@ -24,277 +24,231 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Unit\View;
-
 use App\View\SimpleTemplate;
-use PHPUnit\Framework\TestCase;
 
-final class SimpleTemplateTest extends TestCase
-{
-    public function testBasicVariableReplacement(): void
-    {
-        $template = new SimpleTemplate('Hello {{ name }}!', ['name' => 'World']);
-        $this->assertEquals('Hello World!', (string) $template);
-    }
+test('basic variable replacement', function () {
+    $template = new SimpleTemplate('Hello {{ name }}!', ['name' => 'World']);
+    expect((string) $template)->toEqual('Hello World!');
+});
 
-    public function testVariableReplacementWithDollarPrefix(): void
-    {
-        $template = new SimpleTemplate('Hello {{ $name }}!', ['name' => 'World']);
-        $this->assertEquals('Hello World!', (string) $template);
-    }
+test('variable replacement with dollar prefix', function () {
+    $template = new SimpleTemplate('Hello {{ $name }}!', ['name' => 'World']);
+    expect((string) $template)->toEqual('Hello World!');
+});
 
-    public function testStaticParseMethod(): void
-    {
-        $result = SimpleTemplate::parse('Hello {{ name }}!', ['name' => 'World']);
-        $this->assertEquals('Hello World!', $result);
-    }
+test('static parse method', function () {
+    $result = SimpleTemplate::parse('Hello {{ name }}!', ['name' => 'World']);
+    expect($result)->toEqual('Hello World!');
+});
 
-    public function testSetVariable(): void
-    {
-        $template = new SimpleTemplate('Hello {{ name }}!');
-        $template->setVariable('name', 'World');
-        $this->assertEquals('Hello World!', (string) $template);
-    }
+test('set variable', function () {
+    $template = new SimpleTemplate('Hello {{ name }}!');
+    $template->setVariable('name', 'World');
+    expect((string) $template)->toEqual('Hello World!');
+});
 
-    public function testKeepEmptyTemplates(): void
-    {
-        $template = new SimpleTemplate('Hello {{ missing }}!');
-        $this->assertEquals('Hello !', (string) $template);
+test('keep empty templates', function () {
+    $template = new SimpleTemplate('Hello {{ missing }}!');
+    expect((string) $template)->toEqual('Hello !');
 
-        $template = new SimpleTemplate('Hello {{ missing }}!');
-        $template->keepEmptyTemplates();
-        $this->assertEquals('Hello {{ missing }}!', (string) $template);
-    }
+    $template = new SimpleTemplate('Hello {{ missing }}!');
+    $template->keepEmptyTemplates();
+    expect((string) $template)->toEqual('Hello {{ missing }}!');
+});
 
-    public function testCustomCallback(): void
-    {
-        $template = new SimpleTemplate('Hello {{ name }}!');
-        $template->replaceWith(fn ($matches) => strtoupper((string) $matches[1]));
-        $this->assertEquals('Hello NAME!', (string) $template);
-    }
+test('custom callback', function () {
+    $template = new SimpleTemplate('Hello {{ name }}!');
+    $template->replaceWith(fn ($matches) => strtoupper((string) $matches[1]));
+    expect((string) $template)->toEqual('Hello NAME!');
+});
 
-    public function testTrimFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|trim }}', ['value' => '  Hello World  ']);
-        $this->assertEquals('Hello World', (string) $template);
-    }
+test('trim filter', function () {
+    $template = new SimpleTemplate('{{ value|trim }}', ['value' => '  Hello World  ']);
+    expect((string) $template)->toEqual('Hello World');
+});
 
-    public function testUpperFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|upper }}', ['value' => 'hello']);
-        $this->assertEquals('HELLO', (string) $template);
-    }
+test('upper filter', function () {
+    $template = new SimpleTemplate('{{ value|upper }}', ['value' => 'hello']);
+    expect((string) $template)->toEqual('HELLO');
+});
 
-    public function testLowerFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|lower }}', ['value' => 'HELLO']);
-        $this->assertEquals('hello', (string) $template);
-    }
+test('lower filter', function () {
+    $template = new SimpleTemplate('{{ value|lower }}', ['value' => 'HELLO']);
+    expect((string) $template)->toEqual('hello');
+});
 
-    public function testTitleFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|title }}', ['value' => 'hello world']);
-        $this->assertEquals('Hello World', (string) $template);
-    }
+test('title filter', function () {
+    $template = new SimpleTemplate('{{ value|title }}', ['value' => 'hello world']);
+    expect((string) $template)->toEqual('Hello World');
+});
 
-    public function testCapitalizeFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|capitalize }}', ['value' => 'hello world']);
-        $this->assertEquals('Hello world', (string) $template);
-    }
+test('capitalize filter', function () {
+    $template = new SimpleTemplate('{{ value|capitalize }}', ['value' => 'hello world']);
+    expect((string) $template)->toEqual('Hello world');
+});
 
-    public function testLengthFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|length }}', ['value' => 'Hello']);
-        $this->assertEquals('5', (string) $template);
-    }
+test('length filter', function () {
+    $template = new SimpleTemplate('{{ value|length }}', ['value' => 'Hello']);
+    expect((string) $template)->toEqual('5');
+});
 
-    public function testReplaceFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|replace("world", "universe") }}', ['value' => 'hello world']);
-        $this->assertEquals('hello universe', (string) $template);
-    }
+test('replace filter', function () {
+    $template = new SimpleTemplate('{{ value|replace("world", "universe") }}', ['value' => 'hello world']);
+    expect((string) $template)->toEqual('hello universe');
+});
 
-    public function testReplaceFilterWithSingleQuotes(): void
-    {
-        $template = new SimpleTemplate("{{ value|replace('\"anon\" ', '') }}", ['value' => 'john "anon" doe']);
-        $this->assertEquals('john doe', (string) $template);
-    }
+test('replace filter with single quotes', function () {
+    $template = new SimpleTemplate("{{ value|replace('\"anon\" ', '') }}", ['value' => 'john "anon" doe']);
+    expect((string) $template)->toEqual('john doe');
+});
 
-    public function testReplaceFilterReplacementWithSingleQuotes(): void
-    {
-        $template = new SimpleTemplate("{{ value|replace(\"ryan's\", 'hello') }}", ['value' => "ryan's world"]);
-        $this->assertEquals('hello world', (string) $template);
-    }
+test('replace filter replacement with single quotes', function () {
+    $template = new SimpleTemplate("{{ value|replace(\"ryan's\", 'hello') }}", ['value' => "ryan's world"]);
+    expect((string) $template)->toEqual('hello world');
+});
 
-    public function testReplaceFilterWithNoQuotes(): void
-    {
-        $template = new SimpleTemplate('{{ value|replace(world, universe) }}', ['value' => 'hello world']);
-        $this->assertEquals('hello universe', (string) $template);
-    }
+test('replace filter with no quotes', function () {
+    $template = new SimpleTemplate('{{ value|replace(world, universe) }}', ['value' => 'hello world']);
+    expect((string) $template)->toEqual('hello universe');
+});
 
-    public function testSliceFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|slice(0, 5) }}', ['value' => 'Hello World']);
-        $this->assertEquals('Hello', (string) $template);
-    }
+test('slice filter', function () {
+    $template = new SimpleTemplate('{{ value|slice(0, 5) }}', ['value' => 'Hello World']);
+    expect((string) $template)->toEqual('Hello');
+});
 
-    public function testSliceFilterWithoutLength(): void
-    {
-        $template = new SimpleTemplate('{{ value|slice(6) }}', ['value' => 'Hello World']);
-        $this->assertEquals('World', (string) $template);
-    }
+test('slice filter without length', function () {
+    $template = new SimpleTemplate('{{ value|slice(6) }}', ['value' => 'Hello World']);
+    expect((string) $template)->toEqual('World');
+});
 
-    public function testEscapeFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|escape }}', ['value' => '<script>alert("xss")</script>']);
-        $this->assertEquals('&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;', (string) $template);
-    }
+test('escape filter', function () {
+    $template = new SimpleTemplate('{{ value|escape }}', ['value' => '<script>alert("xss")</script>']);
+    expect((string) $template)->toEqual('&lt;script&gt;alert(&quot;xss&quot;)&lt;/script&gt;');
+});
 
-    public function testEscapeFilterWithStrategy(): void
-    {
-        $template = new SimpleTemplate('{{ value|escape("html") }}', ['value' => '<div>test</div>']);
-        $this->assertEquals('&lt;div&gt;test&lt;/div&gt;', (string) $template);
-    }
+test('escape filter with strategy', function () {
+    $template = new SimpleTemplate('{{ value|escape("html") }}', ['value' => '<div>test</div>']);
+    expect((string) $template)->toEqual('&lt;div&gt;test&lt;/div&gt;');
+});
 
-    public function testUrlEncodeFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|url_encode }}', ['value' => 'hello world']);
-        $this->assertEquals('hello+world', (string) $template);
-    }
+test('url encode filter', function () {
+    $template = new SimpleTemplate('{{ value|url_encode }}', ['value' => 'hello world']);
+    expect((string) $template)->toEqual('hello+world');
+});
 
-    public function testStriptagsFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|striptags }}', ['value' => '<p>Hello <b>World</b></p>']);
-        $this->assertEquals('Hello World', (string) $template);
-    }
+test('striptags filter', function () {
+    $template = new SimpleTemplate('{{ value|striptags }}', ['value' => '<p>Hello <b>World</b></p>']);
+    expect((string) $template)->toEqual('Hello World');
+});
 
-    public function testNl2brFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|nl2br }}', ['value' => "Hello\nWorld"]);
-        $this->assertEquals("Hello<br />\nWorld", (string) $template);
-    }
+test('nl2br filter', function () {
+    $template = new SimpleTemplate('{{ value|nl2br }}', ['value' => "Hello\nWorld"]);
+    expect((string) $template)->toEqual("Hello<br />\nWorld");
+});
 
-    public function testRawFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|raw }}', ['value' => '<b>Hello</b>']);
-        $this->assertEquals('<b>Hello</b>', (string) $template);
-    }
+test('raw filter', function () {
+    $template = new SimpleTemplate('{{ value|raw }}', ['value' => '<b>Hello</b>']);
+    expect((string) $template)->toEqual('<b>Hello</b>');
+});
 
-    public function testNumberFormatFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|number_format(2) }}', ['value' => '1234.5678']);
-        $this->assertEquals('1,234.57', (string) $template);
-    }
+test('number format filter', function () {
+    $template = new SimpleTemplate('{{ value|number_format(2) }}', ['value' => '1234.5678']);
+    expect((string) $template)->toEqual('1,234.57');
+});
 
-    public function testNumberFormatFilterWithCustomSeparators(): void
-    {
-        $template = new SimpleTemplate('{{ value|number_format(2, ".", " ") }}', ['value' => '1234.5678']);
-        $this->assertEquals('1 234.57', (string) $template);
-    }
+test('number format filter with custom separators', function () {
+    $template = new SimpleTemplate('{{ value|number_format(2, ".", " ") }}', ['value' => '1234.5678']);
+    expect((string) $template)->toEqual('1 234.57');
+});
 
-    public function testDateFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|date("Y-m-d") }}', ['value' => '2023-12-25 15:30:00']);
-        $this->assertEquals('2023-12-25', (string) $template);
-    }
+test('date filter', function () {
+    $template = new SimpleTemplate('{{ value|date("Y-m-d") }}', ['value' => '2023-12-25 15:30:00']);
+    expect((string) $template)->toEqual('2023-12-25');
+});
 
-    public function testDateFilterWithTimestamp(): void
-    {
-        $timestamp = mktime(15, 30, 0, 12, 25, 2023);
-        $template = new SimpleTemplate('{{ value|date("Y-m-d H:i") }}', ['value' => (string) $timestamp]);
-        $this->assertEquals('2023-12-25 15:30', (string) $template);
-    }
+test('date filter with timestamp', function () {
+    $timestamp = mktime(15, 30, 0, 12, 25, 2023);
+    $template = new SimpleTemplate('{{ value|date("Y-m-d H:i") }}', ['value' => (string) $timestamp]);
+    expect((string) $template)->toEqual('2023-12-25 15:30');
+});
 
-    public function testJsonEncodeFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|json_encode }}', ['value' => 'Hello "World"']);
-        $this->assertEquals('"Hello \"World\""', (string) $template);
-    }
+test('json encode filter', function () {
+    $template = new SimpleTemplate('{{ value|json_encode }}', ['value' => 'Hello "World"']);
+    expect((string) $template)->toEqual('"Hello \"World\""');
+});
 
-    public function testDefaultFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|default("fallback") }}', ['value' => '']);
-        $this->assertEquals('fallback', (string) $template);
-    }
+test('default filter', function () {
+    $template = new SimpleTemplate('{{ value|default("fallback") }}', ['value' => '']);
+    expect((string) $template)->toEqual('fallback');
+});
 
-    public function testDefaultFilterWithValue(): void
-    {
-        $template = new SimpleTemplate('{{ value|default("fallback") }}', ['value' => 'actual']);
-        $this->assertEquals('actual', (string) $template);
-    }
+test('default filter with value', function () {
+    $template = new SimpleTemplate('{{ value|default("fallback") }}', ['value' => 'actual']);
+    expect((string) $template)->toEqual('actual');
+});
 
-    public function testAbsFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|abs }}', ['value' => '-42']);
-        $this->assertEquals('42', (string) $template);
-    }
+test('abs filter', function () {
+    $template = new SimpleTemplate('{{ value|abs }}', ['value' => '-42']);
+    expect((string) $template)->toEqual('42');
+});
 
-    public function testRoundFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|round(2) }}', ['value' => '3.14159']);
-        $this->assertEquals('3.14', (string) $template);
-    }
+test('round filter', function () {
+    $template = new SimpleTemplate('{{ value|round(2) }}', ['value' => '3.14159']);
+    expect((string) $template)->toEqual('3.14');
+});
 
-    public function testRoundFilterWithoutPrecision(): void
-    {
-        $template = new SimpleTemplate('{{ value|round }}', ['value' => '3.7']);
-        $this->assertEquals('4', (string) $template);
-    }
+test('round filter without precision', function () {
+    $template = new SimpleTemplate('{{ value|round }}', ['value' => '3.7']);
+    expect((string) $template)->toEqual('4');
+});
 
-    public function testChainedFilters(): void
-    {
-        $template = new SimpleTemplate('{{ value|trim|upper }}', ['value' => '  hello  ']);
-        $this->assertEquals('HELLO', (string) $template);
-    }
+test('chained filters', function () {
+    $template = new SimpleTemplate('{{ value|trim|upper }}', ['value' => '  hello  ']);
+    expect((string) $template)->toEqual('HELLO');
+});
 
-    public function testComplexChainedFilters(): void
-    {
-        $template = new SimpleTemplate('{{ value|slice(0, 5)|upper }}', ['value' => 'hello world']);
-        $this->assertEquals('HELLO', (string) $template);
-    }
+test('complex chained filters', function () {
+    $template = new SimpleTemplate('{{ value|slice(0, 5)|upper }}', ['value' => 'hello world']);
+    expect((string) $template)->toEqual('HELLO');
+});
 
-    public function testDotNotationVariables(): void
-    {
-        $template = new SimpleTemplate('{{ user.name }}', ['user.name' => 'John Doe']);
-        $this->assertEquals('John Doe', (string) $template);
-    }
+test('dot notation variables', function () {
+    $template = new SimpleTemplate('{{ user.name }}', ['user.name' => 'John Doe']);
+    expect((string) $template)->toEqual('John Doe');
+});
 
-    public function testUnknownFilter(): void
-    {
-        $template = new SimpleTemplate('{{ value|unknown_filter }}', ['value' => 'test']);
-        $this->assertEquals('test', (string) $template);
-    }
+test('unknown filter', function () {
+    $template = new SimpleTemplate('{{ value|unknown_filter }}', ['value' => 'test']);
+    expect((string) $template)->toEqual('test');
+});
 
-    public function testMultipleVariables(): void
-    {
-        $template = new SimpleTemplate('{{ greeting }} {{ name }}!', [
-            'greeting' => 'Hello',
-            'name' => 'World',
-        ]);
-        $this->assertEquals('Hello World!', (string) $template);
-    }
+test('multiple variables', function () {
+    $template = new SimpleTemplate('{{ greeting }} {{ name }}!', [
+        'greeting' => 'Hello',
+        'name' => 'World',
+    ]);
+    expect((string) $template)->toEqual('Hello World!');
+});
 
-    public function testComplexTemplate(): void
-    {
-        $template = new SimpleTemplate(
-            'Welcome {{ name|title }}! You have {{ count|number_format }} {{ item|lower }}{{ count|default("1")|slice(-1)|escape("js") != "1" ? "s" : "" }}.',
-            [
-                'name' => 'john doe',
-                'count' => '1234',
-                'item' => 'MESSAGE',
-            ]
-        );
-
-        // SimpleTemplate doesn't support ternary, so this will be failed a bit
-        // $expected = 'Welcome John Doe! You have 1,234 messages.';
-        $this->assertEquals('Welcome John Doe! You have 1,234 message"4".', (string) $template);
-
-        $simpleTemplate = new SimpleTemplate('Welcome {{ name|title }}! You have {{ count|number_format }} {{ item|lower }}.', [
+test('complex template', function () {
+    $template = new SimpleTemplate(
+        'Welcome {{ name|title }}! You have {{ count|number_format }} {{ item|lower }}{{ count|default("1")|slice(-1)|escape("js") != "1" ? "s" : "" }}.',
+        [
             'name' => 'john doe',
             'count' => '1234',
             'item' => 'MESSAGE',
-        ]);
-        $this->assertEquals('Welcome John Doe! You have 1,234 message.', (string) $simpleTemplate);
-    }
-}
+        ]
+    );
+
+    // SimpleTemplate doesn't support ternary, so this will be failed a bit
+    // $expected = 'Welcome John Doe! You have 1,234 messages.';
+    expect((string) $template)->toEqual('Welcome John Doe! You have 1,234 message"4".');
+
+    $simpleTemplate = new SimpleTemplate('Welcome {{ name|title }}! You have {{ count|number_format }} {{ item|lower }}.', [
+        'name' => 'john doe',
+        'count' => '1234',
+        'item' => 'MESSAGE',
+    ]);
+    expect((string) $simpleTemplate)->toEqual('Welcome John Doe! You have 1,234 message.');
+});

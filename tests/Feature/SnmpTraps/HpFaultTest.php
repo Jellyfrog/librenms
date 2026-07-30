@@ -21,15 +21,13 @@
  * @link       https://www.librenms.org
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
 
-final class HpFaultTest extends SnmpTrapTestCase
-{
-    public function testBadCable(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+
+test('bad cable', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 SNMPv2-MIB::snmpTrapOID.0 HP-ICF-FAULT-FINDER-MIB::hpicfFaultFinderTrap
@@ -42,15 +40,14 @@ SNMP-COMMUNITY-MIB::snmpTrapAddress.0 {{ ip }}
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 public
 SNMPv2-MIB::snmpTrapEnterprise.0 HP-ICF-OID::hpicfCommonTraps
 TRAP,
-            "Fault - Bad Cable http:\/\/{{ ip }}\/cgi\/fDetail?index=1510",
-            'Could not handle HP-ICF-FAULT-FINDER-MIB::hpicfFaultFinderTrap trap',
-            [Severity::Warning, 'badCable'],
-        );
-    }
+        "Fault - Bad Cable http:\/\/{{ ip }}\/cgi\/fDetail?index=1510",
+        'Could not handle HP-ICF-FAULT-FINDER-MIB::hpicfFaultFinderTrap trap',
+        [Severity::Warning, 'badCable'],
+    );
+});
 
-    public function testBadDriver(): void
-    {
-        $this->assertTrapLogsMessage("{{ hostname }}
+test('bad driver', function () {
+    $this->assertTrapLogsMessage("{{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 SNMPv2-MIB::snmpTrapOID.0 HP-ICF-FAULT-FINDER-MIB::hpicfFaultFinderTrap
 DISMAN-EVENT-MIB::sysUpTimeInstance 133:19:41:09.17
@@ -61,15 +58,14 @@ HP-ICF-FAULT-FINDER-MIB::hpicfFfFaultInfoURL.0.1510 http:\/\/{{ ip }}\/cgi\/fDet
 SNMP-COMMUNITY-MIB::snmpTrapAddress.0 {{ ip }}
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 public
 SNMPv2-MIB::snmpTrapEnterprise.0 HP-ICF-OID::hpicfCommonTraps",
-            "Fault - Unhandled http:\/\/{{ ip }}\/cgi\/fDetail?index=1510",
-            'Could not handle HP-ICF-FAULT-FINDER-MIB::hpicfFaultFinderTrap trap',
-            [Severity::Info, 'badDriver'],
-        );
-    }
+        "Fault - Unhandled http:\/\/{{ ip }}\/cgi\/fDetail?index=1510",
+        'Could not handle HP-ICF-FAULT-FINDER-MIB::hpicfFaultFinderTrap trap',
+        [Severity::Info, 'badDriver'],
+    );
+});
 
-    public function testBcastStorm(): void
-    {
-        $this->assertTrapLogsMessage("{{ hostname }}
+test('bcast storm', function () {
+    $this->assertTrapLogsMessage("{{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 SNMPv2-MIB::snmpTrapOID.0 HP-ICF-FAULT-FINDER-MIB::hpicfFaultFinderTrap
 DISMAN-EVENT-MIB::sysUpTimeInstance 133:19:41:09.17
@@ -80,9 +76,8 @@ HP-ICF-FAULT-FINDER-MIB::hpicfFfFaultInfoURL.0.1510 http:\/\/{{ ip }}\/cgi\/fDet
 SNMP-COMMUNITY-MIB::snmpTrapAddress.0 {{ ip }}
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 public
 SNMPv2-MIB::snmpTrapEnterprise.0 HP-ICF-OID::hpicfCommonTraps",
-            "Fault - Broadcaststorm http:\/\/{{ ip }}\/cgi\/fDetail?index=1510",
-            'Could not handle HP-ICF-FAULT-FINDER-MIB::hpicfFaultFinderTrap trap',
-            [Severity::Error, 'bcastStorm'],
-        );
-    }
-}
+        "Fault - Broadcaststorm http:\/\/{{ ip }}\/cgi\/fDetail?index=1510",
+        'Could not handle HP-ICF-FAULT-FINDER-MIB::hpicfFaultFinderTrap trap',
+        [Severity::Error, 'bcastStorm'],
+    );
+});

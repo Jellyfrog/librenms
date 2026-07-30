@@ -24,70 +24,62 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests;
-
 use App\Facades\LibrenmsConfig;
 use LibreNMS\RRD\RrdDefinition;
 
-final class RrdDefinitionTest extends TestCase
-{
-    public function testEmpty(): void
-    {
-        $this->assertEmpty((string) new RrdDefinition());
-    }
+uses(\LibreNMS\Tests\TestCase::class);
 
-    public function testWrongType(): void
-    {
-        $this->expectException(\LibreNMS\Exceptions\InvalidRrdTypeException::class);
-        LibrenmsConfig::set('rrd.step', 300);
-        LibrenmsConfig::set('rrd.heartbeat', 600);
-        $def = new RrdDefinition();
-        $def->addDataset('badtype', 'Something unexpected');
-    }
+test('empty', function () {
+    expect((string) new RrdDefinition())->toBeEmpty();
+});
 
-    public function testNameEscaping(): void
-    {
-        LibrenmsConfig::set('rrd.step', 300);
-        LibrenmsConfig::set('rrd.heartbeat', 600);
-        $expected = 'DS:bad_name-is_too_lon:GAUGE:600:0:100';
-        $def = RrdDefinition::make()->addDataset('b a%d$_n:a^me-is_too_lon%g.', 'GAUGE', 0, 100, 600);
+test('wrong type', function () {
+    $this->expectException(\LibreNMS\Exceptions\InvalidRrdTypeException::class);
+    LibrenmsConfig::set('rrd.step', 300);
+    LibrenmsConfig::set('rrd.heartbeat', 600);
+    $def = new RrdDefinition();
+    $def->addDataset('badtype', 'Something unexpected');
+});
 
-        $this->assertEquals($expected, (string) $def);
-    }
+test('name escaping', function () {
+    LibrenmsConfig::set('rrd.step', 300);
+    LibrenmsConfig::set('rrd.heartbeat', 600);
+    $expected = 'DS:bad_name-is_too_lon:GAUGE:600:0:100';
+    $def = RrdDefinition::make()->addDataset('b a%d$_n:a^me-is_too_lon%g.', 'GAUGE', 0, 100, 600);
 
-    public function testCreation(): void
-    {
-        LibrenmsConfig::set('rrd.step', 300);
-        LibrenmsConfig::set('rrd.heartbeat', 600);
-        $expected = 'DS:pos:COUNTER:600:0:125000000000 DS:unbound:DERIVE:600:U:U';
+    expect((string) $def)->toEqual($expected);
+});
 
-        $def = new RrdDefinition();
-        $def->addDataset('pos', 'COUNTER', 0, 125000000000);
-        $def->addDataset('unbound', 'DERIVE');
+test('creation', function () {
+    LibrenmsConfig::set('rrd.step', 300);
+    LibrenmsConfig::set('rrd.heartbeat', 600);
+    $expected = 'DS:pos:COUNTER:600:0:125000000000 DS:unbound:DERIVE:600:U:U';
 
-        $this->assertEquals($expected, (string) $def);
-    }
+    $def = new RrdDefinition();
+    $def->addDataset('pos', 'COUNTER', 0, 125000000000);
+    $def->addDataset('unbound', 'DERIVE');
 
-    public function testCreationWithSource(): void
-    {
-        LibrenmsConfig::set('rrd.step', 300);
-        LibrenmsConfig::set('rrd.heartbeat', 600);
-        $def = new RrdDefinition();
-        $def->addDataset('migrated', 'COUNTER', 0, 125000000000, null, 'source_ds');
-        $def->addDataset('other', 'DERIVE');
-        $this->assertEquals([
-            'DS:migrated=source_ds:COUNTER:600:0:125000000000',
-            'DS:other:DERIVE:600:U:U',
-        ], $def->getArguments());
+    expect((string) $def)->toEqual($expected);
+});
 
-        // use __FILE__ to satisify the file exists check
-        $def->addDataset('fromfile', 'COUNTER', source_ds: 'other', source_file: __FILE__);
-        $this->assertEquals([
-            '--source',
-            __FILE__,
-            'DS:migrated=source_ds:COUNTER:600:0:125000000000',
-            'DS:other:DERIVE:600:U:U',
-            'DS:fromfile=other[1]:COUNTER:600:U:U',
-        ], $def->getArguments());
-    }
-}
+test('creation with source', function () {
+    LibrenmsConfig::set('rrd.step', 300);
+    LibrenmsConfig::set('rrd.heartbeat', 600);
+    $def = new RrdDefinition();
+    $def->addDataset('migrated', 'COUNTER', 0, 125000000000, null, 'source_ds');
+    $def->addDataset('other', 'DERIVE');
+    expect($def->getArguments())->toEqual([
+        'DS:migrated=source_ds:COUNTER:600:0:125000000000',
+        'DS:other:DERIVE:600:U:U',
+    ]);
+
+    // use __FILE__ to satisify the file exists check
+    $def->addDataset('fromfile', 'COUNTER', source_ds: 'other', source_file: __FILE__);
+    expect($def->getArguments())->toEqual([
+        '--source',
+        __FILE__,
+        'DS:migrated=source_ds:COUNTER:600:0:125000000000',
+        'DS:other:DERIVE:600:U:U',
+        'DS:fromfile=other[1]:COUNTER:600:U:U',
+    ]);
+});

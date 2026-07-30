@@ -24,70 +24,73 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use App\Facades\LibrenmsConfig;
 use App\Models\BgpPeer;
 use App\Models\Device;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Enum\Severity;
-use LibreNMS\Tests\Traits\RequiresDatabase;
 use LibreNMS\Util\AutonomousSystem;
 
-final class BgpTrapTest extends SnmpTrapTestCase
-{
-    use RequiresDatabase;
-    use DatabaseTransactions;
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-    public function testBgpUp(): void
-    {
-        // Cache it to avoid DNS Lookup
-        LibrenmsConfig::set('astext.1', 'PHPUnit ASTEXT');
-        $device = Device::factory()->create();
-        /** @var Device $device */
-        $bgppeer = BgpPeer::factory()->make(['bgpPeerState' => 'idle', 'bgpPeerRemoteAs' => 1]);
-        /** @var BgpPeer $bgppeer */
-        $device->bgppeers()->save($bgppeer);
+// replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
+beforeEach(function () {
+    if (! getenv('DBTEST')) {
+        $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
+    }
+});
 
-        $this->assertTrapLogsMessage("{{ hostname }}
+test('bgp up', function () {
+    // Cache it to avoid DNS Lookup
+    LibrenmsConfig::set('astext.1', 'PHPUnit ASTEXT');
+    $device = Device::factory()->create();
+
+    /** @var Device $device */
+    $bgppeer = BgpPeer::factory()->make(['bgpPeerState' => 'idle', 'bgpPeerRemoteAs' => 1]);
+
+    /** @var BgpPeer $bgppeer */
+    $device->bgppeers()->save($bgppeer);
+
+    $this->assertTrapLogsMessage("{{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 302:12:56:24.81
 SNMPv2-MIB::snmpTrapOID.0 BGP4-MIB::bgpEstablished
 BGP4-MIB::bgpPeerLastError.$bgppeer->bgpPeerIdentifier \"04 00 \"
 BGP4-MIB::bgpPeerState.$bgppeer->bgpPeerIdentifier established\n",
-            "SNMP Trap: BGP Up $bgppeer->bgpPeerIdentifier " . AutonomousSystem::get($bgppeer->bgpPeerRemoteAs)->name() . ' is now established',
-            'Could not handle bgpEstablished',
-            [Severity::Ok, 'bgpPeer', $bgppeer->bgpPeerIdentifier],
-            $device,
-        );
+        "SNMP Trap: BGP Up $bgppeer->bgpPeerIdentifier " . AutonomousSystem::get($bgppeer->bgpPeerRemoteAs)->name() . ' is now established',
+        'Could not handle bgpEstablished',
+        [Severity::Ok, 'bgpPeer', $bgppeer->bgpPeerIdentifier],
+        $device,
+    );
 
-        $bgppeer = $bgppeer->fresh(); // refresh from database
-        $this->assertEquals($bgppeer->bgpPeerState, 'established');
-    }
+    $bgppeer = $bgppeer->fresh();
+    // refresh from database
+    expect('established')->toEqual($bgppeer->bgpPeerState);
+});
 
-    public function testBgpDown(): void
-    {
-        // Cache it to avoid DNS Lookup
-        LibrenmsConfig::set('astext.1', 'PHPUnit ASTEXT');
-        $device = Device::factory()->create();
-        /** @var Device $device */
-        $bgppeer = BgpPeer::factory()->make(['bgpPeerState' => 'established', 'bgpPeerRemoteAs' => 1]);
-        /** @var BgpPeer $bgppeer */
-        $device->bgppeers()->save($bgppeer);
+test('bgp down', function () {
+    // Cache it to avoid DNS Lookup
+    LibrenmsConfig::set('astext.1', 'PHPUnit ASTEXT');
+    $device = Device::factory()->create();
 
-        $this->assertTrapLogsMessage("{{ hostname }}
+    /** @var Device $device */
+    $bgppeer = BgpPeer::factory()->make(['bgpPeerState' => 'established', 'bgpPeerRemoteAs' => 1]);
+
+    /** @var BgpPeer $bgppeer */
+    $device->bgppeers()->save($bgppeer);
+
+    $this->assertTrapLogsMessage("{{ hostname }}
 UDP: [{{ ip }}]:57602->[185.29.68.52]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 302:12:55:33.47
 SNMPv2-MIB::snmpTrapOID.0 BGP4-MIB::bgpBackwardTransition
 BGP4-MIB::bgpPeerLastError.$bgppeer->bgpPeerIdentifier \"04 00 \"
 BGP4-MIB::bgpPeerState.$bgppeer->bgpPeerIdentifier idle\n",
-            "SNMP Trap: BGP Down $bgppeer->bgpPeerIdentifier " . AutonomousSystem::get($bgppeer->bgpPeerRemoteAs)->name() . ' is now idle',
-            'Could not handle bgpBackwardTransition',
-            [Severity::Error, 'bgpPeer', $bgppeer->bgpPeerIdentifier],
-            $device,
-        );
+        "SNMP Trap: BGP Down $bgppeer->bgpPeerIdentifier " . AutonomousSystem::get($bgppeer->bgpPeerRemoteAs)->name() . ' is now idle',
+        'Could not handle bgpBackwardTransition',
+        [Severity::Error, 'bgpPeer', $bgppeer->bgpPeerIdentifier],
+        $device,
+    );
 
-        $bgppeer = $bgppeer->fresh(); // refresh from database
-        $this->assertEquals($bgppeer->bgpPeerState, 'idle');
-    }
-}
+    $bgppeer = $bgppeer->fresh();
+    // refresh from database
+    expect('idle')->toEqual($bgppeer->bgpPeerState);
+});

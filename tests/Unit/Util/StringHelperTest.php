@@ -24,81 +24,68 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Unit\Util;
-
-use LibreNMS\Tests\TestCase;
 use LibreNMS\Util\StringHelpers;
 
-final class StringHelperTest extends TestCase
-{
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function testInferEncoding(): void
+uses(\LibreNMS\Tests\TestCase::class);
+
+test('infer encoding', function () {
+    expect(StringHelpers::inferEncoding(null))->toEqual(null);
+    expect(StringHelpers::inferEncoding(''))->toEqual('');
+    expect(StringHelpers::inferEncoding('~null'))->toEqual('~null');
+    expect(StringHelpers::inferEncoding('Øverbyvegen'))->toEqual('Øverbyvegen');
+
+    expect(StringHelpers::inferEncoding(base64_decode('w5h2ZXJieXZlZ2Vu')))->toEqual('Øverbyvegen');
+    expect(StringHelpers::inferEncoding(base64_decode('2HZlcmJ5dmVnZW4=')))->toEqual('Øverbyvegen');
+    expect(StringHelpers::inferEncoding(base64_decode('vcy/xs34SVB2NA==')))->toEqual('教科网IPv4');
+
+    config(['app.charset' => 'Shift_JIS']);
+    expect(StringHelpers::inferEncoding(base64_decode('g1KDk4NUgVuDZw==')))->toEqual('コンサート');
+});
+
+test('is stringable', function () {
+    expect(StringHelpers::isStringable(null))->toBeTrue();
+    expect(StringHelpers::isStringable(''))->toBeTrue();
+    expect(StringHelpers::isStringable('string'))->toBeTrue();
+    expect(StringHelpers::isStringable(-1))->toBeTrue();
+    expect(StringHelpers::isStringable(1.0))->toBeTrue();
+    expect(StringHelpers::isStringable(false))->toBeTrue();
+
+    expect(StringHelpers::isStringable([]))->toBeFalse();
+    expect(StringHelpers::isStringable((object) []))->toBeFalse();
+
+    $stringable = new class
     {
-        $this->assertEquals(null, StringHelpers::inferEncoding(null));
-        $this->assertEquals('', StringHelpers::inferEncoding(''));
-        $this->assertEquals('~null', StringHelpers::inferEncoding('~null'));
-        $this->assertEquals('Øverbyvegen', StringHelpers::inferEncoding('Øverbyvegen'));
-
-        $this->assertEquals('Øverbyvegen', StringHelpers::inferEncoding(base64_decode('w5h2ZXJieXZlZ2Vu')));
-        $this->assertEquals('Øverbyvegen', StringHelpers::inferEncoding(base64_decode('2HZlcmJ5dmVnZW4=')));
-        $this->assertEquals('教科网IPv4', StringHelpers::inferEncoding(base64_decode('vcy/xs34SVB2NA==')));
-
-        config(['app.charset' => 'Shift_JIS']);
-        $this->assertEquals('コンサート', StringHelpers::inferEncoding(base64_decode('g1KDk4NUgVuDZw==')));
-    }
-
-    public function testIsStringable(): void
-    {
-        $this->assertTrue(StringHelpers::isStringable(null));
-        $this->assertTrue(StringHelpers::isStringable(''));
-        $this->assertTrue(StringHelpers::isStringable('string'));
-        $this->assertTrue(StringHelpers::isStringable(-1));
-        $this->assertTrue(StringHelpers::isStringable(1.0));
-        $this->assertTrue(StringHelpers::isStringable(false));
-
-        $this->assertFalse(StringHelpers::isStringable([]));
-        $this->assertFalse(StringHelpers::isStringable((object) []));
-
-        $stringable = new class
+        function __toString()
         {
-            public function __toString()
-            {
-                return '';
-            }
-        };
-        $this->assertTrue(StringHelpers::isStringable($stringable));
+            return '';
+        }
+    };
+    expect(StringHelpers::isStringable($stringable))->toBeTrue();
 
-        $nonstringable = new class {
-        };
-        $this->assertFalse(StringHelpers::isStringable($nonstringable));
-    }
+    $nonstringable = new class {
+    };
+    expect(StringHelpers::isStringable($nonstringable))->toBeFalse();
+});
 
-    public function testIsHexString(): void
-    {
-        $this->assertTrue(StringHelpers::isHex('af'));
-        $this->assertTrue(StringHelpers::isHex('28'));
-        $this->assertTrue(StringHelpers::isHex('aF28'));
-        $this->assertFalse(StringHelpers::isHex('a'));
-        $this->assertFalse(StringHelpers::isHex('aF 28'));
-        $this->assertFalse(StringHelpers::isHex('aF 2'));
-        $this->assertFalse(StringHelpers::isHex('aG'));
-    }
+test('is hex string', function () {
+    expect(StringHelpers::isHex('af'))->toBeTrue();
+    expect(StringHelpers::isHex('28'))->toBeTrue();
+    expect(StringHelpers::isHex('aF28'))->toBeTrue();
+    expect(StringHelpers::isHex('a'))->toBeFalse();
+    expect(StringHelpers::isHex('aF 28'))->toBeFalse();
+    expect(StringHelpers::isHex('aF 2'))->toBeFalse();
+    expect(StringHelpers::isHex('aG'))->toBeFalse();
+});
 
-    public function testIsHexWithDelimiters(): void
-    {
-        $this->assertTrue(StringHelpers::isHex('af 28 02', ' '));
-        $this->assertTrue(StringHelpers::isHex('aF 28 02 CE', ' '));
-        $this->assertFalse(StringHelpers::isHex('a5 fj 53', ' '));
-        $this->assertFalse(StringHelpers::isHex('a5fe53', ' '));
+test('is hex with delimiters', function () {
+    expect(StringHelpers::isHex('af 28 02', ' '))->toBeTrue();
+    expect(StringHelpers::isHex('aF 28 02 CE', ' '))->toBeTrue();
+    expect(StringHelpers::isHex('a5 fj 53', ' '))->toBeFalse();
+    expect(StringHelpers::isHex('a5fe53', ' '))->toBeFalse();
 
-        $this->assertFalse(StringHelpers::isHex('af 28 02', ':'));
-        $this->assertTrue(StringHelpers::isHex('af:28:02', ':'));
-        $this->assertTrue(StringHelpers::isHex('aF:28:02:CE', ':'));
-        $this->assertFalse(StringHelpers::isHex('a5:fj:53', ':'));
-        $this->assertFalse(StringHelpers::isHex('a5fe53', ':'));
-    }
-}
+    expect(StringHelpers::isHex('af 28 02', ':'))->toBeFalse();
+    expect(StringHelpers::isHex('af:28:02', ':'))->toBeTrue();
+    expect(StringHelpers::isHex('aF:28:02:CE', ':'))->toBeTrue();
+    expect(StringHelpers::isHex('a5:fj:53', ':'))->toBeFalse();
+    expect(StringHelpers::isHex('a5fe53', ':'))->toBeFalse();
+});

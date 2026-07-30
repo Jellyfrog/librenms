@@ -24,13 +24,9 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
-final class AdvaNetThresholdCrossingAlertTest extends SnmpTrapTestCase
-{
-    public function testNetThresholdTrap(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+test('net threshold trap', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -46,10 +42,10 @@ RMON2-MIB::probeDateTime.0 \"07 E2 0C 0A 0B 2D 0A 00 2D 06 00 \"
 ADVA-MIB::neEventLogIndex.79 79
 ADVA-MIB::neEventLogTimeStamp.79 2018-12-10,11:45:10.8,-6:0
 TRAP,
-            'NETWORK PORT-1-1-1-2 unavailable seconds threshold exceeded for interval-15min',
-            'Could not handle cmEthernetNetPortThresholdCrossingAlert unavailable seconds exceeded',
-        );
-        $this->assertTrapLogsMessage(<<<'TRAP'
+        'NETWORK PORT-1-1-1-2 unavailable seconds threshold exceeded for interval-15min',
+        'Could not handle cmEthernetNetPortThresholdCrossingAlert unavailable seconds exceeded',
+    );
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -65,11 +61,11 @@ RMON2-MIB::probeDateTime.0 \"07 E2 0C 0A 0B 2D 0A 00 2D 06 00 \"
 ADVA-MIB::neEventLogIndex.79 79
 ADVA-MIB::neEventLogTimeStamp.79 2018-12-10,11:45:10.8,-6:0
 TRAP,
-            'NETWORK PORT-1-1-1-1 1519 to MTU byte octets received threshold exceeded for interval-15min',
-            'Could not handle cmEthernetNetPortThresholdCrossingAlert jumbo frame exceeded',
-        );
+        'NETWORK PORT-1-1-1-1 1519 to MTU byte octets received threshold exceeded for interval-15min',
+        'Could not handle cmEthernetNetPortThresholdCrossingAlert jumbo frame exceeded',
+    );
 
-        $this->assertTrapLogsMessage(<<<'TRAP'
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -85,11 +81,11 @@ RMON2-MIB::probeDateTime.0 \"07 E2 0C 0A 0B 2D 0A 00 2D 06 00 \"
 ADVA-MIB::neEventLogIndex.79 79
 ADVA-MIB::neEventLogTimeStamp.79 2018-12-10,11:45:10.8,-6:0
 TRAP,
-            'NETWORK PORT-1-1-1-1 acl drop no match threshold exceeded for interval-1day',
-            'Could not handle cmEthernetNetPortThresholdCrossingAlert no acl match exceeded',
-        );
+        'NETWORK PORT-1-1-1-1 acl drop no match threshold exceeded for interval-1day',
+        'Could not handle cmEthernetNetPortThresholdCrossingAlert no acl match exceeded',
+    );
 
-        $this->assertTrapLogsMessage(<<<'TRAP'
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -105,8 +101,7 @@ RMON2-MIB::probeDateTime.0 \"07 E2 0C 0A 0B 2D 0A 00 2D 06 00 \"
 ADVA-MIB::neEventLogIndex.79 79
 ADVA-MIB::neEventLogTimeStamp.79 2018-12-10,11:45:10.8,-6:0
 TRAP,
-            'NETWORK PORT-1-1-1-1 unknown threshold exceeded for interval-1day',
-            'Could not handle cmEthernetNetPortThresholdCrossingAlert unknown exceeded',
-        );
-    }
-}
+        'NETWORK PORT-1-1-1-1 unknown threshold exceeded for interval-1day',
+        'Could not handle cmEthernetNetPortThresholdCrossingAlert unknown exceeded',
+    );
+});

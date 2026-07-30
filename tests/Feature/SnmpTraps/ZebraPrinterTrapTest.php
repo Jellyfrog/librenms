@@ -1,788 +1,734 @@
 <?php
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
 
-final class ZebraPrinterTrapTest extends SnmpTrapTestCase
-{
-    public function testZebraPrinterHeadOpen(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+
+test('zebra printer head open', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ERROR CONDITION: HEAD OPEN
 TRAP,
-            'ERROR CONDITION: HEAD OPEN',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 HEAD OPEN',
-            [Severity::Warning],
-        );
-    }
+        'ERROR CONDITION: HEAD OPEN',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 HEAD OPEN',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterPaperOut(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer paper out', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: PAPER OUT
 TRAP,
-            'ALERT: PAPER OUT',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 PAPER OUT',
-            [Severity::Error],
-        );
-    }
+        'ALERT: PAPER OUT',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 PAPER OUT',
+        [Severity::Error],
+    );
+});
 
-    public function testZebraPrinterRibbonOut(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer ribbon out', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: RIBBON OUT
 TRAP,
-            'ALERT: RIBBON OUT',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 RIBBON OUT',
-            [Severity::Error],
-        );
-    }
+        'ALERT: RIBBON OUT',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 RIBBON OUT',
+        [Severity::Error],
+    );
+});
 
-    public function testZebraPrinterMediaLow(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer media low', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: MEDIA LOW
 TRAP,
-            'ALERT: MEDIA LOW',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 MEDIA LOW',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: MEDIA LOW',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 MEDIA LOW',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterJobCompleted(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer job completed', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: PQ JOB COMPLETED
 TRAP,
-            'ALERT: PQ JOB COMPLETED',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 PQ JOB COMPLETED',
-            [Severity::Ok],
-        );
-    }
+        'ALERT: PQ JOB COMPLETED',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 PQ JOB COMPLETED',
+        [Severity::Ok],
+    );
+});
 
-    public function testZebraPrinterCutterJam(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer cutter jam', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: CUTTER JAM
 TRAP,
-            'ALERT: CUTTER JAM',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 CUTTER JAM',
-            [Severity::Error],
-        );
-    }
+        'ALERT: CUTTER JAM',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 CUTTER JAM',
+        [Severity::Error],
+    );
+});
 
-    public function testZebraPrinterJobCompletedGerman(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer job completed german', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 MELDUNG: Druckauftr Fertg
 TRAP,
-            'MELDUNG: Druckauftr Fertg',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 PQ JOB COMPLETED (German)',
-            [Severity::Ok],
-        );
-    }
+        'MELDUNG: Druckauftr Fertg',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 PQ JOB COMPLETED (German)',
+        [Severity::Ok],
+    );
+});
 
-    public function testZebraPrinterPaused(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer paused', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: PRINTER PAUSED
 TRAP,
-            'ALERT: PRINTER PAUSED',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 PRINTER PAUSED',
-            [Severity::Info],
-        );
-    }
+        'ALERT: PRINTER PAUSED',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 PRINTER PAUSED',
+        [Severity::Info],
+    );
+});
 
-    public function testZebraPrinterHeadElementBad(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer head element bad', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: HEAD ELEMENT BAD
 TRAP,
-            'ALERT: HEAD ELEMENT BAD',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 HEAD ELEMENT BAD',
-            [Severity::Error],
-        );
-    }
+        'ALERT: HEAD ELEMENT BAD',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 HEAD ELEMENT BAD',
+        [Severity::Error],
+    );
+});
 
-    public function testZebraPrinterReplaceHead(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer replace head', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: REPLACE HEAD
 TRAP,
-            'ALERT: REPLACE HEAD',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 REPLACE HEAD',
-            [Severity::Error],
-        );
-    }
+        'ALERT: REPLACE HEAD',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 REPLACE HEAD',
+        [Severity::Error],
+    );
+});
 
-    public function testZebraPrinterMotorOvertemp(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer motor overtemp', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: MOTOR OVERTEMP
 TRAP,
-            'ALERT: MOTOR OVERTEMP',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 MOTOR OVERTEMP',
-            [Severity::Error],
-        );
-    }
+        'ALERT: MOTOR OVERTEMP',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 MOTOR OVERTEMP',
+        [Severity::Error],
+    );
+});
 
-    public function testZebraPrinterPrintheadShutdown(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer printhead shutdown', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: PRINTHEAD SHUTDOWN
 TRAP,
-            'ALERT: PRINTHEAD SHUTDOWN',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 PRINTHEAD SHUTDOWN',
-            [Severity::Error],
-        );
-    }
+        'ALERT: PRINTHEAD SHUTDOWN',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 PRINTHEAD SHUTDOWN',
+        [Severity::Error],
+    );
+});
 
-    public function testZebraPrinterThermistorFault(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer thermistor fault', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: THERMISTOR FAULT
 TRAP,
-            'ALERT: THERMISTOR FAULT',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 THERMISTOR FAULT',
-            [Severity::Error],
-        );
-    }
+        'ALERT: THERMISTOR FAULT',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 THERMISTOR FAULT',
+        [Severity::Error],
+    );
+});
 
-    public function testZebraPrinterInvalidHead(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer invalid head', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: INVALID HEAD
 TRAP,
-            'ALERT: INVALID HEAD',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 INVALID HEAD',
-            [Severity::Error],
-        );
-    }
+        'ALERT: INVALID HEAD',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 INVALID HEAD',
+        [Severity::Error],
+    );
+});
 
-    public function testZebraPrinterMediaCartridgeLoadFailure(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer media cartridge load failure', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: MEDIA CARTRIDGE LOAD FAILURE
 TRAP,
-            'ALERT: MEDIA CARTRIDGE LOAD FAILURE',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 MEDIA CARTRIDGE LOAD FAILURE',
-            [Severity::Error],
-        );
-    }
+        'ALERT: MEDIA CARTRIDGE LOAD FAILURE',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 MEDIA CARTRIDGE LOAD FAILURE',
+        [Severity::Error],
+    );
+});
 
-    public function testZebraPrinterPaperError(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer paper error', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: PAPER ERROR
 TRAP,
-            'ALERT: PAPER ERROR',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 PAPER ERROR',
-            [Severity::Error],
-        );
-    }
+        'ALERT: PAPER ERROR',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 PAPER ERROR',
+        [Severity::Error],
+    );
+});
 
-    public function testZebraPrinterRibbonAuthError(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer ribbon auth error', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: RIBBON AUTH ERROR
 TRAP,
-            'ALERT: RIBBON AUTH ERROR',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 RIBBON AUTH ERROR',
-            [Severity::Error],
-        );
-    }
+        'ALERT: RIBBON AUTH ERROR',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 RIBBON AUTH ERROR',
+        [Severity::Error],
+    );
+});
 
-    public function testZebraPrinterHeadTooHot(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer head too hot', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: HEAD TOO HOT
 TRAP,
-            'ALERT: HEAD TOO HOT',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 HEAD TOO HOT',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: HEAD TOO HOT',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 HEAD TOO HOT',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterHeadCold(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer head cold', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: HEAD COLD
 TRAP,
-            'ALERT: HEAD COLD',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 HEAD COLD',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: HEAD COLD',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 HEAD COLD',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterSupplyTooHot(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer supply too hot', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: SUPPLY TOO HOT
 TRAP,
-            'ALERT: SUPPLY TOO HOT',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 SUPPLY TOO HOT',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: SUPPLY TOO HOT',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 SUPPLY TOO HOT',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterRibbonLow(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer ribbon low', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: RIBBON LOW
 TRAP,
-            'ALERT: RIBBON LOW',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 RIBBON LOW',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: RIBBON LOW',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 RIBBON LOW',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterBatteryLow(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer battery low', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: BATTERY LOW
 TRAP,
-            'ALERT: BATTERY LOW',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 BATTERY LOW',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: BATTERY LOW',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 BATTERY LOW',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterCleanPrinthead(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer clean printhead', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: CLEAN PRINTHEAD
 TRAP,
-            'ALERT: CLEAN PRINTHEAD',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 CLEAN PRINTHEAD',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: CLEAN PRINTHEAD',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 CLEAN PRINTHEAD',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterRfidError(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer rfid error', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: RFID ERROR
 TRAP,
-            'ALERT: RFID ERROR',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 RFID ERROR',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: RFID ERROR',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 RFID ERROR',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterRewind(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer rewind', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: REWIND
 TRAP,
-            'ALERT: REWIND',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 REWIND',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: REWIND',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 REWIND',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterNoReaderPresent(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer no reader present', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: NO READER PRESENT
 TRAP,
-            'ALERT: NO READER PRESENT',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 NO READER PRESENT',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: NO READER PRESENT',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 NO READER PRESENT',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterBatteryMissing(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer battery missing', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: BATTERY MISSING
 TRAP,
-            'ALERT: BATTERY MISSING',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 BATTERY MISSING',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: BATTERY MISSING',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 BATTERY MISSING',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterMediaCartridgeEjectFailure(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer media cartridge eject failure', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: MEDIA CARTRIDGE EJECT FAILURE
 TRAP,
-            'ALERT: MEDIA CARTRIDGE EJECT FAILURE',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 MEDIA CARTRIDGE EJECT FAILURE',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: MEDIA CARTRIDGE EJECT FAILURE',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 MEDIA CARTRIDGE EJECT FAILURE',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterMediaCartridgeForcedEject(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer media cartridge forced eject', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: MEDIA CARTRIDGE FORCED EJECT
 TRAP,
-            'ALERT: MEDIA CARTRIDGE FORCED EJECT',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 MEDIA CARTRIDGE FORCED EJECT',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: MEDIA CARTRIDGE FORCED EJECT',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 MEDIA CARTRIDGE FORCED EJECT',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterRibbonTension(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer ribbon tension', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: RIBBON TENSION
 TRAP,
-            'ALERT: RIBBON TENSION',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 RIBBON TENSION',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: RIBBON TENSION',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 RIBBON TENSION',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterCoverOpen(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer cover open', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: COVER OPEN
 TRAP,
-            'ALERT: COVER OPEN',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 COVER OPEN',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: COVER OPEN',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 COVER OPEN',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterCleanCutter(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer clean cutter', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: CLEAN CUTTER
 TRAP,
-            'ALERT: CLEAN CUTTER',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 CLEAN CUTTER',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: CLEAN CUTTER',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 CLEAN CUTTER',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterDuplicateIp(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer duplicate ip', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: DUPLICATE IP
 TRAP,
-            'ALERT: DUPLICATE IP',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 DUPLICATE IP',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: DUPLICATE IP',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 DUPLICATE IP',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterBasicForced(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer basic forced', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: BASIC FORCED
 TRAP,
-            'ALERT: BASIC FORCED',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 BASIC FORCED',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: BASIC FORCED',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 BASIC FORCED',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterCountryCodeError(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer country code error', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: COUNTRY CODE ERROR
 TRAP,
-            'ALERT: COUNTRY CODE ERROR',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 COUNTRY CODE ERROR',
-            [Severity::Warning],
-        );
-    }
+        'ALERT: COUNTRY CODE ERROR',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 COUNTRY CODE ERROR',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterBasicRuntime(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer basic runtime', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: BASIC RUNTIME
 TRAP,
-            'ALERT: BASIC RUNTIME',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 BASIC RUNTIME',
-            [Severity::Info],
-        );
-    }
+        'ALERT: BASIC RUNTIME',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 BASIC RUNTIME',
+        [Severity::Info],
+    );
+});
 
-    public function testZebraPrinterSgdSet(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer sgd set', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: SGD SET
 TRAP,
-            'ALERT: SGD SET',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 SGD SET',
-            [Severity::Info],
-        );
-    }
+        'ALERT: SGD SET',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 SGD SET',
+        [Severity::Info],
+    );
+});
 
-    public function testZebraPrinterShuttingDown(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer shutting down', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: SHUTTING DOWN
 TRAP,
-            'ALERT: SHUTTING DOWN',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 SHUTTING DOWN',
-            [Severity::Info],
-        );
-    }
+        'ALERT: SHUTTING DOWN',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 SHUTTING DOWN',
+        [Severity::Info],
+    );
+});
 
-    public function testZebraPrinterRestarting(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer restarting', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: RESTARTING
 TRAP,
-            'ALERT: RESTARTING',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 RESTARTING',
-            [Severity::Info],
-        );
-    }
+        'ALERT: RESTARTING',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 RESTARTING',
+        [Severity::Info],
+    );
+});
 
-    public function testZebraPrinterPmcuDownload(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer pmcu download', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: PMCU DOWNLOAD
 TRAP,
-            'ALERT: PMCU DOWNLOAD',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 PMCU DOWNLOAD',
-            [Severity::Info],
-        );
-    }
+        'ALERT: PMCU DOWNLOAD',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 PMCU DOWNLOAD',
+        [Severity::Info],
+    );
+});
 
-    public function testZebraPrinterCountryCode(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer country code', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: COUNTRY CODE
 TRAP,
-            'ALERT: COUNTRY CODE',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 COUNTRY CODE',
-            [Severity::Info],
-        );
-    }
+        'ALERT: COUNTRY CODE',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 COUNTRY CODE',
+        [Severity::Info],
+    );
+});
 
-    public function testZebraPrinterMediaCartridge(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer media cartridge', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: MEDIA CARTRIDGE
 TRAP,
-            'ALERT: MEDIA CARTRIDGE',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 MEDIA CARTRIDGE',
-            [Severity::Info],
-        );
-    }
+        'ALERT: MEDIA CARTRIDGE',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 MEDIA CARTRIDGE',
+        [Severity::Info],
+    );
+});
 
-    public function testZebraPrinterCleaningMode(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer cleaning mode', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: CLEANING MODE
 TRAP,
-            'ALERT: CLEANING MODE',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 CLEANING MODE',
-            [Severity::Info],
-        );
-    }
+        'ALERT: CLEANING MODE',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 CLEANING MODE',
+        [Severity::Info],
+    );
+});
 
-    public function testZebraPrinterLabelReady(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer label ready', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: LABEL READY
 TRAP,
-            'ALERT: LABEL READY',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 LABEL READY',
-            [Severity::Ok],
-        );
-    }
+        'ALERT: LABEL READY',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 LABEL READY',
+        [Severity::Ok],
+    );
+});
 
-    public function testZebraPrinterRibbonIn(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer ribbon in', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: RIBBON IN
 TRAP,
-            'ALERT: RIBBON IN',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 RIBBON IN',
-            [Severity::Ok],
-        );
-    }
+        'ALERT: RIBBON IN',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 RIBBON IN',
+        [Severity::Ok],
+    );
+});
 
-    public function testZebraPrinterPowerOn(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer power on', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: POWER ON
 TRAP,
-            'ALERT: POWER ON',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 POWER ON',
-            [Severity::Ok],
-        );
-    }
+        'ALERT: POWER ON',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 POWER ON',
+        [Severity::Ok],
+    );
+});
 
-    public function testZebraPrinterColdStart(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer cold start', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 ALERT: COLD START
 TRAP,
-            'ALERT: COLD START',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 COLD START',
-            [Severity::Ok],
-        );
-    }
+        'ALERT: COLD START',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 COLD START',
+        [Severity::Ok],
+    );
+});
 
-    public function testZebraPrinterDruckerpause(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer druckerpause', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 MELDUNG: DRUCKERPAUSE
 TRAP,
-            'MELDUNG: DRUCKERPAUSE',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 DRUCKERPAUSE',
-            [Severity::Info],
-        );
-    }
+        'MELDUNG: DRUCKERPAUSE',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 DRUCKERPAUSE',
+        [Severity::Info],
+    );
+});
 
-    public function testZebraPrinterDeckelOffen(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer deckel offen', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 MELDUNG: Deckel Offen
 TRAP,
-            'MELDUNG: Deckel Offen',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 Deckel Offen',
-            [Severity::Warning],
-        );
-    }
+        'MELDUNG: Deckel Offen',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 Deckel Offen',
+        [Severity::Warning],
+    );
+});
 
-    public function testZebraPrinterEingeschaltet(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer eingeschaltet', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 MELDUNG: Eingeschaltet
 TRAP,
-            'MELDUNG: Eingeschaltet',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 Eingeschaltet',
-            [Severity::Ok],
-        );
-    }
+        'MELDUNG: Eingeschaltet',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 Eingeschaltet',
+        [Severity::Ok],
+    );
+});
 
-    public function testZebraPrinterKaltstart(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer kaltstart', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:23.13
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.1
 ESI-MIB::psOutput.7 MELDUNG: KALTSTART
 TRAP,
-            'MELDUNG: KALTSTART',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 KALTSTART',
-            [Severity::Ok],
-        );
-    }
+        'MELDUNG: KALTSTART',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.1 KALTSTART',
+        [Severity::Ok],
+    );
+});
 
-    public function testZebraPrinterAlertCleared(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('zebra printer alert cleared', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 19:3:47:37.14
 SNMPv2-MIB::snmpTrapOID.0 ZEBRA-QL-MIB::zebra.1.0.2
 ESI-MIB::psOutput.7 ERROR CLEARED: HEAD OPEN
 TRAP,
-            'ERROR CLEARED: HEAD OPEN',
-            'Failed to handle ZEBRA-QL-MIB::zebra.1.0.2 alert cleared',
-            [Severity::Ok],
-        );
-    }
-}
+        'ERROR CLEARED: HEAD OPEN',
+        'Failed to handle ZEBRA-QL-MIB::zebra.1.0.2 alert cleared',
+        [Severity::Ok],
+    );
+});

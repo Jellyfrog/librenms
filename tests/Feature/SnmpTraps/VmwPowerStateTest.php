@@ -26,26 +26,28 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use App\Models\Device;
 use App\Models\Vminfo;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Enum\PowerState;
-use LibreNMS\Tests\Traits\RequiresDatabase;
 
-final class VmwPowerStateTest extends SnmpTrapTestCase
-{
-    use RequiresDatabase;
-    use DatabaseTransactions;
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-    public function testVmwVmPoweredOffTrap(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $guest = Vminfo::factory()->make(); /** @var Vminfo $guest */
-        $device->vminfo()->save($guest);
+// replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
+beforeEach(function () {
+    if (! getenv('DBTEST')) {
+        $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
+    }
+});
 
-        $this->assertTrapLogsMessage("$device->hostname
+
+test('vmw vm powered off trap', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $guest = Vminfo::factory()->make();
+    /** @var Vminfo $guest */
+    $device->vminfo()->save($guest);
+
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:28386->[10.10.10.100]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 5:18:30:26.00
 SNMPv2-MIB::snmpTrapOID.0 VMWARE-VMINFO-MIB::vmwVmPoweredOff
@@ -54,22 +56,23 @@ VMWARE-VMINFO-MIB::vmwVmDisplayName.28 $guest->vmwVmDisplayName
 SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 \"public\"
 SNMPv2-MIB::snmpTrapEnterprise.0 VMWARE-PRODUCTS-MIB::vmwESX",
-            "Guest $guest->vmwVmDisplayName was powered off",
-            'Could not handle VmwVmPoweredOffTrap',
-            device: $device,
-        );
+        "Guest $guest->vmwVmDisplayName was powered off",
+        'Could not handle VmwVmPoweredOffTrap',
+        device: $device,
+    );
 
-        $guest->refresh();
-        $this->assertEquals(PowerState::OFF, $guest->vmwVmState);
-    }
+    $guest->refresh();
+    expect($guest->vmwVmState)->toEqual(PowerState::OFF);
+});
 
-    public function testVmwVmPoweredONTrap(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $guest = Vminfo::factory()->make(); /** @var Vminfo $guest */
-        $device->vminfo()->save($guest);
+test('vmw vm powered ontrap', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $guest = Vminfo::factory()->make();
+    /** @var Vminfo $guest */
+    $device->vminfo()->save($guest);
 
-        $this->assertTrapLogsMessage("$device->hostname
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:28386->[10.10.10.100]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 5:18:30:26.00
 SNMPv2-MIB::snmpTrapOID.0 VMWARE-VMINFO-MIB::vmwVmPoweredOn
@@ -78,22 +81,23 @@ VMWARE-VMINFO-MIB::vmwVmDisplayName.28 $guest->vmwVmDisplayName
 SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 \"public\"
 SNMPv2-MIB::snmpTrapEnterprise.0 VMWARE-PRODUCTS-MIB::vmwESX",
-            "Guest $guest->vmwVmDisplayName was powered on",
-            'Could not handle VmwVmPoweredOnTrap',
-            device: $device,
-        );
+        "Guest $guest->vmwVmDisplayName was powered on",
+        'Could not handle VmwVmPoweredOnTrap',
+        device: $device,
+    );
 
-        $guest->refresh();
-        $this->assertEquals(PowerState::ON, $guest->vmwVmState);
-    }
+    $guest->refresh();
+    expect($guest->vmwVmState)->toEqual(PowerState::ON);
+});
 
-    public function testVmwVmSuspendedTrap(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $guest = Vminfo::factory()->make(); /** @var Vminfo $guest */
-        $device->vminfo()->save($guest);
+test('vmw vm suspended trap', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $guest = Vminfo::factory()->make();
+    /** @var Vminfo $guest */
+    $device->vminfo()->save($guest);
 
-        $this->assertTrapLogsMessage("{{ hostname }}
+    $this->assertTrapLogsMessage("{{ hostname }}
 UDP: [{{ ip }}]:28386->[10.10.10.100]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 5:18:30:26.00
 SNMPv2-MIB::snmpTrapOID.0 VMWARE-VMINFO-MIB::vmwVmSuspended
@@ -102,12 +106,11 @@ VMWARE-VMINFO-MIB::vmwVmDisplayName.28 $guest->vmwVmDisplayName
 SNMP-COMMUNITY-MIB::snmpTrapAddress.0 $device->ip
 SNMP-COMMUNITY-MIB::snmpTrapCommunity.0 \"public\"
 SNMPv2-MIB::snmpTrapEnterprise.0 VMWARE-PRODUCTS-MIB::vmwESX",
-            "Guest $guest->vmwVmDisplayName has been suspended",
-            'Could not handle VmwVmSuspendedTrap',
-            device: $device,
-        );
+        "Guest $guest->vmwVmDisplayName has been suspended",
+        'Could not handle VmwVmSuspendedTrap',
+        device: $device,
+    );
 
-        $guest->refresh();
-        $this->assertEquals(PowerState::SUSPENDED, $guest->vmwVmState);
-    }
-}
+    $guest->refresh();
+    expect($guest->vmwVmState)->toEqual(PowerState::SUSPENDED);
+});

@@ -21,20 +21,12 @@
  * @link       https://www.librenms.org
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
 
-final class ApcLowBatteryTest extends SnmpTrapTestCase
-{
-    /**
-     * Test ApcLowBattery handle
-     *
-     * @return void
-     */
-    public function testApcLowBattery(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+test('apc low battery', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[10.0.0.1]:162
 SNMPv2-MIB::sysUpTime.0 147:21:00:10.20
@@ -42,9 +34,8 @@ SNMPv2-MIB::snmpTrapOID.0 PowerNet-MIB::lowBattery
 PowerNet-MIB::mtrapargsString.0 "UPS: The battery power is too low to continue to support the load; the UPS will shut down if input power does not return to normal soon."
 SNMPv2-MIB::snmpTrapEnterprise.0 PowerNet-MIB::apc
 TRAP,
-            'UPS: The battery power is too low to continue to support the load; the UPS will shut down if input power does not return to normal soon.',
-            'Could not handle testApcLowBattery trap',
-            [Severity::Error],
-        );
-    }
-}
+        'UPS: The battery power is too low to continue to support the load; the UPS will shut down if input power does not return to normal soon.',
+        'Could not handle testApcLowBattery trap',
+        [Severity::Error],
+    );
+});

@@ -21,20 +21,12 @@
  * @link       https://www.librenms.org
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
 
-final class ApcCommunicationEstablishedTest extends SnmpTrapTestCase
-{
-    /**
-     * Test ApcCommunicationEstablished handle
-     *
-     * @return void
-     */
-    public function testApcCommunicationEstablished(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+test('apc communication established', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[10.0.0.1]:162
 SNMPv2-MIB::sysUpTime.0 0:0:07:55.50
@@ -42,9 +34,8 @@ SNMPv2-MIB::snmpTrapOID.0 PowerNet-MIB::communicationEstablished
 PowerNet-MIB::mtrapargsString.0 "UPS: Restored the local network management interface-to-UPS communication."
 SNMPv2-MIB::snmpTrapEnterprise.0 PowerNet-MIB::apc
 TRAP,
-            'UPS: Restored the local network management interface-to-UPS communication.',
-            'Could not handle testApcCommunicationEstablished trap',
-            [Severity::Ok],
-        );
-    }
-}
+        'UPS: Restored the local network management interface-to-UPS communication.',
+        'Could not handle testApcCommunicationEstablished trap',
+        [Severity::Ok],
+    );
+});

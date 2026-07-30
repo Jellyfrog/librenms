@@ -24,24 +24,26 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use App\Models\Device;
 use App\Models\Ipv4Address;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Enum\Severity;
-use LibreNMS\Tests\Traits\RequiresDatabase;
 
-final class FgTrapIpsTest extends SnmpTrapTestCase
-{
-    use RequiresDatabase;
-    use DatabaseTransactions;
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-    public function testIpsAnomaly(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $ipv4 = Ipv4Address::factory()->make(); /** @var Ipv4Address $ipv4 */
-        $this->assertTrapLogsMessage("$device->hostname
+// replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
+beforeEach(function () {
+    if (! getenv('DBTEST')) {
+        $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
+    }
+});
+
+
+test('ips anomaly', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $ipv4 = Ipv4Address::factory()->make();
+    /** @var Ipv4Address $ipv4 */
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 302:12:56:24.81
 SNMPv2-MIB::snmpTrapOID.0 FORTINET-FORTIGATE-MIB::fgTrapIpsAnomaly
@@ -50,33 +52,34 @@ SNMPv2-MIB::sysName.0 $device->hostname
 FORTINET-FORTIGATE-MIB::fgIpsTrapSigId.0 2
 FORTINET-FORTIGATE-MIB::fgIpsTrapSrcIp.0 $ipv4->ipv4_address
 FORTINET-FORTIGATE-MIB::fgIpsTrapSigMsg.0 tcp_src_session",
-            "DDoS prevention triggered. Source: $ipv4->ipv4_address Protocol: tcp_src_session",
-            'Could not handle fgTrapIpsAnomaly trap',
-            [Severity::Warning],
-            $device,
-        );
-    }
+        "DDoS prevention triggered. Source: $ipv4->ipv4_address Protocol: tcp_src_session",
+        'Could not handle fgTrapIpsAnomaly trap',
+        [Severity::Warning],
+        $device,
+    );
+});
 
-    public function testIpsPkgUdate(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $this->assertTrapLogsMessage("$device->hostname
+test('ips pkg udate', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 302:12:56:24.81
 SNMPv2-MIB::snmpTrapOID.0 FORTINET-FORTIGATE-MIB::fgTrapIpsPkgUpdate
 FORTINET-CORE-MIB::fnSysSerial.0 $device->serial
 SNMPv2-MIB::sysName.0 $device->hostname",
-            "IPS package updated on $device->hostname",
-            'Could not handle fgTrapIpsPkgUpdate trap',
-            device: $device,
-        );
-    }
+        "IPS package updated on $device->hostname",
+        'Could not handle fgTrapIpsPkgUpdate trap',
+        device: $device,
+    );
+});
 
-    public function testIpsSignature(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $ipv4 = Ipv4Address::factory()->make(); /** @var Ipv4Address $ipv4 */
-        $this->assertTrapLogsMessage("{{ hostname }}
+test('ips signature', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $ipv4 = Ipv4Address::factory()->make();
+    /** @var Ipv4Address $ipv4 */
+    $this->assertTrapLogsMessage("{{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 302:12:56:24.81
 SNMPv2-MIB::snmpTrapOID.0 FORTINET-FORTIGATE-MIB::fgTrapIpsSignature
@@ -85,10 +88,9 @@ SNMPv2-MIB::sysName.0 $device->hostname
 FORTINET-FORTIGATE-MIB::fgIpsTrapSigId.0 47173
 FORTINET-FORTIGATE-MIB::fgIpsTrapSrcIp.0 $ipv4->ipv4_address
 FORTINET-FORTIGATE-MIB::fgIpsTrapSigMsg.0 UPnP.SSDP.M.Search.Anomaly",
-            "IPS signature UPnP.SSDP.M.Search.Anomaly detected from $ipv4->ipv4_address with Fortiguard ID 47173",
-            'Could not handle fgTrapIpsSignature trap',
-            [Severity::Warning],
-            $device,
-        );
-    }
-}
+        "IPS signature UPnP.SSDP.M.Search.Anomaly detected from $ipv4->ipv4_address with Fortiguard ID 47173",
+        'Could not handle fgTrapIpsSignature trap',
+        [Severity::Warning],
+        $device,
+    );
+});

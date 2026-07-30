@@ -24,15 +24,12 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
 
-final class CienaCesAAAUserAuthenticationEventTest extends SnmpTrapTestCase
-{
-    public function testAuthSuccess(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+test('auth success', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 0:0:15:22.68
@@ -46,15 +43,14 @@ CIENA-CES-AAA-MIB::cienaCesAAAUserAuthenticationServiceType radius
 CIENA-CES-AAA-MIB::cienaCesAAAUserAuthenticationStatus success
 CIENA-CES-AAA-MIB::cienaCesAAAUserAuthenticationDescription User authentication succeeded
 TRAP,
-            'Authentication attempt by lorem. User authentication succeeded',
-            'Could not handle CienaCesAAAUserAuthenticationEvent success',
-            [Severity::Notice],
-        );
-    }
+        'Authentication attempt by lorem. User authentication succeeded',
+        'Could not handle CienaCesAAAUserAuthenticationEvent success',
+        [Severity::Notice],
+    );
+});
 
-    public function testAuthFail(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('auth fail', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 0:0:15:22.68
@@ -68,15 +64,14 @@ CIENA-CES-AAA-MIB::cienaCesAAAUserAuthenticationServiceType radius
 CIENA-CES-AAA-MIB::cienaCesAAAUserAuthenticationStatus failure
 CIENA-CES-AAA-MIB::cienaCesAAAUserAuthenticationDescription User authentication failed
 TRAP,
-            'Authentication attempt by lorem. User authentication failed',
-            'Could not handle CienaCesAAAUserAuthenticationEvent failure',
-            [Severity::Warning],
-        );
-    }
+        'Authentication attempt by lorem. User authentication failed',
+        'Could not handle CienaCesAAAUserAuthenticationEvent failure',
+        [Severity::Warning],
+    );
+});
 
-    public function testAuthLogout(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('auth logout', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 0:0:15:22.68
@@ -90,9 +85,8 @@ CIENA-CES-AAA-MIB::cienaCesAAAUserAuthenticationServiceType local
 CIENA-CES-AAA-MIB::cienaCesAAAUserAuthenticationStatus success
 CIENA-CES-AAA-MIB::cienaCesAAAUserAuthenticationDescription User logout succeeded
 TRAP,
-            'Authentication attempt by lorem. User logout succeeded',
-            'Could not handle CienaCesAAAUserAuthenticationEvent logout',
-            [Severity::Notice],
-        );
-    }
-}
+        'Authentication attempt by lorem. User logout succeeded',
+        'Could not handle CienaCesAAAUserAuthenticationEvent logout',
+        [Severity::Notice],
+    );
+});

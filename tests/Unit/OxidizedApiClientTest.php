@@ -21,95 +21,84 @@
  * @copyright  2024 LibreNMS
  */
 
-namespace LibreNMS\Tests\Unit;
-
 use App\ApiClients\Oxidized;
 use App\Facades\LibrenmsConfig;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use LibreNMS\Tests\TestCase;
 
-final class OxidizedApiClientTest extends TestCase
-{
-    protected function setUp(): void
-    {
-        parent::setUp();
-        LibrenmsConfig::set('oxidized.enabled', true);
-        LibrenmsConfig::set('oxidized.url', 'http://oxidized:8888');
-    }
+uses(\LibreNMS\Tests\TestCase::class);
 
-    public function testGetContentReturnsEmptyStringOnConnectionException(): void
-    {
-        Http::fake(function (): void {
-            throw new ConnectionException('cURL error 7: Failed to connect');
-        });
+beforeEach(function () {
+    LibrenmsConfig::set('oxidized.enabled', true);
+    LibrenmsConfig::set('oxidized.url', 'http://oxidized:8888');
+});
 
-        Log::shouldReceive('warning')
-            ->once()
-            ->withArgs(fn ($msg) => str_contains((string) $msg, 'Oxidized is not reachable'));
+test('get content returns empty string on connection exception', function () {
+    Http::fake(function (): void {
+        throw new ConnectionException('cURL error 7: Failed to connect');
+    });
 
-        $client = new Oxidized();
-        $result = $client->getContent('/node/show/192.168.10.241?format=json');
+    Log::shouldReceive('warning')
+        ->once()
+        ->withArgs(fn ($msg) => str_contains((string) $msg, 'Oxidized is not reachable'));
 
-        $this->assertSame('', $result, 'getContent() should return an empty string when Oxidized is unreachable');
-    }
+    $client = new Oxidized();
+    $result = $client->getContent('/node/show/192.168.10.241?format=json');
 
-    public function testGetContentReturnsEmptyStringWhenDisabled(): void
-    {
-        LibrenmsConfig::set('oxidized.enabled', false);
+    expect($result)->toBe('', 'getContent() should return an empty string when Oxidized is unreachable');
+});
 
-        Http::fake(['*' => Http::response('{"name":"router"}', 200)]);
+test('get content returns empty string when disabled', function () {
+    LibrenmsConfig::set('oxidized.enabled', false);
 
-        $client = new Oxidized();
-        $result = $client->getContent('/node/show/router?format=json');
+    Http::fake(['*' => Http::response('{"name":"router"}', 200)]);
 
-        $this->assertSame('', $result, 'getContent() should return an empty string when Oxidized is disabled');
-        Http::assertNothingSent();
-    }
+    $client = new Oxidized();
+    $result = $client->getContent('/node/show/router?format=json');
 
-    public function testGetContentReturnsBodyOnSuccess(): void
-    {
-        $body = '{"name":"router","ip":"192.168.10.241","model":"ios"}';
-        Http::fake(['*' => Http::response($body, 200)]);
+    expect($result)->toBe('', 'getContent() should return an empty string when Oxidized is disabled');
+    Http::assertNothingSent();
+});
 
-        $client = new Oxidized();
-        $result = $client->getContent('/node/show/router?format=json');
+test('get content returns body on success', function () {
+    $body = '{"name":"router","ip":"192.168.10.241","model":"ios"}';
+    Http::fake(['*' => Http::response($body, 200)]);
 
-        $this->assertSame($body, $result, 'getContent() should return the response body on success');
-    }
+    $client = new Oxidized();
+    $result = $client->getContent('/node/show/router?format=json');
 
-    public function testUpdateNodeReturnsFalseOnConnectionException(): void
-    {
-        Http::fake(function (): void {
-            throw new ConnectionException('cURL error 7: Failed to connect');
-        });
+    expect($result)->toBe($body, 'getContent() should return the response body on success');
+});
 
-        Log::shouldReceive('warning')
-            ->once()
-            ->withArgs(fn ($msg) => str_contains((string) $msg, 'Oxidized is not reachable'));
+test('update node returns false on connection exception', function () {
+    Http::fake(function (): void {
+        throw new ConnectionException('cURL error 7: Failed to connect');
+    });
 
-        $client = new Oxidized();
-        $result = $client->updateNode('router', 'config changed', 'admin');
+    Log::shouldReceive('warning')
+        ->once()
+        ->withArgs(fn ($msg) => str_contains((string) $msg, 'Oxidized is not reachable'));
 
-        $this->assertFalse($result, 'updateNode() should return false when Oxidized is unreachable');
-    }
+    $client = new Oxidized();
+    $result = $client->updateNode('router', 'config changed', 'admin');
 
-    public function testReloadNodesDoesNotThrowOnConnectionException(): void
-    {
-        LibrenmsConfig::set('oxidized.reload_nodes', true);
+    expect($result)->toBeFalse('updateNode() should return false when Oxidized is unreachable');
+});
 
-        Http::fake(function (): void {
-            throw new ConnectionException('cURL error 7: Failed to connect');
-        });
+test('reload nodes does not throw on connection exception', function () {
+    LibrenmsConfig::set('oxidized.reload_nodes', true);
 
-        Log::shouldReceive('warning')
-            ->once()
-            ->withArgs(fn ($msg) => str_contains((string) $msg, 'Oxidized is not reachable'));
+    Http::fake(function (): void {
+        throw new ConnectionException('cURL error 7: Failed to connect');
+    });
 
-        $client = new Oxidized();
+    Log::shouldReceive('warning')
+        ->once()
+        ->withArgs(fn ($msg) => str_contains((string) $msg, 'Oxidized is not reachable'));
 
-        // Should not throw
-        $client->reloadNodes();
-    }
-}
+    $client = new Oxidized();
+
+    // Should not throw
+    $client->reloadNodes();
+});

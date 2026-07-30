@@ -21,29 +21,20 @@
  * @link       https://www.librenms.org
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
 
-final class ApcTestTrapTest extends SnmpTrapTestCase
-{
-    /**
-     * Test ApcTestTrap handle
-     *
-     * @return void
-     */
-    public function testApcTestTrap(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+test('apc test trap', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 SNMPv2-MIB::sysUpTime.0 1:21:34:21.40
 SNMPv2-MIB::snmpTrapOID.0 PowerNet-MIB::apcTestTrap
 SNMPv2-MIB::snmpTrapEnterprise.0 PowerNet-MIB::apc
 TRAP,
-            'APC test trap received.',
-            'Could not handle testApcTestTrap trap',
-            [Severity::Info],
-        );
-    }
-}
+        'APC test trap received.',
+        'Could not handle testApcTestTrap trap',
+        [Severity::Info],
+    );
+});

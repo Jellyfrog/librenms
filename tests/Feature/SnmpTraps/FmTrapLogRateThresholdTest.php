@@ -24,15 +24,13 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
 
-final class FmTrapLogRateThresholdTest extends SnmpTrapTestCase
-{
-    public function testAvOversize(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+
+test('av oversize', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 302:12:56:24.81
@@ -42,9 +40,8 @@ SNMPv2-MIB::sysName.0 $device->hostname
 FORTINET-FORTIMANAGER-FORTIANALYZER-MIB::fmLogRate.0 315
 FORTINET-FORTIMANAGER-FORTIANALYZER-MIB::fmLogRateThreshold.0 260
 TRAP,
-            'Recommended log rate exceeded. Current Rate: 315 Recommended Rate: 260',
-            'Could not handle fmTrapLogRateThreshold trap',
-            [Severity::Notice],
-        );
-    }
-}
+        'Recommended log rate exceeded. Current Rate: 315 Recommended Rate: 260',
+        'Could not handle fmTrapLogRateThreshold trap',
+        [Severity::Notice],
+    );
+});

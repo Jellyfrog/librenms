@@ -24,15 +24,13 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
 
-final class TrippliteTrapTest extends SnmpTrapTestCase
-{
-    public function testTlpNotificationsAlarmEntryAdded(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+
+test('tlp notifications alarm entry added', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:46024->[1.1.1.1]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 0:1:55:34.92
@@ -50,15 +48,14 @@ TRIPPLITE-PRODUCTS::tlpDeviceLocation.1 $device->location
 TRIPPLITE-PRODUCTS::tlpAgentMAC.0 00:06:67:AE:BE:13
 TRIPPLITE-PRODUCTS::tlpAgentUuid.0 c94e376a-8080-44fb-96ad-0fe6583d1c4a
 TRAP,
-            'Trap Alarm active: On Battery',
-            'Could not handle tlpNotificationsAlarmEntryAdded',
-            [Severity::Warning],
-        );
-    }
+        'Trap Alarm active: On Battery',
+        'Could not handle tlpNotificationsAlarmEntryAdded',
+        [Severity::Warning],
+    );
+});
 
-    public function testTlpNotificationsAlarmEntryRemoved(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('tlp notifications alarm entry removed', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:46024->[1.1.1.1]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 0:1:56:40.26
@@ -76,9 +73,8 @@ TRIPPLITE-PRODUCTS::tlpDeviceLocation.1 $device->location
 TRIPPLITE-PRODUCTS::tlpAgentMAC.0 00:06:67:AE:BE:13
 TRIPPLITE-PRODUCTS::tlpAgentUuid.0 c94e376a-8080-44fb-96ad-0fe6583d1c4a
 TRAP,
-            'Trap Alarm inactive: On Utility Power',
-            'Could not handle tlpNotificationsAlarmEntryRemoved',
-            [Severity::Info],
-        );
-    }
-}
+        'Trap Alarm inactive: On Utility Power',
+        'Could not handle tlpNotificationsAlarmEntryRemoved',
+        [Severity::Info],
+    );
+});

@@ -24,18 +24,10 @@
  * @link       https://www.librenms.org
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-final class OspfTxRetransmitTest extends SnmpTrapTestCase
-{
-    /**
-     * Test OSPF lsUpdate packet type trap
-     *
-     * @return void
-     */
-    public function testLsUpdatePacket(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP_WRAP'
+test('ls update packet', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP_WRAP'
         {{ hostname }}
         UDP: [{{ ip }}]:57602->[10.0.0.1]:162
         SNMPv2-MIB::sysUpTime.0 16:21:49.33
@@ -49,19 +41,13 @@ final class OspfTxRetransmitTest extends SnmpTrapTestCase
         OSPF-MIB::ospfLsdbLsid 10.1.1.0
         OSPF-MIB::ospfLsdbRouterId 10.4.5.6
         TRAP_WRAP,
-            'SNMP Trap: OSPFTxRetransmit trap received from {{ hostname }}(Router ID: 10.1.2.3). A lsUpdate packet was sent to 10.3.4.5. LSType: routerLink, route ID: 10.1.1.0, originating from 10.4.5.6.',
-            'Could not handle testlsUpdatePacket trap',
-        );
-    }
+        'SNMP Trap: OSPFTxRetransmit trap received from {{ hostname }}(Router ID: 10.1.2.3). A lsUpdate packet was sent to 10.3.4.5. LSType: routerLink, route ID: 10.1.1.0, originating from 10.4.5.6.',
+        'Could not handle testlsUpdatePacket trap',
+    );
+});
 
-    /**
-     * Test OSPF non lsUpdate packet type
-     *
-     * @return void
-     */
-    public function testNotLsUpdatePacket(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP_WRAP'
+test('not ls update packet', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP_WRAP'
         {{ hostname }}
         UDP: [{{ ip }}]:57602->[10.0.0.1]:162
         SNMPv2-MIB::sysUpTime.0 16:21:49.33
@@ -75,8 +61,7 @@ final class OspfTxRetransmitTest extends SnmpTrapTestCase
         OSPF-MIB::ospfLsdbLsid 10.1.1.0
         OSPF-MIB::ospfLsdbRouterId 10.4.5.6
         TRAP_WRAP,
-            'SNMP TRAP: {{ hostname }}(Router ID: 10.1.2.3) sent a hello packet to 10.3.4.5.',
-            'Could not handle testNotLsUpdatePacket trap',
-        );
-    }
-}
+        'SNMP TRAP: {{ hostname }}(Router ID: 10.1.2.3) sent a hello packet to 10.3.4.5.',
+        'Could not handle testNotLsUpdatePacket trap',
+    );
+});

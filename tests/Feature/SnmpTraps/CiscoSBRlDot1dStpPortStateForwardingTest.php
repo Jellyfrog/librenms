@@ -22,38 +22,33 @@
  * @author     Adam Sweet <adam.sweet@transitiv.co.uk>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use App\Models\Device;
 use App\Models\Port;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Enum\Severity;
-use LibreNMS\Tests\Traits\RequiresDatabase;
-use PHPUnit\Framework\Attributes\TestDox;
 
-#[TestDox('CiscoSB rldot1dStpPortStateForwarding Trap')]
-final class CiscoSBRlDot1dStpPortStateForwardingTest extends SnmpTrapTestCase
-{
-    use RequiresDatabase;
-    use DatabaseTransactions;
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-    #[TestDox('CiscoSB rldot1dStpPortStateForwarding')]
-    public function testCiscoSBRlDot1dStpPortStateForwarding(): void
-    {
-        $device = Device::factory()->create();
-        $port = Port::factory()->make(['ifDescr' => 'gi5']);
-        $device->ports()->save($port);
+// replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
+beforeEach(function () {
+    if (! getenv('DBTEST')) {
+        $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
+    }
+});
 
-        $this->assertTrapLogsMessage("$device->hostname
+test('CiscoSB rldot1dStpPortStateForwarding', function () {
+    $device = Device::factory()->create();
+    $port = Port::factory()->make(['ifDescr' => 'gi5']);
+    $device->ports()->save($port);
+
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:49563->[10.0.0.1]:162
 DISMAN-EXPRESSION-MIB::sysUpTimeInstance 12 days, 8:18:35.35
 SNMPv2-MIB::snmpTrapOID.0 CISCOSB-TRAPS-MIB::rldot1dStpPortStateForwarding
 CISCOSB-BRIDGEMIBOBJECTS-MIB::rldot1dStpTrapVrblifIndex.$port->ifIndex $port->ifIndex
 CISCOSB-DEVICEPARAMS-MIB::rndErrorDesc.0 %STP-W-PORTSTATUS: gi5: STP status Forwarding",
-            'CISCOSB Bridge Port STP State: Interface gi5 STP status transitioned from Learning to Forwarding State',
-            'Could not handle CiscoSBRlDot1dStpPortStateForwarding trap',
-            [Severity::Info],
-            $device,
-        );
-    }
-}
+        'CISCOSB Bridge Port STP State: Interface gi5 STP status transitioned from Learning to Forwarding State',
+        'Could not handle CiscoSBRlDot1dStpPortStateForwarding trap',
+        [Severity::Info],
+        $device,
+    );
+});

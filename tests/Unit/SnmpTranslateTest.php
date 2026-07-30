@@ -24,127 +24,120 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Unit;
-
 use App\Models\Device;
-use LibreNMS\Tests\TestCase;
 
-final class SnmpTranslateTest extends TestCase
-{
-    public function testSimpleInput(): void
-    {
-        $actual = \SnmpQuery::numeric()->translate('IF-MIB::ifTable');
-        $this->assertEquals('.1.3.6.1.2.1.2.2', $actual);
+uses(\LibreNMS\Tests\TestCase::class);
 
-        $actual = \SnmpQuery::numeric()->mibs(['IF-MIB'], append: false)->translate('ifTable');
-        $this->assertEquals('.1.3.6.1.2.1.2.2', $actual);
+test('simple input', function () {
+    $actual = \SnmpQuery::numeric()->translate('IF-MIB::ifTable');
+    expect($actual)->toEqual('.1.3.6.1.2.1.2.2');
 
-        $actual = \SnmpQuery::numeric()->mibs(['ALL'], append: false)->translate('ifTable');
-        $this->assertEquals('.1.3.6.1.2.1.2.2', $actual);
+    $actual = \SnmpQuery::numeric()->mibs(['IF-MIB'], append: false)->translate('ifTable');
+    expect($actual)->toEqual('.1.3.6.1.2.1.2.2');
 
-        $actual = \SnmpQuery::translate('IF-MIB::ifTable');
-        $this->assertEquals('IF-MIB::ifTable', $actual);
+    $actual = \SnmpQuery::numeric()->mibs(['ALL'], append: false)->translate('ifTable');
+    expect($actual)->toEqual('.1.3.6.1.2.1.2.2');
 
-        $actual = \SnmpQuery::numeric()->translate('.1.3.6.1.2.1.2.2');
-        $this->assertEquals('.1.3.6.1.2.1.2.2', $actual);
+    $actual = \SnmpQuery::translate('IF-MIB::ifTable');
+    expect($actual)->toEqual('IF-MIB::ifTable');
 
-        $actual = \SnmpQuery::mibs(['IF-MIB'])->translate('.1.3.6.1.2.1.2.2');
-        $this->assertEquals('IF-MIB::ifTable', $actual);
+    $actual = \SnmpQuery::numeric()->translate('.1.3.6.1.2.1.2.2');
+    expect($actual)->toEqual('.1.3.6.1.2.1.2.2');
 
-        $actual = \SnmpQuery::numeric()->translate('1.3.6.1.2.1.2.2');
-        $this->assertEquals('.1.3.6.1.2.1.2.2', $actual);
+    $actual = \SnmpQuery::mibs(['IF-MIB'])->translate('.1.3.6.1.2.1.2.2');
+    expect($actual)->toEqual('IF-MIB::ifTable');
 
-        $actual = \SnmpQuery::mibs(['ALL'], append: false)->translate('.1.3.6.1.2.1.2.2');
-        $this->assertEquals('RFC1213-MIB::ifTable', $actual);
+    $actual = \SnmpQuery::numeric()->translate('1.3.6.1.2.1.2.2');
+    expect($actual)->toEqual('.1.3.6.1.2.1.2.2');
 
-        $actual = \SnmpQuery::numeric()->mibs(['IP-MIB'])->translate('ifTable');
-        $this->assertEquals('.1.3.6.1.2.1.2.2', $actual);
+    $actual = \SnmpQuery::mibs(['ALL'], append: false)->translate('.1.3.6.1.2.1.2.2');
+    expect($actual)->toEqual('RFC1213-MIB::ifTable');
 
-        $actual = \SnmpQuery::mibs(['IP-MIB'])->translate('ifTable');
-        $this->assertEquals('IF-MIB::ifTable', $actual);
+    $actual = \SnmpQuery::numeric()->mibs(['IP-MIB'])->translate('ifTable');
+    expect($actual)->toEqual('.1.3.6.1.2.1.2.2');
 
-        // with index
-        $actual = \SnmpQuery::numeric()->translate('IF-MIB::ifTable.0');
-        $this->assertEquals('.1.3.6.1.2.1.2.2.0', $actual);
+    $actual = \SnmpQuery::mibs(['IP-MIB'])->translate('ifTable');
+    expect($actual)->toEqual('IF-MIB::ifTable');
 
-        $actual = \SnmpQuery::numeric()->mibs(['IF-MIB'])->translate('ifTable.0');
-        $this->assertEquals('.1.3.6.1.2.1.2.2.0', $actual);
+    // with index
+    $actual = \SnmpQuery::numeric()->translate('IF-MIB::ifTable.0');
+    expect($actual)->toEqual('.1.3.6.1.2.1.2.2.0');
 
-        $actual = \SnmpQuery::numeric()->mibs(['ALL'], append: false)->translate('ifTable.0');
-        $this->assertEquals('.1.3.6.1.2.1.2.2.0', $actual);
+    $actual = \SnmpQuery::numeric()->mibs(['IF-MIB'])->translate('ifTable.0');
+    expect($actual)->toEqual('.1.3.6.1.2.1.2.2.0');
 
-        $actual = \SnmpQuery::translate('IF-MIB::ifTable.0');
-        $this->assertEquals('IF-MIB::ifTable.0', $actual);
+    $actual = \SnmpQuery::numeric()->mibs(['ALL'], append: false)->translate('ifTable.0');
+    expect($actual)->toEqual('.1.3.6.1.2.1.2.2.0');
 
-        $actual = \SnmpQuery::numeric()->translate('.1.3.6.1.2.1.2.2.0');
-        $this->assertEquals('.1.3.6.1.2.1.2.2.0', $actual);
+    $actual = \SnmpQuery::translate('IF-MIB::ifTable.0');
+    expect($actual)->toEqual('IF-MIB::ifTable.0');
 
-        $actual = \SnmpQuery::mibs(['IF-MIB'])->translate('.1.3.6.1.2.1.2.2.0');
-        $this->assertEquals('IF-MIB::ifTable.0', $actual);
+    $actual = \SnmpQuery::numeric()->translate('.1.3.6.1.2.1.2.2.0');
+    expect($actual)->toEqual('.1.3.6.1.2.1.2.2.0');
 
-        $actual = \SnmpQuery::numeric()->translate('1.3.6.1.2.1.2.2.0');
-        $this->assertEquals('.1.3.6.1.2.1.2.2.0', $actual);
+    $actual = \SnmpQuery::mibs(['IF-MIB'])->translate('.1.3.6.1.2.1.2.2.0');
+    expect($actual)->toEqual('IF-MIB::ifTable.0');
 
-        $actual = \SnmpQuery::mibs(['ALL'], append: false)->translate('.1.3.6.1.2.1.2.2.0');
-        $this->assertEquals('RFC1213-MIB::ifTable.0', $actual);
+    $actual = \SnmpQuery::numeric()->translate('1.3.6.1.2.1.2.2.0');
+    expect($actual)->toEqual('.1.3.6.1.2.1.2.2.0');
 
-        $actual = \SnmpQuery::mibs(['IP-MIB'])->translate('ifTable.0');
-        $this->assertEquals('IF-MIB::ifTable.0', $actual);
+    $actual = \SnmpQuery::mibs(['ALL'], append: false)->translate('.1.3.6.1.2.1.2.2.0');
+    expect($actual)->toEqual('RFC1213-MIB::ifTable.0');
 
-        $actual = \SnmpQuery::mibs(['SNMPv2-MIB'])->translate('iso.3.6.1.2.1.1.1.0');
-        $this->assertEquals('SNMPv2-MIB::sysDescr.0', $actual);
+    $actual = \SnmpQuery::mibs(['IP-MIB'])->translate('ifTable.0');
+    expect($actual)->toEqual('IF-MIB::ifTable.0');
 
-        $actual = \SnmpQuery::numeric()->mibs(['SNMPv2-MIB'])->translate('iso.3.6.1.2.1.1.1.0');
-        $this->assertEquals('.1.3.6.1.2.1.1.1.0', $actual);
-    }
+    $actual = \SnmpQuery::mibs(['SNMPv2-MIB'])->translate('iso.3.6.1.2.1.1.1.0');
+    expect($actual)->toEqual('SNMPv2-MIB::sysDescr.0');
 
-    public function testFailedInput(): void
-    {
-        $actual = \SnmpQuery::translate('ifTable');
-        $this->assertEquals('IF-MIB::ifTable', $actual);
+    $actual = \SnmpQuery::numeric()->mibs(['SNMPv2-MIB'])->translate('iso.3.6.1.2.1.1.1.0');
+    expect($actual)->toEqual('.1.3.6.1.2.1.1.1.0');
+});
 
-        $actual = \SnmpQuery::numeric()->mibs([], append: false)->translate('ifTable');
-        $this->assertEquals('', $actual);
+test('failed input', function () {
+    $actual = \SnmpQuery::translate('ifTable');
+    expect($actual)->toEqual('IF-MIB::ifTable');
 
-        $actual = \SnmpQuery::mibs([], append: false)->translate('ifTable');
-        $this->assertEquals('', $actual);
+    $actual = \SnmpQuery::numeric()->mibs([], append: false)->translate('ifTable');
+    expect($actual)->toEqual('');
 
-        $actual = \SnmpQuery::numeric()->mibs(['ASDF-MIB', 'SNMPv2-MIB'], append: false)->translate('ifTable');
-        $this->assertEquals('', $actual);
+    $actual = \SnmpQuery::mibs([], append: false)->translate('ifTable');
+    expect($actual)->toEqual('');
 
-        $actual = \SnmpQuery::mibs([], append: false)->translate('ifTable');
-        $this->assertEquals('', $actual);
+    $actual = \SnmpQuery::numeric()->mibs(['ASDF-MIB', 'SNMPv2-MIB'], append: false)->translate('ifTable');
+    expect($actual)->toEqual('');
 
-        $actual = \SnmpQuery::numeric()->mibs([], append: false)->translate('ifTable');
-        $this->assertEquals('', $actual);
+    $actual = \SnmpQuery::mibs([], append: false)->translate('ifTable');
+    expect($actual)->toEqual('');
 
-        $actual = \SnmpQuery::mibs([], append: false)->translate('ifTable');
-        $this->assertEquals('', $actual);
-    }
+    $actual = \SnmpQuery::numeric()->mibs([], append: false)->translate('ifTable');
+    expect($actual)->toEqual('');
 
-    public function testComplexInput(): void
-    {
-        $actual = \SnmpQuery::mibs(['RFC1213-MIB', 'IF-MIB'], append: false)->translate('.1.3.6.1.2.1.2.2');
-        $this->assertEquals('RFC1213-MIB::ifTable', $actual);
+    $actual = \SnmpQuery::mibs([], append: false)->translate('ifTable');
+    expect($actual)->toEqual('');
+});
 
-        $actual = \SnmpQuery::mibs(['IF-MIB', 'RFC1213-MIB'], append: false)->translate('.1.3.6.1.2.1.2.2');
-        $this->assertEquals('IF-MIB::ifTable', $actual);
+test('complex input', function () {
+    $actual = \SnmpQuery::mibs(['RFC1213-MIB', 'IF-MIB'], append: false)->translate('.1.3.6.1.2.1.2.2');
+    expect($actual)->toEqual('RFC1213-MIB::ifTable');
 
-        $actual = \SnmpQuery::translate('ifTable');
-        $this->assertEquals('IF-MIB::ifTable', $actual);
+    $actual = \SnmpQuery::mibs(['IF-MIB', 'RFC1213-MIB'], append: false)->translate('.1.3.6.1.2.1.2.2');
+    expect($actual)->toEqual('IF-MIB::ifTable');
 
-        $actual = \SnmpQuery::mibs(['RFC1213-MIB', 'IF-MIB'], append: false)->translate('ifTable');
-        $this->assertEquals('RFC1213-MIB::ifTable', $actual);
+    $actual = \SnmpQuery::translate('ifTable');
+    expect($actual)->toEqual('IF-MIB::ifTable');
 
-        $actual = \SnmpQuery::mibs(['IF-MIB', 'RFC1213-MIB'], append: false)->translate('ifTable');
-        $this->assertEquals('IF-MIB::ifTable', $actual);
+    $actual = \SnmpQuery::mibs(['RFC1213-MIB', 'IF-MIB'], append: false)->translate('ifTable');
+    expect($actual)->toEqual('RFC1213-MIB::ifTable');
 
-        // partial numeric
-        $device = Device::factory()->make(['os' => 'dlink']);
-        $actual = \SnmpQuery::device($device)->numeric()->mibs(['EQUIPMENT-MIB', 'DLINKSW-ENTITY-EXT-MIB'], append: false)->translate('.1.3.6.1.4.1.171.14.5.1.4.1.4.1.dram');
-        $this->assertEquals('.1.3.6.1.4.1.171.14.5.1.4.1.4.1.1', $actual);
+    $actual = \SnmpQuery::mibs(['IF-MIB', 'RFC1213-MIB'], append: false)->translate('ifTable');
+    expect($actual)->toEqual('IF-MIB::ifTable');
 
-        $actual = \SnmpQuery::device($device)->numeric()->mibs(['EQUIPMENT-MIB', 'DLINKSW-ENTITY-EXT-MIB'], append: false)->translate('iso.3.6.1.4.1.171.14.5.1.4.1.4.1.dram');
-        $this->assertEquals('.1.3.6.1.4.1.171.14.5.1.4.1.4.1.1', $actual);
-    }
-}
+    // partial numeric
+    $device = Device::factory()->make(['os' => 'dlink']);
+    $actual = \SnmpQuery::device($device)->numeric()->mibs(['EQUIPMENT-MIB', 'DLINKSW-ENTITY-EXT-MIB'], append: false)->translate('.1.3.6.1.4.1.171.14.5.1.4.1.4.1.dram');
+    expect($actual)->toEqual('.1.3.6.1.4.1.171.14.5.1.4.1.4.1.1');
+
+    $actual = \SnmpQuery::device($device)->numeric()->mibs(['EQUIPMENT-MIB', 'DLINKSW-ENTITY-EXT-MIB'], append: false)->translate('iso.3.6.1.4.1.171.14.5.1.4.1.4.1.dram');
+    expect($actual)->toEqual('.1.3.6.1.4.1.171.14.5.1.4.1.4.1.1');
+});

@@ -24,13 +24,9 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
-final class AdvaObjectCreationTest extends SnmpTrapTestCase
-{
-    public function testUserCreation(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+test('user creation', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -43,14 +39,13 @@ RMON2-MIB::probeDateTime.0 \"07 E2 0C 0A 08 37 29 00 2D 06 00 \"
 ADVA-MIB::neEventLogIndex.91 91
 ADVA-MIB::neEventLogTimeStamp.91 2018-12-10,8:55:41.1,-6:0
 TRAP,
-            'User object testuser created',
-            'Could not handle cmObjectCreationTrap user created',
-        );
-    }
+        'User object testuser created',
+        'Could not handle cmObjectCreationTrap user created',
+    );
+});
 
-    public function testLagCreation(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('lag creation', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -70,8 +65,7 @@ RMON2-MIB::probeDateTime.0 \"07 E2 0C 0A 08 3A 2B 00 2D 06 00 \"
 ADVA-MIB::neEventLogIndex.110 110
 ADVA-MIB::neEventLogTimeStamp.110 2018-12-10,8:58:43.7,-6:0
 TRAP,
-            'LAG 1 created',
-            'Could not handle cmObjectCreationTrap LAG created',
-        );
-    }
-}
+        'LAG 1 created',
+        'Could not handle cmObjectCreationTrap LAG created',
+    );
+});

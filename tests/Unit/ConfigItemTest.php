@@ -1,97 +1,99 @@
 <?php
 
-namespace LibreNMS\Tests\Unit;
-
-use LibreNMS\Tests\TestCase;
 use LibreNMS\Util\DynamicConfigItem;
 
-final class ConfigItemTest extends TestCase
-{
-    public function testExecutableValidation(): void
-    {
-        $executableType = new DynamicConfigItem('testExecutable', [
-            'type' => 'executable',
-        ]);
+uses(\LibreNMS\Tests\TestCase::class);
 
-        $lnms_path = base_path('lnms'); // this should be executable
+test('executable validation', function () {
+    $executableType = new DynamicConfigItem('testExecutable', [
+        'type' => 'executable',
+    ]);
 
-        $this->assertTrue($executableType->checkValue($lnms_path));
-        $this->assertTrue($executableType->checkValue(base_path() . '/app/../lnms')); //check path manipulation
-        $this->assertFalse($executableType->checkValue('/'));
-        $this->assertFalse($executableType->checkValue(base_path('LICENSE.txt'))); // non-executable file
+    $lnms_path = base_path('lnms');
 
-        $bad_characters = ['`', ';', '#', '$', '|', '&', '\'', '"', '>', '<', '(', ' '];
-        foreach ($bad_characters as $bad) {
-            $this->assertFalse($executableType->checkValue($lnms_path . $bad));
-        }
+    // this should be executable
+    expect($executableType->checkValue($lnms_path))->toBeTrue();
+    expect($executableType->checkValue(base_path() . '/app/../lnms'))->toBeTrue();
+    //check path manipulation
+    expect($executableType->checkValue('/'))->toBeFalse();
+    expect($executableType->checkValue(base_path('LICENSE.txt')))->toBeFalse();
+
+    // non-executable file
+    $bad_characters = ['`', ';', '#', '$', '|', '&', '\'', '"', '>', '<', '(', ' '];
+    foreach ($bad_characters as $bad) {
+        expect($executableType->checkValue($lnms_path . $bad))->toBeFalse();
     }
+});
 
-    public function testDirectoryValidation(): void
-    {
-        $executableType = new DynamicConfigItem('testDirectory', [
-            'type' => 'directory',
-        ]);
+test('directory validation', function () {
+    $executableType = new DynamicConfigItem('testDirectory', [
+        'type' => 'directory',
+    ]);
 
-        $this->assertTrue($executableType->checkValue(__DIR__));
-        $this->assertTrue($executableType->checkValue(__DIR__ . '/../' . basename(__DIR__))); //check path manipulation
-        $this->assertTrue($executableType->checkValue('/'));
-        $this->assertFalse($executableType->checkValue(__FILE__)); // check file
-        $this->assertFalse($executableType->checkValue(base_path('LICENSE.txt'))); // check file
+    expect($executableType->checkValue(__DIR__))->toBeTrue();
+    expect($executableType->checkValue(__DIR__ . '/../' . basename(__DIR__)))->toBeTrue();
+    //check path manipulation
+    expect($executableType->checkValue('/'))->toBeTrue();
+    expect($executableType->checkValue(__FILE__))->toBeFalse();
+    // check file
+    expect($executableType->checkValue(base_path('LICENSE.txt')))->toBeFalse();
 
-        $bad_characters = ['`', ';', '#', '$', '|', '&', '\'', '"', '>', '<', '(', ' '];
-        foreach ($bad_characters as $bad) {
-            $this->assertFalse($executableType->checkValue(__DIR__ . $bad));
-        }
+    // check file
+    $bad_characters = ['`', ';', '#', '$', '|', '&', '\'', '"', '>', '<', '(', ' '];
+    foreach ($bad_characters as $bad) {
+        expect($executableType->checkValue(__DIR__ . $bad))->toBeFalse();
     }
+});
 
-    public function testArraySubKeyedValidation(): void
-    {
-        $arraySubKeyedType = new DynamicConfigItem('testArray', [
-            'type' => 'array-sub-keyed',
-        ]);
+test('array sub keyed validation', function () {
+    $arraySubKeyedType = new DynamicConfigItem('testArray', [
+        'type' => 'array-sub-keyed',
+    ]);
 
-        $this->assertTrue($arraySubKeyedType->checkValue(['foo' => ['bar']]));
-        $this->assertTrue($arraySubKeyedType->checkValue(['0' => ['bar']]));
-        $this->assertTrue($arraySubKeyedType->checkValue([0 => ['bar']]));
-        $this->assertTrue($arraySubKeyedType->checkValue(['foo' => []]));
-        $this->assertTrue($arraySubKeyedType->checkValue(['foo' => ['bar' => []]]));
+    expect($arraySubKeyedType->checkValue(['foo' => ['bar']]))->toBeTrue();
+    expect($arraySubKeyedType->checkValue(['0' => ['bar']]))->toBeTrue();
+    expect($arraySubKeyedType->checkValue([0 => ['bar']]))->toBeTrue();
+    expect($arraySubKeyedType->checkValue(['foo' => []]))->toBeTrue();
+    expect($arraySubKeyedType->checkValue(['foo' => ['bar' => []]]))->toBeTrue();
 
-        $this->assertTrue($arraySubKeyedType->checkValue([true => []])); // PHP converts it to [1 => []]
-        $this->assertTrue($arraySubKeyedType->checkValue([false => []])); // PHP converts it to [[]]
+    expect($arraySubKeyedType->checkValue([true => []]))->toBeTrue();
+    // PHP converts it to [1 => []]
+    expect($arraySubKeyedType->checkValue([false => []]))->toBeTrue();
 
-        $this->assertFalse($arraySubKeyedType->checkValue(['foo' => 'bar']));
-        $this->assertFalse($arraySubKeyedType->checkValue(['foo' => null]));
-        $this->assertFalse($arraySubKeyedType->checkValue(['foo' => false]));
-        $this->assertFalse($arraySubKeyedType->checkValue(['' => []]));
-        $this->assertFalse($arraySubKeyedType->checkValue([' ' => []]));
-        $this->assertFalse($arraySubKeyedType->checkValue([null => []]));
-    }
+    // PHP converts it to [[]]
+    expect($arraySubKeyedType->checkValue(['foo' => 'bar']))->toBeFalse();
+    expect($arraySubKeyedType->checkValue(['foo' => null]))->toBeFalse();
+    expect($arraySubKeyedType->checkValue(['foo' => false]))->toBeFalse();
+    expect($arraySubKeyedType->checkValue(['' => []]))->toBeFalse();
+    expect($arraySubKeyedType->checkValue([' ' => []]))->toBeFalse();
+    expect($arraySubKeyedType->checkValue([null => []]))->toBeFalse();
+});
 
-    public function testArrayKeysNotEmptyValidation(): void
-    {
-        $array_keys_not_empty = new DynamicConfigItem('testArray', [
-            'type' => 'array-sub-keyed',
-            'validate' => [
-                'value' => 'array_keys_not_empty',
-                'value.*' => 'array_keys_not_empty',
-            ],
-        ]);
+test('array keys not empty validation', function () {
+    $array_keys_not_empty = new DynamicConfigItem('testArray', [
+        'type' => 'array-sub-keyed',
+        'validate' => [
+            'value' => 'array_keys_not_empty',
+            'value.*' => 'array_keys_not_empty',
+        ],
+    ]);
 
-        $this->assertTrue($array_keys_not_empty->checkValue(['foo' => ['bar']]));
-        $this->assertTrue($array_keys_not_empty->checkValue(['0' => ['bar']]));
-        $this->assertTrue($array_keys_not_empty->checkValue([0 => ['bar']]));
-        $this->assertTrue($array_keys_not_empty->checkValue(['foo' => []]));
-        $this->assertTrue($array_keys_not_empty->checkValue(['foo' => ['bar' => []]]));
+    expect($array_keys_not_empty->checkValue(['foo' => ['bar']]))->toBeTrue();
+    expect($array_keys_not_empty->checkValue(['0' => ['bar']]))->toBeTrue();
+    expect($array_keys_not_empty->checkValue([0 => ['bar']]))->toBeTrue();
+    expect($array_keys_not_empty->checkValue(['foo' => []]))->toBeTrue();
+    expect($array_keys_not_empty->checkValue(['foo' => ['bar' => []]]))->toBeTrue();
 
-        $this->assertTrue($array_keys_not_empty->checkValue([true => []])); // PHP converts it to [1 => []]
-        $this->assertTrue($array_keys_not_empty->checkValue([false => []])); // PHP converts it to [[]]
+    expect($array_keys_not_empty->checkValue([true => []]))->toBeTrue();
+    // PHP converts it to [1 => []]
+    expect($array_keys_not_empty->checkValue([false => []]))->toBeTrue();
 
-        $this->assertFalse($array_keys_not_empty->checkValue(['foo' => 'bar']));
-        $this->assertFalse($array_keys_not_empty->checkValue(['foo' => ['' => []]]));
-        $this->assertFalse($array_keys_not_empty->checkValue(['foo' => null]));
-        $this->assertFalse($array_keys_not_empty->checkValue(['foo' => false]));
-        $this->assertFalse($array_keys_not_empty->checkValue(['' => []]));
-        $this->assertFalse($array_keys_not_empty->checkValue([' ' => []]));
-        $this->assertFalse($array_keys_not_empty->checkValue([null => []]));
-    }
-}
+    // PHP converts it to [[]]
+    expect($array_keys_not_empty->checkValue(['foo' => 'bar']))->toBeFalse();
+    expect($array_keys_not_empty->checkValue(['foo' => ['' => []]]))->toBeFalse();
+    expect($array_keys_not_empty->checkValue(['foo' => null]))->toBeFalse();
+    expect($array_keys_not_empty->checkValue(['foo' => false]))->toBeFalse();
+    expect($array_keys_not_empty->checkValue(['' => []]))->toBeFalse();
+    expect($array_keys_not_empty->checkValue([' ' => []]))->toBeFalse();
+    expect($array_keys_not_empty->checkValue([null => []]))->toBeFalse();
+});

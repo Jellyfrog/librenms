@@ -26,15 +26,13 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
 
-final class JnxPowerSupplyTest extends SnmpTrapTestCase
-{
-    public function testJnxPowerSupplyFailureTrap(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+
+test('jnx power supply failure trap', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:49716->[10.0.0.1]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 470:23:25:41.21
@@ -47,15 +45,14 @@ JUNIPER-MIB::jnxContentsDescr.2.4.0.0 PEM 3
 JUNIPER-MIB::jnxOperatingState.2.4.0.0 down
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameMX960
 TRAP,
-            'Power Supply PEM 3 is down',
-            'Could not handle JnxPowerSupplyFailure',
-            [Severity::Error],
-        );
-    }
+        'Power Supply PEM 3 is down',
+        'Could not handle JnxPowerSupplyFailure',
+        [Severity::Error],
+    );
+});
 
-    public function testJnxPowerSupplyOkTrap(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('jnx power supply ok trap', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:49716->[10.0.0.1]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 470:23:25:41.21
@@ -68,9 +65,8 @@ JUNIPER-MIB::jnxContentsDescr.2.4.0.0 PEM 4
 JUNIPER-MIB::jnxOperatingState.2.4.0.0 ok
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameMX960
 TRAP,
-            'Power Supply PEM 4 is OK',
-            'Could not handle JnxPowerSupplyOK',
-            [Severity::Ok],
-        );
-    }
-}
+        'Power Supply PEM 4 is OK',
+        'Could not handle JnxPowerSupplyOK',
+        [Severity::Ok],
+    );
+});

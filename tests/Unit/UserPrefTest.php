@@ -23,103 +23,88 @@
  * @copyright  2026 LibreNMS
  */
 
-namespace LibreNMS\Tests\Unit;
-
 use App\Models\User;
 use App\Models\UserPref;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use LibreNMS\Tests\DBTestCase;
 
-final class UserPrefTest extends DBTestCase
-{
-    use DatabaseTransactions;
+uses(\LibreNMS\Tests\DBTestCase::class);
+uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-    public function testSetPref(): void
-    {
-        $user = User::factory()->create();
-        $pref = UserPref::setPref($user, 'test_pref', 'test_value');
+test('set pref', function () {
+    $user = User::factory()->create();
+    $pref = UserPref::setPref($user, 'test_pref', 'test_value');
 
-        $this->assertInstanceOf(UserPref::class, $pref);
-        $this->assertEquals($user->user_id, $pref->user_id);
-        $this->assertEquals('test_pref', $pref->pref);
-        $this->assertEquals('test_value', $pref->value);
-    }
+    expect($pref)->toBeInstanceOf(UserPref::class);
+    expect($pref->user_id)->toEqual($user->user_id);
+    expect($pref->pref)->toEqual('test_pref');
+    expect($pref->value)->toEqual('test_value');
+});
 
-    public function testGetPref(): void
-    {
-        $user = User::factory()->create();
-        UserPref::setPref($user, 'test_pref', 'test_value');
+test('get pref', function () {
+    $user = User::factory()->create();
+    UserPref::setPref($user, 'test_pref', 'test_value');
 
-        $value = UserPref::getPref($user, 'test_pref');
+    $value = UserPref::getPref($user, 'test_pref');
 
-        $this->assertEquals('test_value', $value);
-    }
+    expect($value)->toEqual('test_value');
+});
 
-    public function testGetPrefReturnsNullWhenNotSet(): void
-    {
-        $user = User::factory()->create();
-        $value = UserPref::getPref($user, 'nonexistent_pref');
+test('get pref returns null when not set', function () {
+    $user = User::factory()->create();
+    $value = UserPref::getPref($user, 'nonexistent_pref');
 
-        $this->assertNull($value);
-    }
+    expect($value)->toBeNull();
+});
 
-    public function testGetPrefWithLoadedRelation(): void
-    {
-        $user = User::factory()->create();
-        UserPref::setPref($user, 'test_pref', 'test_value');
+test('get pref with loaded relation', function () {
+    $user = User::factory()->create();
+    UserPref::setPref($user, 'test_pref', 'test_value');
 
-        $user->load('preferences');
-        $value = UserPref::getPref($user, 'test_pref');
+    $user->load('preferences');
+    $value = UserPref::getPref($user, 'test_pref');
 
-        $this->assertEquals('test_value', $value);
-    }
+    expect($value)->toEqual('test_value');
+});
 
-    public function testForgetPref(): void
-    {
-        $user = User::factory()->create();
-        UserPref::setPref($user, 'test_pref', 'test_value');
+test('forget pref', function () {
+    $user = User::factory()->create();
+    UserPref::setPref($user, 'test_pref', 'test_value');
 
-        UserPref::forgetPref($user, 'test_pref');
+    UserPref::forgetPref($user, 'test_pref');
 
-        $this->assertNull(UserPref::getPref($user, 'test_pref'));
-    }
+    expect(UserPref::getPref($user, 'test_pref'))->toBeNull();
+});
 
-    public function testSetPrefUpdatesExistingPref(): void
-    {
-        $user = User::factory()->create();
-        UserPref::setPref($user, 'test_pref', 'original');
+test('set pref updates existing pref', function () {
+    $user = User::factory()->create();
+    UserPref::setPref($user, 'test_pref', 'original');
 
-        UserPref::setPref($user, 'test_pref', 'updated');
+    UserPref::setPref($user, 'test_pref', 'updated');
 
-        $this->assertEquals('updated', UserPref::getPref($user, 'test_pref'));
-        $this->assertEquals(1, $user->preferences()->where('pref', 'test_pref')->count());
-    }
+    expect(UserPref::getPref($user, 'test_pref'))->toEqual('updated');
+    expect($user->preferences()->where('pref', 'test_pref')->count())->toEqual(1);
+});
 
-    public function testArrayValueIsJsonEncoded(): void
-    {
-        $user = User::factory()->create();
-        $arrayValue = ['key' => 'value', 'nested' => ['a', 'b']];
+test('array value is json encoded', function () {
+    $user = User::factory()->create();
+    $arrayValue = ['key' => 'value', 'nested' => ['a', 'b']];
 
-        UserPref::setPref($user, 'test_pref', $arrayValue);
+    UserPref::setPref($user, 'test_pref', $arrayValue);
 
-        $this->assertEquals($arrayValue, UserPref::getPref($user, 'test_pref'));
-    }
+    expect(UserPref::getPref($user, 'test_pref'))->toEqual($arrayValue);
+});
 
-    public function testMultiplePrefsPerUser(): void
-    {
-        $user = User::factory()->create();
-        UserPref::setPref($user, 'pref_one', 'value_one');
-        UserPref::setPref($user, 'pref_two', 'value_two');
+test('multiple prefs per user', function () {
+    $user = User::factory()->create();
+    UserPref::setPref($user, 'pref_one', 'value_one');
+    UserPref::setPref($user, 'pref_two', 'value_two');
 
-        $this->assertEquals('value_one', UserPref::getPref($user, 'pref_one'));
-        $this->assertEquals('value_two', UserPref::getPref($user, 'pref_two'));
-    }
+    expect(UserPref::getPref($user, 'pref_one'))->toEqual('value_one');
+    expect(UserPref::getPref($user, 'pref_two'))->toEqual('value_two');
+});
 
-    public function testUserRelationship(): void
-    {
-        $user = User::factory()->create();
-        $pref = UserPref::setPref($user, 'test_pref', 'test_value');
+test('user relationship', function () {
+    $user = User::factory()->create();
+    $pref = UserPref::setPref($user, 'test_pref', 'test_value');
 
-        $this->assertEquals($user->user_id, $pref->user->user_id);
-    }
-}
+    expect($pref->user->user_id)->toEqual($user->user_id);
+});

@@ -24,15 +24,12 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
 
-final class AdvaSysAlmTrapTest extends SnmpTrapTestCase
-{
-    public function testCriticalAlarm(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+test('critical alarm', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 0:0:15:22.68
@@ -46,15 +43,14 @@ CM-ALARM-MIB::cmSysAlmLocation.5 nearEnd
 CM-ALARM-MIB::cmSysAlmDirection.5 receiveDirectionOnly
 CM-ALARM-MIB::cmSysAlmDescr.5 "Critical alarm test"
 TRAP,
-            'System Alarm: Critical alarm test Status: critical',
-            'Could not handle cmSysAlmTrap critical',
-            [Severity::Error],
-        );
-    }
+        'System Alarm: Critical alarm test Status: critical',
+        'Could not handle cmSysAlmTrap critical',
+        [Severity::Error],
+    );
+});
 
-    public function testMajorAlarm(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('major alarm', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 0:0:15:22.68
@@ -68,15 +64,14 @@ CM-ALARM-MIB::cmSysAlmLocation.5 nearEnd
 CM-ALARM-MIB::cmSysAlmDirection.5 receiveDirectionOnly
 CM-ALARM-MIB::cmSysAlmDescr.5 "Major alarm test"
 TRAP,
-            'System Alarm: Major alarm test Status: major',
-            'Could not handle cmSysAlmTrap major',
-            [Severity::Warning],
-        );
-    }
+        'System Alarm: Major alarm test Status: major',
+        'Could not handle cmSysAlmTrap major',
+        [Severity::Warning],
+    );
+});
 
-    public function testMinorAlarm(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('minor alarm', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 0:0:15:22.68
@@ -90,15 +85,14 @@ CM-ALARM-MIB::cmSysAlmLocation.5 nearEnd
 CM-ALARM-MIB::cmSysAlmDirection.5 receiveDirectionOnly
 CM-ALARM-MIB::cmSysAlmDescr.5 "Minor alarm test"
 TRAP,
-            'System Alarm: Minor alarm test Status: minor',
-            'Could not handle cmSysAlmTrap minor',
-            [Severity::Notice],
-        );
-    }
+        'System Alarm: Minor alarm test Status: minor',
+        'Could not handle cmSysAlmTrap minor',
+        [Severity::Notice],
+    );
+});
 
-    public function testClearedAlarm(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cleared alarm', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 0:0:15:22.68
@@ -112,9 +106,8 @@ CM-ALARM-MIB::cmSysAlmLocation.5 nearEnd
 CM-ALARM-MIB::cmSysAlmDirection.5 receiveDirectionOnly
 CM-ALARM-MIB::cmSysAlmDescr.5 "Cleared alarm test"
 TRAP,
-            'System Alarm: Cleared alarm test Status: cleared',
-            'Could not handle cmSysAlmTrap major',
-            [Severity::Ok],
-        );
-    }
-}
+        'System Alarm: Cleared alarm test Status: cleared',
+        'Could not handle cmSysAlmTrap major',
+        [Severity::Ok],
+    );
+});

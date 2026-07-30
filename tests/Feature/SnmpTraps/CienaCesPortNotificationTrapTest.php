@@ -26,28 +26,29 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use App\Models\Device;
 use App\Models\Port;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Enum\IfOperStatus;
 use LibreNMS\Enum\Severity;
-use LibreNMS\Tests\Traits\RequiresDatabase;
 
-final class CienaCesPortNotificationTrapTest extends SnmpTrapTestCase
-{
-    use RequiresDatabase;
-    use DatabaseTransactions;
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-    public function testCienaCesPortDownNotification(): void
-    {
-        // make a device and associate a port with it
-        $device = Device::factory()->create(); /** @var Device $device */
-        $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']); /** @var Port $port */
-        $device->ports()->save($port);
+// replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
+beforeEach(function () {
+    if (! getenv('DBTEST')) {
+        $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
+    }
+});
 
-        $this->assertTrapLogsMessage("$device->hostname
+test('ciena ces port down notification', function () {
+    // make a device and associate a port with it
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
+    /** @var Port $port */
+    $device->ports()->save($port);
+
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:57123->[192.168.4.4]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 2:15:07:12.87
 SNMPv2-MIB::snmpTrapOID.0 CIENA-CES-PORT-MIB::cienaCesPortNotificationPortDown
@@ -60,24 +61,26 @@ CIENA-CES-PORT-MIB::cienaCesLogicalPortConfigPortAdminState enabled
 CIENA-CES-PORT-MIB::cienaCesLogicalPortConfigPortOperState disable
 CIENA-CES-PORT-MIB::cienaCesLogicalPortConfigPortName $port->ifName
 CIENA-CES-PORT-MIB::cienaCesLogicalPortConfigPortDesc $port->ifDescr",
-            "Port down on Chassis: 1 Shelf: 1 Slot: 1 Port: $port->ifIndex",
-            'Could not handle CienaCesPortDownNotification',
-            [Severity::Error],
-            $device,
-        );
+        "Port down on Chassis: 1 Shelf: 1 Slot: 1 Port: $port->ifIndex",
+        'Could not handle CienaCesPortDownNotification',
+        [Severity::Error],
+        $device,
+    );
 
-        $port = $port->fresh(); // refresh from database
-        $this->assertEquals(IfOperStatus::Down, $port->ifOperStatus);
-    }
+    $port = $port->fresh();
+    // refresh from database
+    expect($port->ifOperStatus)->toEqual(IfOperStatus::Down);
+});
 
-    public function testCienaCesPortUpNotification(): void
-    {
-        // make a device and associate a port with it
-        $device = Device::factory()->create(); /** @var Device $device */
-        $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']); /** @var Port $port */
-        $device->ports()->save($port);
+test('ciena ces port up notification', function () {
+    // make a device and associate a port with it
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
+    /** @var Port $port */
+    $device->ports()->save($port);
 
-        $this->assertTrapLogsMessage("$device->hostname
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:57123->[192.168.4.4]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 2:15:07:12.87
 SNMPv2-MIB::snmpTrapOID.0 CIENA-CES-PORT-MIB::cienaCesPortNotificationPortUp
@@ -91,13 +94,13 @@ CIENA-CES-PORT-MIB::cienaCesLogicalPortConfigPortOperState enabled
 CIENA-CES-PORT-MIB::cienaCesLogicalPortConfigPortName $port->ifName
 CIENA-CES-PORT-MIB::cienaCesLogicalPortConfigPortType 1
 CIENA-CES-PORT-MIB::cienaCesLogicalPortConfigPortDesc $port->ifDescr",
-            "Port up on Chassis: 1 Shelf: 1 Slot: 1 Port: $port->ifIndex",
-            'Could not handle CienaCesPortUpNotification',
-            [Severity::Ok],
-            $device,
-        );
+        "Port up on Chassis: 1 Shelf: 1 Slot: 1 Port: $port->ifIndex",
+        'Could not handle CienaCesPortUpNotification',
+        [Severity::Ok],
+        $device,
+    );
 
-        $port = $port->fresh(); // refresh from database
-        $this->assertEquals(IfOperStatus::Up, $port->ifOperStatus);
-    }
-}
+    $port = $port->fresh();
+    // refresh from database
+    expect($port->ifOperStatus)->toEqual(IfOperStatus::Up);
+});

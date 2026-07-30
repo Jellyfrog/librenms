@@ -28,31 +28,33 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use App\Models\Device;
 use App\Models\OspfPort;
 use App\Models\Port;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Enum\Severity;
-use LibreNMS\Tests\Traits\RequiresDatabase;
 
-final class OspfIfStateChangeTest extends SnmpTrapTestCase
-{
-    use RequiresDatabase;
-    use DatabaseTransactions;
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-    //Test OSPF interface state down
-    public function testOspfIfDown(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']); /** @var Port $port */
-        $device->ports()->save($port);
+// replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
+beforeEach(function () {
+    if (! getenv('DBTEST')) {
+        $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
+    }
+});
 
-        $ospfIf = OspfPort::factory()->make(['port_id' => $port->port_id, 'ospfIfState' => 'designatedRouter']); /** @var OspfPort $ospfIf */
-        $device->ospfPorts()->save($ospfIf);
 
-        $this->assertTrapLogsMessage("$device->hostname
+test('ospf if down', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
+    /** @var Port $port */
+    $device->ports()->save($port);
+
+    $ospfIf = OspfPort::factory()->make(['port_id' => $port->port_id, 'ospfIfState' => 'designatedRouter']);
+    /** @var OspfPort $ospfIf */
+    $device->ospfPorts()->save($ospfIf);
+
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 0:6:11:31.55
 SNMPv2-MIB::snmpTrapOID.0 OSPF-TRAP-MIB::ospfIfStateChange
@@ -61,27 +63,28 @@ OSPF-MIB::ospfIfIpAddress.$ospfIf->ospfIfIpAddress.0 $ospfIf->ospfIfIpAddress
 OSPF-MIB::ospfAddressLessIf.$ospfIf->ospfIfIpAddress.0 $ospfIf->ospfAddressLessIf
 OSPF-MIB::ospfIfState.$ospfIf->ospfIfIpAddress.0 down
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX240",
-            "OSPF interface $port->ifName is down",
-            'Could not handle ospfIfStateChange down',
-            [Severity::Error],
-            $device,
-        );
+        "OSPF interface $port->ifName is down",
+        'Could not handle ospfIfStateChange down',
+        [Severity::Error],
+        $device,
+    );
 
-        $ospfIf = $ospfIf->fresh();
-        $this->assertEquals($ospfIf->ospfIfState, 'down');
-    }
+    $ospfIf = $ospfIf->fresh();
+    expect('down')->toEqual($ospfIf->ospfIfState);
+});
 
-    //Test OSPF interface state DesignatedRouter
-    public function testOspfIfDr(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']); /** @var Port $port */
-        $device->ports()->save($port);
+test('ospf if dr', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
+    /** @var Port $port */
+    $device->ports()->save($port);
 
-        $ospfIf = OspfPort::factory()->make(['port_id' => $port->port_id, 'ospfIfState' => 'down']); /** @var OspfPort $ospfIf */
-        $device->ospfPorts()->save($ospfIf);
+    $ospfIf = OspfPort::factory()->make(['port_id' => $port->port_id, 'ospfIfState' => 'down']);
+    /** @var OspfPort $ospfIf */
+    $device->ospfPorts()->save($ospfIf);
 
-        $this->assertTrapLogsMessage("$device->hostname
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 0:6:11:31.55
 SNMPv2-MIB::snmpTrapOID.0 OSPF-TRAP-MIB::ospfIfStateChange
@@ -91,27 +94,28 @@ OSPF-MIB::ospfAddressLessIf.$ospfIf->ospfIfIpAddress.0 $ospfIf->ospfAddressLessI
 OSPF-MIB::ospfIfState.$ospfIf->ospfIfIpAddress.0 designatedRouter
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX240
 ",
-            "OSPF interface $port->ifName is designatedRouter",
-            'Could not handle ospfIfStateChange designatedRouter',
-            [Severity::Ok],
-            $device,
-        );
+        "OSPF interface $port->ifName is designatedRouter",
+        'Could not handle ospfIfStateChange designatedRouter',
+        [Severity::Ok],
+        $device,
+    );
 
-        $ospfIf = $ospfIf->fresh();
-        $this->assertEquals($ospfIf->ospfIfState, 'designatedRouter');
-    }
+    $ospfIf = $ospfIf->fresh();
+    expect('designatedRouter')->toEqual($ospfIf->ospfIfState);
+});
 
-    //Test OSPF interface state backupDesignatedRouter
-    public function testOspfIfBdr(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']); /** @var Port $port */
-        $device->ports()->save($port);
+test('ospf if bdr', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
+    /** @var Port $port */
+    $device->ports()->save($port);
 
-        $ospfIf = OspfPort::factory()->make(['port_id' => $port->port_id, 'ospfIfState' => 'down']); /** @var OspfPort $ospfIf */
-        $device->ospfPorts()->save($ospfIf);
+    $ospfIf = OspfPort::factory()->make(['port_id' => $port->port_id, 'ospfIfState' => 'down']);
+    /** @var OspfPort $ospfIf */
+    $device->ospfPorts()->save($ospfIf);
 
-        $this->assertTrapLogsMessage("$device->hostname
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 0:6:11:31.55
 SNMPv2-MIB::snmpTrapOID.0 OSPF-TRAP-MIB::ospfIfStateChange
@@ -120,27 +124,28 @@ OSPF-MIB::ospfIfIpAddress.$ospfIf->ospfIfIpAddress.0 $ospfIf->ospfIfIpAddress
 OSPF-MIB::ospfAddressLessIf.$ospfIf->ospfIfIpAddress.0 $ospfIf->ospfAddressLessIf
 OSPF-MIB::ospfIfState.$ospfIf->ospfIfIpAddress.0 backupDesignatedRouter
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX240",
-            "OSPF interface $port->ifName is backupDesignatedRouter",
-            'Could not handle ospfIfStateChange backupDesignatedRouter',
-            [Severity::Ok],
-            $device,
-        );
+        "OSPF interface $port->ifName is backupDesignatedRouter",
+        'Could not handle ospfIfStateChange backupDesignatedRouter',
+        [Severity::Ok],
+        $device,
+    );
 
-        $ospfIf = $ospfIf->fresh();
-        $this->assertEquals($ospfIf->ospfIfState, 'backupDesignatedRouter');
-    }
+    $ospfIf = $ospfIf->fresh();
+    expect('backupDesignatedRouter')->toEqual($ospfIf->ospfIfState);
+});
 
-    //Test OSPF interface state otherDesignatedRouter
-    public function testOspfIfOdr(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']); /** @var Port $port */
-        $device->ports()->save($port);
+test('ospf if odr', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
+    /** @var Port $port */
+    $device->ports()->save($port);
 
-        $ospfIf = OspfPort::factory()->make(['port_id' => $port->port_id, 'ospfIfState' => 'down']); /** @var OspfPort $ospfIf */
-        $device->ospfPorts()->save($ospfIf);
+    $ospfIf = OspfPort::factory()->make(['port_id' => $port->port_id, 'ospfIfState' => 'down']);
+    /** @var OspfPort $ospfIf */
+    $device->ospfPorts()->save($ospfIf);
 
-        $this->assertTrapLogsMessage("$device->hostname
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 0:6:11:31.55
 SNMPv2-MIB::snmpTrapOID.0 OSPF-TRAP-MIB::ospfIfStateChange
@@ -149,27 +154,28 @@ OSPF-MIB::ospfIfIpAddress.$ospfIf->ospfIfIpAddress.0 $ospfIf->ospfIfIpAddress
 OSPF-MIB::ospfAddressLessIf.$ospfIf->ospfIfIpAddress.0 $ospfIf->ospfAddressLessIf
 OSPF-MIB::ospfIfState.$ospfIf->ospfIfIpAddress.0 otherDesignatedRouter
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX240",
-            "OSPF interface $port->ifName is otherDesignatedRouter",
-            'Could not handle ospfIfStateChange otherDesignatedRouter',
-            [Severity::Ok],
-            $device,
-        );
+        "OSPF interface $port->ifName is otherDesignatedRouter",
+        'Could not handle ospfIfStateChange otherDesignatedRouter',
+        [Severity::Ok],
+        $device,
+    );
 
-        $ospfIf = $ospfIf->fresh();
-        $this->assertEquals($ospfIf->ospfIfState, 'otherDesignatedRouter');
-    }
+    $ospfIf = $ospfIf->fresh();
+    expect('otherDesignatedRouter')->toEqual($ospfIf->ospfIfState);
+});
 
-    //Test OSPF interface state pointToPoint
-    public function testOspfIfPtp(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']); /** @var Port $port */
-        $device->ports()->save($port);
+test('ospf if ptp', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
+    /** @var Port $port */
+    $device->ports()->save($port);
 
-        $ospfIf = OspfPort::factory()->make(['port_id' => $port->port_id, 'ospfIfState' => 'down']); /** @var OspfPort $ospfIf */
-        $device->ospfPorts()->save($ospfIf);
+    $ospfIf = OspfPort::factory()->make(['port_id' => $port->port_id, 'ospfIfState' => 'down']);
+    /** @var OspfPort $ospfIf */
+    $device->ospfPorts()->save($ospfIf);
 
-        $this->assertTrapLogsMessage("$device->hostname
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 0:6:11:31.55
 SNMPv2-MIB::snmpTrapOID.0 OSPF-TRAP-MIB::ospfIfStateChange
@@ -178,27 +184,28 @@ OSPF-MIB::ospfIfIpAddress.$ospfIf->ospfIfIpAddress.0 $ospfIf->ospfIfIpAddress
 OSPF-MIB::ospfAddressLessIf.$ospfIf->ospfIfIpAddress.0 $ospfIf->ospfAddressLessIf
 OSPF-MIB::ospfIfState.$ospfIf->ospfIfIpAddress.0 pointToPoint
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX240",
-            "OSPF interface $port->ifName is pointToPoint",
-            'Could not handle ospfIfStateChange pointToPoint',
-            [Severity::Ok],
-            $device,
-        );
+        "OSPF interface $port->ifName is pointToPoint",
+        'Could not handle ospfIfStateChange pointToPoint',
+        [Severity::Ok],
+        $device,
+    );
 
-        $ospfIf = $ospfIf->fresh();
-        $this->assertEquals($ospfIf->ospfIfState, 'pointToPoint');
-    }
+    $ospfIf = $ospfIf->fresh();
+    expect('pointToPoint')->toEqual($ospfIf->ospfIfState);
+});
 
-    //Test OSPF interface state waiting
-    public function testOspfIfWait(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']); /** @var Port $port */
-        $device->ports()->save($port);
+test('ospf if wait', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
+    /** @var Port $port */
+    $device->ports()->save($port);
 
-        $ospfIf = OspfPort::factory()->make(['port_id' => $port->port_id, 'ospfIfState' => 'designatedRouter']); /** @var OspfPort $ospfIf */
-        $device->ospfPorts()->save($ospfIf);
+    $ospfIf = OspfPort::factory()->make(['port_id' => $port->port_id, 'ospfIfState' => 'designatedRouter']);
+    /** @var OspfPort $ospfIf */
+    $device->ospfPorts()->save($ospfIf);
 
-        $this->assertTrapLogsMessage("$device->hostname
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 0:6:11:31.55
 SNMPv2-MIB::snmpTrapOID.0 OSPF-TRAP-MIB::ospfIfStateChange
@@ -207,27 +214,28 @@ OSPF-MIB::ospfIfIpAddress.$ospfIf->ospfIfIpAddress.0 $ospfIf->ospfIfIpAddress
 OSPF-MIB::ospfAddressLessIf.$ospfIf->ospfIfIpAddress.0 $ospfIf->ospfAddressLessIf
 OSPF-MIB::ospfIfState.$ospfIf->ospfIfIpAddress.0 waiting
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX240",
-            "OSPF interface $port->ifName is waiting",
-            'Could not handle ospfIfStateChange waiting',
-            [Severity::Warning],
-            $device,
-        );
+        "OSPF interface $port->ifName is waiting",
+        'Could not handle ospfIfStateChange waiting',
+        [Severity::Warning],
+        $device,
+    );
 
-        $ospfIf = $ospfIf->fresh();
-        $this->assertEquals($ospfIf->ospfIfState, 'waiting');
-    }
+    $ospfIf = $ospfIf->fresh();
+    expect('waiting')->toEqual($ospfIf->ospfIfState);
+});
 
-    //Test OSPF interface state loopback
-    public function testOspfIfLoop(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']); /** @var Port $port */
-        $device->ports()->save($port);
+test('ospf if loop', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
+    /** @var Port $port */
+    $device->ports()->save($port);
 
-        $ospfIf = OspfPort::factory()->make(['port_id' => $port->port_id, 'ospfIfState' => 'designatedRouter']); /** @var OspfPort $ospfIf */
-        $device->ospfPorts()->save($ospfIf);
+    $ospfIf = OspfPort::factory()->make(['port_id' => $port->port_id, 'ospfIfState' => 'designatedRouter']);
+    /** @var OspfPort $ospfIf */
+    $device->ospfPorts()->save($ospfIf);
 
-        $this->assertTrapLogsMessage("$device->hostname
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 0:6:11:31.55
 SNMPv2-MIB::snmpTrapOID.0 OSPF-TRAP-MIB::ospfIfStateChange
@@ -236,13 +244,12 @@ OSPF-MIB::ospfIfIpAddress.$ospfIf->ospfIfIpAddress.0 $ospfIf->ospfIfIpAddress
 OSPF-MIB::ospfAddressLessIf.$ospfIf->ospfIfIpAddress.0 $ospfIf->ospfAddressLessIf
 OSPF-MIB::ospfIfState.$ospfIf->ospfIfIpAddress.0 loopback
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX240",
-            "OSPF interface $port->ifName is loopback",
-            'Could not handle ospfIfStateChange loopback',
-            [Severity::Warning],
-            $device,
-        );
+        "OSPF interface $port->ifName is loopback",
+        'Could not handle ospfIfStateChange loopback',
+        [Severity::Warning],
+        $device,
+    );
 
-        $ospfIf = $ospfIf->fresh();
-        $this->assertEquals($ospfIf->ospfIfState, 'loopback');
-    }
-}
+    $ospfIf = $ospfIf->fresh();
+    expect('loopback')->toEqual($ospfIf->ospfIfState);
+});

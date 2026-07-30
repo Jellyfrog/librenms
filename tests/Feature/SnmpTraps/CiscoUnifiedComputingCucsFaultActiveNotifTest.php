@@ -22,18 +22,12 @@
  * @author     Adam Sweet <adam.sweet@transitiv.co.uk>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
-use PHPUnit\Framework\Attributes\TestDox;
 
-#[TestDox('Cisco Unified Computing Cucs Fault Active Notif Trap')]
-final class CiscoUnifiedComputingCucsFaultActiveNotifTest extends SnmpTrapTestCase
-{
-    #[TestDox('Cisco Unified Computing Cucs Fault Active Notif')]
-    public function testCiscoUnifiedComputingCucsFaultActiveNotif(): void
-    {
-        $this->assertTrapLogsMessage('{{ hostname }}
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+test('Cisco Unified Computing Cucs Fault Active Notif', function () {
+    $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:49563->[10.0.0.1]:162]:
 DISMAN-EXPRESSION-MIB::sysUpTimeInstance 191 days, 19:10:52.21
 SNMPv2-MIB::snmpTrapOID.0 CISCO-UNIFIED-COMPUTING-MIB::cucsFaultActiveNotif
@@ -49,9 +43,8 @@ CISCO-UNIFIED-COMPUTING-MIB::cucsFaultProbableCause.3161626 249
 CISCO-UNIFIED-COMPUTING-MIB::cucsFaultSeverity.3161626 major
 CISCO-UNIFIED-COMPUTING-MIB::cucsFaultOccur.3161626 1
 CISCO-UNIFIED-COMPUTING-MIB::cucsFaultEntry.13.3161626 3161625',
-            'Cisco Unified Computing Fault 3161626 Active: Virtual interface 702 link state is down for sys/rack-unit-2/adaptor-1/host-eth-2/vif-702 started at 2025-12-11,16:27:4.91, last updated at 2025-12-11,16:27:4.91. Probable cause: 249',
-            'Could not handle CiscoUnifiedComputingCucsFaultActiveNotif trap',
-            [Severity::Error],
-        );
-    }
-}
+        'Cisco Unified Computing Fault 3161626 Active: Virtual interface 702 link state is down for sys/rack-unit-2/adaptor-1/host-eth-2/vif-702 started at 2025-12-11,16:27:4.91, last updated at 2025-12-11,16:27:4.91. Probable cause: 249',
+        'Could not handle CiscoUnifiedComputingCucsFaultActiveNotif trap',
+        [Severity::Error],
+    );
+});

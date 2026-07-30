@@ -21,72 +21,65 @@
  * @link       https://www.librenms.org
  */
 
-namespace LibreNMS\Tests;
-
 use App\Facades\LibrenmsConfig;
 use LibreNMS\Util\Http;
 use LibreNMS\Util\Version;
 
-final class ProxyTest extends TestCase
-{
-    public function testClientAgentIsCorrect(): void
-    {
-        $this->assertEquals('LibreNMS/' . Version::VERSION, Http::client()->getOptions()['headers']['User-Agent']);
-    }
+uses(\LibreNMS\Tests\TestCase::class);
 
-    public function testProxyIsNotSet(): void
-    {
-        LibrenmsConfig::set('http_proxy', '');
-        LibrenmsConfig::set('https_proxy', '');
-        LibrenmsConfig::set('no_proxy', '');
-        $client_options = Http::client()->getOptions();
-        $this->assertEmpty($client_options['proxy']['http']);
-        $this->assertEmpty($client_options['proxy']['https']);
-        $this->assertEmpty($client_options['proxy']['no']);
-    }
+test('client agent is correct', function () {
+    expect(Http::client()->getOptions()['headers']['User-Agent'])->toEqual('LibreNMS/' . Version::VERSION);
+});
 
-    public function testProxyIsSet(): void
-    {
-        LibrenmsConfig::set('http_proxy', 'http://proxy:5000');
-        LibrenmsConfig::set('https_proxy', 'tcp://proxy:5183');
-        LibrenmsConfig::set('no_proxy', 'localhost,127.0.0.1,::1,.domain.com');
-        $client_options = Http::client()->getOptions();
-        $this->assertEquals('http://proxy:5000', $client_options['proxy']['http']);
-        $this->assertEquals('tcp://proxy:5183', $client_options['proxy']['https']);
-        $this->assertEquals([
-            'localhost',
-            '127.0.0.1',
-            '::1',
-            '.domain.com',
-        ], $client_options['proxy']['no']);
-    }
+test('proxy is not set', function () {
+    LibrenmsConfig::set('http_proxy', '');
+    LibrenmsConfig::set('https_proxy', '');
+    LibrenmsConfig::set('no_proxy', '');
+    $client_options = Http::client()->getOptions();
+    expect($client_options['proxy']['http'])->toBeEmpty();
+    expect($client_options['proxy']['https'])->toBeEmpty();
+    expect($client_options['proxy']['no'])->toBeEmpty();
+});
 
-    public function testProxyIsSetFromEnv(): void
-    {
-        LibrenmsConfig::set('http_proxy', '');
-        LibrenmsConfig::set('https_proxy', '');
-        LibrenmsConfig::set('no_proxy', '');
+test('proxy is set', function () {
+    LibrenmsConfig::set('http_proxy', 'http://proxy:5000');
+    LibrenmsConfig::set('https_proxy', 'tcp://proxy:5183');
+    LibrenmsConfig::set('no_proxy', 'localhost,127.0.0.1,::1,.domain.com');
+    $client_options = Http::client()->getOptions();
+    expect($client_options['proxy']['http'])->toEqual('http://proxy:5000');
+    expect($client_options['proxy']['https'])->toEqual('tcp://proxy:5183');
+    expect($client_options['proxy']['no'])->toEqual([
+        'localhost',
+        '127.0.0.1',
+        '::1',
+        '.domain.com',
+    ]);
+});
 
-        putenv('HTTP_PROXY=someproxy:3182');
-        putenv('HTTPS_PROXY=https://someproxy:3182');
-        putenv('NO_PROXY=.there.com');
+test('proxy is set from env', function () {
+    LibrenmsConfig::set('http_proxy', '');
+    LibrenmsConfig::set('https_proxy', '');
+    LibrenmsConfig::set('no_proxy', '');
 
-        $client_options = Http::client()->getOptions();
-        $this->assertEquals('someproxy:3182', $client_options['proxy']['http']);
-        $this->assertEquals('https://someproxy:3182', $client_options['proxy']['https']);
-        $this->assertEquals([
-            '.there.com',
-        ], $client_options['proxy']['no']);
+    putenv('HTTP_PROXY=someproxy:3182');
+    putenv('HTTPS_PROXY=https://someproxy:3182');
+    putenv('NO_PROXY=.there.com');
 
-        putenv('http_proxy=otherproxy:3182');
-        putenv('https_proxy=otherproxy:3183');
-        putenv('no_proxy=dontproxymebro');
+    $client_options = Http::client()->getOptions();
+    expect($client_options['proxy']['http'])->toEqual('someproxy:3182');
+    expect($client_options['proxy']['https'])->toEqual('https://someproxy:3182');
+    expect($client_options['proxy']['no'])->toEqual([
+        '.there.com',
+    ]);
 
-        $client_options = Http::client()->getOptions();
-        $this->assertEquals('otherproxy:3182', $client_options['proxy']['http']);
-        $this->assertEquals('otherproxy:3183', $client_options['proxy']['https']);
-        $this->assertEquals([
-            'dontproxymebro',
-        ], $client_options['proxy']['no']);
-    }
-}
+    putenv('http_proxy=otherproxy:3182');
+    putenv('https_proxy=otherproxy:3183');
+    putenv('no_proxy=dontproxymebro');
+
+    $client_options = Http::client()->getOptions();
+    expect($client_options['proxy']['http'])->toEqual('otherproxy:3182');
+    expect($client_options['proxy']['https'])->toEqual('otherproxy:3183');
+    expect($client_options['proxy']['no'])->toEqual([
+        'dontproxymebro',
+    ]);
+});

@@ -26,29 +26,31 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use App\Models\Device;
 use App\Models\Port;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Enum\Severity;
-use LibreNMS\Tests\Traits\RequiresDatabase;
 
-final class JnxLdpSesTest extends SnmpTrapTestCase
-{
-    use RequiresDatabase;
-    use DatabaseTransactions;
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-    public function testJnxLdpSesDownTrap(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']); /** @var Port $port */
-        $device->ports()->save($port);
+// replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
+beforeEach(function () {
+    if (! getenv('DBTEST')) {
+        $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
+    }
+});
 
-        $warning = "Snmptrap LdpSesDown: Could not find port at ifIndex $port->ifIndex for device: $device->hostname";
-        \Log::shouldReceive('warning')->never()->with($warning);
 
-        $this->assertTrapLogsMessage("$device->hostname
+test('jnx ldp ses down trap', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
+    /** @var Port $port */
+    $device->ports()->save($port);
+
+    $warning = "Snmptrap LdpSesDown: Could not find port at ifIndex $port->ifIndex for device: $device->hostname";
+    \Log::shouldReceive('warning')->never()->with($warning);
+
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:64610->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 198:2:10:48.91
 SNMPv2-MIB::snmpTrapOID.0 JUNIPER-LDP-MIB::jnxLdpSesDown
@@ -56,35 +58,35 @@ JUNIPER-MPLS-LDP-MIB::jnxMplsLdpSesState.'.q.j..'.1.'.q.p..' nonexistent
 JUNIPER-LDP-MIB::jnxLdpSesDownReason.0 allAdjacenciesDown
 JUNIPER-LDP-MIB::jnxLdpSesDownIf.0 $port->ifIndex
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameMX480",
-            "LDP session on interface $port->ifDescr is nonexistent due to allAdjacenciesDown",
-            'Could not handle JnxLdpSesDown trap',
-            [Severity::Warning],
-            $device,
-        );
-    }
+        "LDP session on interface $port->ifDescr is nonexistent due to allAdjacenciesDown",
+        'Could not handle JnxLdpSesDown trap',
+        [Severity::Warning],
+        $device,
+    );
+});
 
-    public function testJnxLdpSesUpTrap(): void
-    {
-        $device = Device::factory()->create();
-        /** @var Device $device */
-        $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
-        /** @var Port $port */
-        $device->ports()->save($port);
+test('jnx ldp ses up trap', function () {
+    $device = Device::factory()->create();
 
-        $warning = "Snmptrap LdpSesUp: Could not find port at ifIndex $port->ifIndex for device: $device->hostname";
-        \Log::shouldReceive('warning')->never()->with($warning);
+    /** @var Device $device */
+    $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
 
-        $this->assertTrapLogsMessage("{{ hostname }}
+    /** @var Port $port */
+    $device->ports()->save($port);
+
+    $warning = "Snmptrap LdpSesUp: Could not find port at ifIndex $port->ifIndex for device: $device->hostname";
+    \Log::shouldReceive('warning')->never()->with($warning);
+
+    $this->assertTrapLogsMessage("{{ hostname }}
 UDP: [{{ ip }}]:64610->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 198:2:10:48.91
 SNMPv2-MIB::snmpTrapOID.0 JUNIPER-LDP-MIB::jnxLdpSesUp
 JUNIPER-MPLS-LDP-MIB::jnxMplsLdpSesState.'.q.d..'.1.'.q.p..' operational
 JUNIPER-LDP-MIB::jnxLdpSesUpIf.0 $port->ifIndex
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameMX960",
-            "LDP session on interface $port->ifDescr is operational",
-            'Could not handle JnxLdpSesUp trap',
-            [Severity::Ok],
-            $device,
-        );
-    }
-}
+        "LDP session on interface $port->ifDescr is operational",
+        'Could not handle JnxLdpSesUp trap',
+        [Severity::Ok],
+        $device,
+    );
+});

@@ -26,24 +26,26 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use App\Models\Device;
 use App\Models\Ipv4Address;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Enum\Severity;
-use LibreNMS\Tests\Traits\RequiresDatabase;
 
-final class JnxLdpLspTest extends SnmpTrapTestCase
-{
-    use RequiresDatabase;
-    use DatabaseTransactions;
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-    public function testLdpLspDownTrap(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $ipv4 = Ipv4Address::factory()->make(); /** @var Ipv4Address $ipv4 */
-        $this->assertTrapLogsMessage("$device->hostname
+// replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
+beforeEach(function () {
+    if (! getenv('DBTEST')) {
+        $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
+    }
+});
+
+
+test('ldp lsp down trap', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $ipv4 = Ipv4Address::factory()->make();
+    /** @var Ipv4Address $ipv4 */
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:64610->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 198:2:10:48.91
 SNMPv2-MIB::snmpTrapOID.0 JUNIPER-LDP-MIB::jnxLdpLspDown
@@ -53,18 +55,19 @@ JUNIPER-LDP-MIB::jnxLdpLspDownReason.0 topologyChanged
 JUNIPER-LDP-MIB::jnxLdpLspFecLen.0 32
 JUNIPER-LDP-MIB::jnxLdpInstanceName.0 \"test instance down\"
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameMX480",
-            "LDP session test instance down from $device->ip to $ipv4->ipv4_address has gone down due to topologyChanged",
-            'Could not handle JnxLdpLspDown trap',
-            [Severity::Warning],
-            $device,
-        );
-    }
+        "LDP session test instance down from $device->ip to $ipv4->ipv4_address has gone down due to topologyChanged",
+        'Could not handle JnxLdpLspDown trap',
+        [Severity::Warning],
+        $device,
+    );
+});
 
-    public function testLdpLspUpTrap(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $ipv4 = Ipv4Address::factory()->make(); /** @var Ipv4Address $ipv4 */
-        $this->assertTrapLogsMessage("$device->hostname
+test('ldp lsp up trap', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $ipv4 = Ipv4Address::factory()->make();
+    /** @var Ipv4Address $ipv4 */
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:64610->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 198:2:10:48.91
 SNMPv2-MIB::snmpTrapOID.0 JUNIPER-LDP-MIB::jnxLdpLspUp
@@ -73,10 +76,9 @@ JUNIPER-LDP-MIB::jnxLdpRtrid.0 $device->ip
 JUNIPER-LDP-MIB::jnxLdpLspFecLen.0 32
 JUNIPER-LDP-MIB::jnxLdpInstanceName.0 \"test instance up\"
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameMX480",
-            "LDP session test instance up from $device->ip to $ipv4->ipv4_address is now up.",
-            'Could not handle JnxLdpLspUp trap',
-            [Severity::Ok],
-            $device,
-        );
-    }
-}
+        "LDP session test instance up from $device->ip to $ipv4->ipv4_address is now up.",
+        'Could not handle JnxLdpLspUp trap',
+        [Severity::Ok],
+        $device,
+    );
+});

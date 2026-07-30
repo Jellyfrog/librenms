@@ -24,15 +24,12 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
 
-final class AdvaNetworkElementAlmTrapTest extends SnmpTrapTestCase
-{
-    public function testElementAlarmCleared(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+test('element alarm cleared', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -53,15 +50,14 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 0B 01 2B 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.231 231
 ADVA-MIB::neEventLogTimeStamp.231 2018-12-10,11:1:43.3,-6:0
 TRAP,
-            'Alarming Element: NETWORK PORT-1-1-1-2 Description: Test Alarm Cleared Severity: cleared',
-            'Could not handle cmNetworkElementAlmTrap cleared',
-            [Severity::Ok],
-        );
-    }
+        'Alarming Element: NETWORK PORT-1-1-1-2 Description: Test Alarm Cleared Severity: cleared',
+        'Could not handle cmNetworkElementAlmTrap cleared',
+        [Severity::Ok],
+    );
+});
 
-    public function testElementAlarmMinor(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('element alarm minor', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -82,15 +78,14 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 0B 01 2B 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.231 231
 ADVA-MIB::neEventLogTimeStamp.231 2018-12-10,11:1:43.3,-6:0
 TRAP,
-            'Alarming Element: NETWORK PORT-1-1-1-2 Description: Test Alarm Minor Severity: minor',
-            'Could not handle cmNetworkElementAlmTrap minor',
-            [Severity::Notice],
-        );
-    }
+        'Alarming Element: NETWORK PORT-1-1-1-2 Description: Test Alarm Minor Severity: minor',
+        'Could not handle cmNetworkElementAlmTrap minor',
+        [Severity::Notice],
+    );
+});
 
-    public function testElementAlarmMajor(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('element alarm major', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -111,15 +106,14 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 0B 01 2B 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.231 231
 ADVA-MIB::neEventLogTimeStamp.231 2018-12-10,11:1:43.3,-6:0
 TRAP,
-            'Alarming Element: NETWORK PORT-1-1-1-2 Description: Test Alarm Major Severity: major',
-            'Could not handle cmNetworkElementAlmTrap major',
-            [Severity::Warning],
-        );
-    }
+        'Alarming Element: NETWORK PORT-1-1-1-2 Description: Test Alarm Major Severity: major',
+        'Could not handle cmNetworkElementAlmTrap major',
+        [Severity::Warning],
+    );
+});
 
-    public function testElementAlarmCritical(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('element alarm critical', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -140,9 +134,8 @@ RMON2-MIB::probeDateTime.0 "07 E2 0C 0A 0B 01 2B 00 2D 06 00 "
 ADVA-MIB::neEventLogIndex.231 231
 ADVA-MIB::neEventLogTimeStamp.231 2018-12-10,11:1:43.3,-6:0
 TRAP,
-            'Alarming Element: NETWORK PORT-1-1-1-2 Description: Test Alarm Critical Severity: critical',
-            'Could not handle cmNetworkElementAlmTrap critical',
-            [Severity::Error],
-        );
-    }
-}
+        'Alarming Element: NETWORK PORT-1-1-1-2 Description: Test Alarm Critical Severity: critical',
+        'Could not handle cmNetworkElementAlmTrap critical',
+        [Severity::Error],
+    );
+});

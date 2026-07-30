@@ -1,224 +1,205 @@
 <?php
 
-namespace LibreNMS\Tests\Feature\Http;
-
 use App\Facades\LibrenmsConfig;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
-use LibreNMS\Tests\TestCase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class UserControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\LibreNMS\Tests\TestCase::class, \Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+beforeEach(function () {
+    // Setup basic roles
+    Role::findOrCreate('admin');
+    Role::findOrCreate('user');
 
-        // Setup basic roles
-        Role::findOrCreate('admin');
-        Role::findOrCreate('user');
+    // Setup permissions
+    Permission::findOrCreate('user.viewAny');
+    Permission::findOrCreate('user.view');
+    Permission::findOrCreate('user.create');
+    Permission::findOrCreate('user.update');
+    Permission::findOrCreate('user.delete');
+    Permission::findOrCreate('role.update');
 
-        // Setup permissions
-        Permission::findOrCreate('user.viewAny');
-        Permission::findOrCreate('user.view');
-        Permission::findOrCreate('user.create');
-        Permission::findOrCreate('user.update');
-        Permission::findOrCreate('user.delete');
-        Permission::findOrCreate('role.update');
+    Password::defaults(fn () => Password::min(8));
 
-        Password::defaults(fn () => Password::min(8));
+    LibrenmsConfig::set('auth_mechanism', 'mysql');
+});
 
-        LibrenmsConfig::set('auth_mechanism', 'mysql');
-    }
+test('admin with create permission can create user', function () {
+    $admin = User::factory()->create(['enabled' => 1]);
+    $admin->assignRole('admin');
+    $admin->givePermissionTo('user.create');
 
-    public function testAdminWithCreatePermissionCanCreateUser(): void
-    {
-        $admin = User::factory()->create(['enabled' => 1]);
-        $admin->assignRole('admin');
-        $admin->givePermissionTo('user.create');
+    $response = $this->actingAs($admin)->post(route('users.store'), [
+        'username' => 'newuser',
+        'new_password' => 'password123',
+        'new_password_confirmation' => 'password123',
+        'realname' => 'New User',
+        'email' => 'newuser@example.com',
+    ]);
 
-        $response = $this->actingAs($admin)->post(route('users.store'), [
-            'username' => 'newuser',
-            'new_password' => 'password123',
-            'new_password_confirmation' => 'password123',
-            'realname' => 'New User',
-            'email' => 'newuser@example.com',
-        ]);
+    $response->assertRedirect(route('users.index'));
+    $this->assertDatabaseHas('users', ['username' => 'newuser']);
+});
 
-        $response->assertRedirect(route('users.index'));
-        $this->assertDatabaseHas('users', ['username' => 'newuser']);
-    }
+test('admin with update permission can update any user', function () {
+    $admin = User::factory()->create(['enabled' => 1]);
+    $admin->assignRole('admin');
+    $admin->givePermissionTo('user.update');
 
-    public function testAdminWithUpdatePermissionCanUpdateAnyUser(): void
-    {
-        $admin = User::factory()->create(['enabled' => 1]);
-        $admin->assignRole('admin');
-        $admin->givePermissionTo('user.update');
+    $targetUser = User::factory()->create(['username' => 'target', 'enabled' => 1]);
 
-        $targetUser = User::factory()->create(['username' => 'target', 'enabled' => 1]);
+    $response = $this->actingAs($admin)->put(route('users.update', $targetUser), [
+        'realname' => 'Updated Name',
+        'email' => 'updated@example.com',
+    ]);
 
-        $response = $this->actingAs($admin)->put(route('users.update', $targetUser), [
-            'realname' => 'Updated Name',
-            'email' => 'updated@example.com',
-        ]);
+    $response->assertRedirect();
+    expect($targetUser->fresh()->realname)->toEqual('Updated Name');
+});
 
-        $response->assertRedirect();
-        $this->assertEquals('Updated Name', $targetUser->fresh()->realname);
-    }
+test('user can update their own profile', function () {
+    $user = User::factory()->create(['password' => Hash::make('old_password'), 'enabled' => 1]);
+    $user->assignRole('user');
 
-    public function testUserCanUpdateTheirOwnProfile(): void
-    {
-        $user = User::factory()->create(['password' => Hash::make('old_password'), 'enabled' => 1]);
-        $user->assignRole('user');
+    $response = $this->actingAs($user)->put(route('users.update', $user), [
+        'realname' => 'My New Name',
+        'email' => 'me@example.com',
+    ]);
 
-        $response = $this->actingAs($user)->put(route('users.update', $user), [
-            'realname' => 'My New Name',
-            'email' => 'me@example.com',
-        ]);
+    $response->assertRedirect();
+    expect($user->fresh()->realname)->toEqual('My New Name');
+});
 
-        $response->assertRedirect();
-        $this->assertEquals('My New Name', $user->fresh()->realname);
-    }
+test('user can change their own password with old password verification', function () {
+    $user = User::factory()->create(['password' => Hash::make('old_password'), 'enabled' => 1]);
+    $user->assignRole('user');
 
-    public function testUserCanChangeTheirOwnPasswordWithOldPasswordVerification(): void
-    {
-        $user = User::factory()->create(['password' => Hash::make('old_password'), 'enabled' => 1]);
-        $user->assignRole('user');
+    // Without old password - should fail
+    $response = $this->actingAs($user)->put(route('users.update', $user), [
+        'new_password' => 'new_password123',
+        'new_password_confirmation' => 'new_password123',
+    ]);
+    $response->assertSessionHasErrors('old_password');
 
-        // Without old password - should fail
-        $response = $this->actingAs($user)->put(route('users.update', $user), [
-            'new_password' => 'new_password123',
-            'new_password_confirmation' => 'new_password123',
-        ]);
-        $response->assertSessionHasErrors('old_password');
+    // With correct old password - should succeed
+    $response = $this->actingAs($user)->put(route('users.update', $user), [
+        'old_password' => 'old_password',
+        'new_password' => 'new_password123',
+        'new_password_confirmation' => 'new_password123',
+    ]);
+    $response->assertRedirect();
+    expect(Hash::check('new_password123', $user->fresh()->password))->toBeTrue();
+});
 
-        // With correct old password - should succeed
-        $response = $this->actingAs($user)->put(route('users.update', $user), [
-            'old_password' => 'old_password',
-            'new_password' => 'new_password123',
-            'new_password_confirmation' => 'new_password123',
-        ]);
-        $response->assertRedirect();
-        $this->assertTrue(Hash::check('new_password123', $user->fresh()->password));
-    }
+test('user cannot update other users', function () {
+    $user = User::factory()->create(['enabled' => 1]);
+    $otherUser = User::factory()->create(['realname' => 'Other User', 'enabled' => 1]);
 
-    public function testUserCannotUpdateOtherUsers(): void
-    {
-        $user = User::factory()->create(['enabled' => 1]);
-        $otherUser = User::factory()->create(['realname' => 'Other User', 'enabled' => 1]);
+    $response = $this->actingAs($user)->put(route('users.update', $otherUser), [
+        'realname' => 'Hacked Name',
+    ]);
 
-        $response = $this->actingAs($user)->put(route('users.update', $otherUser), [
-            'realname' => 'Hacked Name',
-        ]);
+    $response->assertForbidden();
+    expect($otherUser->fresh()->realname)->toEqual('Other User');
+});
 
-        $response->assertForbidden();
-        $this->assertEquals('Other User', $otherUser->fresh()->realname);
-    }
+test('user cannot update restricted fields on themselves', function () {
+    $user = User::factory()->create([
+        'enabled' => 1,
+        'can_modify_passwd' => 1,
+        'username' => 'testuser',
+    ]);
+    $user->assignRole('user');
 
-    public function testUserCannotUpdateRestrictedFieldsOnThemselves(): void
-    {
-        $user = User::factory()->create([
-            'enabled' => 1,
-            'can_modify_passwd' => 1,
-            'username' => 'testuser',
-        ]);
-        $user->assignRole('user');
+    $response = $this->actingAs($user)->put(route('users.update', $user), [
+        'realname' => 'Modified Name',
+        'enabled' => 0,
+        'can_modify_passwd' => 0,
+        'roles' => ['admin'],
+    ]);
 
-        $response = $this->actingAs($user)->put(route('users.update', $user), [
-            'realname' => 'Modified Name',
-            'enabled' => 0,
-            'can_modify_passwd' => 0,
-            'roles' => ['admin'],
-        ]);
+    $response->assertRedirect();
 
-        $response->assertRedirect();
+    $user->refresh();
+    expect($user->realname)->toEqual('Modified Name');
+    expect((int) $user->enabled)->toEqual(1, 'User should NOT be able to change their own enabled status');
+    expect((int) $user->can_modify_passwd)->toEqual(1, 'User should NOT be able to change their own password modification permission');
+    expect($user->hasRole('admin'))->toBeFalse('User should NOT be able to assign themselves roles');
+});
 
-        $user->refresh();
-        $this->assertEquals('Modified Name', $user->realname);
-        $this->assertEquals(1, (int) $user->enabled, 'User should NOT be able to change their own enabled status');
-        $this->assertEquals(1, (int) $user->can_modify_passwd, 'User should NOT be able to change their own password modification permission');
-        $this->assertFalse($user->hasRole('admin'), 'User should NOT be able to assign themselves roles');
-    }
+test('admin can update roles on other users', function () {
+    $admin = User::factory()->create(['enabled' => 1]);
+    $admin->assignRole('admin');
+    $admin->givePermissionTo('user.update');
+    $admin->givePermissionTo('role.update');
 
-    public function testAdminCanUpdateRolesOnOtherUsers(): void
-    {
-        $admin = User::factory()->create(['enabled' => 1]);
-        $admin->assignRole('admin');
-        $admin->givePermissionTo('user.update');
-        $admin->givePermissionTo('role.update');
+    $targetUser = User::factory()->create(['username' => 'target']);
+    expect($targetUser->hasRole('admin'))->toBeFalse();
 
-        $targetUser = User::factory()->create(['username' => 'target']);
-        $this->assertFalse($targetUser->hasRole('admin'));
+    $response = $this->actingAs($admin)->put(route('users.update', $targetUser), [
+        'roles' => ['admin'],
+    ]);
 
-        $response = $this->actingAs($admin)->put(route('users.update', $targetUser), [
-            'roles' => ['admin'],
-        ]);
+    $response->assertRedirect();
+    expect($targetUser->fresh()->hasRole('admin'))->toBeTrue();
+});
 
-        $response->assertRedirect();
-        $this->assertTrue($targetUser->fresh()->hasRole('admin'));
-    }
+test('admin can update restricted fields on other users', function () {
+    $admin = User::factory()->create(['enabled' => 1]);
+    $admin->assignRole('admin');
+    $admin->givePermissionTo('user.update');
 
-    public function testAdminCanUpdateRestrictedFieldsOnOtherUsers(): void
-    {
-        $admin = User::factory()->create(['enabled' => 1]);
-        $admin->assignRole('admin');
-        $admin->givePermissionTo('user.update');
+    $targetUser = User::factory()->create([
+        'enabled' => 1,
+        'can_modify_passwd' => 1,
+        'username' => 'target',
+    ]);
 
-        $targetUser = User::factory()->create([
-            'enabled' => 1,
-            'can_modify_passwd' => 1,
-            'username' => 'target',
-        ]);
+    $response = $this->actingAs($admin)->put(route('users.update', $targetUser), [
+        'enabled' => 0,
+        'can_modify_passwd' => 0,
+    ]);
 
-        $response = $this->actingAs($admin)->put(route('users.update', $targetUser), [
-            'enabled' => 0,
-            'can_modify_passwd' => 0,
-        ]);
+    $response->assertRedirect();
 
-        $response->assertRedirect();
+    $targetUser->refresh();
+    expect((int) $targetUser->enabled)->toEqual(0);
+    expect((int) $targetUser->can_modify_passwd)->toEqual(0);
+});
 
-        $targetUser->refresh();
-        $this->assertEquals(0, (int) $targetUser->enabled);
-        $this->assertEquals(0, (int) $targetUser->can_modify_passwd);
-    }
+test('admin can uncheck restricted fields', function () {
+    $admin = User::factory()->create(['enabled' => 1]);
+    $admin->assignRole('admin');
+    $admin->givePermissionTo('user.update');
 
-    public function testAdminCanUncheckRestrictedFields(): void
-    {
-        $admin = User::factory()->create(['enabled' => 1]);
-        $admin->assignRole('admin');
-        $admin->givePermissionTo('user.update');
+    $targetUser = User::factory()->create([
+        'enabled' => 1,
+        'can_modify_passwd' => 1,
+        'username' => 'target',
+    ]);
 
-        $targetUser = User::factory()->create([
-            'enabled' => 1,
-            'can_modify_passwd' => 1,
-            'username' => 'target',
-        ]);
+    // Sending without enabled/can_modify_passwd should uncheck them (as they are checkboxes)
+    // when an admin is updating another user.
+    $response = $this->actingAs($admin)->put(route('users.update', $targetUser), [
+        'realname' => 'Name Changed',
+    ]);
 
-        // Sending without enabled/can_modify_passwd should uncheck them (as they are checkboxes)
-        // when an admin is updating another user.
-        $response = $this->actingAs($admin)->put(route('users.update', $targetUser), [
-            'realname' => 'Name Changed',
-        ]);
+    $response->assertRedirect();
+    $targetUser->refresh();
+    expect((int) $targetUser->enabled)->toEqual(0);
+    expect((int) $targetUser->can_modify_passwd)->toEqual(0);
 
-        $response->assertRedirect();
-        $targetUser->refresh();
-        $this->assertEquals(0, (int) $targetUser->enabled);
-        $this->assertEquals(0, (int) $targetUser->can_modify_passwd);
+    // To explicitly set them to false.
+    $response = $this->actingAs($admin)->put(route('users.update', $targetUser), [
+        'enabled' => 0,
+        'can_modify_passwd' => 0,
+    ]);
 
-        // To explicitly set them to false.
-        $response = $this->actingAs($admin)->put(route('users.update', $targetUser), [
-            'enabled' => 0,
-            'can_modify_passwd' => 0,
-        ]);
-
-        $response->assertRedirect();
-        $targetUser->refresh();
-        $this->assertEquals(0, (int) $targetUser->enabled);
-        $this->assertEquals(0, (int) $targetUser->can_modify_passwd);
-    }
-}
+    $response->assertRedirect();
+    $targetUser->refresh();
+    expect((int) $targetUser->enabled)->toEqual(0);
+    expect((int) $targetUser->can_modify_passwd)->toEqual(0);
+});

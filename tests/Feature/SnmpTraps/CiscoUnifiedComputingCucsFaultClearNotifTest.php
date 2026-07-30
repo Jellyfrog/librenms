@@ -22,18 +22,13 @@
  * @author     Adam Sweet <adam.sweet@transitiv.co.uk>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
-use PHPUnit\Framework\Attributes\TestDox;
 
-#[TestDox('Cisco Unified Computing Cucs Fault Clear Notif Trap')]
-final class CiscoUnifiedComputingCucsFaultClearNotifTest extends SnmpTrapTestCase
-{
-    #[TestDox('Cisco Unified Computing Cucs Fault Clear Notif')]
-    public function testCiscoUnifiedComputingCucsFaultClearNotif(): void
-    {
-        $this->assertTrapLogsMessage('{{ hostname }}
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+
+test('Cisco Unified Computing Cucs Fault Clear Notif', function () {
+    $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:49563->[10.0.0.1]:162]:
 DISMAN-EXPRESSION-MIB::sysUpTimeInstance 191 days, 19:13:05.46
 SNMPv2-MIB::snmpTrapOID.0 CISCO-UNIFIED-COMPUTING-MIB::cucsFaultClearNotif
@@ -49,9 +44,8 @@ CISCO-UNIFIED-COMPUTING-MIB::cucsFaultProbableCause.3161701 applyFailed
 CISCO-UNIFIED-COMPUTING-MIB::cucsFaultSeverity.3161701 cleared
 CISCO-UNIFIED-COMPUTING-MIB::cucsFaultOccur.3161701 1
 CISCO-UNIFIED-COMPUTING-MIB::cucsFaultEntry.13.3161701 3161700',
-            'Cisco Unified Computing Fault 3161701 Cleared: lan Member 1/50 of Port-Channel 21 on fabric interconnect A is down, membership: down for fabric/lan/A/pc-21/ep-slot-1-port-50 started at 2025-12-11,16:27:18.36, last updated at 2025-12-11,16:29:18.36. Probable cause: applyFailed',
-            'Could not handle CiscoUnifiedComputingCucsFaultClearNotif trap',
-            [Severity::Ok],
-        );
-    }
-}
+        'Cisco Unified Computing Fault 3161701 Cleared: lan Member 1/50 of Port-Channel 21 on fabric interconnect A is down, membership: down for fabric/lan/A/pc-21/ep-slot-1-port-50 started at 2025-12-11,16:27:18.36, last updated at 2025-12-11,16:29:18.36. Probable cause: applyFailed',
+        'Could not handle CiscoUnifiedComputingCucsFaultClearNotif trap',
+        [Severity::Ok],
+    );
+});

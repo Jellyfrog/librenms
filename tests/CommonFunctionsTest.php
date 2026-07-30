@@ -24,8 +24,6 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests;
-
 use App\Facades\LibrenmsConfig;
 use Illuminate\Support\Str;
 use LibreNMS\Enum\PortAssociationMode;
@@ -33,216 +31,203 @@ use LibreNMS\Util\Clean;
 use LibreNMS\Util\StringHelpers;
 use LibreNMS\Util\Validate;
 
-final class CommonFunctionsTest extends TestCase
-{
-    public function testStrContains(): void
-    {
-        $data = 'This is a test. Just Testing.';
+uses(\LibreNMS\Tests\TestCase::class);
 
-        $this->assertTrue(Str::contains($data, 'Just'));
-        $this->assertFalse(Str::contains($data, 'just'));
+test('str contains', function () {
+    $data = 'This is a test. Just Testing.';
 
-        $this->assertTrue(Str::contains($data, 'juSt', ignoreCase: true));
-        $this->assertFalse(Str::contains($data, 'nope', ignoreCase: true));
+    expect(Str::contains($data, 'Just'))->toBeTrue();
+    expect(Str::contains($data, 'just'))->toBeFalse();
 
-        $this->assertTrue(Str::contains($data, ['not', 'this', 'This']));
-        $this->assertFalse(Str::contains($data, ['not', 'this']));
+    expect(Str::contains($data, 'juSt', ignoreCase: true))->toBeTrue();
+    expect(Str::contains($data, 'nope', ignoreCase: true))->toBeFalse();
 
-        $this->assertTrue(Str::contains($data, ['not', 'thIs'], ignoreCase: true));
-        $this->assertFalse(Str::contains($data, ['not', 'anything'], ignoreCase: true));
-    }
+    expect(Str::contains($data, ['not', 'this', 'This']))->toBeTrue();
+    expect(Str::contains($data, ['not', 'this']))->toBeFalse();
 
-    public function testStartsWith(): void
-    {
-        $data = 'This is a test. Just Testing that.';
+    expect(Str::contains($data, ['not', 'thIs'], ignoreCase: true))->toBeTrue();
+    expect(Str::contains($data, ['not', 'anything'], ignoreCase: true))->toBeFalse();
+});
 
-        $this->assertTrue(Str::startsWith($data, 'This'));
-        $this->assertFalse(Str::startsWith($data, 'this'));
+test('starts with', function () {
+    $data = 'This is a test. Just Testing that.';
 
-        $this->assertTrue(Str::startsWith($data, ['this', 'Test', 'This']));
-        $this->assertFalse(Str::startsWith($data, ['this', 'Test']));
-    }
+    expect(Str::startsWith($data, 'This'))->toBeTrue();
+    expect(Str::startsWith($data, 'this'))->toBeFalse();
 
-    public function testEndsWith(): void
-    {
-        $data = 'This is a test. Just Testing';
+    expect(Str::startsWith($data, ['this', 'Test', 'This']))->toBeTrue();
+    expect(Str::startsWith($data, ['this', 'Test']))->toBeFalse();
+});
 
-        $this->assertTrue(Str::endsWith($data, 'Testing'));
-        $this->assertFalse(Str::endsWith($data, 'testing'));
+test('ends with', function () {
+    $data = 'This is a test. Just Testing';
 
-        $this->assertTrue(Str::endsWith($data, ['this', 'Testing', 'This']));
-        $this->assertFalse(Str::endsWith($data, ['this', 'Test']));
-    }
+    expect(Str::endsWith($data, 'Testing'))->toBeTrue();
+    expect(Str::endsWith($data, 'testing'))->toBeFalse();
 
-    public function testRrdDescriptions(): void
-    {
-        $data = 'Toner, S/N:CR_UM-16021314488.';
-        $this->assertEquals('Toner, S/N CR_UM-16021314488.', \LibreNMS\Data\Store\Rrd::safeDescr($data));
-    }
+    expect(Str::endsWith($data, ['this', 'Testing', 'This']))->toBeTrue();
+    expect(Str::endsWith($data, ['this', 'Test']))->toBeFalse();
+});
 
-    public function testSetNull(): void
-    {
-        $this->assertNull(set_null('BAD-DATA'));
-        $this->assertEquals(0, set_null(0));
-        $this->assertEquals(25, set_null(25));
-        $this->assertEquals(-25, set_null(-25));
-        $this->assertEquals(99, set_null(' ', 99));
-        $this->assertNull(set_null(-25, null, 0));
-        $this->assertEquals(2, set_null(2, 0, 2));
-    }
+test('rrd descriptions', function () {
+    $data = 'Toner, S/N:CR_UM-16021314488.';
+    expect(\LibreNMS\Data\Store\Rrd::safeDescr($data))->toEqual('Toner, S/N CR_UM-16021314488.');
+});
 
-    public function testDisplay(): void
-    {
-        $this->assertEquals('&lt;html&gt;string&lt;/html&gt;', Clean::html('<html>string</html>', []));
-        $this->assertEquals('&lt;script&gt;alert("test")&lt;/script&gt;', Clean::html('<script>alert("test")</script>', []));
-        $this->assertEquals("Is your name O'reilly?", Clean::html("Is your name O\'reilly?", []));
-        $this->assertEquals("Is your name O'reilly?", Clean::html("Is your name O\'reilly?"));
-        $this->assertEquals('', Clean::html(''));
-        $this->assertEquals('', Clean::html(null));
+test('set null', function () {
+    expect(set_null('BAD-DATA'))->toBeNull();
+    expect(set_null(0))->toEqual(0);
+    expect(set_null(25))->toEqual(25);
+    expect(set_null(-25))->toEqual(-25);
+    expect(set_null(' ', 99))->toEqual(99);
+    expect(set_null(-25, null, 0))->toBeNull();
+    expect(set_null(2, 0, 2))->toEqual(2);
+});
 
-        $tmp_config = [
-            'HTML.Allowed' => 'b,iframe,i,ul,li,h1,h2,h3,h4,br,p',
-            'HTML.Trusted' => true,
-            'HTML.SafeIframe' => true,
-        ];
+test('display', function () {
+    expect(Clean::html('<html>string</html>', []))->toEqual('&lt;html&gt;string&lt;/html&gt;');
+    expect(Clean::html('<script>alert("test")</script>', []))->toEqual('&lt;script&gt;alert("test")&lt;/script&gt;');
+    expect(Clean::html("Is your name O\'reilly?", []))->toEqual("Is your name O'reilly?");
+    expect(Clean::html("Is your name O\'reilly?"))->toEqual("Is your name O'reilly?");
+    expect(Clean::html(''))->toEqual('');
+    expect(Clean::html(null))->toEqual('');
 
-        $this->assertEquals('<b>Bold</b>', Clean::html('<b>Bold</b>', $tmp_config));
-        $this->assertEquals('', Clean::html('<script>alert("test")</script>', $tmp_config));
-    }
+    $tmp_config = [
+        'HTML.Allowed' => 'b,iframe,i,ul,li,h1,h2,h3,h4,br,p',
+        'HTML.Trusted' => true,
+        'HTML.SafeIframe' => true,
+    ];
 
-    public function testStringToClass(): void
-    {
-        $this->assertSame('LibreNMS\OS\Os', StringHelpers::toClass('OS', 'LibreNMS\\OS\\'));
-        $this->assertSame('SpacesName', StringHelpers::toClass('spaces name', null));
-        $this->assertSame('DashName', StringHelpers::toClass('dash-name', null));
-        $this->assertSame('UnderscoreName', StringHelpers::toClass('underscore_name', null));
-        $this->assertSame('LibreNMS\\AllOfThemName', StringHelpers::toClass('all OF-thEm_NaMe', 'LibreNMS\\'));
-    }
+    expect(Clean::html('<b>Bold</b>', $tmp_config))->toEqual('<b>Bold</b>');
+    expect(Clean::html('<script>alert("test")</script>', $tmp_config))->toEqual('');
+});
 
-    public function testIsValidHostname(): void
-    {
-        $this->assertTrue(Validate::hostname('a'), 'a');
-        $this->assertTrue(Validate::hostname('a.'), 'a.');
-        $this->assertTrue(Validate::hostname('0'), '0');
-        $this->assertTrue(Validate::hostname('a.b'), 'a.b');
-        $this->assertTrue(Validate::hostname('localhost'), 'localhost');
-        $this->assertTrue(Validate::hostname('google.com'), 'google.com');
-        $this->assertTrue(Validate::hostname('news.google.co.uk'), 'news.google.co.uk');
-        $this->assertTrue(Validate::hostname('xn--fsqu00a.xn--0zwm56d'), 'xn--fsqu00a.xn--0zwm56d');
-        $this->assertTrue(Validate::hostname('www.averylargedomainthatdoesnotreallyexist.com'), 'www.averylargedomainthatdoesnotreallyexist.com');
-        $this->assertTrue(Validate::hostname('cont-ains.h-yph-en-s.com'), 'cont-ains.h-yph-en-s.com');
-        $this->assertTrue(Validate::hostname('cisco-3750x'), 'cisco-3750x');
-        $this->assertTrue(Validate::hostname('cisco_3750x'), 'cisco_3750x');
-        $this->assertFalse(Validate::hostname('goo gle.com'), 'goo gle.com');
-        $this->assertFalse(Validate::hostname('google..com'), 'google..com');
-        $this->assertFalse(Validate::hostname('google.com '), 'google.com ');
-        $this->assertFalse(Validate::hostname('google-.com'), 'google-.com');
-        $this->assertFalse(Validate::hostname('.google.com'), '.google.com');
-        $this->assertFalse(Validate::hostname('..google.com'), '..google.com');
-        $this->assertFalse(Validate::hostname('<script'), '<script');
-        $this->assertFalse(Validate::hostname('alert('), 'alert(');
-        $this->assertFalse(Validate::hostname('.'), '.');
-        $this->assertFalse(Validate::hostname('..'), '..');
-        $this->assertFalse(Validate::hostname(' '), 'Just a space');
-        $this->assertFalse(Validate::hostname('-'), '-');
-        $this->assertFalse(Validate::hostname(''), 'Empty string');
-    }
+test('string to class', function () {
+    expect(StringHelpers::toClass('OS', 'LibreNMS\\OS\\'))->toBe('LibreNMS\OS\Os');
+    expect(StringHelpers::toClass('spaces name', null))->toBe('SpacesName');
+    expect(StringHelpers::toClass('dash-name', null))->toBe('DashName');
+    expect(StringHelpers::toClass('underscore_name', null))->toBe('UnderscoreName');
+    expect(StringHelpers::toClass('all OF-thEm_NaMe', 'LibreNMS\\'))->toBe('LibreNMS\\AllOfThemName');
+});
 
-    public function testResolveGlues(): void
-    {
-        $this->dbSetUp();
+test('is valid hostname', function () {
+    expect(Validate::hostname('a'))->toBeTrue('a');
+    expect(Validate::hostname('a.'))->toBeTrue('a.');
+    expect(Validate::hostname('0'))->toBeTrue('0');
+    expect(Validate::hostname('a.b'))->toBeTrue('a.b');
+    expect(Validate::hostname('localhost'))->toBeTrue('localhost');
+    expect(Validate::hostname('google.com'))->toBeTrue('google.com');
+    expect(Validate::hostname('news.google.co.uk'))->toBeTrue('news.google.co.uk');
+    expect(Validate::hostname('xn--fsqu00a.xn--0zwm56d'))->toBeTrue('xn--fsqu00a.xn--0zwm56d');
+    expect(Validate::hostname('www.averylargedomainthatdoesnotreallyexist.com'))->toBeTrue('www.averylargedomainthatdoesnotreallyexist.com');
+    expect(Validate::hostname('cont-ains.h-yph-en-s.com'))->toBeTrue('cont-ains.h-yph-en-s.com');
+    expect(Validate::hostname('cisco-3750x'))->toBeTrue('cisco-3750x');
+    expect(Validate::hostname('cisco_3750x'))->toBeTrue('cisco_3750x');
+    expect(Validate::hostname('goo gle.com'))->toBeFalse('goo gle.com');
+    expect(Validate::hostname('google..com'))->toBeFalse('google..com');
+    expect(Validate::hostname('google.com '))->toBeFalse('google.com ');
+    expect(Validate::hostname('google-.com'))->toBeFalse('google-.com');
+    expect(Validate::hostname('.google.com'))->toBeFalse('.google.com');
+    expect(Validate::hostname('..google.com'))->toBeFalse('..google.com');
+    expect(Validate::hostname('<script'))->toBeFalse('<script');
+    expect(Validate::hostname('alert('))->toBeFalse('alert(');
+    expect(Validate::hostname('.'))->toBeFalse('.');
+    expect(Validate::hostname('..'))->toBeFalse('..');
+    expect(Validate::hostname(' '))->toBeFalse('Just a space');
+    expect(Validate::hostname('-'))->toBeFalse('-');
+    expect(Validate::hostname(''))->toBeFalse('Empty string');
+});
 
-        $this->assertFalse(ResolveGlues(['dbSchema'], 'device_id'));
+test('resolve glues', function () {
+    $this->dbSetUp();
 
-        $this->assertSame(['devices.device_id'], ResolveGlues(['devices'], 'device_id'));
-        $this->assertSame(['sensors.device_id'], ResolveGlues(['sensors'], 'device_id'));
+    expect(ResolveGlues(['dbSchema'], 'device_id'))->toBeFalse();
 
-        // does not work right with current code
-//        $expected = array('bill_data.bill_id', 'bill_ports.port_id', 'ports.device_id');
-//        $this->assertSame($expected, ResolveGlues(array('bill_data'), 'device_id'));
+    expect(ResolveGlues(['devices'], 'device_id'))->toBe(['devices.device_id']);
+    expect(ResolveGlues(['sensors'], 'device_id'))->toBe(['sensors.device_id']);
 
-        $expected = ['application_metrics.app_id', 'applications.device_id'];
-        $this->assertSame($expected, ResolveGlues(['application_metrics'], 'device_id'));
+    // does not work right with current code
+    //        $expected = array('bill_data.bill_id', 'bill_ports.port_id', 'ports.device_id');
+    //        $this->assertSame($expected, ResolveGlues(array('bill_data'), 'device_id'));
+    $expected = ['application_metrics.app_id', 'applications.device_id'];
+    expect(ResolveGlues(['application_metrics'], 'device_id'))->toBe($expected);
 
-        $expected = ['state_translations.state_index_id', 'sensors_to_state_indexes.sensor_id', 'sensors.device_id'];
-        $this->assertSame($expected, ResolveGlues(['state_translations'], 'device_id'));
+    $expected = ['state_translations.state_index_id', 'sensors_to_state_indexes.sensor_id', 'sensors.device_id'];
+    expect(ResolveGlues(['state_translations'], 'device_id'))->toBe($expected);
 
-        $expected = ['ipv4_addresses.port_id', 'ports.device_id'];
-        $this->assertSame($expected, ResolveGlues(['ipv4_addresses'], 'device_id'));
+    $expected = ['ipv4_addresses.port_id', 'ports.device_id'];
+    expect(ResolveGlues(['ipv4_addresses'], 'device_id'))->toBe($expected);
 
-        $this->dbTearDown();
-    }
+    $this->dbTearDown();
+});
 
-    public function testFormatHostname(): void
-    {
-        $device_dns = [
-            'hostname' => 'test.librenms.org',
-            'sysName' => 'Testing DNS',
-        ];
-        $invalid_dns = [
-            'hostname' => 'Not DNS',
-            'sysName' => 'Testing Invalid DNS',
-        ];
-        $device_ip = [
-            'hostname' => '192.168.1.2',
-            'sysName' => 'Testing IP',
-        ];
-        $invalid_ip = [
-            'hostname' => '256.168.1.2',
-            'sysName' => 'Testing Invalid IP',
-        ];
-        $custom_display = [
-            'hostname' => 'test.librenms.org',
-            'sysName' => 'sysName',
-            'display' => 'Custom Display ({{ $hostname }} {{ $sysName }})',
-        ];
+test('format hostname', function () {
+    $device_dns = [
+        'hostname' => 'test.librenms.org',
+        'sysName' => 'Testing DNS',
+    ];
+    $invalid_dns = [
+        'hostname' => 'Not DNS',
+        'sysName' => 'Testing Invalid DNS',
+    ];
+    $device_ip = [
+        'hostname' => '192.168.1.2',
+        'sysName' => 'Testing IP',
+    ];
+    $invalid_ip = [
+        'hostname' => '256.168.1.2',
+        'sysName' => 'Testing Invalid IP',
+    ];
+    $custom_display = [
+        'hostname' => 'test.librenms.org',
+        'sysName' => 'sysName',
+        'display' => 'Custom Display ({{ $hostname }} {{ $sysName }})',
+    ];
 
-        // default {{ $hostname }}
-        LibrenmsConfig::set('device_display_default', null);
-        $this->assertEquals('test.librenms.org', format_hostname($device_dns));
-        $this->assertEquals('Not DNS', format_hostname($invalid_dns));
-        $this->assertEquals('192.168.1.2', format_hostname($device_ip));
-        $this->assertEquals('256.168.1.2', format_hostname($invalid_ip));
-        $this->assertEquals('Custom Display (test.librenms.org sysName)', format_hostname($custom_display));
+    // default {{ $hostname }}
+    LibrenmsConfig::set('device_display_default', null);
+    expect(format_hostname($device_dns))->toEqual('test.librenms.org');
+    expect(format_hostname($invalid_dns))->toEqual('Not DNS');
+    expect(format_hostname($device_ip))->toEqual('192.168.1.2');
+    expect(format_hostname($invalid_ip))->toEqual('256.168.1.2');
+    expect(format_hostname($custom_display))->toEqual('Custom Display (test.librenms.org sysName)');
 
-        // ip to sysname
-        LibrenmsConfig::set('device_display_default', '{{ $sysName_fallback }}');
-        $this->assertEquals('test.librenms.org', format_hostname($device_dns));
-        $this->assertEquals('Not DNS', format_hostname($invalid_dns));
-        $this->assertEquals('Testing IP', format_hostname($device_ip));
-        $this->assertEquals('256.168.1.2', format_hostname($invalid_ip));
-        $this->assertEquals('Custom Display (test.librenms.org sysName)', format_hostname($custom_display));
+    // ip to sysname
+    LibrenmsConfig::set('device_display_default', '{{ $sysName_fallback }}');
+    expect(format_hostname($device_dns))->toEqual('test.librenms.org');
+    expect(format_hostname($invalid_dns))->toEqual('Not DNS');
+    expect(format_hostname($device_ip))->toEqual('Testing IP');
+    expect(format_hostname($invalid_ip))->toEqual('256.168.1.2');
+    expect(format_hostname($custom_display))->toEqual('Custom Display (test.librenms.org sysName)');
 
-        // sysname
-        LibrenmsConfig::set('device_display_default', '{{ $sysName }}');
-        $this->assertEquals('Testing DNS', format_hostname($device_dns));
-        $this->assertEquals('Testing Invalid DNS', format_hostname($invalid_dns));
-        $this->assertEquals('Testing IP', format_hostname($device_ip));
-        $this->assertEquals('Testing Invalid IP', format_hostname($invalid_ip));
-        $this->assertEquals('Custom Display (test.librenms.org sysName)', format_hostname($custom_display));
+    // sysname
+    LibrenmsConfig::set('device_display_default', '{{ $sysName }}');
+    expect(format_hostname($device_dns))->toEqual('Testing DNS');
+    expect(format_hostname($invalid_dns))->toEqual('Testing Invalid DNS');
+    expect(format_hostname($device_ip))->toEqual('Testing IP');
+    expect(format_hostname($invalid_ip))->toEqual('Testing Invalid IP');
+    expect(format_hostname($custom_display))->toEqual('Custom Display (test.librenms.org sysName)');
 
-        // custom
-        $custom_ip = ['display' => 'IP: {{ $ip }}', 'hostname' => '1.1.1.1', 'ip' => '2.2.2.2'];
-        $this->assertEquals('IP: 1.1.1.1', format_hostname($custom_ip));
-        $custom_ip['hostname'] = 'not_ip';
-        $this->assertEquals('IP: 2.2.2.2', format_hostname($custom_ip));
-        $custom_ip['overwrite_ip'] = '3.3.3.3';
-        $this->assertEquals('IP: 3.3.3.3', format_hostname($custom_ip));
-    }
+    // custom
+    $custom_ip = ['display' => 'IP: {{ $ip }}', 'hostname' => '1.1.1.1', 'ip' => '2.2.2.2'];
+    expect(format_hostname($custom_ip))->toEqual('IP: 1.1.1.1');
+    $custom_ip['hostname'] = 'not_ip';
+    expect(format_hostname($custom_ip))->toEqual('IP: 2.2.2.2');
+    $custom_ip['overwrite_ip'] = '3.3.3.3';
+    expect(format_hostname($custom_ip))->toEqual('IP: 3.3.3.3');
+});
 
-    public function testPortAssociation(): void
-    {
-        $modes = [
-            1 => 'ifIndex',
-            2 => 'ifName',
-            3 => 'ifDescr',
-            4 => 'ifAlias',
-        ];
+test('port association', function () {
+    $modes = [
+        1 => 'ifIndex',
+        2 => 'ifName',
+        3 => 'ifDescr',
+        4 => 'ifAlias',
+    ];
 
-        $this->assertEquals($modes, PortAssociationMode::getModes());
-        $this->assertEquals('ifIndex', PortAssociationMode::getName(1));
-        $this->assertEquals(1, PortAssociationMode::getId('ifIndex'));
-        $this->assertNull(PortAssociationMode::getName(666));
-        $this->assertNull(PortAssociationMode::getId('lucifer'));
-    }
-}
+    expect(PortAssociationMode::getModes())->toEqual($modes);
+    expect(PortAssociationMode::getName(1))->toEqual('ifIndex');
+    expect(PortAssociationMode::getId('ifIndex'))->toEqual(1);
+    expect(PortAssociationMode::getName(666))->toBeNull();
+    expect(PortAssociationMode::getId('lucifer'))->toBeNull();
+});

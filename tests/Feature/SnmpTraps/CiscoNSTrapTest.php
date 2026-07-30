@@ -22,64 +22,52 @@
  * @author     Adam Sweet <adam.sweet@transitiv.co.uk>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
 
-final class CiscoNSTrapTest extends SnmpTrapTestCase
-{
-    /**
-     * Test Axis Video trap handlers
-     *
-     * @return void
-     */
-    public function testCiscoNSDBFull(): void
-    {
-        $this->assertTrapLogsMessage('{{ hostname }}
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+test('cisco nsdbfull', function () {
+    $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:49563->[10.2.4.101]:162]:
 SNMPv2-MIB::sysUpTime.0 = Timeticks: (2940) 0:00:29.40
 SNMPv2-MIB::snmpTrapOID.0 CISCO-NS-MIB::fcNameServerDatabaseFull',
-            'Cisco Nameserver entry failed, database full',
-            'Could not handle CISCO-NS-MIB::fcNameServerDatabaseFull test trap',
-            [Severity::Error],
-        );
-    }
+        'Cisco Nameserver entry failed, database full',
+        'Could not handle CISCO-NS-MIB::fcNameServerDatabaseFull test trap',
+        [Severity::Error],
+    );
+});
 
-    public function testCiscoNSEntryAdd(): void
-    {
-        $this->assertTrapLogsMessage('{{ hostname }}
+test('cisco nsentry add', function () {
+    $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:51988->[10.2.4.101]:162]:
 SNMPv2-MIB::sysUpTime.0 = Timeticks: (706805) 1:57:48.05
 SNMPv2-MIB::snmpTrapOID.0 CISCO-NS-MIB::fcNameServerEntryAdd',
-            'Cisco Nameserver database entry added',
-            'Could not handle CISCO-NS-MIB::fcNameServerEntryAdd test trap',
-            [Severity::Notice],
-        );
-    }
+        'Cisco Nameserver database entry added',
+        'Could not handle CISCO-NS-MIB::fcNameServerEntryAdd test trap',
+        [Severity::Notice],
+    );
+});
 
-    public function testCiscoNSEntryDelete(): void
-    {
-        $this->assertTrapLogsMessage('{{ hostname }}
+test('cisco nsentry delete', function () {
+    $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:49563->[10.2.4.101]:162]:
 SNMPv2-MIB::sysUpTime.0 = Timeticks: (101642184) 11 days, 18:20:21.84
 SNMPv2-MIB::snmpTrapOID.0 CISCO-NS-MIB::fcNameServerEntryDelete',
-            'Cisco Nameserver database entry deleted',
-            'Could not handle CISCO-NS-MIB::fcNameServerEntryDelete test trap',
-            [Severity::Notice],
-        );
-    }
+        'Cisco Nameserver database entry deleted',
+        'Could not handle CISCO-NS-MIB::fcNameServerEntryDelete test trap',
+        [Severity::Notice],
+    );
+});
 
-    public function testCiscoNSRejectRegNotify(): void
-    {
-        $this->assertTrapLogsMessage('{{ hostname }}
+test('cisco nsreject reg notify', function () {
+    $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:49563->[10.2.4.101]:162]:
 SNMPv2-MIB::sysUpTime.0 = Timeticks: (101642184) 11 days, 18:20:21.84
 SNMPv2-MIB::snmpTrapOID.0 CISCO-NS-MIB::fcNameServerRejectRegNotify
 CISCO-NS-MIB::fcNameServerRejectReasonCode logicalError
 CISCO-NS-MIB::fcNameServerRejReasonCodeExp nodeNameNotRegistered',
-            'Cisco Nameserver rejected a registration request with error code logicalError due to nodeNameNotRegistered',
-            'Could not handle CISCO-NS-MIB::fcNameServerRejectRegNotify test trap',
-            [Severity::Warning],
-        );
-    }
-}
+        'Cisco Nameserver rejected a registration request with error code logicalError due to nodeNameNotRegistered',
+        'Could not handle CISCO-NS-MIB::fcNameServerRejectRegNotify test trap',
+        [Severity::Warning],
+    );
+});

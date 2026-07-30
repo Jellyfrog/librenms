@@ -28,15 +28,13 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
 
-final class RuckusSzApRadiusServerReachabilityTrapTest extends SnmpTrapTestCase
-{
-    public function testRadiusUnreachableIpv4(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+
+test('radius unreachable ipv4', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 4:8:26:09.00
@@ -53,15 +51,14 @@ RUCKUS-SZ-EVENT-MIB::ruckusSZEventAPGPSCoordinates.0 0.0000 0.0000
 RUCKUS-SZ-EVENT-MIB::ruckusSZRadSrvrIp.0 10.0.0.1
 RUCKUS-SZ-EVENT-MIB::ruckusSZEventAPIPv6.0 ""
 TRAP,
-            'AP test-ap-720 (192.168.0.1) is unable to reach radius server 10.0.0.1',
-            'Could not handle RuckusSzApRadiusServerUnreachableTrapTest IPv4 only.',
-            [Severity::Warning],
-        );
-    }
+        'AP test-ap-720 (192.168.0.1) is unable to reach radius server 10.0.0.1',
+        'Could not handle RuckusSzApRadiusServerUnreachableTrapTest IPv4 only.',
+        [Severity::Warning],
+    );
+});
 
-    public function testRadiusUnreachableIpBoth(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('radius unreachable ip both', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 4:8:26:09.00
@@ -78,15 +75,14 @@ RUCKUS-SZ-EVENT-MIB::ruckusSZEventAPGPSCoordinates.0 0.0000 0.0000
 RUCKUS-SZ-EVENT-MIB::ruckusSZRadSrvrIp.0 10.0.0.1
 RUCKUS-SZ-EVENT-MIB::ruckusSZEventAPIPv6.0 2001:db8::dead:beef
 TRAP,
-            'AP test-ap-720 (192.168.0.1, 2001:db8::dead:beef) is unable to reach radius server 10.0.0.1',
-            'Could not handle RuckusSzApRadiusServerUnreachableTrapTest IPv4 and IPv6.',
-            [Severity::Warning],
-        );
-    }
+        'AP test-ap-720 (192.168.0.1, 2001:db8::dead:beef) is unable to reach radius server 10.0.0.1',
+        'Could not handle RuckusSzApRadiusServerUnreachableTrapTest IPv4 and IPv6.',
+        [Severity::Warning],
+    );
+});
 
-    public function testRadiusReachableIpv4(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('radius reachable ipv4', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 5:8:26:54.00
@@ -103,15 +99,14 @@ RUCKUS-SZ-EVENT-MIB::ruckusSZEventAPGPSCoordinates.0 180.0000 180.000
 RUCKUS-SZ-EVENT-MIB::ruckusSZRadSrvrIp.0 10.0.0.1
 RUCKUS-SZ-EVENT-MIB::ruckusSZEventAPIPv6.0 ""
 TRAP,
-            'AP test-ap-22 (192.168.0.1) is able to reach radius server 10.0.0.1',
-            'Could not handle RuckusSZAPRadiusServerReachableTrap IPv4 only.',
-            [Severity::Ok],
-        );
-    }
+        'AP test-ap-22 (192.168.0.1) is able to reach radius server 10.0.0.1',
+        'Could not handle RuckusSZAPRadiusServerReachableTrap IPv4 only.',
+        [Severity::Ok],
+    );
+});
 
-    public function testRadiusReachableIpBoth(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('radius reachable ip both', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 5:8:26:54.00
@@ -128,9 +123,8 @@ RUCKUS-SZ-EVENT-MIB::ruckusSZEventAPGPSCoordinates.0 180.0000 180.000
 RUCKUS-SZ-EVENT-MIB::ruckusSZRadSrvrIp.0 10.0.0.1
 RUCKUS-SZ-EVENT-MIB::ruckusSZEventAPIPv6.0 2001:db8::dead:beef
 TRAP,
-            'AP test-ap-22 (192.168.0.1, 2001:db8::dead:beef) is able to reach radius server 10.0.0.1',
-            'Could not handle RuckusSZAPRadiusServerReachableTrap IPv4 and IPv6.',
-            [Severity::Ok],
-        );
-    }
-}
+        'AP test-ap-22 (192.168.0.1, 2001:db8::dead:beef) is able to reach radius server 10.0.0.1',
+        'Could not handle RuckusSZAPRadiusServerReachableTrap IPv4 and IPv6.',
+        [Severity::Ok],
+    );
+});

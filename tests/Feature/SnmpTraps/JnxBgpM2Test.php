@@ -26,26 +26,27 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use App\Models\BgpPeer;
 use App\Models\Device;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Enum\Severity;
-use LibreNMS\Tests\Traits\RequiresDatabase;
 
-final class JnxBgpM2Test extends SnmpTrapTestCase
-{
-    use RequiresDatabase;
-    use DatabaseTransactions;
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-    public function testBgpPeerUnknown(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $error = 'Unknown bgp peer handling bgpEstablished trap: 2001:d88:1::2';
-        \Log::shouldReceive('error')->once()->with($error);
+// replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
+beforeEach(function () {
+    if (! getenv('DBTEST')) {
+        $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
+    }
+});
 
-        $this->assertTrapLogsMessage(<<<'TRAP'
+
+test('bgp peer unknown', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $error = 'Unknown bgp peer handling bgpEstablished trap: 2001:d88:1::2';
+    \Log::shouldReceive('error')->once()->with($error);
+
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:64610->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 198:2:10:48.91
@@ -58,24 +59,25 @@ BGP4-V2-MIB-JUNIPER::jnxBgpM2PeerLastErrorReceived.0.2.32.1.13.136.0.1.0.0.0.0.0
 BGP4-V2-MIB-JUNIPER::jnxBgpM2PeerState.0.2.32.1.13.136.0.1.0.0.0.0.0.0.0.0.0.1.2.32.1.13.136.0.1.0.0.0.0.0.0.0.0.0.2 idle
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX240
 TRAP,
-            [], // no log entries should be sent
-            'Could not handle JnxBgpM2BackwardsTransition trap',
-            device: $device,
-        );
-    }
+        [], // no log entries should be sent
+        'Could not handle JnxBgpM2BackwardsTransition trap',
+        device: $device,
+    );
+});
 
-    public function testBgpBackwardTransition(): void
-    {
-        $device = Device::factory()->create();
-        /** @var Device $device */
-        $bgppeer = BgpPeer::factory()->make(['bgpPeerIdentifier' => '2001:d88:1::2', 'bgpPeerState' => 'established']);
-        /** @var BgpPeer $bgppeer */
-        $device->bgppeers()->save($bgppeer);
+test('bgp backward transition', function () {
+    $device = Device::factory()->create();
 
-        $error = 'Unknown bgp peer handling bgpEstablished trap: 2001:d88:1::2';
-        \Log::shouldReceive('error')->never()->with($error);
+    /** @var Device $device */
+    $bgppeer = BgpPeer::factory()->make(['bgpPeerIdentifier' => '2001:d88:1::2', 'bgpPeerState' => 'established']);
 
-        $this->assertTrapLogsMessage(<<<'TRAP'
+    /** @var BgpPeer $bgppeer */
+    $device->bgppeers()->save($bgppeer);
+
+    $error = 'Unknown bgp peer handling bgpEstablished trap: 2001:d88:1::2';
+    \Log::shouldReceive('error')->never()->with($error);
+
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:64610->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 198:2:10:48.91
@@ -88,25 +90,26 @@ BGP4-V2-MIB-JUNIPER::jnxBgpM2PeerLastErrorReceived.0.2.32.1.13.136.0.1.0.0.0.0.0
 BGP4-V2-MIB-JUNIPER::jnxBgpM2PeerState.0.2.32.1.13.136.0.1.0.0.0.0.0.0.0.0.0.1.2.32.1.13.136.0.1.0.0.0.0.0.0.0.0.0.2 idle
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX240
 TRAP,
-            'BGP Peer 2001:d88:1::2 is now in the idle state',
-            'Could not handle JnxBgpM2BackwardsTransition trap',
-            [Severity::Error],
-            $device,
-        );
-    }
+        'BGP Peer 2001:d88:1::2 is now in the idle state',
+        'Could not handle JnxBgpM2BackwardsTransition trap',
+        [Severity::Error],
+        $device,
+    );
+});
 
-    public function testBgpEstablished(): void
-    {
-        $device = Device::factory()->create();
-        /** @var Device $device */
-        $bgppeer = BgpPeer::factory()->make(['bgpPeerIdentifier' => '2001:d88:1::2', 'bgpPeerState' => 'idle']);
-        /** @var BgpPeer $bgppeer */
-        $device->bgppeers()->save($bgppeer);
+test('bgp established', function () {
+    $device = Device::factory()->create();
 
-        $error = 'Unknown bgp peer handling bgpEstablished trap: 2001:d88:1::2';
-        \Log::shouldReceive('error')->never()->with($error);
+    /** @var Device $device */
+    $bgppeer = BgpPeer::factory()->make(['bgpPeerIdentifier' => '2001:d88:1::2', 'bgpPeerState' => 'idle']);
 
-        $this->assertTrapLogsMessage('{{ hostname }}
+    /** @var BgpPeer $bgppeer */
+    $device->bgppeers()->save($bgppeer);
+
+    $error = 'Unknown bgp peer handling bgpEstablished trap: 2001:d88:1::2';
+    \Log::shouldReceive('error')->never()->with($error);
+
+    $this->assertTrapLogsMessage('{{ hostname }}
 UDP: [{{ ip }}]:64610->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 198:2:10:48.91
 SNMPv2-MIB::snmpTrapOID.0 BGP4-V2-MIB-JUNIPER::jnxBgpM2Established
@@ -117,10 +120,9 @@ BGP4-V2-MIB-JUNIPER::jnxBgpM2PeerRemoteAddr.0.2.32.1.13.136.0.1.0.0.0.0.0.0.0.0.
 BGP4-V2-MIB-JUNIPER::jnxBgpM2PeerLastErrorReceived.0.2.32.1.13.136.0.1.0.0.0.0.0.0.0.0.0.1.2.32.1.13.136.0.1.0.0.0.0.0.0.0.0.0.2 "00 00 "
 BGP4-V2-MIB-JUNIPER::jnxBgpM2PeerState.0.2.32.1.13.136.0.1.0.0.0.0.0.0.0.0.0.1.2.32.1.13.136.0.1.0.0.0.0.0.0.0.0.0.2 established
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX240',
-            'BGP Peer 2001:d88:1::2 is now in the established state',
-            'Could not handle JnxBgpM2Established trap',
-            [Severity::Ok],
-            $device,
-        );
-    }
-}
+        'BGP Peer 2001:d88:1::2 is now in the established state',
+        'Could not handle JnxBgpM2Established trap',
+        [Severity::Ok],
+        $device,
+    );
+});

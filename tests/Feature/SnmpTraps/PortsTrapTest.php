@@ -24,28 +24,30 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use App\Models\Device;
 use App\Models\Port;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Enum\IfOperStatus;
 use LibreNMS\Enum\Severity;
-use LibreNMS\Tests\Traits\RequiresDatabase;
 
-final class PortsTrapTest extends SnmpTrapTestCase
-{
-    use RequiresDatabase;
-    use DatabaseTransactions;
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-    public function testLinkDown(): void
-    {
-        // make a device and associate a port with it
-        $device = Device::factory()->create(); /** @var Device $device */
-        $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']); /** @var Port $port */
-        $device->ports()->save($port);
+// replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
+beforeEach(function () {
+    if (! getenv('DBTEST')) {
+        $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
+    }
+});
 
-        $this->assertTrapLogsMessage("<UNKNOWN>
+
+test('link down', function () {
+    // make a device and associate a port with it
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
+    /** @var Port $port */
+    $device->ports()->save($port);
+
+    $this->assertTrapLogsMessage("<UNKNOWN>
 UDP: [$device->ip]:57123->[192.168.4.4]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 2:15:07:12.87
 SNMPv2-MIB::snmpTrapOID.0 IF-MIB::linkDown
@@ -55,33 +57,35 @@ IF-MIB::ifOperStatus.$port->ifIndex down
 IF-MIB::ifDescr.$port->ifIndex GigabitEthernet0/5
 IF-MIB::ifType.$port->ifIndex ethernetCsmacd
 OLD-CISCO-INTERFACES-MIB::locIfReason.$port->ifIndex \"down\"\n",
-            [
-                'SNMP Trap: linkDown down/down ' . $port->ifDescr,
-                "Interface Disabled : $port->ifDescr (TRAP)",
-                "Interface went Down : $port->ifDescr (TRAP)",
-            ],
-            'Could not handle linkDown',
-            [
-                [Severity::Error, 'interface', $port->port_id],
-                [Severity::Notice, 'interface', $port->port_id],
-                [Severity::Error, 'interface', $port->port_id],
-            ],
-            $device,
-        );
+        [
+            'SNMP Trap: linkDown down/down ' . $port->ifDescr,
+            "Interface Disabled : $port->ifDescr (TRAP)",
+            "Interface went Down : $port->ifDescr (TRAP)",
+        ],
+        'Could not handle linkDown',
+        [
+            [Severity::Error, 'interface', $port->port_id],
+            [Severity::Notice, 'interface', $port->port_id],
+            [Severity::Error, 'interface', $port->port_id],
+        ],
+        $device,
+    );
 
-        $port = $port->fresh(); // refresh from database
-        $this->assertEquals(IfOperStatus::Down, $port->ifAdminStatus);
-        $this->assertEquals(IfOperStatus::Down, $port->ifOperStatus);
-    }
+    $port = $port->fresh();
+    // refresh from database
+    expect($port->ifAdminStatus)->toEqual(IfOperStatus::Down);
+    expect($port->ifOperStatus)->toEqual(IfOperStatus::Down);
+});
 
-    public function testLinkUp(): void
-    {
-        // make a device and associate a port with it
-        $device = Device::factory()->create(); /** @var Device $device */
-        $port = Port::factory()->make(['ifAdminStatus' => 'down', 'ifOperStatus' => 'down']); /** @var Port $port */
-        $device->ports()->save($port);
+test('link up', function () {
+    // make a device and associate a port with it
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $port = Port::factory()->make(['ifAdminStatus' => 'down', 'ifOperStatus' => 'down']);
+    /** @var Port $port */
+    $device->ports()->save($port);
 
-        $this->assertTrapLogsMessage("<UNKNOWN>
+    $this->assertTrapLogsMessage("<UNKNOWN>
 UDP: [$device->ip]:57123->[185.29.68.52]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 2:15:07:18.21
 SNMPv2-MIB::snmpTrapOID.0 IF-MIB::linkUp
@@ -91,22 +95,22 @@ IF-MIB::ifOperStatus.$port->ifIndex up
 IF-MIB::ifDescr.$port->ifIndex GigabitEthernet0/5
 IF-MIB::ifType.$port->ifIndex ethernetCsmacd
 OLD-CISCO-INTERFACES-MIB::locIfReason.$port->ifIndex \"up\"\n",
-            [
-                'SNMP Trap: linkUp up/up ' . $port->ifDescr,
-                "Interface Enabled : $port->ifDescr (TRAP)",
-                "Interface went Up : $port->ifDescr (TRAP)",
-            ],
-            'Could not handle linkUp',
-            [
-                [Severity::Ok, 'interface', $port->port_id],
-                [Severity::Notice, 'interface', $port->port_id],
-                [Severity::Ok, 'interface', $port->port_id],
-            ],
-            $device,
-        );
+        [
+            'SNMP Trap: linkUp up/up ' . $port->ifDescr,
+            "Interface Enabled : $port->ifDescr (TRAP)",
+            "Interface went Up : $port->ifDescr (TRAP)",
+        ],
+        'Could not handle linkUp',
+        [
+            [Severity::Ok, 'interface', $port->port_id],
+            [Severity::Notice, 'interface', $port->port_id],
+            [Severity::Ok, 'interface', $port->port_id],
+        ],
+        $device,
+    );
 
-        $port = $port->fresh(); // refresh from database
-        $this->assertEquals(IfOperStatus::Up, $port->ifAdminStatus);
-        $this->assertEquals(IfOperStatus::Up, $port->ifOperStatus);
-    }
-}
+    $port = $port->fresh();
+    // refresh from database
+    expect($port->ifAdminStatus)->toEqual(IfOperStatus::Up);
+    expect($port->ifOperStatus)->toEqual(IfOperStatus::Up);
+});

@@ -23,51 +23,54 @@
  * @author     TheGreatDoc
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use App\Models\Device;
 use App\Models\Sensor;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Enum\Severity;
-use LibreNMS\Tests\Traits\RequiresDatabase;
 
-final class UpsTrapsOnBatteryTest extends SnmpTrapTestCase
-{
-    use RequiresDatabase;
-    use DatabaseTransactions;
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-    public function testOnBattery(): void
-    {
-        $device = Device::factory()->create(); /** @var Device $device */
-        $state = Sensor::factory()->make(['sensor_class' => 'state', 'sensor_type' => 'upsOutputSourceState', 'sensor_current' => '2']); /** @var Sensor $state */
-        $time = Sensor::factory()->make(['sensor_class' => 'runtime', 'sensor_index' => '100', 'sensor_type' => 'rfc1628', 'sensor_current' => '0']); /** @var Sensor $time */
-        $remaining = Sensor::factory()->make(['sensor_class' => 'runtime', 'sensor_index' => '200', 'sensor_type' => 'rfc1628', 'sensor_current' => '371']); /** @var Sensor $remaining */
-        $device->sensors()->save($state);
-        $device->sensors()->save($time);
-        $device->sensors()->save($remaining);
+// replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
+beforeEach(function () {
+    if (! getenv('DBTEST')) {
+        $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
+    }
+});
 
-        \Log::shouldReceive('warning')->never()->with("Snmptrap UpsTraps: Could not find matching sensor \'Estimated battery time remaining\' for device: " . $device->hostname);
-        \Log::shouldReceive('warning')->never()->with("Snmptrap UpsTraps: Could not find matching sensor \'Time on battery\' for device: " . $device->hostname);
-        \Log::shouldReceive('warning')->never()->with("Snmptrap UpsTraps: Could not find matching sensor \'upsOutputSourceState\' for device: " . $device->hostname);
 
-        $this->assertTrapLogsMessage("$device->hostname
+test('on battery', function () {
+    $device = Device::factory()->create();
+    /** @var Device $device */
+    $state = Sensor::factory()->make(['sensor_class' => 'state', 'sensor_type' => 'upsOutputSourceState', 'sensor_current' => '2']);
+    /** @var Sensor $state */
+    $time = Sensor::factory()->make(['sensor_class' => 'runtime', 'sensor_index' => '100', 'sensor_type' => 'rfc1628', 'sensor_current' => '0']);
+    /** @var Sensor $time */
+    $remaining = Sensor::factory()->make(['sensor_class' => 'runtime', 'sensor_index' => '200', 'sensor_type' => 'rfc1628', 'sensor_current' => '371']);
+    /** @var Sensor $remaining */
+    $device->sensors()->save($state);
+    $device->sensors()->save($time);
+    $device->sensors()->save($remaining);
+
+    \Log::shouldReceive('warning')->never()->with("Snmptrap UpsTraps: Could not find matching sensor \'Estimated battery time remaining\' for device: " . $device->hostname);
+    \Log::shouldReceive('warning')->never()->with("Snmptrap UpsTraps: Could not find matching sensor \'Time on battery\' for device: " . $device->hostname);
+    \Log::shouldReceive('warning')->never()->with("Snmptrap UpsTraps: Could not find matching sensor \'upsOutputSourceState\' for device: " . $device->hostname);
+
+    $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:161->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 9:22:15:00.01
 SNMPv2-MIB::snmpTrapOID.0 UPS-MIB::upsTraps.0.1
 UPS-MIB::upsEstimatedMinutesRemaining.0 100 minutes
 UPS-MIB::upsSecondsOnBattery.0 120 seconds
 UPS-MIB::upsConfigLowBattTime.0 1 minutes",
-            'UPS running on battery for 120 seconds. Estimated 100 minutes remaining',
-            'Could not handle UPS-MIB::upsTraps.0.1 trap',
-            [Severity::Error],
-            $device,
-        );
+        'UPS running on battery for 120 seconds. Estimated 100 minutes remaining',
+        'Could not handle UPS-MIB::upsTraps.0.1 trap',
+        [Severity::Error],
+        $device,
+    );
 
-        $state = $state->fresh();
-        $time = $time->fresh();
-        $remaining = $remaining->fresh();
-        $this->assertEquals($state->sensor_current, '5');
-        $this->assertEquals($time->sensor_current, '120');
-        $this->assertEquals($remaining->sensor_current, '100');
-    }
-}
+    $state = $state->fresh();
+    $time = $time->fresh();
+    $remaining = $remaining->fresh();
+    expect('5')->toEqual($state->sensor_current);
+    expect('120')->toEqual($time->sensor_current);
+    expect('100')->toEqual($remaining->sensor_current);
+});

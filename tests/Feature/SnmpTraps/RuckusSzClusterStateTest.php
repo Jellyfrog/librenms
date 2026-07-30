@@ -26,15 +26,13 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
 use LibreNMS\Enum\Severity;
 
-final class RuckusSzClusterStateTest extends SnmpTrapTestCase
-{
-    public function testClusterInMaintenance(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+
+
+test('cluster in maintenance', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -44,15 +42,14 @@ RUCKUS-SZ-EVENT-MIB::ruckusSZEventCode.0 "807"
 RUCKUS-SZ-EVENT-MIB::ruckusSZEventType.0 "clusterInMaintenanceState"
 RUCKUS-SZ-EVENT-MIB::ruckusSZClusterName.0 "{{ hostname }}"
 TRAP,
-            'Smartzone cluster {{ hostname }} state changed to maintenance',
-            'Could not handle ruckusSZClusterInMaintenanceStateTrap',
-            [Severity::Notice],
-        );
-    }
+        'Smartzone cluster {{ hostname }} state changed to maintenance',
+        'Could not handle ruckusSZClusterInMaintenanceStateTrap',
+        [Severity::Notice],
+    );
+});
 
-    public function testClusterInService(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('cluster in service', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 26:19:43:37.24
@@ -62,8 +59,7 @@ RUCKUS-SZ-EVENT-MIB::ruckusSZEventCode.0 "808"
 RUCKUS-SZ-EVENT-MIB::ruckusSZEventType.0 "clusterBackToInService"
 RUCKUS-SZ-EVENT-MIB::ruckusSZClusterName.0 "{{ hostname }}"
 TRAP,
-            'Smartzone cluster {{ hostname }} is now in service',
-            'Could not handle ruckusSZClusterBackToInServiceTrap',
-        );
-    }
-}
+        'Smartzone cluster {{ hostname }} is now in service',
+        'Could not handle ruckusSZClusterBackToInServiceTrap',
+    );
+});

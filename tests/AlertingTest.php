@@ -24,38 +24,28 @@
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
 
-namespace LibreNMS\Tests;
+uses(\LibreNMS\Tests\TestCase::class);
+test('json alert collection', function () {
+    $rules = get_rules_from_json();
+    expect($rules)->toBeArray();
+    foreach ($rules as $rule) {
+        expect($rule)->toBeArray();
+    }
+});
 
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use RegexIterator;
+test('transports', function () {
+    foreach (getTransportFiles() as $file => $_unused) {
+        $parts = explode('/', (string) $file);
+        $transport = ucfirst(str_replace('.php', '', array_pop($parts)));
+        $class = 'LibreNMS\\Alert\\Transport\\' . $transport;
+        expect(class_exists($class))->toBeTrue("The transport $transport does not exist");
+        expect(new $class)->toBeInstanceOf(\LibreNMS\Interfaces\Alert\Transport::class);
+    }
+});
 
-final class AlertingTest extends TestCase
+function getTransportFiles(): RegexIterator
 {
-    public function testJsonAlertCollection(): void
-    {
-        $rules = get_rules_from_json();
-        $this->assertIsArray($rules);
-        foreach ($rules as $rule) {
-            $this->assertIsArray($rule);
-        }
-    }
+    $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('LibreNMS/Alert/Transport'));
 
-    public function testTransports(): void
-    {
-        foreach ($this->getTransportFiles() as $file => $_unused) {
-            $parts = explode('/', (string) $file);
-            $transport = ucfirst(str_replace('.php', '', array_pop($parts)));
-            $class = 'LibreNMS\\Alert\\Transport\\' . $transport;
-            $this->assertTrue(class_exists($class), "The transport $transport does not exist");
-            $this->assertInstanceOf(\LibreNMS\Interfaces\Alert\Transport::class, new $class);
-        }
-    }
-
-    private function getTransportFiles(): RegexIterator
-    {
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('LibreNMS/Alert/Transport'));
-
-        return new RegexIterator($iterator, '/^.+\.php$/i', RegexIterator::GET_MATCH);
-    }
+    return new RegexIterator($iterator, '/^.+\.php$/i', RegexIterator::GET_MATCH);
 }
