@@ -36,7 +36,6 @@ beforeEach(function () {
     }
 });
 
-
 test('on battery', function () {
     $device = Device::factory()->create();
     $state = Sensor::factory()->for($device)->create(['sensor_class' => 'state', 'sensor_type' => 'upsOutputSourceState', 'sensor_current' => '2']);

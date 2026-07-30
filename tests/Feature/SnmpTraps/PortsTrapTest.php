@@ -38,7 +38,6 @@ beforeEach(function () {
     }
 });
 
-
 test('link down', function () {
     // make a device and associate a port with it
     $device = Device::factory()->create();

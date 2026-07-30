@@ -34,7 +34,6 @@ beforeEach(function () {
     }
 });
 
-
 test('hpicf bridge loop protect loop detected notification', function () {
     $device = Device::factory()->create();
     $port = Port::factory()->make(['ifIndex' => '1', 'ifDescr' => 'A1']);

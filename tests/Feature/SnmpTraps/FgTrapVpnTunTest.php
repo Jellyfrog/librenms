@@ -37,7 +37,6 @@ beforeEach(function () {
     }
 });
 
-
 test('vpn tun down', function () {
     $device = Device::factory()->create();
     /** @var Device $device */

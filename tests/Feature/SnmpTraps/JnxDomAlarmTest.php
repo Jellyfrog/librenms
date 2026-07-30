@@ -39,7 +39,6 @@ beforeEach(function () {
     }
 });
 
-
 test('jnx dom alarm set trap', function () {
     $device = Device::factory()->create();
     /** @var Device $device */

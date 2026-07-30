@@ -39,7 +39,6 @@ beforeEach(function () {
     }
 });
 
-
 test('jnx ldp ses down trap', function () {
     $device = Device::factory()->create();
     /** @var Device $device */

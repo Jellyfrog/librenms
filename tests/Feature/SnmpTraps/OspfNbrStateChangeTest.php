@@ -41,7 +41,6 @@ beforeEach(function () {
     }
 });
 
-
 test('ospf nbr down', function () {
     $device = Device::factory()->create();
     /** @var Device $device */

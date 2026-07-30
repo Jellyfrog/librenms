@@ -28,7 +28,6 @@
  * @copyright  2020 KanREN, Inc
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
-
 uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
 test('event', function () {

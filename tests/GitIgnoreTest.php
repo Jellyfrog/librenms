@@ -23,7 +23,6 @@
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
 uses(\LibreNMS\Tests\TestCase::class);
 
 beforeEach(function () {

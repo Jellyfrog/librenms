@@ -39,7 +39,6 @@ beforeEach(function () {
     }
 });
 
-
 test('vmw vm powered off trap', function () {
     $device = Device::factory()->create();
     /** @var Device $device */

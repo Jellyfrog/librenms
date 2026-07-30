@@ -23,7 +23,6 @@
  *
  * @link       https://www.librenms.org
  */
-
 uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
 test('ls update packet', function () {

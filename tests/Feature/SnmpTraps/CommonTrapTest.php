@@ -41,7 +41,6 @@ beforeEach(function () {
     }
 });
 
-
 test('garbage', function () {
     $trapText = "Garbage\n";
 

@@ -32,7 +32,6 @@ use LibreNMS\Enum\Severity;
 
 uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-
 test('radius unreachable ipv4', function () {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}

@@ -39,7 +39,6 @@ beforeEach(function () {
     }
 });
 
-
 test('jnx dom lane alarm set trap', function () {
     $device = Device::factory()->create();
 

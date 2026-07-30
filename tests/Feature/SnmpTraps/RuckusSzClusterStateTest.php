@@ -30,7 +30,6 @@ use LibreNMS\Enum\Severity;
 
 uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-
 test('cluster in maintenance', function () {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}

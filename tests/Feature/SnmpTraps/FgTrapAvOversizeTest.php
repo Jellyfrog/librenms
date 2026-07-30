@@ -26,7 +26,6 @@
 
 uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-
 test('av oversize', function () {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}

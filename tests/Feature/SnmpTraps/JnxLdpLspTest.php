@@ -39,7 +39,6 @@ beforeEach(function () {
     }
 });
 
-
 test('ldp lsp down trap', function () {
     $device = Device::factory()->create();
     /** @var Device $device */

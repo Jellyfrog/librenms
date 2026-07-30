@@ -36,7 +36,6 @@ beforeEach(function () {
     }
 });
 
-
 test('on battery', function () {
     $device = Device::factory()->create();
     /** @var Device $device */

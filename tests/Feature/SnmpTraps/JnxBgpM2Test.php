@@ -39,7 +39,6 @@ beforeEach(function () {
     }
 });
 
-
 test('bgp peer unknown', function () {
     $device = Device::factory()->create();
     /** @var Device $device */

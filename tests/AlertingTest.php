@@ -23,7 +23,6 @@
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-
 uses(\LibreNMS\Tests\TestCase::class);
 test('json alert collection', function () {
     $rules = get_rules_from_json();

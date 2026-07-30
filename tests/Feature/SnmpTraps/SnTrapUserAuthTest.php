@@ -25,7 +25,6 @@
  * @copyright  2022 Heath Barnhart
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
-
 uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
 test('sn trap user login', function () {

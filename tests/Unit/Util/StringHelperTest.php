@@ -55,7 +55,7 @@ test('is stringable', function () {
 
     $stringable = new class
     {
-        function __toString()
+        public function __toString()
         {
             return '';
         }

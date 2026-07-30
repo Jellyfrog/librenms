@@ -28,7 +28,6 @@ use LibreNMS\Enum\Severity;
 
 uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-
 test('cp ups overload', function () {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}

@@ -33,7 +33,6 @@ use LibreNMS\Enum\Severity;
 
 uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-
 test('alarm clear', function () {
     $alarm = genEkiAlarm();
 

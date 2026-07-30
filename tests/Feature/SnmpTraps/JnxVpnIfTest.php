@@ -40,7 +40,6 @@ beforeEach(function () {
     }
 });
 
-
 test('vpn if down', function () {
     $device = Device::factory()->create();
     /** @var Device $device */

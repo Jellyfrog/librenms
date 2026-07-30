@@ -25,7 +25,6 @@ use LibreNMS\Enum\Severity;
 
 uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-
 test('bad cable', function () {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}

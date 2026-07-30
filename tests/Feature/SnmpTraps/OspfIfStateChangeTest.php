@@ -42,7 +42,6 @@ beforeEach(function () {
     }
 });
 
-
 test('ospf if down', function () {
     $device = Device::factory()->create();
     /** @var Device $device */

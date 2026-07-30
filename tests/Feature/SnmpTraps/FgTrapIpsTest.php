@@ -37,7 +37,6 @@ beforeEach(function () {
     }
 });
 
-
 test('ips anomaly', function () {
     $device = Device::factory()->create();
     /** @var Device $device */

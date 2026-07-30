@@ -25,7 +25,6 @@ use LibreNMS\Enum\Severity;
 
 uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-
 test('managed series', function () {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}

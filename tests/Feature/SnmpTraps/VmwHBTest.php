@@ -31,7 +31,6 @@ use LibreNMS\Enum\Severity;
 
 uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-
 test('vmw vm hblost trap', function () {
     $guest = Device::factory()->make();
     /** @var Device $guest */
