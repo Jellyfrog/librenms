@@ -49,4 +49,4 @@ pyvenv.cfg
 /.phpunit.cache
 /storage/pail
 /.nova
-/database/testing.sqlite
+/database/testing*.sqlite*
