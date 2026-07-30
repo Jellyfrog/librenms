@@ -185,9 +185,10 @@ test('get subtree', function (): void {
 function setConfig($function)
 {
     $instance = app()->make('librenms-config');
-    $config = test()->config->getValue($instance);
+    $reflection = new ReflectionProperty(ConfigRepository::class, 'config');
+    $config = $reflection->getValue($instance);
     $function($config);
-    test()->config->setValue($instance, $config);
+    $reflection->setValue($instance, $config);
 }
 
 test('forget', function (): void {

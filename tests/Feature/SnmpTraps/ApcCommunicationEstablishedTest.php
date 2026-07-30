@@ -23,8 +23,6 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
-
 test('apc communication established', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}

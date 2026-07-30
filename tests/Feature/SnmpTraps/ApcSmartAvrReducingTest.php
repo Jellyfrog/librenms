@@ -25,8 +25,6 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
-
 test('apc smart avr reducing', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}

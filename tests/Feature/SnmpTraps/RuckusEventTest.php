@@ -25,8 +25,6 @@
  * @copyright  2019 Heath Barnhart
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
-uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
-
 test('ruckus assoc trap', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}

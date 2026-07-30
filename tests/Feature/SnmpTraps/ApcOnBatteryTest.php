@@ -25,8 +25,6 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
-
 test('apc on battery', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}

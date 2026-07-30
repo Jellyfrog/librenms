@@ -19,3 +19,5 @@
 | `php artisan dusk`, not by Pest.
 |
 */
+
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class)->in('Feature/SnmpTraps');

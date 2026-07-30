@@ -26,8 +26,6 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
-
 test('critical alarm', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}

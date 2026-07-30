@@ -2,8 +2,6 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
-
 test('veeam backup job completed', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}

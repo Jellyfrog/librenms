@@ -2,8 +2,6 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
-
 test('zebra printer head open', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}

@@ -1,14 +1,14 @@
 includes:
     - vendor/larastan/larastan/extension.neon
+    - vendor/mrpunyapal/peststan/extension.neon
     - vendor/pestphp/pest/extension.neon
     - vendor/phpstan/phpstan-mockery/extension.neon
     - vendor/phpstan/phpstan-phpunit/extension.neon
     - vendor/phpstan/phpstan-phpunit/rules.neon
 
 parameters:
-    universalObjectCratesClasses:
-        - Pest\PendingCalls\TestCall
-        - LibreNMS\Tests\TestCase
+    peststan:
+        testCaseClass: LibreNMS\Tests\TestCase
 
     phpVersion:
         min: 80200
@@ -43,17 +43,6 @@ parameters:
 
     ignoreErrors:
         - '#Unsafe usage of new static#'
-        # Pest types $this inside test closures as TestCall (and test() as TestCall
-        # or HigherOrderTapProxy), runtime proxies to the bound test case, so test
-        # case methods and shared state cannot be resolved statically
-        -
-            message: '#Pest\\PendingCalls\\TestCall#'
-            path: tests
-            reportUnmatched: false
-        -
-            message: '#Pest\\Support\\HigherOrderTapProxy#'
-            path: tests
-            reportUnmatched: false
 
     parallel:
         processTimeout: 300.0

@@ -30,7 +30,7 @@ use App\Models\Device;
 use LibreNMS\Enum\Severity;
 use LibreNMS\Util\AutonomousSystem;
 
-uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
 // replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
 beforeEach(function (): void {

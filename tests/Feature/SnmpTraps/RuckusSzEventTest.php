@@ -28,8 +28,6 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
-
 test('sz ap conf', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}

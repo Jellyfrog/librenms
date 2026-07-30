@@ -104,7 +104,7 @@ test('valid auth no create update', function (): void {
     // Create a random username and store it with the defaults
     basicEnvironmentEnv();
     $user = makeUser();
-    expect($a->authenticate(['username' => $user]))->toBeTrue();
+    $this->assertTrue($a->authenticate(['username' => $user]));
 
     // Retrieve it and validate
     expect(User::thisAuth()->where('username', $user)->exists())->toBeFalse();
@@ -122,7 +122,7 @@ test('valid auth create only', function (): void {
     // Create a random username and store it with the defaults
     basicEnvironmentEnv();
     $user = makeUser();
-    expect($a->authenticate(['username' => $user]))->toBeTrue();
+    $this->assertTrue($a->authenticate(['username' => $user]));
 
     // Retrieve it and validate
     $dbuser = User::thisAuth()->where('username', $user)->firstOrNew();
@@ -134,7 +134,7 @@ test('valid auth create only', function (): void {
     $_SERVER['mail'] = 'test@example.net';
     $_SERVER['displayName'] = 'Testier User';
     LibrenmsConfig::set('sso.static_level', 10);
-    expect($a->authenticate(['username' => $user]))->toBeTrue();
+    $this->assertTrue($a->authenticate(['username' => $user]));
 
     // Retrieve it and validate the update was not persisted
     $dbuser = User::thisAuth()->where('username', $user)->firstOrNew();

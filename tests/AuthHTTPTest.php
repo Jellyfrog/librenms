@@ -26,7 +26,6 @@
 
 use App\Facades\LibrenmsConfig;
 use LibreNMS\Authentication\LegacyAuth;
-
 use function strip_tags as strip_tags1;
 
 uses(LibreNMS\Tests\TestCase::class);

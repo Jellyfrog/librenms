@@ -23,7 +23,6 @@
  * @copyright  2019 Heath Barnhart
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
-uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 test('net threshold trap', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}

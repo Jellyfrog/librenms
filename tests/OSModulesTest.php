@@ -108,7 +108,7 @@ test('OS', function ($os, $variant, array $modules): void {
         checkTestData($expected, $actual, 'Polled', $os, $module, $filename, $helper, $debug_output);
     }
 
-    expect(true)->toBeTrue("Tested $os successfully"); // avoid no asserts error
+    $this->assertTrue(true, "Tested $os successfully"); // avoid no asserts error
 
     DeviceCache::flush(); // clear cached devices
     $this->travelBack();

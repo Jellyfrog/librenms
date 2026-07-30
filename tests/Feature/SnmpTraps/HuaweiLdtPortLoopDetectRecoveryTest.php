@@ -23,8 +23,6 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
-
 test('huawei ldt port loop recovery detect', function (): void {
     $this->assertTrapLogsMessage('{{ hostname }}
 UDP: [{{ ip }}]:44289->[1.1.1.1]:162
