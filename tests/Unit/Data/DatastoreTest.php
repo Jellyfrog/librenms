@@ -24,63 +24,53 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Unit\Data;
-
+uses(\LibreNMS\Tests\TestCase::class)->group('datastores');
 use App\Facades\LibrenmsConfig;
-use LibreNMS\Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
 
-#[Group('datastores')]
-final class DatastoreTest extends TestCase
-{
-    protected function setUp(): void
-    {
-        parent::setUp();
 
-        LibrenmsConfig::forget([
-            'graphite',
-            'influxdb',
-            'influxdbv2',
-            'kafka',
-            'opentsdb',
-            'prometheus',
-            'rrd',
-        ]);
-    }
+beforeEach(function () {
+    LibrenmsConfig::forget([
+        'graphite',
+        'influxdb',
+        'influxdbv2',
+        'kafka',
+        'opentsdb',
+        'prometheus',
+        'rrd',
+    ]);
+});
 
-    public function testDefaultInitialization(): void
-    {
-        $ds = $this->app->make('Datastore');
-        $stores = $ds->getStores();
-        $this->assertCount(1, $stores, 'Incorrect number of default stores enabled');
+test('default initialization', function () {
+    $ds = $this->app->make('Datastore');
+    $stores = $ds->getStores();
+    expect($stores)->toHaveCount(1, 'Incorrect number of default stores enabled');
 
-        $this->assertEquals(\LibreNMS\Data\Store\Rrd::class, $stores[0]::class, 'The default enabled store should be Rrd');
-    }
+    expect($stores[0]::class)->toEqual(\LibreNMS\Data\Store\Rrd::class, 'The default enabled store should be Rrd');
+});
 
-    public function testInitialization(): void
-    {
-        LibrenmsConfig::set('rrd.enable', false);
-        LibrenmsConfig::set('graphite.enable', true);
-        LibrenmsConfig::set('influxdb.enable', true);
-        LibrenmsConfig::set('influxdbv2.enable', true);
-        LibrenmsConfig::set('opentsdb.enable', true);
-        LibrenmsConfig::set('prometheus.enable', true);
-        LibrenmsConfig::set('kafka.enable', false);
+test('initialization', function () {
+    LibrenmsConfig::set('rrd.enable', false);
+    LibrenmsConfig::set('graphite.enable', true);
+    LibrenmsConfig::set('influxdb.enable', true);
+    LibrenmsConfig::set('influxdbv2.enable', true);
+    LibrenmsConfig::set('opentsdb.enable', true);
+    LibrenmsConfig::set('prometheus.enable', true);
+    LibrenmsConfig::set('kafka.enable', false);
 
-        $ds = $this->app->make('Datastore');
-        $stores = $ds->getStores();
-        $this->assertCount(5, $stores, 'Incorrect number of default stores enabled');
+    $ds = $this->app->make('Datastore');
+    $stores = $ds->getStores();
+    expect($stores)->toHaveCount(5, 'Incorrect number of default stores enabled');
 
-        $enabled = array_map(get_class(...), $stores);
+    $enabled = array_map(get_class(...), $stores);
 
-        $expected_enabled = [
-            \LibreNMS\Data\Store\Graphite::class,
-            \LibreNMS\Data\Store\InfluxDB::class,
-            \LibreNMS\Data\Store\InfluxDBv2::class,
-            \LibreNMS\Data\Store\OpenTSDB::class,
-            \LibreNMS\Data\Store\Prometheus::class,
-        ];
+    $expected_enabled = [
+        \LibreNMS\Data\Store\Graphite::class,
+        \LibreNMS\Data\Store\InfluxDB::class,
+        \LibreNMS\Data\Store\InfluxDBv2::class,
+        \LibreNMS\Data\Store\OpenTSDB::class,
+        \LibreNMS\Data\Store\Prometheus::class,
+    ];
 
-        $this->assertEquals($expected_enabled, $enabled, 'Expected all non-default stores to be initialized');
-    }
-}
+    expect($enabled)->toEqual($expected_enabled, 'Expected all non-default stores to be initialized');
+});

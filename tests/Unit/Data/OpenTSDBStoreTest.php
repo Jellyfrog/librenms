@@ -24,110 +24,96 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Unit\Data;
-
+uses(\LibreNMS\Tests\TestCase::class)->group('datastores');
 use App\Facades\DeviceCache;
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use Carbon\Carbon;
 use LibreNMS\Data\Store\OpenTSDB;
-use LibreNMS\Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
 
-#[Group('datastores')]
-final class OpenTSDBStoreTest extends TestCase
+
+beforeEach(function () {
+    $this->timestamp = 1190464400;
+
+    // fix the date
+    Carbon::setTestNow(Carbon::createFromTimestampUTC($this->timestamp));
+    LibrenmsConfig::set('opentsdb.enable', true);
+});
+
+afterEach(function () {
+    // restore Carbon:now() to normal
+    Carbon::setTestNow();
+    LibrenmsConfig::set('opentsdb.enable', false);
+
+});
+
+test('socket connect error', function () {
+    $mockFactory = \Mockery::mock(\Socket\Raw\Factory::class);
+
+    $mockFactory->shouldReceive('createClient')
+        ->andThrow(\Socket\Raw\Exception::class, 'Failed to handle connect exception')->once();
+
+    new OpenTSDB($mockFactory);
+});
+
+test('socket write error', function () {
+    $mockSocket = \Mockery::mock(\Socket\Raw\Socket::class);
+    $opentsdb = mockOpenTSDB($mockSocket);
+
+    $mockSocket->shouldReceive('write')
+        ->andThrow(\Socket\Raw\Exception::class, 'Did not handle socket exception')->once();
+
+    $opentsdb->write('fake', ['one' => 1]);
+});
+
+test('simple write', function () {
+    $mockSocket = \Mockery::mock(\Socket\Raw\Socket::class);
+    $opentsdb = mockOpenTSDB($mockSocket);
+
+    $measurement = 'testmeasure';
+    $tags = ['ifName' => 'testifname', 'type' => 'testtype'];
+    $fields = ['ifIn' => 234234, 'ifOut' => 53453];
+    $meta = ['device' => new Device(['hostname' => 'testhost'])];
+
+    $mockSocket->shouldReceive('write')
+        ->with("put net.testmeasure $this->timestamp 234234.000000 hostname=testhost ifName=testifname type=testtype key=ifIn\n")->once();
+    $mockSocket->shouldReceive('write')
+        ->with("put net.testmeasure $this->timestamp 53453.000000 hostname=testhost ifName=testifname type=testtype key=ifOut\n")->once();
+    $opentsdb->write($measurement, $fields, $tags, $meta);
+});
+
+test('port write', function () {
+    $mockSocket = \Mockery::mock(\Socket\Raw\Socket::class);
+    $opentsdb = mockOpenTSDB($mockSocket);
+
+    // test that device is used from DeviceCache::getPrimary()
+    $device = new Device(['hostname' => 'testhost']);
+    $device->device_id = 42;
+    DeviceCache::fake($device);
+    DeviceCache::setPrimary($device->device_id);
+
+    $measurement = 'ports';
+    $tags = ['ifName' => 'testifname', 'type' => 'testtype'];
+    $fields = ['ifIn' => 897238, 'ifOut' => 2342];
+
+    $mockSocket->shouldReceive('write')
+        ->with("put net.port.ifin $this->timestamp 897238.000000 hostname=testhost ifName=testifname type=testtype\n")->once();
+    $mockSocket->shouldReceive('write')
+        ->with("put net.port.ifout $this->timestamp 2342.000000 hostname=testhost ifName=testifname type=testtype\n")->once();
+    $opentsdb->write($measurement, $fields, $tags);
+});
+
+/**
+ * @param  mixed  $mockSocket
+ * @return OpenTSDB
+ */
+function mockOpenTSDB($mockSocket)
 {
-    protected $timestamp = 1190464400;
+    $mockFactory = \Mockery::mock(\Socket\Raw\Factory::class);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $mockFactory->shouldReceive('createClient')
+        ->andReturn($mockSocket);
 
-        // fix the date
-        Carbon::setTestNow(Carbon::createFromTimestampUTC($this->timestamp));
-        LibrenmsConfig::set('opentsdb.enable', true);
-    }
-
-    protected function tearDown(): void
-    {
-        // restore Carbon:now() to normal
-        Carbon::setTestNow();
-        LibrenmsConfig::set('opentsdb.enable', false);
-
-        parent::tearDown();
-    }
-
-    public function testSocketConnectError(): void
-    {
-        $mockFactory = \Mockery::mock(\Socket\Raw\Factory::class);
-
-        $mockFactory->shouldReceive('createClient')
-            ->andThrow(\Socket\Raw\Exception::class, 'Failed to handle connect exception')->once();
-
-        new OpenTSDB($mockFactory);
-    }
-
-    public function testSocketWriteError(): void
-    {
-        $mockSocket = \Mockery::mock(\Socket\Raw\Socket::class);
-        $opentsdb = $this->mockOpenTSDB($mockSocket);
-
-        $mockSocket->shouldReceive('write')
-            ->andThrow(\Socket\Raw\Exception::class, 'Did not handle socket exception')->once();
-
-        $opentsdb->write('fake', ['one' => 1]);
-    }
-
-    public function testSimpleWrite(): void
-    {
-        $mockSocket = \Mockery::mock(\Socket\Raw\Socket::class);
-        $opentsdb = $this->mockOpenTSDB($mockSocket);
-
-        $measurement = 'testmeasure';
-        $tags = ['ifName' => 'testifname', 'type' => 'testtype'];
-        $fields = ['ifIn' => 234234, 'ifOut' => 53453];
-        $meta = ['device' => new Device(['hostname' => 'testhost'])];
-
-        $mockSocket->shouldReceive('write')
-            ->with("put net.testmeasure $this->timestamp 234234.000000 hostname=testhost ifName=testifname type=testtype key=ifIn\n")->once();
-        $mockSocket->shouldReceive('write')
-            ->with("put net.testmeasure $this->timestamp 53453.000000 hostname=testhost ifName=testifname type=testtype key=ifOut\n")->once();
-        $opentsdb->write($measurement, $fields, $tags, $meta);
-    }
-
-    public function testPortWrite(): void
-    {
-        $mockSocket = \Mockery::mock(\Socket\Raw\Socket::class);
-        $opentsdb = $this->mockOpenTSDB($mockSocket);
-
-        // test that device is used from DeviceCache::getPrimary()
-        $device = new Device(['hostname' => 'testhost']);
-        $device->device_id = 42;
-        DeviceCache::fake($device);
-        DeviceCache::setPrimary($device->device_id);
-
-        $measurement = 'ports';
-        $tags = ['ifName' => 'testifname', 'type' => 'testtype'];
-        $fields = ['ifIn' => 897238, 'ifOut' => 2342];
-
-        $mockSocket->shouldReceive('write')
-            ->with("put net.port.ifin $this->timestamp 897238.000000 hostname=testhost ifName=testifname type=testtype\n")->once();
-        $mockSocket->shouldReceive('write')
-            ->with("put net.port.ifout $this->timestamp 2342.000000 hostname=testhost ifName=testifname type=testtype\n")->once();
-        $opentsdb->write($measurement, $fields, $tags);
-    }
-
-    /**
-     * @param  mixed  $mockSocket
-     * @return OpenTSDB
-     */
-    private function mockOpenTSDB($mockSocket)
-    {
-        $mockFactory = \Mockery::mock(\Socket\Raw\Factory::class);
-
-        $mockFactory->shouldReceive('createClient')
-            ->andReturn($mockSocket);
-
-        return new OpenTSDB($mockFactory);
-    }
+    return new OpenTSDB($mockFactory);
 }

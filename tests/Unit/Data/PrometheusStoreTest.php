@@ -24,57 +24,47 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Unit\Data;
-
+uses(\LibreNMS\Tests\TestCase::class)->group('datastores');
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use Illuminate\Support\Facades\Http as LaravelHttp;
 use LibreNMS\Data\Store\Prometheus;
-use LibreNMS\Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
 
-#[Group('datastores')]
-final class PrometheusStoreTest extends TestCase
-{
-    protected function setUp(): void
-    {
-        parent::setUp();
 
-        LibrenmsConfig::set('prometheus.enable', true);
-        LibrenmsConfig::set('prometheus.url', 'http://fake:9999');
-    }
+beforeEach(function () {
+    LibrenmsConfig::set('prometheus.enable', true);
+    LibrenmsConfig::set('prometheus.url', 'http://fake:9999');
+});
 
-    public function testFailWrite(): void
-    {
-        LaravelHttp::fakeSequence()->push('Bad response', 422);
-        $prometheus = app(Prometheus::class);
+test('fail write', function () {
+    LaravelHttp::fakeSequence()->push('Bad response', 422);
+    $prometheus = app(Prometheus::class);
 
-        \Log::shouldReceive('debug');
-        \Log::shouldReceive('error')->once()->with('Prometheus Error: Bad response');
-        $prometheus->write('none', ['one' => 1]);
-    }
+    \Log::shouldReceive('debug');
+    \Log::shouldReceive('error')->once()->with('Prometheus Error: Bad response');
+    $prometheus->write('none', ['one' => 1]);
+});
 
-    public function testSimpleWrite(): void
-    {
-        LaravelHttp::fake([
-            '*' => LaravelHttp::response(),
-        ]);
+test('simple write', function () {
+    LaravelHttp::fake([
+        '*' => LaravelHttp::response(),
+    ]);
 
-        $prometheus = app(Prometheus::class);
+    $prometheus = app(Prometheus::class);
 
-        $measurement = 'testmeasure';
-        $tags = ['ifName' => 'testifname', 'type' => 'testtype'];
-        $fields = ['ifIn' => 234234, 'ifOut' => 53453];
-        $meta = ['device' => new Device(['hostname' => 'testhost'])];
+    $measurement = 'testmeasure';
+    $tags = ['ifName' => 'testifname', 'type' => 'testtype'];
+    $fields = ['ifIn' => 234234, 'ifOut' => 53453];
+    $meta = ['device' => new Device(['hostname' => 'testhost'])];
 
-        \Log::shouldReceive('debug');
-        \Log::shouldReceive('error')->times(0);
+    \Log::shouldReceive('debug');
+    \Log::shouldReceive('error')->times(0);
 
-        $prometheus->write($measurement, $fields, $tags, $meta);
+    $prometheus->write($measurement, $fields, $tags, $meta);
 
-        LaravelHttp::assertSentCount(1);
-        LaravelHttp::assertSent(fn (\Illuminate\Http\Client\Request $request) => $request->method() == 'POST' &&
-            $request->url() == 'http://fake:9999/metrics/job/librenms/instance/testhost/measurement/testmeasure/ifName/testifname/type/testtype' &&
-            $request->body() == "ifIn 234234\nifOut 53453\n");
-    }
-}
+    LaravelHttp::assertSentCount(1);
+    LaravelHttp::assertSent(fn (\Illuminate\Http\Client\Request $request) => $request->method() == 'POST' &&
+        $request->url() == 'http://fake:9999/metrics/job/librenms/instance/testhost/measurement/testmeasure/ifName/testifname/type/testtype' &&
+        $request->body() == "ifIn 234234\nifOut 53453\n");
+});

@@ -23,93 +23,84 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Unit\Data;
-
+uses(\LibreNMS\Tests\TestCase::class)->group('datastores');
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use InfluxDB\Point;
 use LibreNMS\Data\Store\InfluxDB;
-use LibreNMS\Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
 
-#[Group('datastores')]
-final class InfluxDBStoreTest extends TestCase
-{
-    public function testBadSettings(): void
-    {
-        LibrenmsConfig::set('influxdb.host', '');
-        LibrenmsConfig::set('influxdb.port', 'abc');
-        $influx = new InfluxDB(InfluxDB::createFromConfig());
 
-        \Log::shouldReceive('debug');
-        \Log::shouldReceive('error')->once()->with('InfluxDB batch write failed: Unable to parse URI: http://:0');
-        $influx->write('fake', ['one' => 1]);
-    }
+test('bad settings', function () {
+    LibrenmsConfig::set('influxdb.host', '');
+    LibrenmsConfig::set('influxdb.port', 'abc');
+    $influx = new InfluxDB(InfluxDB::createFromConfig());
 
-    public function testSimpleWrite(): void
-    {
-        // Create a mock of the Random Interface
-        $mock = \Mockery::mock(\InfluxDB\Database::class);
-        $mock->shouldReceive('exists')->once()->andReturn(true);
-        $influx = new InfluxDB($mock);
+    \Log::shouldReceive('debug');
+    \Log::shouldReceive('error')->once()->with('InfluxDB batch write failed: Unable to parse URI: http://:0');
+    $influx->write('fake', ['one' => 1]);
+});
 
-        $device = new Device(['hostname' => 'testhost']);
-        $measurement = 'testmeasure';
-        $tags = ['ifName' => 'testifname', 'type' => 'testtype'];
-        $fields = ['ifIn' => 234234.0, 'ifOut' => 53453.0];
-        $meta = ['device' => $device];
+test('simple write', function () {
+    // Create a mock of the Random Interface
+    $mock = \Mockery::mock(\InfluxDB\Database::class);
+    $mock->shouldReceive('exists')->once()->andReturn(true);
+    $influx = new InfluxDB($mock);
 
-        $mock->shouldReceive('writePoints')
-            ->with(\Mockery::on(function ($points) use ($measurement, $tags, $fields, $device) {
-                if (! is_array($points) || count($points) !== 1) {
-                    return false;
-                }
-                $point = $points[0];
+    $device = new Device(['hostname' => 'testhost']);
+    $measurement = 'testmeasure';
+    $tags = ['ifName' => 'testifname', 'type' => 'testtype'];
+    $fields = ['ifIn' => 234234.0, 'ifOut' => 53453.0];
+    $meta = ['device' => $device];
 
-                return $point instanceof Point
-                    && $point->getMeasurement() === $measurement
-                    && $point->getTags() == (['hostname' => $device->hostname] + $tags)
-                    && $point->getFields() == $fields;
-            }), 's') // Expects second precision
-            ->once();
-        $influx->write($measurement, $fields, $tags, $meta);
-    }
+    $mock->shouldReceive('writePoints')
+        ->with(\Mockery::on(function ($points) use ($measurement, $tags, $fields, $device) {
+            if (! is_array($points) || count($points) !== 1) {
+                return false;
+            }
+            $point = $points[0];
 
-    public function testFilteredMeasurementsAllowed(): void
-    {
-        LibrenmsConfig::set('influxdb.measurements', ['testmeasure', 'anothermeasure']);
+            return $point instanceof Point
+                && $point->getMeasurement() === $measurement
+                && $point->getTags() == (['hostname' => $device->hostname] + $tags)
+                && $point->getFields() == $fields;
+        }), 's') // Expects second precision
+        ->once();
+    $influx->write($measurement, $fields, $tags, $meta);
+});
 
-        // Create a mock of the Random Interface
-        $mock = \Mockery::mock(\InfluxDB\Database::class);
-        $mock->shouldReceive('exists')->once()->andReturn(true);
-        $influx = new InfluxDB($mock);
+test('filtered measurements allowed', function () {
+    LibrenmsConfig::set('influxdb.measurements', ['testmeasure', 'anothermeasure']);
 
-        $device = new Device(['hostname' => 'testhost']);
-        $measurement = 'testmeasure';
-        $tags = ['ifName' => 'testifname', 'type' => 'testtype'];
-        $fields = ['ifIn' => 234234.0, 'ifOut' => 53453.0];
-        $meta = ['device' => $device];
+    // Create a mock of the Random Interface
+    $mock = \Mockery::mock(\InfluxDB\Database::class);
+    $mock->shouldReceive('exists')->once()->andReturn(true);
+    $influx = new InfluxDB($mock);
 
-        $mock->shouldReceive('writePoints')->once();
-        $influx->write($measurement, $fields, $tags, $meta);
-    }
+    $device = new Device(['hostname' => 'testhost']);
+    $measurement = 'testmeasure';
+    $tags = ['ifName' => 'testifname', 'type' => 'testtype'];
+    $fields = ['ifIn' => 234234.0, 'ifOut' => 53453.0];
+    $meta = ['device' => $device];
 
-    public function testFilteredMeasurementsRejected(): void
-    {
-        LibrenmsConfig::set('influxdb.measurements', ['anothermeasure', 'yetanothermeasure']);
+    $mock->shouldReceive('writePoints')->once();
+    $influx->write($measurement, $fields, $tags, $meta);
+});
 
-        // Create a mock of the Random Interface
-        $mock = \Mockery::mock(\InfluxDB\Database::class);
-        $mock->shouldReceive('exists')->once()->andReturn(true);
-        $influx = new InfluxDB($mock);
+test('filtered measurements rejected', function () {
+    LibrenmsConfig::set('influxdb.measurements', ['anothermeasure', 'yetanothermeasure']);
 
-        $device = new Device(['hostname' => 'testhost']);
-        $measurement = 'testmeasure';
-        $tags = ['ifName' => 'testifname', 'type' => 'testtype'];
-        $fields = ['ifIn' => 234234.0, 'ifOut' => 53453.0];
-        $meta = ['device' => $device];
+    // Create a mock of the Random Interface
+    $mock = \Mockery::mock(\InfluxDB\Database::class);
+    $mock->shouldReceive('exists')->once()->andReturn(true);
+    $influx = new InfluxDB($mock);
 
-        $mock->shouldReceive('writePoints')->never();
-        $influx->write($measurement, $fields, $tags, $meta);
-    }
-}
+    $device = new Device(['hostname' => 'testhost']);
+    $measurement = 'testmeasure';
+    $tags = ['ifName' => 'testifname', 'type' => 'testtype'];
+    $fields = ['ifIn' => 234234.0, 'ifOut' => 53453.0];
+    $meta = ['device' => $device];
+
+    $mock->shouldReceive('writePoints')->never();
+    $influx->write($measurement, $fields, $tags, $meta);
+});
