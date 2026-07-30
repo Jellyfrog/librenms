@@ -146,17 +146,18 @@ The Kafka tests are tagged with the `external-dependencies` group and are exclud
 
 ```bash
 # Run only Kafka tests
-./vendor/bin/phpunit --group external-dependencies
+./vendor/bin/pest --group external-dependencies
 
-# Or specifically target the Kafka test class
-./vendor/bin/phpunit tests/Unit/Data/KafkaDBStoreTest.php
+# Or specifically target the Kafka test file
+./vendor/bin/pest tests/Unit/Data/KafkaDBStoreTest.php
 ```
 
 ### Run All Tests Including Kafka
 
 ```bash
-# Run all tests (including external dependencies)
-./vendor/bin/phpunit --no-exclude-group
+# Run the default test suite, then the tests that need external dependencies
+./vendor/bin/pest
+./vendor/bin/pest --group external-dependencies
 ```
 
 ## Test Configuration

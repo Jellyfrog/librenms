@@ -35,7 +35,7 @@ class CiHelper
     private ?array $os = null;
     private array $unitEnv = [];
     private array $duskEnv = ['APP_ENV' => 'testing'];
-    private ?array $excludedPhpunitGroups = null;
+    private ?array $excludedPestGroups = null;
     private ?Snmpsim $snmpsim = null;
 
     private array $completedChecks = [
@@ -127,9 +127,9 @@ class CiHelper
         }
     }
 
-    public function setExcludedPhpunitGroups(array $groups): void
+    public function setExcludedPestGroups(array $groups): void
     {
-        $this->excludedPhpunitGroups = $groups;
+        $this->excludedPestGroups = $groups;
     }
 
     public function run(): int
@@ -177,25 +177,25 @@ class CiHelper
     }
 
     /**
-     * Runs phpunit
+     * Runs pest
      *
-     * @return int the return value from phpunit (0 = success)
+     * @return int the return value from pest (0 = success)
      */
     public function checkUnit(): int
     {
-        $phpunit_cmd = [$this->checkPhpExec('phpunit'), '--colors=always', '--fail-on-all-issues', '--testdox'];
+        $pest_cmd = [$this->checkPhpExec('pest'), '--colors=always', '--fail-on-all-issues'];
 
         if ($this->flags['fail-fast']) {
-            $phpunit_cmd[] = '--stop-on-defect';
+            $pest_cmd[] = '--stop-on-defect';
         }
 
         if (Debug::isVerbose()) {
-            $phpunit_cmd[] = '--debug';
+            $pest_cmd[] = '--debug';
         }
 
-        if ($this->excludedPhpunitGroups) {
-            foreach ($this->excludedPhpunitGroups as $group) {
-                array_push($phpunit_cmd, '--exclude-group', $group);
+        if ($this->excludedPestGroups) {
+            foreach ($this->excludedPestGroups as $group) {
+                array_push($pest_cmd, '--exclude-group', $group);
             }
         }
 
@@ -203,34 +203,34 @@ class CiHelper
         if ($this->flags['unit_os']) {
             echo 'Only checking os: ' . implode(', ', $this->os) . PHP_EOL;
             $filter = implode('|', $this->os);
-            // include tests that don't have data providers and only data sets that match
-            array_push($phpunit_cmd, '--group', 'os');
+            // include tests that don't have datasets and only data sets that match
+            array_push($pest_cmd, '--group', 'os');
             if ($this->flags['os-modules-only']) {
-                array_push($phpunit_cmd, '--filter', "/::testOS with data set \"($filter)/");
+                array_push($pest_cmd, '--filter', "/::__pest_evaluable_OS with data set \"($filter)/");
             } else {
                 if ($this->flags['ci']) {
-                    // If in CI mode, we're checking all OSes spread over multiple jobs, so we don't need a full "testOSDetection"
-                    array_push($phpunit_cmd, '--filter', "/with data set \"($filter)/");
+                    // If in CI mode, we're checking all OSes spread over multiple jobs, so we don't need a full "OS detection"
+                    array_push($pest_cmd, '--filter', "/with data set \"($filter)/");
                 } else {
-                    // If NOT in CI mode, explicity run testOSDetection for ALL OSes.
-                    array_push($phpunit_cmd, '--filter', "/::test\w+$|::testOSDetection|with data set \"($filter)/");
+                    // If NOT in CI mode, explicity run the OS detection test for ALL OSes.
+                    array_push($pest_cmd, '--filter', "/^(?!.*with data set)|::__pest_evaluable_OS_detection|with data set \"($filter)/");
                     // We also enable SVG and YAML tests
-                    array_push($phpunit_cmd, '--group', 'svg');
-                    array_push($phpunit_cmd, '--group', 'yaml');
+                    array_push($pest_cmd, '--group', 'svg');
+                    array_push($pest_cmd, '--group', 'yaml');
                 }
             }
         } elseif ($this->flags['unit_docs']) {
-            array_push($phpunit_cmd, '--group', 'docs');
+            array_push($pest_cmd, '--group', 'docs');
         } elseif ($this->flags['unit_svg']) {
-            array_push($phpunit_cmd, '--group', 'svg');
+            array_push($pest_cmd, '--group', 'svg');
         } elseif ($this->flags['unit_modules'] || $this->flags['os-modules-only']) {
             if ($this->flags['os-modules-only']) {
-                array_push($phpunit_cmd, '--filter', '/::testOS /');
+                array_push($pest_cmd, '--filter', '/::__pest_evaluable_OS /');
             }
-            $phpunit_cmd[] = 'tests/OSModulesTest.php';
+            $pest_cmd[] = 'tests/OSModulesTest.php';
         }
 
-        return $this->execute('unit', $phpunit_cmd, false, $this->unitEnv);
+        return $this->execute('unit', $pest_cmd, false, $this->unitEnv);
     }
 
     /**

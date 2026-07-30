@@ -42,12 +42,12 @@ jobs:
             name: Other
             php-version: 8.4
             database: mariadb:11.7
-            arguments: --full --exclude-phpunit-group=browser,mibs,external-dependencies,os
+            arguments: --full --exclude-pest-group=browser,mibs,external-dependencies,os
           -
             name: Other
-            php-version: 8.2
+            php-version: 8.4
             database: mysql:8.0
-            arguments: --full --exclude-phpunit-group=browser,mibs,external-dependencies,os
+            arguments: --full --exclude-pest-group=browser,mibs,external-dependencies,os
 
     services:
       database:
