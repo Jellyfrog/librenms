@@ -23,15 +23,12 @@
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
 uses(\LibreNMS\Tests\TestCase::class)->group('datastores');
 use App\Facades\DeviceCache;
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use Carbon\Carbon;
 use LibreNMS\Data\Store\OpenTSDB;
-use PHPUnit\Framework\Attributes\Group;
-
 
 beforeEach(function () {
     $this->timestamp = 1190464400;
@@ -45,7 +42,6 @@ afterEach(function () {
     // restore Carbon:now() to normal
     Carbon::setTestNow();
     LibrenmsConfig::set('opentsdb.enable', false);
-
 });
 
 test('socket connect error', function () {

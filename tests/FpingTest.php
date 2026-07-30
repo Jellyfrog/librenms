@@ -23,13 +23,11 @@
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
 uses(\LibreNMS\Tests\TestCase::class);
 use App\Facades\LibrenmsConfig;
 use LibreNMS\Data\Source\Fping;
 use LibreNMS\Data\Source\FpingResponse;
 use Symfony\Component\Process\Process;
-
 
 test('up ping', function () {
     $output = "192.168.1.3 : xmt/rcv/%loss = 3/3/0%, min/avg/max = 0.62/0.71/0.93\n";

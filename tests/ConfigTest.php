@@ -23,11 +23,9 @@
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
 uses(\LibreNMS\Tests\TestCase::class);
 use App\ConfigRepository;
 use App\Facades\LibrenmsConfig;
-
 
 beforeEach(function () {
     $this->config = new \ReflectionProperty(ConfigRepository::class, 'config');

@@ -23,11 +23,8 @@
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
 uses(\LibreNMS\Tests\TestCase::class)->group('svg');
 use Illuminate\Support\Str;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\TestDox;
 
 test('svgcontains png', function () {
     foreach (getSvgFiles() as $file => $_unused) {

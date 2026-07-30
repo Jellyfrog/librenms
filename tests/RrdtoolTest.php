@@ -23,11 +23,9 @@
  * @copyright  2016 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
 uses(\LibreNMS\Tests\TestCase::class);
 use App\Facades\LibrenmsConfig;
 use LibreNMS\Data\Store\Rrd;
-
 
 test('build command local', function () {
     LibrenmsConfig::set('rrdcached', '');

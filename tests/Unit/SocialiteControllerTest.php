@@ -23,7 +23,6 @@
  * @copyright  2025 Peter Childs
  * @author     Peter Childs <pjchilds@gmail.com>
  */
-
 uses(\LibreNMS\Tests\TestCase::class);
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Models\User;
@@ -119,12 +118,12 @@ test('set roles from claim saml2 admin', function () {
     // we don't import LightSaml\Model\Assertion\Attribute for testing
     $attr = new class
     {
-        function getName(): string
+        public function getName(): string
         {
             return 'http://schemas.microsoft.com/ws/2008/06/identity/claims/groups';
         }
 
-        function getAllAttributeValues(): array
+        public function getAllAttributeValues(): array
         {
             return ['G_librenms_admins'];
         }
@@ -141,12 +140,12 @@ test('set roles from claim saml2 global read', function () {
     // we don't import LightSaml\Model\Assertion\Attribute for testing
     $attr = new class
     {
-        function getName(): string
+        public function getName(): string
         {
             return 'http://schemas.microsoft.com/ws/2008/06/identity/claims/groups';
         }
 
-        function getAllAttributeValues(): array
+        public function getAllAttributeValues(): array
         {
             return ['G_librenms_users'];
         }

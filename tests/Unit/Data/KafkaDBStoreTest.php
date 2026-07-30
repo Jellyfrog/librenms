@@ -3,8 +3,6 @@
 uses(\LibreNMS\Tests\TestCase::class)->group('external-dependencies');
 use App\Facades\LibrenmsConfig;
 use LibreNMS\Data\Store\Kafka;
-use PHPUnit\Framework\Attributes\Group;
-
 
 beforeEach(function () {
     LibrenmsConfig::set('kafka.enable', true);

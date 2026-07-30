@@ -23,14 +23,11 @@
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
 uses(\LibreNMS\Tests\TestCase::class)->group('datastores');
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use Illuminate\Support\Facades\Http as LaravelHttp;
 use LibreNMS\Data\Store\Prometheus;
-use PHPUnit\Framework\Attributes\Group;
-
 
 beforeEach(function () {
     LibrenmsConfig::set('prometheus.enable', true);

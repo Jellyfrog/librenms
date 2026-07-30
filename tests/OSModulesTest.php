@@ -47,7 +47,6 @@ afterEach(function () {
     // restore modules
     LibrenmsConfig::set('discovery_modules', $this->discoveryModules);
     LibrenmsConfig::set('poller_modules', $this->pollerModules);
-
 });
 
 test('OS data is valid', function ($os, $variant, $modules) {

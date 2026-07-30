@@ -40,7 +40,6 @@ const YAML_SCHEMA_EXCLUDED = [
     '/os_detection/ping.yaml',
 ];
 
-
 test('config schema', function () {
     $error = validateFileAgainstSchema(resource_path('definitions/config_definitions.json'), resource_path('definitions/schema/config_schema.json'));
 

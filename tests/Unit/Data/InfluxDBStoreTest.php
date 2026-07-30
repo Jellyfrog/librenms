@@ -22,14 +22,11 @@
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
 uses(\LibreNMS\Tests\TestCase::class)->group('datastores');
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use InfluxDB\Point;
 use LibreNMS\Data\Store\InfluxDB;
-use PHPUnit\Framework\Attributes\Group;
-
 
 test('bad settings', function () {
     LibrenmsConfig::set('influxdb.host', '');

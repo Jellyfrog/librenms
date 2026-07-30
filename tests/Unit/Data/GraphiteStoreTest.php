@@ -23,15 +23,12 @@
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
 uses(\LibreNMS\Tests\TestCase::class)->group('datastores');
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use Carbon\Carbon;
 use LibreNMS\Data\Store\Graphite;
-use PHPUnit\Framework\Attributes\Group;
 use Socket\Raw\Socket;
-
 
 beforeEach(function () {
     $this->timestamp = 1197464400;
@@ -45,7 +42,6 @@ afterEach(function () {
     // restore Carbon:now() to normal
     Carbon::setTestNow();
     LibrenmsConfig::set('graphite.enable', false);
-
 });
 
 test('socket connect error', function () {

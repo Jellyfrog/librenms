@@ -23,11 +23,8 @@
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
 uses(\LibreNMS\Tests\TestCase::class)->group('datastores');
 use App\Facades\LibrenmsConfig;
-use PHPUnit\Framework\Attributes\Group;
-
 
 beforeEach(function () {
     LibrenmsConfig::forget([
