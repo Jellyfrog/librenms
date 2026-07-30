@@ -30,6 +30,7 @@ use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use LibreNMS\Alert\AlertData;
 use LibreNMS\Alert\Transport;
+
 use function PHPUnit\Framework\assertEquals;
 
 uses(LibreNMS\Tests\TestCase::class);

@@ -53,7 +53,8 @@ test('is stringable', function (): void {
     expect(StringHelpers::isStringable([]))->toBeFalse();
     expect(StringHelpers::isStringable((object) []))->toBeFalse();
 
-    $stringable = new class {
+    $stringable = new class
+    {
         public function __toString()
         {
             return '';
