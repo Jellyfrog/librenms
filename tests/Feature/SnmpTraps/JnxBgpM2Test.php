@@ -30,20 +30,20 @@ use App\Models\BgpPeer;
 use App\Models\Device;
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
 // replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
-beforeEach(function () {
+beforeEach(function (): void {
     if (! getenv('DBTEST')) {
         $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
     }
 });
 
-test('bgp peer unknown', function () {
+test('bgp peer unknown', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $error = 'Unknown bgp peer handling bgpEstablished trap: 2001:d88:1::2';
-    \Log::shouldReceive('error')->once()->with($error);
+    Log::shouldReceive('error')->once()->with($error);
 
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
@@ -64,7 +64,7 @@ TRAP,
     );
 });
 
-test('bgp backward transition', function () {
+test('bgp backward transition', function (): void {
     $device = Device::factory()->create();
 
     /** @var Device $device */
@@ -74,7 +74,7 @@ test('bgp backward transition', function () {
     $device->bgppeers()->save($bgppeer);
 
     $error = 'Unknown bgp peer handling bgpEstablished trap: 2001:d88:1::2';
-    \Log::shouldReceive('error')->never()->with($error);
+    Log::shouldReceive('error')->never()->with($error);
 
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
@@ -96,7 +96,7 @@ TRAP,
     );
 });
 
-test('bgp established', function () {
+test('bgp established', function (): void {
     $device = Device::factory()->create();
 
     /** @var Device $device */
@@ -106,7 +106,7 @@ test('bgp established', function () {
     $device->bgppeers()->save($bgppeer);
 
     $error = 'Unknown bgp peer handling bgpEstablished trap: 2001:d88:1::2';
-    \Log::shouldReceive('error')->never()->with($error);
+    Log::shouldReceive('error')->never()->with($error);
 
     $this->assertTrapLogsMessage('{{ hostname }}
 UDP: [{{ ip }}]:64610->[192.168.5.5]:162

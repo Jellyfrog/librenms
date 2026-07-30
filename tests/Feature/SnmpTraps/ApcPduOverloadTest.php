@@ -23,9 +23,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('near overload', function () {
+test('near overload', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -43,7 +43,7 @@ TRAP,
     );
 });
 
-test('near overload clear', function () {
+test('near overload clear', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -61,7 +61,7 @@ TRAP,
     );
 });
 
-test('overload', function () {
+test('overload', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -79,7 +79,7 @@ TRAP,
     );
 });
 
-test('overload clear', function () {
+test('overload clear', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162

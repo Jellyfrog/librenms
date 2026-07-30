@@ -23,9 +23,9 @@
  *
  * @link       https://www.librenms.org
  */
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('ls update packet', function () {
+test('ls update packet', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP_WRAP'
         {{ hostname }}
         UDP: [{{ ip }}]:57602->[10.0.0.1]:162
@@ -45,7 +45,7 @@ test('ls update packet', function () {
     );
 });
 
-test('not ls update packet', function () {
+test('not ls update packet', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP_WRAP'
         {{ hostname }}
         UDP: [{{ ip }}]:57602->[10.0.0.1]:162

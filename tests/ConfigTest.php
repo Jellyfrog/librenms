@@ -23,26 +23,26 @@
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 use App\ConfigRepository;
 use App\Facades\LibrenmsConfig;
 
-beforeEach(function () {
-    $this->config = new \ReflectionProperty(ConfigRepository::class, 'config');
+beforeEach(function (): void {
+    $this->config = new ReflectionProperty(ConfigRepository::class, 'config');
 });
 
-test('get basic', function () {
+test('get basic', function (): void {
     $dir = realpath(__DIR__ . '/..');
     expect(LibrenmsConfig::get('install_dir'))->toEqual($dir);
 });
 
-test('set basic', function () {
+test('set basic', function (): void {
     $instance = $this->app->make('librenms-config');
     LibrenmsConfig::set('basics', 'first');
     expect($this->config->getValue($instance)['basics'])->toEqual('first');
 });
 
-test('get', function () {
+test('get', function (): void {
     setConfig(function (&$config): void {
         $config['one']['two']['three'] = 'easy';
     });
@@ -50,7 +50,7 @@ test('get', function () {
     expect(LibrenmsConfig::get('one.two.three'))->toEqual('easy');
 });
 
-test('get device setting', function () {
+test('get device setting', function (): void {
     $device = ['set' => true, 'null' => null];
     setConfig(function (&$config): void {
         $config['null'] = 'notnull!';
@@ -66,7 +66,7 @@ test('get device setting', function () {
     expect(LibrenmsConfig::getDeviceSetting($device, 'something', 'else', 'default'))->toEqual('default', 'Failed to return the default argument');
 });
 
-test('get os setting', function () {
+test('get os setting', function (): void {
     setConfig(function (&$config): void {
         $config['os']['nullos']['fancy'] = true;
         $config['fallback'] = true;
@@ -83,7 +83,7 @@ test('get os setting', function () {
     expect(count(LibrenmsConfig::get('os')))->toBeGreaterThan(500, 'Not all OS were loaded from yaml');
 });
 
-test('get combined', function () {
+test('get combined', function (): void {
     setConfig(function (&$config): void {
         $config['num'] = ['one', 'two'];
         $config['withprefix']['num'] = ['four', 'five'];
@@ -117,19 +117,19 @@ test('get combined', function () {
     expect(LibrenmsConfig::getCombined('nullos', 'assoc', 'withprefix.'))->toBe(['a' => 'prefix_same', 'b' => 'different', 'c' => 'still same']);
 });
 
-test('set', function () {
+test('set', function (): void {
     $instance = $this->app->make('librenms-config');
     LibrenmsConfig::set('you.and.me', "I'll be there");
 
     expect($this->config->getValue($instance)['you']['and']['me'])->toEqual("I'll be there");
 });
 
-test('set persist', function () {
+test('set persist', function (): void {
     $this->dbSetUp();
 
     $key = 'testing.persist';
 
-    $query = \App\Models\Config::query()->where('config_name', $key);
+    $query = App\Models\Config::query()->where('config_name', $key);
 
     $query->delete();
     expect($query->exists())->toBeFalse("$key should not be set, clean database");
@@ -141,7 +141,7 @@ test('set persist', function () {
     $this->dbTearDown();
 });
 
-test('has', function () {
+test('has', function (): void {
     LibrenmsConfig::set('long.key.setting', 'no one cares');
     LibrenmsConfig::set('null', null);
 
@@ -154,17 +154,17 @@ test('has', function () {
     expect(LibrenmsConfig::has('off.the'))->toBeFalse('Config:has() should not modify the config');
 });
 
-test('get non existent', function () {
+test('get non existent', function (): void {
     expect(LibrenmsConfig::get('There.is.no.way.this.is.a.key'))->toBeNull();
     expect(LibrenmsConfig::has('There.is.no'))->toBeFalse();
     // should not add kes when getting
 });
 
-test('get non existent nested', function () {
+test('get non existent nested', function (): void {
     expect(LibrenmsConfig::get('cheese.and.bologna'))->toBeNull();
 });
 
-test('get subtree', function () {
+test('get subtree', function (): void {
     LibrenmsConfig::set('words.top', 'August');
     LibrenmsConfig::set('words.mid', 'And Everything');
     LibrenmsConfig::set('words.bot', 'After');
@@ -190,7 +190,7 @@ function setConfig($function)
     test()->config->setValue($instance, $config);
 }
 
-test('forget', function () {
+test('forget', function (): void {
     LibrenmsConfig::set('forget.me', 'now');
     expect(LibrenmsConfig::has('forget.me'))->toBeTrue();
 
@@ -198,7 +198,7 @@ test('forget', function () {
     expect(LibrenmsConfig::has('forget.me'))->toBeFalse();
 });
 
-test('forget subtree', function () {
+test('forget subtree', function (): void {
     LibrenmsConfig::set('forget.me.sub', 'yep');
     expect(LibrenmsConfig::has('forget.me.sub'))->toBeTrue();
 

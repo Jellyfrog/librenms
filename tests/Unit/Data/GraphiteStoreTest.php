@@ -23,14 +23,14 @@
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-uses(\LibreNMS\Tests\TestCase::class)->group('datastores');
+uses(LibreNMS\Tests\TestCase::class)->group('datastores');
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use Carbon\Carbon;
 use LibreNMS\Data\Store\Graphite;
 use Socket\Raw\Socket;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->timestamp = 1197464400;
 
     // fix the date
@@ -38,14 +38,14 @@ beforeEach(function () {
     LibrenmsConfig::set('graphite.enable', true);
 });
 
-afterEach(function () {
+afterEach(function (): void {
     // restore Carbon:now() to normal
     Carbon::setTestNow();
     LibrenmsConfig::set('graphite.enable', false);
 });
 
-test('socket connect error', function () {
-    $mockFactory = \Mockery::mock(\Socket\Raw\Factory::class);
+test('socket connect error', function (): void {
+    $mockFactory = Mockery::mock(\Socket\Raw\Factory::class);
 
     $mockFactory->shouldReceive('createClient')
         ->andThrow(\Socket\Raw\Exception::class, 'Failed to handle connect exception')->once();
@@ -53,8 +53,8 @@ test('socket connect error', function () {
     new Graphite($mockFactory);
 });
 
-test('socket write error', function () {
-    $mockSocket = \Mockery::mock(\Socket\Raw\Socket::class);
+test('socket write error', function (): void {
+    $mockSocket = Mockery::mock(Socket::class);
     $graphite = mockGraphite($mockSocket);
 
     $mockSocket->shouldReceive('write')
@@ -63,8 +63,8 @@ test('socket write error', function () {
     $graphite->write('fake', ['one' => 1], ['rrd_name' => 'name']);
 });
 
-test('simple write', function () {
-    $mockSocket = \Mockery::mock(\Socket\Raw\Socket::class);
+test('simple write', function (): void {
+    $mockSocket = Mockery::mock(Socket::class);
     $graphite = mockGraphite($mockSocket);
 
     $measurement = 'testmeasure';
@@ -81,7 +81,7 @@ test('simple write', function () {
 
 function mockGraphite(Socket $mockSocket): Graphite
 {
-    $mockFactory = \Mockery::mock(\Socket\Raw\Factory::class);
+    $mockFactory = Mockery::mock(\Socket\Raw\Factory::class);
 
     $mockFactory->shouldReceive('createClient')
         ->andReturn($mockSocket);

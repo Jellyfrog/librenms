@@ -27,14 +27,14 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     LibrenmsConfig::set('oxidized.enabled', true);
     LibrenmsConfig::set('oxidized.url', 'http://oxidized:8888');
 });
 
-test('get content returns empty string on connection exception', function () {
+test('get content returns empty string on connection exception', function (): void {
     Http::fake(function (): void {
         throw new ConnectionException('cURL error 7: Failed to connect');
     });
@@ -49,7 +49,7 @@ test('get content returns empty string on connection exception', function () {
     expect($result)->toBe('', 'getContent() should return an empty string when Oxidized is unreachable');
 });
 
-test('get content returns empty string when disabled', function () {
+test('get content returns empty string when disabled', function (): void {
     LibrenmsConfig::set('oxidized.enabled', false);
 
     Http::fake(['*' => Http::response('{"name":"router"}', 200)]);
@@ -61,7 +61,7 @@ test('get content returns empty string when disabled', function () {
     Http::assertNothingSent();
 });
 
-test('get content returns body on success', function () {
+test('get content returns body on success', function (): void {
     $body = '{"name":"router","ip":"192.168.10.241","model":"ios"}';
     Http::fake(['*' => Http::response($body, 200)]);
 
@@ -71,7 +71,7 @@ test('get content returns body on success', function () {
     expect($result)->toBe($body, 'getContent() should return the response body on success');
 });
 
-test('update node returns false on connection exception', function () {
+test('update node returns false on connection exception', function (): void {
     Http::fake(function (): void {
         throw new ConnectionException('cURL error 7: Failed to connect');
     });
@@ -86,7 +86,7 @@ test('update node returns false on connection exception', function () {
     expect($result)->toBeFalse('updateNode() should return false when Oxidized is unreachable');
 });
 
-test('reload nodes does not throw on connection exception', function () {
+test('reload nodes does not throw on connection exception', function (): void {
     LibrenmsConfig::set('oxidized.reload_nodes', true);
 
     Http::fake(function (): void {

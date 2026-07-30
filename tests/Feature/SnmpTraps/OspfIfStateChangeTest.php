@@ -33,16 +33,16 @@ use App\Models\OspfPort;
 use App\Models\Port;
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
 // replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
-beforeEach(function () {
+beforeEach(function (): void {
     if (! getenv('DBTEST')) {
         $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
     }
 });
 
-test('ospf if down', function () {
+test('ospf if down', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
@@ -72,7 +72,7 @@ SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX2
     expect('down')->toEqual($ospfIf->ospfIfState);
 });
 
-test('ospf if dr', function () {
+test('ospf if dr', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
@@ -103,7 +103,7 @@ SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX2
     expect('designatedRouter')->toEqual($ospfIf->ospfIfState);
 });
 
-test('ospf if bdr', function () {
+test('ospf if bdr', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
@@ -133,7 +133,7 @@ SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX2
     expect('backupDesignatedRouter')->toEqual($ospfIf->ospfIfState);
 });
 
-test('ospf if odr', function () {
+test('ospf if odr', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
@@ -163,7 +163,7 @@ SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX2
     expect('otherDesignatedRouter')->toEqual($ospfIf->ospfIfState);
 });
 
-test('ospf if ptp', function () {
+test('ospf if ptp', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
@@ -193,7 +193,7 @@ SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX2
     expect('pointToPoint')->toEqual($ospfIf->ospfIfState);
 });
 
-test('ospf if wait', function () {
+test('ospf if wait', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);
@@ -223,7 +223,7 @@ SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameSRX2
     expect('waiting')->toEqual($ospfIf->ospfIfState);
 });
 
-test('ospf if loop', function () {
+test('ospf if loop', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $port = Port::factory()->make(['ifAdminStatus' => 'up', 'ifOperStatus' => 'up']);

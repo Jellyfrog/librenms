@@ -26,9 +26,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('tlp notifications alarm entry added', function () {
+test('tlp notifications alarm entry added', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:46024->[1.1.1.1]:162
@@ -53,7 +53,7 @@ TRAP,
     );
 });
 
-test('tlp notifications alarm entry removed', function () {
+test('tlp notifications alarm entry removed', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:46024->[1.1.1.1]:162

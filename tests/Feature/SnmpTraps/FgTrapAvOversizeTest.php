@@ -24,9 +24,9 @@
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('av oversize', function () {
+test('av oversize', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162

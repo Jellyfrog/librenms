@@ -30,16 +30,16 @@ use App\Models\Device;
 use App\Models\Ipv4Address;
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
 // replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
-beforeEach(function () {
+beforeEach(function (): void {
     if (! getenv('DBTEST')) {
         $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
     }
 });
 
-test('ldp lsp down trap', function () {
+test('ldp lsp down trap', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $ipv4 = Ipv4Address::factory()->make();
@@ -61,7 +61,7 @@ SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameMX48
     );
 });
 
-test('ldp lsp up trap', function () {
+test('ldp lsp up trap', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $ipv4 = Ipv4Address::factory()->make();

@@ -28,9 +28,9 @@ use LibreNMS\Util\IP;
 use LibreNMS\Util\IPv4;
 use LibreNMS\Util\IPv6;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('is valid', function () {
+test('is valid', function (): void {
     expect(IP::isValid('192.168.0.1'))->toBeTrue();
     expect(IP::isValid('192.168.0.1'))->toBeTrue();
     expect(IP::isValid('2001:4860:4860::8888'))->toBeTrue();
@@ -58,11 +58,11 @@ test('is valid', function () {
     expect(IP::isValid('Falafel', true))->toBeFalse();
 });
 
-test('is valid ipv6 exclude reserved', function () {
+test('is valid ipv6 exclude reserved', function (): void {
     expect(IPv6::isValid('::1', true))->toBeFalse();
 });
 
-test('ipv6 is link local', function () {
+test('ipv6 is link local', function (): void {
     expect(IP::parse('169.254.1.1')->isLinkLocal())->toBeFalse();
     expect(IP::parse('fe80::1')->isLinkLocal())->toBeTrue();
     expect(IP::parse('FE80::1')->isLinkLocal())->toBeTrue();
@@ -70,7 +70,7 @@ test('ipv6 is link local', function () {
     expect(IP::parse('febf::1')->isLinkLocal())->toBeFalse();
 });
 
-test('ip parse', function () {
+test('ip parse', function (): void {
     expect(IP::parse('192.168.0.1'))->toEqual('192.168.0.1');
     expect(IP::parse('127.0.0.1'))->toEqual('127.0.0.1');
     expect(IP::parse('2001:db8:85a3::8a2e:370:7334'))->toEqual('2001:db8:85a3::8a2e:370:7334');
@@ -81,17 +81,17 @@ test('ip parse', function () {
     expect(new IPv6('2001:db8:85a3::8a2e:370:7334'))->toEqual('2001:db8:85a3::8a2e:370:7334');
     expect(new IPv6('::1'))->toEqual('::1');
 
-    $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
     new IPv6('192.168.0.1');
-    $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
     new IPv6('127.0.0.1');
-    $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
     new IPv4('2001:db8:85a3::8a2e:370:7334');
-    $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
     new IPv4('::1');
 });
 
-test('hex to ip', function () {
+test('hex to ip', function (): void {
     expect(IP::fromHexString('c0 a8 01 fe'))->toEqual('192.168.1.254');
     expect(IP::fromHexString('c0a801fe'))->toEqual('192.168.1.254');
     expect(IP::fromHexString('c0 a8 01 fe '))->toEqual('192.168.1.254');
@@ -111,21 +111,21 @@ test('hex to ip', function () {
     // stupid ascii encoded
     expect(IP::fromHexString('00000000000000000000000000000000'))->toEqual('::');
 
-    $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
     IP::fromHexString('c0 a8 01 01 fe');
 
-    $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
     IP::fromHexString('20 01 0d b8 00 00 00 00 00 00 00 00 00 02 00 00 00 01');
 });
 
-test('netmask2 cidr', function () {
+test('netmask2 cidr', function (): void {
     expect(IPv4::netmask2cidr('255.255.255.255'))->toBe(32);
     expect(IPv4::netmask2cidr('255.255.255.252'))->toBe(30);
     expect(IPv4::netmask2cidr('255.255.255.192'))->toBe(26);
     expect(IPv4::netmask2cidr('255.255.0.0'))->toBe(16);
 });
 
-test('ip in network', function () {
+test('ip in network', function (): void {
     expect(IP::parse('192.168.1.0')->inNetwork('192.168.1.0/24'))->toBeTrue();
     expect(IP::parse('192.168.1.32')->inNetwork('192.168.1.0/24'))->toBeTrue();
     expect(IP::parse('192.168.1.254')->inNetwork('192.168.1.0/24'))->toBeTrue();
@@ -140,17 +140,17 @@ test('ip in network', function () {
     expect(IP::parse('2001:db8:85a3::8a2e:370:7334')->inNetwork('2001:db8:85a3::8a2e:370:7334/128'))->toBeTrue();
     expect(IP::parse('2001:db8:85a3::8a2e:370:7335')->inNetwork('2001:db8:85a3::8a2e:370:7334/128'))->toBeFalse();
 
-    $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
     IP::parse('42')->inNetwork('192.168.1.0/4');
 
-    $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
     IP::parse('192.168.1.256')->inNetwork('192.168.1.0/24');
 
-    $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
     IP::parse('192.168.1.0')->inNetwork('192.168.1.0');
 });
 
-test('ipv6 compress', function () {
+test('ipv6 compress', function (): void {
     expect(IP::parse('0:0:0:0:0:0:0:1'))->toEqual('::1');
     expect(IP::parse('0:0:0:0:0:0:0:1')->compressed())->toBe('::1');
     expect(IP::parse('0:0:0:0:0:0:0:0')->compressed())->toBe('::');
@@ -161,7 +161,7 @@ test('ipv6 compress', function () {
     expect(IP::parse('::ffff:169.254.12.3')->compressed())->toBe('::ffff:169.254.12.3');
 });
 
-test('ipv6 uncompress', function () {
+test('ipv6 uncompress', function (): void {
     expect(IP::parse('::1')->uncompressed())->toBe('0000:0000:0000:0000:0000:0000:0000:0001');
     expect(IP::parse('::')->uncompressed())->toBe('0000:0000:0000:0000:0000:0000:0000:0000');
     expect(IP::parse('2001:db8:85a3::8a2e:370:7334')->uncompressed())->toBe('2001:0db8:85a3:0000:0000:8a2e:0370:7334');
@@ -171,7 +171,7 @@ test('ipv6 uncompress', function () {
     expect(IP::parse('::ffff:169.254.12.3')->uncompressed())->toBe('0000:0000:0000:0000:0000:ffff:a9fe:0c03');
 });
 
-test('network from ip', function () {
+test('network from ip', function (): void {
     expect(IP::parse('192.168.1.34')->getNetwork(24))->toBe('192.168.1.0/24');
     expect(IP::parse('192.168.1.0/24')->getNetwork())->toBe('192.168.1.0/24');
     expect(IP::parse('192.168.1.255/24')->getNetwork())->toBe('192.168.1.0/24');
@@ -185,7 +185,7 @@ test('network from ip', function () {
     expect(IP::parse('2001:db8:85a3:341a::370:7334/128')->getNetworkAddress())->toBe('2001:db8:85a3:341a::370:7334');
 });
 
-test('to snmp index', function () {
+test('to snmp index', function (): void {
     expect(IP::parse('192.168.1.5')->toSnmpIndex())->toBe('192.168.1.5');
     expect(IP::parse('2001:878:e000:82e2:86a1:0000:0000:0000')->toSnmpIndex())->toBe('32.1.8.120.224.0.130.226.134.161.0.0.0.0.0.0');
     expect(IP::parse('::1')->toSnmpIndex())->toBe('0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1');

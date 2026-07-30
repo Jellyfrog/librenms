@@ -26,9 +26,9 @@
 
 use LibreNMS\Validations\Rrd\CheckRrdVersion;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('rrd version fix', function () {
+test('rrd version fix', function (): void {
     Storage::fake('base');
     Storage::disk('base')->put('config.php', <<<'EOF'
 <?php

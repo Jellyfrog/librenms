@@ -26,9 +26,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('element alarm cleared', function () {
+test('element alarm cleared', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -56,7 +56,7 @@ TRAP,
     );
 });
 
-test('element alarm minor', function () {
+test('element alarm minor', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -84,7 +84,7 @@ TRAP,
     );
 });
 
-test('element alarm major', function () {
+test('element alarm major', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -112,7 +112,7 @@ TRAP,
     );
 });
 
-test('element alarm critical', function () {
+test('element alarm critical', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162

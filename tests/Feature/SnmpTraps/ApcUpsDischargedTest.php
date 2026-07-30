@@ -23,9 +23,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('apc ups discharged', function () {
+test('apc ups discharged', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162

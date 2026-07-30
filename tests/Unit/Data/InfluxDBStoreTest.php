@@ -22,25 +22,25 @@
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-uses(\LibreNMS\Tests\TestCase::class)->group('datastores');
+uses(LibreNMS\Tests\TestCase::class)->group('datastores');
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use InfluxDB\Point;
 use LibreNMS\Data\Store\InfluxDB;
 
-test('bad settings', function () {
+test('bad settings', function (): void {
     LibrenmsConfig::set('influxdb.host', '');
     LibrenmsConfig::set('influxdb.port', 'abc');
     $influx = new InfluxDB(InfluxDB::createFromConfig());
 
-    \Log::shouldReceive('debug');
-    \Log::shouldReceive('error')->once()->with('InfluxDB batch write failed: Unable to parse URI: http://:0');
+    Log::shouldReceive('debug');
+    Log::shouldReceive('error')->once()->with('InfluxDB batch write failed: Unable to parse URI: http://:0');
     $influx->write('fake', ['one' => 1]);
 });
 
-test('simple write', function () {
+test('simple write', function (): void {
     // Create a mock of the Random Interface
-    $mock = \Mockery::mock(\InfluxDB\Database::class);
+    $mock = Mockery::mock(\InfluxDB\Database::class);
     $mock->shouldReceive('exists')->once()->andReturn(true);
     $influx = new InfluxDB($mock);
 
@@ -51,7 +51,7 @@ test('simple write', function () {
     $meta = ['device' => $device];
 
     $mock->shouldReceive('writePoints')
-        ->with(\Mockery::on(function ($points) use ($measurement, $tags, $fields, $device) {
+        ->with(Mockery::on(function ($points) use ($measurement, $tags, $fields, $device) {
             if (! is_array($points) || count($points) !== 1) {
                 return false;
             }
@@ -66,11 +66,11 @@ test('simple write', function () {
     $influx->write($measurement, $fields, $tags, $meta);
 });
 
-test('filtered measurements allowed', function () {
+test('filtered measurements allowed', function (): void {
     LibrenmsConfig::set('influxdb.measurements', ['testmeasure', 'anothermeasure']);
 
     // Create a mock of the Random Interface
-    $mock = \Mockery::mock(\InfluxDB\Database::class);
+    $mock = Mockery::mock(\InfluxDB\Database::class);
     $mock->shouldReceive('exists')->once()->andReturn(true);
     $influx = new InfluxDB($mock);
 
@@ -84,11 +84,11 @@ test('filtered measurements allowed', function () {
     $influx->write($measurement, $fields, $tags, $meta);
 });
 
-test('filtered measurements rejected', function () {
+test('filtered measurements rejected', function (): void {
     LibrenmsConfig::set('influxdb.measurements', ['anothermeasure', 'yetanothermeasure']);
 
     // Create a mock of the Random Interface
-    $mock = \Mockery::mock(\InfluxDB\Database::class);
+    $mock = Mockery::mock(\InfluxDB\Database::class);
     $mock->shouldReceive('exists')->once()->andReturn(true);
     $influx = new InfluxDB($mock);
 

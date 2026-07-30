@@ -23,8 +23,8 @@
  * @copyright  2016 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-uses(\LibreNMS\Tests\TestCase::class);
-test('json alert collection', function () {
+uses(LibreNMS\Tests\TestCase::class);
+test('json alert collection', function (): void {
     $rules = get_rules_from_json();
     expect($rules)->toBeArray();
     foreach ($rules as $rule) {
@@ -32,13 +32,13 @@ test('json alert collection', function () {
     }
 });
 
-test('transports', function () {
+test('transports', function (): void {
     foreach (getTransportFiles() as $file => $_unused) {
         $parts = explode('/', (string) $file);
         $transport = ucfirst(str_replace('.php', '', array_pop($parts)));
         $class = 'LibreNMS\\Alert\\Transport\\' . $transport;
         expect(class_exists($class))->toBeTrue("The transport $transport does not exist");
-        expect(new $class)->toBeInstanceOf(\LibreNMS\Interfaces\Alert\Transport::class);
+        expect(new $class)->toBeInstanceOf(LibreNMS\Interfaces\Alert\Transport::class);
     }
 });
 

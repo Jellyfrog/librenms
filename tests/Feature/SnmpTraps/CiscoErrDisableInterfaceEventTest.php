@@ -28,16 +28,16 @@ use App\Models\Device;
 use App\Models\Port;
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
 // replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
-beforeEach(function () {
+beforeEach(function (): void {
     if (! getenv('DBTEST')) {
         $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
     }
 });
 
-test('err disable interface event', function () {
+test('err disable interface event', function (): void {
     $device = Device::factory()->create();
 
     /** @var Device $device */
@@ -58,7 +58,7 @@ CISCO-ERR-DISABLE-MIB::cErrDisableIfStatusCause.$port->ifIndex.0 bpduGuard",
     );
 });
 
-test('err disable bad if index', function () {
+test('err disable bad if index', function (): void {
     $device = Device::factory()->create();
 
     /** @var Device $device */

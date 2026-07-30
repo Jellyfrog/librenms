@@ -31,9 +31,9 @@ use LibreNMS\Util\Clean;
 use LibreNMS\Util\StringHelpers;
 use LibreNMS\Util\Validate;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('str contains', function () {
+test('str contains', function (): void {
     $data = 'This is a test. Just Testing.';
 
     expect(Str::contains($data, 'Just'))->toBeTrue();
@@ -49,7 +49,7 @@ test('str contains', function () {
     expect(Str::contains($data, ['not', 'anything'], ignoreCase: true))->toBeFalse();
 });
 
-test('starts with', function () {
+test('starts with', function (): void {
     $data = 'This is a test. Just Testing that.';
 
     expect(Str::startsWith($data, 'This'))->toBeTrue();
@@ -59,7 +59,7 @@ test('starts with', function () {
     expect(Str::startsWith($data, ['this', 'Test']))->toBeFalse();
 });
 
-test('ends with', function () {
+test('ends with', function (): void {
     $data = 'This is a test. Just Testing';
 
     expect(Str::endsWith($data, 'Testing'))->toBeTrue();
@@ -69,12 +69,12 @@ test('ends with', function () {
     expect(Str::endsWith($data, ['this', 'Test']))->toBeFalse();
 });
 
-test('rrd descriptions', function () {
+test('rrd descriptions', function (): void {
     $data = 'Toner, S/N:CR_UM-16021314488.';
-    expect(\LibreNMS\Data\Store\Rrd::safeDescr($data))->toEqual('Toner, S/N CR_UM-16021314488.');
+    expect(LibreNMS\Data\Store\Rrd::safeDescr($data))->toEqual('Toner, S/N CR_UM-16021314488.');
 });
 
-test('set null', function () {
+test('set null', function (): void {
     expect(set_null('BAD-DATA'))->toBeNull();
     expect(set_null(0))->toEqual(0);
     expect(set_null(25))->toEqual(25);
@@ -84,7 +84,7 @@ test('set null', function () {
     expect(set_null(2, 0, 2))->toEqual(2);
 });
 
-test('display', function () {
+test('display', function (): void {
     expect(Clean::html('<html>string</html>', []))->toEqual('&lt;html&gt;string&lt;/html&gt;');
     expect(Clean::html('<script>alert("test")</script>', []))->toEqual('&lt;script&gt;alert("test")&lt;/script&gt;');
     expect(Clean::html("Is your name O\'reilly?", []))->toEqual("Is your name O'reilly?");
@@ -102,7 +102,7 @@ test('display', function () {
     expect(Clean::html('<script>alert("test")</script>', $tmp_config))->toEqual('');
 });
 
-test('string to class', function () {
+test('string to class', function (): void {
     expect(StringHelpers::toClass('OS', 'LibreNMS\\OS\\'))->toBe('LibreNMS\OS\Os');
     expect(StringHelpers::toClass('spaces name', null))->toBe('SpacesName');
     expect(StringHelpers::toClass('dash-name', null))->toBe('DashName');
@@ -110,7 +110,7 @@ test('string to class', function () {
     expect(StringHelpers::toClass('all OF-thEm_NaMe', 'LibreNMS\\'))->toBe('LibreNMS\\AllOfThemName');
 });
 
-test('is valid hostname', function () {
+test('is valid hostname', function (): void {
     expect(Validate::hostname('a'))->toBeTrue('a');
     expect(Validate::hostname('a.'))->toBeTrue('a.');
     expect(Validate::hostname('0'))->toBeTrue('0');
@@ -138,7 +138,7 @@ test('is valid hostname', function () {
     expect(Validate::hostname(''))->toBeFalse('Empty string');
 });
 
-test('resolve glues', function () {
+test('resolve glues', function (): void {
     $this->dbSetUp();
 
     expect(ResolveGlues(['dbSchema'], 'device_id'))->toBeFalse();
@@ -161,7 +161,7 @@ test('resolve glues', function () {
     $this->dbTearDown();
 });
 
-test('format hostname', function () {
+test('format hostname', function (): void {
     $device_dns = [
         'hostname' => 'test.librenms.org',
         'sysName' => 'Testing DNS',
@@ -217,7 +217,7 @@ test('format hostname', function () {
     expect(format_hostname($custom_ip))->toEqual('IP: 3.3.3.3');
 });
 
-test('port association', function () {
+test('port association', function (): void {
     $modes = [
         1 => 'ifIndex',
         2 => 'ifName',

@@ -27,14 +27,14 @@
 use Illuminate\Support\Arr;
 use LibreNMS\Util\FileCategorizer;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('empty files', function () {
+test('empty files', function (): void {
     $cat = new FileCategorizer();
     expect($cat->categorize())->toEqual(getCategorySkeleton());
 });
 
-test('ignored files', function () {
+test('ignored files', function (): void {
     assertCategorized([], [
         'docs/Nothing.md',
         'none',
@@ -49,7 +49,7 @@ test('ignored files', function () {
     ]);
 });
 
-test('php files', function () {
+test('php files', function (): void {
     assertCategorized([
         'php' => [
             'includes/polling/sensors.inc.php',
@@ -60,7 +60,7 @@ test('php files', function () {
     ]);
 });
 
-test('docs files', function () {
+test('docs files', function (): void {
     assertCategorized([
         'docs' => [
             'doc/CNAME',
@@ -70,7 +70,7 @@ test('docs files', function () {
     ]);
 });
 
-test('python', function () {
+test('python', function (): void {
     assertCategorized([
         'python' => [
             'python.py',
@@ -79,7 +79,7 @@ test('python', function () {
     ]);
 });
 
-test('bash', function () {
+test('bash', function (): void {
     assertCategorized([
         'bash' => [
             'daily.sh',
@@ -88,7 +88,7 @@ test('bash', function () {
     ]);
 });
 
-test('svg', function () {
+test('svg', function (): void {
     assertCategorized([
         'svg' => [
             'html/images/os/zte.svg',
@@ -98,7 +98,7 @@ test('svg', function () {
     ]);
 });
 
-test('resources', function () {
+test('resources', function (): void {
     assertCategorized([
         'resources' => [
             'resources/js/app.js',
@@ -111,7 +111,7 @@ test('resources', function () {
     ]);
 });
 
-test('os files', function () {
+test('os files', function (): void {
     assertCategorized([
         'os' => ['ftd', '3com', 'adva_fsp150', 'saf-integra-b'],
         'os-files' => [
@@ -169,7 +169,7 @@ test('os files', function () {
     ]);
 });
 
-test('full checks', function () {
+test('full checks', function (): void {
     assertCategorized(['full-checks' => ['composer.lock']]);
     assertCategorized(['full-checks' => ['.github/workflows/test.yml']], ['other', '.github/workflows/test.yml']);
 

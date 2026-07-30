@@ -1,10 +1,10 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class)->group('external-dependencies');
+uses(LibreNMS\Tests\TestCase::class)->group('external-dependencies');
 use App\Facades\LibrenmsConfig;
 use LibreNMS\Data\Store\Kafka;
 
-beforeEach(function () {
+beforeEach(function (): void {
     LibrenmsConfig::set('kafka.enable', true);
     LibrenmsConfig::set('kafka.broker.list', 'localhost:9092');
     LibrenmsConfig::set('kafka.topic', 'librenms');
@@ -15,11 +15,11 @@ beforeEach(function () {
     LibrenmsConfig::set('kafka.request.required.acks', 0);
 });
 
-test('data push to kafka', function () {
-    $producer = \Mockery::mock(Kafka::getClient());
+test('data push to kafka', function (): void {
+    $producer = Mockery::mock(Kafka::getClient());
     $producer->shouldReceive('newTopic')->once();
 
-    /** @var \RdKafka\Producer $producer */
+    /** @var RdKafka\Producer $producer */
     $producer = $producer;
     $kafka = new Kafka($producer);
 
@@ -34,6 +34,6 @@ test('data push to kafka', function () {
     $kafka->write($measurement, $fields, $tags, $metadata);
 });
 
-afterEach(function () {
+afterEach(function (): void {
     LibrenmsConfig::set('kafka.enable', false);
 });

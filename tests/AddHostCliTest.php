@@ -26,13 +26,13 @@
 
 use App\Models\Device;
 
-uses(\LibreNMS\Tests\DBTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->hostName = 'testHost';
 });
 
-test('CLI SNMP v1', function () {
+test('CLI SNMP v1', function (): void {
     $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-c' => 'community', '--v1' => true])
         ->assertExitCode(0)
         ->execute();
@@ -45,7 +45,7 @@ test('CLI SNMP v1', function () {
     expect($device->snmpver)->toEqual('v1', 'Wrong snmp version');
 });
 
-test('CLI SNMP v2', function () {
+test('CLI SNMP v2', function (): void {
     $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-c' => 'community', '--v2c' => true])
         ->assertExitCode(0)
         ->execute();
@@ -58,7 +58,7 @@ test('CLI SNMP v2', function () {
     expect($device->snmpver)->toEqual('v2c', 'Wrong snmp version');
 });
 
-test('CLI SNMP v3 user and password', function () {
+test('CLI SNMP v3 user and password', function (): void {
     $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-u' => 'SecName', '-A' => 'AuthPW', '-X' => 'PrivPW', '--v3' => true])
     ->assertExitCode(0)
     ->execute();
@@ -74,7 +74,7 @@ test('CLI SNMP v3 user and password', function () {
     expect($device->snmpver)->toEqual('v3', 'Wrong snmp version');
 });
 
-test('port association mode', function () {
+test('port association mode', function (): void {
     $modes = ['ifIndex', 'ifName', 'ifDescr', 'ifAlias'];
     foreach ($modes as $index => $mode) {
         $host = 'hostName' . $mode;
@@ -88,7 +88,7 @@ test('port association mode', function () {
     }
 });
 
-test('SNMP transport', function () {
+test('SNMP transport', function (): void {
     $modes = ['udp', 'udp6', 'tcp', 'tcp6'];
     foreach ($modes as $mode) {
         $host = 'hostName' . $mode;
@@ -103,8 +103,8 @@ test('SNMP transport', function () {
     }
 });
 
-test('SNMP v3 auth protocol', function () {
-    $modes = \LibreNMS\SNMPCapabilities::supportedAuthAlgorithms();
+test('SNMP v3 auth protocol', function (): void {
+    $modes = LibreNMS\SNMPCapabilities::supportedAuthAlgorithms();
     foreach ($modes as $mode) {
         $host = 'hostName' . $mode;
         $this->artisan('device:add', ['device spec' => $host, '--force' => true, '-a' => $mode, '--v3' => true])
@@ -118,8 +118,8 @@ test('SNMP v3 auth protocol', function () {
     }
 });
 
-test('SNMP v3 privacy protocol', function () {
-    $modes = \LibreNMS\SNMPCapabilities::supportedCryptoAlgorithms();
+test('SNMP v3 privacy protocol', function (): void {
+    $modes = LibreNMS\SNMPCapabilities::supportedCryptoAlgorithms();
     foreach ($modes as $mode) {
         $host = 'hostName' . $mode;
         $this->artisan('device:add', ['device spec' => $host, '--force' => true, '-x' => $mode, '--v3' => true])
@@ -133,7 +133,7 @@ test('SNMP v3 privacy protocol', function () {
     }
 });
 
-test('CLI ping', function () {
+test('CLI ping', function (): void {
     $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-P' => true, '-o' => 'nameOfOS', '-w' => 'hardware', '-s' => 'System', '--v1' => true])
         ->assertExitCode(0)
         ->execute();
@@ -147,7 +147,7 @@ test('CLI ping', function () {
     expect($device->sysName)->toEqual('system', 'Wrong system name');
 });
 
-test('existing device', function () {
+test('existing device', function (): void {
     $this->artisan('device:add', ['device spec' => 'existing', '--force' => true])
         ->assertExitCode(0)
         ->execute();

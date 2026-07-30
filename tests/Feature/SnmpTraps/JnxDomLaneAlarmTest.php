@@ -30,16 +30,16 @@ use App\Models\Device;
 use App\Models\Port;
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
 // replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
-beforeEach(function () {
+beforeEach(function (): void {
     if (! getenv('DBTEST')) {
         $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
     }
 });
 
-test('jnx dom lane alarm set trap', function () {
+test('jnx dom lane alarm set trap', function (): void {
     $device = Device::factory()->create();
 
     /** @var Device $device */
@@ -49,7 +49,7 @@ test('jnx dom lane alarm set trap', function () {
     $device->ports()->save($port);
 
     $warning = "Snmptrap JnxDomLaneAlarmSet: Could not find port at ifIndex $port->ifIndex for device: $device->hostname";
-    \Log::shouldReceive('warning')->never()->with($warning);
+    Log::shouldReceive('warning')->never()->with($warning);
 
     $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:64610->[192.168.5.5]:162
@@ -68,7 +68,7 @@ SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameMX96
     );
 });
 
-test('jnx dom lane alarm cleared trap', function () {
+test('jnx dom lane alarm cleared trap', function (): void {
     $device = Device::factory()->create();
 
     /** @var Device $device */
@@ -78,7 +78,7 @@ test('jnx dom lane alarm cleared trap', function () {
     $device->ports()->save($port);
 
     $warning = "Snmptrap JnxDomLaneAlarmCleared: Could not find port at ifIndex $port->ifIndex for device: $device->hostname";
-    \Log::shouldReceive('warning')->never()->with($warning);
+    Log::shouldReceive('warning')->never()->with($warning);
 
     $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:64610->[192.168.5.5]:162

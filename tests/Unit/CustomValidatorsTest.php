@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
 function assertRulePasses($value, string $rule): void
 {
@@ -22,7 +22,7 @@ function assertRuleFails($value, string $rule): void
     expect($validator->errors()->toArray())->toHaveKey('field');
 }
 
-test('alpha space validation', function () {
+test('alpha space validation', function (): void {
     assertRulePasses('Alpha 123_', 'alpha_space');
     assertRulePasses(' spaced words ', 'alpha_space');
     assertRulePasses('umlaut ok', 'alpha_space');
@@ -32,7 +32,7 @@ test('alpha space validation', function () {
     assertRuleFails('punctuation!', 'alpha_space');
 });
 
-test('ip or hostname validation', function () {
+test('ip or hostname validation', function (): void {
     assertRulePasses('192.168.1.1', 'ip_or_hostname');
     assertRulePasses('192.168.1.1/24', 'ip_or_hostname');
     assertRulePasses('2001:db8::1', 'ip_or_hostname');
@@ -44,7 +44,7 @@ test('ip or hostname validation', function () {
     assertRuleFails('example.com/24', 'ip_or_hostname');
 });
 
-test('is regex validation', function () {
+test('is regex validation', function (): void {
     assertRulePasses('/[a-z]+/', 'is_regex');
     assertRulePasses('/^[a-z0-9_-]+$/i', 'is_regex');
     assertRulePasses('~^\\w+\\s+\\d+$~', 'is_regex');
@@ -56,7 +56,7 @@ test('is regex validation', function () {
     assertRuleFails('/[a-z]+/z', 'is_regex');
 });
 
-test('zero or exists validation', function () {
+test('zero or exists validation', function (): void {
     // use simple in-memory db, full db testing is much slower (20s or more)
     $original_connection = config('database.default');
     config([
@@ -90,7 +90,7 @@ test('zero or exists validation', function () {
     }
 });
 
-test('url or xml validation', function () {
+test('url or xml validation', function (): void {
     assertRulePasses('https://example.com/path?x=1', 'url_or_xml');
     assertRulePasses('<root><child/></root>', 'url_or_xml');
 
@@ -99,7 +99,7 @@ test('url or xml validation', function () {
     assertRuleFails(123, 'url_or_xml');
 });
 
-test('array keys not empty validation', function () {
+test('array keys not empty validation', function (): void {
     assertRulePasses(['foo' => 'bar'], 'array_keys_not_empty');
     assertRulePasses(['0' => 'bar', 1 => 'baz'], 'array_keys_not_empty');
 
@@ -108,7 +108,7 @@ test('array keys not empty validation', function () {
     assertRuleFails('not-an-array', 'array_keys_not_empty');
 });
 
-test('date or relative validation', function () {
+test('date or relative validation', function (): void {
     assertRulePasses('123456789', 'date_or_relative');
     assertRulePasses('1699999999', 'date_or_relative');
     assertRulePasses('1234567890123', 'date_or_relative');

@@ -26,14 +26,14 @@
 
 use Symfony\Component\Yaml\Yaml;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->hidden_pages = [
     ];
 });
 
-test('doc exist', function () {
+test('doc exist', function (): void {
     $mkdocs = Yaml::parse(file_get_contents(__DIR__ . '/../mkdocs.yml'));
     $dir = __DIR__ . '/../doc/';
 

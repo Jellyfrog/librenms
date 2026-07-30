@@ -23,8 +23,8 @@
  * @copyright  2019 Heath Barnhart
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
-test('user deletion', function () {
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+test('user deletion', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -40,7 +40,7 @@ TRAP,
     );
 });
 
-test('flow deletion', function () {
+test('flow deletion', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -56,7 +56,7 @@ TRAP,
     );
 });
 
-test('lag port deletion', function () {
+test('lag port deletion', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -72,7 +72,7 @@ TRAP,
     );
 });
 
-test('lag deletion', function () {
+test('lag deletion', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162

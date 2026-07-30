@@ -23,7 +23,7 @@
  * @copyright  2025 Peter Childs
  * @author     Peter Childs <pjchilds@gmail.com>
  */
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Models\User;
 use Laravel\Socialite\AbstractUser;
@@ -41,23 +41,23 @@ use Laravel\Socialite\AbstractUser;
 function runSetRolesFromClaimTest(string $provider, array $rawAttributes, array $expectedRoles, array $claimMap, array $scopes = ['groups']): bool
 {
     // Inject scopes & claims.
-    \App\Facades\LibrenmsConfig::set('auth.socialite.scopes', $scopes);
-    \App\Facades\LibrenmsConfig::set('auth.socialite.claims', $claimMap);
-    \App\Facades\LibrenmsConfig::set('auth.socialite.debug', false);
+    App\Facades\LibrenmsConfig::set('auth.socialite.scopes', $scopes);
+    App\Facades\LibrenmsConfig::set('auth.socialite.claims', $claimMap);
+    App\Facades\LibrenmsConfig::set('auth.socialite.debug', false);
 
     // Stub the Socialite user.
-    $socialiteUserStub = \Mockery::mock(AbstractUser::class);
+    $socialiteUserStub = Mockery::mock(AbstractUser::class);
     $socialiteUserStub->allows('getRaw')->andReturns($rawAttributes);
 
     // Make the SocialiteController private bits accessable via reflection.
     $controller = new SocialiteController();
-    $reflectionClass = new \ReflectionClass($controller);
+    $reflectionClass = new ReflectionClass($controller);
     $prop = $reflectionClass->getProperty('socialite_user');
     $prop->setValue($controller, $socialiteUserStub);
 
     // Stub the User model and assert syncRoles().
     // we expect syncRoles is called once with our expected roles.
-    $userMock = \Mockery::mock(User::class)->makePartial();
+    $userMock = Mockery::mock(User::class)->makePartial();
     $userMock->shouldReceive('syncRoles')
         ->once()
         ->with($expectedRoles);
@@ -68,7 +68,7 @@ function runSetRolesFromClaimTest(string $provider, array $rawAttributes, array 
     return $method->invokeArgs($controller, [$provider, $userMock]);
 }
 
-test('set roles from claim okta admin', function () {
+test('set roles from claim okta admin', function (): void {
     // Test with a 'groups' value that should result in a role of ['admin'].
     $rawAttributes = [
         'sub' => '00REDACTED',
@@ -91,7 +91,7 @@ test('set roles from claim okta admin', function () {
     expect($result)->toBeTrue();
 });
 
-test('set roles from claim okta global read', function () {
+test('set roles from claim okta global read', function (): void {
     // Test with a 'groups' value that should result in a role of ['global-read'].
     $rawAttributes = [
         'sub' => '00REDACTED',
@@ -114,10 +114,9 @@ test('set roles from claim okta global read', function () {
     expect($result)->toBeTrue();
 });
 
-test('set roles from claim saml2 admin', function () {
+test('set roles from claim saml2 admin', function (): void {
     // we don't import LightSaml\Model\Assertion\Attribute for testing
-    $attr = new class
-    {
+    $attr = new class {
         public function getName(): string
         {
             return 'http://schemas.microsoft.com/ws/2008/06/identity/claims/groups';
@@ -136,10 +135,9 @@ test('set roles from claim saml2 admin', function () {
     expect($result)->toBeTrue();
 });
 
-test('set roles from claim saml2 global read', function () {
+test('set roles from claim saml2 global read', function (): void {
     // we don't import LightSaml\Model\Assertion\Attribute for testing
-    $attr = new class
-    {
+    $attr = new class {
         public function getName(): string
         {
             return 'http://schemas.microsoft.com/ws/2008/06/identity/claims/groups';

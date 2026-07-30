@@ -25,9 +25,9 @@
  * @copyright  2019 KanREN, Inc
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('config change trap', function () {
+test('config change trap', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:64610->[192.168.5.5]:162
@@ -44,7 +44,7 @@ TRAP,
     );
 });
 
-test('config rollback trap', function () {
+test('config rollback trap', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:64610->[192.168.5.5]:162

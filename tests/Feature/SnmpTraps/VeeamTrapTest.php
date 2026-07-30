@@ -2,9 +2,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('veeam backup job completed', function () {
+test('veeam backup job completed', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:46024->[1.1.1.1]:162
@@ -22,7 +22,7 @@ TRAP,
     );
 });
 
-test('veeam backup job completed warning', function () {
+test('veeam backup job completed warning', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:46024->[1.1.1.1]:162
@@ -40,7 +40,7 @@ TRAP,
     );
 });
 
-test('veeam backup job completed failed', function () {
+test('veeam backup job completed failed', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:46024->[1.1.1.1]:162
@@ -58,7 +58,7 @@ TRAP,
     );
 });
 
-test('veeam vm backup completed', function () {
+test('veeam vm backup completed', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:46024->[1.1.1.1]:162
@@ -76,7 +76,7 @@ TRAP,
     );
 });
 
-test('veeam vm backup completed warning', function () {
+test('veeam vm backup completed warning', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:46024->[1.1.1.1]:162
@@ -94,7 +94,7 @@ TRAP,
     );
 });
 
-test('veeam vm backup completed failed', function () {
+test('veeam vm backup completed failed', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:46024->[1.1.1.1]:162

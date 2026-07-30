@@ -29,9 +29,9 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use LibreNMS\Authentication\LegacyAuth;
 
-uses(\LibreNMS\Tests\DBTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->original_auth_mech = LibrenmsConfig::get('auth_mechanism');
     LibrenmsConfig::set('auth_mechanism', 'sso');
 
@@ -94,7 +94,7 @@ function makeUser()
     return $user;
 }
 
-test('valid auth no create update', function () {
+test('valid auth no create update', function (): void {
     basicConfig();
     $a = LegacyAuth::reset();
 
@@ -110,10 +110,10 @@ test('valid auth no create update', function () {
     expect(User::thisAuth()->where('username', $user)->exists())->toBeFalse();
 });
 
-test('valid auth create only', function () {
+test('valid auth create only', function (): void {
     basicConfig();
 
-    /** @var \LibreNMS\Authentication\SSOAuthorizer */
+    /** @var LibreNMS\Authentication\SSOAuthorizer */
     $a = LegacyAuth::reset();
 
     LibrenmsConfig::set('sso.create_users', true);
@@ -143,10 +143,10 @@ test('valid auth create only', function () {
     expect($a->authSSOGetAttr(LibrenmsConfig::get('sso.email_attr')) === $dbuser->email)->toBeFalse();
 });
 
-test('valid auth update', function () {
+test('valid auth update', function (): void {
     basicConfig();
 
-    /** @var \LibreNMS\Authentication\SSOAuthorizer */
+    /** @var LibreNMS\Authentication\SSOAuthorizer */
     $a = LegacyAuth::reset();
 
     // Create a random username and store it with the defaults
@@ -167,26 +167,26 @@ test('valid auth update', function () {
     expect($a->authSSOGetAttr(LibrenmsConfig::get('sso.email_attr')))->toBe($dbuser->email);
 });
 
-test('bad auth', function () {
+test('bad auth', function (): void {
     basicConfig();
 
-    /** @var \LibreNMS\Authentication\SSOAuthorizer */
+    /** @var LibreNMS\Authentication\SSOAuthorizer */
     $a = LegacyAuth::reset();
 
     basicEnvironmentEnv();
     unset($_SERVER);
 
-    $this->expectException(\LibreNMS\Exceptions\AuthenticationException::class);
+    $this->expectException(LibreNMS\Exceptions\AuthenticationException::class);
     $a->authenticate([]);
 
     basicEnvironmentHeader();
     unset($_SERVER);
 
-    $this->expectException(\LibreNMS\Exceptions\AuthenticationException::class);
+    $this->expectException(LibreNMS\Exceptions\AuthenticationException::class);
     $a->authenticate([]);
 });
 
-test('no attribute', function () {
+test('no attribute', function (): void {
     basicConfig();
     LegacyAuth::reset();
 
@@ -203,7 +203,7 @@ test('no attribute', function () {
     expect(auth()->attempt(['username' => makeUser()]))->toBeTrue();
 });
 
-test('capability functions', function () {
+test('capability functions', function (): void {
     $a = LegacyAuth::reset();
 
     expect($a->canUpdatePasswords())->toBeFalse();
@@ -212,10 +212,10 @@ test('capability functions', function () {
     expect($a->authIsExternal())->toBeTrue();
 });
 
-test('get external user name', function () {
+test('get external user name', function (): void {
     basicConfig();
 
-    /** @var \LibreNMS\Authentication\SSOAuthorizer */
+    /** @var LibreNMS\Authentication\SSOAuthorizer */
     $a = LegacyAuth::reset();
 
     basicEnvironmentEnv();
@@ -247,8 +247,8 @@ test('get external user name', function () {
     expect($a->getExternalUsername())->toBeNull();
 });
 
-test('get attr', function () {
-    /** @var \LibreNMS\Authentication\SSOAuthorizer */
+test('get attr', function (): void {
+    /** @var LibreNMS\Authentication\SSOAuthorizer */
     $a = LegacyAuth::reset();
 
     $_SERVER['HTTP_VALID_ATTR'] = 'string';
@@ -269,8 +269,8 @@ test('get attr', function () {
     expect($a->authSSOGetAttr('VALID-ATTR'))->toBeString();
 });
 
-test('trusted proxies', function () {
-    /** @var \LibreNMS\Authentication\SSOAuthorizer */
+test('trusted proxies', function (): void {
+    /** @var LibreNMS\Authentication\SSOAuthorizer */
     $a = LegacyAuth::reset();
 
     LibrenmsConfig::set('sso.trusted_proxies', ['127.0.0.1', '::1', '2001:630:50::/48', '8.8.8.0/25']);
@@ -321,8 +321,8 @@ test('trusted proxies', function () {
     expect($a->authSSOProxyTrusted())->toBeFalse();
 });
 
-test('level caulculation from attr', function () {
-    /** @var \LibreNMS\Authentication\SSOAuthorizer $a */
+test('level caulculation from attr', function (): void {
+    /** @var LibreNMS\Authentication\SSOAuthorizer $a */
     $a = LegacyAuth::reset();
 
     LibrenmsConfig::set('sso.mode', 'env');
@@ -346,32 +346,32 @@ test('level caulculation from attr', function () {
     //Invalid String
     LibrenmsConfig::set('sso.level_attr', 'level');
     $_SERVER['level'] = 'foobar';
-    $this->expectException(\LibreNMS\Exceptions\AuthenticationException::class);
+    $this->expectException(LibreNMS\Exceptions\AuthenticationException::class);
     $a->getRoles('');
 
     //null
     LibrenmsConfig::set('sso.level_attr', 'level');
     $_SERVER['level'] = null;
-    $this->expectException(\LibreNMS\Exceptions\AuthenticationException::class);
+    $this->expectException(LibreNMS\Exceptions\AuthenticationException::class);
     $a->getRoles('');
 
     //Unset pointer
     LibrenmsConfig::forget('sso.level_attr');
     $_SERVER['level'] = '9';
-    $this->expectException(\LibreNMS\Exceptions\AuthenticationException::class);
+    $this->expectException(LibreNMS\Exceptions\AuthenticationException::class);
     $a->getRoles('');
 
     //Unset attr
     LibrenmsConfig::set('sso.level_attr', 'level');
     unset($_SERVER['level']);
-    $this->expectException(\LibreNMS\Exceptions\AuthenticationException::class);
+    $this->expectException(LibreNMS\Exceptions\AuthenticationException::class);
     $a->getRoles('');
 });
 
-test('group parsing', function () {
+test('group parsing', function (): void {
     basicConfig();
 
-    /** @var \LibreNMS\Authentication\SSOAuthorizer */
+    /** @var LibreNMS\Authentication\SSOAuthorizer */
     $a = LegacyAuth::reset();
 
     basicEnvironmentEnv();
@@ -448,7 +448,7 @@ test('group parsing', function () {
     expect($a->authSSOParseGroups())->toBe(10);
 });
 
-afterEach(function () {
+afterEach(function (): void {
     LibrenmsConfig::set('auth_mechanism', $this->original_auth_mech);
     LibrenmsConfig::forget('sso');
     $_SERVER = $this->server;

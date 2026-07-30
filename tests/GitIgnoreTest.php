@@ -23,9 +23,9 @@
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->gitIgnoreFiles = [
         '.gitignore',
         'bootstrap/cache/.gitignore',
@@ -44,19 +44,19 @@ beforeEach(function () {
     ];
 });
 
-test('git ignores exist', function () {
+test('git ignores exist', function (): void {
     foreach ($this->gitIgnoreFiles as $file) {
         expect($file)->toBeFile();
     }
 });
 
-test('git ignores mode', function () {
+test('git ignores mode', function (): void {
     foreach ($this->gitIgnoreFiles as $file) {
         expect(is_executable($file))->toBeFalse("$file should not be executable");
     }
 });
 
-test('git ignores not empty', function () {
+test('git ignores not empty', function (): void {
     foreach ($this->gitIgnoreFiles as $file) {
         expect(filesize($file))->toBeGreaterThan(4, "$file is empty, it should not be");
     }

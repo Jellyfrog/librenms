@@ -26,9 +26,9 @@
 
 use LibreNMS\Util\StringHelpers;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('infer encoding', function () {
+test('infer encoding', function (): void {
     expect(StringHelpers::inferEncoding(null))->toEqual(null);
     expect(StringHelpers::inferEncoding(''))->toEqual('');
     expect(StringHelpers::inferEncoding('~null'))->toEqual('~null');
@@ -42,7 +42,7 @@ test('infer encoding', function () {
     expect(StringHelpers::inferEncoding(base64_decode('g1KDk4NUgVuDZw==')))->toEqual('コンサート');
 });
 
-test('is stringable', function () {
+test('is stringable', function (): void {
     expect(StringHelpers::isStringable(null))->toBeTrue();
     expect(StringHelpers::isStringable(''))->toBeTrue();
     expect(StringHelpers::isStringable('string'))->toBeTrue();
@@ -53,8 +53,7 @@ test('is stringable', function () {
     expect(StringHelpers::isStringable([]))->toBeFalse();
     expect(StringHelpers::isStringable((object) []))->toBeFalse();
 
-    $stringable = new class
-    {
+    $stringable = new class {
         public function __toString()
         {
             return '';
@@ -67,7 +66,7 @@ test('is stringable', function () {
     expect(StringHelpers::isStringable($nonstringable))->toBeFalse();
 });
 
-test('is hex string', function () {
+test('is hex string', function (): void {
     expect(StringHelpers::isHex('af'))->toBeTrue();
     expect(StringHelpers::isHex('28'))->toBeTrue();
     expect(StringHelpers::isHex('aF28'))->toBeTrue();
@@ -77,7 +76,7 @@ test('is hex string', function () {
     expect(StringHelpers::isHex('aG'))->toBeFalse();
 });
 
-test('is hex with delimiters', function () {
+test('is hex with delimiters', function (): void {
     expect(StringHelpers::isHex('af 28 02', ' '))->toBeTrue();
     expect(StringHelpers::isHex('aF 28 02 CE', ' '))->toBeTrue();
     expect(StringHelpers::isHex('a5 fj 53', ' '))->toBeFalse();

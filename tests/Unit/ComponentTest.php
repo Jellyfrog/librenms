@@ -29,26 +29,26 @@ use App\Models\ComponentStatusLog;
 use Illuminate\Support\Str;
 use LibreNMS\Component;
 
-uses(\LibreNMS\Tests\DBTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-test('delete component', function () {
-    $target = \App\Models\Component::factory()->create();
-    /** @var \App\Models\Component $target */
-    expect(\App\Models\Component::where('id', $target->id)->exists())->toBeTrue('Failed to create component, this shouldn\'t happen');
+test('delete component', function (): void {
+    $target = App\Models\Component::factory()->create();
+    /** @var App\Models\Component $target */
+    expect(App\Models\Component::where('id', $target->id)->exists())->toBeTrue('Failed to create component, this shouldn\'t happen');
 
     $component = new Component();
     $component->deleteComponent($target->id);
 
-    expect(\App\Models\Component::where('id', $target->id)->exists())->toBeFalse('deleteComponent failed to delete the component.');
+    expect(App\Models\Component::where('id', $target->id)->exists())->toBeFalse('deleteComponent failed to delete the component.');
 });
 
-test('get components empty', function () {
+test('get components empty', function (): void {
     expect((new Component())->getComponents(43))->toEqual([]);
 });
 
-test('get components options type', function () {
-    $target = \App\Models\Component::factory()->create();
-    /** @var \App\Models\Component $target */
+test('get components options type', function (): void {
+    $target = App\Models\Component::factory()->create();
+    /** @var App\Models\Component $target */
     $component = new Component();
 
     $actual = $component->getComponents($target->device_id, ['type' => $target->type]);
@@ -58,10 +58,10 @@ test('get components options type', function () {
     expect($actual)->toEqual(buildExpected($target));
 });
 
-test('get components options filter not ignore', function () {
-    \App\Models\Component::factory()->create(['device_id' => 1, 'ignore' => 1]);
-    $target = \App\Models\Component::factory()->times(2)->create(['device_id' => 1, 'ignore' => 0]);
-    /** @var \Illuminate\Support\Collection $target */
+test('get components options filter not ignore', function (): void {
+    App\Models\Component::factory()->create(['device_id' => 1, 'ignore' => 1]);
+    $target = App\Models\Component::factory()->times(2)->create(['device_id' => 1, 'ignore' => 0]);
+    /** @var Illuminate\Support\Collection $target */
     $component = new Component();
 
     $actual = $component->getComponents(1, ['filter' => ['ignore' => ['=', 0]]]);
@@ -69,12 +69,12 @@ test('get components options filter not ignore', function () {
     expect($actual)->toEqual(buildExpected($target));
 });
 
-test('get components options complex', function () {
-    \App\Models\Component::factory()->create(['label' => 'Search Phrase']);
-    \App\Models\Component::factory()->times(2)->create(['label' => 'Something Else']);
-    $target = \App\Models\Component::factory()->times(2)->create(['label' => 'Search Phrase']);
-    /** @var \Illuminate\Support\Collection $target */
-    \App\Models\Component::factory()->create(['label' => 'Search Phrase']);
+test('get components options complex', function (): void {
+    App\Models\Component::factory()->create(['label' => 'Search Phrase']);
+    App\Models\Component::factory()->times(2)->create(['label' => 'Something Else']);
+    $target = App\Models\Component::factory()->times(2)->create(['label' => 'Search Phrase']);
+    /** @var Illuminate\Support\Collection $target */
+    App\Models\Component::factory()->create(['label' => 'Search Phrase']);
     $component = new Component();
 
     $options = [
@@ -87,7 +87,7 @@ test('get components options complex', function () {
     expect($actual)->toEqual(buildExpected($target->reverse()->values()));
 });
 
-test('get first component id', function () {
+test('get first component id', function (): void {
     $input = [
         1 => [37 => [], 14 => []],
         2 => [19 => []],
@@ -97,10 +97,10 @@ test('get first component id', function () {
     expect($component->getFirstComponentID($input[1]))->toEqual(37);
 });
 
-test('get component count', function () {
-    \App\Models\Component::factory()->times(2)->create(['device_id' => 1, 'type' => 'three']);
-    \App\Models\Component::factory()->create(['device_id' => 2, 'type' => 'three']);
-    \App\Models\Component::factory()->create(['device_id' => 2, 'type' => 'one']);
+test('get component count', function (): void {
+    App\Models\Component::factory()->times(2)->create(['device_id' => 1, 'type' => 'three']);
+    App\Models\Component::factory()->create(['device_id' => 2, 'type' => 'three']);
+    App\Models\Component::factory()->create(['device_id' => 2, 'type' => 'one']);
 
     $component = new Component();
     expect($component->getComponentCount())->toEqual(['three' => 3, 'one' => 1]);
@@ -108,43 +108,43 @@ test('get component count', function () {
     expect($component->getComponentCount(2))->toEqual(['three' => 1, 'one' => 1]);
 });
 
-test('set component prefs', function () {
+test('set component prefs', function (): void {
     // Nightmare function, no where near exhaustive
-    $base = \App\Models\Component::factory()->create();
-    /** @var \App\Models\Component $base */
+    $base = App\Models\Component::factory()->create();
+    /** @var App\Models\Component $base */
     $component = new Component();
 
-    \Log::shouldReceive('event')->withArgs(["Component: $base->type($base->id). Attribute: null_val, was added with value: ", $base->device_id, 'component', 3, $base->id]);
+    Log::shouldReceive('event')->withArgs(["Component: $base->type($base->id). Attribute: null_val, was added with value: ", $base->device_id, 'component', 3, $base->id]);
     $nullVal = buildExpected($base)[$base->device_id];
     $nullVal[$base->id]['null_val'] = null;
     $component->setComponentPrefs($base->device_id, $nullVal);
     expect(ComponentPref::where(['component' => $base->id, 'attribute' => 'null_val'])->first()->value)->toEqual('');
 
-    \Log::shouldReceive('event')->withArgs(["Component $base->id has been modified: label => new label", $base->device_id, 'component', 3, $base->id]);
-    \Log::shouldReceive('event')->withArgs(["Component: $base->type($base->id). Attribute: thirty, was added with value: 30", $base->device_id, 'component', 3, $base->id]);
-    \Log::shouldReceive('event')->withArgs(["Component: $base->type($base->id). Attribute: json, was added with value: {\"json\":\"array\"}", $base->device_id, 'component', 3, $base->id]);
-    \Log::shouldReceive('event')->withArgs(["Component: $base->type($base->id). Attribute: null_val, was deleted.", $base->device_id, 'component', 4]);
+    Log::shouldReceive('event')->withArgs(["Component $base->id has been modified: label => new label", $base->device_id, 'component', 3, $base->id]);
+    Log::shouldReceive('event')->withArgs(["Component: $base->type($base->id). Attribute: thirty, was added with value: 30", $base->device_id, 'component', 3, $base->id]);
+    Log::shouldReceive('event')->withArgs(["Component: $base->type($base->id). Attribute: json, was added with value: {\"json\":\"array\"}", $base->device_id, 'component', 3, $base->id]);
+    Log::shouldReceive('event')->withArgs(["Component: $base->type($base->id). Attribute: null_val, was deleted.", $base->device_id, 'component', 4]);
     $multiple = buildExpected($base)[$base->device_id];
     $multiple[$base->id]['label'] = 'new label';
     $multiple[$base->id]['thirty'] = 30;
     $multiple[$base->id]['json'] = json_encode(['json' => 'array']);
     $component->setComponentPrefs($base->device_id, $multiple);
 
-    \Log::shouldReceive('event')->withArgs(["Component $base->id has been modified: label => ", $base->device_id, 'component', 3, $base->id]);
-    \Log::shouldReceive('event')->withArgs(["Component: $base->type($base->id). Attribute: thirty, was deleted.", $base->device_id, 'component', 4]);
-    \Log::shouldReceive('event')->withArgs(["Component: $base->type($base->id). Attribute: json, was deleted.", $base->device_id, 'component', 4]);
-    $uc = \App\Models\Component::find($base->id);
+    Log::shouldReceive('event')->withArgs(["Component $base->id has been modified: label => ", $base->device_id, 'component', 3, $base->id]);
+    Log::shouldReceive('event')->withArgs(["Component: $base->type($base->id). Attribute: thirty, was deleted.", $base->device_id, 'component', 4]);
+    Log::shouldReceive('event')->withArgs(["Component: $base->type($base->id). Attribute: json, was deleted.", $base->device_id, 'component', 4]);
+    $uc = App\Models\Component::find($base->id);
     expect($uc->label)->toEqual('new label');
     expect($uc->prefs->where('attribute', 'thirty')->first()->value)->toEqual(30);
     expect($uc->prefs->where('attribute', 'json')->first()->value)->toEqual($multiple[$base->id]['json']);
 
-    \Log::shouldReceive('event')->times(0);
+    Log::shouldReceive('event')->times(0);
     $remove = buildExpected($base)[$base->device_id];
     $component->setComponentPrefs($base->device_id, $remove);
     expect(ComponentPref::where('component', $base->id)->exists())->toBeFalse();
 });
 
-test('create component', function () {
+test('create component', function (): void {
     $device_id = random_int(1, 32);
     $type = Str::random(9);
     $component = (new Component())->createComponent($device_id, $type);
@@ -156,7 +156,7 @@ test('create component', function () {
 
     expect($component)->toEqual([$component_id => $expected]);
 
-    $fromDb = \App\Models\Component::find($component_id);
+    $fromDb = App\Models\Component::find($component_id);
     expect($fromDb->device_id)->toEqual($device_id);
     expect($fromDb->type)->toEqual($type);
 
@@ -165,15 +165,15 @@ test('create component', function () {
     expect('Component Created')->toEqual($log->message);
 });
 
-test('get component status log', function () {
+test('get component status log', function (): void {
     // invalid id fails
     $component = new Component();
 
     expect($component->createStatusLogEntry(434242, 0, 'failed'))->toEqual(0, 'incorrectly added log');
 
     $message = Str::random(8);
-    $model = \App\Models\Component::factory()->create();
-    /** @var \App\Models\Component $model */
+    $model = App\Models\Component::factory()->create();
+    /** @var App\Models\Component $model */
     $log_id = $component->createStatusLogEntry($model->id, 1, $message);
     $this->assertNotEquals(0, $log_id, ' failed to create log');
 
@@ -184,7 +184,7 @@ test('get component status log', function () {
 
 function buildExpected($target)
 {
-    $collection = $target instanceof \App\Models\Component ? collect([$target]) : $target;
+    $collection = $target instanceof App\Models\Component ? collect([$target]) : $target;
 
     return $collection->groupBy('device_id')->map(fn ($group) => $group->keyBy('id')->map(function ($model) {
         $base = ['type' => null, 'label' => null, 'status' => 0, 'ignore' => 0, 'disabled' => 0, 'error' => null];

@@ -27,24 +27,24 @@ use App\Models\Device;
 use App\Models\Sensor;
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
 // replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
-beforeEach(function () {
+beforeEach(function (): void {
     if (! getenv('DBTEST')) {
         $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
     }
 });
 
-test('on battery', function () {
+test('on battery', function (): void {
     $device = Device::factory()->create();
     $state = Sensor::factory()->for($device)->create(['sensor_class' => 'state', 'sensor_type' => 'upsOutputSourceState', 'sensor_current' => '2']);
     $time = Sensor::factory()->for($device)->create(['sensor_class' => 'runtime', 'sensor_index' => '100', 'sensor_type' => 'rfc1628', 'sensor_current' => '0']);
     $remaining = Sensor::factory()->for($device)->create(['sensor_class' => 'runtime', 'sensor_index' => '200', 'sensor_type' => 'rfc1628', 'sensor_current' => '371']);
 
-    \Log::shouldReceive('warning')->never()->with("Snmptrap upsTrapOnBattery: Could not find matching sensor \'Estimated battery time remaining\' for device: " . $device->hostname);
-    \Log::shouldReceive('warning')->never()->with("Snmptrap upsTrapOnBattery: Could not find matching sensor \'Time on battery\' for device: " . $device->hostname);
-    \Log::shouldReceive('warning')->never()->with("Snmptrap upsTrapOnBattery: Could not find matching sensor \'upsOutputSourceState\' for device: " . $device->hostname);
+    Log::shouldReceive('warning')->never()->with("Snmptrap upsTrapOnBattery: Could not find matching sensor \'Estimated battery time remaining\' for device: " . $device->hostname);
+    Log::shouldReceive('warning')->never()->with("Snmptrap upsTrapOnBattery: Could not find matching sensor \'Time on battery\' for device: " . $device->hostname);
+    Log::shouldReceive('warning')->never()->with("Snmptrap upsTrapOnBattery: Could not find matching sensor \'upsOutputSourceState\' for device: " . $device->hostname);
 
     $this->assertTrapLogsMessage("$device->hostname
 UDP: [$device->ip]:161->[192.168.5.5]:162

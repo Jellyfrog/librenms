@@ -30,16 +30,16 @@ use App\Models\Device;
 use LibreNMS\Enum\Severity;
 use LibreNMS\Util\AutonomousSystem;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
 // replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
-beforeEach(function () {
+beforeEach(function (): void {
     if (! getenv('DBTEST')) {
         $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
     }
 });
 
-test('bgp up', function () {
+test('bgp up', function (): void {
     // Cache it to avoid DNS Lookup
     LibrenmsConfig::set('astext.1', 'PHPUnit ASTEXT');
     $device = Device::factory()->create();
@@ -67,7 +67,7 @@ BGP4-MIB::bgpPeerState.$bgppeer->bgpPeerIdentifier established\n",
     expect('established')->toEqual($bgppeer->bgpPeerState);
 });
 
-test('bgp down', function () {
+test('bgp down', function (): void {
     // Cache it to avoid DNS Lookup
     LibrenmsConfig::set('astext.1', 'PHPUnit ASTEXT');
     $device = Device::factory()->create();

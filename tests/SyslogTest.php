@@ -23,7 +23,7 @@
  * @copyright  2016 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 // The format is:
 // $SOURCEIP||$FACILITY||$PRIORITY||$LEVEL||$TAG||$YEAR-$MONTH-$DAY $HOUR:$MIN:$SEC||$MSG||$PROGRAM
 // There add an IP for each OS you want to test and use that in the input file
@@ -60,7 +60,7 @@ function checkSyslog($inputline, $modified)
     expect($res)->toEqual($data['result']);
 }
 
-test('cisco syslog', function () {
+test('cisco syslog', function (): void {
     // populate fake $dev_cache
     global $dev_cache;
     $dev_cache['1.1.1.1'] = ['device_id' => 1, 'os' => 'ios', 'version' => 1, 'hostname' => 'cisco-switch1'];
@@ -91,7 +91,7 @@ test('cisco syslog', function () {
     checkSyslog('1.1.1.1||user||info||info||0e||2016-04-06 15:20:35||.Apr 4 21:26:41.778 UTC: %LWAPP-3-REPLAY_ERR: 1 wcm: Received replay error on slot 1, WLAN ID 1, count 1 from AP xxxx.xxxx.xxxx||', ['device_id' => 1, 'program' => '%LWAPP-3-REPLAY_ERR', 'msg' => '1 wcm: Received replay error on slot 1, WLAN ID 1, count 1 from AP xxxx.xxxx.xxxx']);
 });
 
-test('linux syslog', function () {
+test('linux syslog', function (): void {
     // populate fake $dev_cache
     global $dev_cache;
     $dev_cache['1.1.1.1'] = ['device_id' => 1, 'os' => 'linux', 'version' => 1, 'hostname' => 'linux-server1'];
@@ -114,7 +114,7 @@ test('linux syslog', function () {
     checkSyslog('1.1.1.1||authpriv||notice||notice||55||2016-02-28 00:23:34||    root : TTY=pts/1 ; PWD=/opt/librenms ; USER=librenms ; COMMAND=/usr/bin/git status||sudo', ['device_id' => 1, 'program' => 'SUDO', 'msg' => 'root : TTY=pts/1 ; PWD=/opt/librenms ; USER=librenms ; COMMAND=/usr/bin/git status']);
 });
 
-test('procurve syslog', function () {
+test('procurve syslog', function (): void {
     // populate fake $dev_cache
     global $dev_cache;
     $dev_cache['1.1.1.1'] = ['device_id' => 1, 'os' => 'procurve', 'version' => 1, 'hostname' => 'procurve-switch1'];
@@ -130,7 +130,7 @@ test('procurve syslog', function () {
     checkSyslog('1.1.1.1||user||info||info||0e||2016-02-28 00:23:34||updated time by -4 seconds||SNTP', ['device_id' => 1, 'program' => 'SNTP', 'msg' => 'updated time by -4 seconds']);
 });
 
-test('zywall syslog', function () {
+test('zywall syslog', function (): void {
     // populate fake $dev_cache
     global $dev_cache;
     $dev_cache['1.1.1.1'] = ['device_id' => 1, 'os' => 'zywall', 'version' => 1, 'hostname' => 'zywall'];

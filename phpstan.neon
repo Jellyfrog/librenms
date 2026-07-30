@@ -1,7 +1,6 @@
 includes:
     - vendor/larastan/larastan/extension.neon
     - vendor/pestphp/pest/extension.neon
-    - vendor/pestphp/pest/phpstan-pest-extension.neon
     - vendor/phpstan/phpstan-mockery/extension.neon
     - vendor/phpstan/phpstan-phpunit/extension.neon
     - vendor/phpstan/phpstan-phpunit/rules.neon
@@ -44,10 +43,15 @@ parameters:
 
     ignoreErrors:
         - '#Unsafe usage of new static#'
-        # Pest types $this inside test closures as TestCall, a runtime proxy to the
-        # bound test case, so calls to test case methods cannot be resolved statically
+        # Pest types $this inside test closures as TestCall (and test() as TestCall
+        # or HigherOrderTapProxy), runtime proxies to the bound test case, so test
+        # case methods and shared state cannot be resolved statically
         -
-            message: '#^Call to an undefined method Pest\\#'
+            message: '#Pest\\PendingCalls\\TestCall#'
+            path: tests
+            reportUnmatched: false
+        -
+            message: '#Pest\\Support\\HigherOrderTapProxy#'
             path: tests
             reportUnmatched: false
 

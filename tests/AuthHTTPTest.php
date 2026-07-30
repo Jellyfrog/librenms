@@ -26,23 +26,22 @@
 
 use App\Facades\LibrenmsConfig;
 use LibreNMS\Authentication\LegacyAuth;
-
 use function strip_tags as strip_tags1;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->original_auth_mech = LibrenmsConfig::get('auth_mechanism');
     LibrenmsConfig::set('auth_mechanism', 'http-auth');
     $this->server = $_SERVER;
 });
 
-afterEach(function () {
+afterEach(function (): void {
     LibrenmsConfig::set('auth_mechanism', $this->original_auth_mech);
     $_SERVER = $this->server;
 });
 
-test('capability functions', function () {
+test('capability functions', function (): void {
     $a = LegacyAuth::reset();
 
     expect($a->canUpdatePasswords())->toBeFalse();
@@ -51,7 +50,7 @@ test('capability functions', function () {
     expect($a->authIsExternal())->toBeTrue();
 });
 
-test('old behaviour against current', function () {
+test('old behaviour against current', function (): void {
     $old_username = null;
     $new_username = null;
 

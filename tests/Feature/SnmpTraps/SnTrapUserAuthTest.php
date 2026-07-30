@@ -25,9 +25,9 @@
  * @copyright  2022 Heath Barnhart
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('sn trap user login', function () {
+test('sn trap user login', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP_WRAP'
         {{ hostname }}
         UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -40,7 +40,7 @@ test('sn trap user login', function () {
     );
 });
 
-test('sn trap user logout', function () {
+test('sn trap user logout', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP_WRAP'
         {{ hostname }}
         UDP: [{{ ip }}]:57602->[192.168.5.5]:162

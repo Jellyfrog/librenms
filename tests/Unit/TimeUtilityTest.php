@@ -3,9 +3,9 @@
 use Illuminate\Support\Carbon;
 use LibreNMS\Util\Time;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('format interval', function () {
+test('format interval', function (): void {
     expect(Time::formatInterval(0))->toBe('');
     expect(Time::formatInterval(null))->toBe('');
     expect(Time::formatInterval(1))->toBe('1 second');
@@ -37,7 +37,7 @@ test('format interval', function () {
     expect(Time::formatInterval(1461 * 24 * 60 * 60))->toBe('4 years');
 });
 
-test('parse at time', function () {
+test('parse at time', function (): void {
     expect(Time::parseAt('now'))->toEqual(time(), 'now did not match');
     expect(Time::parseAt('+3m'))->toEqual(time() + 180, '+3m did not match');
     expect(Time::parseAt('+2h'))->toEqual(time() + 7200, '+2h did not match');
@@ -55,7 +55,7 @@ test('parse at time', function () {
     expect(Time::parseAt('+1 day'))->toEqual(time() + 86400);
 });
 
-test('parse input', function () {
+test('parse input', function (): void {
     expect(Time::parseInput(null))->toBeNull();
     expect(Time::parseInput(''))->toBeNull();
 
@@ -76,7 +76,7 @@ test('parse input', function () {
     expect(Time::parseInput('not a date'))->toBeNull();
 });
 
-test('random time between', function () {
+test('random time between', function (): void {
     $start = time();
     $end = time() + 3600;
     $randomTime = Time::randomBetween($start, $end)->format('U');

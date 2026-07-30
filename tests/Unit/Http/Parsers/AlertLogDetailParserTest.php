@@ -2,13 +2,13 @@
 
 use App\Http\Parsers\AlertLogDetailParser;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->parser = new AlertLogDetailParser();
 });
 
-test('format basic rule alert', function () {
+test('format basic rule alert', function (): void {
     $details = [
         'rule' => [
             ['message' => 'Test alert', 'value' => 10],
@@ -24,7 +24,7 @@ test('format basic rule alert', function () {
     expect($output['sections'][0]['items'][0]['fields'][1]['value'])->toEqual('10');
 });
 
-test('format alert with diff', function () {
+test('format alert with diff', function (): void {
     $details = [
         'diff' => [
             'added' => [
@@ -51,7 +51,7 @@ test('format alert with diff', function () {
     expect($output['sections'][1]['items'][0]['fields'][0]['value'])->toEqual('Still alert');
 });
 
-test('format bill', function () {
+test('format bill', function (): void {
     $details = [
         'rule' => [
             [
@@ -69,7 +69,7 @@ test('format bill', function () {
     $this->assertStringContainsString('bill_id=123', $fields[0]['url']);
 });
 
-test('format port', function () {
+test('format port', function (): void {
     $details = [
         'rule' => [
             [
@@ -90,7 +90,7 @@ test('format port', function () {
     expect($fields[1]['value'])->toEqual('WAN Interface');
 });
 
-test('format sensor', function () {
+test('format sensor', function (): void {
     $details = [
         'rule' => [
             [
@@ -118,7 +118,7 @@ test('format sensor', function () {
     $this->assertStringContainsString('High: 40', $fields[2]['value']);
 });
 
-test('format sensor state', function () {
+test('format sensor state', function (): void {
     $details = [
         'rule' => [
             [
@@ -142,7 +142,7 @@ test('format sensor state', function () {
     $this->assertStringContainsString('Critical (numerical: 2)', $fields[1]['value']);
 });
 
-test('format access point', function () {
+test('format access point', function (): void {
     $details = [
         'rule' => [
             [
@@ -162,7 +162,7 @@ test('format access point', function () {
     $this->assertStringContainsString('ap=101', $fields[0]['url']);
 });
 
-test('format service', function () {
+test('format service', function (): void {
     $details = [
         'rule' => [
             [
@@ -192,7 +192,7 @@ test('format service', function () {
     expect($fields[3]['value'])->toEqual('Connection refused');
 });
 
-test('format bgp peer', function () {
+test('format bgp peer', function (): void {
     $details = [
         'rule' => [
             [
@@ -221,7 +221,7 @@ test('format bgp peer', function () {
     expect($fields[3]['value'])->toEqual('idle');
 });
 
-test('format mempool', function () {
+test('format mempool', function (): void {
     $details = [
         'rule' => [
             [
@@ -247,7 +247,7 @@ test('format mempool', function () {
     $this->assertStringContainsString('Total: 1.07 GB', $fields[1]['value']);
 });
 
-test('format application', function () {
+test('format application', function (): void {
     $details = [
         'rule' => [
             [
@@ -274,7 +274,7 @@ test('format application', function () {
     expect($fields[2]['value'])->toEqual('requests = 5000');
 });
 
-test('fallback formatting', function () {
+test('fallback formatting', function (): void {
     $details = [
         'rule' => [
             [

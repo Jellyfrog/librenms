@@ -27,16 +27,16 @@
 use App\Facades\LibrenmsConfig;
 use Illuminate\Support\Str;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('mib directory', function ($dir) {
+test('mib directory', function ($dir): void {
     $output = shell_exec('snmptranslate -M +' . LibrenmsConfig::get('mib_dir') . ":$dir -m +ALL SNMPv2-MIB::system 2>&1");
     $errors = str_replace("SNMPv2-MIB::system\n", '', $output);
 
     expect($errors)->toBeEmpty("MIBs in $dir have errors!\n$errors");
 })->with('mibDirs')->group('mibs');
 
-test('duplicate mibs', function ($path, $file, $mib_name) {
+test('duplicate mibs', function ($path, $file, $mib_name): void {
     global $console_color;
 
     $file_path = "$path/$file";
@@ -56,7 +56,7 @@ test('duplicate mibs', function ($path, $file, $mib_name) {
     }
 })->with('mibFiles')->group('mibs');
 
-test('mib name matches', function ($path, $file, $mib_name) {
+test('mib name matches', function ($path, $file, $mib_name): void {
     global $console_color;
 
     $file_path = "$path/$file";
@@ -64,7 +64,7 @@ test('mib name matches', function ($path, $file, $mib_name) {
     expect($file)->toEqual($mib_name, "$highlighted_file should be named $mib_name");
 })->with('mibFiles')->group('mibs');
 
-test('mib contents', function ($path, $file, $mib_name) {
+test('mib contents', function ($path, $file, $mib_name): void {
     global $console_color;
     $file_path = "$path/$file";
     $highlighted_file = $console_color->convert("%r$file_path%n");

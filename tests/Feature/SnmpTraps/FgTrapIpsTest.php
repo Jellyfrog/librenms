@@ -28,16 +28,16 @@ use App\Models\Device;
 use App\Models\Ipv4Address;
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
 // replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
-beforeEach(function () {
+beforeEach(function (): void {
     if (! getenv('DBTEST')) {
         $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
     }
 });
 
-test('ips anomaly', function () {
+test('ips anomaly', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $ipv4 = Ipv4Address::factory()->make();
@@ -58,7 +58,7 @@ FORTINET-FORTIGATE-MIB::fgIpsTrapSigMsg.0 tcp_src_session",
     );
 });
 
-test('ips pkg udate', function () {
+test('ips pkg udate', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $this->assertTrapLogsMessage("$device->hostname
@@ -73,7 +73,7 @@ SNMPv2-MIB::sysName.0 $device->hostname",
     );
 });
 
-test('ips signature', function () {
+test('ips signature', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $ipv4 = Ipv4Address::factory()->make();

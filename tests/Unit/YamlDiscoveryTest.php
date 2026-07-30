@@ -27,9 +27,9 @@
 use LibreNMS\Discovery\Yaml\OidField;
 use LibreNMS\Discovery\Yaml\YamlDiscoveryField;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('yaml discovery field calculate value', function () {
+test('yaml discovery field calculate value', function (): void {
     $field = new YamlDiscoveryField('test');
 
     $field->calculateValue([], [], '0', 0);

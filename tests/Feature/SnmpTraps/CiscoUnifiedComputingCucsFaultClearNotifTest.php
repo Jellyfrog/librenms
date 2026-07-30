@@ -24,9 +24,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('Cisco Unified Computing Cucs Fault Clear Notif', function () {
+test('Cisco Unified Computing Cucs Fault Clear Notif', function (): void {
     $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:49563->[10.0.0.1]:162]:
 DISMAN-EXPRESSION-MIB::sysUpTimeInstance 191 days, 19:13:05.46

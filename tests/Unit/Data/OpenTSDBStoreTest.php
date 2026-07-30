@@ -23,14 +23,14 @@
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-uses(\LibreNMS\Tests\TestCase::class)->group('datastores');
+uses(LibreNMS\Tests\TestCase::class)->group('datastores');
 use App\Facades\DeviceCache;
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use Carbon\Carbon;
 use LibreNMS\Data\Store\OpenTSDB;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->timestamp = 1190464400;
 
     // fix the date
@@ -38,33 +38,33 @@ beforeEach(function () {
     LibrenmsConfig::set('opentsdb.enable', true);
 });
 
-afterEach(function () {
+afterEach(function (): void {
     // restore Carbon:now() to normal
     Carbon::setTestNow();
     LibrenmsConfig::set('opentsdb.enable', false);
 });
 
-test('socket connect error', function () {
-    $mockFactory = \Mockery::mock(\Socket\Raw\Factory::class);
+test('socket connect error', function (): void {
+    $mockFactory = Mockery::mock(Socket\Raw\Factory::class);
 
     $mockFactory->shouldReceive('createClient')
-        ->andThrow(\Socket\Raw\Exception::class, 'Failed to handle connect exception')->once();
+        ->andThrow(Socket\Raw\Exception::class, 'Failed to handle connect exception')->once();
 
     new OpenTSDB($mockFactory);
 });
 
-test('socket write error', function () {
-    $mockSocket = \Mockery::mock(\Socket\Raw\Socket::class);
+test('socket write error', function (): void {
+    $mockSocket = Mockery::mock(Socket\Raw\Socket::class);
     $opentsdb = mockOpenTSDB($mockSocket);
 
     $mockSocket->shouldReceive('write')
-        ->andThrow(\Socket\Raw\Exception::class, 'Did not handle socket exception')->once();
+        ->andThrow(Socket\Raw\Exception::class, 'Did not handle socket exception')->once();
 
     $opentsdb->write('fake', ['one' => 1]);
 });
 
-test('simple write', function () {
-    $mockSocket = \Mockery::mock(\Socket\Raw\Socket::class);
+test('simple write', function (): void {
+    $mockSocket = Mockery::mock(Socket\Raw\Socket::class);
     $opentsdb = mockOpenTSDB($mockSocket);
 
     $measurement = 'testmeasure';
@@ -79,8 +79,8 @@ test('simple write', function () {
     $opentsdb->write($measurement, $fields, $tags, $meta);
 });
 
-test('port write', function () {
-    $mockSocket = \Mockery::mock(\Socket\Raw\Socket::class);
+test('port write', function (): void {
+    $mockSocket = Mockery::mock(Socket\Raw\Socket::class);
     $opentsdb = mockOpenTSDB($mockSocket);
 
     // test that device is used from DeviceCache::getPrimary()
@@ -106,7 +106,7 @@ test('port write', function () {
  */
 function mockOpenTSDB($mockSocket)
 {
-    $mockFactory = \Mockery::mock(\Socket\Raw\Factory::class);
+    $mockFactory = Mockery::mock(Socket\Raw\Factory::class);
 
     $mockFactory->shouldReceive('createClient')
         ->andReturn($mockSocket);

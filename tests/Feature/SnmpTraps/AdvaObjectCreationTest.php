@@ -23,8 +23,8 @@
  * @copyright  2019 Heath Barnhart
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
-test('user creation', function () {
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+test('user creation', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -43,7 +43,7 @@ TRAP,
     );
 });
 
-test('lag creation', function () {
+test('lag creation', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162

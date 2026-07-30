@@ -24,9 +24,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('Cisco DHCP server free address high', function () {
+test('Cisco DHCP server free address high', function (): void {
     $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:49563->[10.0.0.1]:162]:
 SNMPv2-MIB::sysUpTime.0 = Timeticks: (1714266504) 198 days, 9:51:05.04
@@ -39,7 +39,7 @@ CISCO-IETF-DHCP-SERVER-MIB::cDhcpv4ServerSharedNetFreeAddresses."some-dhcp-pool"
     );
 });
 
-test('Cisco DHCP server free address low', function () {
+test('Cisco DHCP server free address low', function (): void {
     $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:49563->[10.0.0.1]:162]:
 SNMPv2-MIB::sysUpTime.0 = Timeticks: (1714275597) 198 days, 9:52:35.97
@@ -52,7 +52,7 @@ CISCO-IETF-DHCP-SERVER-MIB::cDhcpv4ServerSharedNetFreeAddresses."some-dhcp-pool"
     );
 });
 
-test('Cisco DHCP server start', function () {
+test('Cisco DHCP server start', function (): void {
     $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:51988->[10.0.0.1]:162]:
 SNMPv2-MIB::sysUpTime.0 = Timeticks: (45460476) 5 days, 6:16:44.76
@@ -64,7 +64,7 @@ CISCO-IETF-DHCP-SERVER-MIB::cDhcpv4ServerStartTime = Hex-STRING: 07 E6 0B 0A 03 
     );
 });
 
-test('Cisco DHCP server stop', function () {
+test('Cisco DHCP server stop', function (): void {
     $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:51988->[10.0.0.1]:162]:
 SNMPv2-MIB::sysUpTime.0 = Timeticks: (45460476) 5 days, 6:16:44.76

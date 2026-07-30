@@ -23,27 +23,27 @@
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-uses(\LibreNMS\Tests\TestCase::class)->group('datastores');
+uses(LibreNMS\Tests\TestCase::class)->group('datastores');
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use Illuminate\Support\Facades\Http as LaravelHttp;
 use LibreNMS\Data\Store\Prometheus;
 
-beforeEach(function () {
+beforeEach(function (): void {
     LibrenmsConfig::set('prometheus.enable', true);
     LibrenmsConfig::set('prometheus.url', 'http://fake:9999');
 });
 
-test('fail write', function () {
+test('fail write', function (): void {
     LaravelHttp::fakeSequence()->push('Bad response', 422);
     $prometheus = app(Prometheus::class);
 
-    \Log::shouldReceive('debug');
-    \Log::shouldReceive('error')->once()->with('Prometheus Error: Bad response');
+    Log::shouldReceive('debug');
+    Log::shouldReceive('error')->once()->with('Prometheus Error: Bad response');
     $prometheus->write('none', ['one' => 1]);
 });
 
-test('simple write', function () {
+test('simple write', function (): void {
     LaravelHttp::fake([
         '*' => LaravelHttp::response(),
     ]);
@@ -55,13 +55,13 @@ test('simple write', function () {
     $fields = ['ifIn' => 234234, 'ifOut' => 53453];
     $meta = ['device' => new Device(['hostname' => 'testhost'])];
 
-    \Log::shouldReceive('debug');
-    \Log::shouldReceive('error')->times(0);
+    Log::shouldReceive('debug');
+    Log::shouldReceive('error')->times(0);
 
     $prometheus->write($measurement, $fields, $tags, $meta);
 
     LaravelHttp::assertSentCount(1);
-    LaravelHttp::assertSent(fn (\Illuminate\Http\Client\Request $request) => $request->method() == 'POST' &&
+    LaravelHttp::assertSent(fn (Illuminate\Http\Client\Request $request) => $request->method() == 'POST' &&
         $request->url() == 'http://fake:9999/metrics/job/librenms/instance/testhost/measurement/testmeasure/ifName/testifname/type/testtype' &&
         $request->body() == "ifIn 234234\nifOut 53453\n");
 });

@@ -23,13 +23,13 @@
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 use App\Facades\LibrenmsConfig;
 use LibreNMS\Data\Source\Fping;
 use LibreNMS\Data\Source\FpingResponse;
 use Symfony\Component\Process\Process;
 
-test('up ping', function () {
+test('up ping', function (): void {
     $output = "192.168.1.3 : xmt/rcv/%loss = 3/3/0%, min/avg/max = 0.62/0.71/0.93\n";
     mockFpingProcess($output, 0);
 
@@ -47,7 +47,7 @@ test('up ping', function () {
     expect($actual->exit_code)->toEqual(0);
 });
 
-test('partial down ping', function () {
+test('partial down ping', function (): void {
     $output = "192.168.1.7 : xmt/rcv/%loss = 5/3/40%, min/avg/max = 0.13/0.23/0.32\n";
     mockFpingProcess($output, 0);
 
@@ -65,7 +65,7 @@ test('partial down ping', function () {
     expect($actual->exit_code)->toEqual(0);
 });
 
-test('down ping', function () {
+test('down ping', function (): void {
     $output = "192.168.53.1 : xmt/rcv/%loss = 3/0/100%\n";
     mockFpingProcess($output, 1);
 
@@ -83,7 +83,7 @@ test('down ping', function () {
     expect($actual->exit_code)->toEqual(1);
 });
 
-test('duplicate ping', function () {
+test('duplicate ping', function (): void {
     $output = <<<'OUT'
 192.168.1.2 : duplicate for [0], 84 bytes, 0.91 ms
 192.168.1.2 : duplicate for [0], 84 bytes, 0.95 ms
@@ -108,7 +108,7 @@ OUT;
 
 function mockFpingProcess($output, $exitCode)
 {
-    $process = \Mockery::mock(Process::class);
+    $process = Mockery::mock(Process::class);
     $process->shouldReceive('getCommandLine', 'run');
     $process->shouldReceive('getErrorOutput')->andReturn($output);
     $process->shouldReceive('getExitCode')->andReturn($exitCode);
@@ -118,7 +118,7 @@ function mockFpingProcess($output, $exitCode)
     return $process;
 }
 
-test('bulk ping', function () {
+test('bulk ping', function (): void {
     $expected = [
         '192.168.1.4' => [3, 3, 0, 0.62, 0.93, 0.71, 0, 0],
         'hostname' => [3, 0, 100, 0.0, 0.0, 0.0, 0, 1],
@@ -127,7 +127,7 @@ test('bulk ping', function () {
     ];
     $hosts = array_keys($expected);
 
-    $process = \Mockery::mock(Process::class);
+    $process = Mockery::mock(Process::class);
     $process->shouldReceive('setTimeout')->with(LibrenmsConfig::get('rrd.step', 300) * 2);
     $process->shouldReceive('setInput')->with(implode("\n", $hosts) . "\n");
     $process->shouldReceive('getCommandLine');

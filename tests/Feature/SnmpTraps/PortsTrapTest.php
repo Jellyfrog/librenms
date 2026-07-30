@@ -29,16 +29,16 @@ use App\Models\Port;
 use LibreNMS\Enum\IfOperStatus;
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
 // replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
-beforeEach(function () {
+beforeEach(function (): void {
     if (! getenv('DBTEST')) {
         $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
     }
 });
 
-test('link down', function () {
+test('link down', function (): void {
     // make a device and associate a port with it
     $device = Device::factory()->create();
     /** @var Device $device */
@@ -76,7 +76,7 @@ OLD-CISCO-INTERFACES-MIB::locIfReason.$port->ifIndex \"down\"\n",
     expect($port->ifOperStatus)->toEqual(IfOperStatus::Down);
 });
 
-test('link up', function () {
+test('link up', function (): void {
     // make a device and associate a port with it
     $device = Device::factory()->create();
     /** @var Device $device */

@@ -23,8 +23,8 @@
  * @copyright  2019 Heath Barnhart
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
-test('acc threshold trap', function () {
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+test('acc threshold trap', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162

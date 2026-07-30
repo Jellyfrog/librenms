@@ -28,16 +28,16 @@ use App\Models\Device;
 use App\Models\Ipv4Address;
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
 // replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
-beforeEach(function () {
+beforeEach(function (): void {
     if (! getenv('DBTEST')) {
         $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
     }
 });
 
-test('vpn tun down', function () {
+test('vpn tun down', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $ipv4 = Ipv4Address::factory()->make();
@@ -58,7 +58,7 @@ FORTINET-FORTIGATE-MIB::fgVpnTrapPhase1Name.0 test_tunnel_down",
     );
 });
 
-test('vpn tun up', function () {
+test('vpn tun up', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $ipv4 = Ipv4Address::factory()->make();

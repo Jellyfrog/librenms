@@ -27,21 +27,21 @@
 use App\Facades\LibrenmsConfig;
 use LibreNMS\RRD\RrdDefinition;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('empty', function () {
+test('empty', function (): void {
     expect((string) new RrdDefinition())->toBeEmpty();
 });
 
-test('wrong type', function () {
-    $this->expectException(\LibreNMS\Exceptions\InvalidRrdTypeException::class);
+test('wrong type', function (): void {
+    $this->expectException(LibreNMS\Exceptions\InvalidRrdTypeException::class);
     LibrenmsConfig::set('rrd.step', 300);
     LibrenmsConfig::set('rrd.heartbeat', 600);
     $def = new RrdDefinition();
     $def->addDataset('badtype', 'Something unexpected');
 });
 
-test('name escaping', function () {
+test('name escaping', function (): void {
     LibrenmsConfig::set('rrd.step', 300);
     LibrenmsConfig::set('rrd.heartbeat', 600);
     $expected = 'DS:bad_name-is_too_lon:GAUGE:600:0:100';
@@ -50,7 +50,7 @@ test('name escaping', function () {
     expect((string) $def)->toEqual($expected);
 });
 
-test('creation', function () {
+test('creation', function (): void {
     LibrenmsConfig::set('rrd.step', 300);
     LibrenmsConfig::set('rrd.heartbeat', 600);
     $expected = 'DS:pos:COUNTER:600:0:125000000000 DS:unbound:DERIVE:600:U:U';
@@ -62,7 +62,7 @@ test('creation', function () {
     expect((string) $def)->toEqual($expected);
 });
 
-test('creation with source', function () {
+test('creation with source', function (): void {
     LibrenmsConfig::set('rrd.step', 300);
     LibrenmsConfig::set('rrd.heartbeat', 600);
     $def = new RrdDefinition();

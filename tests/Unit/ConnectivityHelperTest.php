@@ -8,9 +8,9 @@ use LibreNMS\Data\Source\Fping;
 use LibreNMS\Data\Source\FpingResponse;
 use LibreNMS\Data\Source\SnmpResponse;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('device status', function () {
+test('device status', function (): void {
     // not called when ping is disabled
     $this->app->singleton(Fping::class, function () {
         $mock = Mockery::mock(Fping::class);
@@ -145,7 +145,7 @@ test('device status', function () {
     expect($device->status_reason)->toEqual('');
 });
 
-test('is snmpable', function () {
+test('is snmpable', function (): void {
     SnmpQuery::partialMock()->shouldReceive('get')
         ->times(4)
         ->andReturn(

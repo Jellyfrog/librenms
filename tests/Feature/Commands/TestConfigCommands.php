@@ -26,7 +26,7 @@
 
 use App\Facades\LibrenmsConfig;
 
-uses(\LibreNMS\Tests\InMemoryDbTestCase::class);
+uses(LibreNMS\Tests\InMemoryDbTestCase::class);
 
 /**
  * @param  string  $setting
@@ -63,7 +63,7 @@ function assertCliGets(string $setting, $expected): void
         ->assertExitCode(0);
 }
 
-test('setting', function () {
+test('setting', function (): void {
     // simple
     LibrenmsConfig::set('login_message', null);
     assertCliSets('login_message', 'hello');
@@ -105,7 +105,7 @@ test('setting', function () {
         ->assertExitCode(0);
 });
 
-test('invalid setting', function () {
+test('invalid setting', function (): void {
     // non-existent setting
     $this->artisan('config:set', ['setting' => 'this_will_never_be.a.setting'])
         ->assertExitCode(2);

@@ -31,9 +31,9 @@ use LibreNMS\Interfaces\Geocoder;
 use LibreNMS\Util\Dns;
 use Mockery\MockInterface;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('can set location', function () {
+test('can set location', function (): void {
     $device = Device::factory()->make();
     /** @var Device $device */
     $device->setLocation('Where');
@@ -46,7 +46,7 @@ test('can set location', function () {
     expect($device->location)->toBeNull();
 });
 
-test('can not set location', function () {
+test('can not set location', function (): void {
     $device = Device::factory()->make();
     /** @var Device $device */
     $location = Location::factory()->make();
@@ -56,7 +56,7 @@ test('can not set location', function () {
     expect($device->location)->toBeNull();
 });
 
-test('can set encoded location', function () {
+test('can set encoded location', function (): void {
     LibrenmsConfig::set('geoloc.dns', false);
     $device = Device::factory()->make();
 
@@ -92,7 +92,7 @@ test('can set encoded location', function () {
     expect($device->location->lng)->toBeNull();
 });
 
-test('can handle given coordinates', function () {
+test('can handle given coordinates', function (): void {
     LibrenmsConfig::set('geoloc.dns', false);
     $device = Device::factory()->make();
     /** @var Device $device */
@@ -106,7 +106,7 @@ test('can handle given coordinates', function () {
     expect($device->location->lng)->toEqual($location->lng);
 });
 
-test('can not set fixed coordinates', function () {
+test('can not set fixed coordinates', function (): void {
     $device = Device::factory()->make();
     /** @var Device $device */
     $locationOne = Location::factory()->withCoordinates()->make();
@@ -128,12 +128,12 @@ test('can not set fixed coordinates', function () {
     expect($device->location->lng)->toEqual($locationTwo->lng);
 });
 
-test('dns lookup', function () {
+test('dns lookup', function (): void {
     $example = 'SW1A2AA.find.me.uk';
     $expected = ['lat' => 51.50354111111111, 'lng' => -0.12766972222222223];
 
-    $this->mock(\Net_DNS2_Resolver::class, function (MockInterface $mock) use ($example, $expected): void {
-        $loc = new \Net_DNS2_RR_LOC();
+    $this->mock(Net_DNS2_Resolver::class, function (MockInterface $mock) use ($example, $expected): void {
+        $loc = new Net_DNS2_RR_LOC();
         $loc->name = $example;
         $loc->latitude = $expected['lat'];
         $loc->longitude = $expected['lng'];
@@ -146,7 +146,7 @@ test('dns lookup', function () {
     expect($result)->toEqual($expected);
 });
 
-test('can set dns coordinate', function () {
+test('can set dns coordinate', function (): void {
     LibrenmsConfig::set('geoloc.dns', true);
     $device = Device::factory()->make();
     /** @var Device $device */
@@ -168,7 +168,7 @@ test('can set dns coordinate', function () {
     expect($device->location->lng)->toBeNull();
 });
 
-test('can set by api', function () {
+test('can set by api', function (): void {
     $device = Device::factory()->make();
     /** @var Device $device */
     $location = Location::factory()->withCoordinates()->make();
@@ -198,7 +198,7 @@ test('can set by api', function () {
     expect($device->location->lng)->toEqual($location->lng);
 });
 
-test('correct precedence', function () {
+test('correct precedence', function (): void {
     $device = Device::factory()->make();
     /** @var Device $device */
     $location_encoded = Location::factory()->withCoordinates()->make();

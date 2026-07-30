@@ -30,12 +30,11 @@ use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use LibreNMS\Alert\AlertData;
 use LibreNMS\Alert\Transport;
-
 use function PHPUnit\Framework\assertEquals;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('discord no config delivery', function () {
+test('discord no config delivery', function (): void {
     Http::fake();
 
     $transport = new Transport\Discord(new AlertTransport([
@@ -76,7 +75,7 @@ test('discord no config delivery', function () {
     });
 });
 
-test('bad options delivery', function () {
+test('bad options delivery', function (): void {
     Http::fake();
 
     $transport = new Transport\Discord(new AlertTransport([
@@ -117,7 +116,7 @@ test('bad options delivery', function () {
     });
 });
 
-test('bad embed fields delivery', function () {
+test('bad embed fields delivery', function (): void {
     Http::fake();
 
     $transport = new Transport\Discord(new AlertTransport([
@@ -163,7 +162,7 @@ test('bad embed fields delivery', function () {
     });
 });
 
-test('discord delivery', function () {
+test('discord delivery', function (): void {
     Http::fake();
 
     $transport = new Transport\Discord(new AlertTransport([

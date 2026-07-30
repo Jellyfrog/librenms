@@ -35,21 +35,21 @@ use LibreNMS\Util\ModuleTestHelper;
 use LibreNMS\Util\Number;
 use PHPUnit\Util\Color;
 
-uses(\LibreNMS\Tests\DBTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     // backup modules
     $this->discoveryModules = LibrenmsConfig::get('discovery_modules');
     $this->pollerModules = LibrenmsConfig::get('poller_modules');
 });
 
-afterEach(function () {
+afterEach(function (): void {
     // restore modules
     LibrenmsConfig::set('discovery_modules', $this->discoveryModules);
     LibrenmsConfig::set('poller_modules', $this->pollerModules);
 });
 
-test('OS data is valid', function ($os, $variant, $modules) {
+test('OS data is valid', function ($os, $variant, $modules): void {
     // special case if dataset throws exception
     if ($os === false) {
         $this->fail($modules);
@@ -58,9 +58,9 @@ test('OS data is valid', function ($os, $variant, $modules) {
     expect($modules)->not->toBeEmpty("No modules to test for $os $variant");
 })->with('dumped_data')->group('os');
 
-test('OS', function ($os, $variant, array $modules) {
+test('OS', function ($os, $variant, array $modules): void {
     // Lock testing time
-    $this->travelTo(new \DateTime('2022-01-01 00:00:00'));
+    $this->travelTo(new DateTime('2022-01-01 00:00:00'));
     $this->requireSnmpsim();  // require snmpsim for tests
     // stub out Eventlog::log and Fping->ping, we don't need to store them for these tests
     stubClasses();
@@ -132,15 +132,15 @@ dataset('dumped_data', function () {
 
 function stubClasses(): void
 {
-    app()->bind(\App\Models\Eventlog::class, function ($app) {
-        $mock = \Mockery::mock(\App\Models\Eventlog::class);
+    app()->bind(App\Models\Eventlog::class, function ($app) {
+        $mock = Mockery::mock(App\Models\Eventlog::class);
         $mock->shouldReceive('_log');
 
         return $mock;
     });
 
     app()->bind(Fping::class, function ($app) {
-        $mock = \Mockery::mock(Fping::class);
+        $mock = Mockery::mock(Fping::class);
         $mock->shouldReceive('ping')->andReturn(FpingResponse::artificialUp());
 
         return $mock;

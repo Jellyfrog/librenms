@@ -29,9 +29,9 @@
 use App\Models\Device;
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('vmw vm hblost trap', function () {
+test('vmw vm hblost trap', function (): void {
     $guest = Device::factory()->make();
     /** @var Device $guest */
     $this->assertTrapLogsMessage("{{ hostname }}
@@ -49,7 +49,7 @@ SNMPv2-MIB::snmpTrapEnterprise.0 VMWARE-PRODUCTS-MIB::vmwESX",
     );
 });
 
-test('vmw vm hbdetected trap', function () {
+test('vmw vm hbdetected trap', function (): void {
     $guest = Device::factory()->make();
     /** @var Device $guest */
     $this->assertTrapLogsMessage("{{ hostname }}

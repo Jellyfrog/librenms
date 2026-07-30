@@ -33,12 +33,12 @@ use LibreNMS\Modules\Core;
 use LibreNMS\Tests\Mocks\SnmpQueryMock;
 use LibreNMS\Util\Debug;
 
-uses(\LibreNMS\Tests\TestCase::class)->group('os');
+uses(LibreNMS\Tests\TestCase::class)->group('os');
 
 /** @var array<string, int> $unchecked_files */
 $unchecked_files = [];
 
-beforeAll(function () use (&$unchecked_files) {
+beforeAll(function () use (&$unchecked_files): void {
     $glob = realpath(__DIR__ . '/..') . '/tests/snmpsim/*.snmprec';
 
     $unchecked_files = array_flip(array_filter(array_map(fn ($file) => basename($file, '.snmprec'), glob($glob)), fn ($file) => ! Str::contains($file, '@')));
@@ -126,7 +126,7 @@ function genDevice($community): Device
     ]);
 }
 
-test('valid OS names', function () {
+test('valid OS names', function (): void {
     $os = array_keys(osProvider());
 
     $invalid_os_name = array_filter($os, fn ($os_name) => preg_match('/[^a-z0-9\-]/', (string) $os_name));
@@ -150,11 +150,11 @@ test('valid OS names', function () {
 /**
  * Populate a list of files to check and make sure it isn't empty
  */
-test('have files to test', function () use (&$unchecked_files) {
+test('have files to test', function () use (&$unchecked_files): void {
     $this->assertNotEmpty($unchecked_files);
 });
 
-test('have variants lowercase', function () use (&$unchecked_files) {
+test('have variants lowercase', function () use (&$unchecked_files): void {
     $this->assertNotEmpty($unchecked_files);
 
     foreach ($unchecked_files as $file => $count) {
@@ -169,7 +169,7 @@ test('have variants lowercase', function () use (&$unchecked_files) {
 /**
  * Test each OS provided by the os_detection dataset
  */
-test('OS detection', function ($os_name) use (&$unchecked_files) {
+test('OS detection', function ($os_name) use (&$unchecked_files): void {
     if (! getenv('SNMPSIM')) {
         $this->app->bind(NetSnmpQuery::class, SnmpQueryMock::class);
     }
@@ -197,7 +197,7 @@ test('OS detection', function ($os_name) use (&$unchecked_files) {
 /**
  * Test that all files have been tested (removed from $unchecked_files)
  */
-test('all files tested', function () use (&$unchecked_files) {
+test('all files tested', function () use (&$unchecked_files): void {
     $this->assertEmpty(
         $unchecked_files,
         'Not all snmprec files were checked: ' . print_r(array_keys($unchecked_files), true)

@@ -26,7 +26,7 @@
 
 use LibreNMS\DB\Schema;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
 function mockSchemaData(): array
 {
@@ -108,7 +108,7 @@ function mockSchemaData(): array
     ];
 }
 
-beforeEach(function () {
+beforeEach(function (): void {
     // use a Mock so we don't have to rely on the schema being stable.
     $this->schema = $this->getMockBuilder(Schema::class)
         ->onlyMethods(['getSchema'])
@@ -117,7 +117,7 @@ beforeEach(function () {
     $this->schema->method('getSchema')->willReturn(mockSchemaData());
 });
 
-test('table relationships', function () {
+test('table relationships', function (): void {
     $expected = [
         'bills' => [],
         'bill_ports' => ['bills', 'ports'],
@@ -133,7 +133,7 @@ test('table relationships', function () {
     expect($this->schema->getTableRelationships())->toEqual($expected);
 });
 
-test('find relationship path', function () {
+test('find relationship path', function (): void {
     expect($this->schema->findRelationshipPath('devices'))->toEqual(['devices']);
     expect($this->schema->findRelationshipPath('locations'))->toEqual(['locations', 'devices']);
     expect($this->schema->findRelationshipPath('ports'))->toEqual(['devices', 'ports']);

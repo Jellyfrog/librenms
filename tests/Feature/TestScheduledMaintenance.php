@@ -5,13 +5,13 @@ use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use LibreNMS\Enum\AlertScheduleStatus;
 
-uses(\LibreNMS\Tests\DBTestCase::class);
+uses(LibreNMS\Tests\DBTestCase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->timezone = config('app.timezone');  //save timezone
 });
 
-afterEach(function () {
+afterEach(function (): void {
     // revert temp time and timezone
     scheduleSetTimezone($this->timezone);
     Carbon::setTestNow();
@@ -56,7 +56,7 @@ function assertScheduleLapsed($time, $schedule)
     test()->assertFalse(AlertSchedule::where('schedule_id', $schedule->schedule_id)->isActive()->exists(), "$schedule is not lapsed at $time (sql)");
 }
 
-test('normal', function () {
+test('normal', function (): void {
     $now = CarbonImmutable::now();
 
     $schedule = AlertSchedule::factory()->make(); /** @var AlertSchedule $schedule */
@@ -78,7 +78,7 @@ test('normal', function () {
     assertScheduleSet($now->subHours(2), $schedule);
 });
 
-test('recurring normal', function () {
+test('recurring normal', function (): void {
     scheduleSetTimezone('America/New_York');
     $schedule = AlertSchedule::factory()->recurring()->make();
     $schedule->recurring_day = '1,2,3,4,5';

@@ -32,23 +32,23 @@ use LibreNMS\Enum\Severity;
 use LibreNMS\Snmptrap\Dispatcher;
 use LibreNMS\Snmptrap\Trap;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
 // replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
-beforeEach(function () {
+beforeEach(function (): void {
     if (! getenv('DBTEST')) {
         $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
     }
 });
 
-test('garbage', function () {
+test('garbage', function (): void {
     $trapText = "Garbage\n";
 
     $trap = new Trap($trapText);
     expect(Dispatcher::handle($trap))->toBeFalse('Found handler for trap with no snmpTrapOID');
 });
 
-test('find by ip', function () {
+test('find by ip', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $port = Port::factory()->make();
@@ -80,7 +80,7 @@ DISMAN-EVENT-MIB::sysUpTimeInstance 198:2:10:48.91\n";
     expect($eventlog->severity)->toEqual(Severity::Info, 'Trap eventlog severity incorrect');
 });
 
-test('generic trap', function () {
+test('generic trap', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $trapText = "$device->hostname
@@ -101,7 +101,7 @@ SNMPv2-MIB::snmpTrapOID.0 SNMPv2-MIB::someOid\n";
     expect($eventlog->severity)->toEqual(Severity::Info, 'Trap eventlog severity incorrect');
 });
 
-test('authorization', function () {
+test('authorization', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $trapText = "$device->hostname
@@ -123,7 +123,7 @@ SNMPv2-MIB::snmpTrapOID.0 SNMPv2-MIB::authenticationFailure\n";
     expect($eventlog->severity)->toEqual(Severity::Notice, 'Trap eventlog severity incorrect');
 });
 
-test('bridge new root', function () {
+test('bridge new root', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $trapText = "$device->hostname
@@ -145,7 +145,7 @@ SNMPv2-MIB::snmpTrapOID.0 BRIDGE-MIB::newRoot";
     expect($eventlog->severity)->toEqual(Severity::Notice, 'Trap eventlog severity incorrect');
 });
 
-test('bridge topology changed', function () {
+test('bridge topology changed', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -158,7 +158,7 @@ TRAP,
     );
 });
 
-test('cold start', function () {
+test('cold start', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -171,7 +171,7 @@ TRAP,
     );
 });
 
-test('warm start', function () {
+test('warm start', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -184,7 +184,7 @@ TRAP,
     );
 });
 
-test('entity database changed', function () {
+test('entity database changed', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162

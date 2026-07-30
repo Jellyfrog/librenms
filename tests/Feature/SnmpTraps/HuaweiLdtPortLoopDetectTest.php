@@ -23,9 +23,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('huawei ldt port loop detect', function () {
+test('huawei ldt port loop detect', function (): void {
     $this->assertTrapLogsMessage('{{ hostname }}
 UDP: [{{ ip }}]:44289->[1.1.1.1]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 82:19:24:56.09

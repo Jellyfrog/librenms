@@ -23,10 +23,10 @@
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-uses(\LibreNMS\Tests\TestCase::class)->group('datastores');
+uses(LibreNMS\Tests\TestCase::class)->group('datastores');
 use App\Facades\LibrenmsConfig;
 
-beforeEach(function () {
+beforeEach(function (): void {
     LibrenmsConfig::forget([
         'graphite',
         'influxdb',
@@ -38,15 +38,15 @@ beforeEach(function () {
     ]);
 });
 
-test('default initialization', function () {
+test('default initialization', function (): void {
     $ds = $this->app->make('Datastore');
     $stores = $ds->getStores();
     expect($stores)->toHaveCount(1, 'Incorrect number of default stores enabled');
 
-    expect($stores[0]::class)->toEqual(\LibreNMS\Data\Store\Rrd::class, 'The default enabled store should be Rrd');
+    expect($stores[0]::class)->toEqual(LibreNMS\Data\Store\Rrd::class, 'The default enabled store should be Rrd');
 });
 
-test('initialization', function () {
+test('initialization', function (): void {
     LibrenmsConfig::set('rrd.enable', false);
     LibrenmsConfig::set('graphite.enable', true);
     LibrenmsConfig::set('influxdb.enable', true);
@@ -62,11 +62,11 @@ test('initialization', function () {
     $enabled = array_map(get_class(...), $stores);
 
     $expected_enabled = [
-        \LibreNMS\Data\Store\Graphite::class,
-        \LibreNMS\Data\Store\InfluxDB::class,
-        \LibreNMS\Data\Store\InfluxDBv2::class,
-        \LibreNMS\Data\Store\OpenTSDB::class,
-        \LibreNMS\Data\Store\Prometheus::class,
+        LibreNMS\Data\Store\Graphite::class,
+        LibreNMS\Data\Store\InfluxDB::class,
+        LibreNMS\Data\Store\InfluxDBv2::class,
+        LibreNMS\Data\Store\OpenTSDB::class,
+        LibreNMS\Data\Store\Prometheus::class,
     ];
 
     expect($enabled)->toEqual($expected_enabled, 'Expected all non-default stores to be initialized');

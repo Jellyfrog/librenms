@@ -23,9 +23,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('bad cable', function () {
+test('bad cable', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -45,7 +45,7 @@ TRAP,
     );
 });
 
-test('bad driver', function () {
+test('bad driver', function (): void {
     $this->assertTrapLogsMessage("{{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 SNMPv2-MIB::snmpTrapOID.0 HP-ICF-FAULT-FINDER-MIB::hpicfFaultFinderTrap
@@ -63,7 +63,7 @@ SNMPv2-MIB::snmpTrapEnterprise.0 HP-ICF-OID::hpicfCommonTraps",
     );
 });
 
-test('bcast storm', function () {
+test('bcast storm', function (): void {
     $this->assertTrapLogsMessage("{{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
 SNMPv2-MIB::snmpTrapOID.0 HP-ICF-FAULT-FINDER-MIB::hpicfFaultFinderTrap

@@ -25,13 +25,13 @@ use App\Facades\LibrenmsConfig;
 use LibreNMS\Util\Http;
 use LibreNMS\Util\Version;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('client agent is correct', function () {
+test('client agent is correct', function (): void {
     expect(Http::client()->getOptions()['headers']['User-Agent'])->toEqual('LibreNMS/' . Version::VERSION);
 });
 
-test('proxy is not set', function () {
+test('proxy is not set', function (): void {
     LibrenmsConfig::set('http_proxy', '');
     LibrenmsConfig::set('https_proxy', '');
     LibrenmsConfig::set('no_proxy', '');
@@ -41,7 +41,7 @@ test('proxy is not set', function () {
     expect($client_options['proxy']['no'])->toBeEmpty();
 });
 
-test('proxy is set', function () {
+test('proxy is set', function (): void {
     LibrenmsConfig::set('http_proxy', 'http://proxy:5000');
     LibrenmsConfig::set('https_proxy', 'tcp://proxy:5183');
     LibrenmsConfig::set('no_proxy', 'localhost,127.0.0.1,::1,.domain.com');
@@ -56,7 +56,7 @@ test('proxy is set', function () {
     ]);
 });
 
-test('proxy is set from env', function () {
+test('proxy is set from env', function (): void {
     LibrenmsConfig::set('http_proxy', '');
     LibrenmsConfig::set('https_proxy', '');
     LibrenmsConfig::set('no_proxy', '');

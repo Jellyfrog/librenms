@@ -29,9 +29,9 @@ use App\Models\Device;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
-uses(\LibreNMS\Tests\DBTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->groups = [
         'Le23HKVMvN' => [
             'Cl09bZU4sn' => [
@@ -96,19 +96,19 @@ beforeEach(function () {
     $this->instance->disableDNSLookup();
 });
 
-test('nonsense', function () {
-    $this->assertNotEquals(0, \Artisan::call('smokeping:generate --probes --targets --no-header'));
-    $this->assertNotEquals(0, \Artisan::call('smokeping:generate --probes --targets --single-process'));
-    $this->assertNotEquals(0, \Artisan::call('smokeping:generate --probes --targets'));
-    $this->assertNotEquals(0, \Artisan::call('smokeping:generate --no-header'));
-    $this->assertNotEquals(0, \Artisan::call('smokeping:generate --single-process'));
-    $this->assertNotEquals(0, \Artisan::call('smokeping:generate'));
+test('nonsense', function (): void {
+    $this->assertNotEquals(0, Artisan::call('smokeping:generate --probes --targets --no-header'));
+    $this->assertNotEquals(0, Artisan::call('smokeping:generate --probes --targets --single-process'));
+    $this->assertNotEquals(0, Artisan::call('smokeping:generate --probes --targets'));
+    $this->assertNotEquals(0, Artisan::call('smokeping:generate --no-header'));
+    $this->assertNotEquals(0, Artisan::call('smokeping:generate --single-process'));
+    $this->assertNotEquals(0, Artisan::call('smokeping:generate'));
 
     $this->expectException('RuntimeException');
-    \Artisan::call('smokeping:generate --foobar');
+    Artisan::call('smokeping:generate --foobar');
 });
 
-test('build header', function () {
+test('build header', function (): void {
     $warnings = ['rpPvjwdI0M0hlg6ZgZA', '2aUjOMql6ZWN7H0DthWDOyCvkXs0kVShhnASnc', 'HYMWbDplSW9PLNK9o9tySeJF4Ac61uTRHUUxxBXHiCl'];
 
     $this->instance->setWarning($warnings[0]);
@@ -127,7 +127,7 @@ test('build header', function () {
     expect([])->toEqual($this->instance->buildHeader(true, false));
 });
 
-test('assemble probes', function () {
+test('assemble probes', function (): void {
     $tests = [0, -1];
 
     foreach ($tests as $test) {
@@ -135,7 +135,7 @@ test('assemble probes', function () {
     }
 });
 
-test('build probe', function () {
+test('build probe', function (): void {
     $saved = ['+ Pl0JnP2vfE',
         '  binary = /usr/bin/G28F3fFeew',
         '  blazemode = true',
@@ -151,7 +151,7 @@ test('build probe', function () {
     expect(implode(PHP_EOL, $output))->toEqual(implode(PHP_EOL, $saved));
 });
 
-test('build targets', function () {
+test('build targets', function (): void {
     $saved = [
         '+ Le23HKVMvN',
         '  menu = Le23HKVMvN',
@@ -244,7 +244,7 @@ test('build targets', function () {
     expect(implode(PHP_EOL, $output))->toEqual(implode(PHP_EOL, $saved));
 });
 
-test('single proccess', function () {
+test('single proccess', function (): void {
     $saved = [
         '+ Le23HKVMvN',
         '  menu = Le23HKVMvN',
@@ -325,7 +325,7 @@ test('single proccess', function () {
     expect(implode(PHP_EOL, $output))->toEqual(implode(PHP_EOL, $saved));
 });
 
-test('compare legacy', function () {
+test('compare legacy', function (): void {
     $data = [];
 
     // Generate a ridiculous number of random devices for testing
@@ -338,8 +338,8 @@ test('compare legacy', function () {
     $data = Arr::sortRecursive($data);
 
     // Disable DNS lookups
-    \Artisan::call('smokeping:generate --targets --no-header --no-dns --single-process --compat');
-    $new = \Artisan::output();
+    Artisan::call('smokeping:generate --targets --no-header --no-dns --single-process --compat');
+    $new = Artisan::output();
     $old = legacyAlgo($data);
 
     expect(canonicalise($old))->toEqual(canonicalise($new));

@@ -28,9 +28,9 @@
  * @copyright  2020 KanREN, Inc
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('event', function () {
+test('event', function (): void {
     $alarm = genEkiEvent();
 
     $this->assertTrapLogsMessage("{{ hostname }}
@@ -55,7 +55,7 @@ EKINOPS-MGNT2-NMS-MIB::mgnt2EventLogChassisId {{ ip }}",
     );
 });
 
-test('event add text', function () {
+test('event add text', function (): void {
     $alarm = genEkiEvent();
 
     $this->assertTrapLogsMessage("{{ hostname }}
@@ -80,7 +80,7 @@ EKINOPS-MGNT2-NMS-MIB::mgnt2EventLogChassisId {{ ip }}",
     );
 });
 
-test('event port', function () {
+test('event port', function (): void {
     $alarm = genEkiEvent();
 
     $this->assertTrapLogsMessage("{{ hostname }}

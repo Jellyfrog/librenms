@@ -23,9 +23,9 @@
  * @copyright  2019 Heath Barnhart
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('Syslog IP version modified', function () {
+test('Syslog IP version modified', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -41,7 +41,7 @@ TRAP,
     );
 });
 
-test('Syslog IPv6 addr modified', function () {
+test('Syslog IPv6 addr modified', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -57,7 +57,7 @@ TRAP,
     );
 });
 
-test('Syslog IP addr modified', function () {
+test('Syslog IP addr modified', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -73,7 +73,7 @@ TRAP,
     );
 });
 
-test('syslog port modified', function () {
+test('syslog port modified', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -89,7 +89,7 @@ TRAP,
     );
 });
 
-test('acl modified', function () {
+test('acl modified', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -105,7 +105,7 @@ TRAP,
     );
 });
 
-test('banner modified', function () {
+test('banner modified', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -121,7 +121,7 @@ TRAP,
     );
 });
 
-test('time source modified', function () {
+test('time source modified', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -153,7 +153,7 @@ TRAP,
     );
 });
 
-test('time zone modified', function () {
+test('time zone modified', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -197,7 +197,7 @@ TRAP,
     );
 });
 
-test('ntp modified', function () {
+test('ntp modified', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -229,7 +229,7 @@ TRAP,
     );
 });
 
-test('auth server modified', function () {
+test('auth server modified', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -266,7 +266,7 @@ TRAP,
         'Could not handle cmAttributeValueChangeTrap authentication server disabled');
 });
 
-test('ne modified', function () {
+test('ne modified', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -286,7 +286,7 @@ TRAP,
     );
 });
 
-test('snmp dying gasp state modified', function () {
+test('snmp dying gasp state modified', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -314,7 +314,7 @@ TRAP,
         'Could not handle cmAttributeValueChangeTrap SNMP dying gasp disabled');
 });
 
-test('net port modified', function () {
+test('net port modified', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -355,7 +355,7 @@ TRAP,
         'Could not handle cmAttributeValueChangeTrap network port modified generic message');
 });
 
-test('acc port modied', function () {
+test('acc port modied', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -397,7 +397,7 @@ TRAP,
         'Could not handle cmAttributeValueChangeTrap access port modified gerneric messages');
 });
 
-test('acc flow modified', function () {
+test('acc flow modified', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -415,7 +415,7 @@ TRAP,
         'Could not handle cmAttributeValueChangeTrap access flow modified');
 });
 
-test('lag modified', function () {
+test('lag modified', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -430,7 +430,7 @@ TRAP,
         'Could not handle cmAttributeValueChangeTrap LAG modified');
 });
 
-test('qos flow policer modfied', function () {
+test('qos flow policer modfied', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -448,7 +448,7 @@ TRAP,
         'Could not handle cmAttributeValueChangeTrap QoS flow policer');
 });
 
-test('qos shaper modified', function () {
+test('qos shaper modified', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -464,7 +464,7 @@ TRAP,
         'Could not handle cmAttributeValueChangeTrap QoS shaper');
 });
 
-test('acc shaper', function () {
+test('acc shaper', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162

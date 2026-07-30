@@ -30,16 +30,16 @@ use App\Models\Device;
 use App\Models\Vminfo;
 use LibreNMS\Enum\PowerState;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
 // replicates LibreNMS\Tests\Traits\RequiresDatabase::setUpBeforeClass (the trait collides with Pest's Testable trait)
-beforeEach(function () {
+beforeEach(function (): void {
     if (! getenv('DBTEST')) {
         $this->markTestSkipped('Database tests not enabled.  Set DBTEST=1 to enable.');
     }
 });
 
-test('vmw vm powered off trap', function () {
+test('vmw vm powered off trap', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $guest = Vminfo::factory()->make();
@@ -64,7 +64,7 @@ SNMPv2-MIB::snmpTrapEnterprise.0 VMWARE-PRODUCTS-MIB::vmwESX",
     expect($guest->vmwVmState)->toEqual(PowerState::OFF);
 });
 
-test('vmw vm powered ontrap', function () {
+test('vmw vm powered ontrap', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $guest = Vminfo::factory()->make();
@@ -89,7 +89,7 @@ SNMPv2-MIB::snmpTrapEnterprise.0 VMWARE-PRODUCTS-MIB::vmwESX",
     expect($guest->vmwVmState)->toEqual(PowerState::ON);
 });
 
-test('vmw vm suspended trap', function () {
+test('vmw vm suspended trap', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $guest = Vminfo::factory()->make();

@@ -29,18 +29,18 @@ use LibreNMS\Enum\IntegerType;
 use LibreNMS\Util\Number;
 use LibreNMS\Util\StringHelpers;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('hex2 bin', function () {
+test('hex2 bin', function (): void {
     expect(hex2bin('426967203130205550'))->toEqual('Big 10 UP');
 });
 
-test('snmp hexstring', function () {
+test('snmp hexstring', function (): void {
     $input = '4c 61 72 70 69 6e 67 20 34 20 55 00 0a';
     expect(StringHelpers::hexToAscii($input, ' '))->toEqual("Larping 4 U\n");
 });
 
-test('dynamic discovery get value', function () {
+test('dynamic discovery get value', function (): void {
     $pre_cache = [
         'firstdata' => [
             0 => ['temp' => 1],
@@ -85,7 +85,7 @@ test('dynamic discovery get value', function () {
     expect(YamlDiscovery::getValueFromData('doubletable', 13, $data, $pre_cache))->toBe('BBQ');
 });
 
-test('number cast', function () {
+test('number cast', function (): void {
     expect(Number::cast(-14.3))->toBe(-14.3);
     expect(Number::cast('b -35'))->toBe(0);
     // cast must start with the number as old style php cast did
@@ -97,9 +97,8 @@ test('number cast', function () {
     expect(Number::cast('2.000'))->toBe(2);
 });
 
-test('number as unsigned', function () {
-    expect(Number::constrainInteger('42', IntegerType::Int32))->toBe(42);
-    /** @phpstan-ignore-line */
+test('number as unsigned', function (): void {
+    expect(Number::constrainInteger('42', IntegerType::Int32))->toBe(42); /** @phpstan-ignore-line */
     expect(Number::constrainInteger(2147483647, IntegerType::Int32))->toBe(2147483647);
     expect(Number::constrainInteger(2147483648, IntegerType::Int32))->toBe(-2147483648);
     expect(Number::constrainInteger(2147483649, IntegerType::Int32))->toBe(-2147483647);
@@ -114,8 +113,8 @@ test('number as unsigned', function () {
     expect(Number::constrainInteger(-2147483649, IntegerType::Uint32))->toBe(2147483645);
 });
 
-test('number as unsigned value exceeds max unsigned value', function () {
-    $this->expectException(\InvalidArgumentException::class);
+test('number as unsigned value exceeds max unsigned value', function (): void {
+    $this->expectException(InvalidArgumentException::class);
 
     // Exceeds the maximum representable value for a 16-bit unsigned integer
     Number::constrainInteger(4294967296, IntegerType::Int16);

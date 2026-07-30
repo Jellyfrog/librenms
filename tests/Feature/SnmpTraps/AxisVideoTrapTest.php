@@ -24,9 +24,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('axis alarm new', function () {
+test('axis alarm new', function (): void {
     $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:49563->[10.2.4.101]:162]:
 SNMPv2-MIB::sysUpTime.0 = Timeticks: (2940) 0:00:29.40
@@ -40,7 +40,7 @@ AXIS-VIDEO-MIB::alarmText Check the SD_DISK storage device',
     );
 });
 
-test('axis alarm cleared', function () {
+test('axis alarm cleared', function (): void {
     $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:51988->[10.2.4.101]:162]:
 SNMPv2-MIB::sysUpTime.0 = Timeticks: (706805) 1:57:48.05
@@ -54,7 +54,7 @@ AXIS-VIDEO-MIB::alarmText Check the fan',
     );
 });
 
-test('axis alarm single', function () {
+test('axis alarm single', function (): void {
     $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:49563->[10.2.4.101]:162]:
 SNMPv2-MIB::sysUpTime.0 = Timeticks: (101642184) 11 days, 18:20:21.84

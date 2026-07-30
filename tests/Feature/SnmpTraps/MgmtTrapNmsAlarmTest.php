@@ -31,9 +31,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('alarm clear', function () {
+test('alarm clear', function (): void {
     $alarm = genEkiAlarm();
 
     $this->assertTrapLogsMessage("{{ hostname }}
@@ -60,7 +60,7 @@ EKINOPS-MGNT2-NMS-MIB::mgnt2AlmLogChassisId {{ ip }}",
     );
 });
 
-test('alarm add text', function () {
+test('alarm add text', function (): void {
     $alarm = genEkiAlarm();
 
     $this->assertTrapLogsMessage("{{ hostname }}
@@ -87,7 +87,7 @@ EKINOPS-MGNT2-NMS-MIB::mgnt2AlmLogChassisId {{ ip }}",
     );
 });
 
-test('alarm port', function () {
+test('alarm port', function (): void {
     $alarm = genEkiAlarm();
 
     $this->assertTrapLogsMessage("{{ hostname }}

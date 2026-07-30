@@ -7,9 +7,9 @@ use Illuminate\Validation\Rules\Password;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-uses(\LibreNMS\Tests\TestCase::class, \Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(LibreNMS\Tests\TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     // Setup basic roles
     Role::findOrCreate('admin');
     Role::findOrCreate('user');
@@ -27,7 +27,7 @@ beforeEach(function () {
     LibrenmsConfig::set('auth_mechanism', 'mysql');
 });
 
-test('admin with create permission can create user', function () {
+test('admin with create permission can create user', function (): void {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
     $admin->givePermissionTo('user.create');
@@ -44,7 +44,7 @@ test('admin with create permission can create user', function () {
     $this->assertDatabaseHas('users', ['username' => 'newuser']);
 });
 
-test('admin with update permission can update any user', function () {
+test('admin with update permission can update any user', function (): void {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
     $admin->givePermissionTo('user.update');
@@ -60,7 +60,7 @@ test('admin with update permission can update any user', function () {
     expect($targetUser->fresh()->realname)->toEqual('Updated Name');
 });
 
-test('user can update their own profile', function () {
+test('user can update their own profile', function (): void {
     $user = User::factory()->create(['password' => Hash::make('old_password'), 'enabled' => 1]);
     $user->assignRole('user');
 
@@ -73,7 +73,7 @@ test('user can update their own profile', function () {
     expect($user->fresh()->realname)->toEqual('My New Name');
 });
 
-test('user can change their own password with old password verification', function () {
+test('user can change their own password with old password verification', function (): void {
     $user = User::factory()->create(['password' => Hash::make('old_password'), 'enabled' => 1]);
     $user->assignRole('user');
 
@@ -94,7 +94,7 @@ test('user can change their own password with old password verification', functi
     expect(Hash::check('new_password123', $user->fresh()->password))->toBeTrue();
 });
 
-test('user cannot update other users', function () {
+test('user cannot update other users', function (): void {
     $user = User::factory()->create(['enabled' => 1]);
     $otherUser = User::factory()->create(['realname' => 'Other User', 'enabled' => 1]);
 
@@ -106,7 +106,7 @@ test('user cannot update other users', function () {
     expect($otherUser->fresh()->realname)->toEqual('Other User');
 });
 
-test('user cannot update restricted fields on themselves', function () {
+test('user cannot update restricted fields on themselves', function (): void {
     $user = User::factory()->create([
         'enabled' => 1,
         'can_modify_passwd' => 1,
@@ -130,7 +130,7 @@ test('user cannot update restricted fields on themselves', function () {
     expect($user->hasRole('admin'))->toBeFalse('User should NOT be able to assign themselves roles');
 });
 
-test('admin can update roles on other users', function () {
+test('admin can update roles on other users', function (): void {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
     $admin->givePermissionTo('user.update');
@@ -147,7 +147,7 @@ test('admin can update roles on other users', function () {
     expect($targetUser->fresh()->hasRole('admin'))->toBeTrue();
 });
 
-test('admin can update restricted fields on other users', function () {
+test('admin can update restricted fields on other users', function (): void {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
     $admin->givePermissionTo('user.update');
@@ -170,7 +170,7 @@ test('admin can update restricted fields on other users', function () {
     expect((int) $targetUser->can_modify_passwd)->toEqual(0);
 });
 
-test('admin can uncheck restricted fields', function () {
+test('admin can uncheck restricted fields', function (): void {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
     $admin->givePermissionTo('user.update');

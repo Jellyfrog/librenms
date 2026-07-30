@@ -26,9 +26,9 @@
 
 use LibreNMS\Util\EnvHelper;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('parse array', function () {
+test('parse array', function (): void {
     putenv('PARSETEST=one,two');
     expect(EnvHelper::parseArray('PARSETEST'))->toBe(['one', 'two'], 'Could not parse simple array');
     expect(EnvHelper::parseArray('PARSETESTNOTSET', 'default'))->toBe(['default'], 'Did not get default value as expected');
@@ -46,7 +46,7 @@ test('parse array', function () {
     putenv('PARSETEST');
 });
 
-test('set env', function () {
+test('set env', function (): void {
     expect(EnvHelper::setEnv("ONE=one\nTWO=\n", [
         'ONE' => 'zero',
         'TWO' => '2$',

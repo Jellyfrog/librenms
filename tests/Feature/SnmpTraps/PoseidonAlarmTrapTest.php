@@ -24,9 +24,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('poseidon sens alarm state changed', function () {
+test('poseidon sens alarm state changed', function (): void {
     $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:49563->[10.2.4.101]:162]:
 SNMPv2-MIB::sysUpTime.0 = Timeticks: (2940) 0:00:29.40
@@ -41,7 +41,7 @@ POSEIDON-MIB::sensUnit.0 percent',
     );
 });
 
-test('poseidon ts trap alarm end', function () {
+test('poseidon ts trap alarm end', function (): void {
     $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:51988->[10.2.4.101]:162]:
 SNMPv2-MIB::sysUpTime.0 = Timeticks: (706805) 1:57:48.05
@@ -54,7 +54,7 @@ POSEIDON-MIB::tsAlarmDescr.0 temperatureOutOfRange',
     );
 });
 
-test('poseidon ts trap alarm start', function () {
+test('poseidon ts trap alarm start', function (): void {
     $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:49563->[10.2.4.101]:162]:
 SNMPv2-MIB::sysUpTime.0 = Timeticks: (101642184) 11 days, 18:20:21.84

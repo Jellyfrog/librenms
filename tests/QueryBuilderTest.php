@@ -26,7 +26,7 @@
 
 use LibreNMS\Alerting\QueryBuilderFluentParser;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
 const QUERY_BUILDER_DATA_FILE = 'tests/data/misc/querybuilder.json';
 
@@ -40,11 +40,11 @@ function loadQueryData(): array
 
 dataset('query_builder_data', fn () => loadQueryData());
 
-test('has query data', function () {
+test('has query data', function (): void {
     expect(loadQueryData())->not->toBeEmpty('Could not load query builder test data from ' . QUERY_BUILDER_DATA_FILE);
 });
 
-test('query conversion', function ($legacy, $builder, $display, $sql, $query) {
+test('query conversion', function ($legacy, $builder, $display, $sql, $query): void {
     $qb = QueryBuilderFluentParser::fromJson($builder);
     expect($qb->toSql(false))->toEqual($display);
     expect($qb->toSql())->toEqual($sql);

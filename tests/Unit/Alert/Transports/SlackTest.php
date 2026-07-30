@@ -31,9 +31,9 @@ use Illuminate\Support\Facades\Http;
 use LibreNMS\Alert\AlertData;
 use LibreNMS\Alert\Transport;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('slack no config delivery', function () {
+test('slack no config delivery', function (): void {
     Http::fake();
 
     $slack = new Transport\Slack(new AlertTransport);
@@ -64,7 +64,7 @@ test('slack no config delivery', function () {
     ]);
 });
 
-test('slack legacy delivery', function () {
+test('slack legacy delivery', function (): void {
     Http::fake();
 
     $slack = new Transport\Slack(new AlertTransport([
@@ -100,7 +100,7 @@ test('slack legacy delivery', function () {
     ]);
 });
 
-test('slack delivery', function () {
+test('slack delivery', function (): void {
     Http::fake();
 
     $slack = new Transport\Slack(new AlertTransport([

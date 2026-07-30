@@ -26,9 +26,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('cp ups overload', function () {
+test('cp ups overload', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -45,7 +45,7 @@ TRAP,
     );
 });
 
-test('cp ups diag failed', function () {
+test('cp ups diag failed', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -62,7 +62,7 @@ TRAP,
     );
 });
 
-test('cp ups discharged', function () {
+test('cp ups discharged', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -78,7 +78,7 @@ TRAP,
     );
 });
 
-test('cp ups on battery', function () {
+test('cp ups on battery', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -95,7 +95,7 @@ TRAP,
     );
 });
 
-test('cp low battery', function () {
+test('cp low battery', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -112,7 +112,7 @@ TRAP,
     );
 });
 
-test('cp power restored', function () {
+test('cp power restored', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -129,7 +129,7 @@ TRAP,
     );
 });
 
-test('cp ups diag passed', function () {
+test('cp ups diag passed', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -145,7 +145,7 @@ TRAP,
     );
 });
 
-test('cp rtn low battery', function () {
+test('cp rtn low battery', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -162,7 +162,7 @@ TRAP,
     );
 });
 
-test('cp ups turned off', function () {
+test('cp ups turned off', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -179,7 +179,7 @@ TRAP,
     );
 });
 
-test('cp ups sleeping', function () {
+test('cp ups sleeping', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -196,7 +196,7 @@ TRAP,
     );
 });
 
-test('cp ups woke up', function () {
+test('cp ups woke up', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -213,7 +213,7 @@ TRAP,
     );
 });
 
-test('cp ups reboot started', function () {
+test('cp ups reboot started', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -230,7 +230,7 @@ TRAP,
     );
 });
 
-test('cp ups over temp', function () {
+test('cp ups over temp', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -247,7 +247,7 @@ TRAP,
     );
 });
 
-test('cp rtn over temp', function () {
+test('cp rtn over temp', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -264,7 +264,7 @@ TRAP,
     );
 });
 
-test('cp rt over load', function () {
+test('cp rt over load', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -281,7 +281,7 @@ TRAP,
     );
 });
 
-test('cp rtn discharged', function () {
+test('cp rtn discharged', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -298,7 +298,7 @@ TRAP,
     );
 });
 
-test('cp ups charger failure', function () {
+test('cp ups charger failure', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -315,7 +315,7 @@ TRAP,
     );
 });
 
-test('cp rtn charger failure', function () {
+test('cp rtn charger failure', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -332,7 +332,7 @@ TRAP,
     );
 });
 
-test('cp ups battery not present', function () {
+test('cp ups battery not present', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162

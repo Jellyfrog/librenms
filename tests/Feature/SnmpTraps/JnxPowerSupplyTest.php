@@ -28,9 +28,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('jnx power supply failure trap', function () {
+test('jnx power supply failure trap', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:49716->[10.0.0.1]:162
@@ -50,7 +50,7 @@ TRAP,
     );
 });
 
-test('jnx power supply ok trap', function () {
+test('jnx power supply ok trap', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:49716->[10.0.0.1]:162

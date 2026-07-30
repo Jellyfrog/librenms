@@ -29,10 +29,10 @@ use App\Models\Device;
 use App\Models\Port;
 use App\Models\User;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 function devicePermissionData($user)
 {
-    $user_id = $user instanceof User ? $user->user_id : (is_numeric($user) ? (int) $user : \Auth::id());
+    $user_id = $user instanceof User ? $user->user_id : (is_numeric($user) ? (int) $user : Auth::id());
 
     $data = null;
 
@@ -50,11 +50,11 @@ function devicePermissionData($user)
             break;
     }
 
-    return new \Illuminate\Support\Collection($data);
+    return new Illuminate\Support\Collection($data);
 }
 
-test('user can access device', function () {
-    $perms = \Mockery::mock(\LibreNMS\Cache\PermissionsCache::class)->makePartial();
+test('user can access device', function (): void {
+    $perms = Mockery::mock(LibreNMS\Cache\PermissionsCache::class)->makePartial();
     $perms->shouldReceive('getDevicePermissions')->andReturnUsing(fn ($user) => devicePermissionData($user));
 
     $device = Device::factory()->make(['device_id' => 54]);
@@ -70,14 +70,14 @@ test('user can access device', function () {
     expect($perms->canAccessDevice(23, 43))->toBeFalse();
     expect($perms->canAccessDevice(54))->toBeFalse();
 
-    \Auth::shouldReceive('id')->once()->andReturn(43);
+    Auth::shouldReceive('id')->once()->andReturn(43);
     expect($perms->canAccessDevice(54))->toBeTrue();
-    \Auth::shouldReceive('id')->once()->andReturn(23);
+    Auth::shouldReceive('id')->once()->andReturn(23);
     expect($perms->canAccessDevice(54))->toBeFalse();
 });
 
-test('devices for user', function () {
-    $perms = \Mockery::mock(\LibreNMS\Cache\PermissionsCache::class)->makePartial();
+test('devices for user', function (): void {
+    $perms = Mockery::mock(LibreNMS\Cache\PermissionsCache::class)->makePartial();
     $perms->shouldReceive('getDevicePermissions')->andReturnUsing(fn ($user) => devicePermissionData($user));
 
     expect($perms->devicesForUser(43))->toEqual(collect([54, 32]));
@@ -86,12 +86,12 @@ test('devices for user', function () {
     expect($perms->devicesForUser($user))->toEqual(collect([54, 32]));
     expect($perms->devicesForUser(9))->toBeEmpty();
     expect($perms->devicesForUser())->toEqual(collect());
-    \Auth::shouldReceive('id')->once()->andReturn(14);
+    Auth::shouldReceive('id')->once()->andReturn(14);
     expect($perms->devicesForUser())->toEqual(collect([54]));
 });
 
-test('user can access port', function () {
-    $perms = \Mockery::mock(\LibreNMS\Cache\PermissionsCache::class)->makePartial();
+test('user can access port', function (): void {
+    $perms = Mockery::mock(LibreNMS\Cache\PermissionsCache::class)->makePartial();
     $perms->shouldReceive('getPortPermissions')->andReturn(collect([
         (object) ['user_id' => 43, 'port_id' => 54],
         (object) ['user_id' => 43, 'port_id' => 32],
@@ -111,14 +111,14 @@ test('user can access port', function () {
     expect($perms->canAccessPort(23, 43))->toBeFalse();
     expect($perms->canAccessPort(54))->toBeFalse();
 
-    \Auth::shouldReceive('id')->once()->andReturn(43);
+    Auth::shouldReceive('id')->once()->andReturn(43);
     expect($perms->canAccessPort(54))->toBeTrue();
-    \Auth::shouldReceive('id')->once()->andReturn(23);
+    Auth::shouldReceive('id')->once()->andReturn(23);
     expect($perms->canAccessPort(54))->toBeFalse();
 });
 
-test('ports for user', function () {
-    $perms = \Mockery::mock(\LibreNMS\Cache\PermissionsCache::class)->makePartial();
+test('ports for user', function (): void {
+    $perms = Mockery::mock(LibreNMS\Cache\PermissionsCache::class)->makePartial();
     $perms->shouldReceive('getPortPermissions')->andReturn(collect([
         (object) ['user_id' => 3, 'port_id' => 7],
         (object) ['user_id' => 3, 'port_id' => 2],
@@ -131,12 +131,12 @@ test('ports for user', function () {
     expect($perms->portsForUser($user))->toEqual(collect([7, 2]));
     expect($perms->portsForUser(9))->toBeEmpty();
     expect($perms->portsForUser())->toEqual(collect());
-    \Auth::shouldReceive('id')->once()->andReturn(4);
+    Auth::shouldReceive('id')->once()->andReturn(4);
     expect($perms->portsForUser())->toEqual(collect([5]));
 });
 
-test('users for port', function () {
-    $perms = \Mockery::mock(\LibreNMS\Cache\PermissionsCache::class)->makePartial();
+test('users for port', function (): void {
+    $perms = Mockery::mock(LibreNMS\Cache\PermissionsCache::class)->makePartial();
     $perms->shouldReceive('getPortPermissions')->andReturn(collect([
         (object) ['user_id' => 3, 'port_id' => 7],
         (object) ['user_id' => 3, 'port_id' => 2],
@@ -152,8 +152,8 @@ test('users for port', function () {
     expect($perms->usersForPort(9))->toBeEmpty();
 });
 
-test('user can access bill', function () {
-    $perms = \Mockery::mock(\LibreNMS\Cache\PermissionsCache::class)->makePartial();
+test('user can access bill', function (): void {
+    $perms = Mockery::mock(LibreNMS\Cache\PermissionsCache::class)->makePartial();
     $perms->shouldReceive('getBillPermissions')->andReturn(collect([
         (object) ['user_id' => 43, 'bill_id' => 54],
         (object) ['user_id' => 43, 'bill_id' => 32],
@@ -173,14 +173,14 @@ test('user can access bill', function () {
     expect($perms->canAccessBill(23, 43))->toBeFalse();
     expect($perms->canAccessBill(54))->toBeFalse();
 
-    \Auth::shouldReceive('id')->once()->andReturn(43);
+    Auth::shouldReceive('id')->once()->andReturn(43);
     expect($perms->canAccessBill(54))->toBeTrue();
-    \Auth::shouldReceive('id')->once()->andReturn(23);
+    Auth::shouldReceive('id')->once()->andReturn(23);
     expect($perms->canAccessBill(54))->toBeFalse();
 });
 
-test('bills for user', function () {
-    $perms = \Mockery::mock(\LibreNMS\Cache\PermissionsCache::class)->makePartial();
+test('bills for user', function (): void {
+    $perms = Mockery::mock(LibreNMS\Cache\PermissionsCache::class)->makePartial();
     $perms->shouldReceive('getBillPermissions')->andReturn(collect([
         (object) ['user_id' => 3, 'bill_id' => 7],
         (object) ['user_id' => 3, 'bill_id' => 2],
@@ -193,12 +193,12 @@ test('bills for user', function () {
     expect($perms->billsForUser($user))->toEqual(collect([7, 2]));
     expect($perms->billsForUser(9))->toBeEmpty();
     expect($perms->billsForUser())->toEqual(collect());
-    \Auth::shouldReceive('id')->once()->andReturn(4);
+    Auth::shouldReceive('id')->once()->andReturn(4);
     expect($perms->billsForUser())->toEqual(collect([5]));
 });
 
-test('users for bill', function () {
-    $perms = \Mockery::mock(\LibreNMS\Cache\PermissionsCache::class)->makePartial();
+test('users for bill', function (): void {
+    $perms = Mockery::mock(LibreNMS\Cache\PermissionsCache::class)->makePartial();
     $perms->shouldReceive('getBillPermissions')->andReturn(collect([
         (object) ['user_id' => 3, 'bill_id' => 7],
         (object) ['user_id' => 3, 'bill_id' => 2],

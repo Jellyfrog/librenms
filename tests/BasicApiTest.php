@@ -28,9 +28,9 @@ use App\Models\ApiToken;
 use App\Models\Device;
 use App\Models\User;
 
-uses(\LibreNMS\Tests\DBTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-test('list devices', function () {
+test('list devices', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $token = ApiToken::generateToken($user);

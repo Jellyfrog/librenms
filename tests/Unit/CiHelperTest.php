@@ -26,9 +26,9 @@
 
 use LibreNMS\Util\CiHelper;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('set flags', function () {
+test('set flags', function (): void {
     $helper = new CiHelper();
     $allFalse = array_map(fn ($flag) => false, getDefaultFlags());
     $allTrue = array_map(fn ($flag) => true, getDefaultFlags());
@@ -48,12 +48,12 @@ test('set flags', function () {
     expect($helper->getFlags())->toEqual($testOne);
 });
 
-test('defaults', function () {
+test('defaults', function (): void {
     $helper = new CiHelper();
     expect($helper->getFlags())->toEqual(getDefaultFlags());
 });
 
-test('no files', function () {
+test('no files', function (): void {
     putenv('FILES=none');
     $helper = new CiHelper();
     $helper->detectChangedFiles();
@@ -69,7 +69,7 @@ test('no files', function () {
     ]);
 });
 
-test('set os', function () {
+test('set os', function (): void {
     $helper = new CiHelper();
     $helper->setOS(['netonix', 'e3meter']);
     assertFlagsSet($helper, [
@@ -106,7 +106,7 @@ test('set os', function () {
     ]);
 });
 
-test('set modules', function () {
+test('set modules', function (): void {
     $helper = new CiHelper();
     $helper->setModules(['sensors', 'processors']);
     assertFlagsSet($helper, [
@@ -174,7 +174,7 @@ test('set modules', function () {
     ]);
 });
 
-test('file categorization', function () {
+test('file categorization', function (): void {
     putenv('FILES=LibreNMS/Alert/Transport/Sensu.php includes/services.inc.php');
     $helper = new CiHelper();
     $helper->detectChangedFiles();

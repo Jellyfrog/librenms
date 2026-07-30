@@ -2,9 +2,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('zebra printer head open', function () {
+test('zebra printer head open', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -18,7 +18,7 @@ TRAP,
     );
 });
 
-test('zebra printer paper out', function () {
+test('zebra printer paper out', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -32,7 +32,7 @@ TRAP,
     );
 });
 
-test('zebra printer ribbon out', function () {
+test('zebra printer ribbon out', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -46,7 +46,7 @@ TRAP,
     );
 });
 
-test('zebra printer media low', function () {
+test('zebra printer media low', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -60,7 +60,7 @@ TRAP,
     );
 });
 
-test('zebra printer job completed', function () {
+test('zebra printer job completed', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -74,7 +74,7 @@ TRAP,
     );
 });
 
-test('zebra printer cutter jam', function () {
+test('zebra printer cutter jam', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -88,7 +88,7 @@ TRAP,
     );
 });
 
-test('zebra printer job completed german', function () {
+test('zebra printer job completed german', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -102,7 +102,7 @@ TRAP,
     );
 });
 
-test('zebra printer paused', function () {
+test('zebra printer paused', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -116,7 +116,7 @@ TRAP,
     );
 });
 
-test('zebra printer head element bad', function () {
+test('zebra printer head element bad', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -130,7 +130,7 @@ TRAP,
     );
 });
 
-test('zebra printer replace head', function () {
+test('zebra printer replace head', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -144,7 +144,7 @@ TRAP,
     );
 });
 
-test('zebra printer motor overtemp', function () {
+test('zebra printer motor overtemp', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -158,7 +158,7 @@ TRAP,
     );
 });
 
-test('zebra printer printhead shutdown', function () {
+test('zebra printer printhead shutdown', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -172,7 +172,7 @@ TRAP,
     );
 });
 
-test('zebra printer thermistor fault', function () {
+test('zebra printer thermistor fault', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -186,7 +186,7 @@ TRAP,
     );
 });
 
-test('zebra printer invalid head', function () {
+test('zebra printer invalid head', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -200,7 +200,7 @@ TRAP,
     );
 });
 
-test('zebra printer media cartridge load failure', function () {
+test('zebra printer media cartridge load failure', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -214,7 +214,7 @@ TRAP,
     );
 });
 
-test('zebra printer paper error', function () {
+test('zebra printer paper error', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -228,7 +228,7 @@ TRAP,
     );
 });
 
-test('zebra printer ribbon auth error', function () {
+test('zebra printer ribbon auth error', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -242,7 +242,7 @@ TRAP,
     );
 });
 
-test('zebra printer head too hot', function () {
+test('zebra printer head too hot', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -256,7 +256,7 @@ TRAP,
     );
 });
 
-test('zebra printer head cold', function () {
+test('zebra printer head cold', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -270,7 +270,7 @@ TRAP,
     );
 });
 
-test('zebra printer supply too hot', function () {
+test('zebra printer supply too hot', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -284,7 +284,7 @@ TRAP,
     );
 });
 
-test('zebra printer ribbon low', function () {
+test('zebra printer ribbon low', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -298,7 +298,7 @@ TRAP,
     );
 });
 
-test('zebra printer battery low', function () {
+test('zebra printer battery low', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -312,7 +312,7 @@ TRAP,
     );
 });
 
-test('zebra printer clean printhead', function () {
+test('zebra printer clean printhead', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -326,7 +326,7 @@ TRAP,
     );
 });
 
-test('zebra printer rfid error', function () {
+test('zebra printer rfid error', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -340,7 +340,7 @@ TRAP,
     );
 });
 
-test('zebra printer rewind', function () {
+test('zebra printer rewind', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -354,7 +354,7 @@ TRAP,
     );
 });
 
-test('zebra printer no reader present', function () {
+test('zebra printer no reader present', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -368,7 +368,7 @@ TRAP,
     );
 });
 
-test('zebra printer battery missing', function () {
+test('zebra printer battery missing', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -382,7 +382,7 @@ TRAP,
     );
 });
 
-test('zebra printer media cartridge eject failure', function () {
+test('zebra printer media cartridge eject failure', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -396,7 +396,7 @@ TRAP,
     );
 });
 
-test('zebra printer media cartridge forced eject', function () {
+test('zebra printer media cartridge forced eject', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -410,7 +410,7 @@ TRAP,
     );
 });
 
-test('zebra printer ribbon tension', function () {
+test('zebra printer ribbon tension', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -424,7 +424,7 @@ TRAP,
     );
 });
 
-test('zebra printer cover open', function () {
+test('zebra printer cover open', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -438,7 +438,7 @@ TRAP,
     );
 });
 
-test('zebra printer clean cutter', function () {
+test('zebra printer clean cutter', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -452,7 +452,7 @@ TRAP,
     );
 });
 
-test('zebra printer duplicate ip', function () {
+test('zebra printer duplicate ip', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -466,7 +466,7 @@ TRAP,
     );
 });
 
-test('zebra printer basic forced', function () {
+test('zebra printer basic forced', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -480,7 +480,7 @@ TRAP,
     );
 });
 
-test('zebra printer country code error', function () {
+test('zebra printer country code error', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -494,7 +494,7 @@ TRAP,
     );
 });
 
-test('zebra printer basic runtime', function () {
+test('zebra printer basic runtime', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -508,7 +508,7 @@ TRAP,
     );
 });
 
-test('zebra printer sgd set', function () {
+test('zebra printer sgd set', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -522,7 +522,7 @@ TRAP,
     );
 });
 
-test('zebra printer shutting down', function () {
+test('zebra printer shutting down', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -536,7 +536,7 @@ TRAP,
     );
 });
 
-test('zebra printer restarting', function () {
+test('zebra printer restarting', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -550,7 +550,7 @@ TRAP,
     );
 });
 
-test('zebra printer pmcu download', function () {
+test('zebra printer pmcu download', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -564,7 +564,7 @@ TRAP,
     );
 });
 
-test('zebra printer country code', function () {
+test('zebra printer country code', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -578,7 +578,7 @@ TRAP,
     );
 });
 
-test('zebra printer media cartridge', function () {
+test('zebra printer media cartridge', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -592,7 +592,7 @@ TRAP,
     );
 });
 
-test('zebra printer cleaning mode', function () {
+test('zebra printer cleaning mode', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -606,7 +606,7 @@ TRAP,
     );
 });
 
-test('zebra printer label ready', function () {
+test('zebra printer label ready', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -620,7 +620,7 @@ TRAP,
     );
 });
 
-test('zebra printer ribbon in', function () {
+test('zebra printer ribbon in', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -634,7 +634,7 @@ TRAP,
     );
 });
 
-test('zebra printer power on', function () {
+test('zebra printer power on', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -648,7 +648,7 @@ TRAP,
     );
 });
 
-test('zebra printer cold start', function () {
+test('zebra printer cold start', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -662,7 +662,7 @@ TRAP,
     );
 });
 
-test('zebra printer druckerpause', function () {
+test('zebra printer druckerpause', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -676,7 +676,7 @@ TRAP,
     );
 });
 
-test('zebra printer deckel offen', function () {
+test('zebra printer deckel offen', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -690,7 +690,7 @@ TRAP,
     );
 });
 
-test('zebra printer eingeschaltet', function () {
+test('zebra printer eingeschaltet', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -704,7 +704,7 @@ TRAP,
     );
 });
 
-test('zebra printer kaltstart', function () {
+test('zebra printer kaltstart', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162
@@ -718,7 +718,7 @@ TRAP,
     );
 });
 
-test('zebra printer alert cleared', function () {
+test('zebra printer alert cleared', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:44298->[192.168.5.5]:162

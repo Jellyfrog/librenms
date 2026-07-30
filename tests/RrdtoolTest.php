@@ -23,11 +23,11 @@
  * @copyright  2016 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 use App\Facades\LibrenmsConfig;
 use LibreNMS\Data\Store\Rrd;
 
-test('build command local', function () {
+test('build command local', function (): void {
     LibrenmsConfig::set('rrdcached', '');
     LibrenmsConfig::set('rrdtool_version', '1.4');
     LibrenmsConfig::set('rrd_dir', '/opt/librenms/rrd');
@@ -53,7 +53,7 @@ test('build command local', function () {
     expect($cmd)->toEqual(['update', '/opt/librenms/rrd/f', 'options']);
 });
 
-test('build command remote', function () {
+test('build command remote', function (): void {
     LibrenmsConfig::set('rrdcached', 'server:42217');
     LibrenmsConfig::set('rrdtool_version', '1.4');
     LibrenmsConfig::set('rrd_dir', '/opt/librenms/rrd');
@@ -79,11 +79,11 @@ test('build command remote', function () {
     expect($cmd)->toEqual(['update', 'f', '--daemon', 'server:42217', 'o']);
 });
 
-test('build command exception', function () {
+test('build command exception', function (): void {
     LibrenmsConfig::set('rrdcached', '');
     LibrenmsConfig::set('rrdtool_version', '1.4');
 
-    $this->expectException(\LibreNMS\Exceptions\FileExistsException::class);
+    $this->expectException(LibreNMS\Exceptions\FileExistsException::class);
 
     // use this file, since it is guaranteed to exist
     buildCommandProxy('create', __FILE__, ['o']);
@@ -91,7 +91,7 @@ test('build command exception', function () {
 
 function buildCommandProxy(string $command, string $filename, array $options): array
 {
-    $mock = \Mockery::mock(Rrd::class)->makePartial();
+    $mock = Mockery::mock(Rrd::class)->makePartial();
     app()->instance(Rrd::class, $mock);
 
     // avoid constructor

@@ -4,9 +4,9 @@ use App\Models\AlertTransport;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http as LaravelHttp;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('get multiline variables', function () {
+test('get multiline variables', function (): void {
     /** @var AlertTransport $transport */
     $transport = AlertTransport::factory()->api('text={{ $msg }}')->make();
 
@@ -24,7 +24,7 @@ test('get multiline variables', function () {
         $request->url() == 'https://librenms.org?text=This%20is%20a%20multi-line%0Aalert.');
 });
 
-test('post multiline variables', function () {
+test('post multiline variables', function (): void {
     /** @var AlertTransport $transport */
     $transport = AlertTransport::factory()->api(
         'text={{ $msg }}',

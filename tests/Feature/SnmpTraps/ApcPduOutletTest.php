@@ -23,9 +23,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('outlet off', function () {
+test('outlet off', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -41,7 +41,7 @@ TRAP,
     );
 });
 
-test('outlet on', function () {
+test('outlet on', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162
@@ -57,7 +57,7 @@ TRAP,
     );
 });
 
-test('outlet reboot', function () {
+test('outlet reboot', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:161->[192.168.5.5]:162

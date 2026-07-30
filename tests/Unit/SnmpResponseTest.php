@@ -27,9 +27,9 @@
 use App\Facades\LibrenmsConfig;
 use LibreNMS\Data\Source\SnmpResponse;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('simple', function () {
+test('simple', function (): void {
     $response = new SnmpResponse("IF-MIB::ifDescr[1] = lo\nIF-MIB::ifDescr[2] = enp4s0\n");
 
     expect($response->isValid())->toBeTrue();
@@ -77,7 +77,7 @@ test('simple', function () {
     ]]);
 });
 
-test('value fetching', function () {
+test('value fetching', function (): void {
     $response = new SnmpResponse("IF-MIB::ifDescr[1] = lo\nIF-MIB::ifDescr[2] = enp4s0\nIF-MIB::ifAlias[1] = alias one\nIF-MIB::ifAlias[2] = alias two\n\n");
 
     expect($response->value())->toEqual('lo');
@@ -102,7 +102,7 @@ test('value fetching', function () {
     expect($response->value('ifAlias[4]'))->toEqual(null);
 });
 
-test('empty values', function () {
+test('empty values', function (): void {
     // empty values
     $response = new SnmpResponse("IF-MIB::ifAlias[1] = \nIF-MIB::ifAlias[2] = 0\nIF-MIB::ifAlias[3] = \"\"\n\n");
     expect($response->isValid())->toBeTrue();
@@ -113,7 +113,7 @@ test('empty values', function () {
     expect($response->value(['IF-MIB::ifAlias[1]', 'IF-MIB::ifAlias[2]', 'IF-MIB::ifAlias[3]']))->toEqual('0');
 });
 
-test('values by index', function () {
+test('values by index', function (): void {
     $response = new SnmpResponse("IF-MIB::ifIndex[1] = 1\nIF-MIB::ifIndex[2] = 2\nIF-MIB::ifDescr[1] = lo\nIF-MIB::ifDescr[2] = enp4s0\n\n");
 
     expect($response->isValid())->toBeTrue();
@@ -143,7 +143,7 @@ test('values by index', function () {
     ]);
 });
 
-test('group by index', function () {
+test('group by index', function (): void {
     $response = new SnmpResponse(".1.3.6.1.2.1.2.2.1.10.1 = 495813425\n.1.3.6.1.2.1.2.2.1.10.2 = 3495809228\n");
     expect($response->isValid())->toBeTrue();
     expect($response->groupByIndex())->toEqual([1 => ['.1.3.6.1.2.1.2.2.1.10.1' => 495813425], 2 => ['.1.3.6.1.2.1.2.2.1.10.2' => 3495809228]]);
@@ -162,7 +162,7 @@ test('group by index', function () {
     expect($response->groupByIndex(-1))->toEqual(['1.1.0' => ['SOME-MIB::oid.1.1.0' => '14'], '1.2.0' => ['SOME-MIB::oid.1.2.0' => '42']]);
 });
 
-test('multi line', function () {
+test('multi line', function (): void {
     $response = new SnmpResponse("SNMPv2-MIB::sysDescr.1 = \"something\n on two lines\"\n");
 
     expect($response->isValid())->toBeTrue();
@@ -298,7 +298,7 @@ function trimTest(): void
     expect($response->value())->toEqual('internal\\backslash');
 }
 
-test('error handling', function () {
+test('error handling', function (): void {
     // no response
     $response = new SnmpResponse('', "Timeout: No Response from udp:127.1.6.1:1161.\n", 1);
     expect($response->isValid())->toBeFalse();

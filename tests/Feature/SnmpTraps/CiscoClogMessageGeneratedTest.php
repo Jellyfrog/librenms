@@ -24,9 +24,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('Cisco Clog Message Generated - Link Up', function () {
+test('Cisco Clog Message Generated - Link Up', function (): void {
     $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:49563->[10.0.0.1]:162]:
 DISMAN-EXPRESSION-MIB::sysUpTimeInstance 12 days, 17:06:55.96

@@ -28,9 +28,9 @@ use App\Models\Device;
 use App\Models\Ipv4Address;
 use App\Models\Port;
 
-uses(\LibreNMS\Tests\DBTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-test('find by hostname', function () {
+test('find by hostname', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $found = Device::findByHostname($device->hostname);
@@ -38,22 +38,22 @@ test('find by hostname', function () {
     expect($found->device_id)->toEqual($device->device_id, 'Did not find the correct device');
 });
 
-test('find by ip fail', function () {
+test('find by ip fail', function (): void {
     $found = Device::findByIp('this is not an ip');
     expect($found)->toBeNull();
 });
 
-test('find by ipv4 fail', function () {
+test('find by ipv4 fail', function (): void {
     $found = Device::findByIp('182.43.219.43');
     expect($found)->toBeNull();
 });
 
-test('find by ipv6 fail', function () {
+test('find by ipv6 fail', function (): void {
     $found = Device::findByIp('341a:234d:3429:9845:909f:fd32:1930:32dc');
     expect($found)->toBeNull();
 });
 
-test('find ip but no port', function () {
+test('find ip but no port', function (): void {
     $ipv4 = Ipv4Address::factory()->create();
     /** @var Ipv4Address $ipv4 */
     Port::destroy($ipv4->port_id);
@@ -62,7 +62,7 @@ test('find ip but no port', function () {
     expect($found)->toBeNull();
 });
 
-test('find by ip', function () {
+test('find by ip', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $found = Device::findByIp($device->ip);
@@ -70,7 +70,7 @@ test('find by ip', function () {
     expect($found->device_id)->toEqual($device->device_id, 'Did not find the correct device');
 });
 
-test('find by ip hostname', function () {
+test('find by ip hostname', function (): void {
     $ip = '192.168.234.32';
     $device = Device::factory()->create(['hostname' => $ip]);
     /** @var Device $device */
@@ -79,7 +79,7 @@ test('find by ip hostname', function () {
     expect($found->device_id)->toEqual($device->device_id, 'Did not find the correct device');
 });
 
-test('find by ip through port', function () {
+test('find by ip through port', function (): void {
     $device = Device::factory()->create();
     /** @var Device $device */
     $port = Port::factory()->make();

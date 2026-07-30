@@ -26,13 +26,13 @@
 
 use Illuminate\Database\QueryException;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->connection = 'testing_persistent';
 });
 
-test('migrations run without error', function () {
+test('migrations run without error', function (): void {
     try {
         $result = Artisan::call('migrate:fresh', ['--database' => $this->connection, '--seed' => true]);
         $output = Artisan::output();
@@ -47,6 +47,6 @@ test('migrations run without error', function () {
         $this->fail($queryException->getMessage() . $output . "\n\nCould not run migration {$migration} on SQLite");
     }
 
-    $count = \DB::connection($this->connection)->table('alert_templates')->count();
+    $count = DB::connection($this->connection)->table('alert_templates')->count();
     expect($count)->toBeGreaterThan(0, 'Database content check failed.');
 });

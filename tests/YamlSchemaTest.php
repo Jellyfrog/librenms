@@ -32,7 +32,7 @@ use PHPUnit\Framework\ExpectationFailedException;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
-uses(\LibreNMS\Tests\TestCase::class)->group('yaml');
+uses(LibreNMS\Tests\TestCase::class)->group('yaml');
 
 const YAML_SCHEMA_EXCLUDED = [
     '/os_detection/default.yaml',
@@ -40,23 +40,23 @@ const YAML_SCHEMA_EXCLUDED = [
     '/os_detection/ping.yaml',
 ];
 
-test('config schema', function () {
+test('config schema', function (): void {
     $error = validateFileAgainstSchema(resource_path('definitions/config_definitions.json'), resource_path('definitions/schema/config_schema.json'));
 
     expect($error)->toBeNull((string) $error);
 });
 
-test('osdefinition schema', function () {
+test('osdefinition schema', function (): void {
     validateYamlFilesAgainstSchema(resource_path('definitions/os_detection'), resource_path('definitions/schema/os_schema.json'));
 });
 
-test('osmatch filename', function () {
+test('osmatch filename', function (): void {
     foreach (listFiles(resource_path('definitions/os_detection/*.yaml')) as $filename => $file) {
         expect(substr((string) $filename, 0, -5))->toEqual(Yaml::parseFile($file)['os'], "Parameter 'os' doesn't match the filename $filename");
     }
 });
 
-test('discovery definition schema', function () {
+test('discovery definition schema', function (): void {
     validateYamlFilesAgainstSchema(resource_path('definitions/os_discovery'), resource_path('definitions/schema/discovery_schema.json'));
 });
 
@@ -108,7 +108,7 @@ function validateFileAgainstSchema(string $filePath, string $schema_file): ?stri
     }
 
     try {
-        $validator = new \JsonSchema\Validator;
+        $validator = new JsonSchema\Validator;
         $validator->validate(
             $data,
             $schema,

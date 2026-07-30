@@ -23,10 +23,10 @@
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-uses(\LibreNMS\Tests\TestCase::class)->group('svg');
+uses(LibreNMS\Tests\TestCase::class)->group('svg');
 use Illuminate\Support\Str;
 
-test('svgcontains png', function () {
+test('svgcontains png', function (): void {
     foreach (getSvgFiles() as $file => $_unused) {
         $svg = file_get_contents($file);
 
@@ -34,7 +34,7 @@ test('svgcontains png', function () {
     }
 });
 
-test('svghas length width', function () {
+test('svghas length width', function (): void {
     foreach (getSvgFiles() as $file => $_unused) {
         if ($file == 'html/images/safari-pinned-tab.svg') {
             continue;
@@ -50,7 +50,7 @@ test('svghas length width', function () {
     }
 });
 
-test('svghas view box', function () {
+test('svghas view box', function (): void {
     foreach (getSvgFiles() as $file => $_unused) {
         $svg = file_get_contents($file);
 

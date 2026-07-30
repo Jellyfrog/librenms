@@ -27,9 +27,9 @@
 use LibreNMS\Exceptions\InsufficientDataException;
 use LibreNMS\Util\Number;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('to bytes', function () {
+test('to bytes', function (): void {
     expect(Number::toBytes('2GiB'))->toEqual(2147483648);
     expect(Number::toBytes('2GiBytes'))->toEqual(2147483648);
     expect(Number::toBytes('2Gib'))->toEqual(2147483648);
@@ -61,7 +61,7 @@ test('to bytes', function () {
     expect(Number::toBytes('fluff'))->toBeNan();
 });
 
-test('percent calculation', function () {
+test('percent calculation', function (): void {
     expect(Number::calculatePercent(99, 100))->toEqual(99);
     expect(Number::calculatePercent(345, 1023450))->toEqual(0.03);
     expect(Number::calculatePercent(345, 1023450, 4))->toEqual(0.0337);
@@ -71,7 +71,7 @@ test('percent calculation', function () {
     expect(Number::calculatePercent(12639.53, 43))->toEqual(29394.26);
 });
 
-test('fill missing ratio', function () {
+test('fill missing ratio', function (): void {
     expect(Number::fillMissingRatio(total: 20, used: 10))->toEqual([20, 10, 10, 50]);
     expect(Number::fillMissingRatio(total: 23, available: 14))->toEqual([23, 9, 14, 39.13]);
     expect(Number::fillMissingRatio(used: 15, available: 36))->toEqual([51, 15, 36, 29.41]);
@@ -117,7 +117,7 @@ test('fill missing ratio', function () {
     }
 });
 
-test('calculate rate', function () {
+test('calculate rate', function (): void {
     expect(Number::calculateRate('100', '200', 1.0, 2.0))->toBe(100.0);
     expect(Number::calculateRate('4294967295', '100', 1.0, 2.0))->toBe(101.0);
     expect(Number::calculateRate('18446744073709551615', '500', 1.0, 3.0, 64))->toBe(250.5);
@@ -130,24 +130,24 @@ test('calculate rate', function () {
     // 200 difference / 1.0 second
 });
 
-test('calculate rate invalid time throws exception', function () {
+test('calculate rate invalid time throws exception', function (): void {
     $this->expectException(InvalidArgumentException::class);
     $this->expectExceptionMessage('Current time must be greater than previous time');
     Number::calculateRate('100', '200', 2.0, 1.0);
 });
 
-test('calculate rate equal time throws exception', function () {
+test('calculate rate equal time throws exception', function (): void {
     $this->expectException(InvalidArgumentException::class);
     Number::calculateRate('100', '200', 1.0, 1.0);
 });
 
-test('calculate rate negative value throws exception', function () {
+test('calculate rate negative value throws exception', function (): void {
     $this->expectException(InvalidArgumentException::class);
     $this->expectExceptionMessage('Counter values must be non-negative integers');
     Number::calculateRate('-100', '200', 1.0, 2.0);
 });
 
-test('calculate rate non numeric value throws exception', function () {
+test('calculate rate non numeric value throws exception', function (): void {
     $this->expectException(InvalidArgumentException::class);
     Number::calculateRate('abc', '200', 1.0, 2.0);
 });

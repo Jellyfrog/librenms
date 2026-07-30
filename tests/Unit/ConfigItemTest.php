@@ -2,9 +2,9 @@
 
 use LibreNMS\Util\DynamicConfigItem;
 
-uses(\LibreNMS\Tests\TestCase::class);
+uses(LibreNMS\Tests\TestCase::class);
 
-test('executable validation', function () {
+test('executable validation', function (): void {
     $executableType = new DynamicConfigItem('testExecutable', [
         'type' => 'executable',
     ]);
@@ -25,7 +25,7 @@ test('executable validation', function () {
     }
 });
 
-test('directory validation', function () {
+test('directory validation', function (): void {
     $executableType = new DynamicConfigItem('testDirectory', [
         'type' => 'directory',
     ]);
@@ -45,7 +45,7 @@ test('directory validation', function () {
     }
 });
 
-test('array sub keyed validation', function () {
+test('array sub keyed validation', function (): void {
     $arraySubKeyedType = new DynamicConfigItem('testArray', [
         'type' => 'array-sub-keyed',
     ]);
@@ -69,7 +69,7 @@ test('array sub keyed validation', function () {
     expect($arraySubKeyedType->checkValue([null => []]))->toBeFalse();
 });
 
-test('array keys not empty validation', function () {
+test('array keys not empty validation', function (): void {
     $array_keys_not_empty = new DynamicConfigItem('testArray', [
         'type' => 'array-sub-keyed',
         'validate' => [

@@ -30,9 +30,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('radius unreachable ipv4', function () {
+test('radius unreachable ipv4', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -56,7 +56,7 @@ TRAP,
     );
 });
 
-test('radius unreachable ip both', function () {
+test('radius unreachable ip both', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -80,7 +80,7 @@ TRAP,
     );
 });
 
-test('radius reachable ipv4', function () {
+test('radius reachable ipv4', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162
@@ -104,7 +104,7 @@ TRAP,
     );
 });
 
-test('radius reachable ip both', function () {
+test('radius reachable ip both', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[192.168.5.5]:162

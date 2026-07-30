@@ -24,9 +24,9 @@
 
 use LibreNMS\Enum\Severity;
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
+uses(LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 
-test('Cisco CCM CLI Running Config Changed', function () {
+test('Cisco CCM CLI Running Config Changed', function (): void {
     $this->assertTrapLogsMessage('{{ hostname }}
 [UDP: [{{ ip }}]:49563->[10.0.0.1]:162]:
 DISMAN-EXPRESSION-MIB::sysUpTimeInstance = Timeticks: (498047044) 57 days, 15:27:50.44
