@@ -185,6 +185,12 @@ class CiHelper
     {
         $pest_cmd = [$this->checkPhpExec('pest'), '--colors=always', '--fail-on-all-issues'];
 
+        if (! isset($this->unitEnv['DBTEST']) || ! isset($this->unitEnv['SNMPSIM'])) {
+            // database and snmpsim dependent tests skip themselves when those services
+            // are not enabled, don't let the expected skips fail the run
+            $pest_cmd[] = '--do-not-fail-on-skipped';
+        }
+
         if ($this->flags['fail-fast']) {
             $pest_cmd[] = '--stop-on-defect';
         }

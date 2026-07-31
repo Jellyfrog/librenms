@@ -110,11 +110,8 @@ function mockSchemaData(): array
 
 beforeEach(function (): void {
     // use a Mock so we don't have to rely on the schema being stable.
-    $this->schema = $this->getMockBuilder(Schema::class)
-        ->onlyMethods(['getSchema'])
-        ->getMock();
-
-    $this->schema->method('getSchema')->willReturn(mockSchemaData());
+    $this->schema = Mockery::mock(Schema::class)->makePartial();
+    $this->schema->shouldReceive('getSchema')->andReturn(mockSchemaData());
 });
 
 test('table relationships', function (): void {
