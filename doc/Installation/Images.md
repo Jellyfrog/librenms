@@ -1,5 +1,5 @@
 # LibreNMS VMs
 
-Pre built virtual machines are no longer support or maintained.
+Prebuilt virtual machines are not supported and not maintained.
 
-Please use [Docker](Docker.md) instead.
+Use [Docker](Docker.md) as an alternative.

@@ -2,19 +2,19 @@
 
 ## Prepare Linux Server
 
-You should have an installed Linux server running one of the supported OS.
-Make sure you select your server's OS in the tabbed options below.
-Choice of web server is your preference, NGINX is recommended.
+Install a Linux server that has one of the supported operating systems.
+Make sure that you select the OS of your server in the tabs below.
+You can select NGINX or Apache as the web server. We recommend NGINX.
 
-Connect to the server command line and follow the instructions below.
+Connect to the command line of the server. Then do the steps below.
 !!! note
 
-    These instructions assume you are the **root** user.  
-    If you are not, prepend `sudo` to the shell commands (the ones that aren't
-    at `mysql>` prompts) or temporarily become a user with root
-    privileges with `sudo -s` or `sudo -i`.
+    These instructions are for the **root** user.  
+    If you are not the root user, add `sudo` before the shell commands (not
+    the commands at `mysql>` prompts). As an alternative, use `sudo -s` or
+    `sudo -i` to become a user with root permissions for a short time.
 
-**Please note the minimum supported PHP version is @= php.version_min =@, the recommended version is @= php.version_recommended =@**
+**The minimum supported PHP version is @= php.version_min =@. The recommended version is @= php.version_recommended =@**
 
 ## Install Required Packages
 
@@ -81,15 +81,15 @@ Change to the LibreNMS user:
 su - librenms
 ```
 
-Then run the composer wrapper script and exit back to the root user:
+Run the composer wrapper script. Then go back to the root user:
 ```
 ./scripts/composer_wrapper.php install --no-dev
 exit
 ```
 
 !!! note
-    Sometimes when there is a proxy used to gain internet access, the above script may fail.
-    The workaround is to install the `composer` package manually. For a global installation:
+    If you use a proxy for internet access, the script above can fail.
+    To correct this, install the `composer` package manually. For a global installation:
     ```
     wget https://getcomposer.org/composer-stable.phar
     mv composer-stable.phar /usr/bin/composer
@@ -98,9 +98,9 @@ exit
 
 ## Set timezone
 
-See <https://php.net/manual/en/timezones.php> for a list of supported
-timezones.  Valid examples are: "America/New_York", "Australia/Brisbane", "Etc/UTC".
-Ensure date.timezone is set in php.ini to your preferred time zone.
+Refer to <https://php.net/manual/en/timezones.php> for a list of supported
+timezones.  Examples of correct values are: "America/New_York", "Australia/Brisbane", "Etc/UTC".
+Make sure that date.timezone in php.ini is set to your timezone.
 
 === "Ubuntu 26.04"
     ```bash
@@ -126,7 +126,7 @@ Ensure date.timezone is set in php.ini to your preferred time zone.
     vi /etc/php/8.4/cli/php.ini
     ```
 
-Remember to set the system timezone as well.
+Also set the system timezone.
 
 ```
 timedatectl set-timezone Etc/UTC
@@ -140,7 +140,7 @@ timedatectl set-timezone Etc/UTC
     vi /etc/mysql/mariadb.conf.d/50-server.cnf
     ```
     
-    Within the `[mariadbd]` section add:
+    Add these lines in the `[mariadbd]` section:
 
     ```
     innodb_file_per_table=1
@@ -152,7 +152,7 @@ timedatectl set-timezone Etc/UTC
     vi /etc/mysql/mariadb.conf.d/50-server.cnf
     ```
 
-    Within the `[mysqld]` section add:
+    Add these lines in the `[mysqld]` section:
 
     ```
     innodb_file_per_table=1
@@ -164,7 +164,7 @@ timedatectl set-timezone Etc/UTC
     vi /etc/mysql/mariadb.conf.d/50-server.cnf
     ```
 
-    Within the `[mysqld]` section add:
+    Add these lines in the `[mysqld]` section:
 
     ```
     innodb_file_per_table=1
@@ -176,7 +176,7 @@ timedatectl set-timezone Etc/UTC
     vi /etc/mysql/mariadb.conf.d/50-server.cnf
     ```
 
-    Within the `[mariadbd]` section add:
+    Add these lines in the `[mariadbd]` section:
 
     ```
     innodb_file_per_table=1
@@ -190,14 +190,14 @@ Then restart MariaDB
 systemctl enable mariadb
 systemctl restart mariadb
 ```
-Start MariaDB client
+Start the MariaDB client
 
 ```
 mysql -u root
 ```
 
 !!! warning
-    Change the 'password' below to something secure.
+    Change 'password' below to a secure password.
 
 ```sql
 CREATE DATABASE librenms CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -243,13 +243,13 @@ user = librenms
 group = librenms
 ```
 
-Change `listen` to a unique path that must match your webserver's config (`fastcgi_pass` for NGINX and `SetHandler` for Apache) :
+Change `listen` to a unique path. The path must be the same as in your web server configuration (`fastcgi_pass` for NGINX, `SetHandler` for Apache):
 ```
 listen = /run/php-fpm-librenms.sock
 ```
 
-If there are no other PHP web applications on this server, you may remove www.conf to save some resources.
-Feel free to tune the performance settings in librenms.conf to meet your needs.
+If there are no other PHP web applications on this server, you can remove www.conf to save resources.
+You can adjust the performance settings in librenms.conf if necessary.
 
 ## Configure Web Server
 
@@ -259,7 +259,7 @@ Feel free to tune the performance settings in librenms.conf to meet your needs.
         vi /etc/nginx/conf.d/librenms.conf
         ```
 
-        Add the following config, edit `server_name` as required:
+        Add the configuration below. Change `server_name` if necessary:
 
         ```nginx
         server {
@@ -297,7 +297,7 @@ Feel free to tune the performance settings in librenms.conf to meet your needs.
         vi /etc/nginx/conf.d/librenms.conf
         ```
 
-        Add the following config, edit `server_name` as required:
+        Add the configuration below. Change `server_name` if necessary:
 
         ```nginx
         server {
@@ -335,7 +335,7 @@ Feel free to tune the performance settings in librenms.conf to meet your needs.
         vi /etc/nginx/sites-enabled/librenms.vhost
         ```
 
-        Add the following config, edit `server_name` as required:
+        Add the configuration below. Change `server_name` if necessary:
 
         ```nginx
         server {
@@ -373,7 +373,7 @@ Feel free to tune the performance settings in librenms.conf to meet your needs.
         vi /etc/nginx/sites-enabled/librenms.vhost
         ```
 
-        Add the following config, edit `server_name` as required:
+        Add the configuration below. Change `server_name` if necessary:
 
         ```nginx
         server {
@@ -411,43 +411,43 @@ Feel free to tune the performance settings in librenms.conf to meet your needs.
     SELinux not enabled by default
 
 === "Ubuntu 24.04"
-    SELinux not enabled by default
+    SELinux is not enabled by default
 
 === "Debian 12"
-    SELinux not enabled by default
+    SELinux is not enabled by default
 
 === "Debian 13"
-    SELinux not enabled by default
+    SELinux is not enabled by default
 
 ## Allow access through firewall
 === "Ubuntu 26.04"
     Firewall not enabled by default
 
 === "Ubuntu 24.04"
-    Firewall not enabled by default
+    The firewall is not enabled by default
 
 === "Debian 12"
-    Firewall not enabled by default
+    The firewall is not enabled by default
 
 === "Debian 13"
-    Firewall not enabled by default
+    The firewall is not enabled by default
 
 ## Enable lnms command completion
 
-This feature grants you the opportunity to use tab for completion on lnms commands as you would
-for normal linux commands.
+With this feature, you can use the tab key to complete lnms commands,
+the same as for usual Linux commands.
 
 ```
 ln -s /opt/librenms/lnms /usr/bin/lnms
 cp /opt/librenms/misc/lnms-completion.bash /etc/bash_completion.d/
 ```
 
-`lnms config` is the preferred method for [Configuration](../Support/Configuration.md)
+`lnms config` is the recommended method for [Configuration](../Support/Configuration.md)
 
 
 ## Configure snmpd (v2c)
 
-If you would like to use SNMPv3 then please [see here](../Support/SNMP-Configuration-Examples.md/#linux-snmpd-v3)
+If you want to use SNMPv3, [refer to these examples](../Support/SNMP-Configuration-Examples.md/#linux-snmpd-v3)
 
 ```
 cp /opt/librenms/snmpd.conf.example /etc/snmp/snmpd.conf
@@ -457,7 +457,7 @@ cp /opt/librenms/snmpd.conf.example /etc/snmp/snmpd.conf
 vi /etc/snmp/snmpd.conf
 ```
 
-Edit the text which says `RANDOMSTRINGGOESHERE` and set your own community string.
+Replace the text `RANDOMSTRINGGOESHERE` with your community string.
 
 ```
 curl -o /usr/bin/distro https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/distro
@@ -473,12 +473,11 @@ cp /opt/librenms/dist/librenms.cron /etc/cron.d/librenms
 ```
 
 !!! note
-    Keep in mind  that cron, by default, only uses a very limited
-    set of environment variables. You may need to configure proxy
-    variables for the cron invocation. Alternatively adding the proxy
-    settings in config.php is possible too. The config.php file will be
-    created in the upcoming steps. Review the following URL after you
-    finished librenms install steps:
+    By default, cron uses only a small set of environment variables.
+    It is possible that you must configure proxy variables for cron.
+    As an alternative, you can add the proxy settings in config.php.
+    You create the config.php file in the steps that follow. Read this
+    page after you complete the LibreNMS installation steps:
     <@= config.site_url =@/Support/Configuration/#proxy-support>
 
 ## Enable the scheduler
@@ -492,9 +491,9 @@ systemctl start librenms-scheduler.timer
 
 ## Enable logrotate
 
-LibreNMS keeps logs in `/opt/librenms/logs`. Over time these can
-become large and be rotated out.  To rotate out the old logs you can
-use the provided logrotate config file:
+LibreNMS keeps logs in `/opt/librenms/logs`. These logs can become
+large. To rotate the old logs, use the supplied logrotate
+configuration file:
 
 ```
 cp /opt/librenms/misc/librenms.logrotate /etc/logrotate.d/librenms
@@ -502,15 +501,15 @@ cp /opt/librenms/misc/librenms.logrotate /etc/logrotate.d/librenms
 
 ## Web installer
 
-Now head to the web installer and follow the on-screen instructions.
+Open the web installer. Then do the steps shown on the screen.
 
 <http://librenms.example.com/install>
 
-The web installer might prompt you to create a `config.php` file in
-your librenms install location manually, copying the content displayed
-on-screen to the file. If you have to do this, please remember to set
-the permissions on config.php after you copied the on-screen contents
-to the file. Run:
+It is possible that the web installer tells you to manually create a
+`config.php` file in your LibreNMS installation location, and to copy
+the content on the screen into the file. If you do this, you must set
+the permissions on config.php after you copy the content into the
+file. Run:
 
 ```
 chown librenms:librenms /opt/librenms/config.php
@@ -518,38 +517,37 @@ chown librenms:librenms /opt/librenms/config.php
 
 ## Final steps
 
-That's it!  You now should be able to log in to
+The installation is complete. You can now log in to
 <http://librenms.example.com/>.
 
 !!! danger
-    Please note that we have not covered
-    HTTPS setup in this example, so your LibreNMS install is not secure
-    by default.  Please do not expose it to the public Internet unless
-    you have configured HTTPS and taken appropriate web server hardening
-    steps.
+    This example does not include the HTTPS setup. Thus your LibreNMS
+    installation is not secure by default. Do not make it available on
+    the public internet before you configure HTTPS and make the web
+    server safe.
 
 ## Add the first device
 
-We now suggest that you add localhost as your first device from within the WebUI.
+We recommend that you add localhost as your first device in the WebUI.
 <https://librenms.example.com/addhost>
 
 ## Troubleshooting
 
-If you ever have issues with your install, you should run validate which will perform
-some base checks and provide the recommended fixes:
+If you have problems with your installation, run validate. It does
+basic checks and shows the recommended corrections:
 
 ```
 sudo su - librenms
 ./validate.php
 ```
 
-There are various options for getting help listed on the LibreNMS web
-site: <https://www.librenms.org/#support>
+The LibreNMS website shows the available support options:
+<https://www.librenms.org/#support>
 
 ## What next?
 
-Now that you've installed LibreNMS, we'd suggest that you have a read
-of a few other docs to get you going:
+After you install LibreNMS, we recommend that you read these
+documents:
 
 - [Performance tuning](../Support/Performance.md)
 - [Alerting](../Alerting/index.md)
@@ -559,11 +557,11 @@ of a few other docs to get you going:
 
 ## Closing
 
-We hope you enjoy using LibreNMS. If you do, it would be great if you
-would consider opting into the stats system we have, please see [this
-page](../General/Callback-Stats-and-Privacy.md) on
+We hope that you like LibreNMS. If you do, you can opt in to the
+stats system. Refer to [this
+page](../General/Callback-Stats-and-Privacy.md) for
 what it is and how to enable it.
 
-If you would like to help make LibreNMS better there are [many ways to
+If you want to help make LibreNMS better, there are [many ways to
 help](../Support/FAQ.md#faq9). You
 can also [back LibreNMS on Open Collective](https://t.libren.ms/donations).
