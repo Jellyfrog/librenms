@@ -1,43 +1,44 @@
 # Device Sensors
 
-LibreNMS has a standard for device sensors they are split into
-categories. This doc is to help users understand device sensors in
-general, if you need help with developing sensors for a device please
-see the [Contributing + Developing section](../Developing/os/Health-Information.md).
+LibreNMS has a standard for device sensors. The sensors are divided
+into categories. This document helps users understand device sensors
+in general. If you need help with the development of sensors for a
+device, refer to the [Contributing + Developing section](../Developing/os/Health-Information.md).
 
 ## Health Sensors
 
-The High and Low values of these sensors can be edited in Web UI by
-going to the device settings -> Health. There you can set your own
-custom High and Low values. List of these sensors can be found
+You can change the High and Low values of these sensors in the Web UI.
+Go to the device settings -> Health. There you can set your own
+High and Low values. The list of these sensors is
 [here](../Developing/os/Health-Information.md)
 
 !!! note
-    Some values are defined by the manufactures and others are
-    auto calculated when you add the device into librenms. Keep in mind
-    every environment is different and may require user input.
+    The manufacturers define some values. The system calculates other
+    values automatically when you add the device into librenms. Each
+    environment is different and can make user input necessary.
 
 ## Wireless Sensors
 
-Some Wireless devices have High and Low values for sensors and can be
-edited in Web UI by going to the device settings -> Wireless Sensors
-There you can set your own custom High and Low values. List of these
-sensors can be found [here](../Developing/os/Wireless-Sensors.md)
+Some wireless devices have High and Low values for sensors. You can
+change them in the Web UI. Go to the device settings -> Wireless Sensors.
+There you can set your own High and Low values. The list of these
+sensors is [here](../Developing/os/Wireless-Sensors.md)
 
 !!! note
-    Some values are defined by the manufactures and others are
-    auto calculated when you add the device into librenms. Keep in mind
-    every environment is different and may require user input.
+    The manufacturers define some values. The system calculates other
+    values automatically when you add the device into librenms. Each
+    environment is different and can make user input necessary.
 
 ## State Sensors
 
-Records the state of some health sensor which can be used for alerting. For example:
+These sensors record the state of a health sensor. You can use the
+state for alerting. For example:
 
 - Drive Status
 - Memory Status
 - Power Supply Status
 
-And will provide a mapped state to one of the following:
+The system maps the state to one of these values:
 
 ```
 0 = OK
@@ -48,25 +49,25 @@ And will provide a mapped state to one of the following:
 
 ## Alerting Sensors
 
-These alert rules can be found inside the Alert Rules Collection. The
-alert rules below are the default alert rules, there are more
-device-specific alert rules in the alerts collection.
+These alert rules are in the Alert Rules Collection. The
+alert rules below are the default alert rules. The alerts collection
+contains more alert rules for specified devices.
 
-**Sensor Over Limit Alert Rule:**  Will alert on any sensor value that
-is over the limit.
+**Sensor Over Limit Alert Rule:**  Sends an alert for each sensor value that
+is more than the limit.
 
-**Sensor Under Limit Alert Rule:** Will alert on any sensor value that
-is under the limit.
+**Sensor Under Limit Alert Rule:** Sends an alert for each sensor value that
+is less than the limit.
 
 !!! note
-    You can set these limits inside device settings in the Web UI.
+    You can set these limits in the device settings in the Web UI.
 
-**State Sensor Critical:** Will alert on any state that returns critical = 2
+**State Sensor Critical:** Sends an alert for each state that returns critical = 2
 
-**State Sensor Warning:** Will alert on any state that returns warning = 1
+**State Sensor Warning:** Sends an alert for each state that returns warning = 1
 
-**Wireless Sensor Over Limit Alert Rule:** Will Alert on sensors that
-listed in device settings under Wireless.
+**Wireless Sensor Over Limit Alert Rule:** Sends an alert for the sensors that
+are in the device settings under Wireless.
 
-**Wireless Sensor Under Limit Alert Rule:** Will Alert on sensors that
-listed in device settings under Wireless.
+**Wireless Sensor Under Limit Alert Rule:** Sends an alert for the sensors that
+are in the device settings under Wireless.

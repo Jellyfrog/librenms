@@ -2,33 +2,33 @@
 
 ## Overview
 
-High Availability (HA) in LibreNMS ensures continuous operation and minimizes downtime by implementing redundancy for two critical components:
+High Availability (HA) in LibreNMS keeps the system in continuous operation and decreases downtime. To do this, it adds redundancy for two critical components:
 
 - **Polling**: The data collection process
 - **WebUI**: The web interface for users
 
-To achieve high availability, you need to ensure that the following components are redundant:
+To get high availability, you must make sure that these components are redundant:
 
 1. **Database**: MySQL/MariaDB with clustering
 2. **Redis w/ Redis Sentinel**: For session management and caching
-3. **RRD Files**: For storing polled data
+3. **RRD Files**: For storage of polled data
 
-Also make sure that the **poller uses a distributed setup** which must be [LibreNMS Dispatcher service](../Extensions/Dispatcher-Service.md).
+Also make sure that the **poller uses a distributed setup**, which must be the [LibreNMS Dispatcher service](../Extensions/Dispatcher-Service.md).
 
-For simplicity, the web-ui and poller can be configured to use the same Redis Sentinel cluster.
+To keep the configuration simple, the web-ui and the poller can use the same Redis Sentinel cluster.
 
 ## Note about RRD Files
 
-Pollers need to write RRD data to files on disk to store polled data. It's recommended
-to use RRDCached which accept RRD data over TCP/IP. This doesn't provide HA for RRD
-data but does allows multiple pollers to write to the same RRD files using network connection.
-This is outlined in [RRDCached.md](../Extensions/RRDCached.md).
+Pollers must write RRD data to files on a disk to keep polled data. We recommend
+RRDCached, which receives RRD data through TCP/IP. This does not give HA for RRD
+data, but it lets multiple pollers write to the same RRD files through a network connection.
+This is described in [RRDCached.md](../Extensions/RRDCached.md).
 
-One way to add HA support for RRD is to use a shared storage over NFS with GlusterFS or similar.
+One method to add HA support for RRD is shared storage through NFS with GlusterFS or a similar system.
 
 ## WebUI High Availability
 
-The WebUI achieves HA through multiple LibreNMS instances sharing these backend services:
+The WebUI gets HA through multiple LibreNMS instances that share these backend services:
 
 - Clustered Database
 - Redis with Sentinel
@@ -38,31 +38,31 @@ The WebUI achieves HA through multiple LibreNMS instances sharing these backend 
 
 1. **Configure Database HA**: 
    - Set up a Galera Cluster
-   - See [Galera-Cluster.md](../Extensions/Galera-Cluster.md) for detailed instructions
+   - Refer to [Galera-Cluster.md](../Extensions/Galera-Cluster.md) for the full instructions
 
 2. **Configure Redis HA**:
-   - Implement Redis Sentinel
-   - See [Redis-Sentinel.md](../Extensions/Redis-Sentinel.md) for configuration details
+   - Install Redis Sentinel
+   - Refer to [Redis-Sentinel.md](../Extensions/Redis-Sentinel.md) for the configuration details
 
 3. **Deploy multiple LibreNMS instances**:
    - Install LibreNMS on multiple servers
-   - Configure each instance to use the same database and Redis Sentinel cluster
-   - Ensure identical `.env` configurations across all instances. Remember to set `APP_KEY` to the same value on all instances.
-   - Each install should have a unique `NODE_ID` in your `.env`.
+   - Configure each instance to use the same database and the same Redis Sentinel cluster
+   - Make sure that the `.env` configurations are identical on all instances. Set `APP_KEY` to the same value on all instances.
+   - Each installation must have a unique `NODE_ID` in your `.env`.
 
 4. **Configure RRD Access**:
-    Either use Use RRDCached that allows all instances to access the same RRD files. Or use a shared storage for the RRD files over NFS or similar.
+    Use RRDCached, which lets all instances get access to the same RRD files. Or use shared storage for the RRD files through NFS or a similar system.
 
 ## Polling High Availability
 
-Distributed polling allows multiple pollers to work together, providing load distribution and failover capability.
+With distributed polling, multiple pollers operate together. This gives load distribution and failover capability.
 
 !!! warning
-    The poller does not support MySQL Galera clustering, so you need to use a TCP load balancer such as Nginx or HAProxy
+    The poller does not support MySQL Galera clustering. Thus, you must use a TCP load balancer, such as Nginx or HAProxy,
     in front of the cluster to point to the cluster nodes.
 
 ### Implementation
 
 1. **Configure distributed polling**:
-   - Follow the instructions in [Distributed-Poller.md](../Extensions/Distributed-Poller.md)
-   - Ensure all pollers connect to the clustered database, Redis Sentinel and can access the same RRD files.
+   - Do the steps in [Distributed-Poller.md](../Extensions/Distributed-Poller.md)
+   - Make sure that all pollers connect to the clustered database and Redis Sentinel, and can get access to the same RRD files.

@@ -1,21 +1,21 @@
 ## Sensor Thresholds
-The default settings for thresholds for a lot of sensors are not very well chosen - adding a Raritan device will cause a lot of threshold alarms unless you have configured these on the device.
+The default threshold settings for many sensors are not good - when you add a Raritan device, many threshold alarms occur, unless you configured the thresholds on the device.
 
-If you don't care about threshold data, these can simply be turned off in the device settings - highlighted below. You can also set sensible thresholds yourself.
+If threshold data is not important to you, you can set the thresholds to off in the device settings - highlighted below. You can also set good thresholds yourself.
 
 ![Sensor Threshold Configuration in LibreNMS](../../img/raritan-thresholds.png)
 
-Unfortunately Raritan use a threshold of 0 to mean both 'the low value for this sensor is 0' and 'no threshold is configured' so it's impossible for us to filter out these bad values.
+Unfortunately, Raritan uses a threshold of 0 for 'the low value for this sensor is 0' and also for 'no threshold is configured'. Thus, we cannot remove these bad values.
 
-Alternatively (and this is the best course of action), you can configure the thresholds on the devices themselves, and LibreNMS will detect them automatically.
+As an alternative (and this is the best procedure), you can configure the thresholds on the devices themselves. Then LibreNMS finds them automatically.
 
-You can do this with in bulk with either the JSON-RPC API, or RedFish.
+You can do this for many devices at the same time with the JSON-RPC API or RedFish.
 * https://pypi.org/project/raritan/4.3.0.51180/
 * https://www.raritan.com/support/product/pdu-g2
 
-For a small number of devices (or with sufficient patience) you can configure the thresholds on the device via the GUI - though the setting is buried.
+For a small number of devices (or with sufficient patience), you can configure the thresholds on the device through the GUI - but the setting is not easy to find.
 
-Hysteresis and deassert are advanced settings - you do not need to change these unless you know what you are doing.
+Hysteresis and deassert are advanced settings - do not change these unless you know their effects.
 
 For an inlet:
 * click 'Inlets' on the left side
@@ -23,22 +23,22 @@ For an inlet:
 ![Sensor Threshold Configuration via the Raritan GUI: Inlet Top Level](../../img/raritan-gui-inlet.png)
 * click on the available thresholds for that sensor
 ![Sensor Threshold Configuration via the Raritan GUI: Inlet Detail](../../img/raritan-gui-inlet-detail.png)
-* you can now edit the thresholds - note that the 'disabled' thresholds are set to zero, so you must enable and change these
+* you can now edit the thresholds - the 'disabled' thresholds are set to zero, thus you must enable and change these
 ![Sensor Threshold Configuration via the Raritan GUI: Inlet Thresholds](../../img/raritan-gui-inlet-thresholds.png)
 
 For an outlet:
 * click 'Outlets' on the left side
-* select the outlet you wish to configure
+* select the outlet that you want to configure
 * click one of the sensor types as shown below
 ![Sensor Threshold Configuration via the Raritan GUI: Inlet Top Level](../../img/raritan-gui-inlet.png)
 * click on the available thresholds for that sensor
 ![Sensor Threshold Configuration via the Raritan GUI: Inlet Detail](../../img/raritan-gui-inlet-detail.png)
-* you can now edit the thresholds - note that the 'disabled' thresholds are set to zero, so you must enable and change these
+* you can now edit the thresholds - the 'disabled' thresholds are set to zero, thus you must enable and change these
 ![Sensor Threshold Configuration via the Raritan GUI: Inlet Thresholds](../../img/raritan-gui-inlet-thresholds.png)
 
 ## Known Sensor Types
 
-'supported' means that support for polling that sensor type has been added to the YAML. Any of the below sensor types should be supportable by LibreNMS, however test data is not currently available for those sensor types.
+'supported' means that the YAML contains support for polling that sensor type. LibreNMS can possibly support each of the sensor types below. But test data is not available for those sensor types at this time.
 
 | Sensor Type                | Supported | Index |
 |----------------------------|-----------|-------|

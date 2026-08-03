@@ -1,6 +1,6 @@
 # Environment Variables
 
-LibreNMS allows certain settings to be set via the environment or
+You can set some LibreNMS settings through the environment or
 through the .env file.
 
 ## Database
@@ -20,11 +20,11 @@ DB_SOCKET=
 
 A comma separated list of trusted reverse proxy IPs or CIDR.
 
-The default value is '127.0.0.1', which only allows reverse proxies on the localhost.
+The default value is '127.0.0.1'. This permits reverse proxies only on the localhost.
 
-These options should be avoided for security reasons.
-`'*'` means trust any proxie
-`'**'` means trust any proxy up the chain.
+Do not use these options, because they decrease security.
+`'*'` means trust all proxies
+`'**'` means trust all proxies up the chain.
 
 ```dotenv
 APP_TRUSTED_PROXIES=192.168.1.0/24,192.167.8.20
@@ -34,11 +34,11 @@ APP_TRUSTED_PROXIES=192.168.1.0/24,192.167.8.20
 
 Set the base url for generated urls.
 
-This will be needed when using signed graph urls for alerting. It may
-be needed when using reverse proxies combined with a subdirectory.
+This is necessary when you use signed graph urls for alerting. It can
+be necessary when you use reverse proxies together with a subdirectory.
 
-Generally, LibreNMS will make correct URLs (especially if you have set
-up your proxy variables correctly)
+Usually, LibreNMS makes correct URLs (specially if your
+proxy variables are set correctly)
 
 ```dotenv
 APP_URL=http://librenms/
@@ -46,8 +46,8 @@ APP_URL=http://librenms/
 
 ## User / Group
 
-The user and group that LibreNMS should operate as.
-Group will default to the same as the user if unset.
+The user and group that LibreNMS operates as.
+If the group is not set, the default is the same as the user.
 
 ```dotenv
 LIBRENMS_USER=librenms
@@ -56,9 +56,9 @@ LIBRENMS_GROUP=librenms
 
 ## Debug
 
-Increases the amount of information shown when an error occurs.
+Increases the quantity of information shown when an error occurs.
 
-> WARNING: This may leak information, do not leave enabled.
+> WARNING: This can release private information. Do not keep this enabled.
 
 ```dotenv
 APP_DEBUG=true

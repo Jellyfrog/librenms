@@ -34,7 +34,7 @@ snmp-server host <INTERFACE> <LIBRENMS-IP> poll version 3 <USER-NAME>
 ```
 
 !!! note
-    If the device is unable to find the SNMP user, reboot the ASA. Once rebooted, continue the steps as normal.
+    If the device cannot find the SNMP user, reboot the ASA. After the reboot, continue the steps as usual.
 
 #### IOS / IOS XE
 
@@ -58,7 +58,7 @@ snmp-server group <GROUP-NAME> v3 priv context vlan- match prefix
 ```
 
 !!! note
-    If the device is unable to find the SNMP user, reboot the ASA. Once rebooted, continue the steps as normal.
+    If the device cannot find the SNMP user, reboot the ASA. After the reboot, continue the steps as usual.
 
 #### NX-OS
 
@@ -91,9 +91,9 @@ snmp-server location <YOUR-LOCATION>
 #### Network Card-MS
 
 1. Connect to the Web UI of the device
-1. Upgrade to the latest available manufacturer firmware which applies to your hardware revision. Refer to the release notes.   For devices which can use the Lx releases, *do* install LD.
-1. After rebooting the card (safe for connected load), configure Network, System and Access Control. Save config for each step.
-1. Configure SNMP. The device defaults to both SNMP v1 and v3 enabled, with default credentials. Disable what you do not need. SNMP v3 works, but uses MD5/DES. You may have to add another section to your SNMP credentials table in LibreNMS. Save.
+1. Upgrade to the latest available manufacturer firmware that applies to your hardware revision. Refer to the release notes.   For devices that can use the Lx releases, *do* install LD.
+1. After you reboot the card (safe for the connected load), configure Network, System and Access Control. Save the config for each step.
+1. Configure SNMP. By default, the device has SNMP v1 and v3 enabled, with default credentials. Disable what you do not need. SNMP v3 operates, but uses MD5/DES. It is possible that you must add one more section to your SNMP credentials table in LibreNMS. Save.
 
 ### Extreme
 
@@ -137,7 +137,7 @@ snmp-agent packet max-size 6000
 ```
 
 !!! note
-    `packet max-size` is required for some walks to complete, but the path must support fragmentation.
+    `packet max-size` is necessary for some walks to complete. But the path must support fragmentation.
 
 SNMPv3
 
@@ -153,7 +153,7 @@ snmp-agent packet max-size 6000
 ```
 
 !!! note
-    `packet max-size` is required for some walks to complete, but the path must support fragmentation.
+    `packet max-size` is necessary for some walks to complete. But the path must support fragmentation.
 
 #### Inform OS 3.2.x
 
@@ -222,13 +222,13 @@ set contact="<NAME>" enabled=yes engine-id=<ENGINE ID> location="<LOCATION>"
 
 !!! note
     * About the snmp community commands:
-         * The commands change the default snmp community.  It is probably possible to create a new one instead.
-         * `<ALLOWED-SRC-IPs/NETMASK>` specify the address and host (not network) netmask of the LibreNMS server.  Example: 192.168.8.71/32
-         * trap-version=2 must also be specified if some other trap-version has been set
-         * trap-interfaces may also be used to limit the interfaces the router listens on
+         * The commands change the default snmp community.  It is possibly also permitted to create a new one.
+         * `<ALLOWED-SRC-IPs/NETMASK>` specifies the address and the host (not network) netmask of the LibreNMS server.  Example: 192.168.8.71/32
+         * you must also specify trap-version=2 if a different trap-version is set
+         * you can also use trap-interfaces to limit the interfaces on which the router listens
     * About the snmp command:
          * contact, engine-id and location are optional
-         * trap-community is probably required if a new snmp community has been created.
+         * trap-community is probably necessary if you created a new snmp community.
 
 CLI SNMP v3 Configuration for *authPriv*
 
@@ -245,11 +245,11 @@ set contact="<NAME>" enabled=yes engine-id="<ENGINE ID>" location="<LOCATION>"
 ```
 
 !!! note
-    * Use password with length of min 8 chars
+    * Use a password with a minimum length of 8 characters
 
     Notes for both SNMP v2 and v3
 
-    * In some cases of advanced routing one may need to set explicitly the source IP address from which the SNMP daemon will reply - `/snmp set src-address=<SELF_IP_ADDRESS>`
+    * With some advanced routing configurations, you must set the source IP address from which the SNMP daemon replies - `/snmp set src-address=<SELF_IP_ADDRESS>`
 
 ### Palo Alto
 
@@ -262,15 +262,15 @@ set contact="<NAME>" enabled=yes engine-id="<ENGINE ID>" location="<LOCATION>"
 1. Enter your SNMP community and then click "OK"
 1. Click Apply
 
-Note that you need to allow SNMP on the needed interfaces. To do that
-you need to create a network "Interface Mgmt" profile for standard
-interface and allow SNMP under "Device > Management > Management
-Interface Settings" for out of band management interface.
+You must permit SNMP on the necessary interfaces. To do this,
+create a network "Interface Mgmt" profile for a standard
+interface. For the out of band management interface, permit SNMP
+under "Device > Management > Management Interface Settings".
 
-One may also configure SNMP from the command line, which is useful
-when you need to configure more than one firewall for SNMP
-monitoring. Log into the firewall(s) via ssh, and perform these
-commands for basic SNMPv3 configuration:
+You can also configure SNMP from the command line. This is useful
+when you must configure more than one firewall for SNMP
+monitoring. Log in to the firewall(s) through ssh, and do these
+commands for a basic SNMPv3 configuration:
 
 ```bash
 username@devicename> configure
@@ -319,9 +319,9 @@ username@devicename# write memory
 
 #### ESX/ESXi 5.x/6.x
 
-Log on to your ESX server by means of ssh. You may have to enable the
-ssh service in the GUI first.
-From the CLI, execute the following commands:
+Log on to your ESX server through ssh. It is possible that you must
+first enable the ssh service in the GUI.
+From the CLI, run these commands:
 
 ```bash
 esxcli system snmp set --authentication SHA1
@@ -329,7 +329,7 @@ esxcli system snmp set --privacy AES128
 esxcli system snmp hash --auth-hash YOUR_AUTH_SECRET --priv-hash YOUR_PRIV_SECRET --raw-secret
 ```
 
-This command produces output like this
+This command gives output like this
 
 ```bash
 Authhash: f3d8982fc28e8d1346c26eee49eb2c4a5950c934
@@ -345,14 +345,14 @@ esxcli system snmp set -C noc@your.org
 esxcli system snmp set --enable true
 ```
 
->Note: In case of snmp timeouts, disable the firewall with `esxcli
->network firewall set --enabled false` If snmp timeouts still occur
->with firewall disabled, migrate VMs if needed and reboot ESXi host.
+>Note: If snmp timeouts occur, disable the firewall with `esxcli
+>network firewall set --enabled false` If snmp timeouts continue
+>with the firewall disabled, migrate the VMs if necessary and reboot the ESXi host.
 
 #### VCenter 6.x
 
-Log on to your ESX server by means of ssh. You may have to enable the
-ssh service in the GUI first. From the CLI, execute the following
+Log on to your ESX server through ssh. It is possible that you must
+first enable the ssh service in the GUI. From the CLI, run these
 commands:
 
 ```bash
@@ -361,7 +361,7 @@ snmp.set --privacy AES128
 snmp.hash --auth_hash YOUR_AUTH_SECRET --priv_hash YOUR_PRIV_SECRET --raw_secret true
 ```
 
-This command produces output like this
+This command gives output like this
 
 ```bash
 Privhash: 0596ab30b315576a4e9f7d7bde65bf49b749e335
@@ -379,8 +379,8 @@ snmp.enable
 
 ### Linux (snmpd v2)
 
-Replace your snmpd.conf file by the example below and edit it with
-appropriate community in "RANDOMSTRINGGOESHERE".
+Replace your snmpd.conf file with the example below. Then edit it and
+set your community in place of "RANDOMSTRINGGOESHERE".
 
 ```bash
 vi /etc/snmp/snmpd.conf
@@ -406,27 +406,27 @@ extend distro /usr/bin/distro
 ```
 
 !!! note
-    On some systems the snmpd is running as its own user, which
-    means it can't read `/sys/devices/virtual/dmi/id/product_serial` which
+    On some systems, snmpd runs as its own user. Thus, it
+    cannot read `/sys/devices/virtual/dmi/id/product_serial`, which
     is mode 0400. One solution is to include `@reboot chmod 444
-    /sys/devices/virtual/dmi/id/product_serial` in the crontab for root or
-    equivalent.
+    /sys/devices/virtual/dmi/id/product_serial` in the crontab for root, or
+    an equivalent.
 
-Non-x86 or SMBIOS-based systems, such as ARM-based Raspberry Pi units should
-query device tree locations for this metadata, for example:
+Non-x86 or SMBIOS-based systems, such as ARM-based Raspberry Pi units, must
+query device tree locations for this metadata. For example:
 
 ```bash
 extend hardware '/bin/cat /sys/firmware/devicetree/base/model'
 extend serial '/bin/cat /sys/firmware/devicetree/base/serial-number'
 ```
 
-The LibreNMS server include a copy of this example here:
+The LibreNMS server includes a copy of this example here:
 
 ```bash
 /opt/librenms/snmpd.conf.example
 ```
 
-The binary /usr/bin/distro must be copied from the original source repository:
+Copy the binary /usr/bin/distro from the initial source repository:
 
 ```bash
 curl -o /usr/bin/distro https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/distro
@@ -457,36 +457,36 @@ service snmpd stop
 
 Go to /var/lib/snmp/snmpd.conf
 
-Open the file in vi or nano /var/lib/snmp/snmpd.conf and add the following
-line to create SNMPV3 User (replace username and passwords with your
+Open the file in vi or nano. Add the line below to create the
+SNMPV3 user (replace the username and the passwords with your
 own):
 
 ```bash
 createUser authPrivUser SHA "authPassword" AES "privPassword"
 ```
 
-This line will be removed and processed into an equivalent line starting with usmUser once the service is started again.
+When the service starts again, the system removes this line and converts it into an equivalent line that starts with usmUser.
 
 Go to /etc/snmp/snmpd.conf
 
-Make sure the agent listens to all interfaces by adding the following
-line inside snmpd.conf:
+Make sure that the agent listens on all interfaces. Add this
+line in snmpd.conf:
 
 ```bash
 agentAddress udp:161,udp6:161
 ```
 
-This line simply means listen to connections across all interfaces
-IPv4 and IPv6 respectively
+With this line, the agent listens for connections on all interfaces,
+IPv4 and IPv6
 
-Uncomment and change the following line to give read access to the
-username created above (rouser is what LibreNMS uses) :
+Uncomment and change the line below to give read access to the
+username that you created above (LibreNMS uses rouser) :
 
 ```bash
 #rouser authPrivUser priv
 ```
 
-Change the following details inside snmpd.conf
+Change these details in snmpd.conf
 
 ```bash
 syslocation Rack, Room, Building, City, Country [GPSX,Y]
@@ -563,7 +563,7 @@ service snmpd restart
 1. Validate change by clicking "Apply"
 
 #### PowerShell
-The following example will install SNMP, set the Librenms IP and set a read only community string.  
+The example below installs SNMP, sets the Librenms IP and sets a read only community string.  
 Replace `$IP` and `$communitystring` with your values.
 
 ```Powershell
@@ -574,7 +574,7 @@ New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\services\SNMP\Parameters\
 ```
 
 !!! note
-    SNMPv3 can be supported on Windows platforms with the use of Net-SNMP.
+    SNMPv3 is possible on Windows platforms with Net-SNMP.
 
 ### Mac OSX
 

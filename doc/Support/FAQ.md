@@ -2,28 +2,28 @@
 
 ### <a name="faq1"> How do I install LibreNMS?</a>
 
-This is currently well documented within the doc folder of the installation files.
+This is fully documented in the doc folder of the installation files.
 
-Please see the following [doc](../Installation/Install-LibreNMS.md)
+Refer to this [doc](../Installation/Install-LibreNMS.md)
 
 ### <a name="faq2"> How do I add a device?</a>
 
-You have two options for adding a new device into LibreNMS.
+There are two methods to add a new device into LibreNMS.
 
-1: Using the command line via ssh you can add a new device by changing
-   to the directory of your LibreNMS install and typing:
+1: On the command line, through ssh, you can add a new device. Change
+   to the directory of your LibreNMS installation and type:
 
 ```bash
 lnms device:add [hostname or ip]
 ```
 
-To see all options run: `lnms device:add -h`
+To see all options, run: `lnms device:add -h`
 
-> Please note that if the community contains special characters such
-> as `$` then you will need to wrap it in `'`. I.e: `'Pa$$w0rd'`.
+> If the community contains special characters, such
+> as `$`, you must put it in `'`. I.e: `'Pa$$w0rd'`.
 
-2: Using the web interface, go to Devices and then Add Device. Enter
-   the details required for the device that you want to add and then
+2: In the web interface, go to Devices and then Add Device. Enter
+   the necessary details for the device that you want to add. Then
    click 'Add Host'.
 
 ### <a name="faq3"> How do I get help?</a>
@@ -38,14 +38,14 @@ Supported is quite a strong word :) The 'officially' supported distros are:
 - Red Hat / CentOS
 - Gentoo
 
-However we will always aim to help wherever possible so if you are
-running a distro that isn't one of the above then give it a try anyway
-and if you need help then jump on the [discord
+But we always try to help where possible. If your
+distro is not one of the above, try it.
+If you need help, go to the [discord
 server](https://t.libren.ms/discord).
 
 ### <a name="faq5"> Do you have a demo available?</a>
 
-We do indeed, you can find access to the demo [here](https://demo.librenms.org)
+Yes. You can get access to the demo [here](https://demo.librenms.org)
 
 
 ## Support
@@ -54,112 +54,112 @@ We do indeed, you can find access to the demo [here](https://demo.librenms.org)
 
 LibreNMS does not parse MIBs to discover sensors for devices.
 LibreNMS uses static discovery definitions written in YAML or PHP.
-Therefore, updating a MIB alone will not improve OS support, the
-definitions must be updated.  LibreNMS only uses MIBs to make OIDs
+Thus, an update of a MIB alone does not make OS support better. The
+definitions must be updated.  LibreNMS uses MIBs only to make OIDs
 easier to read.
 
 ### <a name="faq6"> Why do I get blank pages sometimes in the WebUI?</a>
 
-You can enable debug information by setting `APP_DEBUG=true` in your
-.env. (Do not leave this enabled, it could leak private data)
+To enable debug information, set `APP_DEBUG=true` in your
+.env. (Do not keep this enabled. It can release private data)
 
-If the page you are trying to load has a substantial amount of data in
-it then it could be that the php memory limit needs to be increased in
+If the page that you try to load contains much data,
+it is possible that you must increase the php memory limit in
 [config.php](Configuration.md#core).
 
 ### <a name="faq10"> Why do I not see any graphs?</a>
 
-The easiest way to check if all is well is to run `./validate.php` as
-librenms from within your install directory. This should give you info on
-why things aren't working.
+The easiest method to find problems is to run `./validate.php` as
+librenms from your installation directory. This gives you information
+about why the system does not work.
 
-One other reason could be a restricted snmpd.conf file or snmp view
-which limits the data sent back. If you use net-snmp then we suggest
-using the [included
+One other possible cause is a restricted snmpd.conf file or snmp view,
+which limits the data sent back. If you use net-snmp, we recommend
+the [included
 snmpd.conf](https://raw.githubusercontent.com/librenms/librenms/master/snmpd.conf.example)
 file.
 
 ### <a name="faq7"> How do I debug pages not loading correctly?</a>
 
-A debug system is in place which enables you to see the output from
-php errors, warnings and notices along with the MySQL queries that
-have been run for that page.
+There is a debug system. With it, you can see the output from
+php errors, warnings and notices, together with the MySQL queries that
+ran for that page.
 
-You can enable debug information by setting `APP_DEBUG=true` in your
-.env. (Do not leave this enabled, it could leak private data) To see
-additional information, run `./scripts/composer_wrapper.php install`,
-to install additional debug tools. This will add a debug bar at the
-bottom of every page that will show you detailed debug information.
+To enable debug information, set `APP_DEBUG=true` in your
+.env. (Do not keep this enabled. It can release private data) To see
+more information, run `./scripts/composer_wrapper.php install`
+to install more debug tools. This adds a debug bar at the
+bottom of each page. The bar shows you detailed debug information.
 
 ### <a name="faq11"> How do I debug the discovery process?</a>
 
-Please see the [Discovery Support](Discovery%20Support.md) document
-for further details.
+Refer to the [Discovery Support](Discovery%20Support.md) document
+for more details.
 
 ### <a name="faq12"> How do I debug the poller process?</a>
 
-Please see the [Poller Support](Poller%20Support.md) document
-for further details.
+Refer to the [Poller Support](Poller%20Support.md) document
+for more details.
 
 ### <a name="faq14"> Why do I get a lot apache or rrdtool zombies in my process list?</a>
 
-If this is related to your web service for LibreNMS then this has been
-tracked down to an issue within php which the developers aren't
-fixing. We have implemented a work around which means you shouldn't be
-seeing this. If you are, please report this in [issue
+If this is related to your web service for LibreNMS, the cause is
+a problem in php that the developers do not
+repair. We made a workaround. Thus, you usually do not
+see this. If you see it, report it in [issue
 443](https://github.com/librenms/librenms/issues/443).
 
 ### <a name="faq15"> Why do I see traffic spikes in my graphs?</a>
 
-This occurs either when a counter resets or the device sends back
-bogus data making it look like a counter reset. We have enabled
-support for setting a maximum value for rrd files for ports.
+This occurs when a counter goes back to zero, or when the device sends
+incorrect data that looks like a counter reset. There is
+support for a maximum value for rrd files for ports.
 
-Before this all rrd files were set to 100G max values, now you can
-enable support to limit this to the actual port speed.
+Before this, all rrd files had a maximum value of 100G. Now you can
+enable support to limit this to the true port speed.
 
-rrdtool tune will change the max value when the interface speed is
-detected as being changed (min value will be set for anything 10M or
-over) or when you run the included script (lnms port:tune) -
-see [RRDTune doc](../Extensions/RRDTune.md)
+rrdtool tune changes the maximum value when the system finds that
+the interface speed changed (the minimum value is set for each speed
+of 10M or more), or when you run the included script (lnms port:tune) -
+refer to the [RRDTune doc](../Extensions/RRDTune.md)
 
- SNMP ifInOctets and ifOutOctets are counters, which means they start
+ SNMP ifInOctets and ifOutOctets are counters. They start
  at 0 (at device boot) and count up from there. LibreNMS records the
- value every 5 minutes and uses the difference between the previous
- value and the current value to calculate rate. (Also, this value
- resets to 0 when it hits the max value)
+ value each 5 minutes. It uses the difference between the last
+ value and the current value to calculate the rate. (Also, this value
+ goes back to 0 when it gets to the maximum value)
 
-Now, when the value is not recorded for awhile RRD (our time series
-storage) does not record a 0, it records the last value, otherwise,
-there would be even worse problems. Then finally we get the current
-ifIn/OutOctets value and record that. Now, it appears as though all of
-the traffic since it stopped getting values have occurred in the last
+When no value is recorded for some time, RRD (our time series
+storage) does not record a 0. It records the last value. If it did
+not, there would be worse problems. Then we get the current
+ifIn/OutOctets value and record it. Now it looks as if all
+the traffic since the last good value occurred in the last
 5 minute interval.
 
-So whenever you see spikes like this, it means we have not received data from the device for several polling intervals. The cause can vary quite a bit: bad snmp implementations, intermittent network connectivity, broken poller, and more.
+Thus, when you see spikes like this, we did not receive data from the device for a number of polling intervals. There are many possible causes: bad snmp implementations, intermittent network connectivity, a broken poller, and more.
 
 ### <a name="faq17"> Why do I see gaps in my graphs?</a>
 
-This is most commonly due to the poller not being able to complete
-it's run within 300 seconds. Check which devices are causing this by
-going to /poll-log/ within the Web interface.
+The usual cause is a poller that cannot complete
+its run in 300 seconds. To find the devices that cause this,
+go to /poll-log/ in the Web interface.
 
-When you find the device(s) which are taking the longest you can then
-look at the Polling module graph under Graphs -> Poller -> Poller
-Modules Performance. Take a look at what modules are taking the
-longest and disabled un used modules.
+When you find the device(s) that take the longest time,
+examine the Polling module graph under Graphs -> Poller -> Poller
+Modules Performance. Find the modules that take the
+longest time, and disable the modules that you do not use.
 
-If you poll a large number of devices / ports then it's recommended to
-run a local recursive dns server such as pdns-recursor.
+If you poll a large number of devices / ports, we recommend that you
+run a local recursive dns server, such as pdns-recursor.
 
-Running RRDCached is also highly advised in larger installs but has
-benefits no matter the size.
+We also strongly recommend RRDCached for larger installations. But it
+helps for all sizes.
 
 ### <a name="faq16"> How do I change the IP / hostname of a device?</a>
 
-There is a host rename tool called renamehost.php in your librenms
-root directory. When renaming you are also changing the device's IP /
-hostname address for monitoring.
+There is a host rename tool, renamehost.php, in your librenms
+root directory. When you rename a device, you also change the IP /
+hostname address that the system monitors.
 
 Usage:
 
@@ -167,32 +167,32 @@ Usage:
 ./renamehost.php <old hostname> <new hostname>
 ```
 
-You can also rename a device in the Web UI by going to the device,
-then clicking settings Icon -> Edit.
+You can also rename a device in the Web UI. Go to the device,
+then click the settings Icon -> Edit.
 
 ### <a name="faq19"> My device doesn't finish polling within 300 seconds</a>
 
-We have a few things you can try:
+You can try these steps:
 
 - Disable unnecessary polling modules under edit device.
-- Set a max repeater value within the snmp settings for a device. What
-  to set this to is tricky, you really should run an snmpbulkwalk with
-  -Cr10 through -Cr50 to see what works best. 50 is usually a good
-  choice if the device can cope.
+- Set a max repeater value in the snmp settings for a device. The
+  correct value is not easy to find. Run an snmpbulkwalk with
+  -Cr10 through -Cr50 to see which value is best. 50 is usually a good
+  selection, if the device can operate with it.
 
 ### <a name="faq18"> Things aren't working correctly?</a>
 
-Run `./validate.php` as librenms from within your install.
+Run `./validate.php` as librenms from your installation.
 
-Re-run `./validate.php` once you've resolved any issues raised.
+Run `./validate.php` again after you correct the reported problems.
 
-You have an odd issue - we'd suggest you join our [discord
-server](https://t.libren.ms/discord) to discuss.
+If you have an unusual problem, we recommend that you go to our [discord
+server](https://t.libren.ms/discord) to speak about it.
 
 ### <a name="faq21"> What do the values mean in my graphs?</a>
 
-The values you see are reported as metric values. Thanks to a post on
-[Reddit](https://www.reddit.com/r/networking/comments/4xzpfj/rrd_graph_interface_error_label_what_is_the_m/)
+The values that you see are metric values. Because of a post on
+[Reddit](https://www.reddit.com/r/networking/comments/4xzpfj/rrd_graph_interface_error_label_what_is_the_m/),
 here are those values:
 
 ```
@@ -212,15 +212,15 @@ here are those values:
 
 ### <a name="faq22"> Why does a device show as a warning?</a>
 
-This is indicating that the device has rebooted within the last 24
-hours (by default). If you want to adjust this threshold then you can
-do so by setting `$config['uptime_warning'] = '86400';` in
+This shows that the device did a reboot in the last 24
+hours (by default). To adjust this threshold,
+set `$config['uptime_warning'] = '86400';` in
 `config.php`. The value must be in seconds.
 
 ### <a name="faq23"> Why do I not see all interfaces in the Overall traffic graph for a device?</a>
 
-By default numerous interface types and interface descriptions are
-excluded from this graph. The excluded defaults are:
+By default, many interface types and interface descriptions are
+not included in this graph. The default exclusions are:
 
 ```php
 $config['device_traffic_iftype'][] = '/loopback/';
@@ -239,8 +239,8 @@ $config['device_traffic_descr'][] = '/null/';
 $config['device_traffic_descr'][] = '/dummy/';
 ```
 
-If you would like to re-include l2vlan interfaces for instance, you
-first need to `unset` the config array and set your options:
+If you want to include l2vlan interfaces again, for example,
+first `unset` the config array. Then set your options:
 
 ```php
 unset($config['device_traffic_iftype']);
@@ -254,49 +254,49 @@ $config['device_traffic_iftype'][] = '/ppp/';
 
 ### <a name="faq24"> How do I migrate my LibreNMS install to another server?</a>
 
-If you are moving from one CPU architecture to another then you will
-need to dump the rrd files and re-create them. If you are in this
-scenario then you can use [Dan Brown's migration
+If you move from one CPU architecture to a different one, you must
+dump the rrd files and create them again. In this
+condition, you can use [Dan Brown's migration
 scripts](https://web.archive.org/web/20180815212723/https://vlan50.com/2015/04/17/migrating-from-observium-to-librenms/).
 
-If you are just moving to another server with the same CPU
-architecture then the following steps should be all that's needed:
+If you only move to a different server with the same CPU
+architecture, these steps are usually sufficient:
 
-- Install LibreNMS as per our normal documentation; you don't need to
-  run through the web installer or building the sql schema.
-- Stop cron by commenting out all lines in `/etc/cron.d/librenms`
+- Install LibreNMS as given in our usual documentation. It is not
+  necessary to run the web installer or to build the sql schema.
+- Stop cron. To do this, comment out all lines in `/etc/cron.d/librenms`
 - Dump the MySQL database `librenms` from your old server (`mysqldump
   librenms -u root -p > librenms.sql`)...
 - and import it into your new server (`mysql -u root -p librenms < librenms.sql`).
 - Copy the `rrd/` folder to the new server.
 - Copy the `.env` and `config.php` files to the new server.
-- Check for modified files (eg specific os, ...) with `git status` and
+- Look for changed files (eg specific os, ...) with `git status` and
   migrate them.
-- Ensure ownership of the copied files and folders (substitute your
-  user if necessary) - `chown -R librenms:librenms /opt/librenms`
-- Delete old pollers on the GUI (gear icon --> Pollers --> Pollers)
+- Make sure that the ownership of the copied files and folders is
+  correct (use your user if necessary) - `chown -R librenms:librenms /opt/librenms`
+- Delete the old pollers in the GUI (gear icon --> Pollers --> Pollers)
 - Validate your installation (/opt/librenms/validate.php)
-- Re-enable cron by uncommenting all lines in `/etc/cron.d/librenms`
+- Enable cron again. To do this, uncomment all lines in `/etc/cron.d/librenms`
 
 ### <a name="faq25"> Why is my EdgeRouter device not detected?</a>
 
-If you have `service snmp description` set in your config then this
-will be why, please remove this. For some reason Ubnt have decided
-setting this value should override the sysDescr value returned which
+If `service snmp description` is set in your config, this
+is the cause. Remove this setting. On Ubnt devices,
+this value replaces the sysDescr value that the device returns. This
 breaks our detection.
 
-If you don't have that set then this may be then due to an update of
-EdgeOS or a new device type, please [create an
+If you do not have that setting, the cause can be an update of
+EdgeOS or a new device type. Please [create an
 issue](https://github.com/librenms/librenms/issues/new).
 
 ### <a name="faq26"> Why are some of my disks not showing?</a>
 
-If you are monitoring a linux server then net-snmp doesn't always
-expose all disks via hrStorage (HOST-RESOURCES-MIB). We have
-additional support which will retrieve disks via dskTable
-(UCD-SNMP-MIB). To expose these disks you need to add additional
-config to your snmpd.conf file. For example, to expose `/dev/sda1`
-which may be mounted as `/storage` you can specify:
+If you monitor a linux server, net-snmp does not always
+show all disks through hrStorage (HOST-RESOURCES-MIB). We have
+more support that gets disks through dskTable
+(UCD-SNMP-MIB). To show these disks, you must add more
+configuration to your snmpd.conf file. For example, to show `/dev/sda1`,
+which is possibly mounted as `/storage`, you can specify:
 
 `disk /dev/sda1`
 
@@ -304,61 +304,61 @@ Or
 
 `disk /storage`
 
-Restart snmpd and LibreNMS should populate the additional disk after a fresh discovery.
+Restart snmpd. After a new discovery, LibreNMS shows the added disk.
 
 #### <a name="faq27"> Why are my disks reporting an incorrect size?</a>
 
-There is a known issue for net-snmp, which causes it to report
+There is a known problem with net-snmp. It reports an
 incorrect disk size and disk usage when the size of the disk (or raid)
-are larger then 16TB, a workaround has been implemented but is not
-active on Centos 6.8 by default due to the fact that this workaround
-breaks official SNMP specs, and as such could cause unexpected
-behaviour in other SNMP tools. You can activate the workaround by
-adding to /etc/snmp/snmpd.conf :
+is more than 16TB. There is a workaround, but it is not
+active on Centos 6.8 by default. The cause: this workaround
+does not obey the official SNMP specifications. Thus, it can cause
+unwanted behavior in other SNMP tools. To make the workaround active,
+add this to /etc/snmp/snmpd.conf :
 
 `realStorageUnits 0`
 
 ### <a name="faq28"> What does mean \"ignore alert tag\" on device, component, service and port?</a>
 
-Tag device, component, service and port to ignore alerts. Alert checks will still run.
-However, ignore tag can be read in alert rules. For example on device, if `devices.ignore = 0`
-or `macros.device = 1` condition is is set and ignore alert tag is on,
-the alert rule won't match. The alert rule is ignored.
+Tag a device, component, service or port to ignore alerts. Alert checks continue to run.
+But alert rules can read the ignore tag. For example, on a device, if the `devices.ignore = 0`
+or `macros.device = 1` condition is set, and the ignore alert tag is on,
+the alert rule does not match. The system ignores the alert rule.
 
 ### <a name="network-config-permanent-change"> How do I clean up alerts from my switches and routers about ports being down or changing speed</a>
 
-Some properties used for alerting (ending in `_prev`) are only updated when a
-change is detected, and not every time the poller runs. This means that if you
-make a permanent change to your network such as removing a device, performing a
-major firmware upgrade, or downgrading a WAN connection, you may be stuck with
-some unresolvable alerts.
+Some properties used for alerting (which end in `_prev`) get updates only when
+the system finds a change, not each time the poller runs. Thus, if you
+make a permanent change to your network, such as when you remove a device, do a
+large firmware upgrade, or downgrade a WAN connection, some alerts can
+stay on and cannot clear.
 
-If a port will be permanently down, it's best practice to configure it to be
-administratively down on the device to prevent malicious access. You can then
-only run alerts on ports with `ifAdminStatus = up`. Otherwise, you'll need to
-reset the device port state history.
+If a port stays down permanently, the best procedure is to configure it as
+administratively down on the device. This prevents malicious access. Then you can
+run alerts only on ports with `ifAdminStatus = up`. If you do not do this, you must
+clear the port state history of the device.
 
-On the device generating alerts, use the cog button to go to the edit device
-page. At the top of the _device settings_ pane is a button labelled `Reset Port
-State` - this will clear the historic state for all ports on that device,
-allowing any active alerts to clear.
+On the device that causes the alerts, use the cog button to go to the edit device
+page. At the top of the _device settings_ pane is a button with the label `Reset Port
+State`. This removes the old state for all ports on that device.
+Then the active alerts can clear.
 
 
 
 ### <a name="faq29"> Why can't Normal and Global View users see Oxidized?</a>
 
-Configs can often contain sensitive data. Because of that only global
+Configs frequently contain sensitive data. Because of this, only global
 admins can see configs.
 
 ### <a name="faq30"> What is the Demo User for?</a>
 
-Demo users allow full access except adding/editing users and deleting
-devices and can't change passwords.
+Demo users have full access, but they cannot add or edit users, cannot
+delete devices, and cannot change passwords.
 
 ### <a name="faq31"> Why does modifying 'Default Alert Template' fail?</a>
 
-This template's entry could be missing in the database. Please run
-this from the LibreNMS directory:
+It is possible that the entry for this template is missing in the
+database. Run this from the LibreNMS directory:
 
 ```bash
 php artisan db:seed --class=DefaultAlertTemplateSeeder
@@ -366,29 +366,29 @@ php artisan db:seed --class=DefaultAlertTemplateSeeder
 
 ### <a name="faq32"> Why would alert un-mute itself?</a>
 
-If alert un-mutes itself then it most likely means that the alert
-cleared and is then triggered again. Please review eventlog as it will
-tell you in there.
+If an alert unmutes itself, the probable cause is that the alert
+cleared and then started again. Examine the eventlog. It
+shows this.
 
 ### <a name="faq33"> How do I change the Device Type?</a>
 
-You can change the Device Type by going to the device you would like
-to change, then click on the Gear Icon -> Edit. If you would like to
-define custom types, we suggest using [Device
-Groups](../Extensions/Device-Groups.md). They will be listed in the
-menu similarly to device types.
+To change the Device Type, go to the applicable device.
+Then click the Gear Icon -> Edit. If you want to
+define custom types, we recommend [Device
+Groups](../Extensions/Device-Groups.md). The menu shows them
+almost the same as device types.
 
 ### <a name="faq34"> Editing large device groups gives error messages</a>
 
-If the device group contains large amount of devices, editing it from the UI might cause errors on the form even when all the data seems correct. This is caused by PHP's `max_input_vars`-variable. You should be able to confirm that this is the case by inspecting the PHP's error logs.
+If the device group contains a large number of devices, and you edit it in the UI, errors can occur on the form, also when all the data looks correct. The cause is PHP's `max_input_vars` variable. To make sure that this is the cause, examine the PHP error logs.
 
-With the basic installation on Ubuntu 22.04 LTS with Nginx and PHP 8.1 FPM this value can be tuned by editing the file `/etc/php/8.1/fpm/php.ini` and adjusting the value of `max_input_vars` to be at least the size of the large group. In larger installations a value such as `10000` should suffice.
+With the basic installation on Ubuntu 22.04 LTS with Nginx and PHP 8.1 FPM, you can change this value in the file `/etc/php/8.1/fpm/php.ini`. Set the value of `max_input_vars` to a minimum of the size of the large group. In larger installations, a value such as `10000` is usually sufficient.
 
 ### <a name="faq-where-do-i-update-my-database-credentials">Where do I update my database credentials?</a>
 
-If you've changed your database credentials then you will need to
-update LibreNMS with those new details.
-Please edit `.env`
+If you changed your database credentials, you must
+update LibreNMS with the new details.
+Edit `.env`
 
 [.env](../Support/Environment-Variables.md#database):
 
@@ -402,92 +402,92 @@ DB_PORT=
 
 ### <a name='my-reverse-proxy-is-not-working'>My reverse proxy is not working</a>
 
-Make sure your proxy is passing the proper variables.
-At a minimum: X-Forwarded-For and X-Forwarded-Proto (X-Forwarded-Port if needed)
+Make sure that your proxy sends the correct variables.
+As a minimum: X-Forwarded-For and X-Forwarded-Proto (X-Forwarded-Port if necessary)
 
-You also need to [Set the proxy or proxies as trusted](../Support/Environment-Variables.md#trusted-reverse-proxies)
+You must also [set the proxy or proxies as trusted](../Support/Environment-Variables.md#trusted-reverse-proxies)
 
-If you are using a subdirectory on the reverse proxy and not on the actual web server,
-you may need to set [APP_URL](../Support/Environment-Variables.md#base-url) and `$config['base_url']`.
+If you use a subdirectory on the reverse proxy, and not on the web server,
+it is possible that you must set [APP_URL](../Support/Environment-Variables.md#base-url) and `$config['base_url']`.
 
 ### <a name='my-alerts-aren't-being-delivered-on-time'>My alerts aren't being delivered on time</a>
 
-If you're running MySQL/MariaDB on a separate machine or container
-make sure the timezone is set properly on both the LibreNMS **and**
-MySQL/MariaDB instance. Alerts will be delivered according to
-MySQL/MariaDB's time, so a mismatch between the two can cause alerts
-to be delivered late if LibreNMS is on a timezone later than
+If you run MySQL/MariaDB on a separate machine or container,
+make sure that the timezone is set correctly on the LibreNMS **and**
+the MySQL/MariaDB instance. The system sends alerts at the
+MySQL/MariaDB time. Thus, a difference between the two can cause late
+alerts, if LibreNMS is on a timezone later than
 MySQL/MariaDB.
 
 ### <a name='my-alert-templates-stopped-working'>My alert templates stopped working</a>
 
-You should probably have a look in the documentation concerning the
-new [template syntax](../Alerting/Templates.md). Since version 1.42,
-syntax changed, and you basically need to convert your templates to
-this new syntax (including the titles).
+Read the documentation about the
+new [template syntax](../Alerting/Templates.md). In version 1.42,
+the syntax changed. You must convert your templates to
+this new syntax (which includes the titles).
 
 ### <a name='how-do-i-use-trend-prediction-in-graphs'>How do I use trend prediction in graphs</a>
 
-As of [Ver. 1.55](https://community.librenms.org/t/v1-55-release-changelog-august-2019/9428) a new feature has been added where you can view a simple linear prediction in port graphs.
+[Ver. 1.55](https://community.librenms.org/t/v1-55-release-changelog-august-2019/9428) added a new feature. With it, you can see a simple linear prediction in port graphs.
 
-> It doesn't work on non-port graphs or consolidated graphs at the time this FAQ entry was written.
+> It does not operate on non-port graphs or consolidated graphs at the time this FAQ entry was written.
 
-To view a prediction:
+To see a prediction:
 
-- Click on any `port` graph of any network device
-- Select a `From` date to your liking (not earlier than the device was actually added to LNMS), and then select a future date in the `To` field.
+- Click a `port` graph of a network device
+- Select a `From` date (not earlier than the date when the device was added to LNMS). Then select a future date in the `To` field.
 - Click update
 
-You should now see a linear prediction line on the graph.
+You now see a linear prediction line on the graph.
 ### <a name='move-db-to-another-server'>How do I move only the DB to another server?</a>
 
-There is already a reference how to move your whole LNMS installation to another server. But the following steps will help you to split up an "All-in-one" installation to one LibreNMS installation with a separate database install.
-*Note: This section assumes you have a MySQL/MariaDB instance
+There is already a reference for how to move your full LNMS installation to a different server. But the steps below help you divide an "All-in-one" installation into one LibreNMS installation with a separate database installation.
+*Note: This section applies when you have a MySQL/MariaDB instance
 
-- Stop the apache and mysql service in you LibreNMS installation.
+- Stop the apache and mysql services in your LibreNMS installation.
 - Edit out all the cron entries in `/etc/cron.d/librenms`.
-- Dump your `librenms`database on your current install by issuing `mysqldump librenms -u root -p > librenms.sql`.
-- Stop and disable the MySQL server on your current install.
-- On your new server make sure you create a new database with the standard install command, no need to add a user for localhost though.
-- Copy this over to your new database server and import it with `mysql -u root -p librenms < librenms.sql`.
-- Enter to mysql and add permissions with the following two commands:
+- Dump your `librenms` database on your current installation with `mysqldump librenms -u root -p > librenms.sql`.
+- Stop and disable the MySQL server on your current installation.
+- On your new server, make sure that you create a new database with the standard installation command. It is not necessary to add a user for localhost.
+- Copy the dump to your new database server and import it with `mysql -u root -p librenms < librenms.sql`.
+- Go into mysql and add permissions with these two commands:
 ```sql
 GRANT ALL PRIVILEGES ON librenms.* TO 'librenms'@'IP_OF_YOUR_LNMS_SERVER' IDENTIFIED BY 'PASSWORD' WITH GRANT OPTION;
 GRANT ALL PRIVILEGES ON librenms.* TO 'librenms'@'FQDN_OF_YOUR_LNMS_SERVER' IDENTIFIED BY 'PASSWORD' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 exit;
 ```
-- Enable and restart MySQL server.
-- Edit your `config.php` file to point the install to the new database server location.
-- **Very important**: On your LibreNMS server, inside your install directory is a `.env` file, in it you need to edit the `DBHOST` parameter to point to your new server location.
+- Enable and restart the MySQL server.
+- Edit your `config.php` file to point the installation to the new database server location.
+- **Very important**: On your LibreNMS server, in your installation directory, is a `.env` file. In it, you must edit the `DBHOST` parameter to point to your new server location.
 - After all this is done, enable all the cron entries again and start apache.
 ### <a name='optional-requirements-for-snmpv3-sha2-auth'>What are the "optional requirements message" when I add SNMPv3 devices?</a>
-When you add a device via the WebUI you may see a little message stating "Optional requirements are not met so some options are disabled". Do not panic. This simply means your system does not contain **openssl >= 1.1** and **net-snmp >= 5.8**, which are the minimum specifications needed to be able to use SHA-224|256|384|512 as auth algorithms.
-For crypto algorithms AES-192, AES-256 you need **net-snmp** compiled with `--enable-blumenthal-aes`.
+When you add a device in the WebUI, it is possible that you see a small message: "Optional requirements are not met so some options are disabled". This is not a problem. It only means that your system does not contain **openssl >= 1.1** and **net-snmp >= 5.8**. These are the minimum versions necessary to use SHA-224|256|384|512 as auth algorithms.
+For the crypto algorithms AES-192 and AES-256, you need **net-snmp** compiled with `--enable-blumenthal-aes`.
 
 
 ## Developing
 
 ### <a name="faq8"> How do I add support for a new OS?</a>
 
-Please see [Supporting a new OS](../Developing/Support-New-OS.md) if you are adding all
-the support yourself, i.e. writing all of the supporting code. If you are only able
-to supply supporting info, and would like the help of others to write up the code, please
-follow the below steps.
+Refer to [Supporting a new OS](../Developing/Support-New-OS.md) if you add all
+the support yourself, i.e. you write all the necessary code. If you can only
+supply information, and you want the help of others to write the code,
+do the steps below.
 
 ### <a name="faq20"> What information do you need to add a new OS?</a>
 
-Please [open a feature request in the community forum](https://community.librenms.org/c/feature-requests) and provide
-the output of Discovery, Poller, and Snmpwalk as separate non-expiring
-"pastebin" links, we recommend using <https://paste.rs/> or <https://paste.sh/>
+[Open a feature request in the community forum](https://community.librenms.org/c/feature-requests) and give
+the output of Discovery, Poller, and Snmpwalk as separate "pastebin"
+links that do not expire. We recommend <https://paste.rs/> or <https://paste.sh/>
 
-Please use preferably the command line to obtain the information.
-Especially, if snmpwalk results in a large amount of data. Replace the
-relevant information in these commands such as HOSTNAME and
-COMMUNITY. Use `snmpwalk` instead of `snmpbulkwalk` for v1 devices.
+We recommend that you use the command line to get the information,
+specially if snmpwalk gives a large quantity of data. Replace the
+applicable information in these commands, such as HOSTNAME and
+COMMUNITY. Use `snmpwalk`, not `snmpbulkwalk`, for v1 devices.
 
-> These commands will automatically upload the data to <https://paste.rs/> servers.
-> Feel free to use another service!
+> These commands automatically upload the data to the <https://paste.rs/> servers.
+> You can use a different service!
 
 ```bash
 lnms device:discover -vv HOSTNAME | curl --data-binary @- https://paste.rs/
@@ -495,80 +495,80 @@ lnms device:poll -vv HOSTNAME | curl --data-binary @- https://paste.rs/
 snmpbulkwalk -OUneb -v2c -c COMMUNITY HOSTNAME . | curl --data-binary @- https://paste.rs/
 ```
 
-You can use the links provided by these commands within the community post.
+You can use the links that these commands give in the community post.
 
-If possible please also provide what the OS name should be if it doesn't exist already,
-as well as any useful link (MIBs from vendor, logo, etc etc)
+If possible, also tell us what the OS name must be, if it does not exist,
+and give applicable links (MIBs from the vendor, logo, etc etc)
 
 ### <a name="faq9"> What can I do to help?</a>
 
-Thanks for asking, sometimes it's not quite so obvious and everyone
-can contribute something different. So here are some ways you can help
-LibreNMS improve.
+Thank you for the question. The answer is not always clear, and each
+person can contribute something different. These are some ways to help
+make LibreNMS better.
 
-- Code. This is a big thing. We want this community to grow by the
-  software developing and evolving to cater for users needs. The
-  biggest area that people can help make this happen is by providing
-  code support. This doesn't necessarily mean contributing code for
-  discovering a new device:
-  - Web UI, a new look and feel has been adopted but we are not
-      finished by any stretch of the imagination. Make suggestions,
-      find and fix bugs, update the design / layout.
-  - Poller / Discovery code. Improving it (we think a lot can be done
-    to speed things up), adding new device support and updating old
-    ones.
-  - The LibreNMS main website, this is hosted on GitHub like the main
-    repo and we accept use contributions here as well :)
-- Hardware. We don't physically need it but if we are to add device
-  support, it's made a whole lot easier with access to the kit via
-  SNMP.
-  - If you've got MIBs, they are handy as well :)
-  - If you know the vendor and can get permission to use logos that's also great.
-- Bugs. Found one? We want to know about it. Most bugs are fixed after
-  being spotted and reported by someone, I'd love to say we are
-  amazing developers and will fix all bugs before you spot them but
-  that's just not true.
-- Feature requests. Can't code / won't code. No worries, chuck a
-  feature request into our [community
-  forum](https://community.librenms.org) with enough detail and
-  someone will take a look. A lot of the time this might be what
-  interests someone, they need the same feature or they just have
-  time. Please be patient, everyone who contributes does so in their
+- Code. This is a big item. We want this community to grow through
+  software that develops and changes to do what the users need. The
+  largest area where people can help is
+  code contributions. This does not always mean code for
+  the discovery of a new device:
+  - Web UI. There is a new look and feel, but it is not
+      complete. Make suggestions,
+      find and repair bugs, update the design / layout.
+  - Poller / Discovery code. Make it better (we think that much can be
+    done to make it faster), add new device support, and update old
+    device support.
+  - The LibreNMS main website. This is on GitHub, like the main
+    repo, and we accept contributions here as well :)
+- Hardware. We do not need the hardware itself. But when we add device
+  support, access to the equipment through
+  SNMP makes it much easier.
+  - If you have MIBs, they are useful as well :)
+  - If you know the vendor, and can get permission to use logos, that is also good.
+- Bugs. Did you find one? We want to know about it. Most bugs are
+  repaired after a person sees and reports them. We would like to say
+  that we are perfect developers who repair all bugs before you see
+  them, but that is not true.
+- Feature requests. You cannot code, or do not want to code? That is
+  not a problem. Put a feature request into our [community
+  forum](https://community.librenms.org) with sufficient detail, and
+  a person will examine it. Frequently, a feature interests a person,
+  or they need the same feature, or they have
+  time. Please be patient. Each person who contributes does so in their
   own time.
-- Documentation. Documentation can always be improved and every little
-  bit helps. Not all features are currently documented or documented
-  well, there's spelling mistakes etc. It's very easy to submit
+- Documentation. Documentation can always be made better, and each small
+  contribution helps. Not all features have documentation, or good
+  documentation, and there are spelling errors etc. It is easy to submit
   updates [through the GitHub
-  website](https://help.github.com/articles/editing-files-in-another-user-s-repository/),
-  no git experience needed.
-- Be nice, this is the foundation of this project. We expect everyone
-  to be nice. People will fall out, people will disagree but please do
-  it so in a respectable way.
-- Ask questions. Sometimes just by asking questions you prompt deeper
-  conversations that can lead us to somewhere amazing so please never
+  website](https://help.github.com/articles/editing-files-in-another-user-s-repository/).
+  No git experience is necessary.
+- Be nice. This is the foundation of this project. We expect each
+  person to be nice. People will disagree. But please do
+  it in a way that shows respect.
+- Ask questions. Sometimes a question starts deeper
+  conversations that lead us to a good result. Thus, never
   be afraid to ask a question.
 
 ### <a name="faq13"> How can I test another users branch?</a>
 
-LibreNMS can and is developed by anyone, this means someone may be
-working on a new feature or support for a device that you want. It can
-be helpful for others to test these new features, using Git, this is
-made easy.
+Each person can develop LibreNMS. This means that a person is possibly
+working on a new feature, or on support for a device that you want. It
+helps when others test these new features. With Git, this is
+easy.
 
 ```bash
 cd /opt/librenms
 ```
 
-Firstly ensure that your current branch is in good state:
+First, make sure that your current branch is in a good state:
 
 ```bash
 git status
 ```
 
-If you see `nothing to commit, working directory clean` then let's go for it :)
+If you see `nothing to commit, working directory clean`, you can continue :)
 
-Let's say that you want to test a users (f0o) new development branch
-(issue-1337) then you can do the following:
+For example, you want to test a user's (f0o) new development branch
+(issue-1337). Then you can do this:
 
 ```bash
 git remote add f0o https://github.com/f0o/librenms.git
@@ -576,14 +576,14 @@ git remote update f0o
 git checkout issue-1337
 ```
 
-Once you are done testing, you can easily switch back to the master branch:
+When your tests are complete, you can easily change back to the master branch:
 
 ```bash
 git checkout master
 ```
 
-If you want to pull any new updates provided by f0o's branch then
-whilst you are still in it, do the following:
+If you want to pull new updates from f0o's branch,
+stay in the branch and do this:
 
 ```bash
 git pull f0o issue-1337

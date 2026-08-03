@@ -1,9 +1,9 @@
 # Discovery Support
 
-This document will explain how to use discovery to debug issues or
-manually running to process data.
+This document tells you how to use discovery to debug problems or
+to manually process data.
 
-The basic command to get started is:
+The basic command to start is:
 
 `lnms device:discover HOSTNAME`
 
@@ -31,36 +31,36 @@ Options:
   -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
 ```
 
-`<device spec>` Use this to specify a device via either id or hostname (including
-wildcard using *). You can also specify odd and even. all will run
-discovery against all devices whilst new will poll only those devices
-that have recently been added or have been selected for rediscovery.
+`<device spec>` Use this to specify a device by id or hostname (a
+wildcard with * is possible). You can also specify odd and even. all runs
+discovery on all devices. new polls only the devices
+that were added a short time ago, or that are selected for rediscovery.
 
-`-v` Enables debugging output so that you can see what is happening during
+`-v` Enables debug output. With this, you can see what occurs during
 a discovery run.
 
-`-vv` Enables verbose debugging. This includes things like SQL queries and response
-from snmp with sensitive data masked as best as possible.
+`-vv` Enables verbose debug output. This includes items such as SQL queries
+and responses from snmp, with sensitive data masked as much as possible.
 
-`-vvv` Enables full debugging output with all data in tact.
+`-vvv` Enables full debug output with all data unchanged.
 
-`-m` This enables you to specify the module you want to run for discovery.
+`-m` With this, you can specify the module that you want to run for discovery.
 
 ## Discovery wrapper
 
-We have a `discovery-wrapper.py` script which is based on
+We have a `discovery-wrapper.py` script. It is based on
 `poller-wrapper.py` by [Job Snijders](https://github.com/job). This
-script is currently the default.
+script is the default at this time.
 
-If you need to debug the output of discovery-wrapper.py then you can
-add `-d` to the end of the command - it is NOT recommended to do this
+To debug the output of discovery-wrapper.py, you can
+add `-d` to the end of the command. We do NOT recommend this
 in cron.
 
-You also may use `-m` to pass a list of comma-separated modules.
-Please refer to [Command options](#command-options) of `lnms device:discover -h`.
+You can also use `-m` to give a list of comma-separated modules.
+Refer to [Command options](#command-options) of `lnms device:discover -h`.
 Example: `/opt/librenms/discovery-wrapper.py 1 -m bgp-peers`
 
-If you want to switch back to `lnms device:discover` (not recommended), then you can replace:
+If you want to change back to `lnms device:discover` (not recommended), you can replace:
 
 `33  */6   * * *   librenms    /opt/librenms/discovery-wrapper.py 1 >> /dev/null 2>&1`
 
@@ -70,9 +70,9 @@ With:
 
 ## Discovery config
 
-These are the default discovery config items. You can globally disable
-a module by setting it to 0. If you just want to disable it for one
-device then you can do this within the WebUI -> Device -> Settings ->
+These are the default discovery config items. To disable a module
+globally, set it to 0. To disable it for only one
+device, use the WebUI -> Device -> Settings ->
 Modules.
 
 !!! setting "discovery/discovery_modules"
@@ -119,14 +119,14 @@ Modules.
 
 ## OS based Discovery config
 
-You can enable or disable modules for a specific OS by using
-`lnms config:set`. OS based settings have preference
-over global. Device based settings have preference over all others
+To enable or disable modules for a specified OS, use
+`lnms config:set`. OS based settings have priority
+over global settings. Device based settings have priority over all others
 
-Discover performance improvement can be achieved by deactivating all
-modules that are not supported by specific OS.
+You get better discovery performance when you deactivate all
+modules that a specified OS does not support.
 
-E.g. to deactivate spanning tree but activate discovery-arp module for linux OS
+E.g. to deactivate spanning tree, but activate the discovery-arp module, for the linux OS
 
 !!! setting "discovery/discovery_modules"
     ```bash
@@ -136,16 +136,16 @@ E.g. to deactivate spanning tree but activate discovery-arp module for linux OS
 
 ## Discovery modules
 
-`os`: Os detection. This module will pick up the OS of the device.
+`os`: Os detection. This module finds the OS of the device.
 
-`ports`: This module will detect all ports on a device excluding ones
-configured to be ignored by config options.
+`ports`: This module finds all ports on a device, but not the ports
+that the config options set to ignored.
 
 `ports-stack`: Same as ports except for stacks.
 
 `xdsl`: Module to collect more metrics for xDSL interfaces.
 
-`entity-physical`: Module to pick up the devices hardware support.
+`entity-physical`: Module that finds the device hardware.
 
 `processors`: Processor support for devices.
 
@@ -157,7 +157,7 @@ configured to be ignored by config options.
 
 `ipv6-addresses`: IPv6 Address detection
 
-`route`: This module will load the routing table of the device. The default route
+`route`: This module loads the routing table of the device. The default route
  limit is 1000 (configurable with `lnms config:set routes.max_number 1000`), with history data.
 
 `sensors`: Sensor detection such as Temperature, Humidity, Voltages + More
@@ -201,7 +201,7 @@ device, with history data.
 
 ## Running
 
-Here are some examples of running discovery from within your install directory.
+These are examples of how to run discovery from your installation directory.
 
 ```bash
 lnms device:discover localhost
@@ -211,9 +211,9 @@ lnms device:discover localhost -m ports
 
 ## Debugging
 
-To provide debugging output you will need to run the discovery process
-with the `-v` flag. You can do this either against all modules, single
-or multiple modules:
+To get debug output, run the discovery process
+with the `-v` flag. You can do this for all modules, for one module,
+or for multiple modules:
 
 All Modules
 
@@ -233,12 +233,12 @@ Multiple Modules
 lnms device:discover localhost -m ports,entity-physical -vv
 ```
 
-Using `-vv` shouldn't output much sensitive information, `-vvv` will so
-it is then advisable to sanitise the output before pasting it
-somewhere as the debug output will contain snmp details amongst other
-items including port descriptions.
+`-vv` does not usually show much sensitive information, but `-vvv`
+does. Thus, clean the output before you paste it in a public
+location. The debug output contains snmp details and other items,
+which include port descriptions.
 
-The output will contain:
+The output contains:
 
 - DB Updates
 - SNMP Response

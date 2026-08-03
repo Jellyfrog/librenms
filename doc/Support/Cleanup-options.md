@@ -1,12 +1,12 @@
 # Cleanup Options
 
-As the number of devices starts to grow in your LibreNMS install, so
-will things such as the RRD files, MySQL database containing
-eventlogs, Syslogs and performance data etc. Your LibreNMS install
-could become quite large so it becomes necessary to clean up those
-entries. With Cleanup Options, you can stay in control.
+When the number of devices in your LibreNMS installation increases,
+items such as the RRD files and the MySQL database (which contains
+eventlogs, Syslogs, performance data etc.) also increase. Your
+LibreNMS installation can become large. Thus, it is necessary to
+remove old entries. With Cleanup Options, you have control of this.
 
-These options rely on ```daily.sh``` running from cron as per the installation instructions.
+These options operate only if ```daily.sh``` runs from cron, as given in the installation instructions.
 
 !!! setting "system/cleanup"
     ```bash
@@ -22,35 +22,34 @@ These options rely on ```daily.sh``` running from cron as per the installation i
     lnms config:set networks_purge true
     ```
 
-These options will ensure data within LibreNMS over X days old is
-automatically purged. You can alter these individually, values are in
-days.
+With these options, the system automatically removes LibreNMS data
+that is more than X days old. You can change each option. The values
+are in days.
 
-**NOTE**: Please be aware that `rrd_purge` is NOT set
-by default. This option will remove any RRD files that have not been
-updated for the set amount of days automatically - only enable this if
-you are comfortable with that happening. (All active RRD files are
-updated every polling period.)
+**NOTE**: `rrd_purge` is NOT set by default. This option
+automatically removes all RRD files that did not get updates for the
+set number of days. Enable this option only if you agree with this
+behavior. (All active RRD files get updates in each polling period.)
 
 !!! note
-    Please be aware that `rrd_purge` does not work over rrdcached. The rrd folder needs to be accessible via the local file system or remote file share.
+    `rrd_purge` does not operate through rrdcached. The rrd folder must be accessible through the local file system or a remote file share.
     This is the same for docker and Kubernetes.
 
 ## Ports Purge
 
-Over time as you add devices some interfaces will need to be purged as
-they are set to be ignored or bad interfaces or marked as deleted.
+When you add devices, some interfaces must be removed later, because
+they are set to ignored, or are bad interfaces, or are marked as
+deleted.
 
-You can purge all deleted ports from the WebUI (see below) or by
-setting `lnms config:set ports_purge true`.
+You can remove all deleted ports from the WebUI (see below), or set
+`lnms config:set ports_purge true`.
 
-In the Web UI Under the Ports Tab in the Nav Bar, Click on "Deleted"
-then click on "Purge all deleted". This will purge all the ports.
+In the Web UI, under the Ports Tab in the Nav Bar, click "Deleted".
+Then click "Purge all deleted". This removes all the ports.
 
 ## Networks Purge
 
-If you add and remove subnets, over time you may end up with subnets in
-the database that no longer have any IP addresses attached to them. These
-unused networks can be removed from the database if you enable the 
-networks_purge option.
-
+If you add and remove subnets, the database can contain subnets that
+have no IP addresses attached to them. If you enable the
+networks_purge option, the system removes these unused networks from
+the database.

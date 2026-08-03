@@ -1,7 +1,7 @@
 # Poller Support
 
-This document will explain how to use `lnms device:poll` to debug issues or
-manually running to process data.
+This document tells you how to use `lnms device:poll` to debug
+problems or to manually process data.
 
 ## Command options
 
@@ -30,18 +30,18 @@ Options:
 ## Poller Wrapper
 
 We have a `poller-wrapper.py` script by [Job
-Snijders](https://github.com/job). This script is currently the
-default.
+Snijders](https://github.com/job). This script is the default at this
+time.
 
-If you need to debug the output of poller-wrapper.py then you can add
-`-d` to the end of the command - it is NOT recommended to do this in
+To debug the output of poller-wrapper.py, you can add
+`-d` to the end of the command. We do NOT recommend this in
 cron.
 
 ## Poller config
 
-These are the default poller config items. You can globally disable a
-module by setting it to `false`. If you just want to
-disable it for one device then you can do this within the WebUI Device
+These are the default poller config items. To disable a module
+globally, set it to `false`. To disable it
+for only one device, use the WebUI Device
 -> Edit -> Modules.
 
 !!! setting "poller/poller_modules"
@@ -94,15 +94,15 @@ disable it for one device then you can do this within the WebUI Device
 
 ## OS based Poller config
 
-You can enable or disable modules for a specific OS by using
+To enable or disable modules for a specified OS, use
 `lnms config:set os.<poller_module> false` OS based settings
-have preference over global. Device based settings have preference
+have priority over global settings. Device based settings have priority
 over all others.
 
-Negligible Poller performance improvements can be achieved by deactivating all
-modules that are not supported by specific OS.
+You get small Poller performance improvements when you deactivate all
+modules that a specified OS does not support.
 
-E.g. to deactivate spanning tree but activate unix-agent module for linux OS
+E.g. to deactivate spanning tree, but activate the unix-agent module, for the linux OS
 
 !!! setting "poller/poller_modules"
     ```bash
@@ -116,7 +116,7 @@ E.g. to deactivate spanning tree but activate unix-agent module for linux OS
 
 `system`: Provides information on some common items like uptime, sysDescr and sysContact.
 
-`os`: Os detection. This module will pick up the OS of the device.
+`os`: Os detection. This module finds the OS of the device.
 
 `ipmi`: Enables support for IPMI if login details have been provided for IPMI.
 
@@ -136,10 +136,10 @@ E.g. to deactivate spanning tree but activate unix-agent module for linux OS
 
 `ipSystemStats`: IP statistics for device.
 
-`ports`: This module will detect all ports on a device excluding ones
-configured to be ignored by config options.
+`ports`: This module finds all ports on a device, but not the ports
+that the config options set to ignored.
 
-`xdsl`: This module will collect more metrics for xdsl interfaces.
+`xdsl`: This module collects more metrics for xdsl interfaces.
 
 `nac`: Network Access Control (NAC) or 802.1X support.
 
@@ -177,7 +177,7 @@ configured to be ignored by config options.
 
 `aruba-controller`: Aruba wireless controller support.
 
-`entity-physical`: Module to pick up the devices hardware support.
+`entity-physical`: Module that finds the device hardware.
 
 `applications`: Device application support.
 
@@ -185,7 +185,7 @@ configured to be ignored by config options.
 
 ## Running
 
-Here are some examples of running poller from within your install directory.
+These are examples of how to run the poller from your installation directory.
 
 ```bash
 lnms device:poll localhost
@@ -195,9 +195,9 @@ lnms device:poll localhost -m ports
 
 ## Debugging
 
-To provide debugging output you will need to run the poller process
-with the `-vv` flag. You can do this either against
-all modules, single or multiple modules:
+To get debug output, run the poller process
+with the `-vv` flag. You can do this for
+all modules, for one module, or for multiple modules:
 
 All Modules
 
@@ -217,12 +217,12 @@ Multiple Modules
 lnms device:poll localhost -m ports,entity-physical -vv
 ```
 
-Using `-vv` shouldn't output much sensitive information, `-vvv` will, so
-it is then advisable to sanitise the output before pasting it
-somewhere as the debug output will contain snmp details amongst other
-items including port descriptions.
+`-vv` does not usually show much sensitive information, but `-vvv`
+does. Thus, clean the output before you paste it in a public
+location. The debug output contains snmp details and other items,
+which include port descriptions.
 
-The output will contain:
+The output contains:
 
 DB Updates
 

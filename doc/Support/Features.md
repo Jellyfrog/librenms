@@ -1,7 +1,7 @@
 # Features
 
-Here's a brief list of supported features, some might be missing. If
-you think something is missing, feel free to ask us.
+This is a short list of supported features. Possibly, some are
+missing. If you think that a feature is missing, ask us.
 
 * Auto discovery
 * Alerting
@@ -22,8 +22,8 @@ you think something is missing, feel free to ask us.
 
 ## Supported Vendors
 
-Here's a list of supported vendors, some might be missing.
-If you are unsure of whether your device is supported or not, feel free to ask us.
+This is a list of supported vendors. Possibly, some are missing.
+If you are not sure that your device is supported, ask us.
 
 ```sh exec="1"
 grep -h "^text: " resources/definitions/os_detection/*.yaml \
