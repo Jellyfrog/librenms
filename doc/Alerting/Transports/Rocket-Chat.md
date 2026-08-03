@@ -1,9 +1,9 @@
 ## Rocket.chat
 
-The Rocket.chat transport will POST the alert message to your
-Rocket.chat Incoming WebHook using the attachments option. Simple html
-tags are stripped from the message. All options are optional, the only
-required value is for url, without this then no call to Rocket.chat will be made.
+The Rocket.chat transport POSTs the alert message to your
+Rocket.chat Incoming WebHook with the attachments option. The system
+removes simple html tags from the message. All options are optional. The only
+mandatory value is the url. Without it, the system makes no call to Rocket.chat.
 
 [Rocket.chat Docs](https://rocket.chat/docs/developer-guides/rest-api/chat/postmessage)
 

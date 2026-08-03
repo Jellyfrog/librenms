@@ -1,11 +1,11 @@
 # Rules
 
-The simplest way of testing if an alert rule will match a device is by
-going to the device, clicking edit (the cog), select Capture. From
-this new screen choose Alerts and click run.
+The easiest method to test if an alert rule matches a device:
+go to the device, click edit (the cog), and select Capture. On
+this new screen, select Alerts and click run.
 
-The output will cycle through all alerts applicable to this device and
-show you the Rule name, rule, MySQL query and if the rule matches.
+The output goes through all alerts applicable to this device. It
+shows you the Rule name, the rule, the MySQL query and if the rule matches.
 
 See [Device Troubleshooting](../Support/Device-Troubleshooting.md)
 
@@ -13,8 +13,8 @@ See [Device Troubleshooting](../Support/Device-Troubleshooting.md)
 
 ## Transports
 
-You can test your transports by forcing an actual active alert to run
-regardless of the interval or delay values.
+To test your transports, you can force an active alert to run,
+independently of the interval or delay values.
 
 `./scripts/test-alert.php`. This script accepts -r for the rule id, -h
 for the device id or hostname and -d for debug.
@@ -23,15 +23,15 @@ for the device id or hostname and -d for debug.
 
 ## Templates
 
-It's possible to test your new template before assigning it to a
-rule. To do so you can run `./scripts/test-template.php`. The script
-will provide the help info when ran without any parameters.
+You can test your new template before you attach it to a
+rule. To do this, run `./scripts/test-template.php`. When you run the
+script without parameters, it shows the help information.
 
-As an example, if you wanted to test template ID 10 against localhost
-running rule ID 2 then you would run:
+As an example, to test template ID 10 on localhost
+with rule ID 2, run:
 
 `./scripts/test-template.php -t 10 -d -h localhost -r 2`
 
-If the rule is currently alerting for localhost then you will get the
-full template as expected to see on email, if it's not then you will
-just see the template without any fault information.
+If the rule is in alert for localhost at that time, you get the
+full template, as you see it in an email. If it is not, you
+see only the template, without fault information.

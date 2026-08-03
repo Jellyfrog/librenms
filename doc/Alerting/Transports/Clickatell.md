@@ -1,11 +1,11 @@
 ## Clickatell
 
-Clickatell provides a REST-API requiring an Authorization-Token and at
-least one Cellphone number.
+Clickatell supplies a REST-API. It needs an Authorization-Token and a
+minimum of one Cellphone number.
 
 [Clickatell Docs](https://www.clickatell.com/developers/api-documentation/rest-api-request-parameters/)
 
-Here an example using 3 numbers, any amount of numbers is supported:
+This is an example with 3 numbers. Each quantity of numbers is supported:
 
 **Example:**
 

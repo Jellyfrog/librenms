@@ -1,48 +1,48 @@
 # Templates
 
-Templates can be assigned to a single rule or a group of rules and can
-contain any kind of text. There is also a default template which is
-used for any rule that isn't associated with a template. This template
-can be found under `Alert Templates` page and can be edited. It also
-has an option revert it back to its default content.
+You can attach templates to one rule or to a group of rules. Templates
+can contain each type of text. There is also a default template. The
+system uses it for each rule that has no attached template. This
+template is on the `Alert Templates` page, and you can edit it. There
+is also an option to set it back to its default content.
 
-To attach a template to a rule just open the `Alert Templates`
-settings page, choose the template to assign and click the yellow
-button in the `Actions` column. In the appearing popup box select the
-rule(s) you want the template to be assigned to and click the `Attach`
-button. You might hold down the CTRL key to select multiple rules at once.
+To attach a template to a rule, open the `Alert Templates`
+settings page. Select the applicable template and click the yellow
+button in the `Actions` column. A popup box opens. In it, select the
+rule(s) to which you want to attach the template, and click the `Attach`
+button. You can hold the CTRL key to select multiple rules at the same time.
 
 !!! note
-    Only one template can be associated with a rule at a time.
+    A rule can have only one attached template at a time.
 
-Alert templates are based on Laravel Blade. We will cover some of
-the basics here, however the official Laravel docs will have more
+Alert templates are based on Laravel Blade. We give some of
+the basics here. The official Laravel docs have more
 information [here](https://laravel.com/docs/blade).
 
 !!! warning
-    Laravel blade allows the use of @php which can be used to read/write files locally,
-    run database queries and more. If you don't trust your users then don't provide
+    Laravel blade permits @php, which can read/write local files,
+    run database queries and more. If you do not trust your users, do not give them
     access to create or edit templates.
 
 ## Syntax
 
 Controls:
 
-- if-else (Else can be omitted): `@if ($alert->placeholder  ==
+- if-else (You can omit Else): `@if ($alert->placeholder  ==
   'value') Some Text @else Other Text @endif`
 - foreach-loop: `@foreach ($alert->faults as $key => $value) Key: $key Value: $value @endforeach`
 
 Placeholders:
 
-Placeholders are special variables that if used within the template
-will be replaced with the relevant data, I.e:
+Placeholders are special variables. When you use them in the template,
+the system replaces them with the applicable data, I.e:
 
 `The device {{ $alert->hostname }} has been up for {{ $alert->uptime
-}} seconds` would result in the following `The device localhost has
+}} seconds` gives this result: `The device localhost has
 been up for 30344 seconds`.
 
 !!! note
-    When using placeholders to output data, you need to wrap
+    When you use placeholders to show data, you must put
     the placeholder in `{{ }}`. I.e `{{ $alert->hostname }}`.
 
 - Device ID: `$alert->device_id`
@@ -77,13 +77,13 @@ been up for 30344 seconds`.
 - Rule Builder (the actual rule) (use `{!! $alert->builder !!}`): `$alert->builder`
 - Alert-ID: `$alert->id`
 - Unique-ID: `$alert->uid`
-- Faults, Only available on alert (`$alert->state != 0`), must be
-  iterated in a foreach (`@foreach ($alert->faults as $key => $value)
-  @endforeach`). Holds all available information about the Fault,
-  accessible in the format `$value['Column']`, for example:
-  `$value['ifDescr']`. Special field `$value['string']` has most
-  Identification-information (IDs, Names, Descrs) as single string,
-  this is the equivalent of the default used and must be encased in `{{ }}`
+- Faults, available only on alert (`$alert->state != 0`). You must go
+  through it in a foreach (`@foreach ($alert->faults as $key => $value)
+  @endforeach`). It holds all available information about the Fault.
+  You get access in the format `$value['Column']`, for example:
+  `$value['ifDescr']`. The special field `$value['string']` has most
+  Identification-information (IDs, Names, Descrs) as a single string.
+  This is the equivalent of the default. You must put it in `{{ }}`
 - State: `$alert->state`
 - Severity: `$alert->severity`
 - Rule-Name: `$alert->name`
@@ -91,27 +91,27 @@ been up for 30344 seconds`.
 - Timestamp: `$alert->timestamp`
 - Transport type: `$alert->transport`
 - Transport name: `$alert->transport_name`
-- Contacts, must be iterated in a foreach, `$key` holds email and
-  `$value` holds name: `$alert->contacts`
+- Contacts. You must go through it in a foreach. `$key` holds the email and
+  `$value` holds the name: `$alert->contacts`
 - Application Data: `$alert->applications`
 - Application Metrics: `$alert->applications_metrics`
 
-Placeholders can be used within the subjects for templates as well
-although $faults is most likely going to be worthless due to it being
+You can also use placeholders in the subjects for templates. But
+$faults is usually not useful there, because it is
 an array.
 
-The Default Template is a 'one-size-fit-all'. We highly recommend
-defining your own templates for your rules to include more specific
-information.
+The Default Template is a 'one-size-fit-all'. We strongly recommend
+that you define your own templates for your rules, to include more
+specific information.
 
 ## Base Templates
 
-If you'd like to reuse a common template for your alerts you can
-create your own template to use (a default is included).
+If you want to use a common template for your alerts, you can
+create your own template (a default is included).
 
-The default file is located in
+The default file is in
 `resources/views/alerts/templates/default.blade.php`
-and displays the following:
+and shows this:
 
 ```php
 <html>
@@ -126,13 +126,13 @@ and displays the following:
 </html>
 ```
 
-The important part being the `@yield('content')`
+The important part is the `@yield('content')`
 
-You can use plain text or html as per Alert templates and this will
-form the basis of your common template, feel free to make as many
-templates in the directory as needed.
+You can use plain text or html, the same as in Alert templates. This
+is the base of your common template. You can make as many
+templates in the directory as necessary.
 
-In your alert template just use
+In your alert template, use
 
 ```php
 @extends('alerts.templates.default')
@@ -148,8 +148,8 @@ For more info on extending templates, see the [Laravel documentation](https://la
 
 ### Including other Alert templates
 
-Another way to extend a template, is to reuse the content of other Alert templates in LibreNMS. This can be done by leveraging the AlertTemplate database model. All inside the included template needed variables, need to be passed through to the second parameter (e.g.```["alert" => $alert]```) of the method Blade:render(). 
-With the following example the entire content of the template with the ID 5 will be included.  This could be useful to have all common text parts in seperate templates. E.g. headers or footers.
+A different method to extend a template is to use the content of other Alert templates in LibreNMS. To do this, use the AlertTemplate database model. You must pass all variables that the included template needs through the second parameter (e.g.```["alert" => $alert]```) of the method Blade:render(). 
+The example below includes the full content of the template with the ID 5.  This is useful to keep all common text parts in separate templates. E.g. headers or footers.
 ```php
 { \Illuminate\Support\Facades\Blade::render(\App\Models\AlertTemplate::find(5)->template , ["alert" => $alert]) }}
 ```
@@ -287,8 +287,8 @@ Alert String: {{ $alert->applications['sneck'][0]['data']['alertString'] }}
 
 #### Conditional formatting
 
-Conditional formatting example, will display a link to the host in
-email or just the hostname in any other transport:
+Conditional formatting example. It shows a link to the host in
+email, or only the hostname in each other transport:
 
 ```php
 @if ($alert->transport == 'mail')<a href="https://my.librenms.install/device/device={{ $alert->hostname }}/">{{ $alert->hostname }}</a>
@@ -309,27 +309,27 @@ email or just the hostname in any other transport:
 
 ### Using Application Data In Alert Templates
 
-Application data may be used in a alert template. `$alert->applications` is a
-associative array that contains the various applications for the device in
-question the alert is for. Each sub array contains that line from the
-applications table. So if you wanted for example access the app data for Sneck,
-it would be `$alert->applications['sneck'][0]['data']` and thus if we wanted to
-make us of the value `.data.alertString` in the stored return JSON, we would
+You can use application data in an alert template. `$alert->applications` is an
+associative array that contains the applications for the device
+that the alert applies to. Each sub array contains that line from the
+applications table. For example, to get access to the app data for Sneck,
+use `$alert->applications['sneck'][0]['data']`. Thus, to
+use the value `.data.alertString` in the stored return JSON, we
 use `$alert->applications['sneck'][0]['data']['data']['alertString']`.
 
-If you want to get a better idea of what is usable, call
+To see what is usable, call
 `lnms report:devices -o json -r applications $device | jq -S .applications | less`
-on some device that has the app in question you are curious about and pay attention
-to the app data chunk.
+on a device that has the applicable app. Examine
+the app data section.
 
-`[0]` is there as the legacy apps proxmox and drdb don't use make
-use of app data and instead can have multiple instances.
+`[0]` is there because the legacy apps proxmox and drdb do not
+use app data, and can have multiple instances.
 
 #### Metrics
 
-Application metrics are also available via `$alert->application_metrics`.
+Application metrics are also available through `$alert->application_metrics`.
 
-For example for ZFS if you wanted to include error info, you could do this.
+For example, for ZFS, to include error info, you can do this.
 
 ```
 Current Total Errors: {{ $alert->applications['zfs'][0]['total_errors']['value'] }}
@@ -352,27 +352,27 @@ To use HTML emails you must set HTML email to Yes in the WebUI:
 
 ## Graphs
 
-There are two helpers for graphs that will use a signed url to allow secure external
-access. Anyone using the signed url will be able to view the graph.
+There are two helpers for graphs. They use a signed url for safe external
+access. Each person who has the signed url can see the graph.
 
  - Your LibreNMS web must be accessible from the location where the graph is viewed.
-   Some alert transports require publicly accessible urls.
+   Some alert transports need publicly accessible urls.
  - APP_URL must be set in .env to use signed graphs.
- - Changing APP_KEY will invalidate all previously issued singed urls.
+ - A change of APP_KEY makes all signed urls from before invalid.
 
-You may specify the graph one of two ways, a php array of parameters, or
+You can specify the graph in one of two ways: a php array of parameters, or
 a direct url to a graph.
 
-Note that to and from can be specified either as timestamps with `time()`
-or as relative time `-3d` or `-36h`.  When using relative time, the graph
-will show based on when the user views the graph, not when the event happened.
-Sharing a graph image with a relative time will always give the recipient access
-to current data, where a specific timestamp will only allow access to that timeframe.
+You can specify to and from as timestamps with `time()`,
+or as relative time `-3d` or `-36h`.  With relative time, the graph
+shows data from the time when the user sees the graph, not the time when the event occurred.
+When you share a graph image with a relative time, the receiver always gets access
+to current data. With a specified timestamp, access is only to that timeframe.
 
 ### @signedGraphTag
 
-This will insert a specially formatted html img tag linking to the graph.
-Some transports may search the template for this tag to attach images properly
+This puts in a specially formatted html img tag with a link to the graph.
+Some transports look for this tag in the template, to attach images correctly
 for that transport.
 
 ```php
@@ -400,8 +400,8 @@ Specific graph using url input:
 
 ### @signedGraphUrl
 
-This is used when you need the url directly. One example is using the
-API Transport, you may want to include the url only instead of a html tag.
+Use this when you need the url directly. One example is the
+API Transport. There, you possibly want to include only the url, not a html tag.
 
 ```php
 @signedGraphUrl([
@@ -414,14 +414,14 @@ API Transport, you may want to include the url only instead of a html tag.
 
 ## Using models for optional data
 
-If some value does not exist within the `$faults[]` array, you may
-query fields from the database using Laravel models. You may use
-models to query additional values and use them on the template by
-placing the model and the value to search for within the braces. For
-example, ISIS alerts do have a `port_id` value associated with the
-alert but `ifName` is not directly accessible from the
-`$faults[]` array. If the name of the port was needed, it's value
-could be queried using a template such as:
+If a value does not exist in the `$faults[]` array, you can
+query fields from the database with Laravel models. You can use
+models to query more values and use them in the template. Put
+the model and the value to look for in the braces. For
+example, ISIS alerts have a `port_id` value attached to the
+alert, but `ifName` is not directly accessible from the
+`$faults[]` array. If you need the name of the port, you can
+query its value with a template such as:
 
 ```php
 {{ $alert->title }}
@@ -485,12 +485,12 @@ Template: CPU alert <br>
 
 ## Included
 
-We include a few templates for you to use, these are specific to the
-type of alert rules you are creating. For example if you create a rule
-that would alert on BGP sessions then you can assign the BGP template
-to this rule to provide more information.
+We include some templates for you to use. These apply to specified
+types of alert rules. For example, if you create a rule
+that sends alerts for BGP sessions, you can attach the BGP template
+to this rule to give more information.
 
-The included templates apart from the default template are:
+The included templates, in addition to the default template, are:
 
 - BGP Sessions
 - Ports

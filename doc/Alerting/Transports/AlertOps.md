@@ -1,12 +1,12 @@
 ## AlertOps
 
-Using AlertOps integration with LibreNMS, you can seamlessly forward alerts to AlertOps with detailed information. AlertOps acts as a dispatcher for LibreNMS alerts, allowing you to determine the right individuals or teams to notify based on on-call schedules. Notifications can be sent via various channels including email, text messages (SMS), phone calls, and mobile push notifications for iOS & Android devices. Additionally, AlertOps provides escalation policies to ensure alerts are appropriately managed until they are assigned or closed. You can also filter out/aggregate alerts based on different values.
+With the AlertOps integration, LibreNMS can send alerts to AlertOps with detailed information. AlertOps operates as a dispatcher for LibreNMS alerts. With it, you can find the correct persons or teams to notify, from on-call schedules. AlertOps can send notifications through different channels, which include email, text messages (SMS), phone calls, and mobile push notifications for iOS & Android devices. AlertOps also supplies escalation policies. These make sure that alerts are managed correctly until they are assigned or closed. You can also remove or collect alerts, from different values.
 
 To set up the integration:
 
-- Create a LibreNMS Integration: Sign up for an AlertOps account and create a LibreNMS integration from the integrations page. This will generate an Inbound Integration Endpoint URL that you'll need to copy to LibreNMS.
+- Create a LibreNMS Integration: Make an AlertOps account and create a LibreNMS integration from the integrations page. This makes an Inbound Integration Endpoint URL. You must copy this URL to LibreNMS.
 
-- Configure LibreNMS Integration: In LibreNMS, navigate to the integration settings and paste the inbound integration URL obtained from AlertOps.
+- Configure LibreNMS Integration: In LibreNMS, go to the integration settings and paste the inbound integration URL that you got from AlertOps.
 
 **Example:**
 

@@ -1,6 +1,6 @@
 ## Messagebird Voice
 
-LibreNMS can send messages through Messagebird voice Rest API transport (text to speech).
+LibreNMS can send messages through the Messagebird voice Rest API transport (text to speech).
 
 | Config | Example |
 | ------ | ------- |

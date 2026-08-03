@@ -1,25 +1,25 @@
 ## Grafana Oncall
 
-Send alerts to Grafana Oncall via either a Formatted Webhook or Webhook.
+Send alerts to Grafana Oncall through a Formatted Webhook or a Webhook.
 [See the Grafana documentation for both](https://grafana.com/docs/oncall/latest/integrations/webhook/).
 
-There is little difference between the two, but the Formatted Webhook will 
-provide a more friendly view of things by default.
+The difference between the two is small. But the Formatted Webhook 
+gives an easier view by default.
 
-> NOTE: By default Grafana translates acknowledged alerts to resolved alerts.
-> This can be changed by updating the Template settings for the integration you
-> added as follows.
+> NOTE: By default, Grafana converts acknowledged alerts to resolved alerts.
+> To change this, update the Template settings for the integration that you
+> added, as follows.
 
 Autoresolution: `{{ payload.get("raw_state", "") != 2 and payload.get("state", "").upper() == "OK" }}`
 
 Auto acknowledge: `{{ payload.get("raw_state", "") == 2 }}`
 
-You will also find additional information is sent as part of the payload to Grafana which 
-can be useful within the templates or routes. If you perform a test of the LibreNMS transport 
-you will be able to see the payload within the Grafana interface.
+The payload to Grafana also contains more information, which 
+can be useful in the templates or routes. If you do a test of the LibreNMS transport, 
+you can see the payload in the Grafana interface.
 
-customise what is sent to Grafana and override or add additional fields, you can create
-a custom template which outputs the correct information via JSON. As an example:
+To adjust what the system sends to Grafana, and to replace or add fields, you can create
+a custom template that shows the correct information as JSON. As an example:
 
 ```
 {
@@ -29,8 +29,8 @@ a custom template which outputs the correct information via JSON. As an example:
     "link_to_upstream_details": "{{ \LibreNMS\Util\Url::deviceUrl($device) }}",
 }
 ```
-If you are using more than one transport for an alert rule and need to customise the output per
-transport then you can do the following:
+If you use more than one transport for an alert rule, and you must adjust the output for each
+transport, you can do this:
 
 ```
 @if ($alert->transport == 'grafana')

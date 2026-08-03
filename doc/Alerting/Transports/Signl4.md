@@ -1,10 +1,10 @@
 ## SIGNL4
 
-SIGNL4 offers critical alerting, incident response and service dispatching for operating critical infrastructure. It alerts you persistently via app push, SMS text, voice calls, and email including tracking, escalation, on-call duty scheduling and collaboration.
+SIGNL4 supplies critical alerting, incident response and service dispatching for the operation of critical infrastructure. It sends alerts to you continuously through app push, SMS text, voice calls, and email. It includes tracking, escalation, on-call duty scheduling and collaboration.
 
-Integrating SIGNL4 with LibreNMS to forward critical alerts with detailed information to responsible people or on-call teams. The integration supports triggering as well as closing alerts.
+Connect SIGNL4 with LibreNMS to send critical alerts, with detailed information, to responsible persons or on-call teams. The integration can start alerts and also close them.
 
-In the configuration for your SIGNL4 alert transport you just need to enter your SIGNL4 webhook URL including team or integration secret.
+In the configuration for your SIGNL4 alert transport, you must only enter your SIGNL4 webhook URL, which includes the team or integration secret.
 
 **Example:**
 
@@ -12,4 +12,4 @@ In the configuration for your SIGNL4 alert transport you just need to enter your
 | ------ | ------- |
 | Webhook URL | https://connect.signl4.com/webhook/{team-secret} |
 
-You can find more information about the integration [here](https://docs.signl4.com/integrations/librenms/librenms.html).
+More information about the integration is [here](https://docs.signl4.com/integrations/librenms/librenms.html).

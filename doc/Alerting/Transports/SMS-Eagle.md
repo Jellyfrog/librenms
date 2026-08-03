@@ -1,10 +1,10 @@
 ## SMSEagle
 
-SMSEagle is a hardware SMS Gateway that can be used via their HTTP API
-using a Username and password.
+SMSEagle is a hardware SMS Gateway. You can use it through their HTTP API,
+with a Username and a password.
 
-Destination numbers are one per line, with no spaces. They can be in
-either local or international dialling format.
+Enter one destination number on each line, with no spaces. The numbers can be in
+local or international dialling format.
 
 [SMSEagle Docs](http://www.smseagle.eu)
 

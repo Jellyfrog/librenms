@@ -1,7 +1,7 @@
 ## SMSmode
 
-SMSmode is a SMS provider that can be configured by using the generic API Transport.
-You need a token you can find on your personal space.
+SMSmode is an SMS provider. You can configure it with the generic API Transport.
+You need a token, which is in your personal space.
 
 [SMSmode docs](https://www.smsmode.com/pdf/fiche-api-http.pdf)
 

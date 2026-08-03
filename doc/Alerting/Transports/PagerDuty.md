@@ -1,12 +1,12 @@
 ## PagerDuty
 
-LibreNMS can make use of PagerDuty, this is done by utilizing an API
-key and Integration Key.
+LibreNMS can use PagerDuty. It does this with an API
+key and an Integration Key.
 
-API Keys can be found under 'API Access' in the PagerDuty portal.
+API Keys are under 'API Access' in the PagerDuty portal.
 
-Integration Keys can be found under 'Integration' for the particular
-Service you have created in the PagerDuty portal.
+Integration Keys are under 'Integration' for the applicable
+Service that you created in the PagerDuty portal.
 
 **Example:**
 
@@ -27,5 +27,5 @@ Service you have created in the PagerDuty portal.
 
 **Nice formatting**
 
-PagerDuty formats the Custom Details panel nicely if it receives valid JSON.
-At the time of writing, the PagerDuty web UI handles nested arrays/objects correctly, but the mobile app still shows nested structures as strings.
+PagerDuty formats the Custom Details panel well if it receives valid JSON.
+At this time, the PagerDuty web UI does nested arrays/objects correctly. But the mobile app shows nested structures as strings.

@@ -1,6 +1,6 @@
 ## Messagebird
 
-LibreNMS can send text messages through Messagebird Rest API transport.
+LibreNMS can send text messages through the Messagebird Rest API transport.
 
 | Config | Example |
 | ------ | ------- |

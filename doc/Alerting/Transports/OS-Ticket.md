@@ -1,6 +1,6 @@
 ## osTicket
 
-LibreNMS can send alerts to osTicket API which are then converted to osTicket tickets.
+LibreNMS can send alerts to the osTicket API. osTicket then converts them to tickets.
 
 **Example:**
 

@@ -1,12 +1,12 @@
 ## Matrix
 
-For using the Matrix transports, you have to create a room on the Matrix-server.
-The provided Auth_token belongs to an user, which is member of this room.
-The Message, sent to the matrix-room can be built from the variables defined in
-[Template-Syntax](../Templates.md#syntax) but without the 'alert->' prefix.
-See API-Transport. The variable ``` $msg ``` is contains the result of
-the Alert template.The Matrix-Server URL is cutted before the
-beginning of the ``_matrix/client/r0/...`` API-part.
+To use the Matrix transport, you must create a room on the Matrix-server.
+The given Auth_token belongs to a user who is a member of this room.
+You can build the Message sent to the matrix-room from the variables in
+[Template-Syntax](../Templates.md#syntax), but without the 'alert->' prefix.
+See API-Transport. The variable ``` $msg ``` contains the result of
+the Alert template. The system cuts the Matrix-Server URL before the
+start of the ``_matrix/client/r0/...`` API-part.
 
 **Example:**
 

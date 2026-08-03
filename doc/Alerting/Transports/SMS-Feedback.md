@@ -1,9 +1,9 @@
 ## SMSFeedback
 
-SMSFeedback is a SAAS service, which can be used to deliver Alerts via
-API, using API url, Username & Password.
+SMSFeedback is a SAAS service. It can send Alerts through an
+API, with an API url, Username & Password.
 
-They can be in international dialling format only.
+The numbers can be in international dialling format only.
 
 [SMSFeedback Api Docs](https://www.smsfeedback.ru/smsapi/)
 

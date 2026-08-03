@@ -1,28 +1,28 @@
 ## Slack
 
-The Slack transport will POST the alert message to your Slack Incoming
-WebHook using the attachments option, you are able to specify multiple
-webhooks along with the relevant options to go with it. Simple html
-tags are stripped from the message. All options are optional, the
-only required value is for url, without this  then no call to Slack will be made.
+The Slack transport POSTs the alert message to your Slack Incoming
+WebHook with the attachments option. You can specify multiple
+webhooks, together with the applicable options for each. The system
+removes simple html tags from the message. All options are optional. The
+only mandatory value is the url. Without it, the system makes no call to Slack.
 
-We currently support the following attachment options:
+At this time, we support these attachment options:
 
 - `author_name`
 
-We currently support the following global message options:
+At this time, we support these global message options:
 
-- `channel_name` : Slack channel name (without the leading '#') to which the alert will go
+- `channel_name` : Slack channel name (without the '#' at the start) to which the alert goes
 - `icon_emoji` : Emoji name in colon format to use as the author icon
 
 [Slack docs](https://api.slack.com/docs/message-attachments)
 
-The alert template can make use of
+The alert template can use
 [Slack markdown](https://api.slack.com/reference/surfaces/formatting#basic-formatting).
-In the Slack markdown dialect, custom links are denoted with HTML angled
-brackets, but LibreNMS strips these out. To support embedding custom links in alerts,
-use the bracket/parentheses markdown syntax for links.  For example if you would
-typically use this for a Slack link:
+In the Slack markdown dialect, custom links use HTML angled
+brackets, but LibreNMS removes these. To put custom links in alerts,
+use the bracket/parentheses markdown syntax for links.  For example, if you
+usually use this for a Slack link:
 
 `<https://www.example.com|My Link>`
 

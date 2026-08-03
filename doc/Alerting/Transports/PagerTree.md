@@ -1,9 +1,9 @@
 ## PagerTree
 
-The PagerTree transport will POST the alert message to your PagerTree
-Incoming WebHook. The only required value is PagerTree webhook integration URL.
+The PagerTree transport POSTs the alert message to your PagerTree
+Incoming WebHook. The only mandatory value is the PagerTree webhook integration URL.
 
-The PagerTree transport maps the following fields from LibreNMS to PagerTree.  LibreNMS alert states are translated to PagerTree event type.
+The PagerTree transport maps these fields from LibreNMS to PagerTree.  The system converts LibreNMS alert states to the PagerTree event type.
 
 | LibreNMS alert state | PagerTree event_type |
 | -------------------- | -------------------- |
@@ -20,7 +20,7 @@ The PagerTree transport maps the following fields from LibreNMS to PagerTree.  L
 | Alert msg | Description |
 
 
-Webhook is added in PagerTree portal by selecting "Integrations" --> "New Integration" --> "webhooks".  Webhook URL is labeled as "Endpoint" on the new PagerTree Integration summary page.
+To add the webhook in the PagerTree portal, select "Integrations" --> "New Integration" --> "webhooks".  The Webhook URL has the label "Endpoint" on the new PagerTree Integration summary page.
 
 [PagerTree Docs](https://pagertree.com/docs/integration-guides/webhook). 
 [LibreNMS Alert Data](https://github.com/librenms/librenms/blob/master/LibreNMS/Alert/AlertData.php).

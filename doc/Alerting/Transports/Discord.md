@@ -1,13 +1,12 @@
 ## Discord
 
-The Discord transport will POST the alert message to your Discord
-Incoming WebHook. The only required value is Discord URL, without this no call to Discord will be made. 
+The Discord transport POSTs the alert message to your Discord
+Incoming WebHook. The only mandatory value is the Discord URL. Without it, the system makes no call to Discord. 
 
-Graphs can be included in the template using: ```<img class="librenms-graph" src=""/>```. The rest of the html tags are stripped from the message.
+You can include graphs in the template with: ```<img class="librenms-graph" src=""/>```. The system removes the other html tags from the message.
 
 
- The Options field supports JSON/Form Params listed
-in the 
+ The Options field supports the JSON/Form Params in the 
 [Discord Docs](https://discordapp.com/developers/docs/resources/webhook#execute-webhook). Fields to embed is a comma separated list from the [Alert Data](https://github.com/librenms/librenms/blob/master/LibreNMS/Alert/AlertData.php)).
 
 

@@ -1,11 +1,11 @@
 # Entities
 
-Entities as described earlier are based on the table and column names
-within the database, if you are unsure of what the entity is you want
-then have a browse around inside MySQL using `show tables` and `desc <tablename>`.
+Entities, as given before, come from the table and column names
+in the database. If you are not sure which entity you want,
+look around in MySQL with `show tables` and `desc <tablename>`.
 
-Below are some common entities that you can use within the alerting
-system. This list is not exhaustive and you should look at the MySQL
+Below are some usual entities that you can use in the alerting
+system. This list is not complete. Refer to the MySQL
 database schema for the full list.
 
 ## Devices
@@ -36,9 +36,9 @@ Entity | Description
 `device_stats.ping_rtt_diff_avg_last` | Difference between the RTT last and average ping (ms)
 `device_stats.ping_rtt_diff_avg_last` | Difference between the RTT of the ping from the last 2 polls (ms)
 
-Details on how the averages above are calculated can be found [here](../Support/Configuration.md#averaging-factor).
+Details of how the system calculates the averages above are [here](../Support/Configuration.md#averaging-factor).
 
-The difference fields can be used to detect when ping times increase from their normal valuse.
+With the difference fields, you can find when ping times increase from their usual values.
 
 ## BGP Peers
 

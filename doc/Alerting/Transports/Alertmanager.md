@@ -1,38 +1,38 @@
 ## Alertmanager
 
-Alertmanager is an alert handling software, initially developed for
-alert processing sent by Prometheus.
+Alertmanager is alert handling software. It was initially made to
+process alerts that Prometheus sends.
 
-It has built-in functionality for deduplicating, grouping and routing
-alerts based on configurable criteria.
+It has built-in functions that remove duplicates, group alerts, and
+send alerts on routes, from configurable criteria.
 
-LibreNMS uses alert grouping by alert rule, which can produce an array
-of alerts of similar content for an array of hosts, whereas
-Alertmanager can group them by alert meta, ideally producing one
-single notice in case an issue occurs.
+LibreNMS groups alerts by alert rule. This can make an array
+of alerts with similar content for an array of hosts. Alertmanager
+can group them by alert meta. Then, when a problem occurs, you
+ideally get one single notice.
 
-It is possible to configure as many label values as required in
-Alertmanager Options section. Every label and its value should be
-entered as a new line.
+You can configure as many label values as necessary in the
+Alertmanager Options section. Enter each label and its value
+as a new line.
 
-Labels can be a fixed string or a dynamic variable from the alert and its faults.
+Labels can be a fixed string, or a dynamic variable from the alert and its faults.
 To set dynamic variables, the label's value must be the name of
-the variable you want to get (you can see all the variables in
-Alerts->Notifications by clicking on the Details icon of your alert
+the variable that you want to get (to see all the variables, go to
+Alerts->Notifications and click the Details icon of your alert
 when it is pending). 
 
-Labels prefixed with "dyn_" are omitted from the transport message
+Labels with the prefix "dyn_" are not included in the transport message
 if no matching value exists in the alert data. Labels without this
-prefix are always included, using their fixed string value when a match is not found.
+prefix are always included. They use their fixed string value when there is no match.
 
-Labels prefixed with "stc_" are considered static, 
-and will never be considered for value substitution.
+Labels with the prefix "stc_" are static. 
+The system never does value replacement on them.
 
-Multiple Alertmanager URLs (comma separated) are supported. All 
-will be tried. Alertmanager clustering is expected to deduplicate alerts.
+Multiple Alertmanager URLs (comma separated) are supported. The system 
+tries all of them. Alertmanager clustering must remove the duplicate alerts.
 
 Basic HTTP authentication with a username and a password is supported.
-If you let those value blank, no authentication will be used.
+If you keep those values empty, the system uses no authentication.
 
 [Alertmanager Docs](https://prometheus.io/docs/alerting/alertmanager/)
 

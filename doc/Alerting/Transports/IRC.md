@@ -1,7 +1,7 @@
 ## IRC
 
-The IRC transports only works together with the LibreNMS IRC-Bot.
-Configuration of the LibreNMS IRC-Bot is described [here](https://github.com/librenms/librenms/blob/master/doc/Extensions/IRC-Bot.md).
+The IRC transport operates only together with the LibreNMS IRC-Bot.
+The configuration of the LibreNMS IRC-Bot is given [here](https://github.com/librenms/librenms/blob/master/doc/Extensions/IRC-Bot.md).
 
 **Example:**
 

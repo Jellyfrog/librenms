@@ -1,19 +1,19 @@
 ## Zenduty
 
-Two options are available for ZenDuty support, the first, [native ZenDuty](#native-zenduty)
-is via the API Transport as detailed in official [ZenDuty integration documentation](https://docs.zenduty.com/docs/librenms).
-The other way is by utilising a [native LibreNMS transport](#native-librenms-transport).
+Two options are available for ZenDuty support. The first, [native ZenDuty](#native-zenduty),
+uses the API Transport, as given in the official [ZenDuty integration documentation](https://docs.zenduty.com/docs/librenms).
+The other method uses a [native LibreNMS transport](#native-librenms-transport).
 
 ### Native ZenDuty
-Leveraging LibreNMS > Zenduty Integration, users can send new LibreNMS 
-alerts to the right team and notify them based on on-call schedules
-via email, SMS, Phone Calls, Slack, Microsoft Teams and mobile push
-notifications. Zenduty provides engineers with detailed context around 
-the LibreNMS alert along with playbooks and a complete incident command
-framework to triage, remediate and resolve incidents with speed.
+With the LibreNMS > Zenduty Integration, users can send new LibreNMS 
+alerts to the correct team, and notify them from on-call schedules
+through email, SMS, Phone Calls, Slack, Microsoft Teams and mobile push
+notifications. Zenduty gives engineers detailed context for 
+the LibreNMS alert, together with playbooks and a full incident command
+framework, to examine, repair and resolve incidents quickly.
 
-Create a [LibreNMS Integration](https://docs.zenduty.com/docs/librenms) from inside 
-[Zenduty](https://www.zenduty.com), then copy the Webhook URL from Zenduty
+Create a [LibreNMS Integration](https://docs.zenduty.com/docs/librenms) in 
+[Zenduty](https://www.zenduty.com). Then copy the Webhook URL from Zenduty
 to LibreNMS.
 
 For a detailed guide with screenshots, refer to the 
@@ -26,26 +26,26 @@ For a detailed guide with screenshots, refer to the
 | WebHook URL | <https://www.zenduty.com/api/integration/librenms/integration-key/> |
 
 ### Native LibreNMS Transport
-This integration uses the [ZenDuty Webhooks](https://zenduty.com/docs/generic-integration/) 
-which allows you to use all available ZenDuty parameters such as URLs, SLA, 
+This integration uses the [ZenDuty Webhooks](https://zenduty.com/docs/generic-integration/). 
+With it, you can use all available ZenDuty parameters, such as URLs, SLA, 
 Escalation Policies, etc.
 
-Follow the instructions in the above link to obtain your Webhook URL and then paste that 
-into the `ZenDuty WebHook` field when setting up the LibreNMS transport.
+Do the steps in the link above to get your Webhook URL. Then paste it 
+into the `ZenDuty WebHook` field when you set up the LibreNMS transport.
 
-You can also set the SLA ID and Escalation Policy ID from within the Transport configuration 
-which will be sent with all alerts.
+You can also set the SLA ID and the Escalation Policy ID in the Transport configuration. 
+The system sends them with all alerts.
 
-This transport will send over the following fields:
+This transport sends these fields:
 
 `message` - The alert title
-`alert_type` - The severity of the alert rule, acknowledged or resolved depending on the state of the alert.
+`alert_type` - The severity of the alert rule, or acknowledged or resolved, as applicable to the state of the alert.
 `entity_id` - The alert ID
-`urls` - A link back to the device generating the alert.
-`summary` - The output of the template associated with the alert rule.
+`urls` - A link back to the device that causes the alert.
+`summary` - The output of the template attached to the alert rule.
 
-To customise what is sent to ZenDuty and override or add additional fields, you can create 
-a custom template which outputs the correct information via JSON. As an example:
+To adjust what the system sends to ZenDuty, and to replace or add fields, you can create 
+a custom template that shows the correct information as JSON. As an example:
 
 ```json
 {

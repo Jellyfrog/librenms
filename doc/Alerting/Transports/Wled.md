@@ -1,16 +1,16 @@
 ## WLED
 
-This enables setting of WLED presets for alerts.
+With this, alerts can set WLED presets.
 
-This requires the following information. The hostname/IP of the WLED instance and the IDs
-of the presets you will be using. The ID for the preset will be the number by it's name in
+This needs this information: the hostname/IP of the WLED instance, and the IDs
+of the presets that you use. The ID for the preset is the number adjacent to its name in
 the WLED web interface.
 
-Leaving warning, critical, or recovery blank, will mean that severity/state is ignored.
+If you keep warning, critical, or recovery empty, the system ignores that severity/state.
 
-Using warning, critical, and recovery together can lead to unpredictable
-results. Similarly best to only use this for very specific alerts/hosts given this
-transport can only communicate limited info.
+If you use warning, critical, and recovery together, the
+results can be unwanted. Also, we recommend this transport only for specified
+alerts/hosts, because it can send only limited information.
 
 **Examples:**
 

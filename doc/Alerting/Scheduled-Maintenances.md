@@ -1,60 +1,60 @@
 # Scheduled Maintenances
 
-Scheduled Maintenances enables you to place a device, a location or even a whole device group into maintenance mode.
-Maintenance is indicated for a device by the screwdriver symbol to left of the device name (at its detail page, at
-device group pages, etc.). A maintenance affects how alerting and/or alert transporting (aka user notifications)
-are handled.
+With Scheduled Maintenances, you can put a device, a location, or a full device group into maintenance mode.
+The screwdriver symbol to the left of the device name shows that a device is in maintenance (on its detail page, on
+device group pages, etc.). A maintenance changes how the system does alerting and/or alert transporting (aka user
+notifications).
 
 ## Maintenance Behaviors
 
 A maintenance can have three different behaviors:
 
-- Skip alerts: Existing alerts stay as they are, and all alert rule checks are skipped. This means that new alerts
-are not created, and existing alerts will not recover. This is the default behavior.
-- Mute alert: Alerts are handled as usual (new ones will be raised, existing ones could recover etc.) but any alert
-transport like mail is suppressed. This is useful if you just want "silence" for a period of time for whatever
-reason but don't want to lose sight of what is happening to your devices.
-- Run alerts: This is basically just a cosmetic maintenance. You will see that a device is in maintenance, but this
-setting will not suppress alerts.
+- Skip alerts: The current alerts stay as they are, and no alert rule checks occur. Thus, the system does not create
+new alerts, and the current alerts do not recover. This is the default behavior.
+- Mute alert: The system does alerts as usual (new alerts start, current alerts can recover etc.). But the system stops
+each alert transport, such as mail. This is useful if you want "silence" for a period of time, for a
+reason of your choice, but you want to continue to see what occurs on your devices.
+- Run alerts: This is only a cosmetic maintenance. You see that a device is in maintenance. But this
+setting does not stop alerts.
 
 ## Managing Maintenances
 
-You may access the page for Scheduled Maintenance by the main menu (Alert → Scheduled Maintenance). The table shows
-all maintenances: future ones, active ones, and lapsed ones. Beside adding a new maintenance, you can edit and delete
-existing ones here as well (column "Actions").
+You get access to the page for Scheduled Maintenance through the main menu (Alert → Scheduled Maintenance). The table shows
+all maintenances: future ones, active ones, and completed ones. You can add a new maintenance, and you can also edit and delete
+maintenances here (column "Actions").
 
-The form for adding and editing maintenances always has fields for Title Notes, Behavior and "Map To". With the last
-field you can set which devices, device groups, and locations will be affected. Locations are entities in a separate
-table and referenced by devices; you can choose these here.
+The form to add and edit maintenances always has fields for Title, Notes, Behavior and "Map To". With the last
+field, you can set the devices, device groups, and locations that the maintenance applies to. Locations are entities in a separate
+table, and devices refer to them. You can select these here.
 
-Beside the general attributes, the form offers a slider labelled "Recurring". Use this to choose between two types
+The form also has a slider with the label "Recurring". Use this to select one of two types
 of maintenances:
 
-- Non-recurring maintenances start at a certain time and end at a later time; afterward they are lapsed and have no
-effect anymore unless you opt to change the date values again.
-- Recurring maintenances simply have a start date and an end date between which maintenance periods may happen. You
-also define all days and the start hour and end hour for the maintenance; this hour range will be applied to
+- Non-recurring maintenances start at a set time and end at a later time. After that, they are complete and have no
+more effect, unless you change the date values again.
+- Recurring maintenances have a start date and an end date. Maintenance periods can occur between these dates. You
+also set the days, and the start hour and the end hour, for the maintenance. This hour range applies to
 each selected day.
 
-For example: You could put a group of devices into maintenance from Monday until Friday from 10 pm to 11pm, starting
-at 01.01.20xx until 31.01.20xx. Dates cannot be in the past, however,and End Hour/Date must be later or same as the
+For example: You can put a group of devices into maintenance from Monday until Friday, from 10 pm to 11pm, from
+01.01.20xx until 31.01.20xx. Dates cannot be in the past. The End Hour/Date must be later than, or the same as, the
 Start Hour/Date.
 
-If you want to end a certain maintenance early, simply delete it.
+To end a maintenance early, delete it.
 
 ## Add Single Device Maintenance
 
-To put a single device into maintenance, simply access its edit section and there the "Device Settings". Unless the
-device is already in maintenance, you will find there a green button labelled with "Maintenance Mode". Pressing it
-opens a dialogue with settings like notes, duration, and the aforementioned behavior (the "Skip alerts" option is
-selected by default).
+To put one device into maintenance, go to its edit section, and there to the "Device Settings". If the
+device is not already in maintenance, you find a green button with the label "Maintenance Mode". Push it
+to open a dialogue with settings such as notes, duration, and the behavior given above (the "Skip alerts" option is
+the default).
 
-Initially, you can only choose a duration of 23:30h at most, but you may change it later by editing the corresponding
-maintenance object. The maintenance's title will always be the device's display name (if set) or its hostname or IP
-address. It can be changed later as well.
+Initially, you can only select a duration of a maximum of 23:30h. But you can change it later. To do this, edit the
+applicable maintenance object. The title of the maintenance is always the display name of the device (if set), or its hostname or IP
+address. You can also change it later.
 
-If a device is already affected by at least one maintenance, the button will be orange, the label being "Device already
-in maintenance". You can't manage or remove a device maintenance here.
+If a minimum of one maintenance already applies to the device, the button is orange, with the label "Device already
+in maintenance". You cannot manage or remove a device maintenance here.
 
 ## Setting a Default Behavior for scheduled maintenance
 
@@ -63,7 +63,7 @@ in maintenance". You can't manage or remove a device maintenance here.
     lnms config:set alert.scheduled_maintenance_default_behavior 1
     ```
 
-The following values can be used:
+You can use these values:
 
 - 1 = Skip alerts
 - 2 = Mute alerts

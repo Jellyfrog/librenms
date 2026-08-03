@@ -1,21 +1,21 @@
 ## OpsGenie
 
-> ⚠️ **Atlassian have announced the EOL of Opsgenie on the 5th April 2027.
+> ⚠️ **Atlassian announced the EOL of Opsgenie on the 5th April 2027.
 [Read more here](https://www.atlassian.com/blog/announcements/evolution-of-it-operations)
 
-Using OpsGenie LibreNMS integration, LibreNMS forwards alerts to
-OpsGenie with detailed information. OpsGenie acts as a dispatcher for
-LibreNMS alerts, determines the right people to notify based on
-on-call schedules and notifies via email, text messages (SMS), phone
-calls and iOS & Android push notifications. Then escalates alerts
+With the OpsGenie LibreNMS integration, LibreNMS sends alerts to
+OpsGenie with detailed information. OpsGenie operates as a dispatcher for
+LibreNMS alerts. It finds the correct persons to notify, from
+on-call schedules, and sends notifications through email, text messages (SMS), phone
+calls and iOS & Android push notifications. Then it escalates alerts
 until the alert is acknowledged or closed.
 
-Create a [LibreNMS
+After you make an account, create a [LibreNMS
 Integration](https://docs.opsgenie.com/docs/librenms-integration) from
-the integrations page  once you signup. Then copy the API key from OpsGenie to LibreNMS.
+the integrations page. Then copy the API key from OpsGenie to LibreNMS.
 
-If you want to automatically ack and close alerts, leverage Marid
-integration. More detail with screenshots is available in
+If you want to automatically ack and close alerts, use the Marid
+integration. More detail, with screenshots, is available on the
 [OpsGenie LibreNMS Integration page](https://docs.opsgenie.com/docs/librenms-integration).
 
 **Example:**

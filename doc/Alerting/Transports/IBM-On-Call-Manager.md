@@ -1,10 +1,10 @@
 ## IBM On Call Manager (OCM)
 
-LibreNMS can integrate with IBM On Call Manager by using a webhook URL you create by adding the LibreNMS integration.
+LibreNMS can connect to IBM On Call Manager with a webhook URL. You create this URL when you add the LibreNMS integration.
 
-The webhook URL (referred to as `ocm-url`) can be found under 'Integrations' in the IBM On Call Manager portal after selecting LibreNMS as the integration.
+The webhook URL (with the name `ocm-url`) is under 'Integrations' in the IBM On Call Manager portal, after you select LibreNMS as the integration.
 
-IBM On Call Manager uses the webhook to send the name of the alert rule, along with other relevant details. It will include the name or IP address of the system sending the alert, the name of the alert, the severity, timestamp, OS, location, and a unique ID. 
+IBM On Call Manager uses the webhook to send the name of the alert rule, together with other applicable details. It includes the name or IP address of the system that sends the alert, the name of the alert, the severity, the timestamp, the OS, the location, and a unique ID. 
 
 **Example:**
 

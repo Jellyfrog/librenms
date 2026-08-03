@@ -1,10 +1,10 @@
 ## HipChat
 
-See the HipChat API Documentation for [rooms/message](https://www.hipchat.com/docs/api/method/rooms/message)
-for details on acceptable values.
+Refer to the HipChat API Documentation for [rooms/message](https://www.hipchat.com/docs/api/method/rooms/message)
+for details of the permitted values.
 
-> You may notice that the link points at the "deprecated" v1 API.  This is
-> because the v2 API is still in beta.
+> The link points at the "deprecated" v1 API.  The cause:
+> the v2 API is in beta at this time.
 
 **Example:**
 
@@ -15,9 +15,9 @@ for details on acceptable values.
 | From Name | LibreNMS |
 | Options | color=red |
 
-At present the following options are supported: `color`.
+At this time, these options are supported: `color`.
 
-> Note: The default message format for HipChat messages is HTML.  It is
-> recommended that you specify the `text` message format to prevent unexpected
-> results, such as HipChat attempting to interpret angled brackets (`<` and
+> Note: The default message format for HipChat messages is HTML.  We
+> recommend that you specify the `text` message format to prevent unwanted
+> results, for example when HipChat tries to read angled brackets (`<` and
 > `>`).

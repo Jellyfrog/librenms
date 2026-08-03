@@ -1,18 +1,18 @@
 # Rules
 
-Rules are defined using a logical language.
+You define rules with a logical language.
 
-The GUI provides a simple way of creating rules.
+With the GUI, you can create rules easily.
 
-Creating more complicated rules which may include maths calculations
-and MySQL queries can be done using [macros](Macros.md)
+To create more complex rules, which can include mathematical
+calculations and MySQL queries, use [macros](Macros.md)
 
 ## Syntax
 
-Rules must consist of at least 3 elements: An __Entity__, a __Condition__ and a __Value__.
+Rules must contain a minimum of 3 elements: an __Entity__, a __Condition__ and a __Value__.
 Rules can contain braces and __Glues__.
 
-__Entities__ are provided from Table and Field from the database. For Example: `ports.ifOperStatus`.
+__Entities__ come from the Table and Field of the database. For Example: `ports.ifOperStatus`.
 
 __Conditions__ can be any of:
 
@@ -38,41 +38,41 @@ __Conditions__ can be any of:
 - Less or Equal `<=`
 - Regex `REGEXP`
 
-__Values__ can be an entity or any data. If using macros or another column name as a value you
-must include the macro or column name with backticks. i.e. \`macros.past_60m\` or \`processors.processor_perc_warn\`.
+__Values__ can be an entity or other data. If you use a macro or a different column name as a value, you
+must put the macro or column name in backticks. i.e. \`macros.past_60m\` or \`processors.processor_perc_warn\`.
 
 __Note__: Regex supports MySQL Regular expressions.
 
-Arithmetics are allowed as well.
+Arithmetic is also permitted.
 
 ## Options
 
-Here are some of the other options available when adding an alerting rule:
+These are some of the other options available when you add an alerting rule:
 
-- Rule name: The name associated with the rule.
+- Rule name: The name of the rule.
 - Severity: How "important" the rule is.
 - Invert match: Invert the matching rule (ie. alert on items that
-  _don't match the rule).
-- Mute alerts: Disables sending alert rule through alert
-  transport. But will still show the alert in the Web UI.
-- Recovery alerts: This will disable the recovery notification from
-  being sent if turned off.
-- Acknowledgement alerts: This will disable the acknowledgement notifications
-  from being sent if turned off.
-- Operations: Select the alert operation you want to associate to this alert rule.
-- Match devices, groups and location list: Associate this alert rule to only these devices.
-- All devices except in list: Invert the association to a device based on the Match selection.
+  do _not match the rule).
+- Mute alerts: The system does not send the alert through the alert
+  transport. But it shows the alert in the Web UI.
+- Recovery alerts: If this is off, the system does not send the
+  recovery notification.
+- Acknowledgement alerts: If this is off, the system does not send the
+  acknowledgement notifications.
+- Operations: Select the alert operation that you want to attach to this alert rule.
+- Match devices, groups and location list: Attach this alert rule only to these devices.
+- All devices except in list: Invert the attachment to a device, from the Match selection.
 - Procedure URL: [Rules.md#Procedure](See Procedure).
-- Notes: Add any notes about this rule, this informtion will also be passed to the alert notifications.
+- Notes: Add notes about this rule. This information also goes to the alert notifications.
 
 ## Advanced
 
-On the Advanced tab, you can specify some additional options for the alert rule:
+On the Advanced tab, you can specify some more options for the alert rule:
 
-- Override SQL: Enable this if you using a custom query
-- Query: The query to be used for the alert.
+- Override SQL: Enable this if you use a custom query
+- Query: The query to use for the alert.
 
-- An example of this would be an average rule for all CPUs over 10%
+- An example: an average rule for all CPUs above 10%
 
 ```sql
 SELECT devices.*,AVG(processors.processor_usage) AS cpu_avg, processors.* FROM 
@@ -86,17 +86,17 @@ HAVING AVG(processors.processor_usage)
 ```
 
 !!! note
-    The 10 would then contain the average CPU usage value, you can
-    change this value to be whatever you like.
-    You will to need copy and paste this into the Alert Rule under
-    Advanced then paste into Query box and switch the Override SQL.
+    The 10 contains the average CPU usage value. You can
+    change this value to the value that you want.
+    Copy this into the Alert Rule under
+    Advanced. Then paste it into the Query box and set the Override SQL switch.
 
 ## Procedure
 
-You can provide procedure URL when creating the rule. Only links
-like "http://" are supported, otherwise an error will be returned.
-Once configured, procedures can be opened from the Alert widget
-through the "Open" button, which can be shown/hidden from the
+You can give a procedure URL when you create the rule. Only links
+that start with "http://" are supported. Other links cause an error.
+When this is configured, you can open procedures from the Alert widget
+with the "Open" button. You can show or hide the button in the
 widget configuration box.
 
 ## Examples
@@ -125,13 +125,13 @@ Alert when:
 - High port usage, where description is not client & ifType is not
   softwareLoopback: `macros.port_usage_perc >= 80 AND
   port.port_descr_type != "client" AND ports.ifType != "softwareLoopback"`
-- Alert when mac address is located on your network `ipv4_mac.mac_address = "2c233a756912"`
+- A mac address is found on your network: `ipv4_mac.mac_address = "2c233a756912"`
 - Device MTU test fails: `devices.mtu_status != 1`
 
 ## Alert Rules Collection
 
-You can also select Alert Rule from the Alerts Collection. These Alert
-Rules are submitted by users in the community :) If would like to
-submit your alert rules to the collection, please submit them here [Alert Rules Collection](https://github.com/librenms/librenms/edit/master/resources/definitions/alert_rules.json)
+You can also select an Alert Rule from the Alerts Collection. Users in
+the community submit these Alert Rules :) If you want to
+submit your alert rules to the collection, submit them here [Alert Rules Collection](https://github.com/librenms/librenms/edit/master/resources/definitions/alert_rules.json)
 
 ![Alert Rules Collection](../img/alert-rules-collection.png)
