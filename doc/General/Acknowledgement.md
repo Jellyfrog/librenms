@@ -4,8 +4,8 @@ path: blob/master/doc/
 
 # Acknowledgements
 
-LibreNMS wouldn't be what it is today without the use of some other amazing projects.
-We list below what we make use of including the license compliance.
+LibreNMS uses a number of other projects. The list below shows the
+projects that we use and their license compliance.
 
 ## 3rd Party GPLv3 Compliant
 
