@@ -1,11 +1,11 @@
 # Supermicro
 
-For some Supermicro information to show up in LibreNMS, you will need to install an agent.
+For some Supermicro information to show in LibreNMS, you must install an agent.
 
 ## Supermicro SuperDoctor
-Install Supermicro SuperDoctor onto the device you want to monitor.
+Install Supermicro SuperDoctor on the device that you want to monitor.
 
-Then add the following to /etc/snmp/snmpd.conf:
+Then add this to /etc/snmp/snmpd.conf:
 
 ```bash
 pass .1.3.6.1.4.1.10876 /usr/bin/sudo /opt/Supermicro/SuperDoctor5/libs/native/snmpagent

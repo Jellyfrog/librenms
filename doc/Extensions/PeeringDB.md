@@ -1,18 +1,18 @@
 # PeeringDB Support
 
-LibreNMS has integration with PeeringDB to match up your BGP sessions
-with the peering exchanges you are connected to.
+LibreNMS has integration with PeeringDB. It matches your BGP sessions
+with the peering exchanges to which you are connected.
 
-To enable the integration please do so within the WebUI
+Enable the integration in the WebUI
 
 !!! setting "external/peeringdb"
     ```bash
     lnms config:set peeringdb.enabled true
     ```
 
-Data will be collated the next time daily.sh is run or you can
-manually force this by running `php daily.php -f peeringdb`, the
-initial collection is delayed for a random amount of time to avoid
-overloading the PeeringDB API.
+The system collects the data the next time that daily.sh runs. You can
+also start this manually with `php daily.php -f peeringdb`. The
+initial collection has a delay of a random length of time, to prevent
+too much load on the PeeringDB API.
 
-Once enabled you will have an additional menu item under Routing -> PeeringDB
+When this is enabled, you have one more menu item, under Routing -> PeeringDB

@@ -1,29 +1,29 @@
 # Enabling support for Prometheus
 
-Please be aware Prometheus support is alpha at best, It hasn't been
-extensively tested and is still in development All it provides is the
-sending of data to a a Prometheus PushGateway. Please be careful when
-enabling this support you use it at your own risk!
+Know that Prometheus support is alpha at best. It did not get
+many tests, and it is in development. It only
+sends data to a Prometheus PushGateway. Be careful when
+you enable this support. The risk is yours!
 
-## Requirements (Older versions may work but haven't been tested
+## Requirements (Older versions can possibly operate, but they are not tested
 
 - Prometheus >= 2.0
 - PushGateway >= 0.4.0
 - Grafana
 - PHP-CURL
 
-The setup of the above is completely out of scope here and we aren't
-really able to provide any help with this side of things.
+The setup of the above is not part of this document, and we cannot
+give help with it.
 
 ## What you don't get
 
-- Pretty graphs, this is why at present you need Grafana. You need to
-  build your own graphs within Grafana.
-- Support for Prometheus or Grafana, we would highly recommend that
-  you have some level of experience with these.
+- Graphs. This is why you need Grafana at this time. You must
+  build your own graphs in Grafana.
+- Support for Prometheus or Grafana. We strongly recommend that
+  you have some experience with these.
 
-RRD will continue to function as normal so LibreNMS itself should
-continue to function as normal.
+RRD continues to operate as usual. Thus, LibreNMS itself
+continues to operate as usual.
 
 ## Configuration
 
@@ -35,7 +35,7 @@ continue to function as normal.
     lnms config:set prometheus.prefix 'librenms'
     ```
 
-If your pushgateway uses basic authentication, configure the following:
+If your pushgateway uses basic authentication, configure this:
 
 !!! setting "poller/prometheus"
     ```bash
@@ -53,10 +53,10 @@ Additional settings
 
 ## Prefix
 
-Setting the 'prefix' option will cause all metric names to begin with 
+When you set the 'prefix' option, all metric names start with 
 the configured value.
 
-For instance without setting this option metric names will be something 
+For example, without this option, metric names are 
 like this:
 
 ```
@@ -66,8 +66,8 @@ INOCTETS
 ifInErrors_rate
 ```
 
-Configuring a prefix name, for example 'librenms', instead caused those 
-metrics to be exposed with the following names:
+With a prefix name, for example 'librenms', those 
+metrics show with these names:
 
 ```
 librenms_OUTUCASTPKTS
@@ -86,6 +86,6 @@ librenms_ifInErrors_rate
     - targets: ['127.0.0.1:9091']
 ```
 
-The same data then stored within rrd will be sent to Prometheus and
-recorded. You can then create graphs within Grafana to display the
-information you need.
+The system sends the same data as the data kept in rrd to Prometheus
+and records it. You can then create graphs in Grafana to show the
+necessary information.

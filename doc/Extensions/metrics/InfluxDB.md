@@ -1,29 +1,29 @@
 # Enabling support for InfluxDB
 
-Before we get started it is important that you know and understand
-that InfluxDB support is currently alpha at best. All it provides is
-the sending of data to a InfluxDB install. Due to the current changes
-that are constantly being made to InfluxDB itself then we cannot
-guarantee that your data will be ok so enabling this support is at
-your own risk!
+Before we start, it is important that you know
+that InfluxDB support is alpha at best at this time. It only
+sends data to an InfluxDB installation. Because InfluxDB itself
+changes continuously, we cannot
+make sure that your data stays correct. If you enable this support, the
+risk is yours!
 
 ## Requirements
 
 - InfluxDB >= 0.94 < 2.0
 - Grafana
 
-The setup of the above is completely out of scope here and we aren't
-really able to provide any help with this side of things.
+The setup of the above is not part of this document, and we cannot
+give help with it.
 
 ## What you don't get
 
-- Pretty graphs, this is why at present you need Grafana. You need to
-  build your own graphs within Grafana.
-- Support for InfluxDB or Grafana, we would highly recommend that you
-  have some level of experience with these.
+- Graphs. This is why you need Grafana at this time. You must
+  build your own graphs in Grafana.
+- Support for InfluxDB or Grafana. We strongly recommend that you
+  have some experience with these.
 
-RRD will continue to function as normal so LibreNMS itself should
-continue to function as normal.
+RRD continues to operate as usual. Thus, LibreNMS itself
+continues to operate as usual.
 
 ## Configuration
 
@@ -43,8 +43,8 @@ continue to function as normal.
     lnms config:set influxdb.debug false
     ```
 
-No credentials are needed if you don't use InfluxDB authentication.
+Credentials are not necessary if you do not use InfluxDB authentication.
 
-The same data then stored within rrd will be sent to InfluxDB and
-recorded. You can then create graphs within Grafana to display the
-information you need.
+The system sends the same data as the data kept in rrd to InfluxDB
+and records it. You can then create graphs in Grafana to show the
+necessary information.

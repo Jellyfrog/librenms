@@ -1,15 +1,15 @@
 # Enabling support for Graphite
 
 This module sends all metrics to a remote graphite service. You need
-something like Grafana for graphing.
+a tool such as Grafana for graphs.
 
 ## What you don't get
 
-- Pretty graphs, this is why at present you need Grafana. You need to
-  build your own graphs within Grafana.
+- Graphs. This is why you need Grafana at this time. You must
+  build your own graphs in Grafana.
 
-RRD will continue to function as normal so LibreNMS itself should
-continue to function as normal.
+RRD continues to operate as usual. Thus, LibreNMS itself
+continues to operate as usual.
 
 ## Configuration
 
@@ -21,19 +21,19 @@ continue to function as normal.
     lnms config:set graphite.prefix 'your.metric.prefix'
     ```
 
-Your metric path can be prefixed if required, otherwise the metric
-path for Graphite will be in the form of
-`hostname.measurement.fieldname`, interfaces will be stored as
+You can add a prefix to your metric path, if necessary. If not, the metric
+path for Graphite has the form
+`hostname.measurement.fieldname`. Interfaces are kept as
 `hostname.ports.ifName.fieldname`.
 
-The same data then stored within rrd will be sent to Graphite and
-recorded. You can then create graphs within Grafana to display the
-information you need.
+The system sends the same data as the data kept in rrd to Graphite
+and records it. You can then create graphs in Grafana to show the
+necessary information.
 
 ## Graphite Configuration
 
-As LibreNMS updates its metrics every 5 minutes, the following
-addition to your storage-schemas.conf is suggested.
+LibreNMS updates its metrics each 5 minutes. Thus, we recommend this
+addition to your storage-schemas.conf.
 
 ```
 [network]

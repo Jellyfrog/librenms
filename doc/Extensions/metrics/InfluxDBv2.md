@@ -1,31 +1,31 @@
 # Enabling support for InfluxDBv2
 
-Before we get started it is important that you know and understand
-that InfluxDBv2 support is currently alpha at best. All it provides is
-the sending of data to a InfluxDBv2 bucket. Due to the current changes
-that are constantly being made to InfluxDB itself then we cannot
-guarantee that your data will be ok so enabling this support is at
-your own risk!
+Before we start, it is important that you know
+that InfluxDBv2 support is alpha at best at this time. It only
+sends data to an InfluxDBv2 bucket. Because InfluxDB itself
+changes continuously, we cannot
+make sure that your data stays correct. If you enable this support, the
+risk is yours!
 
-It is also important to understand that InfluxDBv2 only supports the
-InfluxDBv2 API used in InfluxDB version 2.0 or higher. If you are
-looking to send data to any other version of InfluxDB than you should
-use the InfluxDB datastore instead.
+It is also important to know that InfluxDBv2 supports only the
+InfluxDBv2 API used in InfluxDB version 2.0 or higher. If you
+want to send data to a different version of InfluxDB, use
+the InfluxDB datastore.
 
 ## Requirements
 
 - InfluxDB >= 2.0
 
-The setup of the above is completely out of scope here and we aren't
-really able to provide any help with this side of things.
+The setup of the above is not part of this document, and we cannot
+give help with it.
 
 ## What you don't get
 
-- Support for InfluxDB, we would highly recommend that you
-  have some level of experience with these.
+- Support for InfluxDB. We strongly recommend that you
+  have some experience with it.
 
-RRD will continue to function as normal so LibreNMS itself should
-continue to function as normal.
+RRD continues to operate as usual. Thus, LibreNMS itself
+continues to operate as usual.
 
 ## Configuration
 
@@ -48,8 +48,8 @@ continue to function as normal.
     lnms config:set influxdbv2.max_retry 2
     ```
 
-The same data stored within rrd will be sent to InfluxDB and
-recorded. You can then create graphs within Grafana or InfluxDB to display the
-information you need.
+The system sends the same data as the data kept in rrd to InfluxDB
+and records it. You can then create graphs in Grafana or InfluxDB to show the
+necessary information.
 
-Please note that polling will slow down when the poller isn't able to reach or write data to InfluxDBv2.
+Note: polling becomes slower when the poller cannot get access to InfluxDBv2, or cannot write data to it.

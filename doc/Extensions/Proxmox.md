@@ -1,12 +1,12 @@
 # Proxmox graphing
 
-It is possible to create graphs of the Proxmox **VMs** that run on
-your monitored machines. Currently, only traffic graphs are
-created. One for each interface on each VM. Possibly, IO graphs will
-be added later on.
+You can create graphs of the Proxmox **VMs** that run on
+your monitored machines. At this time, the system creates only traffic
+graphs: one for each interface on each VM. Possibly, IO graphs
+come later.
 
-The ultimate goal is to be able to create traffic bills for VMs, no
-matter on which physical machine that VM runs.
+The final goal: create traffic bills for VMs,
+independently of the physical machine on which the VM runs.
 
 ## Enabling Proxmox graphs
 
@@ -27,7 +27,7 @@ cp /opt/librenms-agent/agent-local/proxmox /usr/lib/check_mk_agent/local/proxmox
 chmod +x /usr/lib/check_mk_agent/local/proxmox
 ```
 
-Then, enable and start the check_mk service using systemd
+Then, enable and start the check_mk service with systemd
 
 ```bash
 cp /opt/librenms-agent/check_mk@.service /opt/librenms-agent/check_mk.socket /etc/systemd/system
@@ -35,17 +35,17 @@ systemctl daemon-reload
 systemctl enable check_mk.socket && systemctl start check_mk.socket
 ```
 
-Then in LibreNMS active the librenms-agent and proxmox application
-flag for the device you are monitoring. You should now see an
-application in LibreNMS, as well as a new menu-item in the topmenu,
-allowing you to choose which cluster you want to look at.
+Then, in LibreNMS, make the librenms-agent and proxmox application
+flag active for the device that you monitor. You now see an
+application in LibreNMS, and also a new menu-item in the topmenu.
+With it, you can select the cluster that you want to see.
 
 ## Note, if you want to use use xinetd instead of systemd
 
-Its possible to use the librenms-agent started by xinetd instead of
-systemd. One use case is if you are forced to use a old Proxmox
-installation. After installing the librenms-agent (see above) please
-copy enable the xinetd config, then restart the xinetd service:
+You can use the librenms-agent started by xinetd, not
+systemd. One use case: you must use an old Proxmox
+installation. After you install the librenms-agent (see above),
+copy and enable the xinetd config. Then restart the xinetd service:
 
 ```bash
 cp check_mk_xinetd /etc/xinetd.d/check_mk

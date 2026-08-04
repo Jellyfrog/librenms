@@ -1,11 +1,11 @@
 # Billing Module
 
-With the billing module you can create a bill, assign a quota to it
-and add ports to it. It then tracks the ports usage and shows you the
-usage in the bill, including any overage.
+With the billing module, you can create a bill, give it a quota,
+and add ports to it. It then monitors the port usage and shows you the
+usage in the bill, which includes overage.
 Accounting by both total transferred data and 95th percentile is supported.
 
-To enable and use the billing module you need to perform the following steps:
+To enable and use the billing module, do these steps:
 
 !!! setting "system/billing"
     ```bash
@@ -13,7 +13,7 @@ To enable and use the billing module you need to perform the following steps:
     ```
 
 === "Cron"
-    Edit `/etc/cron.d/librenms` and add the following:
+    Edit `/etc/cron.d/librenms` and add this:
     ```bash
     */5 * * * * librenms /opt/librenms/poll-billing.php >> /dev/null 2>&1
     01  * * * * librenms /opt/librenms/billing-calculate.php >> /dev/null 2>&1
@@ -21,28 +21,28 @@ To enable and use the billing module you need to perform the following steps:
 
 === "Dispatcher Service"
     Go to Settings -> Poller -> Settings
-    And for each poller, ensure `Billing Enabled` is selected.
+    For each poller, make sure that `Billing Enabled` is selected.
 
 ## Adding a bill
 
-To create a new bill, from the LibreNMS menu select Ports -> Traffic Bills and
+To create a new bill, select Ports -> Traffic Bills in the LibreNMS menu, and
 select `+ Create Bill`.
 
-Enter the relevant details within the form, ensuring that you select at least
-one device and port.
+Enter the applicable details in the form. Make sure that you select a minimum
+of one device and port.
 
 ## 95th Percentile Calculation
 
 For 95th Percentile billing, the default behavior is to use the
 highest of the input or output 95th Percentile calculation.
 
-To instead use the combined total of inout + output to derive the 95th percentile,
-This can be changed on a per bill basis by setting 95th Calculation to "Aggregate".
+As an alternative, you can use the combined total of input + output to calculate the 95th percentile.
+You can change this for each bill: set 95th Calculation to "Aggregate".
 
 !!! setting "system/billing"
     ```bash
     lnms config:set billing.95th_default_agg true
     ```
 
-This configuration setting is cosmetic and only changes the default
-selected option when adding a new bill.
+This configuration setting is cosmetic. It changes only the default
+selected option when you add a new bill.

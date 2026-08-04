@@ -1,13 +1,13 @@
 # SNMP Proxy
 
-If you have machines that you want to monitor but are not reachable
-directly, you can use [SNMPD
-Proxy](http://www.net-snmp.org/wiki/index.php/Snmpd_proxy). This will
-use the reachable SNMPD to proxy requests to the unreachable SNMPD.
+If you have machines that you want to monitor, but you cannot get access to
+them directly, you can use the [SNMPD
+Proxy](http://www.net-snmp.org/wiki/index.php/Snmpd_proxy). This
+uses the reachable SNMPD to send requests to the unreachable SNMPD.
 
 ## Example configuration
 
-We want to poll 'unreachable.example.com' via
+We want to poll 'unreachable.example.com' through
 
 'hereweare.example.com'. Use the following config:
 
@@ -32,7 +32,7 @@ On 'unreachable.example.com':
 ```
 
 You can now poll community 'private' on
-'unreachable.example.com' via community 'unreachable' on host
-'hereweare.example.com'. Please note that requests on
-'unreachable.example.com' will be coming from
-'hereweare.example.com', not your poller.
+'unreachable.example.com' through community 'unreachable' on host
+'hereweare.example.com'. Note that requests on
+'unreachable.example.com' come from
+'hereweare.example.com', not from your poller.

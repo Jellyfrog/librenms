@@ -4,12 +4,12 @@ LibreNMS has the following page to show an availability map:
 
  - Overview -> Maps -> Availability
 
-This map will show all devices on a single page, with each device
-having either a box or a coloured square representing its status.
+This map shows all devices on a single page. Each device
+has a box or a coloured square that represents its status.
 
 ## Widget
-There is an availability map widget that can be added to a dashboard
-to give a quick overview of the status of all devices on the network.
+You can add an availability map widget to a dashboard.
+It gives a quick overview of the status of all devices on the network.
 
 ## Settings
 ```bash
