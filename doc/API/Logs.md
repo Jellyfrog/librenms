@@ -1,13 +1,13 @@
-All the `list_*logs` calls are aliased to `list_logs`.
+All the `list_*logs` calls are aliases of `list_logs`.
 
-Retrieve all logs or logs for a specific device.
+Get all logs, or the logs for one device.
 
 - id or hostname is the specific device
 
 Input:
 
 - start: The page number to request.
-- limit: The limit of results to be returned.
+- limit: The maximum number of results to return.
 - from: The date and time or the event id to search from.
 - to: The data and time or the event id to search to.
 
@@ -80,7 +80,7 @@ Output:
 
 Route: `/api/v0/syslogsink`
 
-Accept any json messages and passes to further syslog processing. single messages or an array of multiple messages is accepted. see [Syslog](../Extensions/Syslog.md) for more details and logstash integration
+Accepts json messages and passes them to subsequent syslog processing. Single messages, or an array of multiple messages, are accepted. Refer to [Syslog](../Extensions/Syslog.md) for more details and logstash integration
 
 
 Example
@@ -110,7 +110,7 @@ curl -L -X POST 'https://sink.foo.example/api/v0/syslogsink/' -H 'X-Auth-Token: 
 
 Route: `/api/v0/devices/:hostname/eventlog`
 
-Adds events to a device's eventlog.
+Adds events to the eventlog of a device.
 
 Example
 ```

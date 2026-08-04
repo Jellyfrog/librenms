@@ -41,7 +41,7 @@ Get a list of all VLANs for a given device.
 
 Route: `/api/v0/devices/:hostname/vlans`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Input:
 
@@ -118,7 +118,7 @@ Get a list of Links per giver device.
 
 Route: `/api/v0/devices/:hostname/links`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Input:
 
@@ -157,7 +157,7 @@ Output:
 
 ### `get_link`
 
-Retrieves Link by ID
+Gets a Link by ID
 
 Route: `/api/v0/resources/links/:id`
 
@@ -201,7 +201,7 @@ Get a list of all ports FDB.
 
 Route: `/api/v0/resources/fdb/:mac`
 
-- mac is the specific MAC address you would like to query
+- mac is the MAC address that you want to query
 
 Input:
 
@@ -242,7 +242,7 @@ Get a list of all ports FDB with human readable device  and interface names.
 
 Route: `/api/v0/resources/fdb/:mac/detail`
 
-  - mac is the specific MAC address you would like to query
+  - mac is the MAC address that you want to query
 
 Input:
 
@@ -290,7 +290,7 @@ Get a list of all ports NAC.
 
 Route: `/api/v0/resources/nac/:mac`
 
-- mac is the specific MAC address you would like to query
+- mac is the MAC address that you want to query
 
 Input:
 

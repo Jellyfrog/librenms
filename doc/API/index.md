@@ -1,31 +1,31 @@
 ## Versioning
 
-Versioning an API is a minefield which saw us looking at numerous
-options on how to do this.
+Versioning an API is not easy. We examined many
+options for how to do this.
 
-We have currently settled on using versioning within the API end point
-itself `/api/v0`. As the API itself is new and still in active
-development we also decided that v0 would be the best starting point
-to indicate it's in development.
+At this time, we use versioning in the API end point
+itself: `/api/v0`. The API is new and in active
+development. Thus, we decided that v0 is the best start point,
+to show that it is in development.
 
 ## Tokens
 
-To access any of the token end points you will be required to
-authenticate using a token. Tokens can be created directly from within
-the LibreNMS web interface by going to `/api-access/`.
+To get access to the token end points, you must
+authenticate with a token. You can create tokens directly in
+the LibreNMS web interface. Go to `/api-access/`.
 
 - Click on 'Create API access token'.
-- Select the user you would like to generate the token for.
+- Select the user for whom you make the token.
 - Enter an optional description.
 - Click Create API Token.
 
 ## Endpoints
 
-Whilst this documentation will describe and show examples of the end
-points, we've designed the API so you should be able to traverse
-through it without knowing any of the available API routes.
+This documentation tells about the end points and shows examples.
+But the design of the API lets you go
+through it without knowledge of the available API routes.
 
-You can do this by first calling `/api/v0`:
+To do this, first call `/api/v0`:
 
 ```curl
 curl -H 'X-Auth-Token: YOURAPITOKENHERE' https://librenms.org/api/v0
@@ -43,16 +43,16 @@ Output:
 
 ## Input
 
-Input to the API is done in three different ways, sometimes a
-combination of two or three of these.
+There are three different methods to give input to the API. Sometimes
+you use a combination of two or three of them.
 
-- Passing parameters via the api route. For example when obtaining a
-  devices details you will pass the hostname of the device in the route: `/api/v0/devices/:hostname`.
-- Passing parameters via the query string. For example you can list
-  all devices on your install but limit the output to devices that are
-  currently down: `/api/v0/devices?type=down`
-- Passing data in via JSON, this will mainly be used when adding or
-  updating information via the API, for instance adding a new device:
+- Pass parameters in the api route. For example, to get
+  the details of a device, you pass the hostname of the device in the route: `/api/v0/devices/:hostname`.
+- Pass parameters in the query string. For example, you can list
+  all devices on your installation, but limit the output to devices that are
+  down: `/api/v0/devices?type=down`
+- Pass data in JSON. This is mostly for when you add or
+  update information through the API, for example when you add a new device:
 
 ```curl
 curl -X POST -d '{"hostname":"localhost.localdomain","version":"v1","community":"public"}' -H 'X-Auth-Token: YOURAPITOKENHERE' https://librenms.org/api/v0/devices
@@ -60,11 +60,11 @@ curl -X POST -d '{"hostname":"localhost.localdomain","version":"v1","community":
 
 ## Output
 
-Output from the API currently is via two output types:
+The API gives two output types:
 
-- JSON: Most API responses will output json. As shown in the example for
-  calling the API endpoint.
-- PNG: This is for when the request is for an image such as a graph for a switch port.
+- JSON: Most API responses give json, as shown in the example for
+  the API endpoint call.
+- PNG: This is for requests for an image, such as a graph for a switch port.
 
 ## Endpoint Categories
 

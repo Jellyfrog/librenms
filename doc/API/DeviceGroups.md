@@ -36,7 +36,7 @@ Output:
 
 ### `add_devicegroup`
 
-Add a new device group. Upon success, the ID of the new device group is returned
+Add a new device group. On success, you get the ID of the new device group,
 and the HTTP response code is `201`.
 
 Route: `/api/v0/devicegroups`
@@ -44,13 +44,13 @@ Route: `/api/v0/devicegroups`
 Input (JSON):
 
 - `name`: *required* - The name of the device group
-- `type`: *required* - should be `static` or `dynamic`. Setting this to static
-  requires that the devices input be provided
+- `type`: *required* - must be `static` or `dynamic`. When you set this to static,
+  the devices input is mandatory
 - `desc`: *optional* - Description of the device group
-- `rules`: *required if type == dynamic* - A set of rules to determine which
-  devices should be included in this device group
-- `devices`: *present if type == static* - A list of devices that should be
-  included in this group. This is a static list of devices
+- `rules`: *required if type == dynamic* - A set of rules that finds the
+  devices to include in this device group
+- `devices`: *present if type == static* - A list of devices to
+  include in this group. This is a static list of devices
 
 Examples:
 
@@ -103,21 +103,21 @@ Updates a device group.
 
 Route: `/api/v0/devicegroups/:name`
 
-- name Is the name of the device group which can be obtained using
-  [`get_devicegroups`](#get_devicegroups). Please ensure that
-  the name is urlencoded if it needs to be (i.e Linux Servers would
-  need to be urlencoded.
+- name Is the name of the device group which you can get with
+  [`get_devicegroups`](#get_devicegroups). Make sure that
+  the name is urlencoded if necessary (i.e Linux Servers must
+  be urlencoded.
 
 Input (JSON):
 
 - `name`: *optional* - The name of the device group
-- `type`: *optional* - should be `static` or `dynamic`. Setting this to static
-  requires that the devices input be provided
+- `type`: *optional* - must be `static` or `dynamic`. When you set this to static,
+  the devices input is mandatory
 - `desc`: *optional* - Description of the device group
-- `rules`: *required if type == dynamic* - A set of rules to determine which
-  devices should be included in this device group
-- `devices`: *required if type == static* - A list of devices that should be
-  included in this group. This is a static list of devices
+- `rules`: *required if type == dynamic* - A set of rules that finds the
+  devices to include in this device group
+- `devices`: *required if type == static* - A list of devices to
+  include in this group. This is a static list of devices
 
 Examples:
 
@@ -140,10 +140,10 @@ Deletes a device group.
 
 Route: `/api/v0/devicegroups/:name`
 
-- name Is the name of the device group which can be obtained using
-  [`get_devicegroups`](#get_devicegroups). Please ensure that
-  the name is urlencoded if it needs to be (i.e Linux Servers would
-  need to be urlencoded.
+- name Is the name of the device group which you can get with
+  [`get_devicegroups`](#get_devicegroups). Make sure that
+  the name is urlencoded if necessary (i.e Linux Servers must
+  be urlencoded.
 
 Input:
 
@@ -166,14 +166,14 @@ Output:
 
 ### `get_devices_by_group`
 
-List all devices matching the group provided.
+List all devices that match the given group.
 
 Route: `/api/v0/devicegroups/:name`
 
-- name Is the name of the device group which can be obtained using
-  [`get_devicegroups`](#get_devicegroups). Please ensure that
-  the name is urlencoded if it needs to be (i.e Linux Servers would
-  need to be urlencoded.
+- name Is the name of the device group which you can get with
+  [`get_devicegroups`](#get_devicegroups). Make sure that
+  the name is urlencoded if necessary (i.e Linux Servers must
+  be urlencoded.
 
 Input (JSON):
 
@@ -216,14 +216,14 @@ Route: `/api/v0/devicegroups/:name/maintenance`
 
 Input (JSON):
 
-- `title`: *optional* - Some title for the Maintenance
-  Will be replaced with device group name if omitted
-- `behavior`: *optional* - id of maintenance behavior desired
-  Defaults to alert.scheduled_maintenance_default_behavior if omitted
-- `notes`: *optional* - Some description for the Maintenance
+- `title`: *optional* - A title for the Maintenance.
+  If not given, the system uses the device group name
+- `behavior`: *optional* - id of the wanted maintenance behavior.
+  If not given, the default is alert.scheduled_maintenance_default_behavior
+- `notes`: *optional* - A description for the Maintenance
 - `start`: *optional* - start time of Maintenance in full format `Y-m-d H:i:00`
   eg: 2022-08-01 22:45:00
-  Current system time `now()` will be used if omitted
+  If not given, the system uses the current system time `now()`
 - `duration`: *required* - Duration of Maintenance in format `H:i` / `Hrs:Mins`
   eg: 02:00
 
@@ -280,14 +280,14 @@ Add devices to a device group.
 
 Route: `/api/v0/devicegroups/:name/devices`
 
-- name Is the name of the device group which can be obtained using
-  [`get_devicegroups`](#get_devicegroups). Please ensure that
-  the name is urlencoded if it needs to be (i.e Linux Servers would
-  need to be urlencoded.
+- name Is the name of the device group which you can get with
+  [`get_devicegroups`](#get_devicegroups). Make sure that
+  the name is urlencoded if necessary (i.e Linux Servers must
+  be urlencoded.
 
 Input (JSON):
 
-- `devices`: *required* - A list of devices to be added to the group.
+- `devices`: *required* - A list of devices to add to the group.
 
 Example:
 
@@ -312,14 +312,14 @@ Removes devices from a device group.
 
 Route: `/api/v0/devicegroups/:name/devices`
 
-- name Is the name of the device group which can be obtained using
-  [`get_devicegroups`](#get_devicegroups). Please ensure that
-  the name is urlencoded if it needs to be (i.e Linux Servers would
-  need to be urlencoded.
+- name Is the name of the device group which you can get with
+  [`get_devicegroups`](#get_devicegroups). Make sure that
+  the name is urlencoded if necessary (i.e Linux Servers must
+  be urlencoded.
 
 Input (JSON):
 
-- `devices`: *required* - A list of devices to be removed from the group.
+- `devices`: *required* - A list of devices to remove from the group.
 
 Example:
 

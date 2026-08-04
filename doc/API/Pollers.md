@@ -1,7 +1,7 @@
 ### `list_pollers`
 
-List all pollers in the system. Returns data from the `poller_cluster` table if available,
-otherwise falls back to `pollers` with associated stats.
+List all pollers in the system. Returns data from the `poller_cluster` table, if available.
+If not, it uses `pollers` with the related stats.
 
 Route: `/api/v0/pollers`
 
@@ -67,13 +67,13 @@ Output (poller_cluster with stats):
 
 ### `list_poller_log`
 
-List all devices with polling information. Returns device polling details including last polled time, time taken, and poller group information. Only shows active devices that the user has access to.
+List all devices with polling information. Returns device polling details, which include the last polled time, the time taken, and poller group information. It shows only active devices to which the user has access.
 
 Route: `/api/v0/pollers/log`
 
 Input:
 
-- `unpolled` (optional): If set, filters to show only devices that haven't been polled recently (overdue by 1.2x the rrd.step value, default 300 seconds)
+- `unpolled` (optional): If set, it shows only devices that were not polled for some time (late by 1.2x the rrd.step value, default 300 seconds)
 
 Example:
 

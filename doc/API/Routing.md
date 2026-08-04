@@ -7,7 +7,7 @@ Route: `/api/v0/bgp`
 Input:
 
 - hostname = Either the devices hostname or id.
-- asn = The local ASN you would like to filter by
+- asn = The local ASN by which you want to select
 - remote_asn = Filter by remote peer ASN
 - remote_address = Filter by remote peer address
 - local_address = Filter by local address
@@ -72,7 +72,7 @@ Output:
 
 ### `get_bgp`
 
-Retrieves a BGP session by ID
+Gets a BGP session by ID
 
 Route: `/api/v0/bgp/:id`
 
@@ -313,7 +313,7 @@ List the current IPSec tunnels which are active.
 
 Route: `/api/v0/routing/ipsec/data/:hostname`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Input:
 
@@ -345,7 +345,7 @@ Output:
 }
 ```
 
-> Please note, this will only show active VPN sessions not all configured.
+> Note: this shows only active VPN sessions, not all configured sessions.
 
 ### `list_ospf`
 
@@ -565,7 +565,7 @@ Input:
 
 **OR**
 
-- vrfname = The VRF name you would like to filter by
+- vrfname = The VRF name by which you want to select
 
 Example:
 
@@ -597,7 +597,7 @@ Output:
 
 ### `get_vrf`
 
-Retrieves VRF by ID
+Gets a VRF by ID
 
 Route: `/api/v0/routing/vrf/:id`
 

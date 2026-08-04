@@ -1,6 +1,6 @@
 ### `list_arp`
 
-Retrieve a specific ARP entry or all ARP entries for a device
+Get one ARP entry, or all ARP entries for a device
 
 Route: `/api/v0/resources/ip/arp/:query`
 
@@ -12,8 +12,8 @@ Query can be:
 
 Input:
 
-- device if you specify all for the query then you need to populate this
-  with the hostname or id of the device.
+- device: if you specify all for the query, you must set this
+  to the hostname or id of the device.
 
 Example:
 

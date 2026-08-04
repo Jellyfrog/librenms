@@ -1,6 +1,6 @@
 ### `list_bills`
 
-Retrieve the list of bills currently in the system.
+Get the list of bills in the system at this time.
 
 Route: `/api/v0/bills`
        `/api/v0/bills?period=previous`
@@ -63,7 +63,7 @@ Output:
 
 ### `get_bill`
 
-Retrieve a specific bill
+Get one bill
 
 Route: `/api/v0/bills/:id`
        `/api/v0/bills/:id?period=previous`
@@ -75,8 +75,8 @@ Route: `/api/v0/bills/:id`
 - id is the specific bill id
 - ref is the billing reference
 - custid is the customer reference
-- period=previous indicates you would like the data for the last
-  complete period rather than the current period
+- period=previous shows that you want the data for the last
+  complete period, not the current period
 
 Input:
 
@@ -137,9 +137,9 @@ Output:
 
 ### `get_bill_graph`
 
-Retrieve a graph image associated with a bill.
+Get a graph image attached to a bill.
 
-NB: The graphs returned from this will always be png as they do not
+NB: The graphs returned from this are always png, because they do not
 come from rrdtool, even if you have SVG set.
 
 Route: `/api/v0/bills/:id/graphs/:graph_type
@@ -159,17 +159,17 @@ Graph Image
 
 ### `get_bill_graphdata`
 
-Retrieve the data used to draw a graph so it can be rendered in an external system
+Get the data used to draw a graph, so that an external system can draw it
 
 Route: `/api/v0/bills/:id/graphdata/:graph_type`
 
 Input:
 
-The `reducefactor` parameter is used to reduce the number of data
-points. Billing data has 5 minute granularity, so requesting a graph
-for a long time period will result in many data points.  If not
-supplied, it will be automatically calculated.  A reducefactor of 1
-means return all items, 2 means half of the items etc.
+The `reducefactor` parameter decreases the number of data
+points. Billing data has 5 minute granularity. Thus, a graph request
+for a long time period gives many data points.  If you do not
+supply it, the system calculates it automatically.  A reducefactor of 1
+means: return all items. 2 means half of the items, etc.
 
 Example:
 
@@ -218,7 +218,7 @@ Output:
 
 ### `get_bill_history`
 
-Retrieve the history of specific bill
+Get the history of one bill
 
 Route: `/api/v0/bills/:id/history`
 
@@ -268,9 +268,9 @@ Output:
 
 ### `get_bill_history_graph`
 
-Retrieve a graph of a previous period of a bill
+Get a graph of a period of a bill before this one
 
-NB: The graphs returned from this will always be png as they do not
+NB: The graphs returned from this are always png, because they do not
 come from rrdtool, even if you have SVG set.
 
 Route: `/api/v0/bills/:id/history/:bill_hist_id/graphs/:graph_type`
@@ -291,7 +291,7 @@ Output:
 
 ### `get_bill_history_graphdata`
 
-Retrieve the data for a graph of a previous period of a bill, to be
+Get the data for a graph of a period of a bill before this one, to be
 rendered in an external system
 
 Route: `/api/v0/bills/:id/history/:bill_hist_id/graphdata/:graph_type`
@@ -341,10 +341,10 @@ Route: `/api/v0/bills`
 
 Method: `POST`
 
-- If you send an existing bill_id the call replaces all values it
-  receives. For example if you send 2 ports it will delete the
-  existing ports and add the the 2 new ports. So to add ports you have
-  to get the current ports first and add them to your update call.
+- If you send a known bill_id, the call replaces all values that it
+  receives. For example, if you send 2 ports, it deletes the
+  current ports and adds the 2 new ports. Thus, to add ports, you must
+  first get the current ports and add them to your update call.
 
 Input:
 

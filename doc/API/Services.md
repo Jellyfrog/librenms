@@ -1,13 +1,13 @@
 ### `list_services`
 
-Retrieve all services
+Get all services
 
 Route: `/api/v0/services`
 
 Input:
 
-- state: only which have a certain state (valid options are 0=Ok, 1=Warning, 2=Critical).
-- type: service type, used sql LIKE to find services, so for tcp, use type=tcp for http use type=http
+- state: only services that have a specified state (the valid options are 0=Ok, 1=Warning, 2=Critical).
+- type: service type. The system uses sql LIKE to find services. Thus, for tcp, use type=tcp; for http, use type=http
 
 Example:
 
@@ -63,7 +63,7 @@ Output:
 
 ### `get_service_for_host`
 
-Retrieve services for device
+Get the services for a device
 
 Route: `/api/v0/services/:hostname`
 
@@ -71,9 +71,9 @@ Route: `/api/v0/services/:hostname`
 
 Input:
 
-- state: only which have a certain state (valid options are 0=Ok, 1=Warning, 2=Critical).
-- type: service type, used sql LIKE to find services, so for tcp, use
-  type=tcp for http use type=http
+- state: only services that have a specified state (the valid options are 0=Ok, 1=Warning, 2=Critical).
+- type: service type. The system uses sql LIKE to find services. Thus, for tcp, use
+  type=tcp; for http, use type=http
 
 Example:
 
@@ -173,7 +173,7 @@ Output:
 
 ### `delete_service_from_host`
 
-Deletes service from device
+Deletes a service from a device
 
 Route: `/api/v0/services/:service_id`
 

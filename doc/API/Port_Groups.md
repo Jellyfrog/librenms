@@ -31,14 +31,14 @@ Output:
 
 ### `get_ports_by_group`
 
-List all ports matching the group provided.
+List all ports that match the given group.
 
 Route: `/api/v0/port_groups/:name`
 
-- name Is the name of the port group which can be obtained using
-  [`get_port_groups`](#get_port_groups). Please ensure that
-  the name is urlencoded if it needs to be (i.e Linux Servers would
-  need to be urlencoded.
+- name Is the name of the port group which you can get with
+  [`get_port_groups`](#get_port_groups). Make sure that
+  the name is urlencoded if necessary (i.e Linux Servers must
+  be urlencoded.
 
 Params:
 
@@ -69,7 +69,7 @@ Output:
 
 ### `add_port_group`
 
-Add a new port group. Upon success, the ID of the new port group is returned
+Add a new port group. On success, you get the ID of the new port group,
 and the HTTP response code is `201`.
 
 Route: `/api/v0/port_groups`
@@ -103,7 +103,7 @@ Output:
 
 ### `assign_port_group`
 
-Assign a Port Group to a list of Ports
+Attach a Port Group to a list of Ports
 
 Route: `/api/v0/port_groups/:port_group_id/assign`
 

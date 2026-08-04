@@ -158,7 +158,7 @@ Input (JSON):
   Will also be added to location notes if user prefs "Add schedule notes to locations notes" is set
 - `start`: *optional* - start time of Maintenance in full format `Y-m-d H:i:00`
   eg: 2022-08-01 22:45:00
-  Current system time `now()` will be used if omitted
+  If not given, the system uses the current system time `now()`
 - `duration`: *required* - Duration of Maintenance in format `H:i` / `Hrs:Mins`
   eg: 02:00
 

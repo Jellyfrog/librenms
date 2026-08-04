@@ -4,7 +4,7 @@ Get details of an alert
 
 Route: `/api/v0/alerts/:id`
 
-- id is the alert id, you can obtain a list of alert ids from [`list_alerts`](#list_alerts).
+- id is the alert id, you can get a list of alert ids from [`list_alerts`](#list_alerts).
 
 Input:
 
@@ -43,9 +43,9 @@ Acknowledge an alert
 
 Route: `/api/v0/alerts/:id`
 
-- id is the alert id, you can obtain a list of alert ids from [`list_alerts`](#list_alerts).
+- id is the alert id, you can get a list of alert ids from [`list_alerts`](#list_alerts).
 - note is the note to add to the alert
-- until_clear is a boolean and if set to false, the alert will re-alert if it gets worse/better or changes.
+- until_clear is a boolean. If it is set to false, the alert starts again if it becomes worse/better or changes.
 
 Input:
 
@@ -73,7 +73,7 @@ Unmute an alert
 
 Route: `/api/v0/alerts/unmute/:id`
 
-- id is the alert id, you can obtain a list of alert ids from [`list_alerts`](#list_alerts).
+- id is the alert id, you can get a list of alert ids from [`list_alerts`](#list_alerts).
 
 Input:
 
@@ -102,11 +102,11 @@ Route: `/api/v0/alerts`
 
 Input:
 
-- state: Filter the alerts by state, 0 = ok, 1 = alert, 2 = ack
-- severity: Filter the alerts by severity. Valid values are `ok`, `warning`, `critical`.
-- alert_rule: Filter alerts by alert rule ID.
-- order: How to order the output, default is by timestamp
-  (descending). Can be appended by DESC or ASC to change the order.
+- state: Select the alerts by state: 0 = ok, 1 = alert, 2 = ack
+- severity: Select the alerts by severity. The valid values are `ok`, `warning`, `critical`.
+- alert_rule: Select alerts by alert rule ID.
+- order: How to order the output. The default is by timestamp
+  (descending). You can add DESC or ASC at the end to change the order.
 
 Examples:
 
@@ -298,30 +298,30 @@ Route: `/api/v0/rules`
 
 Input (JSON):
 
-- devices: This is either an array of device ids or -1 for a global rule
+- devices: This is an array of device ids, or -1 for a global rule
 - groups: Array of device group ids
 - locations: Array of location ids
 - invert_map: Optional boolean. When `true`, the rule applies to all
   devices except the selected devices, groups and locations.
-- builder: The rule which should be in the format entity.condition
+- builder: The rule, which must be in the format entity.condition
   value (i.e devices.status != 0 for devices marked as down). It must
-  be json encoded in the format rules are currently stored.
-- severity: The severity level the alert will be raised against, Ok, Warning, Critical.
-- disabled: Whether the rule will be disabled or not, 0 = enabled, 1 = disabled
+  be json encoded, in the format in which rules are kept at this time.
+- severity: The severity level of the alert: Ok, Warning, Critical.
+- disabled: If the rule is disabled: 0 = enabled, 1 = disabled
 - default_operation_step_duration: Optional. When `alert_operation_id` is set, updates that **operation’s** default step duration (for example `5 m`). The value is stored on the global operation, not on the rule. When a segment’s `step_duration_seconds` is `0`, this default (or the global config default if unset) is used as the repeat interval.
 - alert_operation_id: ID of a global alert operation (see **Alerts → Operations** in the UI), or `null` to suppress notifications for this rule
-- operations: (optional) If `alert_operation_id` is not sent, a legacy array of operation objects is converted into a new global operation (with one **segment** per array element) and linked to the rule. Each segment has its own escalation range, timing, and transports.
+- operations: (optional) If you do not send `alert_operation_id`, the system converts a legacy array of operation objects into a new global operation (with one **segment** for each array element) and attaches it to the rule. Each segment has its own escalation range, timing, and transports.
   - operation_phase: `problem`, `recovery`, or `update`
   - escalation_step_from: 1-based escalation step start
   - escalation_step_to: escalation step end (`null` for no limit)
-  - start_in_seconds: delay before first notification in this operation
-  - step_duration_seconds: repeat interval in seconds (`0` means use the operation’s default step duration, or the global config default)
-  - transports: required array of targets
+  - start_in_seconds: delay before the first notification in this operation
+  - step_duration_seconds: repeat interval in seconds (`0` means: use the operation’s default step duration, or the global config default)
+  - transports: mandatory array of targets
     - single transport id: `3`
     - transport group id: `\"g2\"`
-- invert: This would invert the rules check.
-- name: This is the name of the rule and is mandatory.
-- notes: Some informal notes for this rule
+- invert: This inverts the rule check.
+- name: This is the name of the rule. It is mandatory.
+- notes: Notes for this rule
 
 Example:
 
@@ -347,32 +347,32 @@ Route: `/api/v0/rules`
 
 Input (JSON):
 
-- rule_id: You must specify the rule_id to edit an existing rule, if
-  this is absent then a new rule will be created.
-- devices: This is either an array of device ids or -1 for a global rule
+- rule_id: You must specify the rule_id to edit a rule. If
+  this is absent, the system creates a new rule.
+- devices: This is an array of device ids, or -1 for a global rule
 - groups: Array of device group ids
 - locations: Array of location ids
 - invert_map: Optional boolean. When `true`, the rule applies to all
   devices except the selected devices, groups and locations.
-- builder: The rule which should be in the format entity.condition
+- builder: The rule, which must be in the format entity.condition
   value (i.e devices.status != 0 for devices marked as down). It must
-  be json encoded in the format rules are currently stored.
-- severity: The severity level the alert will be raised against, Ok, Warning, Critical.
-- disabled: Whether the rule will be disabled or not, 0 = enabled, 1 = disabled
+  be json encoded, in the format in which rules are kept at this time.
+- severity: The severity level of the alert: Ok, Warning, Critical.
+- disabled: If the rule is disabled: 0 = enabled, 1 = disabled
 - default_operation_step_duration: Optional. When `alert_operation_id` is set, updates that **operation’s** default step duration (for example `5 m`). Stored on the operation, not the rule.
 - alert_operation_id: ID of a global alert operation, or `null` to suppress notifications for this rule
 - operations: (optional) Legacy array of operation objects; used only when `alert_operation_id` is not present in the request
   - operation_phase: `problem`, `recovery`, or `update`
   - escalation_step_from: 1-based escalation step start
   - escalation_step_to: escalation step end (`null` for no limit)
-  - start_in_seconds: delay before first notification in this operation
-  - step_duration_seconds: repeat interval in seconds (`0` means use the operation’s default step duration, or the global config default)
-  - transports: required array of targets
+  - start_in_seconds: delay before the first notification in this operation
+  - step_duration_seconds: repeat interval in seconds (`0` means: use the operation’s default step duration, or the global config default)
+  - transports: mandatory array of targets
     - single transport id: `3`
     - transport group id: `\"g2\"`
-- invert: This would invert the rules check.
-- name: This is the name of the rule and is mandatory.
-- notes: Some informal notes for this rule
+- invert: This inverts the rule check.
+- name: This is the name of the rule. It is mandatory.
+- notes: Notes for this rule
 
 Example:
 
@@ -470,10 +470,10 @@ Route: `/api/v0/alert_templates`
 Input (JSON):
 
 - name: (Required) Name for the new template
-- template: (Required) Template code used to generate the alert message
-- title: Title that is used when an alert is generated
-- title_rec: Title that is used when an alert has recovered
-- alert_rules: an array of rule_id's for which this template should apply (see also: [`list_alert_rules`](#list_alert_rules).)
+- template: (Required) Template code that makes the alert message
+- title: Title used when the system makes an alert
+- title_rec: Title used when an alert has recovered
+- alert_rules: an array of rule_id's to which this template applies (see also: [`list_alert_rules`](#list_alert_rules).)
 
 Example:
 
@@ -483,7 +483,7 @@ curl -X POST -d '{"name":"new alert template","template":"---","title":"CREATED 
 
 Output:
 - status: Status of the request. Can be: ok, warning, error
-- message: The output of this call. Error messages will be displayed here.
+- message: The output of this call. Error messages show here.
 - id: The id of the newly created alert template
 
 ```json
@@ -503,11 +503,11 @@ Route: `/api/v0/alert_templates`
 Input (JSON):
 
 - name: (Required) Name for the new template
-- template: (Required) Template code used to generate the alert message
-- template_id: (Required) template id that will be changed. If this is not present a new alert template will be created.
-- title: Title that is used when an alert is generated
-- title_rec: Title that is used when an alert has recovered
-- alert_rules: an array of rule_id's for which this template should apply (see also: [`list_alert_rules`](#list_alert_rules).)
+- template: (Required) Template code that makes the alert message
+- template_id: (Required) template id to change. If this is not present, the system creates a new alert template.
+- title: Title used when the system makes an alert
+- title_rec: Title used when an alert has recovered
+- alert_rules: an array of rule_id's to which this template applies (see also: [`list_alert_rules`](#list_alert_rules).)
 
 Example:
 

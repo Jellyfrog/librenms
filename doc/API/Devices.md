@@ -4,7 +4,7 @@ Delete a given device.
 
 Route: `/api/v0/devices/:hostname`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Input:
 
@@ -40,7 +40,7 @@ Get details of a given device.
 
 Route: `/api/v0/devices/:hostname`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Input:
 
@@ -75,7 +75,7 @@ Trigger a discovery of given device.
 
 Route: `/api/v0/devices/:hostname/discover`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Input:
 
@@ -106,7 +106,7 @@ Get calculated availabilities of given device.
 
 Route: `/api/v0/devices/:hostname/availability`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Input:
 
@@ -151,7 +151,7 @@ Get detected outages of given device.
 
 Route: `/api/v0/devices/:hostname/outages`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Input:
 
@@ -200,7 +200,7 @@ Get a list of available graphs for a device, this does not include ports.
 
 Route: `/api/v0/devices/:hostname/graphs`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Input:
 
@@ -238,7 +238,7 @@ Output:
 
 ### `list_available_health_graphs`
 
-This function allows to do three things:
+With this function, you can do three things:
 
 - Get a list of overall health graphs available.
 - Get a list of health graphs based on provided class.
@@ -246,9 +246,9 @@ This function allows to do three things:
 
 Route: `/api/v0/devices/:hostname/health(/:type)(/:sensor_id)`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 - type (optional) is health type / sensor class
-- sensor_id (optional) is the sensor id to retrieve specific information.
+- sensor_id (optional) is the sensor id to get specified information.
 
 `type` may be a sensor class (e.g. `device_voltage`) or one of the special
 classes `device_processor`, `device_storage` and `device_mempool`, which are
@@ -377,7 +377,7 @@ Output:
 
 ### `list_available_wireless_graphs`
 
-This function allows to do three things:
+With this function, you can do three things:
 
 - Get a list of overall wireless graphs available.
 - Get a list of wireless graphs based on provided class.
@@ -385,9 +385,9 @@ This function allows to do three things:
 
 Route: `/api/v0/devices/:hostname/wireless(/:type)(/:sensor_id)`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 - type (optional) is wireless type / wireless class
-- sensor_id (optional) is the sensor id to retrieve specific information.
+- sensor_id (optional) is the sensor id to get specified information.
 
 Input:
 
@@ -493,7 +493,7 @@ to a chosen subset of columns.
 
 Route: `/api/v0/devices/:hostname/wireless-sensors`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Input:
 
@@ -501,7 +501,7 @@ Input:
   wireless sensor types (`clients`, `rssi`, `snr`, `mcs`, `frequency`,
   `capacity`, `distance`, `quality`, etc.).
 - columns (optional): comma-separated list of `wireless_sensors` columns to
-  return. Defaults to all columns.
+  return. The default is all columns.
 
 Example:
 
@@ -565,13 +565,13 @@ Output:
 
 ### `get_health_graph`
 
-Get a particular health class graph for a device, if you provide a
-sensor_id as well then a single sensor graph will be provided. If no
-sensor_id value is provided then you will be sent a stacked sensor graph.
+Get one health class graph for a device. If you also give a
+sensor_id, you get a single sensor graph. If you do not give a
+sensor_id value, you get a stacked sensor graph.
 
 Route: `/api/v0/devices/:hostname/graphs/health/:type(/:sensor_id)`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 - type is the name of the health graph as returned by [`list_available_health_graphs`](#list_available_health_graphs)
 - sensor_id (optional) restricts the graph to return a particular health sensor graph.
 
@@ -601,13 +601,13 @@ Output is the graph of the particular health type sensor provided.
 
 ### `get_wireless_graph`
 
-Get a particular wireless class graph for a device, if you provide a
-sensor_id as well then a single sensor graph will be provided. If no
-sensor_id value is provided then you will be sent a stacked wireless graph.
+Get one wireless class graph for a device. If you also give a
+sensor_id, you get a single sensor graph. If you do not give a
+sensor_id value, you get a stacked wireless graph.
 
 Route: `/api/v0/devices/:hostname/graphs/wireless/:type(/:sensor_id)`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 - type is the name of the wireless graph as returned by [`list_available_wireless_graphs`](#list_available_wireless_graphs)
 - sensor_id (optional) restricts the graph to return a particular
   wireless sensor graph.
@@ -642,22 +642,22 @@ Get a specific graph for a device, this does not include ports.
 
 Route: `/api/v0/devices/:hostname/:type`
 
-- hostname can be either the device hostname or id
-- type is the type of graph you want, use
-  [`get_graphs`](#get_graphs to see the graphs
-  available. Defaults to device uptime.
+- hostname can be the device hostname or id
+- type is the type of graph that you want. Use
+  [`get_graphs`](#get_graphs to see the available
+  graphs. The default is device uptime.
 
 Input:
 
-- from: This is the date you would like the graph to start - See
+- from: This is the start date of the graph - See
   [http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html](http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html)
   for more information.
-- to: This is the date you would like the graph to end - See
+- to: This is the end date of the graph - See
   [http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html](http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html)
   for more information.
-- width: The graph width, defaults to 1075.
-- height: The graph height, defaults to 300.
-- output: Set how the graph should be outputted (base64, display), defaults to display.
+- width: The graph width. The default is 1075.
+- height: The graph height. The default is 300.
+- output: Set the graph output format (base64, display). The default is display.
 
 Example:
 
@@ -675,20 +675,20 @@ Get the graph for a service
 
 Route: `/api/v0/devices/:hostname/services/:service_id/graphs/:datasource`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 - service id
 - datasource is the name of the service datasource
 
 Input:
 
-- from: This is the date you would like the graph to start - See
+- from: This is the start date of the graph - See
   [http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html](http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html)
   for more information.
-- to: This is the date you would like the graph to end - See
+- to: This is the end date of the graph - See
   [http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html](http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html)
   for more information.
-- width: The graph width, defaults to 1075.
-- height: The graph height, defaults to 300.
+- width: The graph width. The default is 1075.
+- height: The graph height. The default is 300.
 
   Example:
 
@@ -707,7 +707,7 @@ Get a list of ports for a particular device.
 
 Route: `/api/v0/devices/:hostname/ports`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Input:
 
@@ -795,7 +795,7 @@ Get a list of FDB entries associated with a device.
 
 Route: `/api/v0/devices/:hostname/fdb`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Example:
 
@@ -826,7 +826,7 @@ Get a list of NAC entries associated with a device.
 
 Route: `/api/v0/devices/:hostname/nac`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Example:
 
@@ -872,7 +872,7 @@ Get a list of IP addresses (v4 and v6) associated with a device.
 
 Route: `/api/v0/devices/:hostname/ip`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Example:
 
@@ -906,7 +906,7 @@ physical ports that are in a virtual port-channel.
 
 Route: `/api/v0/devices/:hostname/port_stack`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Example:
 
@@ -950,7 +950,7 @@ Get a list of FDB entries associated with a device.
 
 Route: `/api/v0/devices/:hostname/transceivers`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Example:
 
@@ -1019,7 +1019,7 @@ Get a list of components for a particular device.
 
 Route: `/api/v0/devices/:hostname/components`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Input:
 
@@ -1084,7 +1084,7 @@ Create a new component of a type on a particular device.
 
 Route: `/api/v0/devices/:hostname/components/:type`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 - type is the type of component to add
 
 Example:
@@ -1119,7 +1119,7 @@ Edit an existing component on a particular device.
 
 Route: `/api/v0/devices/:hostname/components`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 In this example we set the label and add a new field: TestField:
 
@@ -1146,7 +1146,7 @@ Delete an existing component on a particular device.
 
 Route: `/api/v0/devices/:hostname/components/:component`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 - component is the component ID to be deleted.
 
 Example:
@@ -1170,11 +1170,11 @@ Get information about a particular port for a device.
 
 Route: `/api/v0/devices/:hostname/ports/:ifname`
 
-- hostname can be either the device hostname or id
-- ifname can be any of the interface names for the device which can be
-  obtained using
-  [`get_device_ports`](#get_device_ports). Please ensure that
-  the ifname is urlencoded if it needs to be (i.e Gi0/1/0 would need to be urlencoded.
+- hostname can be the device hostname or id
+- ifname can be one of the interface names of the device, which you can
+  get with
+  [`get_device_ports`](#get_device_ports). Make sure that
+  the ifname is urlencoded if necessary (i.e Gi0/1/0 must be urlencoded.
 
 Input:
 
@@ -1207,28 +1207,28 @@ Get a graph of a port for a particular device.
 
 Route: `/api/v0/devices/:hostname/ports/:ifname/:type`
 
-- hostname can be either the device hostname or id
-- ifname can be any of the interface names for the device which can be
-  obtained using
-  [`get_device_ports`](#get_device_ports). Please ensure that
-  the ifname is urlencoded if it needs to be (i.e Gi0/1/0 would need
-  to be urlencoded.
-- type is the port type you want the graph for, you can request a list
+- hostname can be the device hostname or id
+- ifname can be one of the interface names of the device, which you can
+  get with
+  [`get_device_ports`](#get_device_ports). Make sure that
+  the ifname is urlencoded if necessary (i.e Gi0/1/0 must
+  be urlencoded.
+- type is the port type for which you want the graph. You can ask for a list
   of ports for a device with [`get_device_ports`](#get_device_ports).
 
 Input:
 
-- from: This is the date you would like the graph to start - See
+- from: This is the start date of the graph - See
   [http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html](http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html)
   for more information.
-- to: This is the date you would like the graph to end - See
+- to: This is the end date of the graph - See
   [http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html](http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html)
   for more information.
-- width: The graph width, defaults to 1075.
-- height: The graph height, defaults to 300.
-- ifDescr: If this is set to true then we will use ifDescr to lookup
-  the port instead of ifName. Pass the ifDescr value you want to
-  search as you would ifName.
+- width: The graph width. The default is 1075.
+- height: The graph height. The default is 300.
+- ifDescr: If this is set to true, we use ifDescr, not ifName, to look up
+  the port. Pass the ifDescr value that you want to
+  look for, the same as for ifName.
 - graph_type: This can be png or svg to force the output as required.
 
 Example:
@@ -1327,7 +1327,7 @@ Input:
     - version: Software version of the device (wildcard)
     - hardware: The model of the device (wildcard)
     - features: Software license features (wildcard)
-- query: If searching by, then this will be used as the input.
+- query: For a search, this is the input.
 
 Example:
 
@@ -1418,7 +1418,7 @@ Input (JSON):
   Will also be added to device notes if user prefs "Add schedule notes to devices notes" is set
 - `start`: *optional* - start time of Maintenance in full format `Y-m-d H:i:00`  
   eg: 2022-08-01 22:45:00  
-  Current system time `now()` will be used if omitted
+  If not given, the system uses the current system time `now()`
 - `duration`: *required* - Duration of Maintenance in format `H:i` / `Hrs:Mins`  
   eg: 02:00
 
@@ -1472,11 +1472,11 @@ Output:
 
 ### `add_device`
 
-Add a new device.  Most fields are optional. You may omit snmp
-credentials to attempt each system credential in order. See snmp.version, snmp.community, and snmp.v3
+Add a new device.  Most fields are optional. You can omit the snmp
+credentials. Then the system tries each system credential in order. See snmp.version, snmp.community, and snmp.v3
 
-To guarantee device is added, use force_add. This will skip checks 
-for duplicate device and snmp reachability, but not duplicate hostname.
+To make sure that the device is added, use force_add. This does no checks 
+for a duplicate device and snmp reachability, but it checks for a duplicate hostname.
 
 Route: `/api/v0/devices`
 
@@ -1485,15 +1485,15 @@ Input (JSON):
 Fields:
 
 - hostname (required): device hostname or IP
-- display_template: A string to display as the name of this device, defaults to 
+- display_template: A string to show as the name of this device. The default is 
   hostname (or device_display_default setting). May be a simple
   template using replacements: {{ $hostname }}, {{ $sysName }},
-  {{ $sysName_fallback }}, {{ $ip }}. This will then generate the display field.
+  {{ $sysName_fallback }}, {{ $ip }}. This makes the display field.
 - snmpver: SNMP version to use, v1, v2c or v3. During checks detection order is v2c,v3,v1
-- port: SNMP port (defaults to port defined in config).
-- transport: SNMP protocol (udp,tcp,udp6,tcp6) Defaults to transport defined in config.
+- port: SNMP port (the default is the port set in the config).
+- transport: SNMP protocol (udp,tcp,udp6,tcp6). The default is the transport set in the config.
 - port_association_mode: method to identify ports: ifIndex (default), ifName, ifDescr, ifAlias
-- poller_group: This is the poller_group id used for distributed poller setup. Defaults to 0.
+- poller_group: This is the poller_group id used for a distributed poller setup. The default is 0.
 - location or location_id: set the location by text or location id
 - override_sysLocation: force use of the location/location_id: and not the value returned by sysLocation
 
@@ -1518,7 +1518,7 @@ SNMP v3 credentials:
 For ICMP only:
 
 - snmp_disable: set to true for ICMP only. Disables SNMP checks and polling.
-- os: OS short name for the device (defaults to ping).
+- os: OS short name for the device (the default is ping).
 - sysName: sysName for the device.
 - hardware: Device hardware.
 
@@ -1547,11 +1547,11 @@ Output:
 
 ### `list_oxidized`
 
-List devices for use with Oxidized. If you have group support enabled
-then a group will also be returned based on your config.
+List devices for use with Oxidized. If group support is enabled,
+you also get a group, from your config.
 
-> LibreNMS will automatically map the OS to the Oxidized model name if
-> they don't match.
+> LibreNMS automatically maps the OS to the Oxidized model name if
+> they do not match.
 
 Route: `/api/v0/oxidized(/:hostname)`
 
@@ -1586,7 +1586,7 @@ Update devices field in the database.
 
 Route: `/api/v0/devices/:hostname`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Input (JSON):
 
@@ -1616,7 +1616,7 @@ Update a device port notes field in the devices_attrs database.
 
 Route: `/api/v0/devices/:hostname/port/:portid`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 - portid needs to be the port unique id (int).
 
 Input (JSON):
@@ -1660,7 +1660,7 @@ Rename device.
 
 Route: `/api/v0/devices/:hostname/rename/:new_hostname`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Input:
 
@@ -1689,7 +1689,7 @@ List the device groups that a device is matched on.
 
 Route: `/api/v0/devices/:hostname/groups`
 
-- hostname can be either the device hostname or id
+- hostname can be the device hostname or id
 
 Input (JSON):
 
@@ -1728,7 +1728,7 @@ search all oxidized device configs for a string.
 
 Route: `api/v0/oxidized/config/search/:searchstring`
 
-  - searchstring is the specific string you would like to search for.
+  - searchstring is the string that you want to look for.
 
 Input:
 
@@ -1830,8 +1830,8 @@ Output:
 
 ### `list_parents_of_host`
 
-This is not a separate API call.  Instead, you obtain the list of parents
-from `list_devices`.  See that entry point for more detailed information.
+This is not a separate API call.  You get the list of parents
+from `list_devices`.  Refer to that entry point for more detailed information.
 
 Example:
 

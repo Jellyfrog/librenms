@@ -9,12 +9,12 @@ Route: `/api/v0/portgroups/:group`
 
 Input:
 
-- from: This is the date you would like the graph to start - See
+- from: This is the start date of the graph - See
   <http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html> for more information.
-- to: This is the date you would like the graph to end - See
+- to: This is the end date of the graph - See
   <http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html> for more information.
-- width: The graph width, defaults to 1075.
-- height: The graph height, defaults to 300.
+- width: The graph width. The default is 1075.
+- height: The graph height. The default is 300.
 
 Example:
 
@@ -37,12 +37,12 @@ Route: `/api/v0/portgroups/multiport/bits/:id`
 
 Input:
 
-- from: This is the date you would like the graph to start - See
+- from: This is the start date of the graph - See
   <http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html> for more information.
-- to: This is the date you would like the graph to end - See
+- to: This is the end date of the graph - See
   <http://oss.oetiker.ch/rrdtool/doc/rrdgraph.en.html> for more information.
-- width: The graph width, defaults to 1075.
-- height: The graph height, defaults to 300.
+- width: The graph width. The default is 1075.
+- height: The graph height. The default is 300.
 
 Example:
 
