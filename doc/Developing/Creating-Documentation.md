@@ -1,72 +1,72 @@
 # Creating Documentation
 
-One of the goals of the LibreNMS project is to enable users to get all of the
-help they need from our documentation.
+One goal of the LibreNMS project: users can get all the
+help that they need from our documentation.
 
 The documentation uses the [markdown](https://en.wikipedia.org/wiki/Markdown)
-markup language and is generated with [mkdocs](https://www.mkdocs.org/). To edit
-or create markdown you only need a text editor, but it is recommended to build
-your docs before submitting, in order to check them visually. The section on
-this page has instructions for this step.
+markup language. The system makes it with [mkdocs](https://www.mkdocs.org/). To edit
+or create markdown, you only need a text editor. But we recommend that you build
+your docs before you submit them, to examine them visually. This
+page has instructions for this step.
 
 ## Writing docs
 
-When you are adding a new feature or extension, we need to have full
-documentation to go along with it. It's quite simple to do this:
+When you add a new feature or extension, we need full
+documentation with it. This is easy to do:
 
-- Find the relevant directory to store your new document in, General, Support
-  and Extensions are the most likely choices.
-- Think of a descriptive name that's not too long, it should match what they may
-  be looking for or describes the feature.
-- Add the new document into the `nav` section of `mkdocs.yml` if it needs to
-  appear in the table of contents
-- Ensure the first line contains: `source: path/to/file.md` - don't include the
+- Find the applicable directory for your new document. General, Support
+  and Extensions are the most probable selections.
+- Select a name that is not too long, and that tells what the document is.
+  It must match what users look for, or tell about the feature.
+- Add the new document into the `nav` section of `mkdocs.yml` if it must
+  show in the table of contents
+- Make sure that the first line contains: `source: path/to/file.md` - do not include the
   initial `doc/`.
-- In the body of the document, be descriptive but keep things simple. Some tips:
-  - If the document could cover different distros like CentOS and Ubuntu please
-    try and include the information for them all. If that's not possible then at
-least put a placeholder in asking for contributions.
-  - Ensure you use the correct formatting for `commands` and `code blocks` by
-    wrapping one liners in backticks or blocks in ```.
-  - Put content into sub-headings where possible to organise the content.
-- If you rename a file, please add a redirect for the old file in `mkdocs.yml` like so:
+- In the body of the document, give the necessary details, but keep the text simple. Some tips:
+  - If the document can apply to different distros, such as CentOS and Ubuntu,
+    try to include the information for all of them. If that is not possible, put in a
+placeholder that asks for contributions.
+  - Make sure that you use the correct format for `commands` and `code blocks`.
+    Put one liners in backticks, and blocks in ```.
+  - Put content into sub-headings where possible, to give the content structure.
+- If you rename a file, add a redirect for the old file in `mkdocs.yml` like this:
 ```yaml
   - redirects:
       redirect_maps:
         'old/page.md': 'new/page.md'
 ```
 
-Please ensure you add the document to the relevant section within `pages` of
-`mkdocs.yml` so that it's in the correct menu and is built.  Forgetting this
-step will result in your document never seeing the light of day :)
+Make sure that you add the document to the applicable section in `pages` of
+`mkdocs.yml`. Then it is in the correct menu, and the system builds it.  If you do not do this
+step, your document stays invisible :)
 
 ## Formatting docs
 
-Our docs are based on Markdown using mkdocs which adheres to markdown specs and
-nothing more, because of that we also import a couple of extra libraries:
+Our docs are based on Markdown with mkdocs, which obeys the markdown specifications and
+nothing more. Because of that, we also import some more libraries:
 
 - pymdownx.tasklist
 - pymdownx.tilde
 
 This means you can use:
 
-- `~~strikethrough~~` to perform ~~strikethrough~~
+- `~~strikethrough~~` to make ~~strikethrough~~
 - [X] `- [X] List items`
-- Url's can be made `[like this](https://www.librenms.org)` [like this](https://www.librenms.org)
-- Code can be placed in \`\` for single line or \`\`\` for multiline.
-- `#` Can be used for main headings which translates to a `<h1>` tag,
-  increasing the `#`'s will increase the hX tags.
-- `###` Can be used for sub-headings which will appear in the TOC to the left.
-- Settings should be prefixed with `!!! setting "<webui setting path>"`
+- You can make Urls `[like this](https://www.librenms.org)` [like this](https://www.librenms.org)
+- You can put code in \`\` for a single line, or \`\`\` for multiple lines.
+- You can use `#` for main headings. This becomes a `<h1>` tag.
+  When you increase the `#`'s, the hX tags increase.
+- You can use `###` for sub-headings, which show in the TOC to the left.
+- Give settings the prefix `!!! setting "<webui setting path>"`
 
 [Markdown CheatSheet Link](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 
 
 ## Building docs
 
-This is achieved with `mkdocs`, a python package.
+You do this with `mkdocs`, a python package.
 
-1. Install the required packages.
+1. Install the necessary packages.
 
 Make a new virtual environment and activate it:
 
@@ -90,31 +90,31 @@ pip install \
  mkdocs-redirects \
  pymdown-extensions
 ```
-If you encounter permissions issues, these might be resolved by using the
-user option, with whatever user you are building as, e.g. `-u librenms`
+If permission problems occur, you can possibly correct them with the
+user option, with the user that you build as, e.g. `-u librenms`
 
-2. A configuration file for building LibreNMS docs is already included in the
-distribution: `/opt/librenms/mkdocs.yml`. The various configuration
+2. A configuration file to build LibreNMS docs is included in the
+distribution: `/opt/librenms/mkdocs.yml`. The configuration
 directives are documented
 [here](https://www.mkdocs.org/user-guide/configuration/).
 
 3. Build from the librenms base directory: `cd /opt/librenms`.
 
-4. Building is simple:
+4. The build is simple:
 
 ```
 mkdocs build
 ```
 
-This will output all the documentation in html format to `/opt/librenms/out`
-(this folder will be ignored from any commits).
+This writes all the documentation in html format to `/opt/librenms/out`
+(commits ignore this folder).
 
 
 ## Viewing docs
 
-mkdocs includes it's own light-weight webserver for this purpose.
+mkdocs includes its own light-weight webserver for this purpose.
 
-Viewing is as simple as running the following command:
+To see the docs, run this command:
 
 ```
 $ mkdocs serve
@@ -127,22 +127,22 @@ INFO    -  Serving on http://127.0.0.1:8000
 INFO    -  Start watching changes
 ```
 
-Now you will find the complete set of LibreNMS documentation by opening your
-browser to `localhost:8000`.
+Now you find the full set of LibreNMS documentation when you open your
+browser at `localhost:8000`.
 
-Note it is not necessary to `build` before viewing as the `serve` command
-will do this for you. Also the server will update the documents it is serving
-whenever changes to the markdown are made, such as in another terminal.
+It is not necessary to `build` before you look at the docs. The `serve` command
+does this for you. Also, the server updates the documents that it serves
+each time the markdown changes, for example in a different terminal.
 
 ### Viewing docs from another machine
 
-By default the server will only listen for connections from the local machine.
-If you are building on a different machine you can use the following directive
+By default, the server listens only for connections from the local machine.
+If you build on a different machine, you can use this directive
 to listen on all interfaces:
 
 ```
 mkdocs serve --dev-addr=0.0.0.0:8000
 ```
 
-WARNING: this is not a secure webserver, do this at your own risk, with
-appropriate host security and do not leave the server running.
+WARNING: this is not a secure webserver. The risk is yours. Use
+applicable host security, and do not keep the server on.

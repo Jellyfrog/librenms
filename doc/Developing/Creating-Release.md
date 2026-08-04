@@ -4,42 +4,42 @@
 
 You can create a new release on [GitHub](https://github.com/librenms/librenms/releases/new).
 
-Enter the tag version that month, i.e for September 2016 you would enter `201609`.
+Enter the tag version for that month, i.e for September 2016, enter `201609`.
 
-Enter a title, we usually use `August 2016 Release`
+Enter a title. We usually use `August 2016 Release`
 
-Enter a placeholder for the body, we will edit this later.
+Enter a placeholder for the body. We edit this later.
 
 ### Create changelog
 
-For this, we assume you are using the master branch to create the release against.
+For this, the master branch is the base to create the release against.
 
-We now generate the changelog using the GitHub API itself so it
-shouldn't matter what state your local branch is in so long as it has
-the code to generate the changelog itself.
+We make the changelog with the GitHub API itself. Thus, the state of
+your local branch is not important, if it has
+the code that makes the changelog.
 
-Using the GitHub API means we can use the labels associated with
-merged pull requests to categorise the changelog. We also then record
-who made the pull request to thank them in the changelog itself.
+With the GitHub API, we can use the labels attached to
+merged pull requests to put the changelog in categories. We also record
+who made the pull request, to thank them in the changelog itself.
 
-You will be asked for a GitHub personal access token. You can generate
-this [here](https://github.com/settings/tokens). No permissions should
-be needed so just give it a name and click `Generate Token`. You can
-then export the token as an  environment variable `GH_TOKEN` or place
+The command asks for a GitHub personal access token. You can make
+this [here](https://github.com/settings/tokens). No permissions are
+necessary. Only give it a name and click `Generate Token`. You can
+then export the token as the  environment variable `GH_TOKEN`, or put
 it in your `.env` file.
 
-The basic command to run is by using `artisan`. Here you pass `new
-tag` (1.41) and `previous tag` (1.40). For further  help run `php
-artisan release:tag --help`. This will generate a changelog up to the
-latest master branch, if you want  it to be done against something
-else then pass the latest pull request number with `--pr $PR_NUMBER`.
+Run the basic command with `artisan`. Here, you pass the `new
+tag` (1.41) and the `previous tag` (1.40). For more  help, run `php
+artisan release:tag --help`. This makes a changelog up to the
+latest master branch. If you want  a different end point,
+pass the latest pull request number with `--pr $PR_NUMBER`.
 
 ```bash
 php artisan release:tag 1.41 1.40
 ```
 
-- Now commit and push the change that has been made to `doc/General/Changelog.md`.
-- Once the pull request has been merged in for the Changelog, you can
+- Now commit and push the change made to `doc/General/Changelog.md`.
+- When the pull request for the Changelog is merged, you can
   create a new release on
   [GitHub](https://github.com/librenms/librenms/releases/new).
 - Create two threads on the community site:

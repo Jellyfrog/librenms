@@ -1,5 +1,5 @@
-First we define our graphs in `resources/definitions/config_definitions.json` to share
-our work and contribute in the development of LibreNMS. :-)
+First, we define our graphs in `resources/definitions/config_definitions.json`. Then we can share
+our work and contribute to the development of LibreNMS. :-)
 
 ```json
         "graph_types.device.pulse_users": {
@@ -20,7 +20,7 @@ our work and contribute in the development of LibreNMS. :-)
         },
 ```
 
-Alternatively, place in `config.php` if you don't plan to contribute.
+As an alternative, put them in `config.php` if you do not plan to contribute.
 
 ```config.php
 // Pulse Secure Graphs
@@ -30,19 +30,19 @@ $config['graph_types']['device']['pulse_sessions'] = ['section' => 'firewall', '
 
 #### Polling OS
 
-OS polling is not necessarily where custom polling should be done,
-please speak to one of the core devs in
+OS polling is not always the correct location for custom polling.
+Speak to one of the core devs in
 [Discord](https://t.libren.ms/discord) for guidance.
 
-Let's update our example file to add additional polling:
+We update our example file to add more polling:
 
 ```bash
 LibreNMS/OS/Pulse.php
 ```
 
-We declare two specific graphs for users and sessions numbers. Theses
-two graphs will be displayed on the firewall section of the graphs tab
-as it was written in the definition include file.
+We declare two graphs, for the numbers of users and sessions. These
+two graphs show in the firewall section of the graphs tab,
+as written in the definition include file.
 
 ```php
 <?php
@@ -77,8 +77,8 @@ class Pulse extends \LibreNMS\OS implements OSPolling
 
 #### Displaying
 
-The specific graphs are not displayed automatically so we need to
-write the following PHP code:
+The graphs do not show automatically. Thus, we must
+write this PHP code:
 
 **Pulse Users**
 
@@ -107,5 +107,5 @@ $unit_text = 'Users';
 require 'includes/html/graphs/generic_simplex.inc.php';
 ```
 
-That should be it, after data has started to be collected graph
-should appear in the WebUI.
+This is all. When the system starts to collect data, the graph
+shows in the WebUI.

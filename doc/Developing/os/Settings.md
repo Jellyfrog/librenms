@@ -1,12 +1,12 @@
 # Optional OS Settings
 
-This page documents settings that can be set in the os yaml files or
-in config.php. All settings listed here are optional. If they are not
-set, the global default will be used.
+This page documents settings that you can set in the os yaml files or
+in config.php. All settings here are optional. If they are not
+set, the system uses the global default.
 
 ### User override in config.php
 
-Users can override these settings in their config.php.
+Users can replace these settings in their config.php.
 
 For example, to set an alternate icon for ios:
 
@@ -16,21 +16,21 @@ $config['os']['ios']['icon'] = 'fuzzybunny';
 
 ### Ignoring Sensors
 
-It is possible to filter some sensors from the configuration:
+You can remove some sensors in the configuration:
 
-- Filter all 'current' sensors for Operating System 'vrp'.
+- Remove all 'current' sensors for the Operating System 'vrp'.
 
 ```php
 $config['os']['vrp']['disabled_sensors']['current'] = true;
 ```
 
-- Filter all sensors with description matching regexp ```'/PEM Iout/'``` for Operating System iosxe.
+- Remove all sensors with a description that matches the regexp ```'/PEM Iout/'``` for the Operating System iosxe.
 
 ```php
 $config['os']['iosxe']['disabled_sensors_regex'][] = '/PEM Iout/';
 ```
 
-- Filter all 'power' sensors with description matching regexp ```'/ Power [TR]x /'``` for Operating System iosxr.
+- Remove all 'power' sensors with a description that matches the regexp ```'/ Power [TR]x /'``` for the Operating System iosxr.
 
 ```php
 $config['os']['iosxr']['disabled_sensors_regex']['power'][] = '/ Power [TR]x /';
@@ -42,7 +42,7 @@ $config['os']['iosxr']['disabled_sensors_regex']['power'][] = '/ Power [TR]x /';
 $config['disabled_sensors']['temperature'] = true;
 ```
 
-- Filter all sensors matching with description regexp ```'/PEM Iout/'```.
+- Remove all sensors with a description that matches the regexp ```'/PEM Iout/'```.
 
 ```php
 $config['disabled_sensors_regex'][] = '/PEM Iout/';
@@ -52,8 +52,8 @@ $config['disabled_sensors_regex'][] = '/PEM Iout/';
 
 See also: [Global Ignoring Interfaces Config](../../Support/Configuration.md#interfaces-to-be-ignored)
 
-> These settings are merged with the global settings, so you can only
-> undo global ones with good_if
+> The system merges these settings with the global settings. Thus, you can
+> cancel global settings only with good_if
 
 ```yaml
 empty_ifdescr: false # allow empty ifDescr
@@ -75,10 +75,10 @@ bad_ifoperstatus # IfOperStatus (substring, case insensitive)
 
 ### Controlling interface labels
 
-By default we use ifDescr to label ports/interfaces.
-Setting either `ifname` or `ifalias` will override that.  Only set one
-of these.  ifAlias is user supplied. `ifindex` will append the ifindex
-to the port label.
+By default, we use ifDescr as the label for ports/interfaces.
+If you set `ifname` or `ifalias`, that replaces it.  Set only one
+of these.  ifAlias comes from the user. `ifindex` adds the ifindex
+to the end of the port label.
 
 ```yaml
 ifname: true
@@ -89,16 +89,16 @@ ifindex: true
 
 ### Poller and Discovery Modules
 
-The various discovery and poller modules can be enabled or disabled
-per OS.  The defaults are usually reasonable, so likely you won't want
-to change more than a few. These modules can be enabled or disabled
-per-device in the webui and per os or globally in config.php. Usually,
-a poller module will not work if it's corresponding discovery module
+You can enable or disable the discovery and poller modules
+for each OS.  The default values are usually good. Thus, you usually
+change only a small number. You can enable or disable these modules
+for each device in the webui, and for each os or globally in config.php. Usually,
+a poller module does not operate if its related discovery module
 is not enabled.
 
-You should avoid setting these to false in the OS definitions unless it has a
-significant negative impact on polling.  Setting modules in the definition
-reduces user control of modules.
+Do not set these to false in the OS definitions, unless the module has a
+large negative effect on polling.  When you set modules in the definition,
+users have less control of the modules.
 
 ```yaml
 poller_modules:
@@ -111,16 +111,16 @@ discovery_modules:
 
 #### Disable snmpbulkwalk
 
-Some devices have buggy snmp implementations and don't respond well to
-the more efficient snmpbulkwalk. To disable snmpbulkwalk and only use
-snmpwalk for an OS set the following.
+Some devices have snmp implementations with bugs. They do not reply well to
+the more efficient snmpbulkwalk. To disable snmpbulkwalk, and use only
+snmpwalk for an OS, set this.
 
 ```yaml
 snmp_bulk: false
 ```
 
-If only some specific OIDs fail with snmpbulkwalk. You can disable just those OIDs.
-This needs to match exactly the OID being walked by LibreNMS. MIB::oid is preferred to prevent name collisions.
+If only some OIDs fail with snmpbulkwalk, you can disable only those OIDs.
+This must match exactly the OID that LibreNMS walks. MIB::oid is recommended to prevent name collisions.
 
 ```yaml
 oids:

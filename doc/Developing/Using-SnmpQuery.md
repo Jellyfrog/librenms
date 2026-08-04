@@ -1,20 +1,20 @@
 ## SnmpQuery
 
-To fetch and manipulate snmp data in LibreNMS, use SnmpQuery.
-Oids can be specified several ways, the preferred way is full textual such
+To get and manipulate snmp data in LibreNMS, use SnmpQuery.
+You can specify Oids in different ways. The recommended way is full textual, such
 as IF-MIB::ifIndex. Numeric and short are also supported.
 
 ### Actions
-Once an action is reached, the query will be executed and return an
-SnmpResponse holding the returned data. SnmpResponse has many options for
-manipulating and indexing the returned data.
+When an action occurs, the query runs and returns an
+SnmpResponse that holds the returned data. SnmpResponse has many options to
+manipulate and index the returned data.
 
-There are 4 primary actions you can execute with SnmpQuery.
+There are 4 primary actions that you can run with SnmpQuery.
 
- - get - fetch one or more full oids from the device
- - walk - walk an oid most useful with tables or columns from tables
+ - get - get one or more full oids from the device
+ - walk - walk an oid. This is most useful with tables, or with columns from tables
  - next - get the next oid after the specified oid
- - translate - translate an oid between textual and numeric (returns a string)
+ - translate - convert an oid between textual and numeric (returns a string)
 
 ### Fetch Options
 
@@ -24,7 +24,7 @@ There are 4 primary actions you can execute with SnmpQuery.
  - context - Set a context for the snmp query
  - mibDir - Set an additional MIB directory
  - mibs -  Set MIBs to use for this query
- - allowUnordered - Do not error on out of order indexes (allows infinite loops)
+ - allowUnordered - No error on out of order indexes (this permits infinite loops)
  - device - specify a different device to query (SnmpQuery always queries the active device)
 
 
@@ -32,8 +32,8 @@ There are 4 primary actions you can execute with SnmpQuery.
 
 ### value
 
-If the response contained a single value, this will return just the value.
-If there was more than one value, you can specify an oid to fetch from the
+If the response contains a single value, this returns only the value.
+If there is more than one value, you can specify an oid to get from the
 response.
 
 ##### Examples
@@ -55,12 +55,12 @@ The value for the oid at the given index
 
 ### values
 
-Fetch all values in an array keyed by the oid as returned by snmp.
+Get all values in an array, with the oid as the key, as snmp returns them.
 
 ##### Examples
 
-Walk a single column from ifTable (You could also fetch all of ifTable, but that would be large)
-Note: tables will use the [] syntax for indexes. Everything else will use dot syntax.
+Walk a single column from ifTable (you can also get all of ifTable, but that is large)
+Note: tables use the [] syntax for indexes. All other items use dot syntax.
 
     SnmpQuery::walk('IF-MIB::ifName')->values();
     [
@@ -101,9 +101,9 @@ Group the values by the full index.
 
 ### table
 
-Make a multi dimensional array with an index value as the key to each level.
-You can specify a depth to group the values at to make the data easier to work
-with, the default is 0.
+Make a multi dimensional array with an index value as the key of each level.
+You can specify a depth at which to group the values, to make the data easier to work
+with. The default is 0.
 
 ##### Examples
 
@@ -147,14 +147,14 @@ Group by 2 (which matches the index count for this table)
 
 ### mapTable
 
-Map an snmp table with callback. Variables passed to the callback will be an
-array of row values followed by each individual index.
+Map an snmp table with a callback. The variables passed to the callback are an
+array of row values, followed by each index.
 
-This is the best method when you want to return a collection of data that matches the rows in an SNMP table.
+This is the best method to return a collection of data that matches the rows in an SNMP table.
 
 ##### Examples
 
-Because this example uses dd() (dump and die), only the first entry will be printed.
+Because this example uses dd() (dump and die), it shows only the first entry.
 
     SnmpQuery::enumStrings()->walk('IP-MIB::ipAddressTable')->mapTable(function ($data, $ipAddressAddrType, $ipAddressAddr) {
         dd(get_defined_vars());
@@ -179,9 +179,9 @@ Because this example uses dd() (dump and die), only the first entry will be prin
 
 ### groupByIndex
 
-Fetch values grouped by the index.  The number of index fields is not detected,
-it must be specified, the default is 1.  Mostly used for numeric oids when
-the index cannot be detected.
+Get values grouped by the index.  The system does not find the number of index fields.
+You must specify it. The default is 1.  This is mostly for numeric oids, when
+the system cannot find the index.
 
 ##### Examples
 
@@ -206,13 +206,13 @@ the index cannot be detected.
 
 ### pluck
 
-Fetch an index to key array of the data.  You can specify an oid to get
+Get an index-to-key array of the data.  You can specify an oid to get
 one column out of an SNMP table.
 
 ##### Examples
 
-In this example, the table IF-MIB::ifTable is indexed by ifIndex, so when we walk the ifName column
-and call pluck, we get a nice mapping of ifIndex to ifName
+In this example, the index of the table IF-MIB::ifTable is ifIndex. Thus, when we walk the ifName column
+and call pluck, we get a good map of ifIndex to ifName
 
     SnmpQuery::walk('IF-MIB::ifName')->pluck()
     [
@@ -222,9 +222,9 @@ and call pluck, we get a nice mapping of ifIndex to ifName
 
 ## Handling errors
 
-Functions for checking the results of the SNMP query.
+Functions to examine the results of the SNMP query.
 
- - isValid - check for issues such as aborted SNMP walks (such as network disconnect) and other things.
- - getExitCode - will get the exit code of the snmp process
- - getErrorMessage - will return the stderr output from the process.
+ - isValid - look for problems such as stopped SNMP walks (such as a network disconnect) and other items.
+ - getExitCode - gets the exit code of the snmp process
+ - getErrorMessage - returns the stderr output from the process.
 

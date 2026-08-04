@@ -1,18 +1,18 @@
 # Tests
 
-Tests ensure LibreNMS works as expected, now and in the future.  New
-OS should provide as much test data as needed and added test data for
-existing OS is welcome.
+Tests make sure that LibreNMS operates correctly, now and in the future.  A new
+OS must supply as much test data as necessary. More test data for
+an existing OS is welcome.
 
-Saved snmp data can be found in `tests/snmpsim/*.snmprec` and saved
-database data can be found in `tests/data/*.json`. Please review this
-for any sensitive data **before** submitting.  When replacing data,
-make sure it is modified in a consistent manner.
+Saved snmp data is in `tests/snmpsim/*.snmprec`, and saved
+database data is in `tests/data/*.json`. Examine this
+for sensitive data **before** you submit.  When you replace data,
+make sure that the changes are consistent.
 
-> We utilise [snmpsim](http://snmpsim.sourceforge.net/) to do unit
-> testing. For OS discovery, we can mock snmpsim, but for other tests
-> you will need it installed and functioning.  We run snmpsim during
-> our integration tests, but not by default when running
+> We use [snmpsim](http://snmpsim.sourceforge.net/) for unit
+> tests. For OS discovery, we can mock snmpsim. But for other tests,
+> it must be installed and serviceable.  We run snmpsim during
+> our integration tests, but not by default when we run
 > `lnms dev:check`.  You can install snmpsim with the
 > command `pip3 install snmpsim`.
 
@@ -20,45 +20,45 @@ make sure it is modified in a consistent manner.
 
 ???+ warning "If test data already exists"
 
-> If test data already exists, but is for a different
-> device/configuration with the same OS.
-> Then you should use the `--variant (-v)` option to
-> specify a different variant of the OS,
-> this will be tested completely separate from other variants.
-> If there is only one variant, please do not specify one.
+> If test data already exists, but for a different
+> device/configuration with the same OS,
+> use the `--variant (-v)` option to
+> specify a different variant of the OS.
+> The system tests this fully separate from other variants.
+> If there is only one variant, do not specify one.
 
 ### 1. Collect SNMP data
 
-`lnms dev:collect-snmprec` is provided to make it easy to
-collect data for tests.  Running `dev:collect-snmprec` with
-`<device> --variant ''` allows you to capture all data used to discover and
-poll a device already added to LibreNMS.  Make sure to re-run the
-command if you add additional support. Check the command-line help for
+With `lnms dev:collect-snmprec`, you can easily
+collect data for tests.  Run `dev:collect-snmprec` with
+`<device> --variant ''` to capture all data used to discover and
+poll a device already added to LibreNMS.  Make sure that you run the
+command again if you add more support. Refer to the command-line help for
 more options.
 
 ### 2. Save test data
 
-After you have collected snmp data, run `./scripts/save-test-data.php`
-with the `--os (-o) -v ''` option to dump the post discovery and post poll
-database entries to json files. This step requires snmpsim, if you are
-having issues, the maintainers may help you generate it from the
-snmprec you created in the previous step.
+After you collect the snmp data, run `./scripts/save-test-data.php`
+with the `--os (-o) -v ''` option. This writes the post discovery and post poll
+database entries to json files. This step needs snmpsim. If you
+have problems, the maintainers can help you make it from the
+snmprec that you created in the step before.
 
-Generally, you will only need to collect data once.
-After you have the data you need in the snmprec file, you can just use
+Usually, you must collect data only one time.
+When you have the necessary data in the snmprec file, you can use
 save-test-data.php to update the database dump (json) after that.
 
 ## Running tests
 
-**Note:** To run tests, ensure you have executed
+**Note:** To run tests, make sure that you ran
 `./scripts/composer_wrapper.php install` from your LibreNMS root
-directory. This will read composer.json and install any dependencies required.
+directory. This reads composer.json and installs the necessary dependencies.
 
-After you have saved your test data, you should run
-`lnms dev:check` verify they pass.
+After you save your test data, run
+`lnms dev:check` to make sure that the tests pass.
 
-To run the full suite of tests enable database and snmpsim reliant
-tests: `lnms dev:check unit --db --snmpsim`
+To run the full set of tests, enable the tests that need the database and snmpsim:
+`lnms dev:check unit --db --snmpsim`
 
 ### Specific OS
 
@@ -83,8 +83,8 @@ You can run snmpsim to access test data by running
 lnms dev:simulate
 ```
 
-You may then run snmp queries against it using the os (and variant) as
-the community and 127.1.6.1:1161 as the host.
+You can then run snmp queries against it. Use the os (and variant) as
+the community, and 127.1.6.1:1161 as the host.
 
 ```bash
 snmpget -v 2c -c ios_c3560e 127.1.6.1:1161 sysDescr.0
@@ -92,7 +92,7 @@ snmpget -v 2c -c ios_c3560e 127.1.6.1:1161 sysDescr.0
 
 ## Simulate specific device from test data
 
-Add/update a device called "snmpsim" to your install and set to use a specific snmprec file
+Add/update a device with the name "snmpsim" in your installation, and set it to use a specified snmprec file
 
 ```bash
 lnms dev:simulate ios_2960x
@@ -103,21 +103,21 @@ to discover and poll the simulated device.
 
 ## Snmprec format
 
-Snmprec files are simple files that store the snmp data. The data
-format is simple with three columns: numeric oid, type code, and
-data. Here is an example snippet.
+Snmprec files are simple files that keep the snmp data. The data
+format is simple, with three columns: numeric oid, type code, and
+data. This is an example.
 
 ```snmp
 1.3.6.1.2.1.1.1.0|4|Pulse Secure,LLC,MAG-2600,8.0R14 (build 41869)
 1.3.6.1.2.1.1.2.0|6|1.3.6.1.4.1.12532.254.1.1
 ```
 
-During testing LibreNMS will use any info in the snmprec file for snmp
-calls.  This one provides sysDescr (`.1.3.6.1.2.1.1.1.0`, 4 = Octet
-String) and sysObjectID (`.1.3.6.1.2.1.1.2.0`, 6 = Object Identifier),
-which is the minimum that should be provided for new snmprec files.
+During tests, LibreNMS uses the information in the snmprec file for snmp
+calls.  This one gives sysDescr (`.1.3.6.1.2.1.1.1.0`, 4 = Octet
+String) and sysObjectID (`.1.3.6.1.2.1.1.2.0`, 6 = Object Identifier).
+This is the minimum that new snmprec files must give.
 
-To look up the numeric OID and type of an string OID with snmptranslate:
+To look up the numeric OID and the type of a string OID with snmptranslate:
 
 ```bash
 snmptranslate -On -Td SNMPv2-MIB::sysDescr.0
@@ -139,60 +139,60 @@ List of SNMP data types:
 | Opaque            | 68            |
 | Counter64         | 70            |
 
-Hex encoded strings (4x) should be used for any strings that contain line returns.
+Use hex encoded strings (4x) for strings that contain line returns.
 
 ## New discovery/poller modules
 
-New discovery or poller modules should define database capture parameters in `/tests/module_tables.yaml`.
+New discovery or poller modules must define database capture parameters in `/tests/module_tables.yaml`.
 
 ## Example workflow
 
 If the base os (<os>.snmprec) already contains test data for the
-module you are testing or that data conflicts with your new data, you
-must use a variant to store your test data (-v <variant>).
+module that you test, or if that data conflicts with your new data, you
+must use a variant to keep your test data (-v <variant>).
 
 ### Add initial detection
 
-1. Add device to LibreNMS. It is generic and device_id = 42
-1. Run `lnms dev:collect-snmprec 42 --variant ''`, initial snmprec will be created
+1. Add the device to LibreNMS. It is generic and device_id = 42
+1. Run `lnms dev:collect-snmprec 42 --variant ''`. This creates the initial snmprec
 1. [Add initial detection](Initial-Detection.md) for `example-os`
-1. Run discovery to make sure it detects properly `lnms device:discover -vv 42`
-1. Add any additional os items like version, hardware, features, or serial.
-1. If there is additional snmp data required, run
+1. Run discovery to make sure that detection is correct: `lnms device:discover -vv 42`
+1. Add more os items, such as version, hardware, features, or serial.
+1. If more snmp data is necessary, run
    `lnms dev:collect-snmprec 42 --variant ''`
 1. Run `./scripts/save-test-data.php -o example-os` to update the
    dumped database data.
-1. Review data. If you modified the snmprec or code (don't modify json
-   manually) run `./scripts/save-test-data.php -o example-os -m os -v ''`
+1. Examine the data. If you changed the snmprec or the code (do not change the json
+   manually), run `./scripts/save-test-data.php -o example-os -m os -v ''`
 1. Run `lnms dev:check unit --db --snmpsim`
-1. If the tests succeed submit a pull request
+1. If the tests pass, submit a pull request
 
 ### Additional module support or test data
 
-1. Add code to support module or support already exists.
-1. `lnms dev:collect-snmprec 42 --variant '' -m <module>`, this will add
+1. Add code to support the module, or the support already exists.
+1. `lnms dev:collect-snmprec 42 --variant '' -m <module>`. This adds
    more data to the snmprec file
-1. Review data. If you modified the snmprec (don't modify json
-   manually) run `./scripts/save-test-data.php -o example-os -v '' -m <module>`
+1. Examine the data. If you changed the snmprec (do not change the json
+   manually), run `./scripts/save-test-data.php -o example-os -v '' -m <module>`
 1. Run `lnms dev:check unit --db --snmpsim`
-1. If the tests succeed submit a pull request
+1. If the tests pass, submit a pull request
 
 ## JSON Application Test Writing Using ./scripts/json-app-tool.php
 
-1. First you will need a good example JSON output produced via SNMP
-   extend in question.
-1. Read the help via `./scripts/json-app-tool.php -h`.
-1. Generate the SNMPrec data via `./scripts/json-app-tool.php -a
+1. First, you need a good example of the JSON output that the applicable SNMP
+   extend makes.
+1. Read the help with `./scripts/json-app-tool.php -h`.
+1. Make the SNMPrec data with `./scripts/json-app-tool.php -a
    appName -s > ./tests/snmpsim/linux_appName-v1.snmprec`. If the
-   SNMP extend name OID different than the application name, then you
-   will need to pass  the -S flag for over riding that.
-1. Generate the test JSON data via `./scripts/json-app-tool.php -a
+   SNMP extend name OID is different from the application name, you
+   must pass  the -S flag to replace it.
+1. Make the test JSON data with `./scripts/json-app-tool.php -a
    appName -t > ./tests/data/linux_appName-v1.json`.
-1. Update the generated './tests/data/linux_appName-v1.json' making
-   sure that all the expected metrics are present. This assumes that
-   everything under .data in the JSON will be collapsed and used.
+1. Update the './tests/data/linux_appName-v1.json' file. Make
+   sure that all the expected metrics are present. This applies when
+   all data under .data in the JSON is collapsed and used.
 
-During test runs if it does not appear to be detecting the app and it
+If, during test runs, the system does not find the app, and the app
 has a different app name and SNMP extend name OID, make sure that -S
-is set properly and that 'includes/discovery/applications.inc.php' has
-been updated.
+is set correctly, and that 'includes/discovery/applications.inc.php' is
+updated.

@@ -1,10 +1,10 @@
 ## Sensors
 
-This document will guide you through adding health / sensor
+This document helps you add health / sensor
 information for your new device.
 
-Currently, we have support for the following health metrics along with
-the values we expect to see the data in:
+At this time, we have support for the health metrics below, together with
+the units in which we expect the data:
 
 | Class                           | Measurement                 |
 | ------------------------------- | --------------------------- |
@@ -42,18 +42,18 @@ the values we expect to see the data in:
 
 ### Simple health discovery
 
-We have support for defining health / sensor discovery using YAML
-files so that you don't need to know how to write PHP.
+You can define health / sensor discovery with YAML
+files. Then it is not necessary to know how to write PHP.
 
-> Please note that DISPLAY-HINTS are disabled so ensure you use the
-> correct divisor / multiplier if applicable.
+> DISPLAY-HINTS are disabled. Thus, make sure that you use the
+> correct divisor / multiplier, if applicable.
 
-All yaml files are located in
-`resources/definitions/os_discovery/$os.yaml`. Defining the information
-here is not always possible and is heavily reliant on vendors being
-sensible with the MIBs they generate. Only snmp walks are supported,
-and you must provide a sane table that can be traversed and contains
-all the data you need. We will use netbotz as an example here.
+All yaml files are in
+`resources/definitions/os_discovery/$os.yaml`. It is not always possible to define the information
+here. It depends much on vendors that make
+good MIBs. Only snmp walks are supported,
+and you must give a good table that the system can go through, and that contains
+all the necessary data. We use netbotz as an example here.
 
 `resources/definitions/os_discovery/netbotz.yaml`
 
@@ -73,94 +73,94 @@ modules:
                     index: 'airFlowSensorValue.{{ $index }}'
 ```
 
-Please ensure that you use the format MIB-NAME::OID for all references to OIDs.
+Make sure that you use the format MIB-NAME::OID for all references to OIDs.
 
-For `data:` you have the following options:
+For `data:` you have these options:
 
-The only sensor we have defined here is airflow. The available options
-are as follows:
+The only sensor that we defined here is airflow. The available options
+are:
 
-- `oid` (required): This is the name of the table you want to snmp walk for data, prepended by the MIB-NAME, I.e `NETBOTZV2-MIB::airFlowSensorTable`.
-- `value` (optional): This is the key within the table that contains
-  the value, prepended by the MIB-NAME, I.e: `NETBOTZV2-MIB::airFlowSensorValue`. If not provided will use `oid`.
-- `num_oid` (required for PullRequests): If not provided, this parameter should be computed
-  automatically by discovery process. This parameter is still required to
+- `oid` (mandatory): This is the name of the table that you want to snmp walk for data, with the MIB-NAME before it, I.e `NETBOTZV2-MIB::airFlowSensorTable`.
+- `value` (optional): This is the key in the table that contains
+  the value, with the MIB-NAME before it, I.e: `NETBOTZV2-MIB::airFlowSensorValue`. If you do not give it, the system uses `oid`.
+- `num_oid` (mandatory for PullRequests): If you do not give this parameter, the discovery
+  procedure calculates it automatically. But this parameter is mandatory when you
   submit a pull request. This is the numerical OID that contains
-  `value`. This should usually include `{{ $index }}`.
+  `value`. It must usually include `{{ $index }}`.
 the string to the equivalent OID representation.
 - `divisor` (optional): This is the divisor to use against the returned `value`.
 - `multiplier` (optional): This is the multiplier to use against the returned `value`.
-- `low_limit` (optional): This is the critical low threshold that
-  `value` should be (used in alerting). If an OID is specified then
-  divisor / multiplier are used.
-- `low_warn_limit` (optional): This is the warning low threshold that
-  `value` should be (used in alerting). If an OID is specified then
-  divisor / multiplier are used.
-- `warn_limit` (optional): This is the warning high threshold that
-  `value` should be (used in alerting). If an OID is specified then
-  divisor / multiplier are used.
-- `high_limit` (optional): This is the critical high threshold that
-  `value` should be (used in alerting). If an OID is specified then
-  divisor / multiplier are used.
-- `skip_limits_calc` (optional): This is the true/false flag which
-  allow raw values when limits are get from OID's. if set to true,
-  divisor / multiplier are skipped for `_limit` values, but
-  `user_func` is still applied to `_limit` values
-- `descr` (required): The visible label for this sensor. It can be a
-  key with in the table or a static string, optionally using `{{ index }}`.
-- `group` (optional): Groups sensors together under in the webui,
-  displaying this text. Not specifying this will put the sensors in
-  the default group. If group is set to `transceiver` it will be shown with the port
-  instead of in with all the generic sensors (You must also set `entPhysicalIndex` to ifIndex)
-- `index` (optional): This is the index value we use to uniquely
-  identify this sensor. `{{ $index }}` will be replaced by the numeric
-  `index` of this row in the table the snmp walk.
-- `skip_values` (optional): This is an array of values we should skip
-  over (see note below).
-- `skip_value_lt` (optional): If sensor value is less than this, skip the discovery.
-- `skip_value_gt` (optional): If sensor value is greater than this, skip the discovery.
+- `low_limit` (optional): This is the critical low threshold for
+  `value` (used in alerting). If you specify an OID, the system
+  uses the divisor / multiplier.
+- `low_warn_limit` (optional): This is the warning low threshold for
+  `value` (used in alerting). If you specify an OID, the system
+  uses the divisor / multiplier.
+- `warn_limit` (optional): This is the warning high threshold for
+  `value` (used in alerting). If you specify an OID, the system
+  uses the divisor / multiplier.
+- `high_limit` (optional): This is the critical high threshold for
+  `value` (used in alerting). If you specify an OID, the system
+  uses the divisor / multiplier.
+- `skip_limits_calc` (optional): This is a true/false flag that
+  permits raw values when limits come from OID's. If set to true,
+  the system does not apply the divisor / multiplier to `_limit` values. But
+  it applies `user_func` to `_limit` values
+- `descr` (mandatory): The visible label for this sensor. It can be a
+  key in the table, or a static string, optionally with `{{ index }}`.
+- `group` (optional): Puts sensors together in a group in the webui,
+  with this text. If you do not specify this, the sensors go into
+  the default group. If group is set to `transceiver`, the sensor shows with the port,
+  not with all the generic sensors (you must also set `entPhysicalIndex` to ifIndex)
+- `index` (optional): This is the index value that we use to
+  identify this sensor. The system replaces `{{ $index }}` with the numeric
+  `index` of this row in the table of the snmp walk.
+- `skip_values` (optional): This is an array of values that the system must
+  ignore (see the note below).
+- `skip_value_lt` (optional): If the sensor value is less than this, no discovery occurs.
+- `skip_value_gt` (optional): If the sensor value is more than this, no discovery occurs.
 - `entPhysicalIndex` and `entPhysicalIndex_measured` (optional) : If the
-  sensor belongs to a physical entity then you can link them here. The currently
-  supported variants are :
-    - `entPhysicalIndex` contains the entPhysicalIndex from entPhysical table, and `entPhysicalIndex_measured` is NULL
-    - `entPhysicalIndex` contains "ifIndex" value of the linked port and `entPhysicalIndex_measured` contains "ports"
-- `user_func` (optional): You can provide a function name for the
-  sensors value to be processed through (i.e. Convert fahrenheit to
-  celsius use `fahrenheit_to_celsius`)
-- `snmp_flags` (optional): this sets the flags to be sent to snmpwalk, it 
-  overrides flags set on the sensor type and os.  The default is `'-OQUb'`.
-  A common issue is dealing with string indexes, setting `'-OQUsbe'` will change them to 
-  numeric oids. Setting `['-OQUsbe', '-Pu']` will also allow _ in oid names. You can find more
+  sensor belongs to a physical entity, you can attach them here. The
+  supported variants at this time are :
+    - `entPhysicalIndex` contains the entPhysicalIndex from the entPhysical table, and `entPhysicalIndex_measured` is NULL
+    - `entPhysicalIndex` contains the "ifIndex" value of the attached port, and `entPhysicalIndex_measured` contains "ports"
+- `user_func` (optional): You can give a function name through which the system
+  processes the sensor value (i.e. to convert fahrenheit to
+  celsius, use `fahrenheit_to_celsius`)
+- `snmp_flags` (optional): This sets the flags sent to snmpwalk. It 
+  replaces the flags set on the sensor type and os.  The default is `'-OQUb'`.
+  A usual problem is string indexes. The setting `'-OQUsbe'` changes them to 
+  numeric oids. The setting `['-OQUsbe', '-Pu']` also permits _ in oid names. More information is
   in the [Man Page](https://linux.die.net/man/1/snmpcmd)
-- `rrd_type` (optional): You can change the type of the RRD file that will be created to
-  store the data. By default, type GAUGE is used. More details can be found here:
+- `rrd_type` (optional): You can change the type of the RRD file that the system creates to
+  keep the data. The default type is GAUGE. More details are here:
   https://oss.oetiker.ch/rrdtool/doc/rrdcreate.en.html
 
-For `options:` you have the following available:
+For `options:` these are available:
 
-- `divisor`: This is the divisor to use against the returned `value`.
-- `multiplier`: This is the multiplier to use against the returned `value`.
-- `skip_values`: This is an array of values we should skip over (see note below).
-- `skip_value_lt`: If sensor value is less than this, skip the discovery.
-- `skip_value_gt`: If sensor value is greater than this, skip the discovery.
+- `divisor`: This is the divisor for the returned `value`.
+- `multiplier`: This is the multiplier for the returned `value`.
+- `skip_values`: This is an array of values that the system must ignore (see the note below).
+- `skip_value_lt`: If the sensor value is less than this, no discovery occurs.
+- `skip_value_gt`: If the sensor value is more than this, no discovery occurs.
 
-Multiple variables can be used in the sensor's definition. The syntax
-is `{{ MIB-NAME::variable }}`. Any oid in the current table can be used, as
-well as pre-fetched data. The index ($index) and the sub_indexes (in
-case the oid is indexed multiple times) are also available: if
+You can use multiple variables in the sensor definition. The syntax
+is `{{ MIB-NAME::variable }}`. You can use each oid in the current table, and
+also pre-fetched data. The index ($index) and the sub_indexes (when
+the oid has an index multiple times) are also available: if
 $index="1.20", then $subindex0="1" and $subindex1="20".
 
-To fetch data not available to your sensor you can use `additional_oids`.
+To get data not available to your sensor, you can use `additional_oids`.
 
 !!! note
-    `additional_oids` should only be used when data is not fetched by your sensor.
+    Use `additional_oids` only when your sensor does not get the data.
 
- `additional_oids` can also be used within a class.
- This is the preferred way if the `additional_oids` are only used inside the class.
- See `additional_oids` in the `temperature` class below aswell as `additional_oids` on the `sensors` level.
+ You can also use `additional_oids` in a class.
+ This is the recommended method if only the class uses the `additional_oids`.
+ See `additional_oids` in the `temperature` class below, and also `additional_oids` on the `sensors` level.
  
 !!! note
-     Only one `additional_oids` statements should be used for the same oid and this is only an example showing both cases.
+     Use only one `additional_oids` statement for the same oid. This is only an example that shows the two cases.
 
 ```
 sensors:
@@ -192,43 +192,43 @@ sensors:
                 divisor: 10
 ```
 
-If you want access a string in an index, `{{ $index_string }}` can be used,
-optionally suffixed with a format string to specify how to extract the string.
-`{{ $index_string:nns }}` will skip two numeric indexes and return the string after.
-`{{ $index_string:nss }}` will skip one numeric index and one string index and return
-next string after.
+To get access to a string in an index, you can use `{{ $index_string }}`,
+optionally with a format string at the end that specifies how to get the string.
+`{{ $index_string:nns }}` ignores two numeric indexes and returns the string after them.
+`{{ $index_string:nss }}` ignores one numeric index and one string index and returns
+the next string after them.
 
 #### Fetching values from other tables/oids
 
-When referencing an oid in another table the full index will be used to match
-the other table. If the indexes of the two tables don't match, you will need
-to specify which indexes to use by their index position starting with 0. The
-data for the other table must be fetched already.
+When you refer to an oid in a different table, the system uses the full index to match
+the other table. If the indexes of the two tables do not match, you must
+specify the indexes to use, by their index position, which starts with 0. The
+data for the other table must already be fetched.
 
 `{{ IF-MIB::ifName:2 }}`
 
-This simple example shows using the 3rd (0 is the first) index value from
-the current table to fetch the IF-MIB::ifName value from the data.
+This simple example uses the 3rd (0 is the first) index value from
+the current table to get the IF-MIB::ifName value from the data.
 
-Additionally, you may specify multiple index values with either a
-range or list of index positions.
+You can also specify multiple index values, with a
+range or a list of index positions.
 
 Range: `{{ IP-MIB::ipAddressPrefixOrigin:0-3 }}`
 List: `{{ IP-MIB::ipAddressPrefixOrigin:2.3.1.4 }}`
 
 #### Skipping rows of the returned data
 
-You can filter rows of the data returned to only discover valid sensors.
-This is often useful when devices always return all sensors possible or
+You can remove rows of the returned data, to discover only valid sensors.
+This is frequently useful when devices always return all possible sensors, or
 mix sensor types in a single table.
 
-> `skip_values` can also compare items within the OID table against
-> values. The index of the sensor is used to retrieve the value
-> from the OID, unless a target index is appended to the OID.
-> Additionally, you may check fields from the device.
-> Comparisons behave on a logical OR basis when chained, so only
-> one of them needs to be matched for that particular sensor
-> to be skipped during discovery. An example of this is below:
+> `skip_values` can also compare items in the OID table with
+> values. The system uses the index of the sensor to get the value
+> from the OID, unless a target index is added to the end of the OID.
+> You can also examine fields from the device.
+> Chained comparisons operate as a logical OR. Thus, only
+> one of them must match for the system to ignore that sensor
+> during discovery. An example is below:
 
 ```yaml
                     skip_values:
@@ -246,7 +246,7 @@ mix sensor types in a single table.
                       value: 'rev2'
 ```
 
-`op` can be any of the following operators :
+`op` can be one of these operators :
 
 > =, !=, ==, !==, <=, >=, <, >,
 > starts, ends, contains, regex, in_array, not_starts,
@@ -290,125 +290,125 @@ Example:
                             value: '1'
 ```
 
-If you aren't able to use yaml to perform the sensor discovery, you
-will most likely need to use Advanced health discovery.
+If you cannot use yaml for the sensor discovery, you
+probably must use Advanced health discovery.
 
 ### Advanced health discovery
 
-If you can't use the yaml files as above, then you will need to create
-the discovery code in php. If it is possible to create via yaml, php discovery
-will likely be rejected due to the much higher chance of later problems,
-so it is highly suggested to use yaml.
+If you cannot use the yaml files as above, you must create
+the discovery code in php. If yaml is possible, we probably do not accept
+php discovery, because the chance of later problems is much higher.
+Thus, we strongly recommend yaml.
 
 The directory structure for sensor information is
-`includes/discovery/sensors/$class/$os.inc.php`. The format of all the
-sensors follows the same code format which is to collect sensor information
-via SNMP and then call the `discover_sensor()` function; except state
-sensors which requires additional code. Sensor information is commonly found in an ENTITY
-mib supplied by device's vendor in the form of a table. Other mib tables may be used as
-well.
+`includes/discovery/sensors/$class/$os.inc.php`. All
+sensors use the same code format: collect sensor information
+through SNMP, and then call the `discover_sensor()` function. State
+sensors are an exception. They need more code. Sensor information is usually in an ENTITY
+mib that the device vendor supplies, in the form of a table. You can also use other mib
+tables.
 
-`discover_sensor()` Accepts the following arguments:
+`discover_sensor()` Accepts these arguments:
 
-- &$valid = This is always null. This is unused.
-- $class = Required. This is the sensor class from the table above (i.e humidity).
-- $device = Required. This is the $device array.
-- $oid = Required. This must be the numerical OID for where the data
-  can be found, i.e .1.2.3.4.5.6.7.0
-- $index = Required. This must be unique for this sensor class, device
-  and type. Typically it's the index from the table being walked, or it
-  could be the name of the OID if it's a single value.
-- $type = Required. This should be the OS name, i.e. pulse.
-- $descr = Required. This is a descriptive value for the sensor. Some
-  devices will provide names to use.
-- $divisor = Defaults to 1. This is used to divide the returned value.
-- $multiplier = Defaults to 1. This is used to multiply the returned value.
-- $low_limit = Defaults to null. Sets the low threshold limit for the
-  sensor, used in alerting to report out range sensors.
-- $low_warn_limit = Defaults to null. Sets the low warning limit for
-  the sensor, used in alerting to report near out of range sensors.
-- $warn_limit = Defaults to null. Sets the high warning limit for the
-  sensor, used in alerting to report near out of range sensors.
-- $high_limit = Defaults to null. Sets the high limit for the sensor,
-  used in alerting to report out range sensors.
-- $current = Defaults to null. Can be used to set the current value on
-  discovery. Poller will update this on the next poll cycle anyway.
-- $poller_type = Defaults to snmp. Things like the unix-agent can set
-  different values but for the most part this should be left as snmp.
-- $entPhysicalIndex = Defaults to null. Sets the entPhysicalIndex to
-  be used to look up further hardware if available.
-- $entPhysicalIndex_measured = Defaults to null. Sets the type of
+- &$valid = This is always null. This is not used.
+- $class = Mandatory. This is the sensor class from the table above (i.e humidity).
+- $device = Mandatory. This is the $device array.
+- $oid = Mandatory. This must be the numerical OID at which the data
+  is, i.e .1.2.3.4.5.6.7.0
+- $index = Mandatory. This must be unique for this sensor class, device
+  and type. Usually, it is the index from the walked table. It can also be
+  the name of the OID, if it is a single value.
+- $type = Mandatory. This must be the OS name, i.e. pulse.
+- $descr = Mandatory. This value tells about the sensor. Some
+  devices give names to use.
+- $divisor = The default is 1. The system divides the returned value by this.
+- $multiplier = The default is 1. The system multiplies the returned value by this.
+- $low_limit = The default is null. Sets the low threshold limit for the
+  sensor. Alerting uses it to report sensors that are out of the range.
+- $low_warn_limit = The default is null. Sets the low warning limit for
+  the sensor. Alerting uses it to report sensors that are almost out of the range.
+- $warn_limit = The default is null. Sets the high warning limit for the
+  sensor. Alerting uses it to report sensors that are almost out of the range.
+- $high_limit = The default is null. Sets the high limit for the sensor.
+  Alerting uses it to report sensors that are out of the range.
+- $current = The default is null. You can use this to set the current value at
+  discovery. The Poller updates this at the next poll cycle.
+- $poller_type = The default is snmp. Items such as the unix-agent can set
+  different values. But usually, keep this as snmp.
+- $entPhysicalIndex = The default is null. Sets the entPhysicalIndex
+  to look up more hardware, if available.
+- $entPhysicalIndex_measured = The default is null. Sets the type of
   entPhysicalIndex used, i.e ports.
-- $user_func = Defaults to null. You can provide a function name for
-  the sensors value to be processed through (i.e. Convert fahrenheit
-  to celsius use `fahrenheit_to_celsius`)
-- $group = Defaults to null. Groups sensors together under in the
-  webui, displaying this text.
-- $rrd_type = Default to 'GAUGE'. Allows to change the type of the RRD
-  file created for this sensor. More details can be found here in the
+- $user_func = The default is null. You can give a function name through
+  which the system processes the sensor value (i.e. to convert fahrenheit
+  to celsius, use `fahrenheit_to_celsius`)
+- $group = The default is null. Puts sensors together in a group in the
+  webui, with this text.
+- $rrd_type = The default is 'GAUGE'. With this, you can change the type of the RRD
+  file created for this sensor. More details are in the
   RRD documentation: https://oss.oetiker.ch/rrdtool/doc/rrdcreate.en.html
 
-For the majority of devices, this is all that's required to add
-support for a sensor. Polling is done based on the data gathered using
-`discover_sensor()`. If custom polling is needed then the file format
+For most devices, this is all that is necessary to add
+support for a sensor. Polling uses the data collected with
+`discover_sensor()`. If custom polling is necessary, the file format
 is similar to discovery:
-`includes/polling/sensors/$class/$os.inc.php`. Whilst it's possible to
-perform additional  snmp queries within polling this should be avoided
-where possible. The value for the OID is already available as `$sensor_value`.
+`includes/polling/sensors/$class/$os.inc.php`. More snmp queries in
+polling are possible, but do not use them
+if it is not necessary. The value for the OID is already available as `$sensor_value`.
 
-Graphing is performed automatically for sensors, no custom graphing is
-required or supported.
+Graphs for sensors occur automatically. Custom graphs are
+not necessary and not supported.
 
 ### Adding a new sensor class
 
-You will need to add code for your new sensor class in the following existing files:
+You must add code for your new sensor class in these files:
 
-- `LibreNMS/Enum/Sensor.php`: add accordingly, find free icon from [Font Awesome](https://fontawesome.com/icons?d=gallery&m=free)
-- `doc/Developing/os/Health-Information.md`: documentation for every sensor class is mandatory.
-- `includes/discovery/functions.inc.php`: optional - if sensible low_limit and high_limit values
-are guessable when a SNMP-retrievable threshold is not available, add a case for the sensor class
+- `LibreNMS/Enum/Sensor.php`: add the class. Find a free icon on [Font Awesome](https://fontawesome.com/icons?d=gallery&m=free)
+- `doc/Developing/os/Health-Information.md`: documentation for each sensor class is mandatory.
+- `includes/discovery/functions.inc.php`: optional - if good low_limit and high_limit values
+can be estimated when a threshold from SNMP is not available, add a case for the sensor class
 to the sensor_limit() and/or sensor_low_limit() functions.
-- `LibreNMS/Util/ObjectCache.php`: optional - choose menu grouping for the sensor class.
+- `LibreNMS/Util/ObjectCache.php`: optional - select the menu group for the sensor class.
 - `includes/html/pages/device/overview.inc.php`: add `require 'overview/sensors/$class.inc.php'`
-in the desired order for the device overview page.
-- `lang/en/sensors.php`: add human-readable names and units for the sensor class
-in English, feel free to do so for other languages as well.
+in the applicable order for the device overview page.
+- `lang/en/sensors.php`: add names and units that persons can read for the sensor class
+in English. You can also do this for other languages.
 
-Create and populate new files for the sensor class in the following places:
+Create and fill new files for the sensor class in these locations:
 
-- `includes/discovery/sensors/$class/`: create the folder where advanced php-based discovery
-files are stored. Not used for yaml discovery.
+- `includes/discovery/sensors/$class/`: create the folder that keeps the advanced php-based discovery
+files. Not used for yaml discovery.
 =======
-- `includes/html/pages/device/overview.inc.php`: add `require 'overview/sensors/$class.inc.php'` in the desired
+- `includes/html/pages/device/overview.inc.php`: add `require 'overview/sensors/$class.inc.php'` in the applicable
 order for the device overview page.
-- `lang/en/sensors.php`: add human-readable names and units for the sensor class in English, feel
-free to do so for other languages as well.
+- `lang/en/sensors.php`: add names and units that persons can read for the sensor class in English. You
+can also do this for other languages.
 
-Create and populate new files for the sensor class in the following places:
+Create and fill new files for the sensor class in these locations:
 
-- `includes/discovery/sensors/$class/`: create the folder where advanced php-based discovery files
-are stored. Not used for yaml discovery.
-- `includes/html/graphs/device/$class.inc.php`: define unit names used in RRDtool graphs.
-- `includes/html/graphs/sensor/$class.inc.php`: define various [parameters](https://oss.oetiker.ch/rrdtool/doc/rrdgraph_graph.en.html) for RRDtool graphs.
+- `includes/discovery/sensors/$class/`: create the folder that keeps the advanced php-based discovery files.
+Not used for yaml discovery.
+- `includes/html/graphs/device/$class.inc.php`: define the unit names used in RRDtool graphs.
+- `includes/html/graphs/sensor/$class.inc.php`: define different [parameters](https://oss.oetiker.ch/rrdtool/doc/rrdgraph_graph.en.html) for RRDtool graphs.
 - `includes/html/pages/device/health/$class.inc.php`
 - `includes/html/pages/device/overview/sensors/$class.inc.php`
 - `includes/html/pages/health/$class.inc.php`
 
 #### Advanced health sensor example
 
-This example shows how to build sensors using the advanced method. In this example we will
-be collecting optical power level (dBm) from Adva FSP150CC family MetroE devices. This example
-will assume an understanding of SNMP and MIBs.
+This example shows how to build sensors with the advanced method. In this example, we
+collect the optical power level (dBm) from Adva FSP150CC family MetroE devices. This example
+applies when you know SNMP and MIBs.
 
 The first line walks the cmEntityObject table to get information about the chassis and line cards. From
-this information we extract the model type which will identify which tables in the CM-Facility-Mib
-the ports are populated in. The program then reads the appropriate table into the `$data`
-array `adva_fsp150_ports`. This array will have OID indexies for each port, which we will use
-later to identify our sensor OIDs.
+this information, we get the model type. This identifies the tables in the CM-Facility-Mib
+that contain the ports. The program then reads the applicable table into the `$data`
+array `adva_fsp150_ports`. This array has OID indexes for each port. We use
+them later to identify our sensor OIDs.
 
-Next we are going to build our sensor discovery code. These are optical readings, so the file will be
-created as the dBm sensor type in `includes/discover/sensors/dbm/adva_fsp150.inc.php`. Below is
-a snippet of the code:
+Then we build our sensor discovery code. These are optical readings. Thus, we create the file
+as the dBm sensor type in `includes/discover/sensors/dbm/adva_fsp150.inc.php`. Below is
+a part of the code:
 
 ```php
 $data = SnmpQuery::walk([
@@ -470,41 +470,41 @@ foreach ($data as $index => $entry) {
 }
 ```
 
-First the program will loop through each port's index value. In the case of Advas, the ports are
-names Ethernet 1-1-1-1, 1-1-1-2, etc, and they are indexed as oid.1.1.1.1, oid.1.1.1.2, etc in
+First, the program goes through the index value of each port. On Advas, the ports have
+the names Ethernet 1-1-1-1, 1-1-1-2, etc. Their indexes are oid.1.1.1.1, oid.1.1.1.2, etc in
 the mib.
 
-Next the program checks which table the port exists in and that the connector type is 'fiber'. There
-are other port tables in the full code that were omitted from the example for brevity. Copper
-media won't have optical readings, so if the media type isn't fiber we skip discovery for that port.
+Then the program finds the table in which the port exists, and makes sure that the connector type is 'fiber'. The
+full code has other port tables, which are not in the example, to keep it short. Copper
+media does not have optical readings. Thus, if the media type is not fiber, we do no discovery for that port.
 
-The next two lines build the OIDs for getting the optical receive and transmit values using the
-`$index` for the port. Using the OIDs the program gets the current receive and transmit values
-($currentRx and $currentTx respectively) to verify the values are not 0. Not all SFPs collect digital
-optical monitoring (DOM) data, in the case of Adva the value of both transmit and receive will be
-0 if DOM is not available. While 0 is a valid value for optical power, its extremely unlikely that
-both will be 0 if DOM is present. If DOM is not available, then the program stops discovery for
-that port. Note that while this is the case with Adva, other vendors may differ in how they handle
-optics that do not supply DOM. Please check your vendor's mibs.
+The next two lines build the OIDs to get the optical receive and transmit values, with the
+`$index` for the port. With the OIDs, the program gets the current receive and transmit values
+($currentRx and $currentTx) to make sure that the values are not 0. Not all SFPs collect digital
+optical monitoring (DOM) data. On Adva, the transmit and receive values are both
+0 if DOM is not available. 0 is a valid value for optical power. But it is very improbable that
+both are 0 if DOM is present. If DOM is not available, the program stops discovery for
+that port. This is the behavior of Adva. Other vendors can do this differently for
+optics that do not supply DOM. Refer to the mibs of your vendor.
 
-Next the program assigns the values of $entPhysicalIndex and $entPhysicalIndex_measured. In this
-case $entPhysicalIndex is set to the value of the `CM-FACILITY-MIB::cmEthernetTrafficPortIfIndex`
-so that it is associated with port. This will also allow the sensor graphs to show up on the
-associated port's page in the GUI in addition to the Health page.
+Then the program sets the values of $entPhysicalIndex and $entPhysicalIndex_measured. Here,
+$entPhysicalIndex is set to the value of the `CM-FACILITY-MIB::cmEthernetTrafficPortIfIndex`.
+Thus, it is attached to the port. With this, the sensor graphs also show on the
+page of the attached port in the GUI, in addition to the Health page.
 
-Following that the program uses a database call to get the description of the port which will be
-used as the title for the graph in the GUI.
+After that, the program uses a database call to get the description of the port. This
+becomes the title of the graph in the GUI.
 
-Lastly the program calls `discover_sensor()` and passes the information collected in the previous
-steps. The `null` values are for low, low warning, high, and high warning values, which are not
-collected in the Adva's MIB.
+Last, the program calls `discover_sensor()` and passes the information collected in the steps
+before. The `null` values are for the low, low warning, high, and high warning values. The Adva
+MIB does not collect them.
 
-You can manually run discovery to verify the code works by running `lnms device:discover $device_id -m sensors`.
-You can use `-v` to see what calls are being used during discovery and `-d` to see debug output.
-In the output under `#### Load disco module sensors ####` you can see a list of sensors types. If
-there is a `+` a sensor is added, if there is a `-` one was deleted, and a `.` means no change. If
-there is nothing next to the sensor type then the sensor was not discovered. There is is also
-information about changes to the database and RRD files at the bottom.
+To make sure that the code operates, run discovery manually with `lnms device:discover $device_id -m sensors`.
+You can use `-v` to see the calls used during discovery, and `-d` to see debug output.
+In the output under `#### Load disco module sensors ####`, you see a list of sensor types. A `+`
+means that a sensor is added. A `-` means that one was deleted. A `.` means no change. If
+there is nothing adjacent to the sensor type, the sensor was not discovered. There is also
+information about changes to the database and the RRD files at the bottom.
 
 ```
 [librenms@nms-test ~]$ lnms device:discover 2 -m sensors

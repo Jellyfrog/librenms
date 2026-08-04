@@ -1,19 +1,19 @@
 # Adding new config settings
 
-Adding support for users to update a new config option via the WebUI
-is now a lot easier for general options. This document shows you how
-to add a new config option and even section to the WebUI.
+It is now much easier to let users update a new config option through the WebUI,
+for general options. This document shows you how
+to add a new config option, and also a new section, to the WebUI.
 
 Config settings are defined in `resources/definitions/config_definitions.json`
 
-You should give a little thought to the name of your config setting.
-For example: a good setting for snmp community, would be `snmp.community`.
-The dot notation is path and when the config is hydrated, it is converted to a nested array.
-If the user is overriding the option in config.php it would use the format `$config['snmp']['community']`
+Think about the name of your config setting.
+For example: a good setting for the snmp community is `snmp.community`.
+The dot notation is a path. When the system hydrates the config, it converts the path to a nested array.
+If the user replaces the option in config.php, the format is `$config['snmp']['community']`
 
 ## Translation
 
-The config definition system inherently supports translation. You must add the English names in the
+The config definition system supports translation. You must add the English names in the
 `resoures/lang/en/settings.php` file (and other languages if you can).
 
 To update the javascript translation files, run:
@@ -38,13 +38,13 @@ For snmp.community, this is the definition:
 
 ## Fields
 
-All fields are optional. To show in the web ui, group and section are required, order is recommended.
+All fields are optional. To show the setting in the web ui, group and section are mandatory, and order is recommended.
 
-* `type`: Defines the type, there are a few predefined types and custom
-types can be defined and implemented in a vue.js component
+* `type`: Sets the type. There are some predefined types. You can also
+define custom types and implement them in a vue.js component
 * `default`: the default value for this setting
 * `options`: the options for the select type. An object with {"value1": "display string", "value2": "display string"}
-* `validate`: Defines more complex validation than the default simple type check.  Uses Laravel validation syntax.
+* `validate`: Sets more complex validation than the default simple type check.  It uses the Laravel validation syntax.
 * `group`: The web ui tab this is under
 * `section`: A panel grouping settings in the web ui
 * `order`: The order to display this setting within the section
@@ -56,18 +56,18 @@ types can be defined and implemented in a vue.js component
 * `boolean`: A simple toggle switch
 * `array`: A list of values that can be added, removed, and re-ordered.
 * `select`: A dropdown box with predefined options. Requires the option field.
-* `email`: Will validate the input is the correct format for an email
-* `password`: Will mask the value of the input (but does not keep it fully private)
+* `email`: Makes sure that the input has the correct format for an email
+* `password`: Masks the value of the input (but does not keep it fully private)
 
 ## Custom Types
 
-You may set the type field to a custom type and define a Vue.js component to display it to the user.
+You can set the type field to a custom type, and define a Vue.js component to show it to the user.
 
-The Vue.js component should be named as "SettingType" where type is the custom type entered with the first
-letter capitalized. Vue.js components exist in the `resources/js/components` directory.
+Give the Vue.js component the name "SettingType", where type is the custom type with the first
+letter as a capital. Vue.js components are in the `resources/js/components` directory.
 
-Here is an empty component named SettingType (make sure to rename it).  It pulls in BaseSetting mixin for
-basic setting code to reuse.  You should review the BaseSetting component.
+This is an empty component with the name SettingType (make sure that you rename it).  It uses the BaseSetting mixin for
+basic setting code.  Examine the BaseSetting component.
 
 ```vue
 <template>
@@ -88,4 +88,4 @@ basic setting code to reuse.  You should review the BaseSetting component.
 </style>
 ```
 
-Using Vue.js is beyond the scope of this document. Documentation can be found at [vuejs.org](https://vuejs.org/v2/guide/).
+How to use Vue.js is not part of this document. Documentation is at [vuejs.org](https://vuejs.org/v2/guide/).

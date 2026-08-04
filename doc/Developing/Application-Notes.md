@@ -2,45 +2,45 @@
 
 ## LibreNMS JSON SNMP Extends
 
-The polling function `json_app_get` makes it easy to poll complex data
-using SNMP extends and JSON.
+With the polling function `json_app_get`, you can easily poll complex data
+with SNMP extends and JSON.
 
-The following exceptions are provided by it.
+It supplies the exceptions given below.
 
-It takes three parameters, in order in the list below.
+It takes three parameters, in the order of the list below.
 
-- Integer :: Device ID to fetch it for.
-- String :: The extend name. For example, if 'zfs' is passed it will
-  be converted to 'nsExtendOutputFull.3.122.102.115'.
-- Integer :: Minimum expected version of the JSON return.
+- Integer :: The Device ID to get it for.
+- String :: The extend name. For example, if you pass 'zfs', the function
+  converts it to 'nsExtendOutputFull.3.122.102.115'.
+- Integer :: The minimum expected version of the JSON return.
 
-The required keys for the returned JSON are as below.
+The mandatory keys for the returned JSON are given below.
 
-- version :: The version of the snmp extend script. Should be numeric
-  and at least 1.
-- error :: Error code from the snmp extend script. Should be > 0
-   (0 will be ignored and negatives are reserved)
-- errorString :: Text to describe the error.
-- data :: An key with an array with the data to be used.
+- version :: The version of the snmp extend script. It must be numeric,
+  with a minimum of 1.
+- error :: The error code from the snmp extend script. It must be > 0
+   (the system ignores 0, and negative values are reserved)
+- errorString :: Text that tells about the error.
+- data :: A key with an array that contains the data to use.
 
-The supported exceptions are as below.
+The supported exceptions are given below.
 
 - JsonAppPollingFailedException :: Empty return from SNMP.
-- JsonAppParsingFailedException :: Could not parse the JSON
+- JsonAppParsingFailedException :: The system could not parse the JSON
 - JsonAppBlankJsonException :: Blank JSON.
-- JsonAppMissingKeysException :: Missing required keys.
-- JsonAppWrongVersionException :: Older version than supported.
-- JsonAppExtendErroredException :: Polling and parsing was good, but
-  the returned data has an error set. This may be checked via
-  $e->getParsedJson() and then checking the keys error and
+- JsonAppMissingKeysException :: Mandatory keys are missing.
+- JsonAppWrongVersionException :: The version is older than the supported version.
+- JsonAppExtendErroredException :: Polling and parsing were good, but
+  the returned data has an error set. You can examine this through
+  $e->getParsedJson(), and then examine the keys error and
   errorString.
 
-The error value can be accessed via $e->getCode(). The output can be
-accessed via $->getOutput() Only returned
-JsonAppParsingFailedException. The parsed JSON can be access via
+You get access to the error value through $e->getCode(). You get access to
+the output through $->getOutput(), only for
+JsonAppParsingFailedException. You get access to the parsed JSON through
 $e->getParsedJson().
 
-An example below from `includes/polling/applications/zfs.inc.php`...
+Below is an example from `includes/polling/applications/zfs.inc.php`...
 
 ```php
 try {
@@ -58,21 +58,22 @@ try {
 
 ### Compression
 
-Also worth noting that `json_app_get` supports compressed data via
-base64 encoded gzip. If base64 encoding is detected on the the SNMP
-return, it will be gunzipped and then parsed.
+Note: `json_app_get` supports compressed data through
+base64 encoded gzip. If the function finds base64 encoding on the SNMP
+return, it gunzips the data and then parses it.
 
+You can use
 `https://github.com/librenms/librenms-agent/blob/master/utils/librenms_return_optimizer`
-may be used to optimize JSON returns.
+to make JSON returns smaller.
 
 ## Application Data Storage
 
 The `$app` model is supplied for each application poller and graph.
-You may access and update the `$app->data` field to store arrays of data
+You can get access to, and update, the `$app->data` field to keep arrays of data in
 the Application model.
 
-When you call update_application() the `$app` model will be saved along with
-any changes to the data field.
+When you call update_application(), the system saves the `$app` model, together with
+the changes to the data field.
 
 ```
 // set the variable data to $foo

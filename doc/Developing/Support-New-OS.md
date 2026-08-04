@@ -1,6 +1,6 @@
-This document is broken down into the relevant sections depending on
-what support you are adding. During all of these examples we will be
-using the OS of `pulse` as the example OS we will add.
+This document is divided into sections for the type of
+support that you add. In all of these examples, we
+use the OS `pulse` as the example OS that we add.
 
 - [Adding the initial detection.](os/Initial-Detection.md)
 - [Adding Memory and CPU information.](os/Mem-CPU-Information.md)
@@ -10,16 +10,16 @@ using the OS of `pulse` as the example OS we will add.
 - [Adding Unit tests (required).](os/Test-Units.md)
 - [Optional Settings](os/Settings.md)
 
-We currently have a script in pre-beta stages that can help speed up
-the process of deploying a new OS. It has support for add sensors in a
-basic form (except state sensors).
+There is a script in the pre-beta stage that can make the
+procedure to add a new OS faster. It has basic support to add
+sensors (state sensors are an exception).
 
-In this example, we will add a new OS called test-os using the device
-ID 101 that has already been added. It will be of the type network and
+In this example, we add a new OS with the name test-os. We use the device
+ID 101, which is already added. The OS is of the type network and
 belongs to the vendor, Cisco:
 
 `./scripts/new-os.php -h 101 -o test-os -t network -v cisco`
 
-The process will then step you through the process with some more
-questions. Please be warned, this is  currently pre-beta and may cause
-some issues. Please let us know of any on [Discord](https://t.libren.ms/discord).
+The script then goes through the procedure with you, with some more
+questions. Warning: this is  pre-beta at this time, and it can cause
+some problems. Tell us about problems on [Discord](https://t.libren.ms/discord).

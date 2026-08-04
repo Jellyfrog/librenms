@@ -2,43 +2,43 @@
 
 ## Introduction
 
-This section will explain how to implement support for sensor state. 
-It will also cover the basic concepts of sensor state monitoring.
+This section tells you how to implement support for sensor state. 
+It also gives the basic concepts of sensor state monitoring.
 
-LibreNMS simplifies sensor state monitoring by translating raw values 
-into understandable generic states like "OK", "Warning", "Critical", and 
-"Unknown", enabling consistent visualization and easier analysis.
+LibreNMS makes sensor state monitoring simple. It converts raw values 
+into clear generic states, such as "OK", "Warning", "Critical", and 
+"Unknown". This gives a consistent view and easier analysis.
 
 ## Key Concepts
 
-For sensor state monitoring, we have 4 DB tables we need to concentrate about. 
-These tables act as a bridge between the raw information provided by each sensor 
-and the standardized representation (generic state) that LibreNMS uses 
-for visualization and alert generation.
+For sensor state monitoring, 4 DB tables are important. 
+These tables are a bridge between the raw information that each sensor gives 
+and the standard representation (generic state) that LibreNMS uses 
+to show data and make alerts.
 
 ### Table: sensors
 
-*Each time a sensor needs to be polled, the system needs to know which
-sensor (regardless of its type) is it that it needs to poll and its description, 
-at what oid is this sensor located, what class the sensor is, etc.*
+*Each time the system polls a sensor, it must know which
+sensor (of each type) it must poll, and its description, 
+the oid at which this sensor is, the class of the sensor, etc.*
 
 ### Table: sensors_to_state_indexes
 
-*Is as you might have guessed, where the sensor_id is mapped 
+*This is where the sensor_id is mapped 
 to a state_index_id.*
 
 ### Table: state_indexes
 
-*Is where we keep track of the state information we monitor.*
+*This is where we keep the state information that we monitor.*
 
 ### Table: state_translations
 
-*Is where we map the possible returned state sensor values to a
-generic LibreNMS value, in order to make displaying and alerting more
-generic. We also map these values to the actual state
-sensor(state_index) where these values are actually returned from.*
+*This is where we map the possible returned state sensor values to a
+generic LibreNMS value. This makes the display and the alerts more
+generic. We also map these values to the true state
+sensor(state_index) from which these values come.*
 
-*The LibreNMS generic states are derived from Nagios:*
+*The LibreNMS generic states come from Nagios:*
 
 ```
 0 = OK
@@ -49,22 +49,22 @@ sensor(state_index) where these values are actually returned from.*
 
  ### Generic States translations
 
-LibreNMS offers flexibility in handling sensor states, which can be represented 
-as either strings or numbers via SNMP. 
+LibreNMS can do sensor states in different ways. SNMP can show them 
+as strings or as numbers. 
 
-If the sensor state input is a string (i.e. "ONLINE") 
-librenms will use the 'descr' field and finally translate it to the desired 
+If the sensor state input is a string (i.e. "ONLINE"), 
+librenms uses the 'descr' field, and then converts it to the applicable 
 generic state (0, 1, 2 or 3)
 - { value: 4, **descr: online**, graph: 1, **generic: 0** }
 
-If the sensor state input is a number (i.e. "4" representing the offline state) 
-librenms will use the 'value' field and finally translate it to the desired 
+If the sensor state input is a number (i.e. "4", which represents the offline state), 
+librenms uses the 'value' field, and then converts it to the applicable 
 generic state (0, 1, 2 or 3).  
 - { **value: 0**, descr: offline, graph: 1, **generic: 2** }
 
 !!! note
-    Here the descr field is used as a label to visualize the value on screen, 
-    but not as an input to translate to a generic state because the state input
+    Here, the descr field is a label to show the value on the screen. 
+    It is not an input for the conversion to a generic state, because the state input
     is a number.
 
 ## YAML Example
@@ -132,9 +132,9 @@ modules:
 
 For advanced state discovery:
 
-This example will be based on a Cisco power supply sensor and is all
-it takes to have sensor state support for Cisco power supplies in Cisco
-switches. The file should be located in 
+This example is based on a Cisco power supply sensor. It is all
+that is necessary for sensor state support for Cisco power supplies in Cisco
+switches. The file must be in 
 /includes/discovery/sensors/state/cisco.inc.php.
 
 ```php

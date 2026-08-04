@@ -1,37 +1,37 @@
 #### Validating Code
 
-As part of the pull request process with GitHub we run some automated
-build tests to ensure that  the code is error free, standards compliant
-and our test suite builds successfully.
+As part of the pull request procedure with GitHub, we run automated
+build tests. These make sure that  the code has no errors, that it obeys the standards,
+and that our test suite builds correctly.
 
-Rather than submit a pull request and wait for the results, you can
-run these checks yourself to ensure  a more seamless merge.
+You do not have to submit a pull request and wait for the results. You can
+run these checks yourself for  an easier merge.
 
-> All of these commands should be run from within the librenms
-> directory and can be run as the librenms user  unless otherwise noted.
+> Run all of these commands from the librenms
+> directory. You can run them as the librenms user,  unless we say differently.
 
-Install composer (you can skip this if composer is already installed).
+Install composer (this is not necessary if composer is already installed).
 
 `curl -sS https://getcomposer.org/installer | php`
 
-Composer will now be installed into /opt/librenms/composer.phar.
+This installs composer into /opt/librenms/composer.phar.
 
-Now install the dependencies we require:
+Now install the necessary dependencies:
 
 `./composer.phar install`
 
-Once composer is installed you can now run the code validation script:
+When composer is installed, you can run the code validation script:
 
 `./lnms dev:check`
 
-If you see `Tests ok, submit away :)` then all is well. If you see
-other output then it should contain  what you need to resolve the issues and re-test.
+If you see `Tests ok, submit away :)`, all is correct. Other
+output contains  what you need to correct the problems. Then test again.
 
 #### Git Hooks
 
-Git has a hook system which you can use to trigger checks at various
-stages. Utilising the `./lnms dev:check`  you can make this part of your
-commit process.
+Git has a hook system. With it, you can start checks at different
+stages. With `./lnms dev:check`,  you can make this a part of your
+commit procedure.
 
 Add `./lnms dev:check` to your `.git/hooks/pre-commit`:
 
