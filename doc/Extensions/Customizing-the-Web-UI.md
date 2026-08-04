@@ -90,7 +90,7 @@ The primary button is edit device by default.
 | Value | Description |
 | ----- | ----------- |
 | edit | Edit device |
-| web | Connect to the device via https/http |
+| web | Connect to the device with https/http |
 | ssh | launch ssh:// protocol to the device, make sure you have a handler registered |
 | telnet | launch telnet:// protocol to the device |
 | capture | Link to the device capture page |

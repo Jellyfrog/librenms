@@ -24,7 +24,7 @@ Roles are collections of permissions that define a user's level of access.
 #### Custom Roles:
 
 Users can create custom roles to define specific sets of functional permissions.
-These can be managed via the Web UI under **Settings (cog icon) -> Manage Users -> Roles**.
+You can manage these in the Web UI, under **Settings (cog icon) -> Manage Users -> Roles**.
 
 ![Roles Management Screen](../img/webui-roles-management.png)
 

@@ -21,7 +21,7 @@ Option | Default-Value | Notes
 --- | --- | ---
 `$config['irc_alert']` | `false` | Optional; Enables Alerting-Socket. `EXPERIMENTAL`
 `$config['irc_alert_chan']` | `false` | Optional; Multiple channels can be defined as Array or delimited with `,`. `EXPERIMENTAL`
-`$config['irc_alert_utf8']` | `false` | Optional; Enables use of strikethrough in alerts via UTF-8 encoded characters. Might cause trouble for some clients.
+`$config['irc_alert_utf8']` | `false` | Optional; Permits strikethrough in alerts with UTF-8 encoded characters. This can cause problems for some clients.
 `$config['irc_alert_short']` | `false` | Optional; Send a one line alert summary instead of multi-line detailed alert.
 `$config['irc_authtime']` | `3` | Optional; Defines how long in Hours an auth-session is valid.
 `$config['irc_chan']` | `##librenms` | Optional; Multiple channels can be defined as Array or delimited with `,`. Passwords are defined after a `space-character`.
@@ -129,8 +129,8 @@ This makes writing extensions by far less painful.
 Add your `command` to the `$config['irc_external']` directive
 and create a file called `includes/ircbot/command.inc.php` containing
 your code. The string behind the call of `.command` is passed as `$params`.
-The user who requested something is accessible via `$this->user`.
-Send your reply/ies via `$this->respond($string)`.
+You get access to the user who made the request with `$this->user`.
+Send your reply/replies with `$this->respond($string)`.
 
 A more detailed documentation of the functions and variables available
 for extensions can be found at [IRC-Bot

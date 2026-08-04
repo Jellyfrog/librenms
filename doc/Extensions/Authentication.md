@@ -333,7 +333,7 @@ LibreNMS ignores other strings sent in `Filter-ID` and goes back to the default 
 ### Radius Huntgroup
 
 Freeradius has a function with the name `Radius Huntgroup`. With it, you can send different attributes, related to the NAS.
-This may be utilized if you already use `Filter-ID` in your environment and also want to use radius with LibreNMS.
+You can use this if you already use `Filter-ID` in your environment, and you also want to use radius with LibreNMS.
 
 ### Old account cleanup
 
@@ -381,7 +381,7 @@ does.
 The configuration is the same as for the ___active\_directory___ module
 with two extra, optional options: auth_ad_binduser and
 auth_ad_bindpassword. Set these to an AD user with read
-capabilities in your AD Domain in order to be able to perform
+capabilities in your AD Domain, to be able to do
 searches. If you do not give these options, the module tries an
 anonymous bind (which then of course must be allowed by your Active
 Directory server(s)).
@@ -492,7 +492,7 @@ possible to use any software that works in a similar way.
 
 In order to make use of the single sign-on module, you need to have an
 Identity Provider up and running, and know how to configure your
-Relying Party to pass attributes to LibreNMS via header injection or
+Relying Party to pass attributes to LibreNMS through header injection or
 environment variables. Setting these up is outside of the scope of
 this documentation.
 
@@ -657,7 +657,7 @@ This filter causes the mechanism to only consider groups matching a regular expr
 
 #### Logout Behaviour
 
-LibreNMS has no capability to log out a user authenticated via Single
+LibreNMS cannot log out a user authenticated through Single
 Sign-On - that responsibility falls to the Relying Party.
 
 If your Relying Party has a magic URL that needs to be called to end a

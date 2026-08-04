@@ -15,7 +15,7 @@ There are two ways to create a plugin.
 
  1. Local plugin: Within LibreNMS under the app/Plugins directory. This is appropriate for plugins that are
     intended to run only on your instance. A local plugin may ONLY use plugin hooks to augment LibreNMS.
- 3. Plugin package: A php package that can be distributed via composer/packagist.org.  This is appropriate
+ 3. Plugin package: A php package that you can distribute through composer/packagist.org.  This is applicable
     for plugins that are intended to be installed by many people. A plugin package can publish multiple
     routes, views, database migrations and more in addition to using hooks to augment specific parts of LibreNMS.
 

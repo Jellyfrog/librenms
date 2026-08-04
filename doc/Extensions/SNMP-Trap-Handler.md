@@ -2,7 +2,7 @@
 
 Currently, LibreNMS supports a lot of trap handlers. You can check them on
 GitHub [here](https://github.com/librenms/librenms/tree/master/LibreNMS/Snmptrap/Handlers).
-To add more see [Adding new SNMP Trap handlers](../Developing/SNMP-Traps.md). Traps are handled via snmptrapd.
+To add more, refer to [Adding new SNMP Trap handlers](../Developing/SNMP-Traps.md). snmptrapd handles the traps.
 
 snmptrapd is an SNMP application that receives and logs SNMP TRAP and INFORM messages.
 > The default is to listen on UDP port 162 on all IPv4 interfaces. Since 162 is a
@@ -10,7 +10,7 @@ privileged port, snmptrapd must typically be run as root.
 
 ## Configure snmptrapd
 
-Install snmptrapd via your package manager.
+Install snmptrapd with your package manager.
 
 For example (Debian based systems):
 

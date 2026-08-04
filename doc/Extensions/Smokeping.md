@@ -20,9 +20,9 @@ smokeping setup, you'll need to adapt these steps somewhat.
 
 ### Install and integrate Smokeping Backend - RHEL, CentOS and alike
 
-Smokeping is available via EPEL, which if you're running LibreNMS, you probably
+Smokeping is available in EPEL. If you run LibreNMS, you probably
 already have. If you want to do something like run Smokeping on a separate host
-and ship data via RRCached though, here's the install command:
+and send data through RRCached. This is the install command:
 
 ```bash
 sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
@@ -78,7 +78,7 @@ sudo systemctl enable --now smokeping
 
 ### Install and integrate Smokeping Backend - Ubuntu, Debian and alike
 
-Smokeping is available via the default repositories.
+Smokeping is available in the default repositories.
 
 ```bash
 sudo apt-get install smokeping

@@ -126,7 +126,7 @@ SHOW GLOBAL STATUS LIKE 'wsrep_%';
 |    :----:                            |    :----:                                                       |    :----:                                               |
 | -----------------------------------  | ----------------------------------------------------------------|---------------------------------------------------------|
 | wsrep_cluster_size                   | 2                                                               | Current number of nodes in Cluster                      |
-| wsrep_cluster_state_uuid             | e71582f3-cf14-11eb-bcf6-a23029e16405                            | Last Transaction UUID, Should be the same for each node |
+| wsrep_cluster_state_uuid             | e71582f3-cf14-11eb-bcf6-a23029e16405                            | Last Transaction UUID. It must be the same for each node |
 | wsrep_connected                      | On                                                              | On = Connected with other nodes                         |
 | wsrep_local_state_comment            | Synced                                                          | Synced with other nodes                                 |
 

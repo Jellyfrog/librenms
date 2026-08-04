@@ -24,7 +24,7 @@ advantages or disadvantages of each are discussed further down.
 
 Like the name suggests, this type uses the current Time or a subset of
 it to generate the passcodes. These passcodes solely rely on the
-secrecy of their Secretkey in order to provide passcodes. An attacker
+secrecy of their Secretkey to give passcodes. An attacker
 only needs to guess that Secretkey and the other variable part is any
 given time, presumably the time upon login. RFC4226 suggests a
 resynchronization attempt in case the passcode mismatches, providing
@@ -35,7 +35,7 @@ the attacker a range of up to +/- 3 Minutes to create passcodes.
 This type uses an internal counter that needs to be in sync with the
 server's counter to successfully authenticate the passcodes. The main
 advantage over timebased OTP: the attacker must not only know
-the Secretkey but also the server's Counter in order to create valid
+the Secretkey, but also the server Counter, to create valid
 passcodes. RFC4226 suggests a resynchronization attempt in case the
 passcode mismatches, providing the attacker a range of up to +4
 increments from the actual counter to create passcodes.

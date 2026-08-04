@@ -73,7 +73,7 @@ to be easily returned by a extend and the data to then be worked
 with, this can also sometimes result in large returns that
 sometimes cause problems with SNMP on some networks.
 
-`librenms_return_optimizer` fixes this via taking the extend output
+`librenms_return_optimizer` corrects this. It takes the extend output
 piped to it, gzipping it, and then converting it to base64. The
 later is needed as net-snmp does not play that nice with binary data,
 converting most of the non-printable characters to `.`. This does add

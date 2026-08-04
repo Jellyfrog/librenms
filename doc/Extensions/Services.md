@@ -126,7 +126,7 @@ file (/etc/cron.d/librenms typically) like:
 */5 * * * * librenms /opt/librenms/services-wrapper.py 1
 ```
 
-Now you can add services via the main Services link in the navbar, or
+Now you can add services with the main Services link in the navbar, or
 via the 'Add Service' link within the device, services page.
 
 Note: some services (procs, inodes, load and similar) always

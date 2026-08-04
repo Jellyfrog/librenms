@@ -46,7 +46,7 @@ to work with the git output module.
     lnms config:set oxidized.features.versioning true
     ```
 
-Oxidized supports various ways to utilise credentials to login to
+Oxidized supports different methods to use credentials to log in to
 devices, you can specify global username/password within Oxidized,
 Group level username/password or per device. LibreNMS currently
 supports sending groups back to Oxidized so that you can then define
@@ -94,7 +94,7 @@ setsebool -P httpd_can_network_connect 1
 
 ----
 
-Oxidized has support for feeding devices into it via an API call,
+Oxidized can receive devices through an API call,
 support for Oxidized has been added to the LibreNMS API. A sample
 config for Oxidized is provided below.
 
@@ -278,7 +278,7 @@ The use of custom ssh and telnet ports can be set through device settings misc t
 ```
 
 It's also possible to exclude certain device types and OS' from being
-output via the API.
+output through the API.
 
 !!! setting "external/oxidized"
     ```bash

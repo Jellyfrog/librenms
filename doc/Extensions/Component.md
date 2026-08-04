@@ -29,8 +29,8 @@ These fields are described below:
 - `type` - name from the component_type table
 - `label` - Display label for the component
 - `status` - The status of the component, retrieved from the device
-- `disabled` - Should this component be polled?
-- `ignore` - Should this component be alerted on
+- `disabled` - Does the system poll this component?
+- `ignore` - Does the system send alerts for this component?
 - `error` - Error message if in Alert state
 
 The component_prefs table holds custom data in an Attribute/Value format:
@@ -261,12 +261,12 @@ of, these are:
 
 ## API
 
-Component details are available via the API.
-Please see the [API-Docs](../API/Devices.md#get_components) for details.
+Component details are available through the API.
+Refer to the [API-Docs](../API/Devices.md#get_components) for details.
 
 ## Alerting
 
-It is intended that discovery/poller modules will detect the status of
+The goal: discovery/poller modules find the status of
 a component during the polling cycle. Status is logged using the
 Nagios convention for status codes, where:
 
@@ -280,7 +280,7 @@ If you are creating a poller module which can detect a fault condition
 simply set STATUS to something other than 0 and ERROR to a message
 that indicates the problem.
 
-To actually raise an alert, the user will need to create an alert
+To start an alert, the user must create an alert
 rule. To assist with this several Alerting Macro's have been created:
 
 - `%macro.component_normal` - A component that is not disabled or
@@ -298,7 +298,7 @@ To raise alerts for components, the following rules could be created:
   Component>"` - To alert on all Critical components of a particular
   type.
 
-If there is a particular component you would like excluded from
+If there is a component that you want to exclude from
 alerting, simply set the ignore field to 1.
 
 The data that is written to each alert when it is raised is in the following format:
@@ -307,7 +307,7 @@ The data that is written to each alert when it is raised is in the following for
 
 # Example Code
 
-To see an example of how the component module can used, please see the
+For an example of how you can use the component module, refer to the
 following modules:
 
 - Cisco OTV
