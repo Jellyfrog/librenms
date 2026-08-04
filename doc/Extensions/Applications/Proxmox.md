@@ -11,7 +11,7 @@
 
 ## SNMP Extend
 
-2. Download the script onto the desired host
+2. Download the script to the applicable host
 
     ```
     wget https://raw.githubusercontent.com/librenms/librenms-agent/master/agent-local/proxmox -O /usr/local/bin/proxmox
@@ -29,7 +29,7 @@
     extend proxmox /usr/local/bin/proxmox
     ```
 
-5. Note: if your snmpd doesn't run as root, you might have to invoke
+5. Note: if your snmpd does not run as root, it is possible that you must start
    the script using sudo and modify the "extend" line
 
     ```bash

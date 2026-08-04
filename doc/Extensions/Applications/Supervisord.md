@@ -10,7 +10,7 @@ It shows you the totals per status and also the uptime per process. That way you
     wget https://github.com/librenms/librenms-agent/raw/master/snmp/supervisord.py -O /etc/snmp/supervisord.py
     ```
 
-    Notice that this will use the default unix socket path. Modify the `unix_socket_path` variable in the script if your path differs from the default.
+    Note: this uses the default unix socket path. Change the `unix_socket_path` variable in the script if your path is different from the default.
 
 2. Make the script executable
 

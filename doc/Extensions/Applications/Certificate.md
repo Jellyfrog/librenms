@@ -14,7 +14,7 @@ A small python3 script that checks age and remaining validity of certificates
     ```
 
 
-Content of an example /etc/snmp/certificate.json . Please edit with your own settings.
+Content of an example /etc/snmp/certificate.json . Edit it with your own settings.
 
 ```json
 {"domains": [
@@ -33,7 +33,7 @@ b. (Optional): You can define a port. By default it checks on port 443.
 c. (Optional): You may define a certificate location for self-signed certificates.
 
 ### SNMP Extend
-1. Copy the shell script to the desired host.
+1. Copy the shell script to the applicable host.
 
 ```bash
 wget https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/certificate.py -O /etc/snmp/certificate.py
@@ -52,4 +52,4 @@ extend certificate /etc/snmp/certificate.py
 ```
 4. Restart snmpd on your host
 
-The application should be auto-discovered as described at the top of the page. If it is not, please follow the steps set out under `SNMP Extend` heading top of page.
+The system discovers the application automatically, as given at the top of the page. If it does not, do the steps given under the `SNMP Extend` heading at the top of the page.

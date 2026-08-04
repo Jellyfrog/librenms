@@ -13,7 +13,7 @@ recommended you use an alternative database location
 
 === "SNMP Extend"
 
-    1. Download the script onto the desired host.
+    1. Download the script to the applicable host.
 
         ```bash
         wget https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/osupdate -O /etc/snmp/osupdate
@@ -48,13 +48,13 @@ recommended you use an alternative database location
 
         If you have `apticron`, `cron-apt` or `apt-listchanges` installed and configured, chances are that packages are already updated periodically .
 
-    The application should be auto-discovered as described at the top of
-    the page. If it is not, please follow the steps set out under `SNMP
-    Extend` heading top of page.
+    The system discovers the application automatically, as given at the top of
+    the page. If it does not, do the steps given under the `SNMP
+    Extend` heading at the top of the page.
 
 === "Agent"
 
-    [Install the agent](../Agent-Setup.md) on this device if it isn't already
+    [Install the agent](../Agent-Setup.md) on this device, if it is not already
     and copy the `osupdate` script to `/usr/lib/check_mk_agent/local/`
 
     Then uncomment the line towards the top marked to be uncommented if

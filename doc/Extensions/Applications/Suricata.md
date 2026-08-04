@@ -45,12 +45,12 @@ Or if you want to use try compressing the return via Base64+GZIP...
 
 4. Restart snmpd on your system.
 
-You will want to make sure Suricata is set to output the stats
-to the eve file once a minute. This will help make sure that
-it won't be to far back in the file and will make sure it is
+Make sure that Suricata is set to write the stats
+to the eve file one time each minute. This helps make sure that
+it is not too far back in the file, and makes sure that it is
 recent when the cronjob runs.
 
-Any configuration of suricata_stat_check should be done in the cron
+Do all configuration of suricata_stat_check in the cron
 setup. If the default does not work, check the docs for it at
 [MetaCPAN for
 suricata_stat_check](https://metacpan.org/dist/Suricata-Monitoring/view/bin/suricata_stat_check)

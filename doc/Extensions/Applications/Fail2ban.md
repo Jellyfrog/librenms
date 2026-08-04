@@ -50,16 +50,16 @@ A small shell script that checks your system's fail2ban status.
 2. If you wish to use caching, add the following to /etc/crontab and
 restart cron.
 
-    The following will update the cache every 3 minutes.
+    The line below updates the cache each 3 minutes.
 
     ```cron
     */3    *    *    *    *    root    /etc/snmp/fail2ban -u
     ```
 
 If you have more than a few jails configured, you may need to use
-caching as each jail needs to be polled and fail2ban-client can't do
+caching, because each jail must be polled, and fail2ban-client cannot do
 so in a timely manner for than a few. This can result in failure of
 other SNMP information being polled.
 
-For additional details of the switches, please see the POD in the
+For more details of the switches, refer to the POD in the
 script it self at the top.

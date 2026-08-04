@@ -23,12 +23,12 @@ For metrics the stats are migrated as below from the stats JSON.
 
 Those keys are appended with the name of the instance running with `_`
 between the instance name and instance metric key. So `uptime` for
-`ids` would be `ids_uptime`.
+`ids` is `ids_uptime`.
 
 The default is named 'ids' unless otherwise specified via the extend.
 
 There is a special instance name of `.total` which is the total of all
-the instances. So if you want the total eps, the metric would be
+the instances. Thus, if you want the total eps, the metric is
 `.total_eps`. Also worth noting that the alert value is the highest
 one found among all the instances.
 
@@ -71,7 +71,7 @@ one found among all the instances.
 
 4. Restart snmpd on your system.
 
-You will want to make sure that sagan is setup to with the values set
+Make sure that sagan is set up with the values set
 below for stats-json processor, for a single instance setup..
 
 ```
@@ -81,7 +81,7 @@ subtract_old_values: true
 filename: "$LOG_PATH/stats.json"
 ```
 
-Any configuration of sagan_stat_check should be done in the cron
+Do all configuration of sagan_stat_check in the cron
 setup. If the default does not work, check the docs for it at
 [MetaCPAN for sagan_stat_check](https://metacpan.org/dist/Sagan-Monitoring/view/bin/sagan_stat_check)
 

@@ -4,7 +4,7 @@ SNMP extend script to get your exim stats data into your host.
 
 ### SNMP Extend
 
-1. Download the script onto the desired host.
+1. Download the script to the applicable host.
 
 ```bash
 wget https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/exim-stats.sh -O /etc/snmp/exim-stats.sh
@@ -31,6 +31,6 @@ snmp ALL=(ALL) NOPASSWD: /etc/snmp/exim-stats.sh, /usr/bin/exim*
 
 5. Restart snmpd on your host
 
-The application should be auto-discovered as described at the top of
-the page. If it is not, please follow the steps set out under `SNMP
-Extend` heading top of page.
+The system discovers the application automatically, as given at the top of
+the page. If it does not, do the steps given under the `SNMP
+Extend` heading at the top of the page.

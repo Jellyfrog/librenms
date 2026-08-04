@@ -52,7 +52,7 @@ flood LibreNMS with constantly-changing graphs.
 
 5. Restart snmpd service on the host
 
-    Application should be auto-discovered and its stats presented on the
+    The system discovers the application automatically and shows its stats on the
     Apps-page on the host. Note: Applications module needs to be enabled on the
     host or globally for the statistics to work as intended.
 

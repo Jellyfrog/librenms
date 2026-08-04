@@ -4,7 +4,7 @@ Shell script to track the OGS/GE jobs running on clusters.
 
 ### SNMP Extend
 
-1. Download the script onto the desired host.
+1. Download the script to the applicable host.
 
     ```bash
     wget https://raw.githubusercontent.com/librenms/librenms-agent/master/agent-local/rocks.sh -O /etc/snmp/rocks.sh
@@ -24,6 +24,6 @@ Shell script to track the OGS/GE jobs running on clusters.
 
 4. Restart snmpd.
 
-    The application should be auto-discovered as described at the top of
-    the page. If it is not, please follow the steps set out under `SNMP
-    Extend` heading top of page.
+    The system discovers the application automatically, as given at the top of
+    the page. If it does not, do the steps given under the `SNMP
+    Extend` heading at the top of the page.

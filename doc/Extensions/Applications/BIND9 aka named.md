@@ -59,7 +59,7 @@ If it is not available, it can be installed by `cpan -i File::ReadBackwards`.
 
 The config file's path defaults to the same path as the script, but
 with .config appended. So if the script is located at
-`/etc/snmp/bind`, the config file will be
+`/etc/snmp/bind`, the config file is
 `/etc/snmp/bind.config`. Alternatively you can also specify a config
 via `-c $file`.
 
@@ -67,7 +67,7 @@ Anything starting with a # is comment. The format for variables are
 $variable=$value. Empty lines are ignored. Spaces and tabs at either
 the start or end of a line are ignored.
 
-Content of an example /etc/snmp/bind.config . Please edit with your
+Content of an example /etc/snmp/bind.config . Edit it with your
 own settings.
 
 ```
@@ -82,7 +82,7 @@ zero_stats = A 0/1 boolean for if the stats file should be zeroed
 ```
 
 If you want to guess at the configuration, call the script with `-g`
-and it will print out what it thinks it should be.
+and it shows what it thinks the configuration must be.
 
 ## Configure Agent or Extend
 
@@ -108,15 +108,15 @@ and it will print out what it thinks it should be.
 
     4. Restart snmpd on the host in question.
 
-    The application should be auto-discovered as described at the top of
-    the page. If it is not, please follow the steps set out under `SNMP
-    Extend` heading top of page.
+    The system discovers the application automatically, as given at the top of
+    the page. If it does not, do the steps given under the `SNMP
+    Extend` heading at the top of the page.
 
 === "Agent"
 
-    1. [Install the agent](../Agent-Setup.md)) on this device if it isn't
+    1. [Install the agent](../Agent-Setup.md)) on this device, if it is not
     
-    2. Download the script onto the desired host:
+    2. Download the script to the applicable host:
 
         ```bash
         wget https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/bind -O /usr/lib/check_mk_agent/local/bind

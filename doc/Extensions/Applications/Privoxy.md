@@ -48,7 +48,7 @@ If your logfile is not at `/var/log/privoxy/logfile`, that may be
 changed via the `-f` option.
 
 If `privoxy-log-parser.pl` is not found in your standard `$PATH`
-setting, you may will need up call the extend via `/usr/bin/env` with
+setting, it is possible that you must call the extend through `/usr/bin/env` with
 a `$PATH` set to something that includes it.
 
 Once that is done, just wait for the server to be rediscovered or just

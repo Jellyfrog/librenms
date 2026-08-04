@@ -3,7 +3,7 @@
 
 ### Agent
 
-[Install the agent](../Agent-Setup.md) on this device if it isn't already
+[Install the agent](../Agent-Setup.md) on this device, if it is not already
 and copy the `tinydns` script to `/usr/lib/check_mk_agent/local/`
 
 !!! note 
@@ -27,4 +27,4 @@ and copy the `tinydns` script to `/usr/lib/check_mk_agent/local/`
 3. Restart TinyDNS and Daemontools: `/etc/init.d/svscan restart`
    
 !!! note 
-    Some say `svc -t /service/dns` is enough, on my install (Gentoo) it doesn't rehook the logging and I'm forced to restart it entirely.
+    Some say that `svc -t /service/dns` is sufficient. On my installation (Gentoo), it does not attach the logging again, and I must restart it fully.

@@ -30,7 +30,7 @@
 !!! note "portactivity"
     Will monitor HTTP, LDAP, and IMAP. The `-p` switch specifies what ports to use. This is a comma separated list.
     
-    These must be found in '/etc/services' or where ever NSS is set to fetch it from. If not, it will throw an error.
+    These must be in '/etc/services', or in the location from which NSS gets them. If not, an error occurs.
     
     If you want to JSON returned by it to be printed in a pretty format use the `-P` flag.
 
@@ -40,4 +40,4 @@
     sudo systemctl restart snmpd
     ```
 
-Please note that for only TCP[46] services are supported.
+Note that for only TCP[46] services are supported.

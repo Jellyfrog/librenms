@@ -4,8 +4,8 @@ The FreeRADIUS application extension requires that status_server be
 enabled in your FreeRADIUS config.  For more information see:
 <https://wiki.freeradius.org/config/Status>
 
-You should note that status requests increment the FreeRADIUS request
-stats.  So LibreNMS polls will ultimately be reflected in your
+Note that status requests increase the FreeRADIUS request
+stats.  Thus, LibreNMS polls show in your
 stats/charts.
 
 1. Go to your FreeRADIUS configuration directory (usually /etc/raddb
@@ -17,7 +17,7 @@ or /etc/freeradius).
 
 4. Restart FreeRADIUS.
 
-5. You should be able to test with the radclient as follows...
+5. You can test with the radclient as follows...
 
 ```bash
 echo "Message-Authenticator = 0x00, FreeRADIUS-Statistics-Type = 31, Response-Packet-Type = Access-Accept" | \
@@ -53,9 +53,9 @@ Change if you've modified this.
 
     5. Restart snmpd on the host in question.
 
-    The application should be auto-discovered as described at the top of
-    the page. If it is not, please follow the steps set out under `SNMP
-    Extend` heading top of page.
+    The system discovers the application automatically, as given at the top of
+    the page. If it does not, do the steps given under the `SNMP
+    Extend` heading at the top of the page.
 
 === "Agent"
 

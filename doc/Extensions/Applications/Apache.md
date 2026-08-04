@@ -7,7 +7,7 @@ Either use SNMP extend or use the agent.
 
 === "SNMP Extend"
 
-    1. Download the script onto the desired host (the host must be added to LibreNMS devices)
+    1. Download the script to the applicable host (the host must be added to LibreNMS devices)
 
     ```bash
     wget https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/apache-stats.py -O /etc/snmp/apache-stats.py
@@ -62,7 +62,7 @@ Either use SNMP extend or use the agent.
 
     ### install agent
 
-    [Install the agent](../Agent-Setup.md)) on this device if it isn't already
+    [Install the agent](../Agent-Setup.md)) on this device, if it is not already
     and copy the `apache` script to `/usr/lib/check_mk_agent/local/`
 
     1. Verify it is working by running `/usr/lib/check_mk_agent/local/apache`

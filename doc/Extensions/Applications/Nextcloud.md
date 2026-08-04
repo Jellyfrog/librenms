@@ -29,7 +29,7 @@
 
 ### SNMP Extend
 
-1. Copy the shell script to the desired host.
+1. Copy the shell script to the applicable host.
 
     ```bash
     wget https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/nextcloud -O /etc/snmp/nextcloud

@@ -10,7 +10,7 @@ Script communicates with I2PD via I2PControl protocol. Enable and configure that
 
 2. Set `enabled = true`
 
-3. Make sure that I2PC listens only on localhost! Config should look like this:
+3. Make sure that I2PC listens only on localhost! The config must look like this:
 
    ```ini
    [i2pcontrol]
@@ -56,7 +56,7 @@ Script communicates with I2PD via I2PControl protocol. Enable and configure that
 
 ### Script requirements
 
-You should already have everything needed, but:
+You usually already have all necessary items, but:
 
 - python3
 - python3-urllib3

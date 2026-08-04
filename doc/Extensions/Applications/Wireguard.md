@@ -51,7 +51,7 @@ The Wireguard application polls the Wireguard service and scrapes all client sta
 | key                          | default     | description                                                 |
 |------------------------------|-------------|-------------------------------------------------------------|
 | include_pubkey               | 0           | Include the pubkey with the return.                         |
-| use_short_hostname           | 1           | If the hostname should be shortened to just the first part. |
+| use_short_hostname           | 1           | If the hostname must be made shorter, to only the first part. |
 | public_key_to_arbitrary_name | {}          | A hash of pubkeys to name mappings.                         |
 | pubkey_resolvers             | <see below> | Resolvers to use for the pubkeys.                           |
 

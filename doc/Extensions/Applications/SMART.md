@@ -35,7 +35,7 @@ wget https://github.com/librenms/librenms-agent/raw/master/snmp/smart-v1 -O /etc
 chmod +x /etc/snmp/smart
 ```
 
-4. Setup a cronjob to run it. This ensures slow to poll disks won't
+4. Set up a cronjob to run it. This makes sure that disks that are slow to poll do not
    result in errors.
 
 ```bash
@@ -48,9 +48,9 @@ chmod +x /etc/snmp/smart
 extend smart /bin/cat /var/cache/smart.snmp
 ```
 
-6. You will also need to create the config file, which defaults to the same path as the
+6. You must also create the config file. Its default is the same path as the
    script, but with .config appended. So if the script is located at /etc/snmp/smart, the
-   config file will be `/etc/snmp/smart.config`. Alternatively you can also  pecific a
+   config file is `/etc/snmp/smart.config`. As an alternative, you can also  specify a
    config via `-c`.
 
 
@@ -79,16 +79,16 @@ The variables are as below.
 |----------|---------|-------------|
 | cache    | /var/cache/smart | The path to the cache file to use. |
 | smartctl | /usr/bin/env smartctl | The path to use for smartctl. |
-| useSN    | 1       | If set to 1, it will use the disks SN for reporting instead of the device name. |
+| useSN    | 1       | If set to 1, it uses the disk SN for reports, not the device name. |
 
 A disk line is can be as simple as just a disk name under /dev/. Such as in the config
-above The line `ada0` would resolve to `/dev/ada0` and would be called with no special
+above, the line `ada0` resolves to `/dev/ada0`, and the system calls it with no special
 argument. If a line has a space in it, everything before the space is treated as the disk
 name and is what used for reporting and everything after that is used as the argument to
 be passed to `smartctl`.
 
-If you want to guess at the configuration, call it with `-g` and it will print out what it
-thinks it should be.
+To get an estimate of the configuration, call it with `-g`. It shows what it
+thinks the configuration must be.
 
 6. Restart snmpd on your host
 
@@ -96,9 +96,9 @@ thinks it should be.
     sudo systemctl restart snmpd
     ```
 
-The application should be auto-discovered as described at the top of
-the page. If it is not, please follow the steps set out under `SNMP
-Extend` heading top of page.
+The system discovers the application automatically, as given at the top of
+the page. If it does not, do the steps given under the `SNMP
+Extend` heading at the top of the page.
 
 7. Optionally setup nightly self tests for the disks. The exend will
    run the specified test on all configured disks if called with the

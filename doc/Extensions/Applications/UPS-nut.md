@@ -25,9 +25,9 @@ A small shell script that exports nut ups status.
 
 4. Restart snmpd on your host
 
-The application should be auto-discovered as described at the top of
-the page. If it is not, please follow the steps set out under `SNMP
-Extend` heading top of page.
+The system discovers the application automatically, as given at the top of
+the page. If it does not, do the steps given under the `SNMP
+Extend` heading at the top of the page.
 
 Optionally if you have multiple UPS or your UPS is not named APCUPS you can specify its name as an argument into `/etc/snmp/ups-nut.sh`
 

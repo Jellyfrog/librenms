@@ -1,7 +1,7 @@
 # Sneck
 
 This is for replacing Nagios/Icinga or the LibreNMS service
-integration in regards to NRPE. This allows LibreNMS to query what
+integration for NRPE. With this, LibreNMS can query what
 checks were ran on the server and keep track of totals of OK, WARNING,
 CRITICAL, and UNKNOWN statuses.
 
@@ -26,7 +26,7 @@ metrics below are provided.
 | errored             | Total checks that errored                                                                                             |
 | time_to_polling     | Difference in seconds between when polling data was generated and when polled                                         |
 | time_to_polling_abs | The absolute value of time_to_polling.                                                                                |
-| check_$CHECK        | Exit status of a specific check `$CHECK` is equal to the name of the check in question. So `foo` would be `check_foo` |
+| check_$CHECK        | Exit status of one check. `$CHECK` is equal to the name of the applicable check. Thus, `foo` is `check_foo` |
 
 The standard Nagios/Icinga style exit codes are used and those are as
 below.
@@ -38,10 +38,10 @@ below.
 | 2    | critical |
 | 3+   | unknown  |
 
-To use `time_to_polling`, it will need to enabled via setting the
+To use `time_to_polling`, you must enable it. Set the
 config item below. The default is false. Unless set to true, this
-value will default to 0. If enabling this, one will want to make sure
-that NTP is in use every were or it will alert if it goes over a
+value default is 0. If you enable this, make sure
+that NTP is in use in all locations. If not, an alert occurs when it goes over a
 difference of 540s.
 
 ```
@@ -85,9 +85,9 @@ at [MetaCPAN](https://metacpan.org/dist/Monitoring-Sneck-Boop_Snoot) and
    `/usr/local/etc/sneck.conf`. You con find it documented
    [here](https://metacpan.org/pod/Monitoring::Sneck#CONFIG-FORMAT).
 
-3. Set it up in cron. This will mean you don't need to wait for all
+3. Set it up in cron. Then it is not necessary to wait for all
    the checks to complete when polled via SNMP, which for like SMART
-   or other long running checks will mean it timing out. Also means it
+   or other long checks cause a timeout. It also means that it
    does not need called via sudo as well.
 
     ```bash

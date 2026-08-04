@@ -2,7 +2,7 @@
 
 ### SNMP Extend
 
-1. Copy the shell script to the desired host.
+1. Copy the shell script to the applicable host.
 
 ```bash
 wget https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/borgbackup -O /etc/snmp/borgbackup
@@ -78,7 +78,7 @@ repo=1234abc
 
 For multi, each section outside of the root represents a repo. So if
 there is '/backup/borg1' with a passphrase of 'foobar' and
-'/backup/derp' with a passcommand of 'pass show backup' it would be
+'/backup/derp' with a passcommand of 'pass show backup', it is
 like below.
 
 ```bash

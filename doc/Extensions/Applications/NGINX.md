@@ -18,7 +18,7 @@ location /nginx-status {
 
 === "SNMP Extend"
 
-    1. Download the script onto the desired host.
+    1. Download the script to the applicable host.
 
         ```bash
         wget https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/nginx -O /etc/snmp/nginx
@@ -38,13 +38,13 @@ location /nginx-status {
 
     4. Restart snmpd on your host
 
-    The application should be auto-discovered as described at the top of
-    the page. If it is not, please follow the steps set out under `SNMP
-    Extend` heading top of page.
+    The system discovers the application automatically, as given at the top of
+    the page. If it does not, do the steps given under the `SNMP
+    Extend` heading at the top of the page.
 
 === "Agent"
 
-    [Install the agent](../Agent-Setup.md) on this device if it isn't already
+    [Install the agent](../Agent-Setup.md) on this device, if it is not already
     and copy the `nginx` script to `/usr/lib/check_mk_agent/local/`
 
 #### SELinux

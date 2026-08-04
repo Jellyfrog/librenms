@@ -32,6 +32,6 @@ server and change the `API_AUTH_KEY` entry inside the snmp script.
     sudo systemctl restart snmpd
     ```
 
-    The application should be auto-discovered as described at the top of
-    the page. If it is not, please follow the steps set out under `SNMP
-    Extend` heading top of page.
+    The system discovers the application automatically, as given at the top of
+    the page. If it does not, do the steps given under the `SNMP
+    Extend` heading at the top of the page.

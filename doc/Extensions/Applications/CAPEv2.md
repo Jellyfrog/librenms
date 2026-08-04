@@ -1,7 +1,7 @@
 
 ## CAPEv2
 
-1. Copy the shell script to the desired host.
+1. Copy the shell script to the applicable host.
 
 ```bash
 wget https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/cape -O /etc/snmp/cape
@@ -28,6 +28,6 @@ extend cape /etc/snmp/cape
 
 5. Restart snmpd on your host
 
-The application should be auto-discovered as described at the top of
-the page. If it is not, please follow the steps set out under `SNMP
-Extend` heading top of page.
+The system discovers the application automatically, as given at the top of
+the page. If it does not, do the steps given under the `SNMP
+Extend` heading at the top of the page.

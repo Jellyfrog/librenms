@@ -3,7 +3,7 @@
 
 ### Install prereqs
 The MySQL script requires PHP-CLI and the PHP MySQL extension, so
-please verify those are installed.
+make sure that those are installed.
 
 !!! note "" 
     May vary based on PHP version
@@ -56,7 +56,7 @@ so you need to also include the line `$chk_options['slave'] = false;` into `mysq
 
 === "Agent"
 
-    [Install the agent](../Agent-Setup.md) on this device if it isn't already
+    [Install the agent](../Agent-Setup.md) on this device, if it is not already
 
     and copy the `mysql` script to `/usr/lib/check_mk_agent/local/`
 
@@ -86,6 +86,6 @@ so you need to also include the line `$chk_options['slave'] = false;` into `mysq
 
     5. Restart snmpd.
 
-    The application should be auto-discovered as described at the top of
-    the page. If it is not, please follow the steps set out under `SNMP
-    Extend` heading top of page.
+    The system discovers the application automatically, as given at the top of
+    the page. If it does not, do the steps given under the `SNMP
+    Extend` heading at the top of the page.

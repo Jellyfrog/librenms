@@ -23,7 +23,7 @@
 
 ### SNMP Extend
 
-1. Download the script onto the desired host.
+1. Download the script to the applicable host.
 
     ```bash
     wget https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/opensearch -O /etc/snmp/opensearch
@@ -51,7 +51,7 @@
         extend opensearch /bin/cat /var/cache/opensearch.json.snmp
         ```
 
-        Update root crontab with. This is required as it will this will
+        Update the root crontab with the line below. This is necessary because it
         likely time out otherwise. Use `*/1` if you want to have the most
         recent stats when polled or to `*/5` if you just want at exactly a 5
         minute interval.

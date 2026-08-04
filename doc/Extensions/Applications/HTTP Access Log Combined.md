@@ -2,7 +2,7 @@
 
 ### SNMP Extend
 
-1. Download the script onto the desired host.
+1. Download the script to the applicable host.
 
     ```bash
     wget https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/http_access_log_combined -O /etc/snmp/http_access_log_combined
@@ -31,7 +31,7 @@
    specified via `-c`. See further below for configuration
    information.
 
-5.  If on large setups where it won't complete in a timely manner, run it via cron.
+5.  On large setups, where it does not complete quickly, run it with cron.
 
     === "If not using cron"
 
@@ -63,18 +63,18 @@
 |-------------------|--------------|------------------------------------------------------------------------------------------------------------------------------------------|
 | access            | hash         | A hash of access logs to monitor. The key is the reporting name while the value is the path to it.                                       |
 | error             | hash         | A hash of errors logs to monitor. The key is the reporting name while the value is the path to it. Must have a matching entry in access  |
-| auto              | boolean, 0/1 | If auto mode should be used or not. If not defined and .access is not defined, then it will default to 1. Other wise it is undef, false. |
+| auto              | boolean, 0/1 | If auto mode is used or not. If this is not defined, and .access is not defined, the default is 1. If not, it is undef, false. |
 | auto_dir          | string       | The dir to look for files in. Default: `/var/log/apache/`                                                                                |
 | auto_end_regex    | string       | What to match files ending in. Default: `.log$`                                                                                          |
-| auto_access_regex | string       | What will be prepended to the end regexp for looking for access log files. Default: `-access`                                            |
-| auto_error_regex  | string       | What will be prepended to the end regexp for looking for error log files. Default: `-error`                                              |
+| auto_access_regex | string       | What goes before the end regexp when the system looks for access log files. Default: `-access`                                            |
+| auto_error_regex  | string       | What goes before the end regexp when the system looks for error log files. Default: `-error`                                              |
 
-Auto will attempt to generate a list of log files to process. Will
+Auto tries to make a list of log files to process. It
 look under the directory specified for files matching the built
 regexp. The regexp is built by joining the access/error regexps to the
-end regexp. so for access it would be come `-access.log$`.
+end regexp. Thus, for access, it becomes `-access.log$`.
 
-The default auto config would look like below.
+The default auto config looks like the example below.
 
 ```JSON
 {
@@ -96,7 +96,7 @@ foo:443-error.log
 bar-access.log
 ```
 
-Then the auto generated stuff would be a like below.
+Then the automatically made items look like the example below.
 
 ```JSON
 {
@@ -112,8 +112,8 @@ Then the auto generated stuff would be a like below.
 }
 ```
 
-A manual config would be like below. Note that only `foo` has a error
-log that the size will be checked for and reported via the stat
+A manual config looks like the example below. Note that only `foo` has an error
+log for which the system checks and reports the size through the stat
 `error_size`.
 
 ```JSON

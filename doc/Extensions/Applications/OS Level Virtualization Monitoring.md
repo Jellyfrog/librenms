@@ -67,7 +67,7 @@ The following keys are used in the JSON config file.
 The default value varies per backend and if it is needed. 
 
 !!! note "cgroups"
-    While the default for usec to sec conversion should be `1000000`, some settings report the value in nanoseconds, requiring `1000000000`.
+    The default for the usec to sec conversion is usually `1000000`. But some settings report the value in nanoseconds, which makes `1000000000` necessary.
 
 | Backend  | Time Divider | Default |
 |----------|--------------|---------|
@@ -83,7 +83,7 @@ By Defaults the backends are as below.
 | FreeBSD  | FreeBSD    |
 | Linux    | cgroups    |
 
-#### Default would be like this.
+#### The default is like this.
 
 ```json
 {
@@ -103,7 +103,7 @@ By Defaults the backends are as below.
 Something is considered not running if it has been seen. How long
 something is considered to have been seen is controlled by
 `apps.oslv_monitor.seen_age`, which is the number of seconds ago it
-would of have to be seen. The default is `604800` which is seven days
+was last seen. The default is `604800`, which is seven days
 in seconds.
 
 All time values are in seconds.
@@ -176,7 +176,7 @@ lnms config:set apps.oslv_monitor.workingset_stats false
 lnms config:set apps.oslv_monitor.thp_activity false
 ```
 
-`apps.oslv_monitor.linux_pg_memory_stats` will disable graphs and stat gathering for the
+`apps.oslv_monitor.linux_pg_memory_stats` disables graphs and stat collection for the
 items below.
 
 - `pgactivate`
@@ -193,7 +193,7 @@ items below.
 - `pgsteal_khugepaged`
 - `pgsteal_kswapd`
 
-`apps.oslv_monitor.misc_linux_memory_stats` will disable graphs and stat gathering for the
+`apps.oslv_monitor.misc_linux_memory_stats` disables graphs and stat collection for the
 items below.
 
 - `anon`
@@ -218,20 +218,20 @@ items below.
 - `slab_unreclaimable`
 - `slab`
 
-`apps.oslv_monitor.zswap_size` will disable graphs and stat gathering for the
+`apps.oslv_monitor.zswap_size` disables graphs and stat collection for the
 items below.
 
 - `zswap`
 - `zswapped`
 
-`apps.oslv_monitor.zswap_activity` will disable graphs and stat gathering for the
+`apps.oslv_monitor.zswap_activity` disables graphs and stat collection for the
 items below.
 
 - `zswpin`
 - `zswpout`
 - `zswpwb`
 
-`apps.oslv_monitor.workingset_stats` will disable graphs and stat gathering for the
+`apps.oslv_monitor.workingset_stats` disables graphs and stat collection for the
 items below.
 
 - `workingset_refault_anon`
@@ -242,7 +242,7 @@ items below.
 - `workingset_restore_file`
 - `workingset_nodereclaim`
 
-`apps.oslv_monitor.thp_activity` will disable graphs and stat gathering for the
+`apps.oslv_monitor.thp_activity` disables graphs and stat collection for the
 items below.
 
 - `thp_fault_alloc`

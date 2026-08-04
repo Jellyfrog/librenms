@@ -22,7 +22,7 @@ Debian-snmp ALL=(ALL) NOPASSWD: /usr/sbin/birdc
 _If your snmp daemon is running on a user that isnt `Debian-snmp` make sure that user has the correct permission to execute `birdc`_
 
 3. Verify the time format for bird2 is defined. Otherwise `iso short
-   ms` (hh:mm:ss) is the default value that will be used. Which is not
+   ms` (hh:mm:ss) is the default value that the system uses. This is not
    compatible with the datetime parsing logic used to parse the output
    from the bird show command. `timeformat protocol` is the one
    important to be defibned for the bird2 app parsing logic to work.
@@ -42,4 +42,4 @@ hh:mm:ss +11:45). See the [Bird
 
 4. Restart snmpd on your host
 
-The application should be auto-discovered as described at the top of the page. If it is not, please follow the steps set out under `SNMP Extend` heading top of page.
+The system discovers the application automatically, as given at the top of the page. If it does not, do the steps given under the `SNMP Extend` heading at the top of the page.

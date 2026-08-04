@@ -1,6 +1,6 @@
 # Mdadm
 
-It allows you to checks mdadm health and array data
+With it, you can check mdadm health and array data
 
 ##  Install prereqs
 
@@ -14,7 +14,7 @@ This script require: `jq`
 
 ### SNMP Extend
 
-1. Download the script onto the desired host.
+1. Download the script to the applicable host.
 
     ```bash
     sudo wget https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/mdadm -O /etc/snmp/mdadm
@@ -44,6 +44,6 @@ This script require: `jq`
     sudo service snmpd restart
     ```
 
-    The application should be auto-discovered as described at the
-    top of the page. If it is not, please follow the steps set out
-    under `SNMP Extend` heading top of page.
+    The system discovers the application automatically, as given at the
+    top of the page. If it does not, do the steps given
+    under the `SNMP Extend` heading at the top of the page.

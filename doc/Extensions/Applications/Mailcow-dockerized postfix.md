@@ -13,7 +13,7 @@
     ```bash
     chmod +x /etc/snmp/mailcow-dockerized-postfix
     ```
-    > Maybe you will need to install `pflogsumm` on debian based OS. Please check if you have package installed.
+    > It is possible that you must install `pflogsumm` on a debian based OS. Make sure that the package is installed.
 
 3. Edit your snmpd.conf file (usually /etc/snmp/snmpd.conf) and add:
 
@@ -23,6 +23,6 @@
 
 4. Restart snmpd on your host
 
-    The application should be auto-discovered as described at the top of
-    the page. If it is not, please follow the steps set out under `SNMP
-    Extend` heading top of page.
+    The system discovers the application automatically, as given at the top of
+    the page. If it does not, do the steps given under the `SNMP
+    Extend` heading at the top of the page.

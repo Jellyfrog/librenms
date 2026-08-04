@@ -15,7 +15,7 @@ battery-powered devices, e.g. laptops. YMMV. However, it's possible to support
 any method as long as it can return a power value, usually in Watts.
 
 !!! tip
-    You can achieve this by adding a method and a function for that method to the script. It should be called by getData() and return a dictionary.
+    To do this, add a method, and a function for that method, to the script. getData() must call it, and it must return a dictionary.
 
 Because the methods are unreliable for all hardware, you need to declare to the script which method to use. The are several options to assist with testing, see the `--help`.
 

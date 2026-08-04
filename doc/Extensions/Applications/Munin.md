@@ -22,7 +22,7 @@
 
 4. Install your munin scripts into the above directory.
 
-To create your own custom munin scripts, please see this example:
+To create your own custom munin scripts, refer to this example:
 
 ```bash
 #!/bin/bash

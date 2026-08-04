@@ -5,7 +5,7 @@ GPSD is a daemon that can be used to monitor GPS devices.
 ## Installation
 
 === "SNMP Extend"
-    1. Download the script onto the desired host.
+    1. Download the script to the applicable host.
 
     ```bash
     wget https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/gpsd -O /etc/snmp/gpsd
@@ -25,8 +25,8 @@ GPSD is a daemon that can be used to monitor GPS devices.
 
     4. Restart snmpd on your host
 
-    The application should be auto-discovered as described at the top of
-    the page. If it is not, please follow the steps set out under `SNMP
+    The system discovers the application automatically, as given at the top of
+    the page. If it does not, do the steps given under the `SNMP
     Extend` heading at the top of the page.
 
     If you run into timeout issues with this, you may need to run it configure it like
@@ -47,7 +47,7 @@ GPSD is a daemon that can be used to monitor GPS devices.
 
 === "Agent"
 
-    [Install the agent](../Agent-Setup.md) on this device if it isn't already
+    [Install the agent](../Agent-Setup.md) on this device, if it is not already
     and copy the `gpsd` script to `/usr/lib/check_mk_agent/local/`
 
     You may need to configure `$server` or `$port`.

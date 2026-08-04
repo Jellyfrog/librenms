@@ -4,7 +4,7 @@ Script that reports load-average/memory/open-files stats of Opensips
 
 ### SNMP Extend
 
-1. Download the script onto the desired host
+1. Download the script to the applicable host
 
     ```bash
     wget https://raw.githubusercontent.com/librenms/librenms-agent/master/snmp/opensips-stats.sh -O /etc/snmp/opensips-stats.sh

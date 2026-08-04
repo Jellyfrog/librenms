@@ -26,11 +26,11 @@
     sudo systemctl restart snmpd
     ```
 
-5. Verify you have nvidia-smi installed, which it generally should be if you have the driver from Nvida installed.
+5. Make sure that nvidia-smi is installed. It usually is, if the driver from Nvida is installed.
 
-    The GPU numbering on the graphs will correspond to how the nvidia-smi
+    The GPU numbers on the graphs agree with how the nvidia-smi
     sees them as being.
 
-    For questions about what the various values are/mean, please see the
+    For questions about what the different values are/mean, refer to the
     nvidia-smi man file under the section covering dmon.
 

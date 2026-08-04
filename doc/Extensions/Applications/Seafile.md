@@ -23,7 +23,7 @@ chmod +x /etc/snmp/seafile.py
 extend seafile /etc/snmp/seafile.py
 ```
 
-4. You will also need to create the config file, which is named
+4. You must also create the config file, with the name
 seafile.json . The script has to be located at /etc/snmp/.
 
 ```json
@@ -40,7 +40,7 @@ The variables are as below.
 | Variable | Description |
 | --- | --- |
 | url | Url how to get access to Seafile Server |
-| username | Login to Seafile Server.<br>It is important that used Login has admin privileges.<br>Otherwise most API calls will be denied. |
+| username | Login to the Seafile Server.<br>It is important that the used Login has admin permissions.<br>If it does not, most API calls are denied. |
 | password | Password to the configured login. |
 | account_identifier | Defines how user accounts are listed in RRD Graph.<br>Options are: name, email |
 | hide_monitoring_account | With this Boolean you can hide the Account which you<br>use to access Seafile API |

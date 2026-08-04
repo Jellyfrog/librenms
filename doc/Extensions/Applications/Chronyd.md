@@ -27,4 +27,4 @@ A shell script that gets the stats from chronyd and exports them with SNMP Exten
 
 4. Restart snmpd service on the host
 
-    Application should be auto-discovered and its stats presented on the Apps-page on the host. Note: Applications module needs to be enabled on the host or globally for the statistics to work as intended.
+    The system discovers the application automatically and shows its stats on the Apps-page of the host. Note: The Applications module must be enabled on the host, or globally, for the statistics to operate correctly.

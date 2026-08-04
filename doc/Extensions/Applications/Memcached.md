@@ -1,6 +1,6 @@
 ## Memcached
 
-This script allows you to monitor memcached stats
+With this script, you can monitor memcached stats
 
 ### SNMP Extend
 
@@ -26,6 +26,6 @@ This script allows you to monitor memcached stats
 
 4. Restart snmpd on your host
 
-    The application should be auto-discovered as described at the top of
-    the page. If it is not, please follow the steps set out under `SNMP
-    Extend` heading top of page.
+    The system discovers the application automatically, as given at the top of
+    the page. If it does not, do the steps given under the `SNMP
+    Extend` heading at the top of the page.

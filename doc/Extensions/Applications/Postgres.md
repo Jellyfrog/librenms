@@ -39,9 +39,9 @@ DBhost=localhost
 ```
 
 Note that if you are using netdata or the like, you may wish to set ignorePG
-to 1 or otherwise that total will be very skewed on systems with light or
+to 1. If you do not, that total is very incorrect on systems with light or
 moderate usage.
 
-The application should be auto-discovered as described at the top of
-the page. If it is not, please follow the steps set out under `SNMP
-Extend` heading top of page.
+The system discovers the application automatically, as given at the top of
+the page. If it does not, do the steps given under the `SNMP
+Extend` heading at the top of the page.
