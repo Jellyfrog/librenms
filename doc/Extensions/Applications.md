@@ -17,10 +17,10 @@ If multiple methods of collection are listed you only need to enable one.
 ## SNMP Extend
 
 When using the `snmp extend` method, the application discovery module
-will pick up which applications you have set up for monitoring
+finds the applications that you set up for monitoring
 automatically, even if the device is already in LibreNMS. The
 application discovery module is enabled by default for most \*nix
-operating systems, but in some cases you will need to manually enable
+operating systems. But in some conditions, you must manually enable
 the application discovery module.
 
 ### SUDO
@@ -37,14 +37,14 @@ Then test if you can run the extend script as that user without issue.
     sudo -u Debian-snmp /usr/local/bin/proxmox
     ```
 
-    If it doesn't work, then you will need to use sudo with the extend command.
-    For the example above, that would mean adding the line below to the sudoers file:
+    If it does not operate, you must use sudo with the extend command.
+    For the example above, that means: add the line below to the sudoers file:
 
     ```bash
     Debian-snmp ALL = NOPASSWD: /usr/local/bin/proxmox
     ```
 
-    Finally we would need to add sudo to the extend command, which would look
+    Last, we must add sudo to the extend command, which looks
     like that for proxmox:
 
     ```bash
@@ -71,7 +71,7 @@ Then test if you can run the extend script as that user without issue.
 While the `json_app_get` does allow for more complex and larger data
 to be easily returned by a extend and the data to then be worked
 with, this can also sometimes result in large returns that
-occasionally don't play nice with SNMP on some networks.
+sometimes cause problems with SNMP on some networks.
 
 `librenms_return_optimizer` fixes this via taking the extend output
 piped to it, gzipping it, and then converting it to base64. The
@@ -156,12 +156,12 @@ if congiured to do so.
 
 1. Edit the device for which you want to add this support
 1. Click on the *Modules* tab and enable the `applications` module.
-1. This will be automatically saved, and you should get a green
+1. The system saves this automatically, and you get a green
    confirmation pop-up message.
 
 ![Enable-application-module](../img/Enable_application_module.png)
 
-After you have enabled the application module, it would be wise to
+After you enable the application module, we recommend that you
 then also enable which applications you want to monitor, in the rare
 case where LibreNMS does not automatically detect it.
 
@@ -173,7 +173,7 @@ LibreNMS during discovery and polling.
 1. Go to the device you have just enabled the application module for.
 1. Click on the *Applications* tab and select the applications you
    want to monitor.
-1. This will also be automatically saved, and you should get a green
+1. The system also saves this automatically, and you get a green
    confirmation pop-up message.
 
 ![Enable-applications](../img/Enable_applications.png)
@@ -183,7 +183,7 @@ LibreNMS during discovery and polling.
 
 The unix-agent does not have a discovery module, only a poller
 module. That poller module is always disabled by default. It needs to
-be manually enabled if using the agent. Some applications will be
+be manually enabled if you use the agent. Some applications are
 automatically enabled by the unix-agent poller module. It is better to
 ensure that your application is enabled for monitoring. You can check
 by following the steps under the `SNMP Extend` heading.

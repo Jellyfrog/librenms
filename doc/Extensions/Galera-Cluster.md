@@ -13,7 +13,7 @@ For more information see
 
 ## Getting Started
 
- * It is best practice to have a minimum of 3 nodes in the cluster, A odd number of nodes is recommended in the event nodes have a disagreement on data, they will have a tie breaker.
+ * The best procedure is a minimum of 3 nodes in the cluster. An odd number of nodes is recommended. Then, when nodes do not agree on data, they have a tie breaker.
  * It's recommended that all servers be similar in hardware performance, cluster performance can be affected by the slowest server in the cluster.
  * Backup the database before starting, and backing up the database regularly is still recommended even in a working cluster environment.
 
@@ -54,18 +54,18 @@ wsrep_node_name="librenms1.35"
 ```
 Change the following values for your environment.
 * wsrep_cluster_address -  All the IP address's of your nodes.
-* wsrep_cluster_name - Name of cluster, should be the same for all nodes
+* wsrep_cluster_name - Name of the cluster. It must be the same for all nodes
 * wsrep_node_address - IP address of this node.
 * wsrep_node_name - Name of this node.
 
 ### Edit LibreNMS .env
 
 LibreNMS supports up to 9 galera nodes, you define these nodes in the .env file. For each node we have the ability to define if this librenms installation/poller is able to write, read or both to that node.
-The galera nodes you define here can be the same or different for each librenms poller. If you have a poller you only want to write/read to one galera node, you would simply add one DB_HOST, and omit all the rest. This allows you to precisely control what galera nodes a librenms poller is reading and or writing too.
+The galera nodes that you define here can be the same, or different, for each librenms poller. If you have a poller that must write/read to only one galera node, add one DB_HOST and no others. With this, you have accurate control of the galera nodes from which a librenms poller reads, and to which it writes.
 
 * DB_HOST is always set to read/write.
 * DB_HOST must be set, however, it does not have to be the same on each poller, it can be different as long as it's part of the same galera cluster.
-* If the node that is set to DB_HOST is down, things like ```lnms db``` command no longer work, as they only use DB_HOST and don't failover to other nodes.
+* If the node that is set as DB_HOST is down, items such as the ```lnms db``` command do not operate. They use only DB_HOST and do not change to other nodes.
 * Set DB_CONNECTION=mysql_cluster to enable
 * DB_STICKY can be used if you are pulling out of sync data form the database in a read request. For more information see
 <https://laravel.com/docs/database#the-sticky-option>
@@ -87,7 +87,7 @@ DB_DATABASE=librenms
 DB_USERNAME=librenms
 DB_PASSWORD=password
 ```
-The above .env on a librenms installation/poller would communicate to each galera node as follows.
+The .env above, on a librenms installation/poller, speaks to each galera node as follows.
 
 * 192.168.1.35 - Read/Write
 * 192.168.1.36 - Read/Write
@@ -134,8 +134,8 @@ SHOW GLOBAL STATUS LIKE 'wsrep_%';
 
 ### Restarting the Entire Cluster
 
-In a cluster environment, steps should be taken to ensure that ALL nodes are not offline at the same time. Failed nodes can recover without issue as long as one node remains online.
-In the event that ALL nodes are offline, the following should be done to ensure you are starting the cluster with the most up-to-date database. To do this login to each node and running the following
+In a cluster environment, make sure that ALL nodes are not offline at the same time. Failed nodes can recover without problems, if one node stays online.
+If ALL nodes are offline, do the steps below to make sure that you start the cluster with the newest database. To do this, log in to each node and run the command below
 
 
 ```grastate.dat

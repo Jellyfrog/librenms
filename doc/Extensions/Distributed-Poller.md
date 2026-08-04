@@ -11,7 +11,7 @@ Before deploying distributed polling, review the [Performance Documentation](../
 
 ## Overview
 
-In addition to separating LibreNMS components across different servers, distributed polling allows poller workloads to be balanced among multiple nodes.
+In addition to the separation of LibreNMS components across different servers, distributed polling can balance poller workloads across multiple nodes.
 
 LibreNMS consists of several core services:
 
@@ -199,4 +199,4 @@ Follow the [installation guide](../Installation/Install-LibreNMS.md), skipping d
 When prompted for the web install, instead copy the `.env` file from another node and assign a unique `NODE_ID`.
 
 Then set up the [Dispatcher Service](Dispatcher-Service.md).
-The poller node will appear in the Web UI once it starts reporting.
+The poller node shows in the Web UI when it starts to report.

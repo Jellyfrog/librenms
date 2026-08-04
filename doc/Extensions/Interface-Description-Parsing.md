@@ -91,7 +91,7 @@ return function (string $ifAlias): array {
 
 Fields you can fill in your returned array
 
- - type: port type (only defined types will show as graphs)
+ - type: port type (only defined types show as graphs)
  - descr: description of the port
  - circuit: usually a circuit id
  - speed: can be a plan name or a numeric speed 10G or asymmetric egress/ingress numeric speeds (eg 10G/500M)

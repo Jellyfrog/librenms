@@ -61,4 +61,4 @@ For additional information on distributed polling configuration, see [Distribute
 
 ## Testing Your Configuration
 
-To verify your Redis Sentinel setup is working correctly with LibreNMS you can connect to the Redis Sentinel cluster using the `redis-cli` and execute the `MONITOR` command. This command will show you the commands being executed on the Redis cluster.
+To make sure that your Redis Sentinel setup operates correctly with LibreNMS, connect to the Redis Sentinel cluster with the `redis-cli` and run the `MONITOR` command. This command shows you the commands that run on the Redis cluster.

@@ -179,7 +179,7 @@ logstash config file that works except for the LibreNMS export, take
 only the "exec" section from output and add it.
 
 ### Remote Logstash (or any json source)
-If you have a large logstash / elastic installation for collecting and filtering syslogs, you can simply pass the relevant logs as json to the LibreNMS API "syslog sink". This variant may be more flexible and secure in transport. It does not require any major changes to existing ELK setup. You can also pass simple json kv messages from any kind of application or script (example below) to this sink. 
+If you have a large logstash / elastic installation that collects and filters syslogs, you can pass the applicable logs as json to the LibreNMS API "syslog sink". This variant can be more flexible and safe in transport. It does not need large changes to the current ELK setup. You can also pass simple json kv messages from each type of application or script (example below) to this sink. 
 
 For long term or advanced aggregation searches you might still use Kibana/Grafana/Graylog etc. It is recommended to keep `config['syslog_purge']` short.
 
@@ -262,7 +262,7 @@ curl -L -X POST 'https://sink.librenms.org/api/v0/syslogsink/' -H 'X-Auth-Token:
 
 ### Graylog
 
-This variant method use a external Graylog installation and its database. Please refer to the dedicated [Graylog](Graylog.md) documentation.
+This variant method uses an external Graylog installation and its database. Refer to the applicable [Graylog](Graylog.md) documentation.
 
 ## Client configuration
 
@@ -370,7 +370,7 @@ write memory
 ```
 
 If you have permitted udp and tcp 514 through any firewall then that
-should be all you need. Logs should start appearing and displayed
+is usually all that you need. Logs start to show
 within the LibreNMS web UI.
 
 ### Windows
@@ -387,7 +387,7 @@ just using this Datagram-Syslog Agent for this example.
 
 [Link to How to](http://techgenix.com/configuring-syslog-agent-windows-server-2012/)
 
-You will need to download and install "Datagram-Syslog Agent" for this how to
+You must download and install "Datagram-Syslog Agent" for this how to
 [Link to Download](http://download.cnet.com/Datagram-SyslogAgent/3001-2085_4-10370938.html)
 
 ## External hooks

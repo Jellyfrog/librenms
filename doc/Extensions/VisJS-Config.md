@@ -93,8 +93,8 @@ from within LibreNMS by adding the following to config.php
 
 Once you've achieved your desired map appearance, click the generate
 options button at the bottom to be given the necessary parameters to
-set in the lnms command. Note that the configurator will output the config
-with `const options` you will need to strip this out.
+set in the lnms command. Note: the configurator writes the config
+with `const options`. You must remove this.
 
 ```bash
 lnms config:set network_map_vis_options '{

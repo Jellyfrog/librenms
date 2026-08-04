@@ -52,7 +52,7 @@ is returned in one single consolidated array, there is the potential
 for someone to attempt to set an attribute (in the `component_prefs`)
 table that is used in the `component` table. Because of this all
 fields of the `component` table are reserved, they cannot be used as
-custom attributes, if you update these the module will attempt to
+custom attributes. If you update these, the module tries to
 write them to the `component` table, not the `component_prefs` table.
 
 ## Using Components
@@ -76,7 +76,7 @@ $ARRAY = $COMPONENT->getComponents($DEVICE_ID, $OPTIONS);
 - `DEVICE_ID` or null for all devices.
 - `OPTIONS` - an array of various options.
 
-`getComponents` will return an array containing components in the following format:
+`getComponents` returns an array that contains components in this format:
 
 ```php
 Array
@@ -173,8 +173,8 @@ $ARRAY = $COMPONENT->createComponent($DEVICE_ID, $TYPE);
 - `DEVICE_ID` - The ID of the device to attach the component to.
 - `TYPE` - The unique type for your module.
 
-This will return a new, empty array with a component ID and Type set,
-all other fields will be set to defaults.
+This returns a new, empty array with a component ID and Type set.
+All other fields are set to the default values.
 
 ```php
 Array
@@ -199,7 +199,7 @@ When a component is no longer needed, it can be deleted.
 $COMPONENT->deleteComponent($COMPONENT_ID)
 ```
 
-This will return `True` on success or `False` on failure.
+This returns `True` on success, or `False` on failure.
 
 ## Editing Components
 
@@ -221,7 +221,7 @@ $ARRAY = $COMPONENT->getComponents($DEVICE_ID, $OPTIONS);
 $ARRAY = $ARRAY[$DEVICE_ID];
 ```
 
-Then simply edit this array to suit your needs.
+Then edit this array for your needs.
 If you need to add a new Attribute/Value pair you can:
 
 ```php
@@ -257,7 +257,7 @@ of, these are:
   `$ARRAY[$DEVICE_ID][$COMPONENT_ID][Attribute] = 'Value';`
 - You cannot edit the Component ID or the Device ID
 - [reserved](#reserved) fields can not be removed
-- if a change is found an entry will be written to the eventlog.
+- if a change is found, the system writes an entry to the eventlog.
 
 ## API
 

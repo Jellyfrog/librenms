@@ -38,7 +38,7 @@ If you are still using CRON:
 
     If you are using distributed pollers you can restrict a
     poller to a group by appending `-g` to the cron entry. Alternatively,
-    you should only run `ping.php` on a single node.
+    run `ping.php` only on a single node.
 
 ## Device dependencies
 

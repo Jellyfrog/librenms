@@ -18,7 +18,7 @@ Plugins come from two main sources:
 * [monitoring-plugins](https://www.monitoring-plugins.org)
 * [pkg-nagios-plugins-contrib](https://github.com/bzed/pkg-nagios-plugins-contrib)
 
-Note: Plugins will only load if they are prefixed with `check_`.
+Note: Plugins load only if their name starts with `check_`.
 The `check_` prefix is stripped out when displaying in the "Add Service"
 GUI "Type" dropdown list.
 
@@ -42,7 +42,7 @@ When a Device is a member of multiple Device Groups, templates from
 all of those Device Groups are applied.
 
 If a Device is added or removed from a Device Group, when the Apply button
-is used or Auto Discovery runs Services will be added / removed as
+is used, or Auto Discovery runs, the system adds / removes Services as
 appropriate.
 
 **Service Templates are tied into Device Groups, you need at least
@@ -94,7 +94,7 @@ Next, you need to enable the services within config.php with the following:
 $config['show_services']           = 1;
 ```
 
-This will enable a new service menu within your navbar.
+This enables a new service menu in your navbar.
 
 Debian/Ubuntu:
 ```php
@@ -106,8 +106,8 @@ Centos:
 $config['nagios_plugins']   = "/usr/lib64/nagios/plugins";
 ```
 
-This will point LibreNMS at the location of the nagios plugins -
-please ensure that any plugins you use are set to executable. For example:
+This points LibreNMS at the location of the nagios plugins -
+make sure that the plugins that you use are executable. For example:
 
 Debian/Ubuntu:
 ```
@@ -129,26 +129,26 @@ file (/etc/cron.d/librenms typically) like:
 Now you can add services via the main Services link in the navbar, or
 via the 'Add Service' link within the device, services page.
 
-Note that some services (procs, inodes, load and similar) will always
+Note: some services (procs, inodes, load and similar) always
 poll the local LibreNMS server it's running on, regardless of which
 device you add it to.
 
 ### Performance data
 
-By default, the check-services script will collect all performance
+By default, the check-services script collects all performance
 data that the Nagios script returns and display each datasource on a
 separate graph. LibreNMS expects scripts to return using Nagios
 convention for the response message structure:
 [AEN200](https://nagios-plugins.org/doc/guidelines.html#AEN200)
 
-However for some modules it would be better if some of this
+But for some modules, it is better if some of this
 information was consolidated on a single graph.
 An example is the ICMP check. This check returns: Round Trip Average
 (rta), Round Trip Min (rtmin) and Round Trip Max (rtmax).
 These have been combined onto a single graph.
 
-If you find a check script that would benefit from having some
-datasources graphed together, please log an issue on GitHub with the
+If you find a check script for which it is better to graph some
+datasources together, open an issue on GitHub with the
 debug information from the script, and let us know which DS's should
 go together. Example below:
 
@@ -184,7 +184,7 @@ Services uses the Nagios Alerting scheme where exit code:
 ```
 
 To create an alerting rule to alert on service=critical, your alerting
-rule would look like:
+rule looks like:
 
 ```
     %services.service_status = "2"
@@ -206,7 +206,7 @@ then you can run the following command to help troubleshoot services.
 
 ### Related Polling / Discovery Options
 
-These settings are related and should be investigated and set accordingly.
+These settings are related. Examine them and set them correctly.
 The below values are not defaults or recommended.
 
 !!! setting "poller/scheduledtasks"
@@ -219,7 +219,7 @@ The below values are not defaults or recommended.
     lnms config:set service_services_workers 16
     lnms config:set service_discovery_workers 300
     ```
-Please also see [Dispatcher Service](../Extensions/Dispatcher-Service.md)
+Also refer to [Dispatcher Service](../Extensions/Dispatcher-Service.md)
 
 ### Service checks polling logic
 
@@ -232,7 +232,7 @@ To override the default logic and always poll service checks, you can
 disable ICMP testing for any device by switching `Disable ICMP Test`
 setting (Edit -> Misc) to ON.
 
-Service checks will never be polled on disabled devices.
+Service checks are never polled on disabled devices.
 
 ### CHECK_MRPE
 
@@ -243,8 +243,8 @@ If you added..
 
 > cpu_check /usr/lib/nagios/plugins/check_cpu.sh -c 95 -w 75
 
-...to `/etc/check_mk/mrpe.cfg` on your remote host, you should be able to check its output by configuring a service using the [check_mrpe](https://raw.githubusercontent.com/librenms/librenms-agent/master/agent-local/check_mrpe) script.
+...to `/etc/check_mk/mrpe.cfg` on your remote host, you can examine its output. Configure a service with the [check_mrpe](https://raw.githubusercontent.com/librenms/librenms-agent/master/agent-local/check_mrpe) script.
 
  - Add [check_mrpe](https://raw.githubusercontent.com/librenms/librenms-agent/master/agent-local/check_mrpe) to the Nagios plugins directory on your LibreNMS server and make it executable.
 - In LibreNMS, add a new service to the desired device with the type mrpe.
-- Enter the IP address of the remote host and in parameters enter `-a cpu_check` (this should match the name used at the beginning of the line in the mrpe.cfg file).
+- Enter the IP address of the remote host, and in parameters enter `-a cpu_check` (this must match the name used at the start of the line in the mrpe.cfg file).

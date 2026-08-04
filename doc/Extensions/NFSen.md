@@ -27,7 +27,7 @@ live. This can also be an array to specify more directories like:
     lnms config:set nfsen_rrds.+ '/var/nfsen/profiles-stat/siteb/'
     ```
 
-Although for most setups, it will look like below, with the
+For most setups, it looks like the example below, with the
 profiles-stat/live directory being where it stores the general RRDs
 for data sources.
 
@@ -38,7 +38,7 @@ for data sources.
 
 If you wish to render info for configure channels for a device, you
 need add the various profile-stat directories your system uses, which
-for most systems will be as below.
+for most systems is as below.
 
 !!! setting "external/nfsen"
     ```bash
@@ -47,7 +47,7 @@ for most systems will be as below.
 
 When adding sources to nfsen.conf, it is important to use the hostname
 that matches what is configured in LibreNMS, because the rrd files
-NfSen creates is named after the source name (ident), and it doesn't
+NfSen creates has the name of the source name (ident), and it does not
 allow you to use an IP address instead. However, in LibreNMS, if your
 device is added by an IP address, add your source with any name of
 your choice, and create a symbolic link to the rrd file.
@@ -74,14 +74,14 @@ The above is a very important bit as device names in NfSen are limited
 to 21 characters. This means full domain names for devices can be very
 problematic to squeeze in, so therefor this chunk is usually removed.
 
-On a similar note, NfSen profiles for channels should be created with
+Also, create NfSen profiles for channels with
 the same name.
 
 ## Stats Defaults and Settings
 
 Below are the default settings used with nfdump for stats.
 
-For more defaulted information on that, please see nfdump(1).  
+For more default information about that, refer to nfdump(1).  
 The default location for nfdump is `/usr/bin/nfdump`. If nfdump
 is located elsewhere, set it with
 

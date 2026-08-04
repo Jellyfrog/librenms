@@ -13,11 +13,11 @@ remote system.
 Make sure that systemd or xinetd is installed on the host you want to
 run the agent on.
 
-The agent uses TCP-Port 6556, please allow access from the **LibreNMS
+The agent uses TCP-Port 6556. Permit access from the **LibreNMS
 host** and **poller nodes** if you're using the [Distributed Polling](Distributed-Poller.md)
 setup.
 
-On each of the hosts you would like to use the agent on, you need to do the following:
+On each of the hosts on which you want to use the agent, do this:
 
 1: Clone the `librenms-agent` repository:
 
@@ -67,7 +67,7 @@ monitor. Under the modules section, ensure that unix-agent is enabled.
 
 9: Then under Applications, enable the apps that you plan to monitor.
 
-10: Wait for around 10 minutes and you should start seeing data in
+10: Wait approximately 10 minutes. Then you start to see data in
 your graphs under Apps for the device.
 
 #### Restrict the devices on which the agent listens: Linux systemd

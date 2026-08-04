@@ -6,7 +6,7 @@ specific to your setup or are not relevant or interesting for all community memb
 You are able to intervene in defined places in the behavior of
 the website, without it coming to problems with future updates.
 
-This documentation will give you a basis for writing a plugin for
+This documentation gives you a base to write a plugin for
 LibreNMS.
 
 ## Distribution
@@ -26,7 +26,7 @@ To tie in to specific parts of LibreNMS such as the Menu, Device Overview or a P
 
 You can see an example plugin here: [example plugin repository](https://github.com/murrant/librenms-example-plugin).
 
-> Please come to discord and share any experiences and update this documentation!
+> Come to discord, tell about your experiences, and update this documentation!
 
 ## Local plugin
 
@@ -57,7 +57,7 @@ The above structure is checked before a plugin can be installed.
 All file/folder names are case sensitive and must match the structure.
 
 Only the blade files that are really needed need to be created. A plugin manager
-will then load a hook that has a basic functionality.
+then loads a hook that has a basic function.
 
 If you want to customize the basic behavior of the hooks, you can create a
 class in 'app/Plugins/PluginName' and overload the hook methods.
@@ -87,7 +87,7 @@ class in 'app/Plugins/PluginName' and overload the hook methods.
 ```
 
 - port-tab.blade.php :: This is called in the Port page,
-  in the "Plugins" menu_option that will appear when your plugin gets
+  in the "Plugins" menu_option that shows when your plugin gets
   enabled. In this blade, you can do your work and display your
   results in a frame.
 
@@ -100,20 +100,20 @@ class in 'app/Plugins/PluginName' and overload the hook methods.
 
 ### PHP Hooks customization
 
-PHP code should run inside your hooks method and not your blade view.
+PHP code must run in your hooks method, not in your blade view.
 The built in hooks support authorize and data methods.
 
 These methods are called with [Dependency Injection](https://laravel.com/docs/container#method-invocation-and-injection)
-Hooks with relevant database models will include them in these calls.
+Hooks with applicable database models include them in these calls.
 Additionally, the settings argument may be included to inject the plugin settings into the method.
 
 #### Data
 
-You can overrid the data method to supply data to your view.  You should also do any processing here.
+You can replace the data method to supply data to your view.  Also do all processing here.
 You can do things like access the database or configuration settings and more.
 
 In the data method we are injecting settings here to count how many we have for display in the menu entry blade view.
-Note that you must specify a default value (`= []` here) for any arguments that don't exist on the parent method.
+Note: you must specify a default value (`= []` here) for arguments that do not exist on the parent method.
 
 ```php
 class Menu extends MenuEntryHook
@@ -131,7 +131,7 @@ class Menu extends MenuEntryHook
 
 By default hooks are always shown, but you may control when the user is authorized to view the hook content.
 
-As an example, you could imagine that the device-overview.blade.php should only be displayed when the
+As an example, the device-overview.blade.php must show only when the
 device is in a maintenance mode and the current user has the admin role.
 
 ```php

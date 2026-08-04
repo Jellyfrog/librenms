@@ -106,7 +106,7 @@ $config['distributed_poller_group'] = 0;               // Poller group ID
 Dispatcher statistics appear in **Settings > Poller > Poller**.
 
 > **Tip:** Set the number of workers carefully.
-> Too few will delay polling; too many will overload your hardware.
+> Too few cause a polling delay. Too many cause too much load on your hardware.
 
 Keep **Consumed Worker Seconds** below **Maximum Worker Seconds**.
 If the two values are close and **Devices Pending** is 0, the poller is well tuned.

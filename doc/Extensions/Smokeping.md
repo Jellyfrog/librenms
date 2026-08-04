@@ -29,7 +29,7 @@ sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noa
 sudo yum install smokeping
 ```
 
-Once installed, you should need a cron script installed to make sure that the
+After the installation, install a cron script to make sure that the
 configuration file is updated. You can find an example in `misc/librenms-smokeping-rhel.example`.
 Put this into /etc/cron.d/hourly, and mark it executable:
 
@@ -84,7 +84,7 @@ Smokeping is available via the default repositories.
 sudo apt-get install smokeping
 ```
 
-Once installed, you should need a cron script installed to make sure that the
+After the installation, install a cron script to make sure that the
 configuration file is updated. You can find an example in `misc/librenms-smokeping-debian.example`.
 Put this into /etc/cron.d/hourly, and mark it executable:
 
@@ -133,9 +133,9 @@ file sequence.
     lnms config:set smokeping.url 'smokeping/'
     ```
 
-`dir` should match the location that smokeping writes RRD's to
-`pings` should match the default smokeping value, default 20
-`probes` should be the number of processes to spread pings over, default 2
+`dir` must match the location to which smokeping writes RRD's
+`pings` must match the default smokeping value, default 20
+`probes` must be the number of processes across which to divide pings, default 2
 
 These settings can also be set in the Web UI.
 
@@ -159,7 +159,7 @@ contact  = admin@ACME.xxx
 cgiurl   = http://yourlibrenms/cgi-bin/smokeping.cgi
 ```
 
-Smokeping should automatically install an Apache configuration file in
+Smokeping usually installs an Apache configuration file automatically in
 `/etc/apache2/conf-available/`. Verify this using :
 
 ```bash
@@ -167,7 +167,7 @@ librenms@librenms:~/scripts$ ls /etc/apache2/conf-available/ | grep smokeping
 smokeping.conf
 ```
 
-If you don't see `smokeping.conf` listed, you'll need to create a symlink for
+If `smokeping.conf` is not in the list, you must create a symlink for
 it:
 
 ```bash
@@ -176,7 +176,7 @@ ln -s /etc/smokeping/apache2.conf /etc/apache2/conf-available/smokeping.conf
 
 After creating the symlink, restart Apache with `sudo systemctl apache2 restart`
 
-You should be able to load the Smokeping web interface at `http://yourhost/cgi-bin/smokeping.cgi`
+You can load the Smokeping web interface at `http://yourhost/cgi-bin/smokeping.cgi`
 
 ### Nginx Configuration - RHEL, CentOS and alike
 This section assumes you have configured LibreNMS with Nginx as
@@ -250,7 +250,7 @@ systemctl enable --now fcgiwrap
 
 Add the following configuration to your `/etc/nginx/conf.d/librenms.conf` file within `server` section.
 
-The following will configure Nginx to respond to `http://yourlibrenms/smokeping`:
+The configuration below sets Nginx to reply at `http://yourlibrenms/smokeping`:
 ```
 location = /smokeping/ {
         fastcgi_intercept_errors on;
@@ -280,7 +280,7 @@ location ^~ /smokeping/ {
         gzip off;
 }
 ```
-If images/js/css don't load, you might have to add
+If images/js/css do not load, it is possible that you must add
 ```
 location ^~ /smokeping/css {
         alias /usr/share/smokeping/htdocs/css/;
@@ -298,7 +298,7 @@ location ^~ /smokeping/images {
 After saving the configuration file, verify your Nginx configuration file syntax
 is OK with `sudo nginx -t`, then restart Nginx with `sudo systemctl restart nginx`
 
-You should be able to load the Smokeping web interface at `http://yourlibrenms/smokeping`
+You can load the Smokeping web interface at `http://yourlibrenms/smokeping`
 
 
 ### Nginx Configuration - Ubuntu, Debian and alike
@@ -319,7 +319,7 @@ cp /usr/share/doc/fcgiwrap/examples/nginx.conf /etc/nginx/fcgiwrap.conf
 
 Add the following configuration to your `/etc/nginx/conf.d/librenms.conf` file within `server` section.
 
-The following will configure Nginx to respond to `http://yourlibrenms/smokeping`:
+The configuration below sets Nginx to reply at `http://yourlibrenms/smokeping`:
 
 ```
 # Browsing to `http://yourlibrenms/smokeping/` should bring up the smokeping web interface
@@ -358,7 +358,7 @@ location ^~ /smokeping/ {
 After saving the configuration file, verify your Nginx configuration file syntax
 is OK with `sudo nginx -t`, then restart Nginx with `sudo systemctl restart nginx`
 
-You should be able to load the Smokeping web interface at `http://yourlibrenms/smokeping`
+You can load the Smokeping web interface at `http://yourlibrenms/smokeping`
 
 #### Nginx Password Authentication
 
@@ -466,7 +466,7 @@ semodule -i smokeping_librenms.pp
 
 ### Probe FPing missing missing from the probes section
 
-Take a look at the instructions again - something isn't correct in your
+Read the instructions again - something is not correct in your
 configuration.
 
 ### Section or variable already exists
@@ -479,13 +479,13 @@ than once) or stanza. Otherwise, look again at the instructions.
 
 ### Mandatory variable 'probe' not defined
 The target block must have a default probe. If you follow the instructions you
-will have one. If you're trying to integrate LibreNMS, smokeping *and* another
+has one. If you try to integrate LibreNMS, smokeping *and* another
 source of configuration, you need to make sure there are no duplicate or missing
 definitions.
 
 ### File '/usr/sbin/sendmail' does not exist`
 
-If you got this error at the end of the installation, simply edit or
+If you got this error at the end of the installation, edit or
 comment out the sendmail entry in the configuration:
 
 ```diff

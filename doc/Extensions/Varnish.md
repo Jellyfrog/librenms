@@ -17,8 +17,8 @@ Simplified block diagram of an Apache HTTP server with Varnish 4.0 Reverse Proxy
 
 ## CentOS 7 Varnish Installation
 
-In this example we will assume your Apache 2.4.X HTTP server is working and
-configured to process HTTP requests on port 80.  If not, please see
+This example applies when your Apache 2.4.X HTTP server is serviceable and
+configured to process HTTP requests on port 80.  If not, refer to
 [Installing LibreNMS](../Installation/Install-LibreNMS.md)
 
 ## Install Varnish 4.0 RPM
@@ -47,7 +47,7 @@ systemctl start varnish
 ```
 
 Using a web browser navigate to <server ip addr>:6081 or
-127.0.0.1:6081. You should see a Varnish error message, this shows
+127.0.0.1:6081. You see a Varnish error message. This shows
 that Varnish is working. Example error message:
 
 ```ssh
@@ -259,11 +259,11 @@ sub vcl_deliver {
 firewall-cmd --reload
 ```
 
-Varnish caching does not take effect immediately.  You will need to
+Varnish caching does not start immediately.  You must
 browse the LibreNMS website to build up the cache.
 
 Use the command `varnishstat` to monitor Varnish caching.  Over time
-you should see 'MAIN.cache_hit' and 'MAIN.client_req' increase.  With
+you see 'MAIN.cache_hit' and 'MAIN.client_req' increase.  With
 the above VCL the hit to request ratio is approximately 84%.
 
 - Session based VCL (coming soon)

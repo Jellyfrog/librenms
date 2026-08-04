@@ -29,7 +29,7 @@ These can be managed via the Web UI under **Settings (cog icon) -> Manage Users 
 ![Roles Management Screen](../img/webui-roles-management.png)
 
 Custom roles allow for fine-tuned access. Unlike built-in roles, they can be configured with any combination of
-functional permissions available in the system. For example, you can create a role that only allows viewing
+functional permissions available in the system. For example, you can create a role that permits only a view of
 event logs and nothing else.
 
 ### 3. Permissions
@@ -71,7 +71,7 @@ Even if a user is granted access to a specific device, they still require the co
 permission** to access certain modules or menu items for that device.
 
 **Example: Routing**
-Even with access to Router-01, the Routing menu won't appear unless the user's role includes
+Also with access to Router-01, the Routing menu does not show, unless the user's role includes
 `routing.viewAny` or `routing.view`.
 
 This pattern applies to several other modules, including:
@@ -89,17 +89,17 @@ also have the required functional permissions for those modules).
 #### Port Permissions:
 
 Access can be granted to individual ports. Note that if a user already has access to the parent device,
-they will automatically have access to all its ports.
+they automatically have access to all its ports.
 
 **Port-only Access:**
-If a user is granted access only to specific ports, they will **not** see the parent device in the main
-Devices list or in most global views. They will only see the ports they have access to in the Ports list
+If a user has access only to specified ports, they do **not** see the parent device in the main
+Devices list, or in most global views. They see only the ports to which they have access, in the Ports list
 and in specific port-related views. This is useful for providing customers access to only their specific
 interfaces without exposing the entire device configuration or other customers' ports.
 
 #### Bill Permissions:
 Visibility of billing data is restricted to specific users through bill-level permissions. If a user
-lacks `bill.viewAny`, they will only see bills they have been explicitly granted access to.
+does not have `bill.viewAny`, they see only the bills to which they have access.
 
 #### Device Group Permissions:
 Access can be granted to all devices within a specific **Static Device Group**.
@@ -143,7 +143,7 @@ Goal: Allow a customer to see only their devices and specific ports.
 2.  **Assign Devices:** Go to **Manage Access** for that user and add the specific devices they own.
 3.  **Assign Ports:** Go to **Manage Access** for that user and add specific ports on other devices (e.g., their uplink port
     on a shared switch).
-4.  **Result:** The customer will see their own devices in full, plus only the specific ports assigned to them from
+4.  **Result:** The customer sees their own devices in full, plus only the specified ports given to them from
     other devices.
 
 #### Scenario: Billing Manager

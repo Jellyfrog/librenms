@@ -1,6 +1,6 @@
 # Graylog integration
 
-We have simple integration for Graylog, you will be able to view any
+There is simple integration for Graylog. You can see the
 logs from within LibreNMS that have been parsed by the syslog input
 from within Graylog itself. This includes logs from devices which
 aren't in LibreNMS still, you can also see logs for a specific device
@@ -13,12 +13,12 @@ sends the shortname only. To fix this, add
 
 `$PreserveFQDN on`
 
-to your rsyslog config to send the full FQDN so device logs will be
+to your rsyslog config to send the full FQDN. Then device logs are
 associated correctly in LibreNMS. Also see near the bottom of this
 document for tips on how to enable/suppress the domain part of
 hostnames in syslog-messages for some platforms.
 
-Graylog itself isn't included within LibreNMS, you will need to
+Graylog itself is not included in LibreNMS. You must
 install this separately either on the same infrastructure as LibreNMS
 or as a totally standalone appliance.
 
@@ -47,7 +47,7 @@ Timezone must be PHP supported timezones, available at:
 <https://php.net/manual/en/timezones.php>
 
 ## Graylog Version
-If you are running a version earlier than Graylog then please set
+If you run an earlier Graylog version, set
 
 !!! setting "external/graylog"
     ```bash
@@ -67,7 +67,7 @@ can override the default of `/api/` using
     ```
 
 ## User Credentials
-If you don't want to use an admin account for connection to Graylog
+If you do not want to use an admin account for the connection to Graylog
 Log into http://<graylog-server-ip>/api/api-browser/global/index.html using graylog admin credentials
 Browse to: Roles: User roles
 Click on: Create a new role
@@ -92,7 +92,7 @@ Graylog, "read" permissions alone are not sufficient.
 
 ## TLS Certificate
 If you have enabled TLS for the Graylog API and you are using a
-self-signed certificate, please make sure that the certificate is
+self-signed certificate, make sure that the certificate is
 trusted by your LibreNMS host, otherwise the connection will
 fail. Additionally, the certificate's Common Name (CN) has to match
 the FQDN or IP address specified in
@@ -129,7 +129,7 @@ Sets the maximum number of rows to be displayed (default: 10)
     lnms config:set graylog.device-page.loglevel 7
     ```
 
-You can set which loglevels that should be displayed on the overview page. (default: 7, min:
+You can set the loglevels that show on the overview page. (default: 7, min:
 0, max: 7)
 
 !!! setting "external/graylog"
@@ -150,7 +150,7 @@ lnms config:set graylog.loglevel 7
 
 Suppressing/enabling the domain part of a hostname for specific platforms
 
-You should see if what you get in syslog/Graylog matches up with your
+Make sure that what you get in syslog/Graylog agrees with your
 configured hosts first. If you need to modify the syslog messages from
 specific platforms, this may be of assistance:
 

@@ -8,9 +8,9 @@ procedures. A user is now required to supply a changing 6-digit
 passcode in addition to their password to obtain access to the account.
 
 LibreNMS has a RFC4226 conformant implementation of both Time and Counter
-based One-Time-Passwords. It also allows the administrator to
+based One-Time-Passwords. With it, the administrator can also
 configure a throttle time to enforce after 3 failures exceeded. Unlike
-RFC4226 suggestions, this throttle time will not stack on the amount of
+RFC4226 recommendations, this throttle time does not stack on the quantity of
 failures.
 
 ## Types
@@ -34,7 +34,7 @@ the attacker a range of up to +/- 3 Minutes to create passcodes.
 
 This type uses an internal counter that needs to be in sync with the
 server's counter to successfully authenticate the passcodes. The main
-advantage over timebased OTP is the attacker doesn't only need to know
+advantage over timebased OTP: the attacker must not only know
 the Secretkey but also the server's Counter in order to create valid
 passcodes. RFC4226 suggests a resynchronization attempt in case the
 passcode mismatches, providing the attacker a range of up to +4
@@ -47,10 +47,10 @@ increments from the actual counter to create passcodes.
 Enable 'Two-Factor' Via Global Settings in the Web UI under
 Authentication -> General Authentication Settings.
 
-Optionally enter a throttle timer in seconds. This will unlock an account 
+Optionally, enter a throttle timer in seconds. This unlocks an account 
 after this time once it has failed 3 attempt to authenticate. Set to 0 (default) 
-to disable this feature, meaning accounts will remain locked after 3 attempts 
-and will need an administrator to clear.
+to disable this feature. Then accounts stay locked after 3 tries, 
+and an administrator must clear them.
 
 ### CLI
 
@@ -65,7 +65,7 @@ Set throttle-time (in seconds):
 
 ## User Administration
 
-If Two-Factor is enabled, the Settings -> Manage Users grid will show a '2FA' column 
+If Two-Factor is enabled, the Settings -> Manage Users grid shows a '2FA' column 
 containing a green tick for users with active 2FA.
 
 There is no functionality to mandate 2FA for users.
@@ -73,11 +73,11 @@ There is no functionality to mandate 2FA for users.
 If a user has failed 3 attempts, their account can be unlocked or 2FA disabled by 
 editing the user from the Manage Users table.
 
-If a throttle timer is set, it will unlock accounts after this time. If set to the 
-default of 0, accounts will need to be manually unlocked by an administrator after 3 
+If a throttle timer is set, it unlocks accounts after this time. If it is set to the 
+default of 0, an administrator must manually unlock accounts after 3 
 failed attempts.
 
-Locked accounts will report to the user stating to wait for the throttle time period,
+Locked accounts tell the user to wait for the throttle time period,
 or to contact the administrator if no timer set.
 
 ## End-User Enrolment

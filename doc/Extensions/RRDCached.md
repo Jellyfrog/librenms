@@ -3,7 +3,7 @@
  - [Github: Oetiker RRDCached](https://github.com/oetiker/rrdtool-1.x/)
  - [RRDCached](https://oss.oetiker.ch/rrdtool/doc/rrdcached.en.html)
 
-This document will explain how to set up RRDCached for LibreNMS.
+This document tells you how to set up RRDCached for LibreNMS.
 
 Since version 1.5, rrdtool / rrdcached now supports creating rrd files
 over rrdcached. If you have rrdcached 1.5.5 or above, you can also
@@ -280,7 +280,7 @@ Check to see if the graphs are being drawn in LibreNMS. This might take a few mi
 After at least one poll cycle (5 mins), check the LibreNMS disk I/O performance delta.
 Disk I/O can be found under the menu Devices>All Devices>[localhost_hostname]>Health>Disk I/O.
 
-Depending on many factors, you should see the Ops/sec drop by ~30-40%.
+Related to many factors, the Ops/sec usually decrease by ~30-40%.
 
 ### Verify SELINUX
 
@@ -301,7 +301,7 @@ If there are no denials, the policy module has been successfully installed and L
 ## Securing RRCached
 
 According to the [man page](https://linux.die.net/man/1/rrdcached),
-under "SECURITY CONSIDERATIONS", rrdcached has no authentication or security except for running under a unix socket. If you choose to use a network socket instead of a unix socket, you will need to secure your rrdcached installation. To do so you can proxy rrdcached using
+under "SECURITY CONSIDERATIONS", rrdcached has no authentication or security, except when it runs under a unix socket. If you select a network socket, not a unix socket, you must make your rrdcached installation safe. To do this, you can proxy rrdcached with
 nginx to allow only specific IPs to connect.
 
 Using the same setup above, using nginx version 1.9.0 or later, you can follow this setup to proxy the default rrdcached port to the local unix socket.
@@ -336,7 +336,7 @@ server {
 
 ```
 
-Replace `$LibreNMS_IP` with the ip of the server that will be using rrdcached. You can specify more than one `allow` statement. This will bind nginx to TCP 42217 (the default rrdcached port), allow the specified IPs to connect, and deny all others.
+Replace `$LibreNMS_IP` with the ip of the server that uses rrdcached. You can specify more than one `allow` statement. This binds nginx to TCP 42217 (the default rrdcached port), permits the specified IPs to connect, and denies all others.
 
 next, we'll symlink the config to streams-enabled:
 `ln -s /etc/nginx/streams-{available,enabled}/rrd`

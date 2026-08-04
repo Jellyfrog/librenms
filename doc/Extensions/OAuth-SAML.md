@@ -4,12 +4,12 @@
 
 LibreNMS has support for [Laravel Socialite](https://github.com/laravel/socialite) to try and simplify the use of OAuth 1 or 2 providers such as using GitHub, Microsoft, Twitter + many more and SAML.
 
-[Socialite Providers](https://socialiteproviders.com) supports more than 100+ 3rd parties so you will most likely find support for the SAML or OAuth provider you need without too much trouble.
+[Socialite Providers](https://socialiteproviders.com) supports more than 100+ 3rd parties. Thus, you can usually find support for the SAML or OAuth provider that you need without too much work.
 
-Please do note however, these providers are not maintained by LibreNMS so we cannot add support for new ones and we can only provide you basic help with general configuration.
+But note: LibreNMS does not maintain these providers. Thus, we cannot add support for new ones, and we can give you only basic help with the general configuration.
 See the Socialite Providers website for more information on adding a new OAuth provider.
 
-Below we will guide you on how to install SAML or some of these OAth providers, you should be able to use these as a guide on how to install any others you may need but **please, please, ensure you read the Socialite Providers documentation carefully**.
+Below, we show you how to install SAML or some of these OAth providers. You can use these as a guide for how to install the other providers that you need. But **make sure that you read the Socialite Providers documentation carefully**.
 
 [GitHub Provider](https://socialiteproviders.com/GitHub/)
 [Microsoft Provider](https://socialiteproviders.com/Microsoft/)
@@ -20,17 +20,17 @@ Below we will guide you on how to install SAML or some of these OAth providers, 
 
 LibreNMS version 22.3.0 or later.
 
-Please ensure you set `APP_URL` within your `.env` file so that callback URLs work correctly with the identify provider.
+Make sure that you set `APP_URL` in your `.env` file. Then callback URLs operate correctly with the identity provider.
 
 !!! note
-    Once you have configured your OAuth or SAML2 provider, please ensure you check the [Post configuration settings](#post-config) section at the end.
+    When your OAuth or SAML2 provider is configured, make sure that you read the [Post configuration settings](#post-config) section at the end.
 
 ## GitHub and Microsoft Examples
 
 ### Install plugin
 
 !!! note
-    First we need to install the plugin itself. The plugin name can be slightly different so be sure to check the Socialite Providers documentation and look for this line, `composer require socialiteproviders/github` which will give you the name you need for the command, i.e: `socialiteproviders/github`.
+    First, we must install the plugin itself. The plugin name can be a small quantity different. Thus, make sure that you read the Socialite Providers documentation and look for this line: `composer require socialiteproviders/github`. It gives you the name that you need for the command, i.e: `socialiteproviders/github`.
 
 === "GitHub"
 
@@ -49,7 +49,7 @@ Please ensure you set `APP_URL` within your `.env` file so that callback URLs wo
 Next we need to find the provider name and writing it down
 
 !!! note
-    It's almost always the name of the provider in lowercase but can be different so check the Socialite Providers documentation and look for this line, `github => [` which will give you the name you need for the above command: `github`.
+    It is almost always the name of the provider in lowercase, but it can be different. Thus, read the Socialite Providers documentation and look for this line: `github => [`. It gives you the name that you need for the command above: `github`.
 
 === "GitHub"
 
@@ -95,11 +95,11 @@ Next we need to find the provider name and writing it down
 
 #### Register a new application
 
-Now we need some values from the OAuth provider itself, in most cases you need to register a new "OAuth application" at the providers site. This will vary from provider to provider but the process itself should be similar to the examples below.
+Now we need some values from the OAuth provider itself. Usually, you must register a new "OAuth application" on the provider site. This is different for each provider, but the procedure itself is usually similar to the examples below.
 
 !!! note
     The callback URL is always: https://*your-librenms-url*/auth/*provider*/callback
-    It doesn't need to be a public available site, but it almost always needs to support TLS (https)!
+    It does not have to be a publicly available site. But it almost always must support TLS (https)!
 
 === "GitHub"
     For our example with GitHub we go to [GitHub Developer Settings](https://github.com/settings/developers) and press "Register a new application":
@@ -117,7 +117,7 @@ Now we need some values from the OAuth provider itself, in most cases you need t
     Fill out the form accordingly using your own values):
     ![socialite-2](../img/socialite-microsoft-2.png)
 
-    Copy the value of the **Application (client) ID** and **Directory (tenant) ID** and save them, you will need them in the next step.
+    Copy the value of the **Application (client) ID** and the **Directory (tenant) ID** and save them. You need them in the next step.
     ![socialite-2](../img/socialite-microsoft-3.png)
 
 === "Okta"
@@ -125,7 +125,7 @@ Now we need some values from the OAuth provider itself, in most cases you need t
 
     ![socialite-okta-1](../img/socialite-okta-1.png)
 
-    Fill in the Name, Logo, and Assignments based on your preferred settings. Leave the `Sign-In Redirect URI` field, this is where you will edit this later:
+    Fill in the Name, Logo, and Assignments with your settings. Keep the `Sign-In Redirect URI` field. You edit this later:
     ![socialite-okta-2](../img/socialite-okta-2.png)
 
     Note your Okta domain or login url. Sometimes this can be a vanity url like `login.company.com`, or sometimes just `company.okta.com`.
@@ -155,20 +155,20 @@ Now we need some values from the OAuth provider itself, in most cases you need t
 
     ![socialite-2](../img/socialite-microsoft-6.png)
 
-    Copy the client secret **Value** (not Secret ID!) before you leave this page. You will need it in the next step.
+    Copy the client secret **Value** (not Secret ID!) before you go away from this page. You need it in the next step.
 
     ![socialite-2](../img/socialite-microsoft-5.png)
 
 === "Okta"
 
-    This step is done for you when creating the app. All you have to do is copy down the client secret. You will need it in the next step.
+    This step occurs for you when you create the app. You must only copy the client secret. You need it in the next step.
 
     ![socialite-okta-3](../img/socialite-okta-3.png)
 
 
 ### Saving configuration
 
-Now we need to set the configuration options for your provider within LibreNMS itself. Please replace the values in the examples below with the values you collected earlier:
+Now we must set the configuration options for your provider in LibreNMS itself. Replace the values in the examples below with the values that you collected before:
 
 The format of the configuration string is `auth.socialite.configs.*provider name*.*value*`
 
@@ -204,7 +204,7 @@ The final step is to now add an event listener.
 
 !!! note
     It's important to copy exactly the right value here,
-    It should begin with a `\` and end before the `::class.'@handle'`
+    It must start with a `\` and end before the `::class.'@handle'`
 
 === "GitHub"
 
@@ -264,7 +264,7 @@ The final step is to now add an event listener.
     Don't forget the initial backslack (\\) !
 
 Now you are done with setting up the OAuth provider!
-If it doesn't work, please double check your configuration values by using the `config:get` command below.
+If it does not operate, examine your configuration values again with the `config:get` command below.
 
 !!! setting "settings/auth/socialite"
     ```bash
@@ -273,12 +273,12 @@ If it doesn't work, please double check your configuration values by using the `
 
 ### Default Role
 
-Since most Socialite Providers don't provide Authorization only Authentication it is possible to set
-the default User Role for Authorized users.   Appropriate care should be taken.
+Most Socialite Providers give only Authentication, not Authorization. Thus, you can set
+the default User Role for Authorized users.   Be careful.
 
 - none: **No Permissions**: User has no permissions assigned
 
-- normal: **Normal User**: You will need to assign device / port
+- normal: **Normal User**: You must assign device / port
       permissions for users at this level.
 
 - global-read: **Global Read**: Read only Administrator.
@@ -292,7 +292,7 @@ the default User Role for Authorized users.   Appropriate care should be taken.
 
 ###  Claims / Access Scopes
 
-Socialite can specify scopes that should be included with in the authentication request.
+Socialite can specify scopes to include in the authentication request.
 (see [Larvel docs](https://laravel.com/docs/10.x/socialite#access-scopes) )
 
 === "Okta"
@@ -301,7 +301,7 @@ Socialite can specify scopes that should be included with in the authentication 
     names to configure User Roles.
 
     This requires configuration in Okta.  You can set the 'Groups claim type' to 'Filter' and supply
-    a regex of which groups should be returned which can be mapped below.
+    a regex for the groups to return, which you can map below.
 
     ![socialite-okta-1](../img/socialite-okta-4.png)
 
@@ -386,8 +386,8 @@ lnms plugin:add socialiteproviders/saml2
 
 ### Add configuration
 
-Depending on what your identity provider (Google, Azure, ...) supports, the configuration could look different from what you see next so please use this as a rough guide.
-It is up the IdP to provide the relevant details that you will need for configuration.
+Related to what your identity provider (Google, Azure, ...) supports, the configuration can look different from what you see next. Thus, use this as an approximate guide.
+The IdP gives the applicable details that you need for the configuration.
 
 === "Google"
 
@@ -424,7 +424,7 @@ It is up the IdP to provide the relevant details that you will need for configur
     lnms config:set auth.socialite.configs.saml2.metadata "$(cat /tmp/GoogleIDPMetadata.xml)"
     ```
 
-    Alternatively, you can copy the content of the file and run it like so, this will result in the exact same result as above.
+    As an alternative, you can copy the content of the file and run it as shown. This gives exactly the same result as above.
     !!! setting "settings/auth/socialite"
     ```bash
     lnms config:set auth.socialite.configs.saml2.metadata '''<?xml version="1.0" encoding
@@ -496,8 +496,8 @@ Now we just need to define the listener service within LibreNMS:
 
 ### SESSION_SAME_SITE
 
-You most likely will need to set `SESSION_SAME_SITE=none` in `.env` if you use SAML2!
-If you get an error with http code 419, you should try to remove `SESSION_SAME_SITE=none` from your `.env`.
+You usually must set `SESSION_SAME_SITE=none` in `.env` if you use SAML2!
+If you get an error with http code 419, try to remove `SESSION_SAME_SITE=none` from your `.env`.
 
 !!! note
     Don't forget to run `lnms config:clear` after you modify `.env` to flush the config cache
@@ -509,7 +509,7 @@ LibreNMS exposes all of this information from your [LibreNMS install](https://*y
 
 
 ## Troubleshooting
-If it doesn't work, please double check your configuration values by using the `config:get` command below.
+If it does not operate, examine your configuration values again with the `config:get` command below.
 
 !!! setting "settings/auth/socialite"
     ```bash
@@ -531,6 +531,6 @@ If you have a need to, then you can override redirect url with the following com
 !!! setting "settings/auth/socialite"
     From here you can configure the settings for any identity providers you have configured along with some bespoke options.
 
-    Redirect Login page: This setting will skip your LibreNMS login and take the end user straight to the first idP you configured.
+    Redirect Login page: This setting ignores your LibreNMS login and sends the end user directly to the first idP that you configured.
 
-    Allow registration via provider: If this setting is disabled, new users signing in via the idP will not be authenticated. This setting allows a local user to be automatically created which permits their login.
+    Allow registration via provider: If this setting is disabled, new users who sign in through the idP are not authenticated. With this setting, the system can create a local user automatically, which permits their login.

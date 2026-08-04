@@ -6,12 +6,12 @@ First of all, create a file in `includes/ircbot`, the file-name should
 be in this format: `command.inc.php`.
 
 When editing the file, do not open nor close PHP-tags.
-Any variable you assign will be discarded as soon as your command returns.
+The system discards each variable that you assign as soon as your command returns.
 Some variables, specially all listed under `$this->`, have special meanings or effects.
 Before a command is executed, the IRC-Bot ensures that the
 MySQL-Socket is working, that `$this->user` points to the right user
 and that the user is authenticated.
-Below you will find a table with related functions and attributes.
+Below is a table with related functions and attributes.
 You can chain-load any built-in command by calling `$this->_command("My Parameters")`.
 You cannot chain-load external commands.
 
@@ -41,7 +41,7 @@ Function( (Type) $Variable [= Default] [,...] ) | Returns | Description
 `$this->isAuthd( )` | `Boolean` | `true` if the user is authenticated.
 `$this->joinChan( (string) $Channel )` | `Boolean` | Joins given `$Channel`.
 `$this->log( (string) $Message )` | `Boolean` | Logs given `$Message` into `STDOUT`.
-`$this->read( (string) $Buffer )` | `String/Boolean` | Returns a `line` from given `$Buffer` or `false` if there's nothing suitable inside the Buffer. Please use `$this->getData()` for handler-safe data retrieval.
+`$this->read( (string) $Buffer )` | `String/Boolean` | Returns a `line` from the given `$Buffer`, or `false` if there is nothing applicable in the Buffer. Use `$this->getData()` to get data safely in handlers.
 `$this->respond( (string) $Message )` | `Boolean` | Responds to the `request` auto-detecting channel or private message.
 
 ### Attributes

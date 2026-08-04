@@ -28,7 +28,7 @@ $config['rancid_configs']['core'] = '/the/path/where/is/rancid/core';
 $config['rancid_ignorecomments'] = 0;
 ```
 
-After that, you should see some "config" tab on routers that have a rancid update.
+After that, you see a "config" tab on routers that have a rancid update.
 
 ## Rancid Bare Git Repository
 
@@ -101,7 +101,7 @@ copy and paste results into the below file:
 `sudo vi /var/lib/rancid/librenms/router.db`
 
 NOTE - This ONLY applies to newer RANCID versions and Linux
-distros. Older versions will need to retain the : and not the ;
+distros. Older versions must keep the : and not the ;
 
 Create/edit rancids login file:
 
@@ -130,7 +130,7 @@ NOTE: IF you run into a 'diffie-hellman' kind of error, then it is
 because your Linux distro is using newer encryption methods
 etc. This is basically just letting you know that the device you
 tested on is running an outdated encryption type. I recommend updating
-downstream device if possible. If not, the following should fix:
+downstream device, if possible. If not, this corrects it:
 
 `sudo vi /etc/ssh/ssh_config`
 

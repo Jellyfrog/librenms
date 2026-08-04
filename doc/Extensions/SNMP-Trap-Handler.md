@@ -26,7 +26,7 @@ authCommunity log,execute,net COMMUNITYSTRING
 traphandle default /opt/librenms/snmptrap.php
 ```
 
-To enable snmptrapd to properly parse traps, we will need to add MIBs to service.
+For snmptrapd to parse traps correctly, we must add MIBs to the service.
 
 ### Option 1
 
@@ -84,8 +84,8 @@ Here is a list of snmptrapd options:
 |   -m   | MIBLIST: use MIBLIST (`FILE1-MIB:FILE2-MIB`). `ALL` = Load all MIBS in DIRLIST. (usually fails) |
 |   -M   | DIRLIST: use DIRLIST as the list of locations to look for MIBs. Option is not recursive, so you need to specify each DIR individually, separated by `:`. (For example: /opt/librenms/mibs:/opt/librenms/mibs/cisco:/opt/librenms/mibs/edgecos)|
 
-Good practice is to avoid `-m ALL` because then it will try to load all the MIBs in DIRLIST, which
-will typically fail (snmptrapd cannot load that many mibs). Better is to specify the
+A good procedure is to not use `-m ALL`, because then it tries to load all the MIBs in DIRLIST. This
+usually fails (snmptrapd cannot load that many mibs). It is better to specify the
 exact MIB files defining the traps you are interested in, for example for LinkDown and LinkUp
 as well as BGP traps, use `-m IF-MIB:BGP4-MIB`. Multiple files can be added, separated with `:`.
 
@@ -139,7 +139,7 @@ sudo systemctl restart snmptrapd
 ## Testing
 
 The easiest test is to generate a trap from your device. Usually, changing the configuration on a network device, or
-plugging/unplugging a network cable (LinkUp, LinkDown) will generate a trap. You can confirm it using a with `tcpdump`, `tshark` or `wireshark`.
+when you connect/disconnect a network cable (LinkUp, LinkDown), this makes a trap. You can make sure of it with `tcpdump`, `tshark` or `wireshark`.
 
 You can also generate a trap using the `snmptrap` command from the LibreNMS server itself (if and only if the LibreNMS server is monitored).
 
@@ -157,7 +157,7 @@ Using OID's:
 snmptrap -v 2c -c public localhost '' 1.3.6.1.4.1.8072.2.3.0.1 1.3.6.1.4.1.8072.2.3.2.1 i 123456
 ```
 
-If you have configured logging of traps to ```/var/log/snmptrap/traps.log``` then you will see in `traps.log` new entry:
+If you configured the log of traps to ```/var/log/snmptrap/traps.log```, you see a new entry in `traps.log`:
 
 ```
 2020-03-09 16:22:59 localhost [UDP: [127.0.0.1]:58942->[127.0.0.1]:162]:
@@ -172,16 +172,16 @@ and in LibreNMS your localhost device eventlog like:
 
 ### Why we need Uptime
 
-When you send a trap, it must of course conform to a set of standards. Every trap needs an uptime value. Uptime is how long the system has been running since boot. Sometimes this is the operating system, other devices might use the SNMP engine uptime. Regardless, a value will be sent.
+When you send a trap, it must obey a set of standards. Each trap needs an uptime value. Uptime is the time since the system boot. Sometimes this is the operating system. Other devices possibly use the SNMP engine uptime. In each condition, a value is sent.
 
-So what value should you type in the commands below? Oddly enough, simply supplying no value by using two single quotes '' will instruct the command to obtain the value from the operating system you are executing this on.
+Thus, which value must you type in the commands below? When you supply no value, with two single quotes '', the command gets the value from the operating system on which you run this.
 
 ### Event logging
 
-You can configure generic event logging for snmp traps.  This will log
+You can configure generic event logs for snmp traps.  This logs
 an event of the type trap for received traps. These events can be used for alerting.
 By default, only the TrapOID is logged. But you can enable the "detailed" variant,
-and all the data received with the trap will be logged.
+and the system logs all the data received with the trap.
 
 The parameter can be found in General Settings / External / SNMP Traps Integration.
 
@@ -195,6 +195,6 @@ It can also be configured in your config.
 
 Valid options are:
 
-- `unhandled` only unhandled traps will be logged (default value)
+- `unhandled` the system logs only unhandled traps (default value)
 - `all` log all traps
-- `none` no traps will create a generic event log (handled traps may still log events)
+- `none` no traps create a generic event log (handled traps can continue to log events)
