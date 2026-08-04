@@ -2,7 +2,7 @@
 
 When the number of devices in your LibreNMS installation increases,
 items such as the RRD files and the MySQL database (which contains
-eventlogs, Syslogs, performance data etc.) also increase. Your
+eventlogs, Syslogs, performance data and so on) also increase. Your
 LibreNMS installation can become large. Thus, it is necessary to
 remove old entries. With Cleanup Options, you have control of this.
 

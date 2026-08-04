@@ -20,7 +20,7 @@ lnms device:add [hostname or ip]
 To see all options, run: `lnms device:add -h`
 
 > If the community contains special characters, such
-> as `$`, you must put it in `'`. I.e: `'Pa$$w0rd'`.
+> as `$`, you must put it in `'`. That is, `'Pa$$w0rd'`.
 
 2: In the web interface, go to Devices and then Add Device. Enter
    the necessary details for the device that you want to add. Then
@@ -131,7 +131,7 @@ refer to the [RRDTune doc](../Extensions/RRDTune.md)
 
 When no value is recorded for some time, RRD (our time series
 storage) does not record a 0. It records the last value. If it did
-not, there would be worse problems. Then we get the current
+not, the problems become worse. Then we get the current
 ifIn/OutOctets value and record it. Now it looks as if all
 the traffic since the last good value occurred in the last
 5 minute interval.
@@ -170,7 +170,7 @@ Usage:
 You can also rename a device in the Web UI. Go to the device,
 then click the settings Icon -> Edit.
 
-### <a name="faq19"> My device doesn't finish polling within 300 seconds</a>
+### <a name="faq19"> My device does not complete polling in 300 seconds</a>
 
 You can try these steps:
 
@@ -180,7 +180,7 @@ You can try these steps:
   -Cr10 through -Cr50 to see which value is best. 50 is usually a good
   selection, if the device can operate with it.
 
-### <a name="faq18"> Things aren't working correctly?</a>
+### <a name="faq18"> Things do not operate correctly?</a>
 
 Run `./validate.php` as librenms from your installation.
 
@@ -286,7 +286,7 @@ this value replaces the sysDescr value that the device returns. This
 breaks our detection.
 
 If you do not have that setting, the cause can be an update of
-EdgeOS or a new device type. Please [create an
+EdgeOS or a new device type. [Create an
 issue](https://github.com/librenms/librenms/issues/new).
 
 ### <a name="faq26"> Why are some of my disks not showing?</a>
@@ -345,7 +345,7 @@ Then the active alerts can clear.
 
 
 
-### <a name="faq29"> Why can't Normal and Global View users see Oxidized?</a>
+### <a name="faq29"> Why can Normal and Global View users not see Oxidized?</a>
 
 Configs frequently contain sensitive data. Because of this, only global
 admins can see configs.
@@ -364,7 +364,7 @@ database. Run this from the LibreNMS directory:
 php artisan db:seed --class=DefaultAlertTemplateSeeder
 ```
 
-### <a name="faq32"> Why would alert un-mute itself?</a>
+### <a name="faq32"> Why does an alert unmute itself?</a>
 
 If an alert unmutes itself, the probable cause is that the alert
 cleared and then started again. Examine the eventlog. It
@@ -410,7 +410,7 @@ You must also [set the proxy or proxies as trusted](../Support/Environment-Varia
 If you use a subdirectory on the reverse proxy, and not on the web server,
 it is possible that you must set [APP_URL](../Support/Environment-Variables.md#base-url) and `$config['base_url']`.
 
-### <a name='my-alerts-aren't-being-delivered-on-time'>My alerts aren't being delivered on time</a>
+### <a name='my-alerts-aren't-being-delivered-on-time'>My alerts do not arrive on time</a>
 
 If you run MySQL/MariaDB on a separate machine or container,
 make sure that the timezone is set correctly on the LibreNMS **and**
@@ -471,7 +471,7 @@ For the crypto algorithms AES-192 and AES-256, you need **net-snmp** compiled wi
 ### <a name="faq8"> How do I add support for a new OS?</a>
 
 Refer to [Supporting a new OS](../Developing/Support-New-OS.md) if you add all
-the support yourself, i.e. you write all the necessary code. If you can only
+the support yourself, that is, you write all the necessary code. If you can only
 supply information, and you want the help of others to write the code,
 do the steps below.
 
@@ -498,7 +498,7 @@ snmpbulkwalk -OUneb -v2c -c COMMUNITY HOSTNAME . | curl --data-binary @- https:/
 You can use the links that these commands give in the community post.
 
 If possible, also tell us what the OS name must be, if it does not exist,
-and give applicable links (MIBs from the vendor, logo, etc etc)
+and give applicable links (MIBs from the vendor, logo, and so on and so on)
 
 ### <a name="faq9"> What can I do to help?</a>
 
@@ -525,24 +525,24 @@ make LibreNMS better.
   - If you have MIBs, they are useful as well :)
   - If you know the vendor, and can get permission to use logos, that is also good.
 - Bugs. Did you find one? We want to know about it. Most bugs are
-  repaired after a person sees and reports them. We would like to say
+  repaired after a person sees and reports them. We want to say
   that we are perfect developers who repair all bugs before you see
   them, but that is not true.
 - Feature requests. You cannot code, or do not want to code? That is
   not a problem. Put a feature request into our [community
   forum](https://community.librenms.org) with sufficient detail, and
-  a person will examine it. Frequently, a feature interests a person,
+  a person examines it. Frequently, a feature interests a person,
   or they need the same feature, or they have
-  time. Please be patient. Each person who contributes does so in their
+  time. Be patient. Each person who contributes does so in their
   own time.
 - Documentation. Documentation can always be made better, and each small
   contribution helps. Not all features have documentation, or good
-  documentation, and there are spelling errors etc. It is easy to submit
+  documentation, and there are spelling errors and so on. It is easy to submit
   updates [through the GitHub
   website](https://help.github.com/articles/editing-files-in-another-user-s-repository/).
   No git experience is necessary.
 - Be nice. This is the foundation of this project. We expect each
-  person to be nice. People will disagree. But please do
+  person to be nice. People do not always agree. But do
   it in a way that shows respect.
 - Ask questions. Sometimes a question starts deeper
   conversations that lead us to a good result. Thus, never

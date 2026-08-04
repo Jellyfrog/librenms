@@ -6,13 +6,13 @@ PowerMon tracks the power usage on your host and can report on both consumption 
 
 Currently the script uses one of two methods to determine current power usage:
 
-* ACPI via `libsensors`
+* ACPI through `libsensors`
 
 * `HP-Health` (HP Proliant servers only)
 
-The ACPI method is quite unreliable as it is usually only implemented by
-battery-powered devices, e.g. laptops. YMMV. However, it's possible to support
-any method as long as it can return a power value, usually in Watts.
+The ACPI method is not reliable, because usually only
+battery-powered devices, for example, laptops, implement it. Results are different for each device. But support for
+each method is possible, if it can return a power value, usually in Watts.
 
 !!! tip
     To do this, add a method, and a function for that method, to the script. getData() must call it, and it must return a dictionary.
@@ -80,7 +80,7 @@ vi /usr/local/bin/powermon-snmp.py
             * From the HP Management Component Pack (MCP).
             * Included in the [HP Service Pack for Proliant (SPP)](https://support.hpe.com/hpesc/public/docDisplay?docId=emr_na-a00026884en_us)
 
-        * If you've downloaded the standalone package, install it. For example:
+        * If you downloaded the standalone package, install it. For example:
         ```
         rpm -ivh hp-health-10.91-1878.11.rhel8.x86_64.rpm
         ```
@@ -131,7 +131,7 @@ vi /usr/local/bin/powermon-snmp.py
 extend  powermon   /usr/local/bin/powermon-snmp.py -m hpasmcli
 ```
 
-    > NOTE: Avoid using other script options in the snmpd config as the results may not be
+    > NOTE: Do not use other script options in the snmpd config, because the results can not be
     > interpreted correctly by LibreNMS.
 
 6. Reload your snmpd service:
@@ -139,4 +139,4 @@ extend  powermon   /usr/local/bin/powermon-snmp.py -m hpasmcli
 systemctl reload snmpd
 ```
 
-7. You're now ready to enable the application in LibreNMS.
+7. You are now ready to enable the application in LibreNMS.

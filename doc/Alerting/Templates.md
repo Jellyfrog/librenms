@@ -35,7 +35,7 @@ Controls:
 Placeholders:
 
 Placeholders are special variables. When you use them in the template,
-the system replaces them with the applicable data, I.e:
+the system replaces them with the applicable data. For example:
 
 `The device {{ $alert->hostname }} has been up for {{ $alert->uptime
 }} seconds` gives this result: `The device localhost has
@@ -43,7 +43,7 @@ been up for 30344 seconds`.
 
 !!! note
     When you use placeholders to show data, you must put
-    the placeholder in `{{ }}`. I.e `{{ $alert->hostname }}`.
+    the placeholder in `{{ }}`. That is, `{{ $alert->hostname }}`.
 
 - Device ID: `$alert->device_id`
 - Hostname of the Device: `$alert->hostname`
@@ -148,8 +148,8 @@ For more info on extending templates, see the [Laravel documentation](https://la
 
 ### Including other Alert templates
 
-A different method to extend a template is to use the content of other Alert templates in LibreNMS. To do this, use the AlertTemplate database model. You must pass all variables that the included template needs through the second parameter (e.g.```["alert" => $alert]```) of the method Blade:render(). 
-The example below includes the full content of the template with the ID 5.  This is useful to keep all common text parts in separate templates. E.g. headers or footers.
+A different method to extend a template is to use the content of other Alert templates in LibreNMS. To do this, use the AlertTemplate database model. You must pass all variables that the included template needs through the second parameter (for example ```["alert" => $alert]```) of the method Blade:render(). 
+The example below includes the full content of the template with the ID 5.  This is useful to keep all common text parts in separate templates. For example, headers or footers.
 ```php
 { \Illuminate\Support\Facades\Blade::render(\App\Models\AlertTemplate::find(5)->template , ["alert" => $alert]) }}
 ```

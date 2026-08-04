@@ -217,7 +217,7 @@ Create an SVG image of the icon and the logo.  Legacy PNG bitmaps are also suppo
 - Save the icon SVG to `html/images/os/$os.svg`.
 - Icons must look good at 32x32 px.
 - Square icons are better than full logos with text.
-- Remove small decorations that are almost not visible at 32px width (e.g. ® or ™).
+- Remove small decorations that are almost not visible at 32px width (for example, ® or ™).
 
 ##### Logo
 

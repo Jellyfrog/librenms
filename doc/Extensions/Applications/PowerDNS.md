@@ -36,7 +36,7 @@ An authoritative DNS server: <https://www.powerdns.com/auth.html>
 
 === "Permissions"
 
-   If snmpd is running as an unpriveledged user, you may need to use sudo.
+   If snmpd runs as a user without privileges, it is possible that you must use sudo.
    Here is a rough outline of one way to accomplish this.
 
    Add `Debian-snmp ALL=(ALL) NOPASSWD: /usr/bin/pdns_control list` to your sudoers file

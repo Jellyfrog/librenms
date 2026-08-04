@@ -169,7 +169,7 @@ The `reducefactor` parameter decreases the number of data
 points. Billing data has 5 minute granularity. Thus, a graph request
 for a long time period gives many data points.  If you do not
 supply it, the system calculates it automatically.  A reducefactor of 1
-means: return all items. 2 means half of the items, etc.
+means: return all items. 2 means half of the items, and so on.
 
 Example:
 

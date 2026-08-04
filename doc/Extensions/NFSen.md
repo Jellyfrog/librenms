@@ -48,7 +48,7 @@ for most systems is as below.
 When adding sources to nfsen.conf, it is important to use the hostname
 that matches what is configured in LibreNMS, because the rrd files
 NfSen creates has the name of the source name (ident), and it does not
-allow you to use an IP address instead. However, in LibreNMS, if your
+permit an IP address as an alternative. But, in LibreNMS, if your
 device is added by an IP address, add your source with any name of
 your choice, and create a symbolic link to the rrd file.
 
@@ -107,27 +107,27 @@ is located elsewhere, set it with
     lnms config:set nfsen_last_max 153600
     ```
 
-The above is the max value in seconds one may pull stats for. The
-higher this is, the more CPU and disk intensive the search will be.
+The above is the maximum value, in seconds, for which you can get stats. The
+higher this is, the more CPU and disk load the search causes.
 
-Numbers larger than this will be set to this.
+The system decreases larger numbers to this value.
 
 !!! setting "external/nfsen"
     ```bash
     lnms config:set nfsen_top_max 500
     ```
 
-The above is max number of items to be displayed.
+The above is the maximum number of items to show.
 
-Numbers larger than this will be set to this.
+The system decreases larger numbers to this value.
 
 !!! setting "external/nfsen"
     ```bash
     lnms config:set nfsen_top_N '[10, 20, 50, 100, 200, 500]'
     ```
 
-The above is a array containing a list for the drop down menu how many
-top items should be returned.
+The above is an array that contains a list for the drop down menu: the number of
+top items to return.
 
 !!! setting "external/nfsen"
     ```bash
@@ -190,5 +190,5 @@ The above is the last default to use from the drop down.
 
 The above associative array contains time intervals for how
 far back to go. The keys are the length in seconds and the
-value is just a description to display.
+value is only a description to show.
 

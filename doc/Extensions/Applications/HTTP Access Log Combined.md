@@ -28,7 +28,7 @@
 
 4. Configure it if needed. Uses
    `/usr/local/etc/http_access_log_combined_extend.json`, unless
-   specified via `-c`. See further below for configuration
+   specified with `-c`. See below for configuration
    information.
 
 5.  On large setups, where it does not complete quickly, run it with cron.

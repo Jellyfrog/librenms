@@ -35,7 +35,7 @@ flood LibreNMS with constantly-changing graphs.
     }
     ```
 
-    `url` may instead be supplied as separate `host` and `port` keys. If the
+    As an alternative, you can supply `url` as separate `host` and `port` keys. If the
     file is absent the built-in defaults are used.
 
 4. Edit the snmpd.conf file to include the extend by adding the following line

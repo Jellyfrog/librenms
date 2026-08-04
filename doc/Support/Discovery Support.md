@@ -126,7 +126,7 @@ over global settings. Device based settings have priority over all others
 You get better discovery performance when you deactivate all
 modules that a specified OS does not support.
 
-E.g. to deactivate spanning tree, but activate the discovery-arp module, for the linux OS
+For example, to deactivate spanning tree, but activate the discovery-arp module, for the linux OS
 
 !!! setting "discovery/discovery_modules"
     ```bash
@@ -164,7 +164,7 @@ that the config options set to ignored.
 
 `storage`: Storage detection for hard disks
 
-`hr-device`: Processor and Memory support via HOST-RESOURCES-MIB.
+`hr-device`: Processor and Memory support through HOST-RESOURCES-MIB.
 
 `discovery-protocols`: Auto discovery module for xDP, OSPF, OSPFv3 and BGP.
 
@@ -173,7 +173,7 @@ that the config options set to ignored.
 `fdb-table`: Detection of the Forwarding DataBase table for the
 device, with history data.
 
-`discovery-arp`: Auto discovery via ARP.
+`discovery-arp`: Auto discovery through ARP.
 
 `junose-atm-vp`: Juniper ATM support.
 

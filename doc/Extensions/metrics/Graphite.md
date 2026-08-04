@@ -3,7 +3,7 @@
 This module sends all metrics to a remote graphite service. You need
 a tool such as Grafana for graphs.
 
-## What you don't get
+## What you do not get
 
 - Graphs. This is why you need Grafana at this time. You must
   build your own graphs in Grafana.

@@ -3,7 +3,7 @@
 **Distributed Polling** enables LibreNMS to spread polling and discovery tasks across multiple servers for horizontal scaling.
 
 A single poller can typically handle up to **1,000+ devices**, depending on factors like latency and device responsiveness.
-Before deploying distributed polling, review the [Performance Documentation](../Support/Performance.md) to ensure your system is fully optimized.
+Before you deploy distributed polling, read the [Performance Documentation](../Support/Performance.md) to make sure that your system is fully optimized.
 
 > **Note:** Distributed polling is **not intended for remote polling**.
 
@@ -55,11 +55,11 @@ REDIS_USERNAME=<Username>
 
 ### Sentinel
 
-If you use Redis Sentinel, you may still need to define
+If you use Redis Sentinel, it is possible that you must continue to define
 `REDIS_PASSWORD`, `REDIS_USERNAME`, `REDIS_DB`, and `REDIS_TIMEOUT`.
 
 Sentinel provides high availability and automatic failover.
-Authentication can (and should) be enabled for both Sentinel and Redis instances.
+You can (and must) enable authentication for the Sentinel and Redis instances.
 
 ```dotenv
 REDIS_SENTINEL=<Server List> # Comma separated with host:port format eg: redis-001.example.org:26379,redis-002.example.org:26379
@@ -110,7 +110,7 @@ DB_PASSWORD=<DB Password>
 
 ## Poller Groups
 
-Poller groups allow you to assign devices to specific pollers or sets of pollers.
+With poller groups, you can assign devices to specified pollers or sets of pollers.
 By default, all devices and pollers belong to **group 0**.
 
 Enable distributed polling to expose poller group options in the Web UI:
@@ -147,7 +147,7 @@ To change the default poller group:
 ### Distributed Billing
 
 By default, [billing](Billing-Module.md) runs on a single poller.
-To allow billing across groups:
+To permit billing across groups:
 
 !!! setting "poller/distributed"
     ```bash

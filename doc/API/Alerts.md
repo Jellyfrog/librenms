@@ -304,7 +304,7 @@ Input (JSON):
 - invert_map: Optional boolean. When `true`, the rule applies to all
   devices except the selected devices, groups and locations.
 - builder: The rule, which must be in the format entity.condition
-  value (i.e devices.status != 0 for devices marked as down). It must
+  value (that is, devices.status != 0 for devices marked as down). It must
   be json encoded, in the format in which rules are kept at this time.
 - severity: The severity level of the alert: Ok, Warning, Critical.
 - disabled: If the rule is disabled: 0 = enabled, 1 = disabled
@@ -355,7 +355,7 @@ Input (JSON):
 - invert_map: Optional boolean. When `true`, the rule applies to all
   devices except the selected devices, groups and locations.
 - builder: The rule, which must be in the format entity.condition
-  value (i.e devices.status != 0 for devices marked as down). It must
+  value (that is, devices.status != 0 for devices marked as down). It must
   be json encoded, in the format in which rules are kept at this time.
 - severity: The severity level of the alert: Ok, Warning, Critical.
 - disabled: If the rule is disabled: 0 = enabled, 1 = disabled

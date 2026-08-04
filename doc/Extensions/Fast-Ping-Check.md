@@ -2,10 +2,10 @@
 
 Normally, LibreNMS sends an ICMP ping to the device before polling to
 check if it is up or down. This check is tied to the poller frequency,
-which is normally 5 minutes. This means it may take up to 5 minutes
+which is usually 5 minutes. This means that it can take up to 5 minutes
 to find out if a device is down.
 
-Some users may want to know if devices stop responding to ping more
+Some users want to know if devices stop replies to ping more
 quickly than that. LibreNMS offers a `ping.php` script to run ping
 checks as quickly as possible without increasing snmp load on your
 devices by switching to 1 minute polling.
@@ -44,7 +44,7 @@ If you are still using CRON:
 
 The `ping.php` script respects device dependencies, but the main poller
 does not (for technical reasons). However, using this script does not
-disable the icmp check in the poller and a child may be reported as
+disable the icmp check in the poller, and the system can report a child as
 down before the parent.
 
 ## Settings
@@ -52,7 +52,7 @@ down before the parent.
 `ping.php` uses much the same settings as the poller fping with one
 exception: retries is used instead of count.
 `ping.php` does not measure loss and avg response time, only up/down, so
-once a device responds it stops pinging it.
+when a device replies, it stops the pings to it.
 
 !!! setting "poller/ping"
 

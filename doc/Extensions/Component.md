@@ -211,7 +211,7 @@ To edit a component, the procedure is:
 
 ### Edit the Array
 
-Once you have a component array from `getComponents` the first thing
+When you have a component array from `getComponents`, the first thing
 to do is extract the components for only the single device you are
 editing. This is required because the `setComponentPrefs` function
 only saves a single device at a time.
@@ -242,7 +242,7 @@ $ARRAY[COMPONENT_ID]['Existing Attribute'] = "New Value";
 
 ### <a name="update-write">Write the components </a> 
 
-To write component changes back to the database simply:
+To write component changes back to the database:
 
 ```php
 $COMPONENT->setComponentPrefs($DEVICE_ID, $ARRAY)
@@ -277,7 +277,7 @@ Nagios convention for status codes, where:
 ```
 
 If you are creating a poller module which can detect a fault condition
-simply set STATUS to something other than 0 and ERROR to a message
+set STATUS to a value other than 0, and ERROR to a message
 that indicates the problem.
 
 To start an alert, the user must create an alert
@@ -299,7 +299,7 @@ To raise alerts for components, the following rules could be created:
   type.
 
 If there is a component that you want to exclude from
-alerting, simply set the ignore field to 1.
+alerting, set the ignore field to 1.
 
 The data that is written to each alert when it is raised is in the following format:
 

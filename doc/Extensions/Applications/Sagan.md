@@ -25,7 +25,7 @@ Those keys are appended with the name of the instance running with `_`
 between the instance name and instance metric key. So `uptime` for
 `ids` is `ids_uptime`.
 
-The default is named 'ids' unless otherwise specified via the extend.
+The default name is 'ids', unless the extend specifies a different name.
 
 There is a special instance name of `.total` which is the total of all
 the instances. Thus, if you want the total eps, the metric is

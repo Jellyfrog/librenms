@@ -15,7 +15,7 @@ risk is yours!
 The setup of the above is not part of this document, and we cannot
 give help with it.
 
-## What you don't get
+## What you do not get
 
 - Graphs. This is why you need Grafana at this time. You must
   build your own graphs in Grafana.

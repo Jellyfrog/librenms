@@ -28,7 +28,7 @@ For a detailed guide with screenshots, refer to the
 ### Native LibreNMS Transport
 This integration uses the [ZenDuty Webhooks](https://zenduty.com/docs/generic-integration/). 
 With it, you can use all available ZenDuty parameters, such as URLs, SLA, 
-Escalation Policies, etc.
+Escalation Policies, and so on.
 
 Do the steps in the link above to get your Webhook URL. Then paste it 
 into the `ZenDuty WebHook` field when you set up the LibreNMS transport.

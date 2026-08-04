@@ -25,7 +25,7 @@ radclient -x localhost:18121 status adminsecret
 ```
 
 Note that adminsecret is the default secret key in status_server.
-Change if you've modified this.
+Change it if you changed this.
 
 === "SNMP Extend"
 
@@ -41,8 +41,8 @@ Change if you've modified this.
         chmod +x /etc/snmp/freeradius.sh
         ```
 
-    3. If you've made any changes to the FreeRADIUS status_server config
-    (secret key, port, etc.) edit freeradius.sh and adjust the config
+    3. If you made changes to the FreeRADIUS status_server config
+    (secret key, port, and so on) edit freeradius.sh and adjust the config
     variable accordingly.
 
     4. Edit your snmpd.conf file and add:
@@ -71,8 +71,8 @@ Change if you've modified this.
     chmod +x /usr/lib/check_mk_agent/local/freeradius.sh
     ```
 
-    3. If you've made any changes to the FreeRADIUS status_server config
-    (secret key, port, etc.) edit freeradius.sh and adjust the config
+    3. If you made changes to the FreeRADIUS status_server config
+    (secret key, port, and so on) edit freeradius.sh and adjust the config
     variable accordingly.
 
     4. Edit the freeradius.sh script and set the variable 'AGENT' to '1'

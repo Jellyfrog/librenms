@@ -30,7 +30,7 @@ Make sure that you set `APP_URL` in your `.env` file. Then callback URLs operate
 ### Install plugin
 
 !!! note
-    First, we must install the plugin itself. The plugin name can be a small quantity different. Thus, make sure that you read the Socialite Providers documentation and look for this line: `composer require socialiteproviders/github`. It gives you the name that you need for the command, i.e: `socialiteproviders/github`.
+    First, we must install the plugin itself. The plugin name can be a small quantity different. Thus, make sure that you read the Socialite Providers documentation and look for this line: `composer require socialiteproviders/github`. It gives you the name that you need for the command, that is, `socialiteproviders/github`.
 
 === "GitHub"
 
@@ -128,7 +128,7 @@ Now we need some values from the OAuth provider itself. Usually, you must regist
     Fill in the Name, Logo, and Assignments with your settings. Keep the `Sign-In Redirect URI` field. You edit this later:
     ![socialite-okta-2](../img/socialite-okta-2.png)
 
-    Note your Okta domain or login url. Sometimes this can be a vanity url like `login.company.com`, or sometimes just `company.okta.com`.
+    Write down your Okta domain or login url. Sometimes this can be a vanity url, such as `login.company.com`, or sometimes only `company.okta.com`.
 
     Click save.
 
@@ -203,7 +203,7 @@ The format of the configuration string is `auth.socialite.configs.*provider name
 The final step is to now add an event listener.
 
 !!! note
-    It's important to copy exactly the right value here,
+    It is important to copy exactly the correct value here,
     It must start with a `\` and end before the `::class.'@handle'`
 
 === "GitHub"
@@ -223,7 +223,7 @@ The final step is to now add an event listener.
         ```bash
         lnms config:set auth.socialite.configs.github.listener "\SocialiteProviders\GitHub\GitHubExtendSocialite"
         ```
-    Don't forget the initial backslash (\\) !
+    Do not forget the initial backslash (\\) !
 
 === "Microsoft"
 
@@ -242,7 +242,7 @@ The final step is to now add an event listener.
         ```bash
         lnms config:set auth.socialite.configs.microsoft.listener "\SocialiteProviders\Microsoft\MicrosoftExtendSocialite"
         ```
-    Don't forget the initial backslash (\\) !
+    Do not forget the initial backslash (\\) !
 
 === "Okta"
 
@@ -261,7 +261,7 @@ The final step is to now add an event listener.
         ```bash
         lnms config:set auth.socialite.configs.okta.listener "\SocialiteProviders\Okta\OktaExtendSocialite"
         ```
-    Don't forget the initial backslack (\\) !
+    Do not forget the initial backslash (\\) !
 
 Now you are done with setting up the OAuth provider!
 If it does not operate, examine your configuration values again with the `config:get` command below.
@@ -307,7 +307,7 @@ Socialite can specify scopes to include in the authentication request.
 
     First enable sending the 'groups' claim (along with the normal openid, profile, and email claims).
     Be aware that the scope name must match the claim name. For identity providers where the scope does
-    not match (e.g. Keycloak: roles -> groups) you need to configure a custom scope.
+    not match (for example, Keycloak: roles -> groups) you need to configure a custom scope.
 
     !!! setting "settings/auth/socialite"
         ```bash
@@ -487,7 +487,7 @@ The IdP gives the applicable details that you need for the configuration.
 
 ### Add provider event listener
 
-Now we just need to define the listener service within LibreNMS:
+Now we must only define the listener service in LibreNMS:
 
 !!! setting "settings/auth/socialite"
     ```bash
@@ -500,11 +500,11 @@ You usually must set `SESSION_SAME_SITE=none` in `.env` if you use SAML2!
 If you get an error with http code 419, try to remove `SESSION_SAME_SITE=none` from your `.env`.
 
 !!! note
-    Don't forget to run `lnms config:clear` after you modify `.env` to flush the config cache
+    Do not forget to run `lnms config:clear` after you change `.env`, to clear the config cache
 
 ### Service provider metadata
 
-Your identify provider might ask you for your Service Provider (SP) metadata.
+It is possible that your identity provider asks you for your Service Provider (SP) metadata.
 LibreNMS exposes all of this information from your [LibreNMS install](https://*your-librenms-url*/auth/saml2/metadata)
 
 

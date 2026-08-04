@@ -31,7 +31,7 @@ Use these methods on Carbon objects to convert them to unix epoch timestamps or 
 - `$object->unix()`
 - `$object->toIso8601ZuluString()`
 
-The function below formats dates on web pages. But it is legacy, because a better solution exists: use JSON to get the data from an AJAX endpoint, and then use the javascript formatting functions given further down this page to format the time. Then the date format uses the locale of the end user (e.g. dd/mm/yy vs mm/dd/yy):
+The function below formats dates on web pages. But it is legacy, because a better solution exists: use JSON to get the data from an AJAX endpoint, and then use the javascript formatting functions given further down this page to format the time. Then the date format uses the locale of the end user (for example, dd/mm/yy vs mm/dd/yy):
 - `Time::format()` - Takes a Carbon object and a format string as inputs. It shows the time in the user's selected timezone, with the format string.
 
 When you use the `Time::format()` function, select one of these config options for the date format.  An example of the default output is adjacent to each option:

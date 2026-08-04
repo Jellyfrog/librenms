@@ -26,7 +26,7 @@ You can then use these macros in the alerting rules. Example:
 
 The name of the macro sets the type of the macro. If the macro name ends with `_perc` or '_delta', the system reads it as an integer. Then a comparison of the value is possible. Each other name is a boolean test, which shows as a `yes` or `no` selection in the rule.
 
-The macro can contain placeholders. When the system examines the rule, it replaces the placeholders with the true values. The placeholders have the prefix `%`, which represents the true value of the sensor, port, device, etc. For example, the system replaces `%sensors.sensor_current` with the true value of the sensor. The prefix `%` is optional, but we recommend it to prevent ambiguity.
+The macro can contain placeholders. When the system examines the rule, it replaces the placeholders with the true values. The placeholders have the prefix `%`, which represents the true value of the sensor, port, device, and so on. For example, the system replaces `%sensors.sensor_current` with the true value of the sensor. The prefix `%` is optional, but we recommend it to prevent ambiguity.
 
 The contents of a macro can be any valid SQL statement or valid rule expression.
 
@@ -107,7 +107,7 @@ Source: `COALESCE((SELECT AVG(p.processor_usage) FROM processors AS p WHERE p.de
 
 Entity: `macros.device_component_down_junos`
 
-Description: Device component is down such as Fan, PSU, etc for JunOS devices.
+Description: Device component is down such as Fan, PSU, and so on for JunOS devices.
 
 source. `sensors.sensor_class = "state" && sensors.sensor_current != "6" && (sensors.sensor_type = "jnxFruState" || sensors.sensor_type = "jnxFruTable") && sensors.sensor_current != "2" && sensors.sensor_alert = "1"`
 
@@ -116,7 +116,7 @@ source. `sensors.sensor_class = "state" && sensors.sensor_current != "6" && (sen
 
 Entity: `macros.device_component_down_cisco`
 
-Description: Device component is down such as Fan, PSU, etc for Cisco devices.
+Description: Device component is down such as Fan, PSU, and so on for Cisco devices.
 
 Example: `sensors.sensor_current != "1" && sensors.sensor_current != "5" && sensors.sensor_type REGEXP "^cisco.*State$" && sensors.sensor_alert = "1"`
 
@@ -283,7 +283,7 @@ Source: `ports.ifOperStatus != ports.ifOperStatus_prev && ports.ifOperStatus_pre
 
 Entity: `macros.port_has_xdp_neighbours`
 
-Description: Ports that have an xDP (lldp, cdp, etc) neighbour.
+Description: Ports that have an xDP (lldp, cdp, and so on) neighbour.
 
 Source: `(macros.port && links.local_port_id = ports.port_id)`
 
@@ -291,7 +291,7 @@ Source: `(macros.port && links.local_port_id = ports.port_id)`
 
 Entity: `macros.port_has_xdp_neighbours_device`
 
-Description: Ports that have an xDP (lldp, cdp, etc) neighbour that is already known in LibreNMS.
+Description: Ports that have an xDP (lldp, cdp, and so on) neighbour that is already known in LibreNMS.
 
 Source: `(macros.port_has_xdp_neighbours && links.remote_port_id IS NOT NULL)`
 

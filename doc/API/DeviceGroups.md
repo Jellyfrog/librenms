@@ -105,7 +105,7 @@ Route: `/api/v0/devicegroups/:name`
 
 - name Is the name of the device group which you can get with
   [`get_devicegroups`](#get_devicegroups). Make sure that
-  the name is urlencoded if necessary (i.e Linux Servers must
+  the name is urlencoded if necessary (that is, Linux Servers must
   be urlencoded.
 
 Input (JSON):
@@ -142,7 +142,7 @@ Route: `/api/v0/devicegroups/:name`
 
 - name Is the name of the device group which you can get with
   [`get_devicegroups`](#get_devicegroups). Make sure that
-  the name is urlencoded if necessary (i.e Linux Servers must
+  the name is urlencoded if necessary (that is, Linux Servers must
   be urlencoded.
 
 Input:
@@ -172,7 +172,7 @@ Route: `/api/v0/devicegroups/:name`
 
 - name Is the name of the device group which you can get with
   [`get_devicegroups`](#get_devicegroups). Make sure that
-  the name is urlencoded if necessary (i.e Linux Servers must
+  the name is urlencoded if necessary (that is, Linux Servers must
   be urlencoded.
 
 Input (JSON):
@@ -222,10 +222,10 @@ Input (JSON):
   If not given, the default is alert.scheduled_maintenance_default_behavior
 - `notes`: *optional* - A description for the Maintenance
 - `start`: *optional* - start time of Maintenance in full format `Y-m-d H:i:00`
-  eg: 2022-08-01 22:45:00
+  for example, 2022-08-01 22:45:00
   If not given, the system uses the current system time `now()`
 - `duration`: *required* - Duration of Maintenance in format `H:i` / `Hrs:Mins`
-  eg: 02:00
+  for example, 02:00
 
 Example with start time:
 
@@ -282,7 +282,7 @@ Route: `/api/v0/devicegroups/:name/devices`
 
 - name Is the name of the device group which you can get with
   [`get_devicegroups`](#get_devicegroups). Make sure that
-  the name is urlencoded if necessary (i.e Linux Servers must
+  the name is urlencoded if necessary (that is, Linux Servers must
   be urlencoded.
 
 Input (JSON):
@@ -314,7 +314,7 @@ Route: `/api/v0/devicegroups/:name/devices`
 
 - name Is the name of the device group which you can get with
   [`get_devicegroups`](#get_devicegroups). Make sure that
-  the name is urlencoded if necessary (i.e Linux Servers must
+  the name is urlencoded if necessary (that is, Linux Servers must
   be urlencoded.
 
 Input (JSON):

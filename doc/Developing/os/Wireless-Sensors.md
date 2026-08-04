@@ -13,9 +13,9 @@ together with the units in which we expect the data:
 | cell        | count       | WirelessCellDiscovery        | The cell in a multicell technology                                                              |
 | clients     | count       | WirelessClientsDiscovery     | The number of clients connected to/managed by this device                                       |
 | distance    | km          | WirelessDistanceDiscovery    | The distance of a radio link in Kilometers                                                      |
-| error-rate  | bps         | WirelessErrorRateDiscovery   | The rate of errored packets or bits, etc                                                        |
-| error-ratio | %           | WirelessErrorRatioDiscovery  | The percent of errored packets or bits, etc                                                     |
-| errors      | count       | WirelessErrorsDiscovery      | The total bits of errored packets or bits, etc                                                  |
+| error-rate  | bps         | WirelessErrorRateDiscovery   | The rate of errored packets or bits, and so on                                                        |
+| error-ratio | %           | WirelessErrorRatioDiscovery  | The percent of errored packets or bits, and so on                                                     |
+| errors      | count       | WirelessErrorsDiscovery      | The total bits of errored packets or bits, and so on                                                  |
 | frequency   | MHz         | WirelessFrequencyDiscovery   | The frequency of the radio in MHz, channels can be converted                                    |
 | mse         | dB          | WirelessMseDiscovery         | The Mean Square Error                                                                           |
 | noise-floor | dBm         | WirelessNoiseFloorDiscovery  | The amount of noise received by the radio                                                       |
@@ -61,12 +61,12 @@ All discovery interfaces make it necessary to return an array of WirelessSensor 
 
 `new WirelessSensor()` Accepts these arguments:
 
-- `$type =` Mandatory. This is the sensor class from the table above (i.e humidity).
+- `$type =` Mandatory. This is the sensor class from the table above (that is, humidity).
 - `$device_id =` Mandatory. You can get this value with $this->getDeviceId()
 - `$oids =` Mandatory. This must be the numerical OID at which the data
-  is, i.e .1.2.3.4.5.6.7.0. If this is an array of oids,
+  is, that is, .1.2.3.4.5.6.7.0. If this is an array of oids,
   specify an $aggregator.
-- `$subtype =` Mandatory. This must be the OS name, i.e airos.
+- `$subtype =` Mandatory. This must be the OS name, that is, airos.
 - `$index =` Mandatory. This must be unique for this sensor type, device and subtype.
   Usually, it is the index from the walked table. It can also be
   the name of the OID, if it is a single value.
@@ -95,7 +95,7 @@ All discovery interfaces make it necessary to return an array of WirelessSensor 
 - `$entPhysicalIndex =` The default is null. Sets the entPhysicalIndex
   to look up more hardware, if available.
 - `$entPhysicalIndexMeasured =` The default is null. Sets the type of
-  entPhysicalIndex used, i.e ports.
+  entPhysicalIndex used, that is, ports.
 
 Polling occurs automatically, from the discovered data.  If
 you must replace polling, you can implement the

@@ -20,7 +20,7 @@ you can run the included script:
 
 `lnms port:tune <hostname> <ifName>` 
 
-Wildcards with * are supported, and ifName is optional, i.e:
+Wildcards with * are supported, and ifName is optional. For example:
 
 `lnms port:tune local* eth*`
 

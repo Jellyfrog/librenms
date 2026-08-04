@@ -44,20 +44,20 @@ chmod +x /etc/snmp/privoxy
 extend privoxy /etc/snmp/privoxy
 ```
 
-If your logfile is not at `/var/log/privoxy/logfile`, that may be
-changed via the `-f` option.
+If your logfile is not at `/var/log/privoxy/logfile`, you can
+change that with the `-f` option.
 
 If `privoxy-log-parser.pl` is not found in your standard `$PATH`
 setting, it is possible that you must call the extend through `/usr/bin/env` with
 a `$PATH` set to something that includes it.
 
-Once that is done, just wait for the server to be rediscovered or just
+When that is done, wait for the server to be discovered again, or
 enable it manually.
 
 ## Cron
 
 If you are having timeouts or there is privilege separation issues,
-then it can be ran via cron like below. `-w` can be used to write it
+it can run with cron, as below. You can use `-w` to write it
 out and `-o` can be used to control where it is written to. See
 `--help` for more information.
 

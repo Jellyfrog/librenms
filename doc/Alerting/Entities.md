@@ -20,10 +20,10 @@ Entity | Description
 `devices.location` | The device location
 `devices.status` | The status of the device, 1 | up, 0 | down
 `devices.status_reason` | The reason the device was detected as down (icmp or snmp)
-`devices.ignore` | If the device is ignored this will be set to 1
-`devices.disabled` | If the device is disabled this will be set to 1
+`devices.ignore` | If the device is ignored, this is set to 1
+`devices.disabled` | If the device is disabled, this is set to 1
 `devices.last_polled` | The the last polled datetime (yyyy-mm-dd hh:mm:ss)
-`devices.type` | The device type such as network, server, firewall, etc.
+`devices.type` | The device type such as network, server, firewall, and so on.
 
 ## Device Stats
 

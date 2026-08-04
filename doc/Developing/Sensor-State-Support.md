@@ -20,7 +20,7 @@ to show data and make alerts.
 
 *Each time the system polls a sensor, it must know which
 sensor (of each type) it must poll, and its description, 
-the oid at which this sensor is, the class of the sensor, etc.*
+the oid at which this sensor is, the class of the sensor, and so on.*
 
 ### Table: sensors_to_state_indexes
 
@@ -52,12 +52,12 @@ sensor(state_index) from which these values come.*
 LibreNMS can do sensor states in different ways. SNMP can show them 
 as strings or as numbers. 
 
-If the sensor state input is a string (i.e. "ONLINE"), 
+If the sensor state input is a string (that is, "ONLINE"), 
 librenms uses the 'descr' field, and then converts it to the applicable 
 generic state (0, 1, 2 or 3)
 - { value: 4, **descr: online**, graph: 1, **generic: 0** }
 
-If the sensor state input is a number (i.e. "4", which represents the offline state), 
+If the sensor state input is a number (that is, "4", which represents the offline state), 
 librenms uses the 'value' field, and then converts it to the applicable 
 generic state (0, 1, 2 or 3).  
 - { **value: 0**, descr: offline, graph: 1, **generic: 2** }

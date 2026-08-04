@@ -11,7 +11,7 @@ wget https://github.com/librenms/librenms-agent/raw/master/snmp/seafile.py -O /e
 ```
 
 Also you have to install the requests Package for Python3.
-Under Ubuntu/Debian just run `apt install python3-requests`
+On Ubuntu/Debian, run `apt install python3-requests`
 
 2. Make the script executable
 ```

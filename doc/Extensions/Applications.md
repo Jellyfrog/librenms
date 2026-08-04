@@ -68,7 +68,7 @@ Then test if you can run the extend script as that user without issue.
 
 ### JSON Return Optimization Using librenms_return_optimizer
 
-While the `json_app_get` does allow for more complex and larger data
+The `json_app_get` permits more complex and larger data
 to be easily returned by a extend and the data to then be worked
 with, this can also sometimes result in large returns that
 sometimes cause problems with SNMP on some networks.
@@ -81,13 +81,13 @@ a bit of additional overhead to the gzipped data, but still tends to
 be result in a return that is usually a third of the size for JSONs
 items.
 
-The change required is fairly simply. So for the portactivity example below...
+The necessary change is easy. Thus, for the portactivity example below...
 
 ```bash
 extend portactivity /etc/snmp/extends/portactivity smtps,http,imap,imaps,postgresql,https,ldap,ldaps,nfsd,syslog-conn,ssh,matrix,gitea
 ```
 
-Would become this...
+It becomes this...
 
 ```bash
 extend portactivity /usr/local/bin/lnms_return_optimizer -- /etc/snmp/extends/portactivity smtps,http,imap,imaps,postgresql,https,ldap,ldaps,nfsd,syslog-conn,ssh,matrix,gitea
@@ -170,7 +170,7 @@ LibreNMS during discovery and polling.
 
 ## Enable the application(s) to be discovered
 
-1. Go to the device you have just enabled the application module for.
+1. Go to the device for which you enabled the application module.
 1. Click on the *Applications* tab and select the applications you
    want to monitor.
 1. The system also saves this automatically, and you get a green
@@ -185,5 +185,5 @@ The unix-agent does not have a discovery module, only a poller
 module. That poller module is always disabled by default. It needs to
 be manually enabled if you use the agent. Some applications are
 automatically enabled by the unix-agent poller module. It is better to
-ensure that your application is enabled for monitoring. You can check
+make sure that your application is enabled for monitoring. You can make sure of
 by following the steps under the `SNMP Extend` heading.

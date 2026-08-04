@@ -29,7 +29,7 @@ GPSD is a daemon that can be used to monitor GPS devices.
     the page. If it does not, do the steps given under the `SNMP
     Extend` heading at the top of the page.
 
-    If you run into timeout issues with this, you may need to run it configure it like
+    If timeout problems occur with this, it is possible that you must configure it like
     below. If `time gpspipe -w -n 20` is regularly longer than what your SNMP time out is
     for, this is required.
 
@@ -50,6 +50,6 @@ GPSD is a daemon that can be used to monitor GPS devices.
     [Install the agent](../Agent-Setup.md) on this device, if it is not already
     and copy the `gpsd` script to `/usr/lib/check_mk_agent/local/`
 
-    You may need to configure `$server` or `$port`.
+    It is possible that you must configure `$server` or `$port`.
 
     Verify it is working by running `/usr/lib/check_mk_agent/local/gpsd`

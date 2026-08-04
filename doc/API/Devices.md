@@ -250,7 +250,7 @@ Route: `/api/v0/devices/:hostname/health(/:type)(/:sensor_id)`
 - type (optional) is health type / sensor class
 - sensor_id (optional) is the sensor id to get specified information.
 
-`type` may be a sensor class (e.g. `device_voltage`) or one of the special
+`type` can be a sensor class (for example, `device_voltage`) or one of the special
 classes `device_processor`, `device_storage` and `device_mempool`, which are
 stored in their own tables rather than the `sensors` table. The `device_`
 prefix is optional, so `processor` and `device_processor` are equivalent.
@@ -499,7 +499,7 @@ Input:
 
 - class (optional): filter rows by `sensor_class`. Must be one of the
   wireless sensor types (`clients`, `rssi`, `snr`, `mcs`, `frequency`,
-  `capacity`, `distance`, `quality`, etc.).
+  `capacity`, `distance`, `quality`, and so on).
 - columns (optional): comma-separated list of `wireless_sensors` columns to
   return. The default is all columns.
 
@@ -785,7 +785,7 @@ Output:
 }
 ```
 
-> **Note:** Using `with=vlans` on devices with many ports may increase response
+> **Note:** `with=vlans` on devices with many ports can increase the response
 > size and memory usage. Consider using the `columns` parameter to limit
 > returned fields when fetching VLAN data for large devices.
 
@@ -1137,7 +1137,7 @@ Output:
 }
 ```
 
-Just take the JSON array from add_components or edit_components, edit
+Take the JSON array from add_components or edit_components, edit
 as you wish and submit it back to edit components.
 
 ### `delete_components`
@@ -1174,7 +1174,7 @@ Route: `/api/v0/devices/:hostname/ports/:ifname`
 - ifname can be one of the interface names of the device, which you can
   get with
   [`get_device_ports`](#get_device_ports). Make sure that
-  the ifname is urlencoded if necessary (i.e Gi0/1/0 must be urlencoded.
+  the ifname is urlencoded if necessary (that is, Gi0/1/0 must be urlencoded.
 
 Input:
 
@@ -1211,7 +1211,7 @@ Route: `/api/v0/devices/:hostname/ports/:ifname/:type`
 - ifname can be one of the interface names of the device, which you can
   get with
   [`get_device_ports`](#get_device_ports). Make sure that
-  the ifname is urlencoded if necessary (i.e Gi0/1/0 must
+  the ifname is urlencoded if necessary (that is, Gi0/1/0 must
   be urlencoded.
 - type is the port type for which you want the graph. You can ask for a list
   of ports for a device with [`get_device_ports`](#get_device_ports).
@@ -1411,16 +1411,16 @@ Route: `/api/v0/devices/:hostname/maintenance`
 Input (JSON):
 
 - `title`: *optional* -  Some title for the Maintenance  
-  Will be replaced with hostname if omitted
+  If not given, the system uses the hostname
 - `behavior`: *optional* - id of maintenance behavior desired
   Defaults to alert.scheduled_maintenance_default_behavior if omitted
 - `notes`: *optional* -  Some description for the Maintenance  
-  Will also be added to device notes if user prefs "Add schedule notes to devices notes" is set
+  The system also adds it to the device notes if the user preference "Add schedule notes to devices notes" is set
 - `start`: *optional* - start time of Maintenance in full format `Y-m-d H:i:00`  
-  eg: 2022-08-01 22:45:00  
+  for example, 2022-08-01 22:45:00  
   If not given, the system uses the current system time `now()`
 - `duration`: *required* - Duration of Maintenance in format `H:i` / `Hrs:Mins`  
-  eg: 02:00
+  for example, 02:00
 
 Example with start time:
 
@@ -1486,7 +1486,7 @@ Fields:
 
 - hostname (required): device hostname or IP
 - display_template: A string to show as the name of this device. The default is 
-  hostname (or device_display_default setting). May be a simple
+  hostname (or the device_display_default setting). It can be a simple
   template using replacements: {{ $hostname }}, {{ $sysName }},
   {{ $sysName_fallback }}, {{ $ip }}. This makes the display field.
 - snmpver: SNMP version to use, v1, v2c or v3. During checks detection order is v2c,v3,v1

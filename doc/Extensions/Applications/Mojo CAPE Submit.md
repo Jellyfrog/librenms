@@ -2,7 +2,7 @@
 
 ### SNMP Extend
 
-This assumes you've already configured `mojo_cape_submit` from `CAPE::Utils`.
+This applies when `mojo_cape_submit` from `CAPE::Utils` is already configured.
 
 1. Add the following to `snmpd.conf` and restarted SNMPD.
 
@@ -16,4 +16,4 @@ This assumes you've already configured `mojo_cape_submit` from `CAPE::Utils`.
     sudo systemctl restart snmpd
     ```
 
-Then just wait for the machine in question to be rediscovered or enabled it in the device settings app page.
+Then wait for the applicable machine to be discovered again, or enable it on the device settings app page.

@@ -16,12 +16,12 @@ to look at [Configure LibreNMS - All Operating Systems](#configure-librenms-all-
 ## New Installation
 
 All installation steps assume a clean configuration - if you have an existing
-smokeping setup, you'll need to adapt these steps somewhat.
+smokeping setup, you must adapt these steps.
 
 ### Install and integrate Smokeping Backend - RHEL, CentOS and alike
 
 Smokeping is available in EPEL. If you run LibreNMS, you probably
-already have. If you want to do something like run Smokeping on a separate host
+already have it. You can also run Smokeping on a separate host
 and send data through RRCached. This is the install command:
 
 ```bash
@@ -60,15 +60,15 @@ remark = Welcome to the SmokePing website of <b>Insert Company Name Here</b>. \
 @include /etc/smokeping/librenms-targets.conf
 ```
 
-Note there may be other stanza's (possibly `*** Slaves ***`) between the
+Note: there can be other stanzas (possibly `*** Slaves ***`) between the
 `*** Probes ***` and `*** Targets ***` stanza's - leave these intact.
 
 Leave everything else untouched. If you need to add other configuration, make
 sure it comes *after* the LibreNMS configuration, and keep in mind that
-Smokeping does not allow duplicate modules, and cares about the configuration
+Smokeping does not permit duplicate modules, and the configuration
 file sequence.
 
-Once you're happy, manually kick off the cron once, then enable and start
+When you are satisfied, start the cron manually one time. Then enable and start
 smokeping:
 
 ```bash
@@ -119,7 +119,7 @@ remark = Welcome to the SmokePing website of <b>Insert Company Name Here</b>. \
 
 Leave everything else untouched. If you need to add other configuration, make
 sure it comes *after* the LibreNMS configuration, and keep in mind that
-Smokeping does not allow duplicate modules, and cares about the configuration
+Smokeping does not permit duplicate modules, and the configuration
 file sequence.
 
 ## Configure LibreNMS - All Operating Systems
@@ -382,7 +382,7 @@ You can verify your user and password with
 cat /etc/nginx/.htpasswd
 ```
 
-Then you just need to add to your config `auth_basic` parameters
+Then you must only add the `auth_basic` parameters to your config
 
 ```
         location ^~ /smokeping/ {
@@ -398,14 +398,14 @@ Then you just need to add to your config `auth_basic` parameters
 
 ### RRDs::update ERROR: opening ... Permission denied
 There is a problem writing to the RRD directory. This is somewhat out of scope
-of LibreNMS, but make sure that file permissions and SELinux labels allow the
+of LibreNMS. But make sure that the file permissions and SELinux labels permit the
 smokeping user to write to the directory.
 
-If you're using RRDCacheD, make sure that the permissions are correct there too,
-and that if you're using -B that the smokeping RRD's are inside the base
+If you use RRDCacheD, make sure that the permissions are also correct there,
+and, if you use -B, that the smokeping RRD's are in the base
 directory; update the smokeping rrd directory if required.
 
-It's not recommended to run RRDCachedD without the -B switch.
+We do not recommend that you run RRDCachedD without the -B switch.
 
 #### Share RRDCached with LibreNMS
 
@@ -432,7 +432,7 @@ sudo systemctl start smokeping
 
 Remember to update your config with the new locations.
 
-#### Configure SELinux to allow smokeping to write in LibreNMS directory on Centos / RHEL
+#### Configure SELinux to permit smokeping to write in the LibreNMS directory on Centos / RHEL
 If you are using RRDCached with the -B switch and smokeping RRD's inside the LibreNMS RRD base directory, you can install this SELinux profile:
 
 ```
@@ -471,11 +471,11 @@ configuration.
 
 ### Section or variable already exists
 
-Most likely, content wasn't fully removed from the `*** Probes ***`
+Probably, content was not fully removed from the `*** Probes ***`
 `*** Targets***` stanza's as instructed.
-If you're trying to integrate LibreNMS, smokeping *and* another source of
-configuration, you're probably trying to redefine a module (e.g. '+ FPing' more
-than once) or stanza. Otherwise, look again at the instructions.
+If you try to integrate LibreNMS, smokeping *and* one more source of
+configuration, you probably define a module (for example, '+ FPing') or stanza
+more than one time. If not, read the instructions again.
 
 ### Mandatory variable 'probe' not defined
 The target block must have a default probe. If you follow the instructions you

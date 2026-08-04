@@ -19,7 +19,7 @@ want to send data to a different version of Kafka, you must adapt the source cod
 The setup of the above is not part of this document, and we cannot
 give help with it.
 
-## What you don't get
+## What you do not get
 
 - Support for Kafka. We strongly recommend that you
   have some experience with it.

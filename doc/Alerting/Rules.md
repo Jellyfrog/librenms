@@ -39,7 +39,7 @@ __Conditions__ can be any of:
 - Regex `REGEXP`
 
 __Values__ can be an entity or other data. If you use a macro or a different column name as a value, you
-must put the macro or column name in backticks. i.e. \`macros.past_60m\` or \`processors.processor_perc_warn\`.
+must put the macro or column name in backticks. That is, \`macros.past_60m\` or \`processors.processor_perc_warn\`.
 
 __Note__: Regex supports MySQL Regular expressions.
 
@@ -51,7 +51,7 @@ These are some of the other options available when you add an alerting rule:
 
 - Rule name: The name of the rule.
 - Severity: How "important" the rule is.
-- Invert match: Invert the matching rule (ie. alert on items that
+- Invert match: Invert the matching rule (that is, alert on items that
   do _not match the rule).
 - Mute alerts: The system does not send the alert through the alert
   transport. But it shows the alert in the Web UI.

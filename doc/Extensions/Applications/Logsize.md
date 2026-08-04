@@ -58,10 +58,10 @@ logsize is a small shell script that reports the size of log files.
     dir="/var/log/suricata/flows/current"
     ```
 
-4. If the directories all readable via SNMPD, this script can be ran
-   via snmpd. Otherwise it needs setup in cron. Similarly is
-   processing a large number of files, it may also need setup in cron
-   if it takes the script awhile to run.
+4. If SNMPD can read all the directories, this script can run
+   through snmpd. If not, you must set it up in cron. Also, when it
+   processes a large number of files, it is possible that you must set it up in cron,
+   if the script needs much time to run.
 
     ```cron
     */5 * * * * /etc/snmp/logsize -b 2> /dev/null > /dev/null
@@ -139,10 +139,10 @@ script and make it executable.
     dir="/var/log/suricata/flows/current"
     ```
 
-4. If the directories all readable via SNMPD, this script can be ran
-   via snmpd. Otherwise it needs setup in cron. Similarly is
-   processing a large number of files, it may also need setup in cron
-   if it takes the script awhile to run.
+4. If SNMPD can read all the directories, this script can run
+   through snmpd. If not, you must set it up in cron. Also, when it
+   processes a large number of files, it is possible that you must set it up in cron,
+   if the script needs much time to run.
 
     ```cron
     */5 * * * * /etc/snmp/logsize -b 2> /dev/null > /dev/null

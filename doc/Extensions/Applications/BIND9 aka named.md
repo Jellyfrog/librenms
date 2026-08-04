@@ -8,7 +8,7 @@ Create stats file with appropriate permissions:
 touch /var/cache/bind/stats
 chown bind:bind /var/cache/bind/stats
 ```
-Change `user:group` to the user and group that's running bind/named.
+Change `user:group` to the user and group that run bind/named.
 
 ### 2. Bind/named configuration:
 
@@ -55,13 +55,13 @@ The script for this also requires the Perl module `File::ReadBackwards`.
 
 If it is not available, it can be installed by `cpan -i File::ReadBackwards`.
 
-### 7. You may possibly need to configure the agent/extend script as well.
+### 7. It is possible that you must also configure the agent/extend script.
 
 The config file's path defaults to the same path as the script, but
 with .config appended. So if the script is located at
 `/etc/snmp/bind`, the config file is
 `/etc/snmp/bind.config`. Alternatively you can also specify a config
-via `-c $file`.
+with `-c $file`.
 
 Anything starting with a # is comment. The format for variables are
 $variable=$value. Empty lines are ignored. Spaces and tabs at either

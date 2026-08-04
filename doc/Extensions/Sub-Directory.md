@@ -3,9 +3,9 @@ directives for the LibreNMS directory in the base server
 configuration, or in a virtual host container of your selection. If
 you use a virtual host, put the directives in the file where the
 virtual host is configured. If you use the base server on RHEL
-distributions (CentOS, Scientific Linux, etc.), you can put the directives
+distributions (CentOS, Scientific Linux, and so on), you can put the directives
 in `/etc/httpd/conf.d/librenms.conf`. For Debian distributions
-(Ubuntu, etc.), put the directives in
+(Ubuntu, and so on), put the directives in
 `/etc/apache2/sites-available/default`.
 
 ```apache

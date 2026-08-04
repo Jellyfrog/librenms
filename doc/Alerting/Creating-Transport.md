@@ -3,7 +3,7 @@
 ## File location
 
 All transports are in `LibreNMS\Alert\Transport`. The files
-have the name of the Transport. I.e `Discord.php` for Discord.
+have the name of the Transport. That is, `Discord.php` for Discord.
 
 ## Transport structure
 
@@ -29,7 +29,7 @@ Do not forget to create a documentation file `doc/Alerting/Transports/$Transport
 with the details of your new transport.
 
 Supply a table that shows the form values that we ask for,
-with examples. I.e:
+with examples. For example:
 
 |Config | Example|
 ------ | -------

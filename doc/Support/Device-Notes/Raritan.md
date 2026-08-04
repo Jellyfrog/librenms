@@ -20,21 +20,21 @@ Hysteresis and deassert are advanced settings - do not change these unless you k
 For an inlet:
 * click 'Inlets' on the left side
 * click one of the sensor types as shown below
-![Sensor Threshold Configuration via the Raritan GUI: Inlet Top Level](../../img/raritan-gui-inlet.png)
+![Sensor Threshold Configuration through the Raritan GUI: Inlet Top Level](../../img/raritan-gui-inlet.png)
 * click on the available thresholds for that sensor
-![Sensor Threshold Configuration via the Raritan GUI: Inlet Detail](../../img/raritan-gui-inlet-detail.png)
+![Sensor Threshold Configuration through the Raritan GUI: Inlet Detail](../../img/raritan-gui-inlet-detail.png)
 * you can now edit the thresholds - the 'disabled' thresholds are set to zero, thus you must enable and change these
-![Sensor Threshold Configuration via the Raritan GUI: Inlet Thresholds](../../img/raritan-gui-inlet-thresholds.png)
+![Sensor Threshold Configuration through the Raritan GUI: Inlet Thresholds](../../img/raritan-gui-inlet-thresholds.png)
 
 For an outlet:
 * click 'Outlets' on the left side
 * select the outlet that you want to configure
 * click one of the sensor types as shown below
-![Sensor Threshold Configuration via the Raritan GUI: Inlet Top Level](../../img/raritan-gui-inlet.png)
+![Sensor Threshold Configuration through the Raritan GUI: Inlet Top Level](../../img/raritan-gui-inlet.png)
 * click on the available thresholds for that sensor
-![Sensor Threshold Configuration via the Raritan GUI: Inlet Detail](../../img/raritan-gui-inlet-detail.png)
+![Sensor Threshold Configuration through the Raritan GUI: Inlet Detail](../../img/raritan-gui-inlet-detail.png)
 * you can now edit the thresholds - the 'disabled' thresholds are set to zero, thus you must enable and change these
-![Sensor Threshold Configuration via the Raritan GUI: Inlet Thresholds](../../img/raritan-gui-inlet-thresholds.png)
+![Sensor Threshold Configuration through the Raritan GUI: Inlet Thresholds](../../img/raritan-gui-inlet-thresholds.png)
 
 ## Known Sensor Types
 

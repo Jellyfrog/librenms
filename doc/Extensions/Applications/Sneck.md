@@ -8,10 +8,10 @@ CRITICAL, and UNKNOWN statuses.
 The big advantage over this compared to a NRPE are as below.
 
 - It does not need to know what checks are configured on it.
-- Also does not need to wait for the tests to run as sneck is meant to
-  be ran via cron and the then return the cache when queried via SNMP,
-  meaning a lot faster response time, especially if slow checks are
-  being performed.
+- Also, it does not have to wait for the tests to run. Sneck
+  runs with cron, and then returns the cache when SNMP queries it.
+  This means a much faster response time, specially when slow checks
+  run.
 - Works over proxied SNMP connections.
 
 Included are alert examples. Although for setting up custom ones, the
@@ -52,8 +52,8 @@ For more information on Sneck, check it out at
 [MetaCPAN](https://metacpan.org/dist/Monitoring-Sneck) or
 [Github](https://github.com/VVelox/Monitoring-Sneck).
 
-For poking systems using Sneck, also check out boop_snoot
-if one wants to query those systems via the CLI. Docs on it
+To poll systems that use Sneck through the CLI, you can also use
+boop_snoot. Its docs are
 at [MetaCPAN](https://metacpan.org/dist/Monitoring-Sneck-Boop_Snoot) and
 [Github](https://github.com/VVelox/Monitoring-Sneck-Boop_Snoot).
 
@@ -86,9 +86,9 @@ at [MetaCPAN](https://metacpan.org/dist/Monitoring-Sneck-Boop_Snoot) and
    [here](https://metacpan.org/pod/Monitoring::Sneck#CONFIG-FORMAT).
 
 3. Set it up in cron. Then it is not necessary to wait for all
-   the checks to complete when polled via SNMP, which for like SMART
-   or other long checks cause a timeout. It also means that it
-   does not need called via sudo as well.
+   the checks to complete when SNMP polls it. For SMART
+   or other long checks, that wait causes a timeout. It also means that it
+   is not necessary to call it with sudo.
 
     ```bash
     */5 * * * * /usr/bin/env PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin /usr/local/bin/sneck -u 2> /dev/null > /dev/null

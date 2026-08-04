@@ -6,7 +6,7 @@ assigned to users to define what they can see and do within the application.
 ### 1. Introduction to Authorization
 
 Authorization determines what an authenticated user is allowed to do. In LibreNMS, this is handled through
-a combination of functional permissions (via Roles) and resource-specific permissions (direct user assignments).
+a combination of functional permissions (through Roles) and resource permissions (direct user assignments).
 
 !!! warning
     Functional permissions are assigned to **Roles** and Roles are assigned to **Users**.
@@ -28,7 +28,7 @@ You can manage these in the Web UI, under **Settings (cog icon) -> Manage Users 
 
 ![Roles Management Screen](../img/webui-roles-management.png)
 
-Custom roles allow for fine-tuned access. Unlike built-in roles, they can be configured with any combination of
+Custom roles give accurate access control. Different from built-in roles, you can configure them with each combination of
 functional permissions available in the system. For example, you can create a role that permits only a view of
 event logs and nothing else.
 
@@ -55,8 +55,8 @@ Functional permissions like `device.viewAny`, `port.viewAny`, and `bill.viewAny`
 ALL resources of that type.
 
 *   If a user **has** `device.viewAny`, they see all devices.
-*   If a user **lacks** `device.viewAny`, the system falls back to **granular permissions**. They will
-    only see devices specifically assigned to them (via direct assignment or a static device group).
+*   If a user does **not have** `device.viewAny`, the system uses **granular permissions**. They
+    see only devices given to them (through direct assignment or a static device group).
 
 Most other items in the system (sensors, services, health data, alerts for a specific device) do not have their
 own separate granular permissions. Instead, access to these items **falls back to the device or port permissions**.
@@ -64,8 +64,8 @@ If you have access to a device, you generally have access to its sub-resources.
 
 #### Interaction Between Functional and Resource Permissions
 
-A common point of confusion is the interaction between functional permissions (e.g., `routing.viewAny`)
-and resource-specific permissions (e.g., device access).
+A common point of confusion is the interaction between functional permissions (for example, `routing.viewAny`)
+and resource-specific permissions (for example, device access).
 
 Even if a user is granted access to a specific device, they still require the corresponding **functional
 permission** to access certain modules or menu items for that device.
@@ -78,7 +78,7 @@ This pattern applies to several other modules, including:
 *   **Switching (VLANs):** Requires `vlan.viewAny`.
 *   **Services:** Requires `service.view`.
 *   **Health Data (Sensors):** While viewing basic health data typically falls back to device access,
-    managing sensors (e.g., editing thresholds or labels) requires specific functional
+    managing sensors (for example, editing thresholds or labels) requires specific functional
     permissions such as `sensor.update` or `wireless-sensor.update`.
 
 #### Device Permissions:
@@ -128,7 +128,7 @@ You can use the `./lnms` command-line tool for some user management tasks:
 ### 6. Common Scenarios & Examples
 
 #### Scenario: NOC Operator
-Goal: Allow monitoring of all devices and alerts, but prevent configuration changes.
+Goal: Permit monitoring of all devices and alerts, but prevent configuration changes.
 
 1.  **Create Role:** Create a noc-operator role and assign the following permissions: `device.viewAny`,
     `port.viewAny`, `alert.viewAny`, `eventlog.viewAny`, and `device-log.viewAny`.
@@ -137,17 +137,17 @@ Goal: Allow monitoring of all devices and alerts, but prevent configuration chan
     resource assignments are needed.
 
 #### Scenario: Customer with Specific Access
-Goal: Allow a customer to see only their devices and specific ports.
+Goal: Permit a customer to see only their devices and specified ports.
 
 1.  **Assign Role:** Assign the built-in `user` role to the customer. (This role has no `viewAny` permissions).
 2.  **Assign Devices:** Go to **Manage Access** for that user and add the specific devices they own.
-3.  **Assign Ports:** Go to **Manage Access** for that user and add specific ports on other devices (e.g., their uplink port
+3.  **Assign Ports:** Go to **Manage Access** for that user and add specific ports on other devices (for example, their uplink port
     on a shared switch).
 4.  **Result:** The customer sees their own devices in full, plus only the specified ports given to them from
     other devices.
 
 #### Scenario: Billing Manager
-Goal: Allow access to billing data and nothing else.
+Goal: Permit access to billing data and nothing more.
 
 1.  **Create Role:** Create a `billing-manager` role and assign `bill.viewAny` and `bill.update`.
 2.  **Assign Role:** Assign the `billing-manager` role to the user.

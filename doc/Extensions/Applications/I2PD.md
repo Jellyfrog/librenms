@@ -2,7 +2,7 @@
 
 This is simple Python3-based SNMP extend script for monitoring I2PD routing daemon using LibreNMS. Script provides very basic metrics for example tunnel success rate, network status and throughput monitoring.
 
-Script communicates with I2PD via I2PControl protocol. Enable and configure that first.
+The script speaks with I2PD through the I2PControl protocol. Enable and configure that first.
 
 ## Enabling I2PControl
 
@@ -75,7 +75,7 @@ I2PControl protocol is not enabled in i2pd daemon, or **I2PC_URL** is incorrect 
 
 - `ERROR(3): Connection timed out to I2PControl socket!`
 
-I2PControl protocol is not enabled in i2pd daemon, or **I2PC_URL** is incorrect in `i2pd-stats.py`.  Your i2pd daemon may be stuck, try to restart `i2pd.service`.
+The I2PControl protocol is not enabled in the i2pd daemon, or **I2PC_URL** is incorrect in `i2pd-stats.py`.  It is possible that your i2pd daemon does not operate. Try to restart `i2pd.service`.
 
 ## Alerting
 

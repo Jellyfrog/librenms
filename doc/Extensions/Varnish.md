@@ -74,7 +74,7 @@ relay those requests to the Apache HTTP server on port 8080 (see block diagram).
 systemctl stop varnish
 ```
 
-- Create a back-up of varnish.params just in case you make a mistake.
+- Create a backup of varnish.params, in case you make an error.
 
 ```bash
 cp /etc/varnish/varnish.params /etc/varnish/varnish.params.bak

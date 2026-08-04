@@ -1,6 +1,6 @@
 ## Socket Statistics (ss)
 
-The Socket Statistics application polls ss and scrapes socket statuses.  Individual sockets and address-families may be filtered out within the script's optional configuration JSON file.
+The Socket Statistics application polls ss and collects socket statuses.  You can remove single sockets and address-families in the optional configuration JSON file of the script.
 
 1. The socket types below are polled directly.  When you remove a socket type, this disables direct polling, and also indirect polling in the address-families that list the socket type as their child:
 ```

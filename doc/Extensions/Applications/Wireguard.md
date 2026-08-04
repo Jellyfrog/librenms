@@ -62,7 +62,7 @@ The default for `pubkey_resolvers` is
 |------------------------------------------------|------------------------------------------------------------------------------------------------------|
 | config                                         | Use the mappings from `.public_key_to_arbitrary_name` .                                              |
 | endpoint_if_first_allowed_is_subnet_use_hosts  | If the first allowed IP is a subnet, see if a matching IP can be found in hosts for the endpoint.    |
-| endpoint_if_first_allowed_is_subnet_use_getent | If the first allowed IP is a subnet, see if a hit can be found for the endpoint IP via getent hosts. |
+| endpoint_if_first_allowed_is_subnet_use_getent | If the first permitted IP is a subnet, look for a hit for the endpoint IP with getent hosts. |
 | endpoint_if_first_allowed_is_subnet_use_ip     | If the first allowed IP is a subnet, use the endpoint IP for the name.                               |
 | first_allowed_use_hosts                        | See if a match can be found in hosts for the first allowed IP.                                       |
 | first_allowed_use_getent                       | Use getent hosts to see try to fetch a match for the first allowed IP.                               |

@@ -30,7 +30,8 @@ after the script collects the information, it sends the information to LibreNMS 
 the protocol is:
 type,vlanId,ifName <cr>
 
-i.e: 
+For example:
+
 T,254,ether1 means Tagged vlan 254 on port ether1
 
 U,100,wlan2 means Untagged vlan 100 on port wlan2

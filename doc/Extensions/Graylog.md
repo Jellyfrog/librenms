@@ -3,7 +3,7 @@
 There is simple integration for Graylog. You can see the
 logs from within LibreNMS that have been parsed by the syslog input
 from within Graylog itself. This includes logs from devices which
-aren't in LibreNMS still, you can also see logs for a specific device
+are not in LibreNMS. You can also see the logs for one device
 under the logs section for the device.
 
 Currently, LibreNMS does not associate shortnames from Graylog with
@@ -22,7 +22,7 @@ Graylog itself is not included in LibreNMS. You must
 install this separately either on the same infrastructure as LibreNMS
 or as a totally standalone appliance.
 
-Config is simple, here's an example based on Graylog 2.4:
+The config is simple. This is an example based on Graylog 2.4:
 
 !!! setting "external/graylog"
     ```bash
@@ -93,7 +93,7 @@ Graylog, "read" permissions alone are not sufficient.
 ## TLS Certificate
 If you have enabled TLS for the Graylog API and you are using a
 self-signed certificate, make sure that the certificate is
-trusted by your LibreNMS host, otherwise the connection will
+trusted by your LibreNMS host. If it is not, the connection
 fail. Additionally, the certificate's Common Name (CN) has to match
 the FQDN or IP address specified in
 
@@ -152,7 +152,7 @@ Suppressing/enabling the domain part of a hostname for specific platforms
 
 Make sure that what you get in syslog/Graylog agrees with your
 configured hosts first. If you need to modify the syslog messages from
-specific platforms, this may be of assistance:
+specified platforms, this can help:
 
 ### IOS (Cisco)
 

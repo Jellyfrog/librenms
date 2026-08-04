@@ -35,7 +35,7 @@ The following URL options are available:
  - bare=yes : Removes the control bar from the top of the page.
  - screenshot=yes : Removes all labels from the nodes and links
 
-e.g. If you want bare and screenshot enabled, https://_nmsserver_/maps/custom/2
+for example, If you want bare and screenshot enabled, https://_nmsserver_/maps/custom/2
 becomes https://_nmsserver_/maps/custom/2?bare=yes&screenshot=yes
 
 ## Editor
@@ -65,8 +65,8 @@ button in the top-left of the editor.
 
 ### Nodes
 
-Once you have a map, you can start by adding "nodes" to the map.  A node
-represents a device, or an external point in the network (e.g. the internet)
+When you have a map, you can start to add "nodes" to the map.  A node
+represents a device, or an external point in the network (for example, the internet)
 To add a node, you click on the "Add Node" button in the control bar, then
 click the map area where you want to add the node.  The system then asks you
 for the following information:
@@ -83,7 +83,7 @@ for the following information:
 
 There are also options to choose the size and colour of the node and the font.
 
-Once you have finished choosing the options for the node, you can press Save to
+When the options for the node are set, you can push Save to
 add it to the map.  NOTE: This does not save anything to the database immediately.
 You need to click on the "Save Map" button in the top-right to save your changes
 to the database.
@@ -96,7 +96,7 @@ You can also modify the default settings for all new nodes by clicking on the
 
 ### Edges
 
-Once you have 2 or more nodes, you can add links between the nodes.  These are
+When you have 2 or more nodes, you can add links between the nodes.  These are
 called edges in the editor.  To add a link, click on the "Add Edge" button in
 the control bar, then click on one of the nodes you want to link and drag the
 cursor to the second node that you want to attach.  The system then asks you for
@@ -116,7 +116,7 @@ the following information:
  - *Recenter Line*: If you set this box, the centre point of the line moves
    back to half way between the 2 nodes when you click on the save button.
 
-Once you have finished choosing the options for the node, you can press Save to
+When the options for the node are set, you can push Save to
 add it to the map.  NOTE: This does not save anything to the database immediately.
 You need to click on the "Save Map" button in the top-right to save your changes
 to the database.
@@ -140,7 +140,7 @@ clicked to draw all lines again, in the way in which the viewer shows them.
 
 ### Save Map
 
-Once you are happy with a set of changes that you have made, you can click on the
+When you are satisfied with a set of changes that you made, you can click the
 "Save Map" button in the top-right of the page to commit changes to the database.
 Then each person who sees the map gets the new version the next time their
 page refreshes.

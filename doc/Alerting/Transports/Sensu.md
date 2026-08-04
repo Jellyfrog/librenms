@@ -18,8 +18,7 @@ sets an annotation (`generated-by`). With it, you can process LibreNMS events
 differently from agent events.
 
 The 'shortname' option is a simple method to decrease the length of device names in
-configs. It replaces the last 3 domain components with single letters (e.g.
-websrv08.dc4.eu.corp.example.net becomes websrv08.dc4.eu.cen).
+configs. It replaces the last 3 domain components with single letters (for example, websrv08.dc4.eu.corp.example.net becomes websrv08.dc4.eu.cen).
 
 ### Limitations
 

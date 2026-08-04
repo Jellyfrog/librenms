@@ -2,7 +2,7 @@
 
 Librenms can interpret, display and group certain additional information on ports.
 This is done based on the format that the port description is written,
-although it's possible  to customise the parser to be specific for your setup.
+but you can adjust the parser for your setup.
 
 ## Keywords
 
@@ -60,9 +60,9 @@ The following config options can be set to enable more custom types:
 
 ## Custom interface parser
 
-It's also possible to write your own parser, the existing one is: includes/port-descr-parser.inc.php
+You can also write your own parser. The current one is: includes/port-descr-parser.inc.php
 
-Once you've created your own then you can enable it with:
+When your own parser is created, you can enable it with:
 
 !!! setting "webui/port-descr"
     ```bash

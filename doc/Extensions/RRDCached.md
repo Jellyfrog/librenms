@@ -21,7 +21,7 @@ or newer, in addition to your rrdcached version.
 
 ## High-Availability
 
-It's advised to only run one active instance of RRDCached and have a failover instance ready to take over in case of failure.
+We recommend that you run only one active instance of RRDCached, with a failover instance ready to continue the work after a failure.
 A recommended setup is to use a network socket for RRDCached and have a load balancer in front of it such as Nginx.
 See [Securing RRDCached](#securing-rrcached) for more information.
 
@@ -142,7 +142,7 @@ Ubuntu and Debian are very similar, the main difference is the location of the `
     !!! note
         `rrdcached` is installed as part of the `rrdtool` package, but the `rrdcached` service is not setup by default, unlike the Ubuntu/Debian setup.
 
-        The intermediate files generated during the process for the SELinux policy (e.g., `rrdcached_librenms.mod` and `rrdcached_librenms.pp`) do not need to be saved after the policy module is successfully installed.
+        The intermediate files generated during the process for the SELinux policy (for example, `rrdcached_librenms.mod` and `rrdcached_librenms.pp`) do not need to be saved after the policy module is successfully installed.
 
 
      1. link in the service and reload:
@@ -194,7 +194,7 @@ Ubuntu and Debian are very similar, the main difference is the location of the `
 === "CentOS 6"
 
     This example is based on a fresh LibreNMS install, on a minimal CentOS 6 installation.
-    In this example, we'll use the Repoforge repository.
+    In this example, we use the Repoforge repository.
 
     ```bash
     rpm -ivh http://pkgs.repoforge.org/rpmforge-release/rpmforge-release-0.5.3-1.el6.rf.x86_64.rpm
@@ -276,7 +276,7 @@ Edit your LibreNMS config by running the following:
 
 ## Verify
 
-Check to see if the graphs are being drawn in LibreNMS. This might take a few minutes.
+Make sure that LibreNMS draws the graphs. This can take some minutes.
 After at least one poll cycle (5 mins), check the LibreNMS disk I/O performance delta.
 Disk I/O can be found under the menu Devices>All Devices>[localhost_hostname]>Health>Disk I/O.
 
@@ -290,7 +290,7 @@ If you are using SELinux, and you have issue you can verify the policy module is
 semodule -l | grep rrdcached_librenms
 ```
 
-Test Functionality: Ensure LibreNMS can successfully interact with RRDcached without SELinux denials. Check SELinux logs for any denials:
+Test the function: Make sure that LibreNMS can speak with RRDcached without SELinux denials. Examine the SELinux logs for denials:
 
 ```bash
 ausearch -m avc -ts recent
@@ -302,7 +302,7 @@ If there are no denials, the policy module has been successfully installed and L
 
 According to the [man page](https://linux.die.net/man/1/rrdcached),
 under "SECURITY CONSIDERATIONS", rrdcached has no authentication or security, except when it runs under a unix socket. If you select a network socket, not a unix socket, you must make your rrdcached installation safe. To do this, you can proxy rrdcached with
-nginx to allow only specific IPs to connect.
+nginx to permit only specified IPs to connect.
 
 Using the same setup above, using nginx version 1.9.0 or later, you can follow this setup to proxy the default rrdcached port to the local unix socket.
 
@@ -338,7 +338,7 @@ server {
 
 Replace `$LibreNMS_IP` with the ip of the server that uses rrdcached. You can specify more than one `allow` statement. This binds nginx to TCP 42217 (the default rrdcached port), permits the specified IPs to connect, and denies all others.
 
-next, we'll symlink the config to streams-enabled:
+then, we symlink the config to streams-enabled:
 `ln -s /etc/nginx/streams-{available,enabled}/rrd`
 
 and reload nginx

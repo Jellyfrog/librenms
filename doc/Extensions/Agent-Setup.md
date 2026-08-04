@@ -14,7 +14,7 @@ Make sure that systemd or xinetd is installed on the host you want to
 run the agent on.
 
 The agent uses TCP-Port 6556. Permit access from the **LibreNMS
-host** and **poller nodes** if you're using the [Distributed Polling](Distributed-Poller.md)
+host** and **poller nodes** if you use the [Distributed Polling](Distributed-Poller.md)
 setup.
 
 On each of the hosts on which you want to use the agent, do this:
@@ -63,7 +63,7 @@ can find detail setup instructions for specific applications above.
 | `/etc/init.d/xinetd restart` | `systemctl enable check_mk.socket && systemctl start check_mk.socket` |
 
 8: Login to the LibreNMS web interface and edit the device you want to
-monitor. Under the modules section, ensure that unix-agent is enabled.
+monitor. In the modules section, make sure that unix-agent is enabled.
 
 9: Then under Applications, enable the apps that you plan to monitor.
 
@@ -77,7 +77,7 @@ If you want to restrict which network adapter the agent listens on, do the follo
 
 2: Under the `[Socket]` section, add a new line `BindToDevice=` and the name of your network adapter.
 
-3: If the script has already been enabled in systemd, you may need to issue a `systemctl daemon-reload` and then `systemctl restart check_mk.socket`
+3: If the script is already enabled in systemd, it is possible that you must run `systemctl daemon-reload` and then `systemctl restart check_mk.socket`
 
 
 ### Windows

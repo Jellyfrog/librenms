@@ -44,7 +44,7 @@ A small shell script that reports the status of PHP-FPM (FastCGI Process Manager
     ```
 
     4. Create the config file
-    `/usr/local/etc/php-fpm_extend.json`. Alternate locations may be
+    `/usr/local/etc/php-fpm_extend.json`. You can specify different locations
     specified using the the `-f` switch. Akin to like below. For more
     information, see `/etc/snmp/php-fpm --help`.
 

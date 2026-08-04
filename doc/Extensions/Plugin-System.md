@@ -14,7 +14,7 @@ LibreNMS.
 There are two ways to create a plugin.
 
  1. Local plugin: Within LibreNMS under the app/Plugins directory. This is appropriate for plugins that are
-    intended to run only on your instance. A local plugin may ONLY use plugin hooks to augment LibreNMS.
+    made to run only on your instance. A local plugin can use ONLY plugin hooks to extend LibreNMS.
  3. Plugin package: A php package that you can distribute through composer/packagist.org.  This is applicable
     for plugins that are intended to be installed by many people. A plugin package can publish multiple
     routes, views, database migrations and more in addition to using hooks to augment specific parts of LibreNMS.
@@ -105,7 +105,7 @@ The built in hooks support authorize and data methods.
 
 These methods are called with [Dependency Injection](https://laravel.com/docs/container#method-invocation-and-injection)
 Hooks with applicable database models include them in these calls.
-Additionally, the settings argument may be included to inject the plugin settings into the method.
+Also, you can include the settings argument to inject the plugin settings into the method.
 
 #### Data
 
@@ -129,7 +129,7 @@ class Menu extends MenuEntryHook
 
 #### Authorize 
 
-By default hooks are always shown, but you may control when the user is authorized to view the hook content.
+By default, hooks always show. But you can control when the user has authorization to see the hook content.
 
 As an example, the device-overview.blade.php must show only when the
 device is in a maintenance mode and the current user has the admin role.

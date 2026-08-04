@@ -2,7 +2,7 @@
 
 NGINX is a free, open-source, high-performance HTTP server: <https://www.nginx.org/>
 
-It's required to have the following directive in your nginx
+This directive is mandatory in your nginx
 configuration responsible for the localhost server:
 
 ```nginx

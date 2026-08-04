@@ -2,7 +2,7 @@
 
 A small shell script that reports various Freeswitch call status.
 
-Install via the agent or extend.
+Install through the agent or extend.
 
 === "Agent"
 
@@ -19,7 +19,7 @@ Install via the agent or extend.
     chmod +x /usr/lib/check_mk_agent/local/freeswitch
     ```
 
-    3. Configure `FSCLI` in the script. You may also have to create an
+    3. Configure `FSCLI` in the script. It is possible that you must also create an
     `/etc/fs_cli.conf` file if your `fs_cli` command requires
     authentication.
 
@@ -39,7 +39,7 @@ Install via the agent or extend.
     chmod +x /etc/snmp/freeswitch
     ```
 
-    3. Configure `FSCLI` in the script. You may also have to create an
+    3. Configure `FSCLI` in the script. It is possible that you must also create an
     `/etc/fs_cli.conf` file if your `fs_cli` command requires
     authentication.
 

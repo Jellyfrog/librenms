@@ -3,12 +3,12 @@
 Install/Setup:
 To install/set up local Librenms RRDCached: refer to [RRDCached](../RRDCached.md)
 
-Will collect stats by:
+It collects stats by:
 1. Connecting directly to the associated device on port 42217
 2. Monitor thru snmp with SNMP extend, as outlined below
 3. Connecting to the rrdcached server specified by the `rrdcached` setting
 
-SNMP extend script to monitor your (remote) RRDCached via snmp
+SNMP extend script to monitor your (remote) RRDCached through snmp
 
 ## SNMP Extend
 

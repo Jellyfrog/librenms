@@ -16,7 +16,7 @@ data as shown in the screenshot:
 The default SNMP Port is 161.
 
 By default, the system uses the Hostname to poll data. If you want
-to poll data through a specified IP-Address (e.g. a Management IP), set the 
+to poll data through a specified IP-Address (for example, a Management IP), set the 
 Hostname to the IP-Address. After the device is added, you can edit
 the device and set the display name to the initial Hostname.
 
@@ -43,7 +43,7 @@ enter:
 
 !!! note
     If the community contains special characters, such
-    as `$`, you must put it in `'`. I.e: `'Pa$$w0rd'`.
+    as `$`, you must put it in `'`. That is, `'Pa$$w0rd'`.
 
 ## Ping Only Device
 

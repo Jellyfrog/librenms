@@ -44,11 +44,11 @@ increments from the actual counter to create passcodes.
 
 ### WebUI
 
-Enable 'Two-Factor' Via Global Settings in the Web UI under
+Enable 'Two-Factor' through Global Settings in the Web UI under
 Authentication -> General Authentication Settings.
 
 Optionally, enter a throttle timer in seconds. This unlocks an account 
-after this time once it has failed 3 attempt to authenticate. Set to 0 (default) 
+after this time, when it failed 3 tries to authenticate. Set it to 0 (default) 
 to disable this feature. Then accounts stay locked after 3 tries, 
 and an administrator must clear them.
 
@@ -84,12 +84,12 @@ or to contact the administrator if no timer set.
 
 These steps imply that Two-Factor has been enabled system wide as above under Configuration.
 
-2FA is enabled by each user once they are logged in normally:
+Each user enables 2FA when they are logged in as usual:
 
 - Go to 'My Settings' (/preferences/)
 - Choose TwoFactor type
 - Click on 'Generate TwoFactor Secret Key'
-- If your browser didn't reload, reload manually
+- If your browser did not reload, reload manually
 - Scan provided QR or click on 'Manual' to see the Key
 
 ### Authenticator Apps

@@ -1,6 +1,6 @@
 ## Pwrstatd
 
-Pwrstatd (commonly known as powerpanel) is an application/service available from CyberPower to monitor their PSUs over USB.  It is currently capable of reading the status of only one PSU connected via USB at a time.  The powerpanel software is available here:
+Pwrstatd (usually known as powerpanel) is an application/service available from CyberPower to monitor their PSUs over USB.  At this time, it can read the status of only one PSU connected through USB at a time.  The powerpanel software is available here:
 https://www.cyberpowersystems.com/products/software/power-panel-personal/
 
 ### SNMP Extend

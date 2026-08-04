@@ -4,7 +4,7 @@ LibreNMS uses [Laravel Localization](https://laravel.com/docs/localization) for 
 
 - Common strings (and some others) are in `lang/<locale>.json`.
 - Most strings are in `lang/<locale>/<group>.php`. The PHP files return an array. The
-  system flattens it to dot notation (e.g., `['nav' => ['devices' => 'Devices']]` in the file menu.php
+  system flattens it to dot notation (for example, `['nav' => ['devices' => 'Devices']]` in the file menu.php
   becomes `menu.nav.devices`).
 
 ### Finding untranslated strings

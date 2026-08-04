@@ -28,7 +28,7 @@
     ```
 
 !!! note "portactivity"
-    Will monitor HTTP, LDAP, and IMAP. The `-p` switch specifies what ports to use. This is a comma separated list.
+    This monitors HTTP, LDAP, and IMAP. The `-p` switch specifies the ports to use. This is a comma separated list.
     
     These must be in '/etc/services', or in the location from which NSS gets them. If not, an error occurs.
     

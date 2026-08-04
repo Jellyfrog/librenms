@@ -1,6 +1,6 @@
 ## Ilert
 This integration uses the [ilert LibreNMS integration](https://docs.ilert.com/integrations/inbound-integrations/librenms). 
-With it, you can use all available ilert parameters, such as links, images, comments, etc.
+With it, you can use all available ilert parameters, such as links, images, comments, and so on.
 
 This transport sends these fields:
 

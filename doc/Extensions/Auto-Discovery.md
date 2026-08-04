@@ -80,7 +80,7 @@ set
     lnms config:set mydomain example.com
     ```
 
-### Allow Duplicate sysName
+### Permit Duplicate sysName
 
 By default we require unique sysNames when adding devices (this is
 that your devices return through snmp). To permit
@@ -94,7 +94,7 @@ devices with duplicate sysNames, set
 ## Discovery Methods
 
 Below are the methods for auto discovering devices.  Each one can be
-enabled or disabled and may have additional configuration options.
+enabled or disabled, and can have more configuration options.
 
 ### ARP
 
@@ -127,7 +127,7 @@ This includes FDP, CDP and LLDP support based on the device type.
 The system always discovers the LLDP/xDP links with neighbours as soon as the discovery module is enabled.
 But LibreNMS tries to add the new devices discovered with LLDP/xDP only if `$config['autodiscovery']['xdp'] = true;`.
 
-Devices may be excluded from xdp discovery by sysName and sysDescr.
+You can exclude devices from xdp discovery by sysName and sysDescr.
 
 !!! setting "discovery/autodiscovery"
     ```bash
@@ -138,7 +138,7 @@ Devices may be excluded from xdp discovery by sysName and sysDescr.
     lnms config:set autodiscovery.xdp_exclude.sysdescr_regexp.+ '/Vendor X/'
     ```
 
-Devices may be excluded from cdp discovery by platform. (CDP only)
+You can exclude devices from cdp discovery by platform. (CDP only)
 
 !!! setting "discovery/autodiscovery"
     ```bash

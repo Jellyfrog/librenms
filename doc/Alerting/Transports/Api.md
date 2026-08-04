@@ -1,7 +1,7 @@
 ## API
 
 With the API transport, you can get access to each service provider that uses POST, PUT or GET URLs
-(such as an SMS provider, etc). You can use it in multiple ways:
+(such as an SMS provider, and so on). You can use it in multiple ways:
 
 - The same text built from the Alert template is available in the
   variable

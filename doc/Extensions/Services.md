@@ -127,10 +127,10 @@ file (/etc/cron.d/librenms typically) like:
 ```
 
 Now you can add services with the main Services link in the navbar, or
-via the 'Add Service' link within the device, services page.
+with the 'Add Service' link on the device services page.
 
 Note: some services (procs, inodes, load and similar) always
-poll the local LibreNMS server it's running on, regardless of which
+poll the local LibreNMS server on which it runs, independently of which
 device you add it to.
 
 ### Performance data
@@ -149,7 +149,7 @@ These have been combined onto a single graph.
 
 If you find a check script for which it is better to graph some
 datasources together, open an issue on GitHub with the
-debug information from the script, and let us know which DS's should
+debug information from the script, and tell us which DS's must
 go together. Example below:
 
 ```
@@ -225,7 +225,7 @@ Also refer to [Dispatcher Service](../Extensions/Dispatcher-Service.md)
 
 Service check is skipped when the associated device is not pingable,
 and an appropriate entry is populated in the event log. Service check
-is polled if it's `IP address` parameter is not equal to associated
+is polled if its `IP address` parameter is not equal to the related
 device's IP address, even when the associated device is not pingable.
 
 To override the default logic and always poll service checks, you can
@@ -236,7 +236,7 @@ Service checks are never polled on disabled devices.
 
 ### CHECK_MRPE
 
-In most cases, only Nagios plugins that run against a remote host with the -H option are available as services.  However, if you're remote host is running the [Check_MK agent](Agent-Setup.md) you may be able to use MRPE to monitor Nagios plugins that only execute locally as services.
+Usually, only Nagios plugins that run against a remote host with the -H option are available as services.  But, if your remote host runs the [Check_MK agent](Agent-Setup.md), you can possibly use MRPE to monitor Nagios plugins that run only locally as services.
 
 For example, consider the fairly common check_cpu.sh Nagios plugin.
 If you added..

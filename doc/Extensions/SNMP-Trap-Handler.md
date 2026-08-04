@@ -34,7 +34,7 @@ Make the folder `/etc/systemd/system/snmptrapd.service.d/` and edit
 the file `/etc/systemd/system/snmptrapd.service.d/mibs.conf` and add
 the following content.
 
-You may want to tweak to add vendor directories
+You can adjust it to add vendor directories
 for devices you care about. In the example below, standard and cisco
 directories are defined, and only IF-MIB is loaded.
 
@@ -49,13 +49,13 @@ For non-systemd systems, you can edit TRAPDOPTS in the init script in /etc/init.
 `TRAPDOPTS="-Lsd  -M /opt/librenms/mibs -m IF-MIB -f -p $TRAPD_PID"`
 
 Along with any necessary configuration to receive the traps from your
-devices (community, etc.)
+devices (community, and so on)
 
 
 ### Option 2
 > Tested on Ubuntu 18
 
-Just set up your service like:
+Set up your service like:
 
 ```
 [Unit]

@@ -6,7 +6,7 @@ The MySQL script requires PHP-CLI and the PHP MySQL extension, so
 make sure that those are installed.
 
 !!! note "" 
-    May vary based on PHP version
+    This can be different, related to the PHP version
         
 === "Debian/Ubuntu"
 
@@ -45,9 +45,9 @@ $mysql_host = 'localhost';
 $mysql_port = 3306;
 ```
 
-Note that depending on your MySQL installation (chrooted install for example),
-you may have to specify 127.0.0.1 instead of localhost. Localhost make
-a MySQL connection via the mysql socket, while 127.0.0.1 make a standard
+Note: related to your MySQL installation (a chrooted installation for example),
+it is possible that you must specify 127.0.0.1, not localhost. Localhost makes
+a MySQL connection through the mysql socket. 127.0.0.1 makes a standard
 IP connection to mysql.
 
 Note also if you get a mysql error `Uncaught TypeError: mysqli_num_rows(): Argument #1`,

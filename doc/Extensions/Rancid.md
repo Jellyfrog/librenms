@@ -1,13 +1,13 @@
 # Rancid
 
 Librenms can generate a list of hosts that can be monitored by
-RANCID. We assume you have currently a running Rancid, and you just
+RANCID. This applies when you have a Rancid that runs, and you only
 need to create and update the file 'router.db'
 
 ## Included Rancid script
 
 To generate the config file (maybe even add a cron to schedule
-this). We've assumed a few locations for Rancid, the config file you
+this). We use some usual locations for Rancid. The config file that you
 want to call it and where LibreNMS is:
 
 ```bash
@@ -53,7 +53,7 @@ $config['rancid_repo_url'] = '/repo';
 
 The options shown below also contains the default values.
 
-> NOTE - This is Only for Ubuntu 16.04 at this time, and may not work on other distros!
+> NOTE - This is only for Ubuntu 16.04 at this time. It possibly does not operate on other distros!
 
 `sudo apt-get install rancid subversion`
 
@@ -78,7 +78,7 @@ RCSSYS=svn; export RCSSYS
 ```
 
 NOTE - This only creates 1 group! You can of course make more when you
-get the hang of it, this is just a basic "Need it to work" deal.
+learn it fully. This is only a basic "make it operate" procedure.
 
 `sudo su -c /var/lib/rancid/bin/rancid-cvs -s /bin/bash -l rancid`
 > NOTE - do NOT change cvs to svn here! Leave command as is!
@@ -128,7 +128,7 @@ Test config:
 
 NOTE: IF you run into a 'diffie-hellman' kind of error, then it is
 because your Linux distro is using newer encryption methods
-etc. This is basically just letting you know that the device you
+and so on. This only tells you that the device that you
 tested on is running an outdated encryption type. I recommend updating
 downstream device, if possible. If not, this corrects it:
 
@@ -144,7 +144,7 @@ Upon success, run rancid:
 
 `sudo su -c /var/lib/rancid/bin/rancid-run -s /bin/bash -l rancid`
 
-Ensure your configs pulled:
+Make sure that your configs were pulled:
 
 ```
 sudo su - rancid

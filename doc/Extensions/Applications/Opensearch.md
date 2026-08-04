@@ -37,7 +37,7 @@
 
 3. Update your `snmpd.conf`.
 
-    Can be directly or via cron. It recommended to use cron if under heavy load it time out waiting for Opensearch.
+    This can be direct, or with cron. We recommend cron if, under heavy load, it gets a timeout while it waits for Opensearch.
 
     === "If not using cron"
 
@@ -52,8 +52,8 @@
         ```
 
         Update the root crontab with the line below. This is necessary because it
-        likely time out otherwise. Use `*/1` if you want to have the most
-        recent stats when polled or to `*/5` if you just want at exactly a 5
+        probably gets a timeout if you do not. Use `*/1` if you want the most
+        recent stats when polled, or `*/5` if you want exactly a 5
         minute interval.
 
         ```bash

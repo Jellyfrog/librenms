@@ -49,7 +49,7 @@
 
 Wait for it to be rediscovered by LibreNMS.
 
-An optional config file may be specified via -f or placed at
+You can specify an optional config file with -f, or put it at
 `/usr/local/etc/oslv_monitor.json`.
 
 The following keys are used in the JSON config file.
@@ -164,7 +164,7 @@ The following mappings are done though.
 | `user_usec`       | `user-time`      |
 | `throttled_usecs` | `throttled-time` |
 
-If the extended memory stat information pulled via C groups is not needed, it can be
+If the extended memory stat information that comes through C groups is not necessary, it can be
 disabled as below.
 
 ```

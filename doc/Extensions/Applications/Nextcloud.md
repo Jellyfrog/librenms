@@ -63,4 +63,4 @@
     extend nextcloud /bin/cat /var/cache/nextcloud_extend/snmp
     ```
 
-Then just wait for it to be rediscovered.
+Then wait for it to be discovered again.

@@ -2,13 +2,13 @@
 
 Okay this is a very quick walk-through in writing your own `commands` for the IRC-Bot.
 
-First of all, create a file in `includes/ircbot`, the file-name should
+First, create a file in `includes/ircbot`. The file-name must
 be in this format: `command.inc.php`.
 
 When editing the file, do not open nor close PHP-tags.
 The system discards each variable that you assign as soon as your command returns.
 Some variables, specially all listed under `$this->`, have special meanings or effects.
-Before a command is executed, the IRC-Bot ensures that the
+Before a command runs, the IRC-Bot makes sure that the
 MySQL-Socket is working, that `$this->user` points to the right user
 and that the user is authenticated.
 Below is a table with related functions and attributes.
@@ -34,7 +34,7 @@ See: [Example](#example)
 Function( (Type) $Variable [= Default] [,...] ) | Returns | Description
 --- | --- | ---
 `$this->getChan( )` | `String` | Returns `channel` of current event.
-`$this->getData( (boolean) $Block = false )` | `String/Boolean` | Returns a `line` from the IRC-Buffer if it's not matched against any other `command`. If `$Block` is `true`, wait until a suitable line is returned.
+`$this->getData( (boolean) $Block = false )` | `String/Boolean` | Returns a `line` from the IRC-Buffer if it does not match a different `command`. If `$Block` is `true`, it waits until an applicable line is returned.
 `$this->getUser( )` | `String` | Returns `nick` of current user. Not to confuse with `$this->user`!
 `$this->get_user( )` | `Array` | See `$this->user` in Attributes.
 `$this->irc_raw( (string) $Protocol )` | `Boolean` | Sends raw IRC-Protocol.

@@ -8,7 +8,7 @@ LibreNMS alerting contains some connected parts. This page shows what each part 
 | --- | --- | --- | --- |
 | Alert Rules | Set when an alert starts | Yes | [Creating alert rules](Rules.md) |
 | Alert Operations | Set who gets a notification, and when | No (but necessary for notifications) | [Creating alert operations](Operations.md) |
-| Alert Transports | Set how the system sends notifications (email, Slack, etc.) | No (but necessary for notifications) | [Configuring alert transports](Transports.md) |
+| Alert Transports | Set how the system sends notifications (email, Slack, and so on) | No (but necessary for notifications) | [Configuring alert transports](Transports.md) |
 | Alert Templates | Set the notification message format | No (optional, recommended) | [Configuring alert templates](Templates.md) |
 
 Flow:

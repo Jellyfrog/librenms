@@ -82,7 +82,7 @@ One trick you can do to ignore all ungrouped devices is set both of these settin
 
 ## SELinux
 
-If you're running SELinux, you'll need to allow httpd to connect
+If you run SELinux, you must permit httpd to connect
 outbound to the network, otherwise Oxidized integration in the web UI
 fails without a message:
 
@@ -255,7 +255,7 @@ hooks:
     async: true
     cmd: 'curl -k -s -X POST -d "{\"text\": \"Config change observed on check. Commit Ref: ${OX_REPO_COMMITREF} Group: ${OX_NODE_GROUP} Timetaken: ${OX_JOB_TIME}\",\"severity\":\"2\",\"type\":\"oxidized\"}" -H "X-Auth-Token: YOURAPITOKENHERE" https://foo.example/api/v0/devices/${OX_NODE_NAME}/eventlog'
 ```
-Note: Ensure /bin/sh uses bash or substitutions may fail. [Ruby only executes commands with the shell defined as /bin/sh.](https://ruby-doc.org/core-2.6.5/Process.html#method-c-exec)
+Note: Make sure that /bin/sh uses bash. If not, replacements can fail. [Ruby only executes commands with the shell defined as /bin/sh.](https://ruby-doc.org/core-2.6.5/Process.html#method-c-exec)
 
 ## Miscellaneous
 
@@ -277,7 +277,7 @@ The use of custom ssh and telnet ports can be set through device settings misc t
             telnet_port: telnet_port
 ```
 
-It's also possible to exclude certain device types and OS' from being
+You can also exclude some device types and OS' from being
 output through the API.
 
 !!! setting "external/oxidized"
@@ -309,7 +309,7 @@ next_adds_job: true
 
 ## Accessing configuration of a disabled/removed device
 
-When you're disabling or removing a device from LibreNMS, the
+When you disable or remove a device from LibreNMS, the
 configuration is no longer available through the LibreNMS web interface.  
 You can gain access to these configurations directly in the Git repository of
 Oxidized (if using Git for version control).

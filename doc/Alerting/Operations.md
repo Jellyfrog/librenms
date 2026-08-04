@@ -43,7 +43,7 @@ Example:
 
 Each segment contains its own list of notification targets:
 
-- **Transports** (Slack, email, Telegram, etc.)
+- **Transports** (Slack, email, Telegram, and so on)
 - **Transport groups** (a reusable group of transports)
 
 This means you can:

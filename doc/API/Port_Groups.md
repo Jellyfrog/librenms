@@ -37,7 +37,7 @@ Route: `/api/v0/port_groups/:name`
 
 - name Is the name of the port group which you can get with
   [`get_port_groups`](#get_port_groups). Make sure that
-  the name is urlencoded if necessary (i.e Linux Servers must
+  the name is urlencoded if necessary (that is, Linux Servers must
   be urlencoded.
 
 Params:

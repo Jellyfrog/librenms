@@ -34,7 +34,7 @@ A small shell script that checks your system's fail2ban status.
         extend fail2ban /etc/snmp/fail2ban -c -U
         ```
 
-    3.  If you need to specify a custom location for the fail2ban-client, that can be done via the `-f` switch.
+    3.  To specify a custom location for the fail2ban-client, use the `-f` switch.
 
         ```bash
         extend fail2ban /etc/snmp/fail2ban -f /foo/bin/fail2ban-client
@@ -56,7 +56,7 @@ restart cron.
     */3    *    *    *    *    root    /etc/snmp/fail2ban -u
     ```
 
-If you have more than a few jails configured, you may need to use
+If more than some jails are configured, it is possible that you must use
 caching, because each jail must be polled, and fail2ban-client cannot do
 so in a timely manner for than a few. This can result in failure of
 other SNMP information being polled.

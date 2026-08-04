@@ -4,7 +4,7 @@ You can set one or more parents for a device. The goal:
 if all parent devices are down, the alert transports do not
 receive unnecessary alerts for the dependent devices. This is very useful
 when you have an outage, for example in a branch office. Usually, you
-would receive hundreds of alerts. But when this is configured
+receive hundreds of alerts. But when this is configured
 correctly, you receive an alert only for the parent host(s).
 
 There are three methods to configure this feature. The first one is in the

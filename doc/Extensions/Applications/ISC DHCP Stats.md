@@ -42,7 +42,7 @@ modules.
     ```
 
 3.  Edit your snmpd.conf file
-    If on a slow system running it via cron may be needed.
+    On a slow system, it is possible that you must run it with cron.
 
     === "If not using cron"
 

@@ -2,7 +2,7 @@
 
 With Scheduled Maintenances, you can put a device, a location, or a full device group into maintenance mode.
 The screwdriver symbol to the left of the device name shows that a device is in maintenance (on its detail page, on
-device group pages, etc.). A maintenance changes how the system does alerting and/or alert transporting (aka user
+device group pages, and so on). A maintenance changes how the system does alerting and/or alert transporting (aka user
 notifications).
 
 ## Maintenance Behaviors
@@ -11,7 +11,7 @@ A maintenance can have three different behaviors:
 
 - Skip alerts: The current alerts stay as they are, and no alert rule checks occur. Thus, the system does not create
 new alerts, and the current alerts do not recover. This is the default behavior.
-- Mute alert: The system does alerts as usual (new alerts start, current alerts can recover etc.). But the system stops
+- Mute alert: The system does alerts as usual (new alerts start, current alerts can recover and so on). But the system stops
 each alert transport, such as mail. This is useful if you want "silence" for a period of time, for a
 reason of your choice, but you want to continue to see what occurs on your devices.
 - Run alerts: This is only a cosmetic maintenance. You see that a device is in maintenance. But this

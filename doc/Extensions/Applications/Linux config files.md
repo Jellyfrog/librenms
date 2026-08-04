@@ -1,6 +1,6 @@
 # Linux config files
 
-`linux_config_files` is an application intended to monitor a Linux distribution's configuration files via that distribution's configuration management tool/system.  At this time, ONLY RPM-based (Fedora/RHEL) SYSTEMS ARE SUPPORTED utilizing the rpmconf tool.  The `linux_config_files` application collects and graphs the total count of configuration files that are out of sync and graphs that number.
+`linux_config_files` is an application that monitors the configuration files of a Linux distribution, through the configuration management tool/system of that distribution.  At this time, ONLY RPM-based (Fedora/RHEL) SYSTEMS ARE SUPPORTED, with the rpmconf tool.  The `linux_config_files` application collects the total count of configuration files that are not in sync, and graphs that number.
 
 Fedora/RHEL: Rpmconf is a utility that analyzes rpm configuration files using the RPM Package Manager.  Rpmconf reports when a new configuration file standard has been issued for an upgraded/downgraded piece of software.  Typically, rpmconf is used to provide a diff of the current configuration file versus the new, standard configuration file.  The administrator can then choose to install the new configuration file or keep the old one.
 

@@ -30,7 +30,7 @@ Content of an example /etc/snmp/certificate.json . Edit it with your own setting
 
 a. (Required): Key 'domains' contains a list of domains to check.
 b. (Optional): You can define a port. By default it checks on port 443.
-c. (Optional): You may define a certificate location for self-signed certificates.
+c. (Optional): You can define a certificate location for self-signed certificates.
 
 ### SNMP Extend
 1. Copy the shell script to the applicable host.

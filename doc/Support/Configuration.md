@@ -56,7 +56,7 @@ If you set up bash completion, you can use tab completion to find config setting
     set them with the `--ignore-checks` option. Without that option, the command makes sure that 
     the input is valid. Be careful: with `--ignore-checks`, you can enter bad values. 
 
-    Please report missing settings.
+    Report missing settings.
 
 ### Getting a list of all current values
 

@@ -51,9 +51,9 @@ See [Authorization](Authorization.md) for more details on roles and permissions.
 
 ## Note for SELinux users
 
-When using SELinux on the LibreNMS server, you need to allow Apache
+When you use SELinux on the LibreNMS server, you must permit Apache
 (httpd) to connect LDAP/Active Directory server, this is disabled by
-default. You can use SELinux Booleans to allow network access to LDAP
+default. You can use SELinux Booleans to permit network access to LDAP
 resources with this command:
 
 ```bash
@@ -113,9 +113,9 @@ this ignores certificate errors.
 
 If you set `auth_ad_require_groupmembership` to 1, the
 authenticated user has to be a member of the specific group.
-If not, all users can authenticate, and have no default roles or
-you may set `auth_ad_global_read` to 1 and all users will
-have the role 'global-read' and have read only access to all devices.
+If not, all users can authenticate and have no default roles. Or
+you can set `auth_ad_global_read` to 1. Then all users
+have the role 'global-read', with read only access to all devices.
 
 ### Old account cleanup
 
@@ -179,7 +179,7 @@ the group filter.
 
 ### SELinux configuration
 
-On RHEL / CentOS / Fedora, in order for LibreNMS to reach Active Directory, you need to allow LDAP requests in SELinux:
+On RHEL / CentOS / Fedora, for LibreNMS to get access to Active Directory, you must permit LDAP requests in SELinux:
 ```
 setsebool -P httpd_can_connect_ldap 1
 ```
@@ -238,9 +238,9 @@ lets say we have a prefix of `uid=`, the user `derp`, and the suffix of
 
 ### LDAP bind user (optional)
 
-If your ldap server does not allow anonymous bind, it is highly
-suggested to create a bind user, otherwise "remember me", alerting
-users, and the API does not operate.
+If your ldap server does not permit anonymous bind, we strongly
+recommend that you create a bind user. If you do not, "remember me", alerting
+users, and the API do not operate.
 
 !!! setting "auth/ldap"
     ```bash
@@ -290,7 +290,7 @@ roles replace the `auth_ldap_groups` line with the following:
 
 ### SELinux configuration
 
-On RHEL / CentOS / Fedora, in order for LibreNMS to reach LDAP, you need to allow LDAP requests in SELinux:
+On RHEL / CentOS / Fedora, for LibreNMS to get access to LDAP, you must permit LDAP requests in SELinux:
 ```
 setsebool -P httpd_can_connect_ldap 1
 ```
@@ -372,7 +372,7 @@ Config option: `ad-authorization`
 This module is a combination of ___http-auth___ and ___active\_directory___
 
 LibreNMS expects that the user authenticated through your
-webservice already (e.g. using Kerberos Authentication in Apache) but
+webservice already (for example, using Kerberos Authentication in Apache) but
 uses Active Directory lookups to find and assign the
 role(s) of a user. The system calculates the roles with AD
 group membership information as the ___active\_directory___ module
@@ -406,7 +406,7 @@ Config option: `ldap-authorization`
 This module is a combination of ___http-auth___ and ___ldap___
 
 LibreNMS expects that the user authenticated through your
-webservice already (e.g. using Kerberos Authentication in Apache) but
+webservice already (for example, using Kerberos Authentication in Apache) but
 uses LDAP to find and assign the role(s) of a user. The
 system calculates the roles with LDAP group membership
 information as the ___ldap___ module does.
@@ -458,9 +458,9 @@ auth_ldap_userlist_filter: Replace 'service=informatique' by your ldap filter to
 
 #### LDAP bind user (optional)
 
-If your ldap server does not allow anonymous bind, it is highly
-suggested to create a bind user, otherwise "remember me", alerting
-users, and the API does not operate.
+If your ldap server does not permit anonymous bind, we strongly
+recommend that you create a bind user. If you do not, "remember me", alerting
+users, and the API do not operate.
 
 !!! setting "auth/ldap"
     ```bash
@@ -515,19 +515,19 @@ lnms config:set sso.static_level 10
 This, along with the defaults, sets up a basic Single Sign-on setup that:
 
 - Reads values from environment variables
-- Automatically creates users when they're first seen
+- Automatically creates users when they are first seen
 - Automatically updates users with new values
 - Gives everyone privilege level 10
 
-This happens to mimic the behaviour of [http-auth](#http-auth), so if
-this is the kind of setup you want, you're probably better of just
-going and using that mechanism.
+This is the same behavior as [http-auth](#http-auth). Thus, if
+this is the type of setup that you want, it is probably better
+to use that mechanism.
 
 ### Security
 
-If there is a proxy involved (e.g. EZProxy, Azure AD Application
-Proxy, NGINX, mod_proxy) it's ___essential___ that you have some means
-in place to prevent headers being injected between the proxy and the
+If there is a proxy involved (for example, EZProxy, Azure AD Application
+Proxy, NGINX, mod_proxy), it is ___essential___ that you have a method
+to prevent header injection between the proxy and the
 end user, and also prevent end users from contacting LibreNMS
 directly.
 
@@ -559,11 +559,11 @@ ___REMOTE\_USER___, you can override this choice.
 lnms config:set sso.trusted_proxies HTTP_UID
 ```
 
-Note that the user lookup is a little special - normally headers are
-prefixed with ___HTTP\____, however this is not the case for remote
-user - it's a special case. If you're using something different you
-need to figure out of the ___HTTP\____ prefix is required or not
-yourself.
+Note: the user lookup is special - usually, headers have the
+prefix ___HTTP\____. But this does not apply to remote
+user - it is a special case. If you use something different, you
+must find out yourself if the ___HTTP\____ prefix is necessary or
+not.
 
 #### Automatic User Create/Update
 
@@ -643,9 +643,9 @@ specified in the ___sso\_static\_level___ variable, with a default of 0 (no acce
 This feature can be used to provide a default access level (such as read-only)
 to all authenticated users.
 
-Additionally, this format may be specific to Shibboleth; other relying party
-software may need changes to the mechanism (e.g. ___mod\_auth\_mellon___
-may create pseudo arrays).
+Also, it is possible that this format applies only to Shibboleth. Other relying party
+software can make changes to the mechanism necessary (for example, ___mod\_auth\_mellon___
+can create pseudo arrays).
 
 There is an optional value for sites with large numbers of groups:
 

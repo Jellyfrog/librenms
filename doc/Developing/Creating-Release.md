@@ -4,7 +4,7 @@
 
 You can create a new release on [GitHub](https://github.com/librenms/librenms/releases/new).
 
-Enter the tag version for that month, i.e for September 2016, enter `201609`.
+Enter the tag version for that month, that is, for September 2016, enter `201609`.
 
 Enter a title. We usually use `August 2016 Release`
 

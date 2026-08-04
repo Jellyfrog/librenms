@@ -19,7 +19,7 @@ $config['gateone']['server'] = 'http://<your_gateone_url/';
 **Note:** You *must* use the full url including the trailing `/`!
 
 The system can also add the Librenms user that is logged in to the start of the
-SSH connection URL that it creates, eg. `ssh://admin@localhost`\ To
+SSH connection URL that it creates, for example, `ssh://admin@localhost`\ To
 enable this, put this in your `config.php`:
 
 ```php

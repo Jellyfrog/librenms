@@ -4,8 +4,8 @@ Get the graph based on the group type.
 
 Route: `/api/v0/portgroups/:group`
 
-- group is the type of port group graph you want, I.e Transit,
-  Peering, etc. You can specify multiple types comma separated.
+- group is the type of port group graph you want, That is, Transit,
+  Peering, and so on. You can specify multiple types comma separated.
 
 Input:
 
@@ -32,8 +32,8 @@ Get the graph based on the multiple port id separated by commas `,`.
 
 Route: `/api/v0/portgroups/multiport/bits/:id`
 
-- id is a comma separated list of port ids you want, I.e 1,2,3,4,
-  etc. You can specify multiple IDs comma separated.
+- id is a comma separated list of port ids you want, That is, 1,2,3,4,
+  and so on. You can specify multiple IDs comma separated.
 
 Input:
 

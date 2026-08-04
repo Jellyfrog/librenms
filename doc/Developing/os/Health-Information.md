@@ -80,9 +80,9 @@ For `data:` you have these options:
 The only sensor that we defined here is airflow. The available options
 are:
 
-- `oid` (mandatory): This is the name of the table that you want to snmp walk for data, with the MIB-NAME before it, I.e `NETBOTZV2-MIB::airFlowSensorTable`.
+- `oid` (mandatory): This is the name of the table that you want to snmp walk for data, with the MIB-NAME before it, That is, `NETBOTZV2-MIB::airFlowSensorTable`.
 - `value` (optional): This is the key in the table that contains
-  the value, with the MIB-NAME before it, I.e: `NETBOTZV2-MIB::airFlowSensorValue`. If you do not give it, the system uses `oid`.
+  the value, with the MIB-NAME before it, That is, `NETBOTZV2-MIB::airFlowSensorValue`. If you do not give it, the system uses `oid`.
 - `num_oid` (mandatory for PullRequests): If you do not give this parameter, the discovery
   procedure calculates it automatically. But this parameter is mandatory when you
   submit a pull request. This is the numerical OID that contains
@@ -125,7 +125,7 @@ the string to the equivalent OID representation.
     - `entPhysicalIndex` contains the entPhysicalIndex from the entPhysical table, and `entPhysicalIndex_measured` is NULL
     - `entPhysicalIndex` contains the "ifIndex" value of the attached port, and `entPhysicalIndex_measured` contains "ports"
 - `user_func` (optional): You can give a function name through which the system
-  processes the sensor value (i.e. to convert fahrenheit to
+  processes the sensor value (that is, to convert fahrenheit to
   celsius, use `fahrenheit_to_celsius`)
 - `snmp_flags` (optional): This sets the flags sent to snmpwalk. It 
   replaces the flags set on the sensor type and os.  The default is `'-OQUb'`.
@@ -311,14 +311,14 @@ tables.
 `discover_sensor()` Accepts these arguments:
 
 - &$valid = This is always null. This is not used.
-- $class = Mandatory. This is the sensor class from the table above (i.e humidity).
+- $class = Mandatory. This is the sensor class from the table above (that is, humidity).
 - $device = Mandatory. This is the $device array.
 - $oid = Mandatory. This must be the numerical OID at which the data
-  is, i.e .1.2.3.4.5.6.7.0
+  is, that is, .1.2.3.4.5.6.7.0
 - $index = Mandatory. This must be unique for this sensor class, device
   and type. Usually, it is the index from the walked table. It can also be
   the name of the OID, if it is a single value.
-- $type = Mandatory. This must be the OS name, i.e. pulse.
+- $type = Mandatory. This must be the OS name, that is, pulse.
 - $descr = Mandatory. This value tells about the sensor. Some
   devices give names to use.
 - $divisor = The default is 1. The system divides the returned value by this.
@@ -338,9 +338,9 @@ tables.
 - $entPhysicalIndex = The default is null. Sets the entPhysicalIndex
   to look up more hardware, if available.
 - $entPhysicalIndex_measured = The default is null. Sets the type of
-  entPhysicalIndex used, i.e ports.
+  entPhysicalIndex used, that is, ports.
 - $user_func = The default is null. You can give a function name through
-  which the system processes the sensor value (i.e. to convert fahrenheit
+  which the system processes the sensor value (that is, to convert fahrenheit
   to celsius, use `fahrenheit_to_celsius`)
 - $group = The default is null. Puts sensors together in a group in the
   webui, with this text.
@@ -471,7 +471,7 @@ foreach ($data as $index => $entry) {
 ```
 
 First, the program goes through the index value of each port. On Advas, the ports have
-the names Ethernet 1-1-1-1, 1-1-1-2, etc. Their indexes are oid.1.1.1.1, oid.1.1.1.2, etc in
+the names Ethernet 1-1-1-1, 1-1-1-2, and so on. Their indexes are oid.1.1.1.1, oid.1.1.1.2, and so on in
 the mib.
 
 Then the program finds the table in which the port exists, and makes sure that the connector type is 'fiber'. The

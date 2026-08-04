@@ -91,7 +91,7 @@ pip install \
  pymdown-extensions
 ```
 If permission problems occur, you can possibly correct them with the
-user option, with the user that you build as, e.g. `-u librenms`
+user option, with the user that you build as, for example, `-u librenms`
 
 2. A configuration file to build LibreNMS docs is included in the
 distribution: `/opt/librenms/mkdocs.yml`. The configuration

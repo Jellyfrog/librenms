@@ -51,7 +51,7 @@ extend smart /bin/cat /var/cache/smart.snmp
 6. You must also create the config file. Its default is the same path as the
    script, but with .config appended. So if the script is located at /etc/snmp/smart, the
    config file is `/etc/snmp/smart.config`. As an alternative, you can also  specify a
-   config via `-c`.
+   config with `-c`.
 
 
 - Anything starting with a # is comment. 
@@ -81,7 +81,7 @@ The variables are as below.
 | smartctl | /usr/bin/env smartctl | The path to use for smartctl. |
 | useSN    | 1       | If set to 1, it uses the disk SN for reports, not the device name. |
 
-A disk line is can be as simple as just a disk name under /dev/. Such as in the config
+A disk line can be as simple as a disk name under /dev/, as in the config
 above, the line `ada0` resolves to `/dev/ada0`, and the system calls it with no special
 argument. If a line has a space in it, everything before the space is treated as the disk
 name and is what used for reporting and everything after that is used as the argument to
@@ -100,8 +100,8 @@ The system discovers the application automatically, as given at the top of
 the page. If it does not, do the steps given under the `SNMP
 Extend` heading at the top of the page.
 
-7. Optionally setup nightly self tests for the disks. The exend will
-   run the specified test on all configured disks if called with the
+7. Optionally, set up self tests for the disks each night. The extend
+   runs the specified test on all configured disks, if you call it with the
    `-t` flag and the name of the SMART test to run.
 
     ```

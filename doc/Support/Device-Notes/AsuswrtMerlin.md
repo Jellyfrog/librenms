@@ -116,7 +116,7 @@ NOTE, to examine the output data from one of these extensions, run this on the L
 
 NOTE, on the LibreNMS machine, make sure that snmp-mibs-downloader is installed.
 
-NOTE, on the AsuswrtMerlin machine, make sure that distro is installed (i.e. that the OS is correctly detected!).
+NOTE, on the AsuswrtMerlin machine, make sure that distro is installed (that is, that the OS is correctly detected!).
 
 3: Restart the snmp service on AsuswrtMerlin:
 

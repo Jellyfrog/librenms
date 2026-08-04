@@ -37,7 +37,7 @@
     extend suricata-stats /usr/bin/env PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin suricata_stat_check -c
     ```
 
-Or if you want to use try compressing the return via Base64+GZIP...
+Or, if you want, you can try to compress the return with Base64+GZIP...
 
     ```bash
     extend suricata-stats /usr/bin/env PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin suricata_stat_check -c -b

@@ -24,12 +24,12 @@ LibreNMS has a whole list of Widgets to select from.
 - Eventlog: Displays all events with your devices and LibreNMS.
 - External Image: can be used to show external images on your
   dashboard. Or images from inside LibreNMS.
-- Globe Map: Will display map of the globe.
+- Globe Map: Shows a map of the globe.
 - Graph: Can be used to display graphs from devices.
 - Graylog: Displays all Graylog's syslog entries.
 - Notes: use for html tags, embed links and external web pages. Or
-  just notes in general.
-- Server Stats: Will display gauges for CPU, Memory, Storage
+  general notes.
+- Server Stats: Shows gauges for CPU, Memory, Storage
   usage. Note the device type has to be listed as "Server".
 - Syslog: Displays all syslog entries.
 - Top Devices: By Traffic, or  Uptime, or Response time, or Poller
@@ -47,11 +47,11 @@ List of Widgets:
 
 - Private: Sets the dashboard to only the user that created the
   dashboard can view and edit.
-- Shared Read: Sets the dashboard to allow other users to view the
+- Shared Read: Sets the dashboard to permit other users to see the
   dashboard, but cannot make changes to the dashboard.
-- Shared Admin RW: Sets the dashboard to allow other users to view
+- Shared Admin RW: Sets the dashboard to permit other users to see
   the dashboard, but Admins can make changes.
-- Shared: Allows all users to view the dashboard and make changes.
+- Shared: Permits all users to see the dashboard and make changes.
 
 ## Setting a global default dashboard
 
@@ -71,7 +71,7 @@ Using the Notes Widget.
 </iframe>
 ```
 
-Note you may need to play with the width and height and also size your widget properly.
+Note: it is possible that you must adjust the width and the height, and also set the correct size for your widget.
 
 ``` src="url" ``` needs to be URL to webpage you are linking to.
 Also some web pages may not support html embedded or iframe.

@@ -2,9 +2,9 @@
 
 This is currently being tested, use at your own risk.
 
-LibreNMS can be used with a MariaDB Galera Cluster. This is a Multi Master cluster, meaning each
-node in the cluster can read and write to the database. They all have the same ability. LibreNMS will
-randomly choose a working node to read and write requests to.
+You can use LibreNMS with a MariaDB Galera Cluster. This is a Multi Master cluster: each
+node in the cluster can read and write to the database. They all have the same ability. LibreNMS
+selects a random serviceable node for read and write requests.
 
 
 For more information see
@@ -14,7 +14,7 @@ For more information see
 ## Getting Started
 
  * The best procedure is a minimum of 3 nodes in the cluster. An odd number of nodes is recommended. Then, when nodes do not agree on data, they have a tie breaker.
- * It's recommended that all servers be similar in hardware performance, cluster performance can be affected by the slowest server in the cluster.
+ * We recommend that all servers have similar hardware performance. The slowest server in the cluster can have an effect on the cluster performance.
  * Backup the database before starting, and backing up the database regularly is still recommended even in a working cluster environment.
 
 ## Install and Configure Galera
@@ -64,7 +64,7 @@ LibreNMS supports up to 9 galera nodes, you define these nodes in the .env file.
 The galera nodes that you define here can be the same, or different, for each librenms poller. If you have a poller that must write/read to only one galera node, add one DB_HOST and no others. With this, you have accurate control of the galera nodes from which a librenms poller reads, and to which it writes.
 
 * DB_HOST is always set to read/write.
-* DB_HOST must be set, however, it does not have to be the same on each poller, it can be different as long as it's part of the same galera cluster.
+* DB_HOST must be set. But it does not have to be the same on each poller. It can be different, if it is part of the same galera cluster.
 * If the node that is set as DB_HOST is down, items such as the ```lnms db``` command do not operate. They use only DB_HOST and do not change to other nodes.
 * Set DB_CONNECTION=mysql_cluster to enable
 * DB_STICKY can be used if you are pulling out of sync data form the database in a read request. For more information see
@@ -152,4 +152,4 @@ safe_to_bootstrap: 1
 
 If the safe_to_bootstrap = 1, then Galera determined that this node has the most up-to-date database and can be safeley used to start the cluster.
 
-Once you have found a node that can be used for starting the cluster, follow the steps in starting for the first time.
+When you find a node that you can use to start the cluster, do the steps in starting for the first time.

@@ -8,7 +8,7 @@ such as Grafana for graphs.
 - OpenTSDB
 - Grafana
 
-## What you don't get
+## What you do not get
 
  Graphs. This is why you need Grafana at this time. You must
  build your own graphs in Grafana.

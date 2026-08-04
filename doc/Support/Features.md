@@ -6,7 +6,7 @@ missing. If you think that a feature is missing, ask us.
 * Auto discovery
 * Alerting
 * Multiple environment sensors support
-* Multiple protocols data collection (STP, OSPF, OSPFv3, BGP etc)
+* Multiple protocols data collection (STP, OSPF, OSPFv3, BGP and so on)
 * VLAN, ARP and FDB table collection
 * Customizable Dashboards
 * Device Backup integration (Oxidized, RANCID)

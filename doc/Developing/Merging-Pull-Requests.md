@@ -15,7 +15,7 @@ you merge a commit, make  sure that you:
   - fix: or bugfix: To show that this is a bug fix.
   - refactoring: or refactor: When the changes refactor a large
     portion of code
-- You can refer to an issue number with `#xyz`, i.e `#1234`
+- You can refer to an issue number with `#xyz`, that is, `#1234`
 - Use the `Confirm squash and merge` button to merge.
 
 ### Example commits

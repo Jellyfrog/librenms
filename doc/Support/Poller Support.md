@@ -102,7 +102,7 @@ over all others.
 You get small Poller performance improvements when you deactivate all
 modules that a specified OS does not support.
 
-E.g. to deactivate spanning tree, but activate the unix-agent module, for the linux OS
+For example, to deactivate spanning tree, but activate the unix-agent module, for the linux OS
 
 !!! setting "poller/poller_modules"
     ```bash
