@@ -490,7 +490,7 @@ the module has been written assuming the use of SAML, and therefore
 these instructions contain some SAML terminology. But it is usually
 possible to use any software that works in a similar way.
 
-In order to make use of the single sign-on module, you need to have an
+To use the single sign-on module, you must have an
 Identity Provider up and running, and know how to configure your
 Relying Party to pass attributes to LibreNMS through header injection or
 environment variables. Setting these up is outside of the scope of

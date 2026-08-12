@@ -102,7 +102,7 @@ vsock
     "addr_families": "all"
 }
 ```
-In order to filter out uncommon/unused socket types, the following JSON configuration is recommended:
+To remove unusual/unused socket types, we recommend this JSON configuration:
 ```
 {
     "ss_cmd": "/sbin/ss",
