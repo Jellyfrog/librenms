@@ -71,24 +71,6 @@ if ($options['f'] === 'update') {
     exit(0);
 }
 
-if ($options['f'] === 'rrd_purge') {
-    $lock = Cache::lock('rrd_purge', 86000);
-    if ($lock->get()) {
-        $rrd_purge = LibrenmsConfig::get('rrd_purge');
-        $rrd_dir = LibrenmsConfig::get('rrd_dir');
-
-        if (is_numeric($rrd_purge) && $rrd_purge > 0) {
-            $cmd = "find $rrd_dir -name .gitignore -prune -o -type f -mtime +$rrd_purge -print -exec rm -f {} +";
-            $purge = shell_exec($cmd);
-            if (! empty($purge)) {
-                echo "Purged the following RRD files due to old age (over $rrd_purge days old):\n";
-                echo $purge;
-            }
-        }
-        $lock->release();
-    }
-}
-
 if ($options['f'] === 'ports_fdb') {
     $ret = lock_and_purge('ports_fdb', 'updated_at < DATE_SUB(NOW(), INTERVAL ? DAY)');
     exit($ret);

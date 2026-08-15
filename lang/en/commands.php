@@ -260,6 +260,20 @@ return [
     'maintenance:cleanup-networks' => [
         'delete' => 'Deleting :count unused networks',
     ],
+    'maintenance:cleanup-rrd' => [
+        'description' => 'Cleanup RRD files that have not been updated for a specified number of days',
+        'arguments' => [
+            'days' => 'Number of days to keep RRD files (default: rrd_purge configured value)',
+        ],
+        'bad_days_input' => 'Days must be numeric',
+        'bad_days_setting' => 'RRD cleanup disabled due to invalid rrd_purge setting',
+        'bad_directory' => 'RRD cleanup skipped, rrd_dir is not a readable directory (:dir)',
+        'delete' => 'Purged RRD files not updated in the last :days days (:count files)',
+        'deleted_file' => 'Purged :file',
+        'delete_failed' => 'Failed to purge :file',
+        'delete_failed_count' => 'Failed to purge :count file|Failed to purge :count files',
+        'disabled' => 'RRD cleanup disabled, days <= 0',
+    ],
     'maintenance:fetch-ouis' => [
         'description' => 'Fetch MAC OUIs and cache them to display vendor names for MAC addresses',
         'options' => [
