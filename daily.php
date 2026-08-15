@@ -192,25 +192,6 @@ if ($options['f'] === 'handle_notifiable') {
     }
 }
 
-if ($options['f'] === 'bill_data') {
-    // Deletes data older than XX months before the start of the last complete billing period
-    $msg = "Deleting billing data more than %d month before the last completed billing cycle\n";
-    $table = 'bill_data';
-    $sql = 'DELETE bill_data
-            FROM bill_data
-                INNER JOIN (SELECT bill_id,
-                    SUBDATE(
-                        SUBDATE(
-                            ADDDATE(
-                                subdate(curdate(), (day(curdate())-1)),             # Start of this month
-                                bill_day - 1),                                      # Billing anniversary
-                            INTERVAL IF(bill_day > DAY(curdate()), 1, 0) MONTH),    # Deal with anniversary not yet happened this month
-                        INTERVAL ? MONTH) AS threshold                              # Adjust based on config threshold
-            FROM bills) q
-            ON bill_data.bill_id = q.bill_id AND bill_data.timestamp < q.threshold;';
-    lock_and_purge_query($table, $sql, $msg);
-}
-
 if ($options['f'] === 'alert_log') {
     $msg = "Deleting alert_logs more than %d days that are not active\n";
     $table = 'alert_log';

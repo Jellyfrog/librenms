@@ -254,6 +254,16 @@ return [
             'optionValue' => 'Selected :option is invalid. Should be one of: :values',
         ],
     ],
+    'maintenance:cleanup-bill-data' => [
+        'description' => 'Cleanup billing data older than a specified number of months before the last completed billing cycle',
+        'arguments' => [
+            'months' => 'Number of months of billing data to keep before the last completed billing cycle (default: bill_data_purge configured value)',
+        ],
+        'bad_months_input' => 'Months must be numeric',
+        'bad_months_setting' => 'Billing data cleanup disabled due to invalid bill_data_purge setting',
+        'delete' => 'Cleared billing data more than :months months before the last completed billing cycle (:count rows)',
+        'disabled' => 'Billing data cleanup disabled, months <= 0',
+    ],
     'maintenance:cleanup-database' => [
         'description' => 'Database cleanup of orphaned items.',
     ],

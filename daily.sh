@@ -379,7 +379,6 @@ main () {
                                "authlog"
                                "callback"
                                "purgeusers"
-                               "bill_data"
                                "alert_log"
                                "rrd_purge"
                                "ports_fdb"
