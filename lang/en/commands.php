@@ -260,6 +260,16 @@ return [
     'maintenance:cleanup-networks' => [
         'delete' => 'Deleting :count unused networks',
     ],
+    'maintenance:cleanup-route' => [
+        'description' => 'Cleanup route entries not updated in a specified number of days',
+        'arguments' => [
+            'days' => 'Number of days to keep route entries (default: route_purge configured value)',
+        ],
+        'bad_days_input' => 'Days must be numeric',
+        'bad_days_setting' => 'Route cleanup disabled due to invalid route_purge setting',
+        'delete' => 'Cleared route entries older than :days days (:count rows)',
+        'disabled' => 'Route cleanup disabled, days <= 0',
+    ],
     'maintenance:fetch-ouis' => [
         'description' => 'Fetch MAC OUIs and cache them to display vendor names for MAC addresses',
         'options' => [

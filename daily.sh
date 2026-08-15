@@ -384,7 +384,6 @@ main () {
                                "rrd_purge"
                                "ports_fdb"
                                "ports_nac"
-                               "route"
                                "ports_purge")
                 call_daily_php "${options[@]}"
             ;;
