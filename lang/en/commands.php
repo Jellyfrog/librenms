@@ -260,6 +260,16 @@ return [
     'maintenance:cleanup-networks' => [
         'delete' => 'Deleting :count unused networks',
     ],
+    'maintenance:cleanup-ports-nac' => [
+        'description' => 'Cleanup NAC (network access control) entries older than a specified number of days',
+        'arguments' => [
+            'days' => 'Number of days to keep NAC entries (default: ports_nac_purge configured value)',
+        ],
+        'bad_days_input' => 'Days must be numeric',
+        'bad_days_setting' => 'NAC cleanup disabled due to invalid ports_nac_purge setting',
+        'delete' => 'Cleared NAC entries older than :days days (:count rows)',
+        'disabled' => 'NAC cleanup disabled, days <= 0',
+    ],
     'maintenance:fetch-ouis' => [
         'description' => 'Fetch MAC OUIs and cache them to display vendor names for MAC addresses',
         'options' => [
