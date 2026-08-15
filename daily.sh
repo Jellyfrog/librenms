@@ -378,7 +378,6 @@ main () {
                                "eventlog"
                                "authlog"
                                "callback"
-                               "purgeusers"
                                "bill_data"
                                "alert_log"
                                "rrd_purge"

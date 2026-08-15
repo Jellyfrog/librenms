@@ -305,6 +305,17 @@ return [
         'delete' => 'Cleared syslog entries older than :days days (:count rows)',
         'disabled' => 'Syslog cleanup disabled, days <= 0',
     ],
+    'maintenance:cleanup-users' => [
+        'description' => 'Remove users of the current auth mechanism that have not logged in for a number of days',
+        'arguments' => [
+            'days' => 'Number of days a user may go without logging in (default: the users_purge configured value for the current auth mechanism)',
+        ],
+        'bad_days_input' => 'Days must be numeric',
+        'bad_days_setting' => 'User cleanup disabled due to invalid :setting setting',
+        'delete' => 'Removed users that have not logged in for :days days (:count users)',
+        'disabled' => 'User cleanup disabled, days <= 0',
+        'unsupported_auth' => 'User cleanup is only supported for the radius and active_directory auth mechanisms, not :mechanism',
+    ],
     'maintenance:discover-ssl-certificates' => [
         'description' => 'Discover SSL certificates on devices (HTTPS port 443)',
         'options' => [

@@ -240,30 +240,6 @@ if ($options['f'] === 'alert_log') {
     lock_and_purge_query($table, $sql, $msg);
 }
 
-if ($options['f'] === 'purgeusers') {
-    $lock = Cache::lock('purgeusers', 86000);
-    if ($lock->get()) {
-        $purge = 0;
-        if (is_numeric(\App\Facades\LibrenmsConfig::get('radius.users_purge')) && LibrenmsConfig::get('auth_mechanism') === 'radius') {
-            $purge = \App\Facades\LibrenmsConfig::get('radius.users_purge');
-        }
-        if (is_numeric(\App\Facades\LibrenmsConfig::get('active_directory.users_purge')) && LibrenmsConfig::get('auth_mechanism') === 'active_directory') {
-            $purge = \App\Facades\LibrenmsConfig::get('active_directory.users_purge');
-        }
-        if ($purge > 0) {
-            $users = \App\Models\AuthLog::where('datetime', '>=', \Carbon\Carbon::now()->subDays($purge))
-                ->distinct()->pluck('user')
-                ->merge(\App\Models\User::has('apiTokens')->pluck('username')) // don't purge users with api tokens
-                ->unique();
-
-            if (\App\Models\User::thisAuth()->whereNotIn('username', $users)->delete()) {
-                echo "Removed users that haven't logged in for $purge days\n";
-            }
-        }
-        $lock->release();
-    }
-}
-
 if ($options['f'] === 'refresh_alert_rules') {
     $lock = Cache::lock('refresh_alert_rules', 86000);
     if ($lock->get()) {

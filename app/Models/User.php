@@ -180,6 +180,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Authentication log entries for this user, matched by username as authlog has no user_id.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\AuthLog, $this>
+     */
+    public function authLogs(): HasMany
+    {
+        return $this->hasMany(AuthLog::class, 'user', 'username');
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\Bill, $this>
      */
     public function bills(): BelongsToMany
