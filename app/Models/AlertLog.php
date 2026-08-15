@@ -27,6 +27,21 @@ class AlertLog extends DeviceRelatedModel
     ];
 
     /**
+     * The alert this entry was logged for (matched by device_id + rule_id).
+     *
+     * Note: this relationship cannot be eager-loaded because Eloquent only
+     * supports a single foreign key for BelongsTo, and the constraint on
+     * rule_id uses whereColumn which is not available in eager-load queries.
+     *
+     * @return BelongsTo<Alert, $this>
+     */
+    public function alert(): BelongsTo
+    {
+        return $this->belongsTo(Alert::class, 'device_id', 'device_id')
+            ->whereColumn('alerts.rule_id', 'alert_log.rule_id');
+    }
+
+    /**
      * @return BelongsTo<AlertRule, $this>
      */
     public function rule(): BelongsTo

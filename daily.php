@@ -211,35 +211,6 @@ if ($options['f'] === 'bill_data') {
     lock_and_purge_query($table, $sql, $msg);
 }
 
-if ($options['f'] === 'alert_log') {
-    $msg = "Deleting alert_logs more than %d days that are not active\n";
-    $table = 'alert_log';
-    $sql = 'DELETE alert_log
-                FROM alert_log
-                INNER JOIN alerts
-                ON alerts.device_id=alert_log.device_id AND alerts.rule_id=alert_log.rule_id
-                WHERE alerts.state=0 AND alert_log.time_logged < DATE_SUB(NOW(),INTERVAL ? DAY)
-                ';
-    lock_and_purge_query($table, $sql, $msg);
-
-    // alert_log older than $config['alert_log_purge'] days match now only the alert_log of active alerts
-    // in case of flapping of an alert, many entries are kept in alert_log
-    // we want only to keep the last alert_log that contains the alert details
-
-    $msg = "Deleting history of active alert_logs more than %d days\n";
-    $sql = 'DELETE alert_log FROM
-                alert_log
-                INNER JOIN
-                (SELECT device_id, rule_id, max(time_logged) AS mtime_logged
-                    FROM alert_log
-                    WHERE time_logged < DATE_SUB(NOW(), INTERVAL ? DAY)
-                    GROUP BY device_id, rule_id) AS b
-                ON
-                    alert_log.device_id = b.device_id AND alert_log.rule_id = b.rule_id
-                WHERE alert_log.time_logged < b.mtime_logged';
-    lock_and_purge_query($table, $sql, $msg);
-}
-
 if ($options['f'] === 'purgeusers') {
     $lock = Cache::lock('purgeusers', 86000);
     if ($lock->get()) {

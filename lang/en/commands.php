@@ -254,6 +254,17 @@ return [
             'optionValue' => 'Selected :option is invalid. Should be one of: :values',
         ],
     ],
+    'maintenance:cleanup-alert-log' => [
+        'description' => 'Cleanup alert log entries older than a specified number of days',
+        'arguments' => [
+            'days' => 'Number of days to keep alert log entries (default: alert_log_purge configured value)',
+        ],
+        'bad_days_input' => 'Days must be numeric',
+        'bad_days_setting' => 'Alert log cleanup disabled due to invalid alert_log_purge setting',
+        'delete_cleared' => 'Cleared alert log entries older than :days days for alerts that are not active (:count rows)',
+        'delete_history' => 'Cleared alert log history older than :days days, keeping the most recent entry per alert (:count rows)',
+        'disabled' => 'Alert log cleanup disabled, days <= 0',
+    ],
     'maintenance:cleanup-database' => [
         'description' => 'Database cleanup of orphaned items.',
     ],
