@@ -260,6 +260,13 @@ return [
     'maintenance:cleanup-networks' => [
         'delete' => 'Deleting :count unused networks',
     ],
+    'maintenance:cleanup-ports' => [
+        'description' => 'Permanently remove ports that have been marked as deleted',
+        'options' => [
+            'force' => 'Purge deleted ports even if the ports_purge setting is disabled',
+        ],
+        'delete' => 'Purged :count deleted ports',
+    ],
     'maintenance:fetch-ouis' => [
         'description' => 'Fetch MAC OUIs and cache them to display vendor names for MAC addresses',
         'options' => [

@@ -118,23 +118,6 @@ if ($options['f'] === 'callback') {
     \LibreNMS\Util\Stats::submit();
 }
 
-if ($options['f'] === 'ports_purge') {
-    if (LibrenmsConfig::get('ports_purge')) {
-        $lock = Cache::lock('ports_purge', 86000);
-        if ($lock->get()) {
-            \App\Models\Port::query()->with(['device' => function ($query) {
-                $query->select('device_id', 'hostname');
-            }])->isDeleted()->chunkById(100, function ($ports) {
-                foreach ($ports as $port) {
-                    $port->delete();
-                }
-            });
-            echo "All deleted ports now purged\n";
-            $lock->release();
-        }
-    }
-}
-
 if ($options['f'] === 'handle_notifiable') {
     if ($options['t'] === 'update') {
         $title = 'Error: Daily update failed';
