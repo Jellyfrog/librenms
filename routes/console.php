@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\MaintenanceCleanupEventlog;
 use App\Console\Commands\MaintenanceCleanupNetworks;
 use App\Console\Commands\MaintenanceCleanupSyslog;
 use App\Console\Commands\MaintenanceDiscoverSslCertificates;
@@ -218,3 +219,9 @@ Schedule::command(MaintenanceRefreshSslCertificates::class)
     ->onOneServer()
     ->appendOutputTo($maintenance_log_file)
     ->onFailure(fn () => Eventlog::log('The scheduled command maintenance:refresh-ssl-certificates failed to run. Check the maintenance.log for details.', null, 'maintenance', Severity::Error));
+
+Schedule::command(MaintenanceCleanupEventlog::class)
+    ->dailyAt(Time::pseudoRandomBetween('06:00', '06:59'))
+    ->onOneServer()
+    ->appendOutputTo($maintenance_log_file)
+    ->onFailure(fn () => Eventlog::log('The scheduled command maintenance:cleanup-eventlog failed to run. Check the maintenance.log for details.', null, 'maintenance', Severity::Error));

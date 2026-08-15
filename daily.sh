@@ -375,7 +375,6 @@ main () {
                 options=("refresh_alert_rules"
                                "refresh_device_groups"
                                "recalculate_device_dependencies"
-                               "eventlog"
                                "authlog"
                                "callback"
                                "purgeusers"

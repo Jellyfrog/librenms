@@ -257,6 +257,16 @@ return [
     'maintenance:cleanup-database' => [
         'description' => 'Database cleanup of orphaned items.',
     ],
+    'maintenance:cleanup-eventlog' => [
+        'description' => 'Cleanup eventlog entries older than a specified number of days',
+        'arguments' => [
+            'days' => 'Number of days to keep eventlog entries (default: eventlog_purge configured value)',
+        ],
+        'bad_days_input' => 'Days must be numeric',
+        'bad_days_setting' => 'Eventlog cleanup disabled due to invalid eventlog_purge setting',
+        'delete' => 'Cleared eventlog entries older than :days days (:count rows)',
+        'disabled' => 'Eventlog cleanup disabled, days <= 0',
+    ],
     'maintenance:cleanup-networks' => [
         'delete' => 'Deleting :count unused networks',
     ],

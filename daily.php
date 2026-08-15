@@ -104,11 +104,6 @@ if ($options['f'] === 'route') {
     exit($ret);
 }
 
-if ($options['f'] === 'eventlog') {
-    $ret = lock_and_purge('eventlog', 'datetime < DATE_SUB(NOW(), INTERVAL ? DAY)');
-    exit($ret);
-}
-
 if ($options['f'] === 'authlog') {
     $ret = lock_and_purge('authlog', 'datetime < DATE_SUB(NOW(), INTERVAL ? DAY)');
     exit($ret);
