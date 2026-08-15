@@ -260,6 +260,16 @@ return [
     'maintenance:cleanup-networks' => [
         'delete' => 'Deleting :count unused networks',
     ],
+    'maintenance:cleanup-ports-fdb' => [
+        'description' => 'Cleanup port FDB entries older than a specified number of days',
+        'arguments' => [
+            'days' => 'Number of days to keep port FDB entries (default: ports_fdb_purge configured value)',
+        ],
+        'bad_days_input' => 'Days must be numeric',
+        'bad_days_setting' => 'Port FDB cleanup disabled due to invalid ports_fdb_purge setting',
+        'delete' => 'Cleared port FDB entries older than :days days (:count rows)',
+        'disabled' => 'Port FDB cleanup disabled, days <= 0',
+    ],
     'maintenance:fetch-ouis' => [
         'description' => 'Fetch MAC OUIs and cache them to display vendor names for MAC addresses',
         'options' => [

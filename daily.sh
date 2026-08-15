@@ -382,7 +382,6 @@ main () {
                                "bill_data"
                                "alert_log"
                                "rrd_purge"
-                               "ports_fdb"
                                "ports_nac"
                                "route"
                                "ports_purge")

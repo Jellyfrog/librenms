@@ -1,6 +1,7 @@
 <?php
 
 use App\Console\Commands\MaintenanceCleanupNetworks;
+use App\Console\Commands\MaintenanceCleanupPortsFdb;
 use App\Console\Commands\MaintenanceCleanupSyslog;
 use App\Console\Commands\MaintenanceDiscoverSslCertificates;
 use App\Console\Commands\MaintenanceFetchOuis;
@@ -218,3 +219,9 @@ Schedule::command(MaintenanceRefreshSslCertificates::class)
     ->onOneServer()
     ->appendOutputTo($maintenance_log_file)
     ->onFailure(fn () => Eventlog::log('The scheduled command maintenance:refresh-ssl-certificates failed to run. Check the maintenance.log for details.', null, 'maintenance', Severity::Error));
+
+Schedule::command(MaintenanceCleanupPortsFdb::class)
+    ->dailyAt(Time::pseudoRandomBetween('08:00', '08:59'))
+    ->onOneServer()
+    ->appendOutputTo($maintenance_log_file)
+    ->onFailure(fn () => Eventlog::log('The scheduled command maintenance:cleanup-ports-fdb failed to run. Check the maintenance.log for details.', null, 'maintenance', Severity::Error));
