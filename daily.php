@@ -109,11 +109,6 @@ if ($options['f'] === 'eventlog') {
     exit($ret);
 }
 
-if ($options['f'] === 'authlog') {
-    $ret = lock_and_purge('authlog', 'datetime < DATE_SUB(NOW(), INTERVAL ? DAY)');
-    exit($ret);
-}
-
 if ($options['f'] === 'callback') {
     \LibreNMS\Util\Stats::submit();
 }

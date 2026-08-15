@@ -254,6 +254,16 @@ return [
             'optionValue' => 'Selected :option is invalid. Should be one of: :values',
         ],
     ],
+    'maintenance:cleanup-authlog' => [
+        'description' => 'Cleanup authentication log entries older than a specified number of days',
+        'arguments' => [
+            'days' => 'Number of days to keep authlog entries (default: authlog_purge configured value)',
+        ],
+        'bad_days_input' => 'Days must be numeric',
+        'bad_days_setting' => 'Authlog cleanup disabled due to invalid authlog_purge setting',
+        'delete' => 'Cleared authlog entries older than :days days (:count rows)',
+        'disabled' => 'Authlog cleanup disabled, days <= 0',
+    ],
     'maintenance:cleanup-database' => [
         'description' => 'Database cleanup of orphaned items.',
     ],
