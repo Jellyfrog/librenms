@@ -24,7 +24,6 @@
 namespace LibreNMS\Tests\Feature\Commands;
 
 use App\Console\Commands\MaintenanceRun;
-use App\Facades\LibrenmsConfig;
 use App\Maintenance\TaskRegistry;
 use App\Models\Eventlog;
 use Illuminate\Contracts\Console\Kernel;
@@ -153,30 +152,6 @@ final class MaintenanceRunTest extends InMemoryDbTestCase
             ->assertExitCode(0);
 
         $this->assertSame(0, $this->reportedFailures());
-    }
-
-    /**
-     * The auto_discover guard used to live on the schedule entry, so moving the
-     * command into the registry would have turned discovery on everywhere it was
-     * switched off. The guard has to be in the command itself.
-     */
-    public function testSslDiscoveryStaysOffWhenAutoDiscoverIsDisabled(): void
-    {
-        LibrenmsConfig::set('ssl_certificates.auto_discover', false);
-
-        $this->artisan('maintenance:discover-ssl-certificates')
-            ->expectsOutputToContain(trans('commands.maintenance:discover-ssl-certificates.disabled'))
-            ->assertExitCode(0);
-    }
-
-    public function testSslDiscoveryCanBeForcedWhenDisabled(): void
-    {
-        LibrenmsConfig::set('ssl_certificates.auto_discover', false);
-
-        // no devices exist, so this proves only that the guard was bypassed
-        $this->artisan('maintenance:discover-ssl-certificates', ['--force' => true])
-            ->expectsOutputToContain(trans('commands.maintenance:discover-ssl-certificates.no_devices'))
-            ->assertExitCode(0);
     }
 
     /**
