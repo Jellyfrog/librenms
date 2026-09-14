@@ -2,12 +2,14 @@
 
 namespace App\Console\Commands;
 
+use App\Actions\Maintenance\FetchRss;
 use App\Console\LnmsCommand;
-use Illuminate\Support\Facades\Cache;
-use LibreNMS\Util\Notifications;
+use App\Console\Commands\Traits\RendersTaskResult;
 
 class MaintenanceFetchRSS extends LnmsCommand
 {
+    use RendersTaskResult;
+
     /**
      * The name of the console command.
      *
@@ -18,16 +20,8 @@ class MaintenanceFetchRSS extends LnmsCommand
     /**
      * Execute the console command.
      */
-    public function handle(): int
+    public function handle(FetchRss $action): int
     {
-        $lock = Cache::lock('notifications', 86000);
-        if ($lock->get()) {
-            Notifications::post();
-            $lock->release();
-
-            return 0;
-        }
-
-        return 1;
+        return $this->renderTaskResult($action->execute());
     }
 }

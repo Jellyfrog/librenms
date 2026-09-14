@@ -19,17 +19,16 @@
  * @link       https://www.librenms.org
  */
 
-namespace App\Actions\Maintenance;
+namespace App\Jobs\Maintenance;
 
-use App\Maintenance\TaskResult;
-use LibreNMS\Util\Notifications;
+use App\Actions\Maintenance\FetchRss as FetchRssAction;
 
-class FetchRss
+class FetchRss extends MaintenanceJob
 {
-    public function execute(): TaskResult
-    {
-        Notifications::post();
+    public int $timeout = 600;
 
-        return TaskResult::make();
+    public function handle(FetchRssAction $action): void
+    {
+        $this->report($action->execute());
     }
 }

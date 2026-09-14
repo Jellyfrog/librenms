@@ -1,7 +1,7 @@
 <?php
 
 /**
- * FetchRss.php
+ * RendersTaskResult.php
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,17 +19,26 @@
  * @link       https://www.librenms.org
  */
 
-namespace App\Actions\Maintenance;
+namespace App\Console\Commands\Traits;
 
 use App\Maintenance\TaskResult;
-use LibreNMS\Util\Notifications;
 
-class FetchRss
+/**
+ * The console half of a maintenance task: print what it did and turn the
+ * outcome into an exit code. The queue half is MaintenanceJob::report().
+ */
+trait RendersTaskResult
 {
-    public function execute(): TaskResult
+    protected function renderTaskResult(TaskResult $result): int
     {
-        Notifications::post();
+        foreach ($result->messages() as $message) {
+            match ($message['level']) {
+                TaskResult::ERROR => $this->error($message['text']),
+                TaskResult::WARNING => $this->warn($message['text']),
+                default => $this->line($message['text']),
+            };
+        }
 
-        return TaskResult::make();
+        return $result->failed() ? 1 : 0;
     }
 }
