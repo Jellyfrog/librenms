@@ -327,6 +327,10 @@ return [
         'error' => 'Error processing Mac OUI:',
         'vendor_update' => 'Adding OUI :oui for :vendor',
     ],
+    'maintenance:fetch-rss' => [
+        'description' => 'Fetch the LibreNMS notification feed',
+        'already_running' => 'Another poller is fetching notifications right now. Skipped.',
+    ],
     'maintenance:rrd-step' => [
         'description' => 'Convert RRD files to match configured step and heartbeat',
         'arguments' => [
