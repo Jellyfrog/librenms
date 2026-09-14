@@ -2,14 +2,15 @@
 
 namespace App\Console\Commands;
 
+use App\Actions\Maintenance\CleanupNetworks;
+use App\Console\Commands\Traits\RendersTaskResult;
 use App\Console\LnmsCommand;
-use App\Facades\LibrenmsConfig;
-use App\Models\Ipv4Network;
-use App\Models\Ipv6Network;
 use Symfony\Component\Console\Input\InputOption;
 
 class MaintenanceCleanupNetworks extends LnmsCommand
 {
+    use RendersTaskResult;
+
     /**
      * The name of the console command.
      *
@@ -27,32 +28,8 @@ class MaintenanceCleanupNetworks extends LnmsCommand
     /**
      * Execute the console command.
      */
-    public function handle(): int
+    public function handle(CleanupNetworks $action): int
     {
-        $force = $this->option('force');
-
-        if (LibrenmsConfig::get('networks_purge') === true || $force) {
-            $oldNetworks = Ipv4Network::withCount('ipv4')
-                ->having('ipv4_count', 0)
-                ->pluck('ipv4_network_id');
-            if ($oldNetworks->count() > 0) {
-                $this->line(trans('commands.maintenance:cleanup-networks.delete', [
-                    'count' => $oldNetworks->count(),
-                ]));
-                Ipv4Network::whereIn('ipv4_network_id', $oldNetworks)->delete();
-            }
-
-            $oldIpv6Networks = Ipv6Network::withCount('ipv6')
-                ->having('ipv6_count', 0)
-                ->pluck('ipv6_network_id');
-            if ($oldIpv6Networks->count() > 0) {
-                $this->line(trans('commands.maintenance:cleanup-networks.delete', [
-                    'count' => $oldIpv6Networks->count(),
-                ]));
-                Ipv6Network::whereIn('ipv6_network_id', $oldIpv6Networks)->delete();
-            }
-        }
-
-        return 0;
+        return $this->renderTaskResult($action->execute((bool) $this->option('force')));
     }
 }

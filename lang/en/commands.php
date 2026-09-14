@@ -307,7 +307,12 @@ return [
         'description' => 'Database cleanup of orphaned items.',
     ],
     'maintenance:cleanup-networks' => [
+        'description' => 'Delete IPv4 and IPv6 networks that no longer contain any addresses',
+        'options' => [
+            'force' => 'Clean up even when the networks_purge setting is disabled',
+        ],
         'delete' => 'Deleting :count unused networks',
+        'disabled' => 'Network cleanup is disabled (networks_purge)',
     ],
     'maintenance:fetch-ouis' => [
         'description' => 'Fetch MAC OUIs and cache them to display vendor names for MAC addresses',
