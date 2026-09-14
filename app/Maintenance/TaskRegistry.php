@@ -47,11 +47,6 @@ namespace App\Maintenance;
 class TaskRegistry
 {
     /**
-     * Fallback timeout, in seconds, for tasks that do not set their own.
-     */
-    public const DEFAULT_TIMEOUT = 3600;
-
-    /**
      * Tasks by cadence, in run order, mapped to their timeout in seconds.
      *
      * The timeout is what bounds a run: a task that hangs is killed and the
@@ -109,13 +104,5 @@ class TaskRegistry
     public function tasks(string $cadence): array
     {
         return $this->tasks[$cadence] ?? [];
-    }
-
-    /**
-     * The timeout for a single task, in seconds.
-     */
-    public function timeout(string $cadence, string $task): int
-    {
-        return $this->tasks($cadence)[$task] ?? self::DEFAULT_TIMEOUT;
     }
 }

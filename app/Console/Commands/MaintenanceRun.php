@@ -31,8 +31,9 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
-use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
+
+use function Illuminate\Support\php_binary;
 
 /**
  * Replaces the cleanup chain daily.sh used to run, which looped over a list of
@@ -53,6 +54,13 @@ use Symfony\Component\Process\Process;
 class MaintenanceRun extends LnmsCommand
 {
     protected $name = 'maintenance:run';
+
+    /**
+     * The part of every task's command line that does not change between tasks.
+     *
+     * @var array<int, string>
+     */
+    private array $commandPrefix = [];
 
     public function __construct()
     {
@@ -77,10 +85,13 @@ class MaintenanceRun extends LnmsCommand
             return 1;
         }
 
-        $timeoutOverride = $this->timeoutOverride();
-        if ($timeoutOverride === false) {
+        $timeout = $this->option('timeout');
+        if ($timeout !== null && (! is_numeric($timeout) || (int) $timeout < 1)) {
+            $this->error(trans('commands.maintenance:run.bad_timeout'));
+
             return 1;
         }
+        $timeoutOverride = $timeout === null ? null : (int) $timeout;
 
         $tasks = $this->filterTasks($registry->tasks($cadence));
 
@@ -90,9 +101,17 @@ class MaintenanceRun extends LnmsCommand
             return 0;
         }
 
+        $this->commandPrefix = [
+            php_binary(),
+            base_path('artisan'),
+            '--no-interaction',
+            '--no-ansi',
+            ...array_filter([$this->subprocessVerbosity()]),
+        ];
+
         $failed = 0;
-        foreach ($tasks as $task => $timeout) {
-            if (! $this->runTask($task, $timeoutOverride ?? $timeout)) {
+        foreach ($tasks as $task => $taskTimeout) {
+            if (! $this->runTask($task, $timeoutOverride ?? $taskTimeout)) {
                 $failed++;
             }
         }
@@ -113,8 +132,13 @@ class MaintenanceRun extends LnmsCommand
         try {
             $process = new Process($this->buildCommand($task));
             $process->setTimeout($timeout);
+            // The child's output is streamed straight through and never read back,
+            // so do not let Process keep a second copy of it as well.
+            $process->disableOutput();
             $process->run(function ($type, $buffer): void {
-                $this->output->write($buffer);
+                // Raw, because this is not console markup: a hostname or SNMP value
+                // in angle brackets would otherwise be swallowed as a style tag.
+                $this->output->write($buffer, false, OutputInterface::OUTPUT_RAW);
             });
 
             if ($process->isSuccessful()) {
@@ -169,27 +193,17 @@ class MaintenanceRun extends LnmsCommand
      */
     protected function buildCommand(string $task): array
     {
-        $command = [
-            (new PhpExecutableFinder)->find(false) ?: PHP_BINARY,
-            base_path('artisan'),
-            $task,
-            '--no-interaction',
-            '--no-ansi',
-        ];
-
-        if ($verbosity = $this->subprocessVerbosity()) {
-            $command[] = $verbosity;
-        }
-
-        return $command;
+        return [...$this->commandPrefix, $task];
     }
 
     private function subprocessVerbosity(): ?string
     {
+        $verbosity = $this->output->getVerbosity();
+
         return match (true) {
-            $this->output->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG => '-vvv',
-            $this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE => '-vv',
-            $this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE => '-v',
+            $verbosity >= OutputInterface::VERBOSITY_DEBUG => '-vvv',
+            $verbosity >= OutputInterface::VERBOSITY_VERY_VERBOSE => '-vv',
+            $verbosity >= OutputInterface::VERBOSITY_VERBOSE => '-v',
             default => null,
         };
     }
@@ -209,26 +223,6 @@ class MaintenanceRun extends LnmsCommand
         }
 
         return $tasks;
-    }
-
-    /**
-     * @return int|null|false null when unset, false when invalid
-     */
-    private function timeoutOverride(): int|null|false
-    {
-        $timeout = $this->option('timeout');
-
-        if ($timeout === null) {
-            return null;
-        }
-
-        if (! is_numeric($timeout) || (int) $timeout <= 0) {
-            $this->error(trans('commands.maintenance:run.bad_timeout'));
-
-            return false;
-        }
-
-        return (int) $timeout;
     }
 
     private function elapsed(float $started): string

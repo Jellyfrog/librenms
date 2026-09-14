@@ -50,6 +50,11 @@ final class MaintenanceRunTest extends InMemoryDbTestCase
         $this->app->instance(TaskRegistry::class, new TaskRegistry($tasks));
     }
 
+    private function reportedFailures(): int
+    {
+        return Eventlog::where('type', 'maintenance')->count();
+    }
+
     public function testUnknownCadenceIsRejected(): void
     {
         $this->registerTasks(['daily' => []]);
@@ -87,7 +92,7 @@ final class MaintenanceRunTest extends InMemoryDbTestCase
         $this->artisan('maintenance:run', ['cadence' => 'daily'])
             ->assertExitCode(0);
 
-        $this->assertSame(0, Eventlog::where('type', 'maintenance')->count(),
+        $this->assertSame(0, $this->reportedFailures(),
             'a task that succeeded should not write an eventlog entry');
     }
 
@@ -133,7 +138,7 @@ final class MaintenanceRunTest extends InMemoryDbTestCase
         $this->artisan('maintenance:run', ['cadence' => 'daily', '--only' => self::PASSING_TASK])
             ->assertExitCode(0);
 
-        $this->assertSame(0, Eventlog::where('type', 'maintenance')->count(),
+        $this->assertSame(0, $this->reportedFailures(),
             'the failing task should have been filtered out');
     }
 
@@ -147,7 +152,7 @@ final class MaintenanceRunTest extends InMemoryDbTestCase
         $this->artisan('maintenance:run', ['cadence' => 'daily', '--except' => self::FAILING_TASK])
             ->assertExitCode(0);
 
-        $this->assertSame(0, Eventlog::where('type', 'maintenance')->count());
+        $this->assertSame(0, $this->reportedFailures());
     }
 
     /**
@@ -192,7 +197,7 @@ final class MaintenanceRunTest extends InMemoryDbTestCase
         $this->assertLessThan(20, microtime(true) - $started,
             'the hung task should have been killed at its timeout, not waited out');
 
-        $this->assertSame(1, Eventlog::where('type', 'maintenance')->count(),
+        $this->assertSame(1, $this->reportedFailures(),
             'the timed out task should be reported, and only it');
     }
 }

@@ -24,11 +24,12 @@ namespace LibreNMS\Tests\Feature\Maintenance;
 use App\Jobs\Maintenance\FetchRss;
 use App\Jobs\Maintenance\MaintenanceJob;
 use App\Maintenance\TaskResult;
+use App\Models\Eventlog;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
-use LibreNMS\Tests\TestCase;
+use LibreNMS\Tests\InMemoryDbTestCase;
 use RuntimeException;
 
-final class MaintenanceJobTest extends TestCase
+final class MaintenanceJobTest extends InMemoryDbTestCase
 {
     /**
      * Maintenance work is heavy on the database, so only one task may run at a
@@ -85,6 +86,28 @@ final class MaintenanceJobTest extends TestCase
         $this->expectExceptionMessage('it broke');
 
         $job->handle();
+    }
+
+    /**
+     * The failure has to be recorded by the task, not by whatever dispatched
+     * it, or it is lost the moment a worker replaces the chain runner. This
+     * also proves the sync driver reaches failed(), which the runner relies on.
+     */
+    public function testAFailedJobIsRecordedInTheEventlogUnderTheSyncDriver(): void
+    {
+        try {
+            ReportingJob::dispatchSync(TaskResult::make()->error('it broke'));
+            $this->fail('the failure should still propagate after being recorded');
+        } catch (RuntimeException) {
+            // expected
+        }
+
+        $entries = Eventlog::where('type', 'maintenance')->pluck('message');
+
+        $this->assertCount(1, $entries, 'one failure, one eventlog entry');
+        $this->assertStringContainsString('it broke', $entries->first());
+        $this->assertStringContainsString('ReportingJob', $entries->first(),
+            'the entry should say which task failed');
     }
 
     public function testASuccessfulResultDoesNotThrow(): void

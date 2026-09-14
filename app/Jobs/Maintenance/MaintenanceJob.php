@@ -24,6 +24,7 @@
 namespace App\Jobs\Maintenance;
 
 use App\Maintenance\TaskResult;
+use App\Models\Eventlog;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -31,6 +32,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use LibreNMS\Enum\Severity;
 use RuntimeException;
 
 /**
@@ -85,15 +87,28 @@ abstract class MaintenanceJob implements ShouldQueue
     protected function report(TaskResult $result): void
     {
         foreach ($result->messages() as $message) {
-            match ($message['level']) {
-                TaskResult::ERROR => Log::error($message['text']),
-                TaskResult::WARNING => Log::warning($message['text']),
-                default => Log::info($message['text']),
-            };
+            // the levels are PSR-3 names, so the log takes them as they are
+            Log::log($message['level'], $message['text']);
         }
 
         if ($result->failed()) {
             throw new RuntimeException($result->summary());
+        }
+    }
+
+    /**
+     * Record the failure where operators look for it. A queue worker calls
+     * this itself, and so does the sync driver, so it holds however the task
+     * was run -- which is why it lives on the task and not in whatever happens
+     * to be dispatching it.
+     */
+    public function failed(\Throwable $e): void
+    {
+        // best effort: a broken database must not hide the original failure
+        try {
+            Eventlog::log(class_basename($this) . ': ' . $e->getMessage(), null, 'maintenance', Severity::Error);
+        } catch (\Throwable) {
+            Log::error('Could not write a maintenance failure to the eventlog: ' . $e->getMessage());
         }
     }
 }

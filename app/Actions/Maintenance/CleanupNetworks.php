@@ -41,8 +41,8 @@ class CleanupNetworks
             return $result->warning(trans('commands.maintenance:cleanup-networks.disabled'));
         }
 
-        $this->prune($result, Ipv4Network::class, 'ipv4', 'ipv4_network_id');
-        $this->prune($result, Ipv6Network::class, 'ipv6', 'ipv6_network_id');
+        $this->prune($result, Ipv4Network::class, 'ipv4');
+        $this->prune($result, Ipv6Network::class, 'ipv6');
 
         return $result;
     }
@@ -50,23 +50,19 @@ class CleanupNetworks
     /**
      * Delete networks that no longer have any addresses in them.
      *
-     * This used to be withCount()->having($count, 0)->pluck($key), but pluck()
-     * replaces the select and drops the count subquery, leaving HAVING pointing
-     * at a column that is no longer there. whereDoesntHave says the same thing
-     * without the aggregate.
+     * One statement. delete() returns the row count the message needs, so
+     * there is no id list to fetch first, hold in memory, or expand into a
+     * WHERE ... IN with one placeholder per row -- which matters most right
+     * after a bulk device removal, exactly when this task has the most to do.
      *
      * @param  class-string<Ipv4Network|Ipv6Network>  $model
      */
-    private function prune(TaskResult $result, string $model, string $relation, string $key): void
+    private function prune(TaskResult $result, string $model, string $relation): void
     {
-        $unused = $model::whereDoesntHave($relation)->pluck($key);
+        $deleted = $model::whereDoesntHave($relation)->delete();
 
-        if ($unused->isEmpty()) {
-            return;
+        if ($deleted > 0) {
+            $result->info(trans('commands.maintenance:cleanup-networks.delete', ['count' => $deleted]));
         }
-
-        $result->info(trans('commands.maintenance:cleanup-networks.delete', ['count' => $unused->count()]));
-
-        $model::whereIn($key, $unused)->delete();
     }
 }

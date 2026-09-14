@@ -3,9 +3,11 @@
 use App\Console\Commands\MaintenanceRun;
 use App\Facades\LibrenmsConfig;
 use App\Jobs\PingCheck;
+use App\Models\Eventlog;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schedule;
+use LibreNMS\Enum\Severity;
 use LibreNMS\Util\Time;
 use Symfony\Component\Process\Process;
 
@@ -187,24 +189,39 @@ $maintenance_log_file = LibrenmsConfig::get('log_dir') . '/maintenance.log';
  * TODO: port these to queued jobs once LibreNMS ships a queue runner. A worker
  * gives sequencing, failure isolation, timeouts and retries natively, and
  * maintenance:run can then be deleted. See App\Maintenance\TaskRegistry.
+ *
+ * Each task reports its own failure. The hook here is for the one thing a
+ * task cannot report: the chain itself dying or never starting. It also fires
+ * when the chain exits non-zero because a task failed, adding one summary
+ * line to the per-task entries.
  */
+$chainFailed = fn (string $cadence) => fn () => Eventlog::log(
+    "The $cadence maintenance chain finished with failures. Check the maintenance.log for details.",
+    null,
+    'maintenance',
+    Severity::Error
+);
+
 Schedule::command(MaintenanceRun::class, ['hourly'])
     ->hourlyAt(17)
     ->onOneServer()
     ->runInBackground()
     ->withoutOverlapping()
-    ->appendOutputTo($maintenance_log_file);
+    ->appendOutputTo($maintenance_log_file)
+    ->onFailure($chainFailed('hourly'));
 
 Schedule::command(MaintenanceRun::class, ['daily'])
     ->dailyAt(Time::pseudoRandomBetween('01:00', '05:00'))
     ->onOneServer()
     ->runInBackground()
     ->withoutOverlapping()
-    ->appendOutputTo($maintenance_log_file);
+    ->appendOutputTo($maintenance_log_file)
+    ->onFailure($chainFailed('daily'));
 
 Schedule::command(MaintenanceRun::class, ['weekly'])
     ->weeklyOn(0, Time::pseudoRandomBetween('01:00', '05:00'))
     ->onOneServer()
     ->runInBackground()
     ->withoutOverlapping()
-    ->appendOutputTo($maintenance_log_file);
+    ->appendOutputTo($maintenance_log_file)
+    ->onFailure($chainFailed('weekly'));
