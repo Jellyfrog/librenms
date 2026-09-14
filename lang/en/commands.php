@@ -370,6 +370,25 @@ return [
         'none' => 'No enabled certificates to refresh',
         'summary' => 'Refreshed: :refreshed, Failed: :failed',
     ],
+    'maintenance:run' => [
+        'description' => 'Run the registered maintenance tasks for a cadence, one at a time',
+        'arguments' => [
+            'cadence' => 'Which set of tasks to run: hourly, daily, or weekly',
+        ],
+        'options' => [
+            'only' => 'Only run these tasks (comma separated list of command names)',
+            'except' => 'Skip these tasks (comma separated list of command names)',
+            'timeout' => 'Override the timeout, in seconds, applied to every task',
+        ],
+        'bad_timeout' => 'Timeout must be a positive number of seconds',
+        'unknown_cadence' => 'Unknown cadence :cadence. It must be one of: :cadences',
+        'no_tasks' => 'No maintenance tasks are registered to run :cadence',
+        'task_finished' => 'Finished :task in :duration seconds',
+        'task_failed' => 'The maintenance task :task exited with code :code after :duration seconds',
+        'task_timed_out' => 'The maintenance task :task was killed after exceeding its timeout of :timeout seconds',
+        'task_errored' => 'The maintenance task :task could not be run: :message',
+        'eventlog_failed' => 'Could not write an eventlog entry for :task: :message',
+    ],
     'plugin:disable' => [
         'description' => 'Disable all plugins with the given name',
         'arguments' => [

@@ -6,6 +6,7 @@ use App\Console\Commands\MaintenanceDiscoverSslCertificates;
 use App\Console\Commands\MaintenanceFetchOuis;
 use App\Console\Commands\MaintenanceFetchRSS;
 use App\Console\Commands\MaintenanceRefreshSslCertificates;
+use App\Console\Commands\MaintenanceRun;
 use App\Facades\LibrenmsConfig;
 use App\Jobs\PingCheck;
 use App\Models\Eventlog;
@@ -180,6 +181,41 @@ Schedule::call(function (): void {
 
 // schedule maintenance, should be after all others
 $maintenance_log_file = LibrenmsConfig::get('log_dir') . '/maintenance.log';
+
+/*
+ * Maintenance tasks run as chains, one task at a time, in a background process
+ * so a slow task cannot eat the scheduler's minute. Tasks are registered in
+ * App\Maintenance\TaskRegistry rather than scheduled individually, so that they
+ * run in a defined order instead of an arbitrary one.
+ *
+ * onOneServer() stops two servers dispatching the same chain in the same
+ * minute; withoutOverlapping() stops a second chain starting while one is still
+ * running. Both are needed, they do different things.
+ *
+ * TODO: port these to queued jobs once LibreNMS ships a queue runner. A worker
+ * gives sequencing, failure isolation, timeouts and retries natively, and
+ * maintenance:run can then be deleted. See App\Maintenance\TaskRegistry.
+ */
+Schedule::command(MaintenanceRun::class, ['hourly'])
+    ->hourlyAt(17)
+    ->onOneServer()
+    ->runInBackground()
+    ->withoutOverlapping()
+    ->appendOutputTo($maintenance_log_file);
+
+Schedule::command(MaintenanceRun::class, ['daily'])
+    ->dailyAt(Time::pseudoRandomBetween('01:00', '05:00'))
+    ->onOneServer()
+    ->runInBackground()
+    ->withoutOverlapping()
+    ->appendOutputTo($maintenance_log_file);
+
+Schedule::command(MaintenanceRun::class, ['weekly'])
+    ->weeklyOn(0, Time::pseudoRandomBetween('01:00', '05:00'))
+    ->onOneServer()
+    ->runInBackground()
+    ->withoutOverlapping()
+    ->appendOutputTo($maintenance_log_file);
 
 Schedule::command(MaintenanceFetchOuis::class)
     ->weeklyOn(0, Time::pseudoRandomBetween('01:00', '01:59'))
