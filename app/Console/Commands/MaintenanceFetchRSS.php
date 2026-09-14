@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Actions\Maintenance\FetchRss;
-use App\Console\LnmsCommand;
 use App\Console\Commands\Traits\RendersTaskResult;
+use App\Console\LnmsCommand;
 
 class MaintenanceFetchRSS extends LnmsCommand
 {
