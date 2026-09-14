@@ -2,14 +2,15 @@
 
 namespace App\Console\Commands;
 
+use App\Actions\Maintenance\CleanupSyslog;
+use App\Console\Commands\Traits\RendersTaskResult;
 use App\Console\LnmsCommand;
-use App\Facades\LibrenmsConfig;
-use App\Models\Syslog;
-use Carbon\Carbon;
 use Symfony\Component\Console\Input\InputArgument;
 
 class MaintenanceCleanupSyslog extends LnmsCommand
 {
+    use RendersTaskResult;
+
     protected $name = 'maintenance:cleanup-syslog';
 
     public function __construct()
@@ -20,44 +21,19 @@ class MaintenanceCleanupSyslog extends LnmsCommand
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle(): int
+    public function handle(CleanupSyslog $action): int
     {
-        $syslog_purge = $this->argument('days');
+        $days = $this->argument('days');
 
-        if ($syslog_purge === null) {
-            $syslog_purge = LibrenmsConfig::get('syslog_purge');
-
-            if (! is_numeric($syslog_purge)) {
-                $this->warn(__('commands.maintenance:cleanup-syslog.bad_days_setting'));
-
-                return 0;
-            }
-        } elseif (! is_numeric($syslog_purge)) {
+        // What someone typed is checked here; what the config says is checked
+        // by the task, so a queued run gets the same answer as a manual one.
+        if ($days !== null && ! is_numeric($days)) {
             $this->error(__('commands.maintenance:cleanup-syslog.bad_days_input'));
 
             return 1;
         }
 
-        if ($syslog_purge <= 0) {
-            $this->warn(__('commands.maintenance:cleanup-syslog.disabled'));
-
-            return 0;
-        }
-
-        $deleted_total = 0;
-        $deleted_rows = 1;
-        while ($deleted_rows > 0) {
-            $deleted_rows = Syslog::where('timestamp', '<=', Carbon::now()->subDays($syslog_purge)->toDateTimeString())
-                            ->limit(5000)
-                            ->delete();
-            $deleted_total += $deleted_rows;
-        }
-
-        $this->line(trans('commands.maintenance:cleanup-syslog.delete', ['days' => $syslog_purge, 'count' => $deleted_total]));
-
-        return 0;
+        return $this->renderTaskResult($action->execute($days === null ? null : (int) $days));
     }
 }
