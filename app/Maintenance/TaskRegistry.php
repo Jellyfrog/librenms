@@ -61,9 +61,18 @@ class TaskRegistry
      * @var array<string, array<string, int>>
      */
     private const TASKS = [
-        'hourly' => [],
-        'daily' => [],
-        'weekly' => [],
+        'hourly' => [
+            'maintenance:cleanup-syslog' => 3600,
+        ],
+        'daily' => [
+            'maintenance:fetch-rss' => 600,
+            'maintenance:discover-ssl-certificates' => 7200,
+            'maintenance:refresh-ssl-certificates' => 7200,
+        ],
+        'weekly' => [
+            'maintenance:fetch-ouis' => 3600,
+            'maintenance:cleanup-networks' => 3600,
+        ],
     ];
 
     /** @var array<string, array<string, int>> */

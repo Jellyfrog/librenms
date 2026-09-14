@@ -18,6 +18,7 @@ class MaintenanceDiscoverSslCertificates extends LnmsCommand
     {
         parent::__construct();
         $this->addOption('device', 'd', InputOption::VALUE_OPTIONAL, __('Device spec to discover: device_id, hostname, or all'));
+        $this->addOption('force', null, InputOption::VALUE_NONE);
     }
 
     /**
@@ -25,6 +26,14 @@ class MaintenanceDiscoverSslCertificates extends LnmsCommand
      */
     public function handle(): int
     {
+        // This used to be a when() guard on the schedule entry, which meant a
+        // manual run scanned every device even with auto discovery turned off.
+        if (! LibrenmsConfig::get('ssl_certificates.auto_discover', false) && ! $this->option('force')) {
+            $this->warn(__('commands.maintenance:discover-ssl-certificates.disabled'));
+
+            return 0;
+        }
+
         $deviceSpec = $this->option('device') ?? 'all';
 
         $query = Device::query()->where('disabled', 0);

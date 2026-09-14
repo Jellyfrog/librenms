@@ -358,7 +358,9 @@ return [
         'description' => 'Discover SSL certificates on devices (HTTPS port 443)',
         'options' => [
             'device' => 'Device spec to discover: device_id, hostname, or all',
+            'force' => 'Discover even when ssl_certificates.auto_discover is disabled',
         ],
+        'disabled' => 'SSL certificate discovery is disabled (ssl_certificates.auto_discover)',
         'no_devices' => 'No devices found',
         'summary' => 'Created: :created, Updated: :updated, Failed: :failed',
     ],
