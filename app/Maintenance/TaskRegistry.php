@@ -23,58 +23,50 @@
 
 namespace App\Maintenance;
 
+use App\Jobs\Maintenance\CleanupNetworks;
+use App\Jobs\Maintenance\CleanupSyslog;
+use App\Jobs\Maintenance\DiscoverSslCertificates;
+use App\Jobs\Maintenance\FetchOuis;
+use App\Jobs\Maintenance\FetchRss;
+use App\Jobs\Maintenance\MaintenanceJob;
+use App\Jobs\Maintenance\RefreshSslCertificates;
+
 /**
- * The tasks run by maintenance:run, in the order they are listed here.
+ * Which maintenance jobs run, and in what order, for each cadence.
  *
- * Each task is an ordinary artisan command, so it can still be run by hand.
- * The registry adds no contract beyond "returns an exit code", and tasks must
- * be non-interactive: maintenance:rrd-step is not eligible, it requires an
- * argument and prompts for confirmation.
+ * That is all it says. Everything about a task -- how long it may run, what
+ * setting switches it off, how it guards against overlapping -- belongs on
+ * the job itself, so the same class can be dispatched to a queue unchanged.
  *
- * Gating belongs in the task itself, not here. A task that is disabled by
- * config should check that config and return 0, so that running it by hand
- * behaves the same way as running it from the scheduler. That is why this
- * registry has no condition callbacks.
- *
- * Why subprocesses instead of a queue: LibreNMS does not ship a queue runner,
- * so there is nowhere to put queued jobs. Once one exists, each entry here
- * should become a queued job and maintenance:run can be deleted outright --
- * a worker provides sequencing, failure isolation, timeouts and retries
- * natively, and does it better than this does. Keeping the tasks as plain
- * commands with no orchestrator-specific contract is what keeps that
- * migration cheap.
+ * Today maintenance:run walks a cadence and runs each job in its own process,
+ * standing in for a queue worker. When LibreNMS ships one, that command goes
+ * and these lists are dispatched as a batch instead. This class stays as it is.
  */
 class TaskRegistry
 {
     /**
-     * Tasks by cadence, in run order, mapped to their timeout in seconds.
-     *
-     * The timeout is what bounds a run: a task that hangs is killed and the
-     * chain continues, which keeps total runtime predictable enough that a
-     * run does not collide with the next one.
-     *
-     * @var array<string, array<string, int>>
+     * @var array<string, array<int, class-string<MaintenanceJob>>>
      */
     private const TASKS = [
         'hourly' => [
-            'maintenance:cleanup-syslog' => 3600,
+            CleanupSyslog::class,
         ],
         'daily' => [
-            'maintenance:fetch-rss' => 600,
-            'maintenance:discover-ssl-certificates' => 7200,
-            'maintenance:refresh-ssl-certificates' => 7200,
+            FetchRss::class,
+            DiscoverSslCertificates::class,
+            RefreshSslCertificates::class,
         ],
         'weekly' => [
-            'maintenance:fetch-ouis' => 3600,
-            'maintenance:cleanup-networks' => 3600,
+            FetchOuis::class,
+            CleanupNetworks::class,
         ],
     ];
 
-    /** @var array<string, array<string, int>> */
+    /** @var array<string, array<int, class-string<MaintenanceJob>>> */
     private array $tasks;
 
     /**
-     * @param  array<string, array<string, int>>|null  $tasks  overrides the registered tasks, for tests
+     * @param  array<string, array<int, class-string<MaintenanceJob>>>|null  $tasks  a different set of tasks, otherwise the built-in one
      */
     public function __construct(?array $tasks = null)
     {
@@ -97,9 +89,9 @@ class TaskRegistry
     }
 
     /**
-     * The tasks for a cadence, in run order, mapped to their timeout in seconds.
+     * The jobs for a cadence, in run order.
      *
-     * @return array<string, int>
+     * @return array<int, class-string<MaintenanceJob>>
      */
     public function tasks(string $cadence): array
     {

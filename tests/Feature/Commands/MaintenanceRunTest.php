@@ -3,7 +3,7 @@
 /*
  * MaintenanceRunTest.php
  *
- * Tests the maintenance task chain runner.
+ * Tests the maintenance job chain runner.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,33 +23,34 @@
 
 namespace LibreNMS\Tests\Feature\Commands;
 
-use App\Console\Commands\MaintenanceRun;
 use App\Maintenance\TaskRegistry;
 use App\Models\Eventlog;
-use Illuminate\Contracts\Console\Kernel;
 use LibreNMS\Tests\InMemoryDbTestCase;
-use Symfony\Component\Process\PhpExecutableFinder;
+use LibreNMS\Tests\Mocks\Maintenance\ExitingJob;
+use LibreNMS\Tests\Mocks\Maintenance\FailingJob;
+use LibreNMS\Tests\Mocks\Maintenance\PassingJob;
+use LibreNMS\Tests\Mocks\Maintenance\SleepingJob;
 
+/**
+ * Each job runs in a child process that boots on its own, so the jobs used
+ * here are real classes under tests/ rather than anything defined in the test:
+ * a closure or an anonymous class would not exist in the child.
+ *
+ * For the same reason the child cannot see this test's database. What a job
+ * records in failed() is covered in MaintenanceJobTest; here the eventlog
+ * shows only what the runner itself recorded.
+ */
 final class MaintenanceRunTest extends InMemoryDbTestCase
 {
     /**
-     * A real command that succeeds. list:bash-completion is deliberate: it is the
-     * only command exempt from the running-user check, so the subprocess behaves
-     * the same whether the suite runs as root or as the librenms user.
-     */
-    private const PASSING_TASK = 'list:bash-completion';
-
-    private const FAILING_TASK = 'bogus:does-not-exist';
-
-    /**
-     * @param  array<string, array<string, int>>  $tasks
+     * @param  array<string, array<int, class-string>>  $tasks
      */
     private function registerTasks(array $tasks): void
     {
         $this->app->instance(TaskRegistry::class, new TaskRegistry($tasks));
     }
 
-    private function reportedFailures(): int
+    private function reportedByRunner(): int
     {
         return Eventlog::where('type', 'maintenance')->count();
     }
@@ -77,120 +78,104 @@ final class MaintenanceRunTest extends InMemoryDbTestCase
 
     public function testNonPositiveTimeoutIsRejected(): void
     {
-        $this->registerTasks(['daily' => [self::PASSING_TASK => 60]]);
+        $this->registerTasks(['daily' => [PassingJob::class]]);
 
         $this->artisan('maintenance:run', ['cadence' => 'daily', '--timeout' => '0'])
             ->expectsOutputToContain(trans('commands.maintenance:run.bad_timeout'))
             ->assertExitCode(1);
     }
 
-    public function testPassingTaskIsReported(): void
+    public function testARegistryEntryThatIsNotAJobIsRefusedBeforeAnythingRuns(): void
     {
-        $this->registerTasks(['daily' => [self::PASSING_TASK => 120]]);
+        $this->registerTasks(['daily' => [\stdClass::class, PassingJob::class]]);
 
         $this->artisan('maintenance:run', ['cadence' => 'daily'])
+            ->expectsOutputToContain(trans('commands.maintenance:run.not_a_task', ['job' => \stdClass::class]))
+            ->assertExitCode(1);
+    }
+
+    public function testAPassingJobIsReported(): void
+    {
+        $this->registerTasks(['daily' => [PassingJob::class]]);
+
+        $this->artisan('maintenance:run', ['cadence' => 'daily'])
+            ->expectsOutputToContain('Finished PassingJob')
             ->assertExitCode(0);
 
-        $this->assertSame(0, $this->reportedFailures(),
-            'a task that succeeded should not write an eventlog entry');
+        $this->assertSame(0, $this->reportedByRunner());
     }
 
     /**
-     * The property the whole design exists for: a task that dies must not stop
-     * the tasks after it. daily.sh got this by discarding every exit code, so it
+     * The property the whole design exists for: a job that fails must not stop
+     * the ones after it. daily.sh got this by discarding every exit code, so it
      * is the one behaviour a port has to keep.
      */
-    public function testAFailingTaskDoesNotStopTheChain(): void
+    public function testAFailingJobDoesNotStopTheChain(): void
     {
-        $this->registerTasks(['daily' => [
-            self::FAILING_TASK => 120,
-            self::PASSING_TASK => 120,
-            'bogus:also-does-not-exist' => 120,
-        ]]);
+        $this->registerTasks(['daily' => [FailingJob::class, PassingJob::class]]);
 
         $this->artisan('maintenance:run', ['cadence' => 'daily'])
+            ->expectsOutputToContain('The maintenance task FailingJob exited with code 1')
+            ->expectsOutputToContain('Finished PassingJob')
             ->assertExitCode(1);
 
-        $reported = Eventlog::where('type', 'maintenance')->pluck('message');
-
-        // reaching the third task at all proves the chain did not stop at the first
-        $this->assertCount(2, $reported,
-            'both failing tasks should be reported, so the chain ran to the end');
-
-        foreach ([self::FAILING_TASK, 'bogus:also-does-not-exist'] as $task) {
-            $this->assertTrue($reported->contains(fn ($message) => str_contains($message, $task)),
-                "the failure of $task should have been reported");
-        }
-
-        // the task between the two broken ones ran, and ran cleanly
-        $this->assertFalse($reported->contains(fn ($message) => str_contains($message, self::PASSING_TASK)),
-            'the task between the failing ones should have succeeded');
+        // exit code 1 means the job recorded its own failure, so the runner
+        // must not record it again
+        $this->assertSame(0, $this->reportedByRunner());
     }
 
-    public function testOnlyOptionLimitsTheChain(): void
+    /**
+     * A job that dies -- killed, out of memory, a fatal error -- never reaches
+     * failed(), so recording it is the runner's job.
+     */
+    public function testAJobThatDiesIsRecordedByTheRunner(): void
     {
-        $this->registerTasks(['daily' => [
-            self::FAILING_TASK => 120,
-            self::PASSING_TASK => 120,
-        ]]);
+        $this->registerTasks(['daily' => [ExitingJob::class, PassingJob::class]]);
 
-        $this->artisan('maintenance:run', ['cadence' => 'daily', '--only' => self::PASSING_TASK])
-            ->assertExitCode(0);
+        $this->artisan('maintenance:run', ['cadence' => 'daily'])
+            ->expectsOutputToContain('The maintenance task ExitingJob exited with code 3')
+            ->expectsOutputToContain('Finished PassingJob')
+            ->assertExitCode(1);
 
-        $this->assertSame(0, $this->reportedFailures(),
-            'the failing task should have been filtered out');
+        $this->assertSame(1, $this->reportedByRunner());
     }
 
-    public function testExceptOptionSkipsTasks(): void
+    public function testOnlyOptionAcceptsAShortClassName(): void
     {
-        $this->registerTasks(['daily' => [
-            self::FAILING_TASK => 120,
-            self::PASSING_TASK => 120,
-        ]]);
+        $this->registerTasks(['daily' => [FailingJob::class, PassingJob::class]]);
 
-        $this->artisan('maintenance:run', ['cadence' => 'daily', '--except' => self::FAILING_TASK])
+        $this->artisan('maintenance:run', ['cadence' => 'daily', '--only' => 'PassingJob'])
+            ->expectsOutputToContain('Finished PassingJob')
             ->assertExitCode(0);
+    }
 
-        $this->assertSame(0, $this->reportedFailures());
+    public function testExceptOptionAcceptsAFullClassName(): void
+    {
+        $this->registerTasks(['daily' => [FailingJob::class, PassingJob::class]]);
+
+        $this->artisan('maintenance:run', ['cadence' => 'daily', '--except' => FailingJob::class])
+            ->expectsOutputToContain('Finished PassingJob')
+            ->assertExitCode(0);
     }
 
     /**
      * The timeout is what bounds a run, and so what keeps runs from overlapping.
-     * A hung task must be killed and the chain must carry on past it.
+     * A hung job must be killed and the chain must carry on past it.
      */
-    public function testHungTaskIsKilledAndTheChainContinues(): void
+    public function testAHungJobIsKilledAndTheChainContinues(): void
     {
-        $this->registerTasks(['daily' => ['sleeper' => 1, self::PASSING_TASK => 120]]);
-
-        $this->app[Kernel::class]->registerCommand(new SleepingMaintenanceRun);
+        $this->registerTasks(['daily' => [SleepingJob::class, PassingJob::class]]);
 
         $started = microtime(true);
 
-        $this->artisan('maintenance:run-sleeping-test', ['cadence' => 'daily', '--timeout' => '1'])
+        $this->artisan('maintenance:run', ['cadence' => 'daily', '--timeout' => '1'])
+            ->expectsOutputToContain('Finished PassingJob')
             ->assertExitCode(1);
 
         $this->assertLessThan(20, microtime(true) - $started,
-            'the hung task should have been killed at its timeout, not waited out');
+            'the hung job should have been killed at its timeout, not waited out');
 
-        $this->assertSame(1, $this->reportedFailures(),
-            'the timed out task should be reported, and only it');
-    }
-}
-
-/**
- * maintenance:run with the subprocess swapped for a command that hangs, so the
- * timeout path can be exercised without depending on a slow real task.
- */
-class SleepingMaintenanceRun extends MaintenanceRun
-{
-    protected $name = 'maintenance:run-sleeping-test';
-
-    protected function buildCommand(string $task): array
-    {
-        if ($task === 'sleeper') {
-            return [(new PhpExecutableFinder)->find(false) ?: PHP_BINARY, '-r', 'sleep(30);'];
-        }
-
-        return parent::buildCommand($task);
+        $this->assertSame(1, $this->reportedByRunner(),
+            'a killed job cannot report itself, so the runner must');
     }
 }

@@ -3,7 +3,7 @@
 /**
  * MaintenanceRun.php
  *
- * Runs the registered maintenance tasks for a cadence, one at a time.
+ * Runs the registered maintenance jobs for a cadence, one at a time.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 namespace App\Console\Commands;
 
 use App\Console\LnmsCommand;
+use App\Jobs\Maintenance\MaintenanceJob;
 use App\Maintenance\TaskRegistry;
 use App\Models\Eventlog;
 use LibreNMS\Enum\Severity;
@@ -36,27 +37,27 @@ use Symfony\Component\Process\Process;
 use function Illuminate\Support\php_binary;
 
 /**
- * Replaces the cleanup chain daily.sh used to run, which looped over a list of
- * options and ran each one as its own php process. That gave two properties
- * worth keeping: tasks run one at a time, and a task that dies cannot stop the
- * ones after it. daily.sh got the second one by accident, by discarding every
- * exit code; here it is deliberate.
+ * Stands in for a queue worker until LibreNMS ships one.
  *
- * Each task is run as a separate artisan process so that an out of memory
- * condition or a fatal error takes down only that task. Catching Throwable
- * would not be enough, since neither of those is catchable.
+ * Each job in the cadence is run in its own artisan process, one after the
+ * other, through maintenance:run-task. A separate process is what makes the
+ * jobs independent: an out of memory condition or a fatal error takes down
+ * only that job, where catching Throwable would not help since neither is
+ * catchable. It is also how a job that hangs gets killed, since a job's
+ * timeout is enforced by a worker and there is none.
  *
- * Why not a queue: LibreNMS does not ship a queue runner. Once it does, the
- * registry entries should become queued jobs and this command can be deleted --
- * a worker gives sequencing, failure isolation, timeouts and retries natively.
- * See App\Maintenance\TaskRegistry for the rest of that note.
+ * daily.sh had both properties too, by running each cleanup as its own php
+ * process and discarding every exit code. Here they are deliberate.
+ *
+ * With a worker this command is deleted and the registry's lists are
+ * dispatched as a batch; the jobs do not change.
  */
 class MaintenanceRun extends LnmsCommand
 {
     protected $name = 'maintenance:run';
 
     /**
-     * The part of every task's command line that does not change between tasks.
+     * The part of every job's command line that does not change between jobs.
      *
      * @var array<int, string>
      */
@@ -93,12 +94,20 @@ class MaintenanceRun extends LnmsCommand
         }
         $timeoutOverride = $timeout === null ? null : (int) $timeout;
 
-        $tasks = $this->filterTasks($registry->tasks($cadence));
+        $jobs = $this->filterJobs($registry->tasks($cadence));
 
-        if (empty($tasks)) {
+        if (empty($jobs)) {
             $this->line(trans('commands.maintenance:run.no_tasks', ['cadence' => $cadence]));
 
             return 0;
+        }
+
+        foreach ($jobs as $job) {
+            if (! is_subclass_of($job, MaintenanceJob::class)) {
+                $this->error(trans('commands.maintenance:run.not_a_task', ['job' => $job]));
+
+                return 1;
+            }
         }
 
         $this->commandPrefix = [
@@ -110,8 +119,9 @@ class MaintenanceRun extends LnmsCommand
         ];
 
         $failed = 0;
-        foreach ($tasks as $task => $taskTimeout) {
-            if (! $this->runTask($task, $timeoutOverride ?? $taskTimeout)) {
+        foreach ($jobs as $job) {
+            // the job knows how long it may run; the option overrides it
+            if (! $this->runJob($job, $timeoutOverride ?? (new $job)->timeout)) {
                 $failed++;
             }
         }
@@ -120,17 +130,20 @@ class MaintenanceRun extends LnmsCommand
     }
 
     /**
-     * Run one task as its own artisan process.
+     * Run one job as its own artisan process.
      *
      * Nothing may escape this method: the whole point of the chain is that the
-     * tasks after a broken one still get their turn.
+     * jobs after a broken one still get their turn.
+     *
+     * @param  class-string<MaintenanceJob>  $job
      */
-    private function runTask(string $task, int $timeout): bool
+    private function runJob(string $job, int $timeout): bool
     {
+        $name = class_basename($job);
         $started = microtime(true);
 
         try {
-            $process = new Process($this->buildCommand($task));
+            $process = new Process([...$this->commandPrefix, 'maintenance:run-task', $job]);
             $process->setTimeout($timeout);
             // The child's output is streamed straight through and never read back,
             // so do not let Process keep a second copy of it as well.
@@ -143,57 +156,59 @@ class MaintenanceRun extends LnmsCommand
 
             if ($process->isSuccessful()) {
                 $this->line(trans('commands.maintenance:run.task_finished', [
-                    'task' => $task,
+                    'task' => $name,
                     'duration' => $this->elapsed($started),
                 ]));
 
                 return true;
             }
 
-            return $this->taskFailed($task, trans('commands.maintenance:run.task_failed', [
-                'task' => $task,
-                'code' => (int) $process->getExitCode(),
+            $code = (int) $process->getExitCode();
+
+            // Exit code 1 means the job failed and recorded that itself. Anything
+            // else means the process died before or outside the job, and nothing
+            // has been recorded yet. See MaintenanceRunTask.
+            return $this->jobFailed($name, trans('commands.maintenance:run.task_failed', [
+                'task' => $name,
+                'code' => $code,
                 'duration' => $this->elapsed($started),
-            ]));
+            ]), record: $code !== 1);
         } catch (ProcessTimedOutException) {
-            return $this->taskFailed($task, trans('commands.maintenance:run.task_timed_out', [
-                'task' => $task,
+            return $this->jobFailed($name, trans('commands.maintenance:run.task_timed_out', [
+                'task' => $name,
                 'timeout' => $timeout,
-            ]));
+            ]), record: true);
         } catch (\Throwable $e) {
-            return $this->taskFailed($task, trans('commands.maintenance:run.task_errored', [
-                'task' => $task,
+            return $this->jobFailed($name, trans('commands.maintenance:run.task_errored', [
+                'task' => $name,
                 'message' => $e->getMessage(),
-            ]));
+            ]), record: true);
         }
     }
 
     /**
-     * Report a failed task to the console and the eventlog, then carry on.
+     * Report a failed job to the console, and to the eventlog if the job could
+     * not have done so itself, then carry on.
      */
-    private function taskFailed(string $task, string $message): bool
+    private function jobFailed(string $name, string $message, bool $record): bool
     {
         $this->error($message);
 
-        // best effort: a broken database should not stop the remaining tasks
+        if (! $record) {
+            return false;
+        }
+
+        // best effort: a broken database should not stop the remaining jobs
         try {
             Eventlog::log($message, null, 'maintenance', Severity::Error);
         } catch (\Throwable $e) {
             $this->error(trans('commands.maintenance:run.eventlog_failed', [
-                'task' => $task,
+                'task' => $name,
                 'message' => $e->getMessage(),
             ]));
         }
 
         return false;
-    }
-
-    /**
-     * @return array<int, string>
-     */
-    protected function buildCommand(string $task): array
-    {
-        return [...$this->commandPrefix, $task];
     }
 
     private function subprocessVerbosity(): ?string
@@ -209,20 +224,26 @@ class MaintenanceRun extends LnmsCommand
     }
 
     /**
-     * @param  array<string, int>  $tasks
-     * @return array<string, int>
+     * Apply --only and --except. A job may be named by its class name with or
+     * without the namespace, so CleanupSyslog is enough at a prompt.
+     *
+     * @param  array<int, class-string<MaintenanceJob>>  $jobs
+     * @return array<int, class-string<MaintenanceJob>>
      */
-    private function filterTasks(array $tasks): array
+    private function filterJobs(array $jobs): array
     {
+        $named = fn (string $job, array $names): bool => in_array($job, $names, true)
+            || in_array(class_basename($job), $names, true);
+
         if ($only = $this->commaSeparatedOption('only')) {
-            $tasks = array_intersect_key($tasks, array_flip($only));
+            $jobs = array_filter($jobs, fn (string $job) => $named($job, $only));
         }
 
         if ($except = $this->commaSeparatedOption('except')) {
-            $tasks = array_diff_key($tasks, array_flip($except));
+            $jobs = array_filter($jobs, fn (string $job) => ! $named($job, $except));
         }
 
-        return $tasks;
+        return array_values($jobs);
     }
 
     private function elapsed(float $started): string

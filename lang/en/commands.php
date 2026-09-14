@@ -386,8 +386,8 @@ return [
             'cadence' => 'Which set of tasks to run: hourly, daily, or weekly',
         ],
         'options' => [
-            'only' => 'Only run these tasks (comma separated list of command names)',
-            'except' => 'Skip these tasks (comma separated list of command names)',
+            'only' => 'Only run these tasks (comma separated job class names, with or without namespace)',
+            'except' => 'Skip these tasks (comma separated job class names, with or without namespace)',
             'timeout' => 'Override the timeout, in seconds, applied to every task',
         ],
         'bad_timeout' => 'Timeout must be a positive number of seconds',
@@ -398,6 +398,14 @@ return [
         'task_timed_out' => 'The maintenance task :task was killed after exceeding its timeout of :timeout seconds',
         'task_errored' => 'The maintenance task :task could not be run: :message',
         'eventlog_failed' => 'Could not write an eventlog entry for :task: :message',
+        'not_a_task' => ':job is registered as a maintenance task but is not a maintenance job',
+    ],
+    'maintenance:run-task' => [
+        'description' => 'Run one maintenance job in this process (used by maintenance:run)',
+        'arguments' => [
+            'job' => 'The job class to run',
+        ],
+        'not_a_task' => ':job is not a maintenance job',
     ],
     'plugin:disable' => [
         'description' => 'Disable all plugins with the given name',
