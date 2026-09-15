@@ -43,6 +43,7 @@ final class GitIgnoreTest extends TestCase
         'storage/framework/testing/.gitignore',
         'storage/framework/views/.gitignore',
         'storage/logs/.gitignore',
+        'storage/plugins/.gitignore',
     ];
 
     public function testGitIgnoresExist(): void

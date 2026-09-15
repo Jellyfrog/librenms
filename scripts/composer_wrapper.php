@@ -104,7 +104,8 @@ if ($exec) {
         $escaped_args[] = escapeshellarg($arg);
     }
     $user_args = implode(' ', $escaped_args);
-    passthru("$exec $user_args$extra_args 2>&1", $exit_code);
+    // extra args go first, so they stay options when the user args contain --
+    passthru("$exec$extra_args $user_args 2>&1", $exit_code);
     exit($exit_code);
 } else {
     echo "Composer not available, please manually install composer.\n";

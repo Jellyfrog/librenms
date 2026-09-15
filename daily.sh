@@ -358,14 +358,10 @@ main () {
                 # re-check dependencies after pull with the new code
                 check_dependencies
 
-                # Insert user installed plugins before calling composer install
-
-                PLUGINS=$(call_daily_php "composer_get_plugins")
-                if [ -n "$PLUGINS" ]; then
-                    # shellcheck disable=SC2086
-                    FORCE=1 ${COMPOSER} require --update-no-dev --no-install $PLUGINS
-                fi
                 status_run 'Updating Composer packages' "${COMPOSER} install --no-dev" 'update'
+
+                # Before the migrations, so plugins match the new LibreNMS dependencies
+                status_run 'Updating plugin packages' "'${LIBRENMS_DIR}/lnms' plugin:sync"
 
                 # Check if we need to revert (Must be in post pull so we can update it)
                 if [[ "$old_version" != "$new_version" ]]; then

@@ -8,5 +8,6 @@ return [
     App\Providers\DatastoreServiceProvider::class,
     App\Providers\SnmptrapProvider::class,
     App\Providers\PluginProvider::class,
+    App\Providers\PluginPackageServiceProvider::class,
     App\Providers\RestifyServiceProvider::class,
 ];
