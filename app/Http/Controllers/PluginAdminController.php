@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Plugin;
+use App\Plugins\PluginRoot;
 use LibreNMS\Interfaces\Plugins\PluginManagerInterface;
 
 class PluginAdminController extends Controller
@@ -18,10 +19,10 @@ class PluginAdminController extends Controller
         // v2 cleanup
         $manager->cleanupPlugins();
 
-        $plugins = Plugin::get();
-
         return view('plugins.admin', [
-            'plugins' => $plugins,
+            'plugins' => Plugin::get(),
+            'required' => PluginRoot::required(),
+            'installed' => PluginRoot::installed(),
         ]);
     }
 }

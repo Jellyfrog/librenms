@@ -25,3 +25,10 @@ cd docker-master/examples/compose
 sudo docker compose -f compose.yml up -d
 ```
 5. Open the web interface at `http://localhost:8000` to complete the configuration. Use the correct IP address or name instead of `localhost`.
+
+# Plugins
+
+Plugin packages are installed into the image at build time, by building your own image on
+top of the official one. Installing a plugin inside a running container does not survive
+the container being recreated. See
+[Docker](../Extensions/Plugin-System.md#docker) in the plugin documentation for the recipe.

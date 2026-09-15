@@ -2,47 +2,32 @@
 
 namespace App\Console\Commands;
 
+use App\Plugins\PluginRoot;
 use Illuminate\Console\Command;
-use LibreNMS\ComposerHelper;
 
 class PluginAddCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'plugin:add {package} {version?}';
+    protected $signature = 'plugin:add {package : Composer package name with an optional version constraint, for example vendor/my-plugin:^1.0}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Install a plugin';
+    protected $description = 'Install a plugin package';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
     public function handle(): int
     {
-        // Add package to "real" composer.json first, to catch dependency failures etc.
-        if (ComposerHelper::addPackage($this->argument('package'), $this->argument('version')) == 0) {
-            return ComposerHelper::addPlugin($this->argument('package'), $this->argument('version'));
+        $package = (string) $this->argument('package');
+        $name = strtolower(preg_split('/[:= ]/', $package, 2)[0]);
+
+        if (array_key_exists($name, PluginRoot::replaceBlock())) {
+            $this->error("$name is already installed by LibreNMS.");
+
+            return 1;
         }
 
-        return 1;
+        if (PluginRoot::composer(['require', '--update-no-dev', '--', $package]) !== 0) {
+            $this->error('Failed to install, see the composer output above.');
+
+            return 1;
+        }
+
+        return 0;
     }
 }
