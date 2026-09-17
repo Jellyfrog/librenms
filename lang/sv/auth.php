@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'title' => 'Auth',
-    'disabled' => 'Ditt konto är inaktiverat, kontakta administratören.',
+    'title' => 'Autentisering',
+    'disabled' => 'Ditt konto är inaktiverat. Kontakta din administratör.',
 ];

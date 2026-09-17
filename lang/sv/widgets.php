@@ -2,16 +2,16 @@
 
 return [
     'alerts' => [
-        'title' => 'Varningar',
+        'title' => 'Larm',
     ],
     'alertlog' => [
-        'title' => 'Varningshistorik',
+        'title' => 'Larmhistorik',
     ],
     'alertlog-stats' => [
-        'title' => 'Statistik för varningshistorik',
+        'title' => 'Statistik för larmhistorik',
     ],
     'alert-map' => [
-        'title' => 'Varningskarta',
+        'title' => 'Larmkarta',
     ],
     'availability-map' => [
         'title' => 'Tillgänglighetskarta',
@@ -23,10 +23,10 @@ return [
         'title' => 'Anpassad karta',
     ],
     'device-summary-horiz' => [
-        'title' => 'Enhetsöversikt horisontell',
+        'title' => 'Enhetsöversikt, horisontell',
     ],
     'device-summary-vert' => [
-        'title' => 'Enhetsöversikt Vertikal',
+        'title' => 'Enhetsöversikt, vertikal',
     ],
     'device-types' => [
         'title' => 'Enhetstyper',
@@ -41,7 +41,7 @@ return [
         'title' => 'Externa bilder',
     ],
     'globe' => [
-        'title' => 'Globkarta',
+        'title' => 'Jordglob',
     ],
     'graylog' => [
         'title' => 'Graylog',
@@ -57,18 +57,22 @@ return [
     ],
     'server-stats' => [
         'title' => 'Serverstatistik',
+        'cpu_usage' => 'CPU-användning',
+        'hidden_gauges' => 'Dolda mätare',
+        'select_gauges' => 'Välj en eller flera mätare',
+        'hidden_gauges_help' => 'De valda mätarna döljs. Lämna tomt för att visa alla mätare.',
     ],
     'syslog' => [
         'title' => 'Syslog',
     ],
     'top-devices' => [
-        'title' => 'Toppenheter',
+        'title' => 'Topplista enheter',
     ],
     'top-errors' => [
-        'title' => 'Toppfel',
+        'title' => 'Topplista fel',
     ],
     'top-interfaces' => [
-        'title' => 'Toppgränssnitt',
+        'title' => 'Topplista gränssnitt',
     ],
     'world-map' => [
         'title' => 'Världskarta',

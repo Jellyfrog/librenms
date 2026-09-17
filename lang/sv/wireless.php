@@ -1,15 +1,15 @@
 <?php
 
 return [
-    'title' => 'Trådlös',
+    'title' => 'Trådlöst',
     'ap-count' => [
-        'short' => 'APs',
-        'long' => 'Antal AP',
+        'short' => 'AP:er',
+        'long' => 'Antal accesspunkter',
         'unit' => '',
     ],
     'clients' => [
-        'short' => 'Kunder',
-        'long' => 'Kundantal',
+        'short' => 'Klienter',
+        'long' => 'Antal klienter',
         'unit' => '',
     ],
     'capacity' => [
@@ -19,7 +19,7 @@ return [
     ],
     'ccq' => [
         'short' => 'CCQ',
-        'long' => 'Klientanslutningskvalitet',
+        'long' => 'Kvalitet på klientanslutningen',
         'unit' => '%',
     ],
     'errors' => [
@@ -28,8 +28,8 @@ return [
         'unit' => '',
     ],
     'error-ratio' => [
-        'short' => 'Felförhållande',
-        'long' => 'Bit/paketfelförhållande',
+        'short' => 'Felkvot',
+        'long' => 'Bit-/paketfelkvot',
         'unit' => '%',
     ],
     'error-rate' => [
@@ -49,7 +49,7 @@ return [
     ],
     'mse' => [
         'short' => 'MSE',
-        'long' => 'Mean Square Error',
+        'long' => 'Medelkvadratfel',
         'unit' => 'dB',
     ],
     'mcs' => [
@@ -58,13 +58,13 @@ return [
         'unit' => 'MCS',
     ],
     'noise-floor' => [
-        'short' => 'Buller Golv',
-        'long' => 'Buller Golv',
+        'short' => 'Brusgolv',
+        'long' => 'Brusgolv',
         'unit' => 'dBm',
     ],
     'power' => [
-        'short' => 'Ström/Signal',
-        'long' => 'TX/RX Power eller Signal',
+        'short' => 'Effekt/signal',
+        'long' => 'TX-/RX-effekt eller signal',
         'unit' => 'dBm',
     ],
     'quality' => [
@@ -73,8 +73,8 @@ return [
         'unit' => '%',
     ],
     'rate' => [
-        'short' => 'Betygsätt',
-        'long' => 'TX/RX-hastighet',
+        'short' => 'Hastighet',
+        'long' => 'TX-/RX-hastighet',
         'unit' => 'bps',
     ],
     'rssi' => [
@@ -84,22 +84,22 @@ return [
     ],
     'snr' => [
         'short' => 'SNR',
-        'long' => 'Signal-brus-förhållande',
+        'long' => 'Signal/brus-förhållande',
         'unit' => 'dB',
     ],
     'sinr' => [
         'short' => 'SINR',
-        'long' => 'Signal-till-störning-plus-brusförhållande',
+        'long' => 'Förhållande mellan signal och störning plus brus',
         'unit' => 'dB',
     ],
     'rsrq' => [
         'short' => 'RSRQ',
-        'long' => 'Referenssignal mottagen kvalitet',
+        'long' => 'Mottagen kvalitet för referenssignal',
         'unit' => 'dB',
     ],
     'rsrp' => [
         'short' => 'RSRP',
-        'long' => 'Referenssignaler Mottagen ström',
+        'long' => 'Mottagen effekt för referenssignaler',
         'unit' => 'dBm',
     ],
     'ssr' => [
@@ -109,12 +109,12 @@ return [
     ],
     'utilization' => [
         'short' => 'Utnyttjande',
-        'long' => 'utnyttjande',
+        'long' => 'Utnyttjande',
         'unit' => '%',
     ],
     'xpi' => [
         'short' => 'XPI',
-        'long' => 'Cross Polar Interference',
+        'long' => 'Korspolariserad störning',
         'unit' => 'dB',
     ],
     'cell' => [

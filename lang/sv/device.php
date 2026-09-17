@@ -10,70 +10,85 @@ return [
         'ip' => 'IP',
         'location' => 'Plats',
         'os' => 'Enhetens OS',
-        'serial' => 'Seriell',
+        'serial' => 'Serienummer',
         'sysDescr' => 'sysDescr',
         'sysName' => 'sysName',
         'sysObjectID' => 'sysObjectID',
         'version' => 'OS-version',
         'type' => 'Enhetstyp',
     ],
-    'never_polled' => 'Har aldrig frågat',
+
+    'never_polled' => 'Aldrig pollad',
     'vm_host' => 'VM-värd',
     'scheduled_maintenance' => 'Schemalagt underhåll',
     'delete_device' => 'Ta bort enhet',
     'delete' => 'Ta bort :name',
     'confirm_delete' => 'Är du säker på att du vill ta bort enheten :name?',
     'deleted' => 'Enheten :hostname har tagits bort.',
-    'please_select' => 'Vänligen välj',
-    'warning_monitored' => 'Varning, detta tar bort enheten från att övervakas!',
-    'warning_data' => 'Det kommer också att ta bort historisk data om den här enheten som:',
+    'please_select' => 'Välj',
+    'warning_monitored' => 'Varning! Detta tar bort enheten från övervakningen.',
+    'warning_data' => 'Det tar även bort historiska data om den här enheten, till exempel:',
     'device_group' => 'Enhetsgrupp',
     'show_filter' => 'Visa filter',
     'show_header' => 'Visa rubrik',
     'os' => 'OS',
     'status' => 'Status',
-    'status_up' => 'Upp',
-    'status_down' => 'Ner',
+    'status_up' => 'Uppe',
+    'status_down' => 'Nere',
     'device_type' => 'Enhetstyp',
-    'alerts_disabled' => 'Varningar inaktiverade',
+    'alerts_disabled' => 'Larm inaktiverade',
+
     'edit' => [
         'delete_device' => 'Ta bort enhet',
-        'rediscover_title' => 'Schemalägg enheten för omedelbar återupptäckning av pollaren',
-        'rediscover' => 'Återupptäck enheten',
-        'hostname_title' => 'Ändra värdnamnet som används för namnupplösning',
+        'rediscover_title' => 'Schemalägg enheten för omedelbar omupptäckt av pollern',
+        'rediscover' => 'Upptäck enheten på nytt',
+
+        'hostname_title' => 'Ändra värdnamnet som används för namnuppslagning',
         'hostname_ip' => 'Värdnamn / IP',
-        'display_title' => 'Visningsnamn för den här enheten.  Håll dig kort. Tillgängliga platshållare: värdnamn, sysName, sysName_fallback, ip (t.ex. ":sysName")',
+
+        'display_title' => 'Visningsnamn för den här enheten. Håll det kort. Tillgängliga platshållare: hostname, sysName, sysName_fallback, ip (till exempel ":sysName")',
         'display_name' => 'Visningsnamn',
-        'system_default' => 'System Standard',
-        'overwrite_ip_title' => 'Använd denna IP istället för löst en för polling',
+        'system_default' => 'Systemstandard',
+
+        'overwrite_ip_title' => 'Använd den här IP-adressen vid pollning i stället för den som slås upp',
         'overwrite_ip' => 'Skriv över IP (använd inte)',
+
         'description' => 'Beskrivning',
         'type' => 'Typ',
         'static_groups' => 'Statiska grupper',
+
         'override_sysLocation' => 'Åsidosätt sysLocation',
-        'coordinates_title' => 'För att ställa in koordinater, inkludera [latitud, longitud]',
+        'coordinates_title' => 'Ange koordinater i formatet [latitud,longitud]',
+
         'override_sysContact' => 'Åsidosätt sysContact',
-        'depends_on' => 'Denna enhet beror på',
-        'none' => 'Inga',
-        'poller_group' => 'Pollergruppen',
-        'poller_group_general' => 'Allmänt',
-        'default_poller' => '(standard poller)',
-        'disable_polling_alerting' => 'Inaktivera polling och larm',
-        'disable_alerting' => 'Inaktivera varning',
-        'ignore_alert_tag' => 'Ignorera varningstagg',
-        'ignore_alert_tag_title' => 'Tagga enheten för att ignorera varningar. Varningskontroller kommer fortfarande att köras.
-Ignorera taggen kan dock läsas i varningsregler.
-Om villkoret `devices.ignore = 0` eller `macros.device = 1` är inställt och ignorera varningstaggen är på, kommer varningsregeln inte att matcha.',
-        'ignore_device_status' => 'Ignorera enhetsstatus',
-        'ignore_device_status_title' => 'Tagga enheten för att ignorera Status. Det kommer alltid att visas som online.',
+
+        'depends_on' => 'Den här enheten är beroende av',
+        'none' => 'Ingen',
+
+        'poller_group' => 'Pollergrupp',
+        'poller_group_general' => 'Allmän',
+        'default_poller' => '(standardpoller)',
+
+        'disable_polling_alerting' => 'Inaktivera pollning och larm',
+        'disable_alerting' => 'Inaktivera larm',
+
+        'ignore_alert_tag' => 'Ignorera larmtagg',
+        'ignore_alert_tag_title' => "Tagga enheten för att ignorera larm. Larmkontrollerna körs fortfarande.\nLarmregler kan läsa av ignoreringstaggen.\nOm larmtaggen Ignorera är aktiv matchar larmregeln inte villkoret `devices.ignore = 0` eller `macros.device = 1`.",
+
+        'ignore_device_status' => 'Ignorera enhetens status',
+        'ignore_device_status_title' => 'Tagga enheten för att ignorera status. Den visas då alltid som online.',
+
         'save' => 'Spara',
+
         'size_on_disk' => 'Storlek på disk',
         'rrd_files' => 'RRD-filer',
-        'last_polled' => 'Senast tillfrågad',
+        'last_polled' => 'Senast pollad',
         'last_discovered' => 'Senast upptäckt',
-        'rediscover_error' => 'Ett fel uppstod när den här enheten skulle återupptäckas',
+
+        'rediscover_error' => 'Det gick inte att schemalägga den här enheten för omupptäckt',
     ],
+
     'oxidized' => [
-        'connection_error' => 'Vi kunde inte hämta enhetsinformationen från Oxidized',
+        'connection_error' => 'Det gick inte att hämta enhetsinformationen från Oxidized',
     ],
 ];

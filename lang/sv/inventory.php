@@ -1,9 +1,9 @@
 <?php
 
 return [
-    'purge' => 'Rensning obefintlig',
-    'name' => 'Delens namn',
-    'model' => 'Delnr',
+    'purge' => 'Rensa bort ej existerande',
+    'name' => 'Delnamn',
+    'model' => 'Artikelnr',
     'serial' => 'Serienr',
     'part' => 'Del',
     'all_parts' => 'Alla delar',

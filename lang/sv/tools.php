@@ -2,10 +2,10 @@
 
 return [
     'oui' => [
-        'title' => 'MAC OUI-leverantörssökning',
-        'lookup' => 'OUI-sökning',
-        'prompt' => 'Ange MAC-adresser för att slå upp:',
-        'no_db' => 'Din installation har inga leverantörsdata. Detta bör hämtas av den dagliga processen.  Testa att köra :command för hand.',
-        'not_enabled' => 'Du måste ha inställningen :setting inställd för att använda den här funktionen.',
+        'title' => 'Sök tillverkare via MAC OUI',
+        'lookup' => 'Slå upp OUI',
+        'prompt' => 'Ange MAC-adress(er) att slå upp:',
+        'no_db' => 'Din installation saknar tillverkardata. Den dagliga processen hämtar dessa data. Kör :command manuellt.',
+        'not_enabled' => 'Du måste ställa in :setting för att kunna använda den här funktionen.',
     ],
 ];

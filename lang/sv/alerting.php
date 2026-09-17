@@ -5,13 +5,13 @@ return [
         'maintenance' => 'Underhåll',
         'behavior' => [
             'options' => [
-                'skip_alerts' => 'Hoppa över varningar',
-                'mute_alerts' => 'Stäng av aviseringar',
-                'run_alerts' => 'Kör varningar',
+                'skip_alerts' => 'Hoppa över larm',
+                'mute_alerts' => 'Tysta larm',
+                'run_alerts' => 'Kör larm',
             ],
-            'tooltip' => '- Hoppa över varningar: Nu kommer nya varningar att skapas och befintliga varningar kommer inte att lösas.
-        - Stäng av varningar: Varningar skapas och löses som vanligt, men alla typer av användarmeddelanden (som e-post) är undertryckta
-        - Kör varningar: Varningar körs som vanligt, användare meddelas. Det här alternativet leder i huvudsak till ett "enbart kosmetiskt" underhåll',
+            'tooltip' => '- Hoppa över larm: Inga nya larm skapas och befintliga larm löses inte.
+        - Tysta larm: Larm skapas och löses som vanligt, men alla aviseringar till användare, till exempel e-post, undertrycks.
+        - Kör larm: Larm körs som vanligt och användarna aviseras. Det här alternativet gör underhållet rent kosmetiskt.',
         ],
         'title' => 'Titel',
     ],
