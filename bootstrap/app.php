@@ -50,8 +50,6 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\EnforceJson::class, // must be before auth
-            \App\Http\Middleware\DefaultAcceptJson::class, // must be before auth
-            \App\Http\Middleware\EnsureApiEnabled::class, // must be before auth
             \App\Http\Middleware\LegacyExternalAuth::class, // must be before auth
             \Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class,

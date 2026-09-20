@@ -5,7 +5,9 @@ namespace App\Providers;
 use ApiPlatform\Laravel\ApiPlatformDeferredProvider;
 use ApiPlatform\Laravel\ApiPlatformProvider;
 use ApiPlatform\Laravel\Eloquent\ApiPlatformEventProvider;
+use Illuminate\Console\Events\CommandStarting;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use LibreNMS\Util\EnvHelper;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
@@ -36,6 +38,17 @@ class ApiPlatformServiceProvider extends ServiceProvider
     public static bool $registerForTesting = false;
 
     /**
+     * Set when a route table is being built, including by a nested call such
+     * as PluginEnable's callSilent('route:cache'). route:cache builds a second
+     * application inside the running process, where argv still names the outer
+     * command, so the command bus is the only thing that sees it.
+     */
+    private static bool $buildingRoutes = false;
+
+    /** route:cache boots a second application, which would warn twice. */
+    private static bool $warnedAboutDatabase = false;
+
+    /**
      * Console commands that need to see the v2 routes.
      */
     private const ROUTE_COMMANDS = [
@@ -53,7 +66,15 @@ class ApiPlatformServiceProvider extends ServiceProvider
         // run that skipped that merge would bake a config with no pagination
         // or format settings in it, which then fails at request time because
         // mergeConfigFrom is skipped once the config is cached.
-        $this->mergeConfigFrom($this->packagePath('config/api-platform.php'), 'api-platform');
+        // A literal path, not reflection on ApiPlatformProvider: that would
+        // autoload an 83KB vendor class on every boot, including every poller
+        // run, which is exactly what this provider exists to avoid.
+        $this->mergeConfigFrom(base_path('vendor/api-platform/laravel/config/api-platform.php'), 'api-platform');
+
+        Event::listen(CommandStarting::class, static function (CommandStarting $event): void {
+            self::$buildingRoutes = self::$buildingRoutes
+                || in_array($event->command, self::ROUTE_COMMANDS, true);
+        });
 
         if (! $this->needsApiPlatform()) {
             return;
@@ -84,14 +105,32 @@ class ApiPlatformServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
+            if (! self::$buildingRoutes && ! $this->app->runningConsoleCommand(...self::ROUTE_COMMANDS)) {
+                return false;
+            }
+
             // Building the routes reads the schema of every #[ApiResource]
             // model, so a route cache can only include them when there is a
             // database to read. composer install runs artisan optimize before
             // the installer has created one; that has to keep working, and the
             // installer clears the route cache it leaves behind.
-            return $this->app->runningConsoleCommand(...self::ROUTE_COMMANDS)
-                && EnvHelper::isInstalled()
-                && $this->databaseIsReachable();
+            if (! EnvHelper::isInstalled()) {
+                return false;
+            }
+
+            if (! $this->databaseIsReachable()) {
+                // An installed LibreNMS that cannot reach its database is not
+                // the install case, and the cache this command is about to
+                // write would silently have no v2 routes in it.
+                if (! self::$warnedAboutDatabase) {
+                    self::$warnedAboutDatabase = true;
+                    fwrite(STDERR, "The v2 API routes were left out of the route cache: no database connection.\n");
+                }
+
+                return false;
+            }
+
+            return true;
         }
 
         // Nothing to serve from a checkout that has no database yet.
@@ -118,10 +157,5 @@ class ApiPlatformServiceProvider extends ServiceProvider
         } catch (\Throwable) {
             return false;
         }
-    }
-
-    private function packagePath(string $path): string
-    {
-        return dirname((new \ReflectionClass(ApiPlatformProvider::class))->getFileName()) . '/' . $path;
     }
 }

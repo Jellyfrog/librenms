@@ -8,9 +8,8 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Hide an opt-in API version until it is switched on.
- *
- * Used as `EnsureApiEnabled::class . ':v1'`, which gates on api.v1.enabled.
+ * Hide an opt-in API version until it is switched on. 404 rather than 403, so
+ * a disabled version is indistinguishable from one that does not exist.
  */
 class EnsureApiEnabled
 {

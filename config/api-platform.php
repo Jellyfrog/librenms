@@ -3,9 +3,10 @@
 /*
  * API Platform configuration for the LibreNMS v2 API.
  *
- * Only the keys LibreNMS overrides are listed. The package merges this on top
- * of its own config (a shallow merge, so a key listed here replaces the
- * vendor's whole value for it), and anything omitted keeps the vendor default.
+ * The package merges this on top of its own config, so anything omitted keeps
+ * the vendor default. The merge is shallow, so a key listed here replaces the
+ * vendor's whole value for it - which is why some entries below repeat a
+ * vendor default: a sibling in the same top-level array is overridden.
  *
  * @see vendor/api-platform/laravel/config/api-platform.php
  * @see https://api-platform.com/docs/laravel/
@@ -20,13 +21,11 @@ return [
 
     'routes' => [
         'domain' => null,
-        // Applied to every API Platform route, including the documentation.
-        // DefaultAcceptJson goes first so that the 404 from a disabled v2 and
-        // the 401 from a missing token are both JSON. It only fills in an
-        // Accept header when the client did not send one; EnforceJson must not
-        // be used here, it overwrites the header and would break content
-        // negotiation. EnsureApiEnabled keeps the beta API behind the
-        // api.v2.enabled setting.
+        // Applied to every API Platform route, in this order: DefaultAcceptJson
+        // first so the 404 from a disabled v2 and the 401 from a missing token
+        // are both JSON (see that class for why it is not EnforceJson), then
+        // the gate, then auth. Neither of the first two is in the priority
+        // list in bootstrap/app.php, so this order is the one that applies.
         'middleware' => [
             \App\Http\Middleware\DefaultAcceptJson::class,
             \App\Http\Middleware\EnsureApiEnabled::class . ':v2',
@@ -36,12 +35,6 @@ return [
 
     // Only Eloquent models carry #[ApiResource] today. Add app/ApiResource
     // here if plain resource classes are introduced later.
-    //
-    // API Platform builds resource metadata from the database schema, so
-    // scanning these paths needs a working connection. App\Providers\
-    // ApiPlatformServiceProvider only registers API Platform for requests and
-    // commands that need the v2 routes, keeping LibreNMS bootable without a
-    // database.
     'resources' => [
         app_path('Models'),
     ],

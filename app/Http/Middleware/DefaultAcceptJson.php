@@ -31,7 +31,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Pick JSON for clients that did not ask for anything in particular.
  *
  * Unlike EnforceJson this leaves an explicit Accept header alone, so content
- * negotiation (JSON-LD, JSON:API, the HTML documentation) keeps working. It is
+ * negotiation (JSON-LD, JSON:API) keeps working. It is
  * what stops an unauthenticated `curl /api/v2/...` being answered with a
  * redirect to the login page instead of a 401.
  *
@@ -43,9 +43,7 @@ class DefaultAcceptJson
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $accept = $request->header('Accept', '');
-
-        if ($accept === '' || str_starts_with($accept, '*/*')) {
+        if ($request->acceptsAnyContentType()) {
             $request->headers->set('Accept', 'application/json');
         }
 

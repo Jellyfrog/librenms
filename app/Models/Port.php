@@ -41,9 +41,7 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 // left out, the rates are what an API client wants.
 //
 // The link back to the device is device_id plus the /devices/{device_id}/ports
-// operation below. Serializing the device relation itself is not worth it: only
-// JSON-LD renders it as a proper IRI, plain JSON gives an empty object and
-// JSON:API puts it under attributes with a self link pointing at the port.
+// operation below; the device relation itself is not serialized, see the doc.
 #[ApiResource(
     shortName: 'Port',
     description: 'An interface on a monitored device.',
@@ -134,11 +132,7 @@ class Port extends DeviceRelatedModel
     public $timestamps = false;
     protected $primaryKey = 'port_id';
     protected $guarded = [];
-    /**
-     * Filters for the web UI tables, see the Filterable trait. The v2 API
-     * declares its own set in the #[QueryParameter] attributes above; the two
-     * overlap but are not interchangeable, the DSLs differ.
-     */
+    /** Filters for the web UI tables, see the note on Device::$filterable. */
     protected array $filterable = [
         'device_id',
         'ifName',
