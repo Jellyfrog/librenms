@@ -3,7 +3,7 @@
 /**
  * HasAccessQueryExtension.php
  *
- * -Description-
+ * Row level access control for the v2 API
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,12 @@ use Illuminate\Database\Eloquent\Model;
  *
  * API Platform discovers this class automatically and applies it to every
  * Eloquent query it builds, so it reuses each model's own hasAccess scope, the
- * same one the web UI filters with. A model without that scope is left alone:
- * its policy is then the only thing guarding it.
+ * same one the web UI filters with.
+ *
+ * It denies rather than defers when there is nothing to filter with. A policy
+ * only guards the item operation; a collection would hand back the whole table
+ * on a model that forgot the scope, so a new resource has to opt in to being
+ * readable rather than out of being filtered.
  */
 class HasAccessQueryExtension implements QueryExtensionInterface
 {
@@ -47,14 +51,10 @@ class HasAccessQueryExtension implements QueryExtensionInterface
      */
     public function apply(Builder $builder, array $uriVariables, Operation $operation, $context = []): Builder
     {
-        if (! $builder->getModel()->hasNamedScope('hasAccess')) {
-            return $builder;
-        }
-
         $user = auth()->user();
 
-        if (! $user instanceof User) {
-            return $builder->whereRaw('1 = 0'); // no user, no rows
+        if (! $user instanceof User || ! $builder->getModel()->hasNamedScope('hasAccess')) {
+            return $builder->whereRaw('1 = 0');
         }
 
         return $builder->scopes(['hasAccess' => [$user]]);

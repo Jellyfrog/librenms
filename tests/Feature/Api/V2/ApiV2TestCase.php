@@ -3,7 +3,7 @@
 /**
  * ApiV2TestCase.php
  *
- * -Description-
+ * Shared setup for the v2 API tests
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ namespace LibreNMS\Tests\Feature\Api\V2;
 
 use App\Facades\LibrenmsConfig;
 use App\Models\User;
+use App\Providers\ApiPlatformServiceProvider;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Testing\TestResponse;
 use LibreNMS\Tests\DBTestCase;
@@ -33,24 +34,37 @@ abstract class ApiV2TestCase extends DBTestCase
 {
     use DatabaseTransactions;
 
-    /** @var array<int, string> plain text token per user */
+    /** @var array<int, string> */
     private array $tokens = [];
+
+    private ?User $admin = null;
 
     protected function setUp(): void
     {
+        // Before parent::setUp(), which is what creates the application: the
+        // provider decides whether to register API Platform while it boots,
+        // and skips it for the rest of the suite.
+        ApiPlatformServiceProvider::$registerForTesting = true;
+
         parent::setUp();
 
         LibrenmsConfig::set('api.v2.enabled', true);
     }
 
+    protected function tearDown(): void
+    {
+        ApiPlatformServiceProvider::$registerForTesting = false;
+
+        parent::tearDown();
+    }
+
     protected function admin(): User
     {
-        return User::factory()->admin()->create();
+        return $this->admin ??= User::factory()->admin()->create();
     }
 
     /**
-     * Request as the given user, authenticating the way a client has to: a
-     * bearer token, one per user.
+     * Request as the given user, authenticating the way a client has to.
      */
     protected function getJsonAs(User $user, string $uri, string $accept = 'application/json'): TestResponse
     {

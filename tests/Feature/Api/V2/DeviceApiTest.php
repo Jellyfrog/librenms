@@ -3,7 +3,7 @@
 /**
  * DeviceApiTest.php
  *
- * -Description-
+ * Tests for the v2 device endpoint
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,16 +29,26 @@ use App\Models\User;
 
 class DeviceApiTest extends ApiV2TestCase
 {
-    public function testDevicesRequireAToken(): void
+    private const ENDPOINTS = ['/api/v2/devices', '/api/v2/ports', '/api/v2/docs'];
+
+    /**
+     * The token and the beta flag are route group middleware, so they are
+     * checked once over every v2 endpoint rather than once per resource.
+     */
+    public function testEndpointsRequireAToken(): void
     {
-        $this->json('GET', '/api/v2/devices')->assertStatus(401);
+        foreach (self::ENDPOINTS as $uri) {
+            $this->json('GET', $uri)->assertStatus(401);
+        }
     }
 
-    public function testDevicesAreHiddenWhenV2IsDisabled(): void
+    public function testEndpointsAreHiddenWhenV2IsDisabled(): void
     {
         LibrenmsConfig::set('api.v2.enabled', false);
 
-        $this->getJsonAs($this->admin(), '/api/v2/devices')->assertStatus(404);
+        foreach (self::ENDPOINTS as $uri) {
+            $this->getJsonAs($this->admin(), $uri)->assertStatus(404);
+        }
     }
 
     public function testListDevices(): void
@@ -87,22 +97,41 @@ class DeviceApiTest extends ApiV2TestCase
         }
     }
 
+    /**
+     * The camel case columns are the ones api-platform's name conversion
+     * breaks, so sysName is covered here alongside the rest.
+     */
     public function testDevicesAreFiltered(): void
     {
-        Device::factory()->create(['hostname' => 'api-v2-filter.example.com', 'os' => 'linux']);
-        Device::factory()->create(['hostname' => 'api-v2-other.example.com', 'os' => 'ios']);
+        $match = Device::factory()->create([
+            'hostname' => 'api-v2-filter.example.com',
+            'sysName' => 'api-v2-filter',
+            'os' => 'linux',
+            'type' => 'server',
+            'serial' => 'SN-1234',
+        ]);
+        $other = Device::factory()->create([
+            'hostname' => 'api-v2-other.example.com',
+            'sysName' => 'api-v2-other',
+            'os' => 'ios',
+            'type' => 'network',
+            'serial' => 'SN-9999',
+        ]);
 
-        $admin = $this->admin();
+        $filters = [
+            'hostname=v2-filter',
+            'sysName=api-v2-filter',
+            'os=linux',
+            'type=server',
+            'serial=SN-1234',
+        ];
 
-        $this->getJsonAs($admin, '/api/v2/devices?os=linux')
-            ->assertStatus(200)
-            ->assertJsonFragment(['hostname' => 'api-v2-filter.example.com'])
-            ->assertJsonMissing(['hostname' => 'api-v2-other.example.com']);
-
-        $this->getJsonAs($admin, '/api/v2/devices?hostname=v2-other')
-            ->assertStatus(200)
-            ->assertJsonFragment(['hostname' => 'api-v2-other.example.com'])
-            ->assertJsonMissing(['hostname' => 'api-v2-filter.example.com']);
+        foreach ($filters as $filter) {
+            $this->getJsonAs($this->admin(), '/api/v2/devices?' . $filter)
+                ->assertStatus(200)
+                ->assertJsonFragment(['id' => $match->device_id])
+                ->assertJsonMissing(['id' => $other->device_id]);
+        }
     }
 
     public function testFieldNamesAreNormalized(): void
@@ -163,14 +192,13 @@ class DeviceApiTest extends ApiV2TestCase
     public function testJsonApiAndJsonLdRepresentations(): void
     {
         Device::factory()->create(['hostname' => 'api-v2-formats.example.com']);
-        $admin = $this->admin();
 
-        $this->getJsonAs($admin, '/api/v2/devices', 'application/ld+json')
+        $this->getJsonAs($this->admin(), '/api/v2/devices', 'application/ld+json')
             ->assertStatus(200)
             ->assertJsonPath('@type', 'Collection')
             ->assertJsonFragment(['hostname' => 'api-v2-formats.example.com']);
 
-        $this->getJsonAs($admin, '/api/v2/devices', 'application/vnd.api+json')
+        $this->getJsonAs($this->admin(), '/api/v2/devices', 'application/vnd.api+json')
             ->assertStatus(200)
             ->assertJsonPath('data.0.type', 'Device');
     }

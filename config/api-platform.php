@@ -67,7 +67,6 @@ return [
         'pagination_client_partial' => true,
         'pagination_items_per_page' => 50,
         'pagination_maximum_items_per_page' => 500,
-        // Everything API Platform registers lives under the v2 prefix.
         'route_prefix' => '/api/v2',
         'middleware' => [],
     ],

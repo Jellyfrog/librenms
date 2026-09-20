@@ -134,6 +134,11 @@ class Port extends DeviceRelatedModel
     public $timestamps = false;
     protected $primaryKey = 'port_id';
     protected $guarded = [];
+    /**
+     * Filters for the web UI tables, see the Filterable trait. The v2 API
+     * declares its own set in the #[QueryParameter] attributes above; the two
+     * overlap but are not interchangeable, the DSLs differ.
+     */
     protected array $filterable = [
         'device_id',
         'ifName',

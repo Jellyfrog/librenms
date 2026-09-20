@@ -3,7 +3,7 @@
 /**
  * PortApiTest.php
  *
- * -Description-
+ * Tests for the v2 port endpoint
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,25 +23,12 @@
 
 namespace LibreNMS\Tests\Feature\Api\V2;
 
-use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use App\Models\Port;
 use App\Models\User;
 
 class PortApiTest extends ApiV2TestCase
 {
-    public function testPortsRequireAToken(): void
-    {
-        $this->json('GET', '/api/v2/ports')->assertStatus(401);
-    }
-
-    public function testPortsAreHiddenWhenV2IsDisabled(): void
-    {
-        LibrenmsConfig::set('api.v2.enabled', false);
-
-        $this->getJsonAs($this->admin(), '/api/v2/ports')->assertStatus(404);
-    }
-
     public function testListPorts(): void
     {
         $port = $this->port(['ifName' => 'api-v2-list']);
@@ -96,8 +83,6 @@ class PortApiTest extends ApiV2TestCase
             'ifVlan' => '20',
         ]);
 
-        $admin = $this->admin();
-
         $filters = [
             'ifName=api-v2-match',
             'ifAlias=uplink',
@@ -110,13 +95,13 @@ class PortApiTest extends ApiV2TestCase
         ];
 
         foreach ($filters as $filter) {
-            $this->getJsonAs($admin, '/api/v2/ports?' . $filter)
+            $this->getJsonAs($this->admin(), '/api/v2/ports?' . $filter)
                 ->assertStatus(200)
                 ->assertJsonFragment(['id' => $match->port_id])
                 ->assertJsonMissing(['id' => $other->port_id]);
         }
 
-        $this->getJsonAs($admin, '/api/v2/ports?device_id=' . $device->device_id)
+        $this->getJsonAs($this->admin(), '/api/v2/ports?device_id=' . $device->device_id)
             ->assertStatus(200)
             ->assertJsonFragment(['id' => $match->port_id])
             ->assertJsonFragment(['id' => $other->port_id]);
