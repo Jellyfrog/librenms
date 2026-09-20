@@ -28,7 +28,6 @@ return [
         'api' => [
             'cors' => ['name' => 'CORS'],
             'v1' => ['name' => 'API v1 (Beta)'],
-            'v2' => ['name' => 'API v2 (Beta)'],
         ],
         'apps' => [
             'powerdns-recursor' => ['name' => 'PowerDNS Recursor'],
@@ -295,12 +294,6 @@ return [
                 'enabled' => [
                     'description' => 'Enable the v1 API (Beta)',
                     'help' => 'Opt in to the new v1 REST API. When disabled, all /api/v1 endpoints return 404 and the web UI hides v1 token management.',
-                ],
-            ],
-            'v2' => [
-                'enabled' => [
-                    'description' => 'Enable the v2 API (Beta)',
-                    'help' => 'Opt in to the new v2 REST API. When disabled, all /api/v2 endpoints return 404.',
                 ],
             ],
         ],

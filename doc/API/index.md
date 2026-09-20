@@ -6,8 +6,8 @@ We put the version into the API endpoint itself: `/api/v0`. The API is
 new and still in active development. We therefore start at v0 to show
 this development state.
 
-Two later versions are in beta and disabled by default: [v1](v1.md) and
-[v2](v2.md). This page documents v0.
+Two later versions are in beta: [v1](v1.md), which is disabled by default,
+and [v2](v2.md). This page documents v0.
 
 ## Tokens
 

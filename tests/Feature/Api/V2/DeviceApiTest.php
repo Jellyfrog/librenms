@@ -23,7 +23,6 @@
 
 namespace LibreNMS\Tests\Feature\Api\V2;
 
-use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use App\Models\User;
 
@@ -32,22 +31,13 @@ class DeviceApiTest extends ApiV2TestCase
     private const ENDPOINTS = ['/api/v2/devices', '/api/v2/ports', '/api/v2/docs'];
 
     /**
-     * The token and the beta flag are route group middleware, so they are
-     * checked once over every v2 endpoint rather than once per resource.
+     * The token is route group middleware, so it is checked once over every
+     * v2 endpoint rather than once per resource.
      */
     public function testEndpointsRequireAToken(): void
     {
         foreach (self::ENDPOINTS as $uri) {
             $this->json('GET', $uri)->assertStatus(401);
-        }
-    }
-
-    public function testEndpointsAreHiddenWhenV2IsDisabled(): void
-    {
-        LibrenmsConfig::set('api.v2.enabled', false);
-
-        foreach (self::ENDPOINTS as $uri) {
-            $this->getJsonAs($this->admin(), $uri)->assertStatus(404);
         }
     }
 

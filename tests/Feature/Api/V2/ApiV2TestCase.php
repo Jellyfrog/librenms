@@ -23,7 +23,6 @@
 
 namespace LibreNMS\Tests\Feature\Api\V2;
 
-use App\Facades\LibrenmsConfig;
 use App\Models\User;
 use App\Providers\ApiPlatformServiceProvider;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -47,8 +46,6 @@ abstract class ApiV2TestCase extends DBTestCase
         ApiPlatformServiceProvider::$registerForTesting = true;
 
         parent::setUp();
-
-        LibrenmsConfig::set('api.v2.enabled', true);
     }
 
     protected function tearDown(): void

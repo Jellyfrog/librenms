@@ -21,14 +21,13 @@ return [
 
     'routes' => [
         'domain' => null,
-        // Applied to every API Platform route, in this order: DefaultAcceptJson
-        // first so the 404 from a disabled v2 and the 401 from a missing token
-        // are both JSON (see that class for why it is not EnforceJson), then
-        // the gate, then auth. Neither of the first two is in the priority
-        // list in bootstrap/app.php, so this order is the one that applies.
+        // Applied to every API Platform route. DefaultAcceptJson goes first so
+        // that the 401 from a missing token is JSON rather than a redirect to
+        // the login page (see that class for why it is not EnforceJson). It is
+        // not in the middleware priority list in bootstrap/app.php, so this
+        // order is the one that applies.
         'middleware' => [
             \App\Http\Middleware\DefaultAcceptJson::class,
-            \App\Http\Middleware\EnsureApiEnabled::class . ':v2',
             'auth:sanctum',
         ],
     ],

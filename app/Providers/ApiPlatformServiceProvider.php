@@ -140,11 +140,6 @@ class ApiPlatformServiceProvider extends ServiceProvider
 
         $prefix = trim((string) config('api-platform.defaults.route_prefix'), '/');
 
-        // Deliberately not also checking api.v2.enabled, which would save
-        // registering all of this just for EnsureApiEnabled to 404 a disabled
-        // v2: that setting lives in the database behind the config cache, and
-        // resolving it this early leaves the deferred cache provider unusable
-        // for the rest of the request.
         return $this->app['request']->is($prefix, $prefix . '/*');
     }
 

@@ -498,9 +498,9 @@ Route::prefix('install')->group(function (): void {
 // Legacy routes
 Route::any('/dummy_legacy_auth/{path?}', [LegacyController::class, 'dummy'])->middleware('auth');
 Route::any('/dummy_legacy_unauth/{path?}', [LegacyController::class, 'dummy']);
-// api/v1 and api/v2 are excluded so those URLs 404 when the API version is
-// disabled, or its routes were not registered, instead of falling through to
-// the legacy page handler and answering an API client with a login page.
+// api/v1 and api/v2 are excluded so those URLs 404 when v1 is disabled, or
+// when the v2 routes were not registered, instead of falling through to the
+// legacy page handler and answering an API client with a login page.
 Route::any('/{path?}', [LegacyController::class, 'index'])
     ->where('path', '^(?!api/v[12]($|/))((?!_debugbar).)*')
     ->middleware('auth');
