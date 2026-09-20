@@ -2,6 +2,16 @@
 
 namespace App\Models;
 
+use ApiPlatform\Laravel\Eloquent\Filter\BooleanFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link as ApiLink;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Models\Traits\Filterable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,16 +26,6 @@ use Illuminate\Support\Str;
 use LibreNMS\Enum\IfOperStatus;
 use LibreNMS\Util\Number;
 use LibreNMS\Util\Rewrite;
-use ApiPlatform\Laravel\Eloquent\Filter\BooleanFilter;
-use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
-use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
-use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
-use ApiPlatform\Metadata\ApiProperty;
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Link as ApiLink;
-use ApiPlatform\Metadata\QueryParameter;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**

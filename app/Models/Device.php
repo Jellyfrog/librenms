@@ -2,6 +2,17 @@
 
 namespace App\Models;
 
+use ApiPlatform\Laravel\Eloquent\Filter\BooleanFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\DateFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link as ApiLink;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Facades\DeviceCache;
 use App\Facades\LibrenmsConfig;
 use App\Models\Traits\Filterable;
@@ -31,17 +42,6 @@ use LibreNMS\Util\IP;
 use LibreNMS\Util\Rewrite;
 use LibreNMS\Util\Time;
 use LibreNMS\Util\Url;
-use ApiPlatform\Laravel\Eloquent\Filter\BooleanFilter;
-use ApiPlatform\Laravel\Eloquent\Filter\DateFilter;
-use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
-use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
-use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
-use ApiPlatform\Metadata\ApiProperty;
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Link as ApiLink;
-use ApiPlatform\Metadata\QueryParameter;
 use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
