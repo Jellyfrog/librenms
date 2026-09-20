@@ -19,27 +19,6 @@ use LibreNMS\Validations\Php;
 $options = getopt('df:o:t:r:');
 $options['f'] = isset($options['f']) ? $options['f'] : '';
 
-/**
- * Scripts without dependencies
- */
-if ($options['f'] === 'composer_get_plugins') {
-    $output = [];
-
-    $plugins = is_file('composer.plugins.json') ?
-        json_decode(file_get_contents('composer.plugins.json')) : [];
-
-    foreach ($plugins->require ?? [] as $package => $version) {
-        $output[] = "$package:$version";
-    }
-
-    echo implode(' ', $output);
-
-    return;
-}
-
-/**
- * Scripts with dependencies
- */
 $init_modules = ['alerts'];
 require __DIR__ . '/includes/init.php';
 

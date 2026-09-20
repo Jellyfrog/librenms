@@ -29,6 +29,21 @@ You can see an example plugin here: [example plugin repository](https://github.c
 
 > Please come to discord and share any experiences and update this documentation!
 
+#### Docker
+
+To add plugins to Docker, build your own image on top of the official image:
+
+```dockerfile
+FROM librenms/librenms:latest
+RUN gosu librenms ./lnms plugin:add socialiteproviders/saml2
+```
+
+```bash
+docker build -t librenms-with-plugins .
+```
+
+Use this image instead of `librenms/librenms` in your `compose.yml`.
+
 ## Local plugin
 
 Local plugins need to be placed in app/Plugins

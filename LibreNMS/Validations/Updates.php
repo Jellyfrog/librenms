@@ -30,7 +30,6 @@ use App\Facades\LibrenmsConfig;
 use DateTime;
 use DateTimeZone;
 use Exception;
-use LibreNMS\ComposerHelper;
 use LibreNMS\Util\EnvHelper;
 use LibreNMS\Util\Git;
 use LibreNMS\ValidationResult;
@@ -112,16 +111,13 @@ class Updates extends BaseValidation
         $modifiedcmd = 'git -C ' . escapeshellarg($validator->getBaseDir()) . ' diff --name-only --exit-code';
         $validator->execAsUser($modifiedcmd, $cmdoutput, $code);
         if ($code !== 0 && ! empty($cmdoutput)) {
-            // Check so it's not only plugins that "pests" the diff
-            if (! ($cmdoutput === ['composer.json', 'composer.lock'] && ComposerHelper::getPlugins())) {
-                $result = ValidationResult::warn(
-                    'Your local git contains modified files, this could prevent automatic updates.',
-                    'You can fix this with ./scripts/github-remove'
-                );
+            $result = ValidationResult::warn(
+                'Your local git contains modified files, this could prevent automatic updates.',
+                'You can fix this with ./scripts/github-remove'
+            );
 
-                $result->setList('Modified Files', $cmdoutput);
-                $validator->result($result);
-            }
+            $result->setList('Modified Files', $cmdoutput);
+            $validator->result($result);
         }
     }
 }

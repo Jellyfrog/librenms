@@ -4,6 +4,22 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
+// Register plugin packages installed in the plugin composer root (storage/plugins).
+// This has to happen before the application is created so that plugin classes are
+// available to every entry point: the web UI, artisan/lnms and the cron pollers.
+// The plugin autoloader appends itself, so the core autoloader always wins a lookup.
+// An interrupted composer run in the plugin root would otherwise fatal every entry point,
+// lnms included, leaving no way to repair it. Skipping the plugins keeps that door open.
+// Some failures, such as a function declared twice, are fatal and cannot be caught, so the
+// commands that manage plugins never load them.
+if (! App\Plugins\PluginRoot::skipsPlugins() && is_file($pluginAutoload = __DIR__ . '/../storage/plugins/vendor/autoload.php')) {
+    try {
+        require_once $pluginAutoload;
+    } catch (Throwable $e) {
+        error_log('Failed to load plugin packages, run lnms plugin:sync: ' . $e->getMessage());
+    }
+}
+
 return Application::configure(basePath: dirname(__DIR__))
     ->registered(function ($app) {
         $app->usePublicPath(path: realpath(base_path('html')));

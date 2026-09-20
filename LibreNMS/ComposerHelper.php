@@ -30,6 +30,7 @@ use Composer\Script\Event;
 use LibreNMS\Exceptions\FileWriteFailedException;
 use LibreNMS\Util\EnvHelper;
 use Minishlink\WebPush\VAPID;
+use Symfony\Component\Process\Process;
 
 class ComposerHelper
 {
@@ -62,50 +63,6 @@ class ComposerHelper
 
     public static function preInstall(Event $event)
     {
-    }
-
-    public static function addPlugin(string $package, ?string $version = null): int
-    {
-        return self::execComposerCommand(
-            ['require', '--no-update', $package . ($version ? ":$version" : '')],
-            ['COMPOSER' => 'composer.plugins.json'],
-        );
-    }
-
-    public static function addPackage(string $package, ?string $version = null): int
-    {
-        return self::execComposerCommand(
-            ['require', '--update-no-dev', $package . ($version ? ":$version" : '')],
-            ['FORCE' => 1],
-        );
-    }
-
-    public static function removePlugin(string $package): int
-    {
-        return self::execComposerCommand(
-            ['remove', '--no-update', $package],
-            ['COMPOSER' => 'composer.plugins.json'],
-        );
-    }
-
-    public static function removePackage(string $package): int
-    {
-        return self::execComposerCommand(
-            ['remove', '--update-no-dev', $package],
-            ['FORCE' => 1],
-        );
-    }
-
-    public static function getPlugins(): array
-    {
-        // Not cwd-relative: also reached from the web UI, where cwd is the
-        // document root. Not base_path(): this class runs as a composer script.
-        $file = realpath(__DIR__ . '/..') . '/composer.plugins.json';
-
-        $plugins = is_file($file) && is_readable($file) ?
-            json_decode((string) file_get_contents($file), true) : [];
-
-        return $plugins['require'] ?? [];
     }
 
     /**
@@ -176,22 +133,24 @@ class ComposerHelper
     }
 
     /**
+     * Run composer through scripts/composer_wrapper.php and stream its output. The wrapper
+     * finds or downloads composer and sets up any proxy.
+     *
      * @param  string[]  $command
-     * @param  array<string, string|int|float>  $env
-     * @return int
      */
-    private static function execComposerCommand(array $command, array $env = []): int
+    public static function execComposerCommand(array $command): int
     {
-        $cli = [];
-        foreach ($env as $key => $value) {
-            $cli[] = "$key=$value";
-        }
-        $cli[] = PHP_BINARY;
-        $cli[] = realpath(__DIR__ . '/../scripts/composer_wrapper.php');
-        foreach ($command as $word) {
-            $cli[] = escapeshellarg($word);
-        }
+        // without a tty symfony/console wraps messages at 80 columns, a wide terminal stops that.
+        // TERM is unset because the wrapper adds --ansi when it is set, and --ansi wins.
+        $process = new Process(
+            [PHP_BINARY, realpath(__DIR__ . '/../scripts/composer_wrapper.php'), '--no-ansi', ...$command],
+            null,
+            ['COLUMNS' => '10000', 'TERM' => false],
+        );
+        $process->setTimeout(null);
 
-        return self::exec([implode(' ', $cli)]);
+        return $process->run(function (string $type, string $output): void {
+            echo $output;
+        });
     }
 }

@@ -38,5 +38,37 @@
                 @endforeach
             </table>
         </div>
+
+        <div class="panel panel-default panel-condensed col-md-6 col-md-offset-3 col-xs-12 col-sm-8 col-sm-offset-2" style="padding: 0">
+            <div class="panel-heading">
+                <strong>{{ __('plugins.packages_title') }}</strong>
+            </div>
+
+            @if(empty($required))
+                <div class="panel-body">
+                    {{ __('plugins.packages_none') }}
+                </div>
+            @else
+                <table class="table table-condensed">
+                    <tr>
+                        <th>{{ __('plugins.packages_package') }}</th>
+                        <th>{{ __('plugins.packages_required') }}</th>
+                        <th>{{ __('plugins.packages_installed') }}</th>
+                    </tr>
+                    @foreach($required as $name => $constraint)
+                        <tr>
+                            <td>{{ $name }}</td>
+                            <td>{{ $constraint }}</td>
+                            <td>{{ $installed[$name] ?? __('plugins.packages_missing') }}</td>
+                        </tr>
+                    @endforeach
+                </table>
+            @endif
+
+            <div class="panel-footer">
+                {{ __('plugins.packages_cli_only') }}
+                <br><code>lnms plugin:add vendor/package</code>
+            </div>
+        </div>
     </div>
 @endsection
