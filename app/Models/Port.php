@@ -2,6 +2,16 @@
 
 namespace App\Models;
 
+use ApiPlatform\Laravel\Eloquent\Filter\BooleanFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link as ApiLink;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Models\Traits\Filterable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,6 +26,9 @@ use Illuminate\Support\Str;
 use LibreNMS\Enum\IfOperStatus;
 use LibreNMS\Util\Number;
 use LibreNMS\Util\Rewrite;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\TypeInfo\Type\BuiltinType;
+use Symfony\Component\TypeInfo\TypeIdentifier;
 
 /**
  * @property IfOperStatus|null $ifOperStatus
@@ -23,6 +36,95 @@ use LibreNMS\Util\Rewrite;
  * @property IfOperStatus|null $ifAdminStatus
  * @property IfOperStatus|null $ifAdminStatus_prev
  */
+// API v2 resource, see https://api-platform.com/docs/laravel/ and doc/API/v2.md.
+// Read only for now. As on Device, only the attributes carrying the port:read
+// group are serialized; the per-poll counter bookkeeping (_prev, _delta) is
+// left out, the rates are what an API client wants.
+//
+// The link back to the device is device_id plus the /devices/{device_id}/ports
+// operation below. Serializing the device relation itself is not worth it: only
+// JSON-LD renders it as a proper IRI, plain JSON gives an empty object and
+// JSON:API puts it under attributes with a self link pointing at the port.
+#[ApiResource(
+    shortName: 'Port',
+    description: 'An interface on a monitored device.',
+    operations: [
+        new GetCollection(policy: 'viewAny'),
+        new Get(policy: 'view'),
+        new GetCollection(
+            uriTemplate: '/devices/{device_id}/ports{._format}',
+            uriVariables: ['device_id' => new ApiLink(fromClass: Device::class, toProperty: 'device')],
+            policy: 'viewAny',
+        ),
+    ],
+    normalizationContext: ['groups' => ['port:read']],
+)]
+#[ApiProperty(property: 'port_id', identifier: true, serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'device_id', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifIndex', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifName', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifDescr', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifAlias', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'portName', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifType', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifSpeed', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifMtu', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifDuplex', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifPhysAddress', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifConnectorPresent', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifOperStatus', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifAdminStatus', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifLastChange', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifVlan', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifTrunk', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifVrf', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'port_descr_type', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'port_descr_descr', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'port_descr_circuit', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'port_descr_speed', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'port_descr_notes', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ignore', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'disabled', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'deleted', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifInOctets', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifOutOctets', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifInOctets_rate', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifOutOctets_rate', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifInErrors_rate', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'ifOutErrors_rate', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'poll_time', serialize: new Groups(['port:read']))]
+// api-platform/laravel 5.0.0 name-converts a parameter's property to
+// snake_case and then queries that (its filters read _query_property,
+// nothing sets it), so a column with a capital in it needs the real name
+// pinned in extraProperties or the filter silently matches nothing.
+#[QueryParameter(key: 'ifName', filter: PartialSearchFilter::class, extraProperties: ['_query_property' => 'ifName'])]
+#[QueryParameter(key: 'ifDescr', filter: PartialSearchFilter::class, extraProperties: ['_query_property' => 'ifDescr'])]
+#[QueryParameter(key: 'ifAlias', filter: PartialSearchFilter::class, extraProperties: ['_query_property' => 'ifAlias'])]
+#[QueryParameter(key: 'portName', filter: PartialSearchFilter::class, extraProperties: ['_query_property' => 'portName'])]
+#[QueryParameter(key: 'device_id', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'ifIndex', filter: EqualsFilter::class, extraProperties: ['_query_property' => 'ifIndex'])]
+#[QueryParameter(key: 'ifType', filter: EqualsFilter::class, extraProperties: ['_query_property' => 'ifType'])]
+#[QueryParameter(key: 'ifOperStatus', filter: EqualsFilter::class, extraProperties: ['_query_property' => 'ifOperStatus'])]
+#[QueryParameter(key: 'ifAdminStatus', filter: EqualsFilter::class, extraProperties: ['_query_property' => 'ifAdminStatus'])]
+#[QueryParameter(key: 'ifVlan', filter: EqualsFilter::class, extraProperties: ['_query_property' => 'ifVlan'])]
+#[QueryParameter(key: 'ignore', filter: BooleanFilter::class, nativeType: new BuiltinType(TypeIdentifier::BOOL))]
+#[QueryParameter(key: 'disabled', filter: BooleanFilter::class, nativeType: new BuiltinType(TypeIdentifier::BOOL))]
+#[QueryParameter(key: 'deleted', filter: BooleanFilter::class, nativeType: new BuiltinType(TypeIdentifier::BOOL))]
+// Sortable fields are listed one by one, see the note on Device.
+#[QueryParameter(key: 'order[port_id]', filter: OrderFilter::class, property: 'port_id')]
+#[QueryParameter(key: 'order[device_id]', filter: OrderFilter::class, property: 'device_id')]
+#[QueryParameter(key: 'order[ifIndex]', filter: OrderFilter::class, property: 'ifIndex', extraProperties: ['_query_property' => 'ifIndex'])]
+#[QueryParameter(key: 'order[ifName]', filter: OrderFilter::class, property: 'ifName', extraProperties: ['_query_property' => 'ifName'])]
+#[QueryParameter(key: 'order[ifAlias]', filter: OrderFilter::class, property: 'ifAlias', extraProperties: ['_query_property' => 'ifAlias'])]
+#[QueryParameter(key: 'order[portName]', filter: OrderFilter::class, property: 'portName', extraProperties: ['_query_property' => 'portName'])]
+#[QueryParameter(key: 'order[ifType]', filter: OrderFilter::class, property: 'ifType', extraProperties: ['_query_property' => 'ifType'])]
+#[QueryParameter(key: 'order[ifSpeed]', filter: OrderFilter::class, property: 'ifSpeed', extraProperties: ['_query_property' => 'ifSpeed'])]
+#[QueryParameter(key: 'order[ifOperStatus]', filter: OrderFilter::class, property: 'ifOperStatus', extraProperties: ['_query_property' => 'ifOperStatus'])]
+#[QueryParameter(key: 'order[ifAdminStatus]', filter: OrderFilter::class, property: 'ifAdminStatus', extraProperties: ['_query_property' => 'ifAdminStatus'])]
+#[QueryParameter(key: 'order[ifLastChange]', filter: OrderFilter::class, property: 'ifLastChange', extraProperties: ['_query_property' => 'ifLastChange'])]
+#[QueryParameter(key: 'order[ifInOctets_rate]', filter: OrderFilter::class, property: 'ifInOctets_rate', extraProperties: ['_query_property' => 'ifInOctets_rate'])]
+#[QueryParameter(key: 'order[ifOutOctets_rate]', filter: OrderFilter::class, property: 'ifOutOctets_rate', extraProperties: ['_query_property' => 'ifOutOctets_rate'])]
+#[QueryParameter(key: 'order[poll_time]', filter: OrderFilter::class, property: 'poll_time')]
 class Port extends DeviceRelatedModel
 {
     use HasFactory;
