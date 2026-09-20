@@ -55,10 +55,14 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 #[ObservedBy([DeviceObserver::class])]
 // API v2 resource, see https://api-platform.com/docs/laravel/ and doc/API/v2.md.
 // Read only for now. Only the attributes carrying the device:read group are
-// serialized: the SNMP credentials on this table (community, authname,
-// authpass, cryptopass, ...) must never leave the server, and $hidden cannot
-// be used to drop them because the poller and discovery read them back out of
-// Device::toArray().
+// serialized, so the SNMP credentials on this table (community, authname,
+// authpass, cryptopass, ...) never leave the server. Naming every field is the
+// price of that allow-list: api-platform takes the property list off the table
+// schema, so a column not named here is the only column that stays private,
+// including one a later migration adds. $hidden would express the same thing
+// in fewer lines, but it is not local to this API - toArray() also feeds the
+// v0 API, the legacy $device array in PollDevice/DiscoverDevice and the alert
+// payload, so hiding a column there changes all of them.
 #[ApiResource(
     shortName: 'Device',
     description: 'A monitored device.',
