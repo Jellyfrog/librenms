@@ -21,13 +21,15 @@ return [
     'routes' => [
         'domain' => null,
         // Applied to every API Platform route, including the documentation.
-        // EnsureApiEnabled keeps the beta API behind the api.v2.enabled
-        // setting. EnforceJson must not be used here, it overwrites the Accept
-        // header and would break content negotiation; DefaultAcceptJson only
-        // fills one in when the client did not send one.
+        // DefaultAcceptJson goes first so that the 404 from a disabled v2 and
+        // the 401 from a missing token are both JSON. It only fills in an
+        // Accept header when the client did not send one; EnforceJson must not
+        // be used here, it overwrites the header and would break content
+        // negotiation. EnsureApiEnabled keeps the beta API behind the
+        // api.v2.enabled setting.
         'middleware' => [
-            \App\Http\Middleware\EnsureApiEnabled::class . ':v2',
             \App\Http\Middleware\DefaultAcceptJson::class,
+            \App\Http\Middleware\EnsureApiEnabled::class . ':v2',
             'auth:sanctum',
         ],
     ],
@@ -50,11 +52,13 @@ return [
         'jsonapi' => ['application/vnd.api+json'],
     ],
 
+    // No 'html': the bundled documentation UIs load their CSS and JS from
+    // /vendor/api-platform, and nothing publishes those into html/. Point a
+    // Swagger UI of your own at the OpenAPI document instead.
     'docs_formats' => [
         'jsonld' => ['application/ld+json'],
         'jsonapi' => ['application/vnd.api+json'],
         'jsonopenapi' => ['application/vnd.openapi+json'],
-        'html' => ['text/html'],
     ],
 
     'defaults' => [
@@ -62,9 +66,7 @@ return [
         'pagination_partial' => false,
         'pagination_client_enabled' => false,
         'pagination_client_items_per_page' => true,
-        // Let a client paging through a large collection pass partial=true to
-        // skip the COUNT(*) that the totals need.
-        'pagination_client_partial' => true,
+        'pagination_client_partial' => false,
         'pagination_items_per_page' => 50,
         'pagination_maximum_items_per_page' => 500,
         'route_prefix' => '/api/v2',
@@ -76,12 +78,15 @@ return [
     'name_converter' => null,
 
     'swagger_ui' => [
-        'enabled' => true,
-        'http_auth' => [
-            'API token' => [
-                'scheme' => 'bearer',
-            ],
-        ],
+        'enabled' => false,
+    ],
+
+    'redoc' => [
+        'enabled' => false,
+    ],
+
+    'scalar' => [
+        'enabled' => false,
     ],
 
     // LibreNMS does not expose an MCP endpoint.

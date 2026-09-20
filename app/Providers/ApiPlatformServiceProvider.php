@@ -5,6 +5,7 @@ namespace App\Providers;
 use ApiPlatform\Laravel\ApiPlatformDeferredProvider;
 use ApiPlatform\Laravel\ApiPlatformProvider;
 use ApiPlatform\Laravel\Eloquent\ApiPlatformEventProvider;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use LibreNMS\Util\EnvHelper;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
@@ -21,8 +22,8 @@ use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter
  *
  * So the package is excluded from auto-discovery (composer.json
  * extra.laravel.dont-discover) and registered here instead, only for requests
- * to an enabled /api/v2 and for the commands that build the route cache.
- * Tests opt in for themselves with $registerForTesting, see ApiV2TestCase.
+ * to /api/v2 and for the few commands that need the whole route table. Tests
+ * opt in for themselves with $registerForTesting, see ApiV2TestCase.
  */
 class ApiPlatformServiceProvider extends ServiceProvider
 {
@@ -35,7 +36,7 @@ class ApiPlatformServiceProvider extends ServiceProvider
     public static bool $registerForTesting = false;
 
     /**
-     * Console commands that need to see every v2 route.
+     * Console commands that need to see the v2 routes.
      */
     private const ROUTE_COMMANDS = [
         'optimize',
@@ -47,6 +48,13 @@ class ApiPlatformServiceProvider extends ServiceProvider
 
     public function register(): void
     {
+        // Always, even when API Platform itself is not registered below: the
+        // package merges its own defaults over this config, and a config:cache
+        // run that skipped that merge would bake a config with no pagination
+        // or format settings in it, which then fails at request time because
+        // mergeConfigFrom is skipped once the config is cached.
+        $this->mergeConfigFrom($this->packagePath('config/api-platform.php'), 'api-platform');
+
         if (! $this->needsApiPlatform()) {
             return;
         }
@@ -76,8 +84,14 @@ class ApiPlatformServiceProvider extends ServiceProvider
         }
 
         if ($this->app->runningInConsole()) {
+            // Building the routes reads the schema of every #[ApiResource]
+            // model, so a route cache can only include them when there is a
+            // database to read. composer install runs artisan optimize before
+            // the installer has created one; that has to keep working, and the
+            // installer clears the route cache it leaves behind.
             return $this->app->runningConsoleCommand(...self::ROUTE_COMMANDS)
-                && EnvHelper::isInstalled();
+                && EnvHelper::isInstalled()
+                && $this->databaseIsReachable();
         }
 
         // Nothing to serve from a checkout that has no database yet.
@@ -93,5 +107,21 @@ class ApiPlatformServiceProvider extends ServiceProvider
         // resolving it this early leaves the deferred cache provider unusable
         // for the rest of the request.
         return $this->app['request']->is($prefix, $prefix . '/*');
+    }
+
+    private function databaseIsReachable(): bool
+    {
+        try {
+            DB::connection()->getPdo();
+
+            return true;
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
+    private function packagePath(string $path): string
+    {
+        return dirname((new \ReflectionClass(ApiPlatformProvider::class))->getFileName()) . '/' . $path;
     }
 }
