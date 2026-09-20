@@ -28,8 +28,6 @@ use LibreNMS\Util\Number;
 use LibreNMS\Util\Rewrite;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\SerializedName;
-use Symfony\Component\TypeInfo\Type\BuiltinType;
-use Symfony\Component\TypeInfo\TypeIdentifier;
 
 /**
  * @property IfOperStatus|null $ifOperStatus
@@ -98,38 +96,36 @@ use Symfony\Component\TypeInfo\TypeIdentifier;
 #[ApiProperty(property: 'ifInErrors_rate', serialize: new Groups(['port:read']))]
 #[ApiProperty(property: 'ifOutErrors_rate', serialize: new Groups(['port:read']))]
 #[ApiProperty(property: 'poll_time', serialize: new Groups(['port:read']))]
-// api-platform/laravel 5.0.0 name-converts a parameter's property to
-// snake_case and then queries that (its filters read _query_property,
-// nothing sets it), so a column with a capital in it needs the real name
-// pinned in extraProperties or the filter silently matches nothing.
-#[QueryParameter(key: 'ifName', filter: PartialSearchFilter::class, extraProperties: ['_query_property' => 'ifName'])]
-#[QueryParameter(key: 'ifDescr', filter: PartialSearchFilter::class, extraProperties: ['_query_property' => 'ifDescr'])]
-#[QueryParameter(key: 'ifAlias', filter: PartialSearchFilter::class, extraProperties: ['_query_property' => 'ifAlias'])]
-#[QueryParameter(key: 'portName', filter: PartialSearchFilter::class, extraProperties: ['_query_property' => 'portName'])]
+#[QueryParameter(key: 'ifName', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'ifDescr', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'ifAlias', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'portName', filter: PartialSearchFilter::class)]
 #[QueryParameter(key: 'device_id', filter: EqualsFilter::class)]
-#[QueryParameter(key: 'ifIndex', filter: EqualsFilter::class, extraProperties: ['_query_property' => 'ifIndex'])]
-#[QueryParameter(key: 'ifType', filter: EqualsFilter::class, extraProperties: ['_query_property' => 'ifType'])]
-#[QueryParameter(key: 'ifOperStatus', filter: EqualsFilter::class, extraProperties: ['_query_property' => 'ifOperStatus'])]
-#[QueryParameter(key: 'ifAdminStatus', filter: EqualsFilter::class, extraProperties: ['_query_property' => 'ifAdminStatus'])]
-#[QueryParameter(key: 'ifVlan', filter: EqualsFilter::class, extraProperties: ['_query_property' => 'ifVlan'])]
-#[QueryParameter(key: 'ignore', filter: BooleanFilter::class, nativeType: new BuiltinType(TypeIdentifier::BOOL))]
-#[QueryParameter(key: 'disabled', filter: BooleanFilter::class, nativeType: new BuiltinType(TypeIdentifier::BOOL))]
-#[QueryParameter(key: 'deleted', filter: BooleanFilter::class, nativeType: new BuiltinType(TypeIdentifier::BOOL))]
-// Sortable fields are listed one by one, see the note on Device.
-#[QueryParameter(key: 'order[id]', filter: OrderFilter::class, property: 'port_id', extraProperties: ['_query_property' => 'port_id'])]
-#[QueryParameter(key: 'order[device_id]', filter: OrderFilter::class, property: 'device_id')]
-#[QueryParameter(key: 'order[ifIndex]', filter: OrderFilter::class, property: 'ifIndex', extraProperties: ['_query_property' => 'ifIndex'])]
-#[QueryParameter(key: 'order[ifName]', filter: OrderFilter::class, property: 'ifName', extraProperties: ['_query_property' => 'ifName'])]
-#[QueryParameter(key: 'order[ifAlias]', filter: OrderFilter::class, property: 'ifAlias', extraProperties: ['_query_property' => 'ifAlias'])]
-#[QueryParameter(key: 'order[portName]', filter: OrderFilter::class, property: 'portName', extraProperties: ['_query_property' => 'portName'])]
-#[QueryParameter(key: 'order[ifType]', filter: OrderFilter::class, property: 'ifType', extraProperties: ['_query_property' => 'ifType'])]
-#[QueryParameter(key: 'order[ifSpeed]', filter: OrderFilter::class, property: 'ifSpeed', extraProperties: ['_query_property' => 'ifSpeed'])]
-#[QueryParameter(key: 'order[ifOperStatus]', filter: OrderFilter::class, property: 'ifOperStatus', extraProperties: ['_query_property' => 'ifOperStatus'])]
-#[QueryParameter(key: 'order[ifAdminStatus]', filter: OrderFilter::class, property: 'ifAdminStatus', extraProperties: ['_query_property' => 'ifAdminStatus'])]
-#[QueryParameter(key: 'order[ifLastChange]', filter: OrderFilter::class, property: 'ifLastChange', extraProperties: ['_query_property' => 'ifLastChange'])]
-#[QueryParameter(key: 'order[ifInOctets_rate]', filter: OrderFilter::class, property: 'ifInOctets_rate', extraProperties: ['_query_property' => 'ifInOctets_rate'])]
-#[QueryParameter(key: 'order[ifOutOctets_rate]', filter: OrderFilter::class, property: 'ifOutOctets_rate', extraProperties: ['_query_property' => 'ifOutOctets_rate'])]
-#[QueryParameter(key: 'order[poll_time]', filter: OrderFilter::class, property: 'poll_time')]
+#[QueryParameter(key: 'ifIndex', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'ifType', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'ifOperStatus', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'ifAdminStatus', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'ifVlan', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'ignore', filter: BooleanFilter::class)]
+#[QueryParameter(key: 'disabled', filter: BooleanFilter::class)]
+#[QueryParameter(key: 'deleted', filter: BooleanFilter::class)]
+// Sortable fields are an explicit allow-list, see the note on Device.
+#[QueryParameter(key: 'order[id]', filter: OrderFilter::class, property: 'port_id')]
+#[QueryParameter(key: 'order[:property]', filter: OrderFilter::class, properties: [
+    'device_id',
+    'ifIndex',
+    'ifName',
+    'ifAlias',
+    'portName',
+    'ifType',
+    'ifSpeed',
+    'ifOperStatus',
+    'ifAdminStatus',
+    'ifLastChange',
+    'ifInOctets_rate',
+    'ifOutOctets_rate',
+    'poll_time',
+])]
 class Port extends DeviceRelatedModel
 {
     use HasFactory;

@@ -34,6 +34,10 @@ use Symfony\Component\HttpFoundation\Response;
  * negotiation (JSON-LD, JSON:API, the HTML documentation) keeps working. It is
  * what stops an unauthenticated `curl /api/v2/...` being answered with a
  * redirect to the login page instead of a 401.
+ *
+ * Exceptions::shouldRenderJsonWhen() does not work here: API Platform decorates
+ * the exception handler, and its ErrorHandler hands anything it cannot render
+ * itself to the original Laravel handler, which never sees the callback.
  */
 class DefaultAcceptJson
 {

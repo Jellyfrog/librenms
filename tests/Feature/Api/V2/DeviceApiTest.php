@@ -26,20 +26,9 @@ namespace LibreNMS\Tests\Feature\Api\V2;
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use LibreNMS\Tests\DBTestCase;
 
-class DeviceApiTest extends DBTestCase
+class DeviceApiTest extends ApiV2TestCase
 {
-    use DatabaseTransactions;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        LibrenmsConfig::set('api.v2.enabled', true);
-    }
-
     public function testDevicesRequireAToken(): void
     {
         $this->json('GET', '/api/v2/devices')->assertStatus(401);
@@ -184,23 +173,5 @@ class DeviceApiTest extends DBTestCase
         $this->getJsonAs($admin, '/api/v2/devices', 'application/vnd.api+json')
             ->assertStatus(200)
             ->assertJsonPath('data.0.type', 'Device');
-    }
-
-    private function admin(): User
-    {
-        return User::factory()->admin()->create();
-    }
-
-    /**
-     * @return \Illuminate\Testing\TestResponse<\Illuminate\Http\Response>
-     */
-    private function getJsonAs(User $user, string $uri, string $accept = 'application/json'): \Illuminate\Testing\TestResponse
-    {
-        auth()->forgetGuards();
-
-        return $this->json('GET', $uri, [], [
-            'Authorization' => 'Bearer ' . $user->createToken('test')->plainTextToken,
-            'Accept' => $accept,
-        ]);
     }
 }

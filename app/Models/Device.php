@@ -44,8 +44,6 @@ use LibreNMS\Util\Time;
 use LibreNMS\Util\Url;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\SerializedName;
-use Symfony\Component\TypeInfo\Type\BuiltinType;
-use Symfony\Component\TypeInfo\TypeIdentifier;
 
 /**
  * @property-read int|null $ports_count
@@ -104,12 +102,8 @@ use Symfony\Component\TypeInfo\TypeIdentifier;
 #[ApiProperty(property: 'last_polled', serialize: new Groups(['device:read']))]
 #[ApiProperty(property: 'last_discovered', serialize: new Groups(['device:read']))]
 #[ApiProperty(property: 'last_ping', serialize: new Groups(['device:read']))]
-// api-platform/laravel 5.0.0 name-converts a parameter's property to
-// snake_case and then queries that (its filters read _query_property,
-// nothing sets it), so a column with a capital in it needs the real name
-// pinned in extraProperties or the filter silently matches nothing.
 #[QueryParameter(key: 'hostname', filter: PartialSearchFilter::class)]
-#[QueryParameter(key: 'sysName', filter: PartialSearchFilter::class, extraProperties: ['_query_property' => 'sysName'])]
+#[QueryParameter(key: 'sysName', filter: PartialSearchFilter::class)]
 #[QueryParameter(key: 'display', filter: PartialSearchFilter::class)]
 #[QueryParameter(key: 'hardware', filter: PartialSearchFilter::class)]
 #[QueryParameter(key: 'serial', filter: PartialSearchFilter::class)]
@@ -118,25 +112,28 @@ use Symfony\Component\TypeInfo\TypeIdentifier;
 #[QueryParameter(key: 'type', filter: EqualsFilter::class)]
 #[QueryParameter(key: 'location_id', filter: EqualsFilter::class)]
 #[QueryParameter(key: 'poller_group', filter: EqualsFilter::class)]
-#[QueryParameter(key: 'status', filter: BooleanFilter::class, nativeType: new BuiltinType(TypeIdentifier::BOOL))]
-#[QueryParameter(key: 'disabled', filter: BooleanFilter::class, nativeType: new BuiltinType(TypeIdentifier::BOOL))]
-#[QueryParameter(key: 'ignore', filter: BooleanFilter::class, nativeType: new BuiltinType(TypeIdentifier::BOOL))]
+#[QueryParameter(key: 'status', filter: BooleanFilter::class)]
+#[QueryParameter(key: 'disabled', filter: BooleanFilter::class)]
+#[QueryParameter(key: 'ignore', filter: BooleanFilter::class)]
 #[QueryParameter(key: 'last_polled', filter: DateFilter::class)]
-// Sortable fields are listed one by one: the order[:property] placeholder
-// expands to every column of the table, including the SNMP credentials,
-// and names them in camelCase unlike the rest of the API.
-#[QueryParameter(key: 'order[id]', filter: OrderFilter::class, property: 'device_id', extraProperties: ['_query_property' => 'device_id'])]
-#[QueryParameter(key: 'order[hostname]', filter: OrderFilter::class, property: 'hostname')]
-#[QueryParameter(key: 'order[sysName]', filter: OrderFilter::class, property: 'sysName', extraProperties: ['_query_property' => 'sysName'])]
-#[QueryParameter(key: 'order[display]', filter: OrderFilter::class, property: 'display')]
-#[QueryParameter(key: 'order[os]', filter: OrderFilter::class, property: 'os')]
-#[QueryParameter(key: 'order[type]', filter: OrderFilter::class, property: 'type')]
-#[QueryParameter(key: 'order[status]', filter: OrderFilter::class, property: 'status')]
-#[QueryParameter(key: 'order[uptime]', filter: OrderFilter::class, property: 'uptime')]
-#[QueryParameter(key: 'order[inserted]', filter: OrderFilter::class, property: 'inserted')]
-#[QueryParameter(key: 'order[last_polled]', filter: OrderFilter::class, property: 'last_polled')]
-#[QueryParameter(key: 'order[last_discovered]', filter: OrderFilter::class, property: 'last_discovered')]
-#[QueryParameter(key: 'order[last_ping]', filter: OrderFilter::class, property: 'last_ping')]
+// Sortable fields are an explicit allow-list: left to itself the :property
+// placeholder expands to every column of the table, which would let a client
+// sort by community or authpass and read the credentials back as an
+// ordering oracle.
+#[QueryParameter(key: 'order[id]', filter: OrderFilter::class, property: 'device_id')]
+#[QueryParameter(key: 'order[:property]', filter: OrderFilter::class, properties: [
+    'hostname',
+    'sysName',
+    'display',
+    'os',
+    'type',
+    'status',
+    'uptime',
+    'inserted',
+    'last_polled',
+    'last_discovered',
+    'last_ping',
+])]
 class Device extends BaseModel
 {
     use PivotEventTrait, HasFactory, Filterable;

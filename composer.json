@@ -99,6 +99,7 @@
     "extra": {
         "laravel": {
             "dont-discover": [
+                "api-platform/laravel",
                 "nunomaduro/laravel-console-summary",
                 "facade/ignition",
                 "socialiteproviders/manager"

@@ -15,7 +15,7 @@ return [
     'middleware' => [
         App\Http\Middleware\EnforceJsonApi::class,
         App\Http\Middleware\FormatJsonApiError::class,
-        App\Http\Middleware\EnsureApiV1Enabled::class,
+        App\Http\Middleware\EnsureApiEnabled::class . ':v1',
         'auth:sanctum',
         DispatchRestifyStartingEvent::class,
     ],

@@ -212,6 +212,14 @@ class EnvHelper
     }
 
     /**
+     * Detect if the install process has been completed.
+     */
+    public static function isInstalled(): bool
+    {
+        return ! config('librenms.install') && file_exists(base_path('.env'));
+    }
+
+    /**
      * Detect if LibreNMS is installed from the official Docker image.
      *
      * @return bool

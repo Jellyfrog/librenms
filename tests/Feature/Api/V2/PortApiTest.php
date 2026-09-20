@@ -27,21 +27,9 @@ use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use App\Models\Port;
 use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Testing\TestResponse;
-use LibreNMS\Tests\DBTestCase;
 
-class PortApiTest extends DBTestCase
+class PortApiTest extends ApiV2TestCase
 {
-    use DatabaseTransactions;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        LibrenmsConfig::set('api.v2.enabled', true);
-    }
-
     public function testPortsRequireAToken(): void
     {
         $this->json('GET', '/api/v2/ports')->assertStatus(401);
@@ -221,20 +209,8 @@ class PortApiTest extends DBTestCase
      */
     private function port(array $attributes = []): Port
     {
-        return Port::factory()->create($attributes + ['device_id' => Device::factory()->create()->device_id]);
-    }
+        $attributes['device_id'] ??= Device::factory()->create()->device_id;
 
-    private function admin(): User
-    {
-        return User::factory()->admin()->create();
-    }
-
-    private function getJsonAs(User $user, string $uri): TestResponse
-    {
-        auth()->forgetGuards();
-
-        return $this->json('GET', $uri, [], [
-            'Authorization' => 'Bearer ' . $user->createToken('test')->plainTextToken,
-        ]);
+        return Port::factory()->create($attributes);
     }
 }
