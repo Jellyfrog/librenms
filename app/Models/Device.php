@@ -2,17 +2,6 @@
 
 namespace App\Models;
 
-use ApiPlatform\Laravel\Eloquent\Filter\BooleanFilter;
-use ApiPlatform\Laravel\Eloquent\Filter\DateFilter;
-use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
-use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
-use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
-use ApiPlatform\Metadata\ApiProperty;
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Link as ApiLink;
-use ApiPlatform\Metadata\QueryParameter;
 use App\Facades\DeviceCache;
 use App\Facades\LibrenmsConfig;
 use App\Models\Traits\Filterable;
@@ -42,8 +31,6 @@ use LibreNMS\Util\IP;
 use LibreNMS\Util\Rewrite;
 use LibreNMS\Util\Time;
 use LibreNMS\Util\Url;
-use Symfony\Component\Serializer\Attribute\Groups;
-use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @property-read int|null $ports_count
@@ -53,91 +40,6 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
  * @method static \Database\Factories\DeviceFactory factory(...$parameters)
  */
 #[ObservedBy([DeviceObserver::class])]
-// API v2 resource, see https://api-platform.com/docs/laravel/ and doc/API/v2.md.
-// Read only for now. Only the attributes carrying the read group are
-// serialized, so the SNMP credentials on this table (community, authname,
-// authpass, cryptopass, ...) never leave the server. Naming every field is the
-// price of that allow-list: api-platform takes the property list off the table
-// schema, so a column not named here is the only column that stays private,
-// including one a later migration adds. $hidden would express the same thing
-// in fewer lines, but it is not local to this API - toArray() also feeds the
-// v0 API, the legacy $device array in PollDevice/DiscoverDevice and the alert
-// payload, so hiding a column there changes all of them.
-#[ApiResource(
-    shortName: 'Device',
-    description: 'A monitored device.',
-    operations: [
-        new GetCollection(policy: 'viewAny'),
-        new Get(
-            uriTemplate: '/devices/{id}{._format}',
-            uriVariables: ['id' => new ApiLink(fromClass: self::class, identifiers: ['device_id'])],
-            policy: 'view',
-        ),
-    ],
-    normalizationContext: ['groups' => ['read']],
-)]
-#[ApiProperty(property: 'device_id', identifier: true, serialize: [new Groups('read'), new SerializedName('id')])]
-#[ApiProperty(property: 'hostname', serialize: new Groups('read'))]
-#[ApiProperty(property: 'sysName', serialize: new Groups('read'))]
-#[ApiProperty(property: 'display', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ip', serialize: new Groups('read'))]
-#[ApiProperty(property: 'os', serialize: new Groups('read'))]
-#[ApiProperty(property: 'type', serialize: new Groups('read'))]
-#[ApiProperty(property: 'hardware', serialize: new Groups('read'))]
-#[ApiProperty(property: 'version', serialize: new Groups('read'))]
-#[ApiProperty(property: 'features', serialize: [new Groups('read'), new SerializedName('feature')])]
-#[ApiProperty(property: 'serial', serialize: new Groups('read'))]
-#[ApiProperty(property: 'icon', serialize: new Groups('read'))]
-#[ApiProperty(property: 'purpose', serialize: new Groups('read'))]
-#[ApiProperty(property: 'notes', serialize: [new Groups('read'), new SerializedName('note')])]
-#[ApiProperty(property: 'location_id', serialize: new Groups('read'))]
-#[ApiProperty(property: 'sysDescr', serialize: new Groups('read'))]
-#[ApiProperty(property: 'sysContact', serialize: new Groups('read'))]
-#[ApiProperty(property: 'sysObjectID', serialize: new Groups('read'))]
-#[ApiProperty(property: 'status', serialize: new Groups('read'))]
-#[ApiProperty(property: 'status_reason', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ignore', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ignore_status', serialize: new Groups('read'))]
-#[ApiProperty(property: 'disabled', serialize: new Groups('read'))]
-#[ApiProperty(property: 'disable_notify', serialize: new Groups('read'))]
-#[ApiProperty(property: 'uptime', serialize: new Groups('read'))]
-#[ApiProperty(property: 'poller_group', serialize: new Groups('read'))]
-#[ApiProperty(property: 'inserted', serialize: new Groups('read'))]
-#[ApiProperty(property: 'last_polled', serialize: new Groups('read'))]
-#[ApiProperty(property: 'last_discovered', serialize: new Groups('read'))]
-#[ApiProperty(property: 'last_ping', serialize: new Groups('read'))]
-#[QueryParameter(key: 'hostname', filter: PartialSearchFilter::class)]
-#[QueryParameter(key: 'sysName', filter: PartialSearchFilter::class)]
-#[QueryParameter(key: 'display', filter: PartialSearchFilter::class)]
-#[QueryParameter(key: 'hardware', filter: PartialSearchFilter::class)]
-#[QueryParameter(key: 'serial', filter: PartialSearchFilter::class)]
-#[QueryParameter(key: 'version', filter: PartialSearchFilter::class)]
-#[QueryParameter(key: 'os', filter: EqualsFilter::class)]
-#[QueryParameter(key: 'type', filter: EqualsFilter::class)]
-#[QueryParameter(key: 'location_id', filter: EqualsFilter::class)]
-#[QueryParameter(key: 'poller_group', filter: EqualsFilter::class)]
-#[QueryParameter(key: 'status', filter: BooleanFilter::class)]
-#[QueryParameter(key: 'disabled', filter: BooleanFilter::class)]
-#[QueryParameter(key: 'ignore', filter: BooleanFilter::class)]
-#[QueryParameter(key: 'last_polled', filter: DateFilter::class)]
-// Sortable fields are an explicit allow-list: left to itself the :property
-// placeholder expands to every column of the table, which would let a client
-// sort by community or authpass and read the credentials back as an
-// ordering oracle.
-#[QueryParameter(key: 'order[id]', filter: OrderFilter::class, property: 'device_id')]
-#[QueryParameter(key: 'order[:property]', filter: OrderFilter::class, properties: [
-    'hostname',
-    'sysName',
-    'display',
-    'os',
-    'type',
-    'status',
-    'uptime',
-    'inserted',
-    'last_polled',
-    'last_discovered',
-    'last_ping',
-])]
 class Device extends BaseModel
 {
     use PivotEventTrait, HasFactory, Filterable;
@@ -191,8 +93,8 @@ class Device extends BaseModel
 
     /**
      * Filters for the web UI tables, see the Filterable trait. The v2 API
-     * declares its own set in the #[QueryParameter] attributes above; the two
-     * overlap but are not interchangeable, the DSLs differ.
+     * declares its own set on App\Models\ApiDevice; the two overlap but are
+     * not interchangeable, the DSLs differ.
      */
     protected array $filterable = [
         'device_id',

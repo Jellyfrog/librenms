@@ -2,16 +2,6 @@
 
 namespace App\Models;
 
-use ApiPlatform\Laravel\Eloquent\Filter\BooleanFilter;
-use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
-use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
-use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
-use ApiPlatform\Metadata\ApiProperty;
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Link as ApiLink;
-use ApiPlatform\Metadata\QueryParameter;
 use App\Models\Traits\Filterable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,8 +16,6 @@ use Illuminate\Support\Str;
 use LibreNMS\Enum\IfOperStatus;
 use LibreNMS\Util\Number;
 use LibreNMS\Util\Rewrite;
-use Symfony\Component\Serializer\Attribute\Groups;
-use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @property IfOperStatus|null $ifOperStatus
@@ -35,95 +23,6 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
  * @property IfOperStatus|null $ifAdminStatus
  * @property IfOperStatus|null $ifAdminStatus_prev
  */
-// API v2 resource, see https://api-platform.com/docs/laravel/ and doc/API/v2.md.
-// Read only for now. As on Device, only the attributes carrying the read
-// group are serialized; the per-poll counter bookkeeping (_prev, _delta) is
-// left out, the rates are what an API client wants.
-//
-// The link back to the device is device_id plus the /devices/{device_id}/ports
-// operation below; the device relation itself is not serialized, see the doc.
-#[ApiResource(
-    shortName: 'Port',
-    description: 'An interface on a monitored device.',
-    operations: [
-        new GetCollection(policy: 'viewAny'),
-        new Get(
-            uriTemplate: '/ports/{id}{._format}',
-            uriVariables: ['id' => new ApiLink(fromClass: self::class, identifiers: ['port_id'])],
-            policy: 'view',
-        ),
-        new GetCollection(
-            uriTemplate: '/devices/{device_id}/ports{._format}',
-            uriVariables: ['device_id' => new ApiLink(fromClass: Device::class, toProperty: 'device')],
-            policy: 'viewAny',
-        ),
-    ],
-    normalizationContext: ['groups' => ['read']],
-)]
-#[ApiProperty(property: 'port_id', identifier: true, serialize: [new Groups('read'), new SerializedName('id')])]
-#[ApiProperty(property: 'device_id', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifIndex', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifName', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifDescr', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifAlias', serialize: new Groups('read'))]
-#[ApiProperty(property: 'portName', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifType', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifSpeed', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifMtu', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifDuplex', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifPhysAddress', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifConnectorPresent', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifOperStatus', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifAdminStatus', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifLastChange', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifVlan', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifTrunk', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifVrf', serialize: new Groups('read'))]
-#[ApiProperty(property: 'port_descr_type', serialize: [new Groups('read'), new SerializedName('descr_type')])]
-#[ApiProperty(property: 'port_descr_descr', serialize: [new Groups('read'), new SerializedName('descr_descr')])]
-#[ApiProperty(property: 'port_descr_circuit', serialize: [new Groups('read'), new SerializedName('descr_circuit')])]
-#[ApiProperty(property: 'port_descr_speed', serialize: [new Groups('read'), new SerializedName('descr_speed')])]
-#[ApiProperty(property: 'port_descr_notes', serialize: [new Groups('read'), new SerializedName('descr_note')])]
-#[ApiProperty(property: 'ignore', serialize: new Groups('read'))]
-#[ApiProperty(property: 'disabled', serialize: new Groups('read'))]
-#[ApiProperty(property: 'deleted', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifInOctets', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifOutOctets', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifInOctets_rate', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifOutOctets_rate', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifInErrors_rate', serialize: new Groups('read'))]
-#[ApiProperty(property: 'ifOutErrors_rate', serialize: new Groups('read'))]
-#[ApiProperty(property: 'poll_time', serialize: new Groups('read'))]
-#[QueryParameter(key: 'ifName', filter: PartialSearchFilter::class)]
-#[QueryParameter(key: 'ifDescr', filter: PartialSearchFilter::class)]
-#[QueryParameter(key: 'ifAlias', filter: PartialSearchFilter::class)]
-#[QueryParameter(key: 'portName', filter: PartialSearchFilter::class)]
-#[QueryParameter(key: 'device_id', filter: EqualsFilter::class)]
-#[QueryParameter(key: 'ifIndex', filter: EqualsFilter::class)]
-#[QueryParameter(key: 'ifType', filter: EqualsFilter::class)]
-#[QueryParameter(key: 'ifOperStatus', filter: EqualsFilter::class)]
-#[QueryParameter(key: 'ifAdminStatus', filter: EqualsFilter::class)]
-#[QueryParameter(key: 'ifVlan', filter: EqualsFilter::class)]
-#[QueryParameter(key: 'ignore', filter: BooleanFilter::class)]
-#[QueryParameter(key: 'disabled', filter: BooleanFilter::class)]
-#[QueryParameter(key: 'deleted', filter: BooleanFilter::class)]
-// Sortable fields are an explicit allow-list, see the note on Device.
-#[QueryParameter(key: 'order[id]', filter: OrderFilter::class, property: 'port_id')]
-#[QueryParameter(key: 'order[:property]', filter: OrderFilter::class, properties: [
-    'device_id',
-    'ifIndex',
-    'ifName',
-    'ifAlias',
-    'portName',
-    'ifType',
-    'ifSpeed',
-    'ifOperStatus',
-    'ifAdminStatus',
-    'ifLastChange',
-    'ifInOctets_rate',
-    'ifOutOctets_rate',
-    'poll_time',
-])]
 class Port extends DeviceRelatedModel
 {
     use HasFactory;
