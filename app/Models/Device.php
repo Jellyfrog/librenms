@@ -2,6 +2,16 @@
 
 namespace App\Models;
 
+use ApiPlatform\Laravel\Eloquent\Filter\BooleanFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\DateFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Facades\DeviceCache;
 use App\Facades\LibrenmsConfig;
 use App\Models\Traits\Filterable;
@@ -31,6 +41,9 @@ use LibreNMS\Util\IP;
 use LibreNMS\Util\Rewrite;
 use LibreNMS\Util\Time;
 use LibreNMS\Util\Url;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\TypeInfo\Type\BuiltinType;
+use Symfony\Component\TypeInfo\TypeIdentifier;
 
 /**
  * @property-read int|null $ports_count
@@ -40,6 +53,84 @@ use LibreNMS\Util\Url;
  * @method static \Database\Factories\DeviceFactory factory(...$parameters)
  */
 #[ObservedBy([DeviceObserver::class])]
+// API v2 resource, see https://api-platform.com/docs/laravel/ and doc/API/v2.md.
+// Read only for now. Only the attributes carrying the device:read group are
+// serialized: the SNMP credentials on this table (community, authname,
+// authpass, cryptopass, ...) must never leave the server, and $hidden cannot
+// be used to drop them because the poller and discovery read them back out of
+// Device::toArray().
+#[ApiResource(
+    shortName: 'Device',
+    description: 'A monitored device.',
+    operations: [
+        new GetCollection(policy: 'viewAny'),
+        new Get(policy: 'view'),
+    ],
+    normalizationContext: ['groups' => ['device:read']],
+)]
+#[ApiProperty(property: 'device_id', identifier: true, serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'hostname', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'sysName', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'display', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'ip', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'os', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'type', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'hardware', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'version', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'features', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'serial', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'icon', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'purpose', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'notes', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'location_id', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'sysDescr', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'sysContact', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'sysObjectID', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'status', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'status_reason', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'ignore', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'ignore_status', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'disabled', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'disable_notify', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'uptime', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'poller_group', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'inserted', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'last_polled', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'last_discovered', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'last_ping', serialize: new Groups(['device:read']))]
+// api-platform/laravel 5.0.0 name-converts a parameter's property to
+// snake_case and then queries that (its filters read _query_property,
+// nothing sets it), so a column with a capital in it needs the real name
+// pinned in extraProperties or the filter silently matches nothing.
+#[QueryParameter(key: 'hostname', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'sysName', filter: PartialSearchFilter::class, extraProperties: ['_query_property' => 'sysName'])]
+#[QueryParameter(key: 'display', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'hardware', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'serial', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'version', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'os', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'type', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'location_id', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'poller_group', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'status', filter: BooleanFilter::class, nativeType: new BuiltinType(TypeIdentifier::BOOL))]
+#[QueryParameter(key: 'disabled', filter: BooleanFilter::class, nativeType: new BuiltinType(TypeIdentifier::BOOL))]
+#[QueryParameter(key: 'ignore', filter: BooleanFilter::class, nativeType: new BuiltinType(TypeIdentifier::BOOL))]
+#[QueryParameter(key: 'last_polled', filter: DateFilter::class)]
+// Sortable fields are listed one by one: the order[:property] placeholder
+// expands to every column of the table, including the SNMP credentials,
+// and names them in camelCase unlike the rest of the API.
+#[QueryParameter(key: 'order[device_id]', filter: OrderFilter::class, property: 'device_id')]
+#[QueryParameter(key: 'order[hostname]', filter: OrderFilter::class, property: 'hostname')]
+#[QueryParameter(key: 'order[sysName]', filter: OrderFilter::class, property: 'sysName', extraProperties: ['_query_property' => 'sysName'])]
+#[QueryParameter(key: 'order[display]', filter: OrderFilter::class, property: 'display')]
+#[QueryParameter(key: 'order[os]', filter: OrderFilter::class, property: 'os')]
+#[QueryParameter(key: 'order[type]', filter: OrderFilter::class, property: 'type')]
+#[QueryParameter(key: 'order[status]', filter: OrderFilter::class, property: 'status')]
+#[QueryParameter(key: 'order[uptime]', filter: OrderFilter::class, property: 'uptime')]
+#[QueryParameter(key: 'order[inserted]', filter: OrderFilter::class, property: 'inserted')]
+#[QueryParameter(key: 'order[last_polled]', filter: OrderFilter::class, property: 'last_polled')]
+#[QueryParameter(key: 'order[last_discovered]', filter: OrderFilter::class, property: 'last_discovered')]
+#[QueryParameter(key: 'order[last_ping]', filter: OrderFilter::class, property: 'last_ping')]
 class Device extends BaseModel
 {
     use PivotEventTrait, HasFactory, Filterable;
