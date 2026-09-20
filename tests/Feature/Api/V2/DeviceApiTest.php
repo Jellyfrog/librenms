@@ -65,13 +65,22 @@ class DeviceApiTest extends ApiV2TestCase
             ]);
     }
 
+    /**
+     * The field list is a deny list: Device::$hidden. A column a migration adds
+     * is public by default, so this pins the ones that must never be, and
+     * testCredentialsCannotBeUsedAsASortKey covers the other way of reading
+     * them.
+     */
     public function testSnmpCredentialsAreNotExposed(): void
     {
         $credentials = [
             'community' => 'communityvalue',
             'authname' => 'authnamevalue',
             'authpass' => 'authpassvalue',
+            'authalgo' => 'SHA-512',
+            'authlevel' => 'authPriv',
             'cryptopass' => 'cryptopassvalue',
+            'cryptoalgo' => 'AES-256',
         ];
 
         $device = Device::factory()->create($credentials + ['hostname' => 'api-v2-creds.example.com']);
@@ -83,6 +92,33 @@ class DeviceApiTest extends ApiV2TestCase
             $response->assertJsonMissingPath($field);
             $this->assertStringNotContainsString($value, $response->getContent());
         }
+
+        $this->assertSame(
+            $credentials,
+            $device->fresh()->only(array_keys($credentials)),
+            'hiding a column must not stop the poller reading it'
+        );
+    }
+
+    /**
+     * order[:property] has an explicit allow-list because the placeholder
+     * otherwise offers every column, hidden ones included, which would make
+     * the credentials readable one comparison at a time.
+     */
+    public function testCredentialsCannotBeUsedAsASortKey(): void
+    {
+        $first = Device::factory()->create(['hostname' => 'api-v2-sort-a.example.com', 'community' => 'zzz']);
+        Device::factory()->create(['hostname' => 'api-v2-sort-b.example.com', 'community' => 'aaa']);
+
+        foreach (['order[community]=asc', 'order[authpass]=asc'] as $query) {
+            $this->getJsonAs($this->admin(), '/api/v2/devices?' . $query)
+                ->assertStatus(200)
+                ->assertJsonPath('0.id', $first->device_id);
+        }
+
+        $this->getJsonAs($this->admin(), '/api/v2/devices?order[hostname]=desc')
+            ->assertStatus(200)
+            ->assertJsonPath('0.hostname', 'api-v2-sort-b.example.com');
     }
 
     /**
