@@ -27,6 +27,7 @@ use LibreNMS\Enum\IfOperStatus;
 use LibreNMS\Util\Number;
 use LibreNMS\Util\Rewrite;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Component\TypeInfo\Type\BuiltinType;
 use Symfony\Component\TypeInfo\TypeIdentifier;
 
@@ -50,7 +51,11 @@ use Symfony\Component\TypeInfo\TypeIdentifier;
     description: 'An interface on a monitored device.',
     operations: [
         new GetCollection(policy: 'viewAny'),
-        new Get(policy: 'view'),
+        new Get(
+            uriTemplate: '/ports/{id}{._format}',
+            uriVariables: ['id' => new ApiLink(fromClass: self::class, identifiers: ['port_id'])],
+            policy: 'view',
+        ),
         new GetCollection(
             uriTemplate: '/devices/{device_id}/ports{._format}',
             uriVariables: ['device_id' => new ApiLink(fromClass: Device::class, toProperty: 'device')],
@@ -59,7 +64,7 @@ use Symfony\Component\TypeInfo\TypeIdentifier;
     ],
     normalizationContext: ['groups' => ['port:read']],
 )]
-#[ApiProperty(property: 'port_id', identifier: true, serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'port_id', identifier: true, serialize: [new Groups(['port:read']), new SerializedName('id')])]
 #[ApiProperty(property: 'device_id', serialize: new Groups(['port:read']))]
 #[ApiProperty(property: 'ifIndex', serialize: new Groups(['port:read']))]
 #[ApiProperty(property: 'ifName', serialize: new Groups(['port:read']))]
@@ -78,11 +83,11 @@ use Symfony\Component\TypeInfo\TypeIdentifier;
 #[ApiProperty(property: 'ifVlan', serialize: new Groups(['port:read']))]
 #[ApiProperty(property: 'ifTrunk', serialize: new Groups(['port:read']))]
 #[ApiProperty(property: 'ifVrf', serialize: new Groups(['port:read']))]
-#[ApiProperty(property: 'port_descr_type', serialize: new Groups(['port:read']))]
-#[ApiProperty(property: 'port_descr_descr', serialize: new Groups(['port:read']))]
-#[ApiProperty(property: 'port_descr_circuit', serialize: new Groups(['port:read']))]
-#[ApiProperty(property: 'port_descr_speed', serialize: new Groups(['port:read']))]
-#[ApiProperty(property: 'port_descr_notes', serialize: new Groups(['port:read']))]
+#[ApiProperty(property: 'port_descr_type', serialize: [new Groups(['port:read']), new SerializedName('descr_type')])]
+#[ApiProperty(property: 'port_descr_descr', serialize: [new Groups(['port:read']), new SerializedName('descr_descr')])]
+#[ApiProperty(property: 'port_descr_circuit', serialize: [new Groups(['port:read']), new SerializedName('descr_circuit')])]
+#[ApiProperty(property: 'port_descr_speed', serialize: [new Groups(['port:read']), new SerializedName('descr_speed')])]
+#[ApiProperty(property: 'port_descr_notes', serialize: [new Groups(['port:read']), new SerializedName('descr_note')])]
 #[ApiProperty(property: 'ignore', serialize: new Groups(['port:read']))]
 #[ApiProperty(property: 'disabled', serialize: new Groups(['port:read']))]
 #[ApiProperty(property: 'deleted', serialize: new Groups(['port:read']))]
@@ -111,7 +116,7 @@ use Symfony\Component\TypeInfo\TypeIdentifier;
 #[QueryParameter(key: 'disabled', filter: BooleanFilter::class, nativeType: new BuiltinType(TypeIdentifier::BOOL))]
 #[QueryParameter(key: 'deleted', filter: BooleanFilter::class, nativeType: new BuiltinType(TypeIdentifier::BOOL))]
 // Sortable fields are listed one by one, see the note on Device.
-#[QueryParameter(key: 'order[port_id]', filter: OrderFilter::class, property: 'port_id')]
+#[QueryParameter(key: 'order[id]', filter: OrderFilter::class, property: 'port_id', extraProperties: ['_query_property' => 'port_id'])]
 #[QueryParameter(key: 'order[device_id]', filter: OrderFilter::class, property: 'device_id')]
 #[QueryParameter(key: 'order[ifIndex]', filter: OrderFilter::class, property: 'ifIndex', extraProperties: ['_query_property' => 'ifIndex'])]
 #[QueryParameter(key: 'order[ifName]', filter: OrderFilter::class, property: 'ifName', extraProperties: ['_query_property' => 'ifName'])]

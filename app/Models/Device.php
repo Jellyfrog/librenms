@@ -11,6 +11,7 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link as ApiLink;
 use ApiPlatform\Metadata\QueryParameter;
 use App\Facades\DeviceCache;
 use App\Facades\LibrenmsConfig;
@@ -42,6 +43,7 @@ use LibreNMS\Util\Rewrite;
 use LibreNMS\Util\Time;
 use LibreNMS\Util\Url;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 use Symfony\Component\TypeInfo\Type\BuiltinType;
 use Symfony\Component\TypeInfo\TypeIdentifier;
 
@@ -64,11 +66,15 @@ use Symfony\Component\TypeInfo\TypeIdentifier;
     description: 'A monitored device.',
     operations: [
         new GetCollection(policy: 'viewAny'),
-        new Get(policy: 'view'),
+        new Get(
+            uriTemplate: '/devices/{id}{._format}',
+            uriVariables: ['id' => new ApiLink(fromClass: self::class, identifiers: ['device_id'])],
+            policy: 'view',
+        ),
     ],
     normalizationContext: ['groups' => ['device:read']],
 )]
-#[ApiProperty(property: 'device_id', identifier: true, serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'device_id', identifier: true, serialize: [new Groups(['device:read']), new SerializedName('id')])]
 #[ApiProperty(property: 'hostname', serialize: new Groups(['device:read']))]
 #[ApiProperty(property: 'sysName', serialize: new Groups(['device:read']))]
 #[ApiProperty(property: 'display', serialize: new Groups(['device:read']))]
@@ -77,11 +83,11 @@ use Symfony\Component\TypeInfo\TypeIdentifier;
 #[ApiProperty(property: 'type', serialize: new Groups(['device:read']))]
 #[ApiProperty(property: 'hardware', serialize: new Groups(['device:read']))]
 #[ApiProperty(property: 'version', serialize: new Groups(['device:read']))]
-#[ApiProperty(property: 'features', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'features', serialize: [new Groups(['device:read']), new SerializedName('feature')])]
 #[ApiProperty(property: 'serial', serialize: new Groups(['device:read']))]
 #[ApiProperty(property: 'icon', serialize: new Groups(['device:read']))]
 #[ApiProperty(property: 'purpose', serialize: new Groups(['device:read']))]
-#[ApiProperty(property: 'notes', serialize: new Groups(['device:read']))]
+#[ApiProperty(property: 'notes', serialize: [new Groups(['device:read']), new SerializedName('note')])]
 #[ApiProperty(property: 'location_id', serialize: new Groups(['device:read']))]
 #[ApiProperty(property: 'sysDescr', serialize: new Groups(['device:read']))]
 #[ApiProperty(property: 'sysContact', serialize: new Groups(['device:read']))]
@@ -119,7 +125,7 @@ use Symfony\Component\TypeInfo\TypeIdentifier;
 // Sortable fields are listed one by one: the order[:property] placeholder
 // expands to every column of the table, including the SNMP credentials,
 // and names them in camelCase unlike the rest of the API.
-#[QueryParameter(key: 'order[device_id]', filter: OrderFilter::class, property: 'device_id')]
+#[QueryParameter(key: 'order[id]', filter: OrderFilter::class, property: 'device_id', extraProperties: ['_query_property' => 'device_id'])]
 #[QueryParameter(key: 'order[hostname]', filter: OrderFilter::class, property: 'hostname')]
 #[QueryParameter(key: 'order[sysName]', filter: OrderFilter::class, property: 'sysName', extraProperties: ['_query_property' => 'sysName'])]
 #[QueryParameter(key: 'order[display]', filter: OrderFilter::class, property: 'display')]

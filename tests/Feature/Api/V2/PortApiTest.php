@@ -61,7 +61,7 @@ class PortApiTest extends DBTestCase
         $this->getJsonAs($this->admin(), '/api/v2/ports?ifName=api-v2-list')
             ->assertStatus(200)
             ->assertJsonFragment([
-                'port_id' => $port->port_id,
+                'id' => $port->port_id,
                 'device_id' => $port->device_id,
                 'ifName' => 'api-v2-list',
             ]);
@@ -74,7 +74,7 @@ class PortApiTest extends DBTestCase
         $this->getJsonAs($this->admin(), '/api/v2/ports/' . $port->port_id)
             ->assertStatus(200)
             ->assertJson([
-                'port_id' => $port->port_id,
+                'id' => $port->port_id,
                 'ifName' => 'api-v2-item',
                 'ifAlias' => 'uplink to core',
             ]);
@@ -124,14 +124,45 @@ class PortApiTest extends DBTestCase
         foreach ($filters as $filter) {
             $this->getJsonAs($admin, '/api/v2/ports?' . $filter)
                 ->assertStatus(200)
-                ->assertJsonFragment(['port_id' => $match->port_id])
-                ->assertJsonMissing(['port_id' => $other->port_id]);
+                ->assertJsonFragment(['id' => $match->port_id])
+                ->assertJsonMissing(['id' => $other->port_id]);
         }
 
         $this->getJsonAs($admin, '/api/v2/ports?device_id=' . $device->device_id)
             ->assertStatus(200)
-            ->assertJsonFragment(['port_id' => $match->port_id])
-            ->assertJsonFragment(['port_id' => $other->port_id]);
+            ->assertJsonFragment(['id' => $match->port_id])
+            ->assertJsonFragment(['id' => $other->port_id]);
+    }
+
+    public function testFieldNamesAreNormalized(): void
+    {
+        $port = $this->port([
+            'ifName' => 'api-v2-fields',
+            'port_descr_type' => 'transit',
+            'port_descr_descr' => 'core uplink',
+            'port_descr_circuit' => 'CID-1',
+            'port_descr_speed' => '1G',
+            'port_descr_notes' => 'a note',
+        ]);
+
+        $json = $this->getJsonAs($this->admin(), '/api/v2/ports/' . $port->port_id)
+            ->assertStatus(200)
+            ->json();
+
+        // the port_ prefix is dropped and plurals are singular
+        $this->assertArrayHasKey('id', $json);
+        $this->assertArrayNotHasKey('port_id', $json);
+        $this->assertSame('transit', $json['descr_type'] ?? null);
+        $this->assertSame('core uplink', $json['descr_descr'] ?? null);
+        $this->assertSame('CID-1', $json['descr_circuit'] ?? null);
+        $this->assertSame('1G', $json['descr_speed'] ?? null);
+        $this->assertSame('a note', $json['descr_note'] ?? null);
+        foreach (['port_descr_type', 'port_descr_descr', 'port_descr_circuit', 'port_descr_speed', 'port_descr_notes'] as $old) {
+            $this->assertArrayNotHasKey($old, $json);
+        }
+
+        // the reference to the device keeps its name, it is not the port's own id
+        $this->assertSame($port->device_id, $json['device_id'] ?? null);
     }
 
     public function testPortsAreOrdered(): void
@@ -157,8 +188,8 @@ class PortApiTest extends DBTestCase
 
         $this->getJsonAs($this->admin(), '/api/v2/devices/' . $device->device_id . '/ports')
             ->assertStatus(200)
-            ->assertJsonFragment(['port_id' => $mine->port_id])
-            ->assertJsonMissing(['port_id' => $theirs->port_id]);
+            ->assertJsonFragment(['id' => $mine->port_id])
+            ->assertJsonMissing(['id' => $theirs->port_id]);
     }
 
     public function testUsersOnlySeeThePortsTheyMayAccess(): void
@@ -176,9 +207,9 @@ class PortApiTest extends DBTestCase
 
         $this->getJsonAs($user, '/api/v2/ports')
             ->assertStatus(200)
-            ->assertJsonFragment(['port_id' => $viaDevice->port_id])
-            ->assertJsonFragment(['port_id' => $viaPort->port_id])
-            ->assertJsonMissing(['port_id' => $forbidden->port_id]);
+            ->assertJsonFragment(['id' => $viaDevice->port_id])
+            ->assertJsonFragment(['id' => $viaPort->port_id])
+            ->assertJsonMissing(['id' => $forbidden->port_id]);
 
         $this->getJsonAs($user, '/api/v2/ports/' . $viaDevice->port_id)->assertStatus(200);
         $this->getJsonAs($user, '/api/v2/ports/' . $viaPort->port_id)->assertStatus(200);

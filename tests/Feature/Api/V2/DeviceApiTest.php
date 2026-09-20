@@ -59,7 +59,7 @@ class DeviceApiTest extends DBTestCase
         $this->getJsonAs($this->admin(), '/api/v2/devices')
             ->assertStatus(200)
             ->assertJsonFragment([
-                'device_id' => $device->device_id,
+                'id' => $device->device_id,
                 'hostname' => 'api-v2-list.example.com',
             ]);
     }
@@ -71,7 +71,7 @@ class DeviceApiTest extends DBTestCase
         $this->getJsonAs($this->admin(), '/api/v2/devices/' . $device->device_id)
             ->assertStatus(200)
             ->assertJson([
-                'device_id' => $device->device_id,
+                'id' => $device->device_id,
                 'hostname' => 'api-v2-item.example.com',
             ]);
     }
@@ -114,6 +114,27 @@ class DeviceApiTest extends DBTestCase
             ->assertStatus(200)
             ->assertJsonFragment(['hostname' => 'api-v2-other.example.com'])
             ->assertJsonMissing(['hostname' => 'api-v2-filter.example.com']);
+    }
+
+    public function testFieldNamesAreNormalized(): void
+    {
+        Device::factory()->create([
+            'hostname' => 'api-v2-fields.example.com',
+            'features' => 'ipbase',
+            'notes' => 'a note',
+        ]);
+
+        $device = $this->getJsonAs($this->admin(), '/api/v2/devices?hostname=api-v2-fields')
+            ->assertStatus(200)
+            ->json('0');
+
+        // the device_ prefix is dropped and plurals are singular
+        $this->assertArrayHasKey('id', $device);
+        $this->assertArrayNotHasKey('device_id', $device);
+        $this->assertSame('ipbase', $device['feature'] ?? null);
+        $this->assertArrayNotHasKey('features', $device);
+        $this->assertSame('a note', $device['note'] ?? null);
+        $this->assertArrayNotHasKey('notes', $device);
     }
 
     /**
