@@ -175,7 +175,6 @@ Artisan::command('scan
 
 // mark schedule working
 Schedule::call(function (): void {
-    // store a scalar, the value is only checked for existence and objects should not be cached
     Cache::put('scheduler_working', now()->timestamp, now()->addMinutes(6));
 })->name('schedule operational check')->everyFiveMinutes();
 

@@ -58,12 +58,12 @@ class ObjectCache
                 ->select(['app_type', 'app_state', 'app_instance'])
                 ->groupBy('app_type', 'app_state', 'app_instance')
                 ->get()
+                ->sortBy('show_name', SORT_NATURAL | SORT_FLAG_CASE)
+                ->values()
                 ->toArray();
         });
 
-        return Application::hydrate($applications)
-            ->sortBy('show_name', SORT_NATURAL | SORT_FLAG_CASE)
-            ->groupBy('app_type');
+        return Application::hydrate($applications)->groupBy('app_type');
     }
 
     public static function routing()
