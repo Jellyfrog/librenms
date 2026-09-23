@@ -29,18 +29,20 @@ class DeviceStats extends DeviceRelatedModel
 
         // Only update the latency if we have data
         if ($response->avg_latency) {
-            $this->ping_rtt_prev = $this->ping_rtt_last ?: $response->avg_latency;
+            $this->ping_rtt_prev = $this->ping_rtt_last ?? $response->avg_latency;
             $this->ping_rtt_last = $response->avg_latency;
             // Average is calculated as the exponential weighted moving average
-            $this->ping_rtt_avg = $this->ping_rtt_avg ? $this->ping_rtt_avg + (($this->ping_rtt_last - $this->ping_rtt_avg) * $avg_factor) : $this->ping_rtt_last;
+            $this->ping_rtt_avg = $this->ping_rtt_avg !== null ? $this->ping_rtt_avg + (($this->ping_rtt_last - $this->ping_rtt_avg) * $avg_factor) : $this->ping_rtt_last;
         }
 
         // Only update loss if we transmitted a packet
         if ($response->transmitted) {
-            $this->ping_loss_prev = $this->ping_loss_last ?: 100 * ($response->transmitted - $response->received) / $response->transmitted;
-            $this->ping_loss_last = 100 * ($response->transmitted - $response->received) / $response->transmitted;
+            $loss = 100 * ($response->transmitted - $response->received) / $response->transmitted;
+            // Only null means no history, 0% loss is a valid previous value
+            $this->ping_loss_prev = $this->ping_loss_last ?? $loss;
+            $this->ping_loss_last = $loss;
             // Average is calculated as the exponential weighted moving average
-            $this->ping_loss_avg = $this->ping_loss_avg ? $this->ping_loss_avg + (($this->ping_loss_last - $this->ping_loss_avg) * $avg_factor) : $this->ping_loss_last;
+            $this->ping_loss_avg = $this->ping_loss_avg !== null ? $this->ping_loss_avg + (($this->ping_loss_last - $this->ping_loss_avg) * $avg_factor) : $this->ping_loss_last;
         }
     }
 }
