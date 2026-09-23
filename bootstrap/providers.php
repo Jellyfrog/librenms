@@ -3,6 +3,7 @@
 return [
     App\Providers\ConfigServiceProvider::class,
     App\Providers\AppServiceProvider::class,
+    App\Providers\ApiPlatformServiceProvider::class,
     App\Providers\CliServiceProvider::class,
     App\Providers\ComposerServiceProvider::class,
     App\Providers\DatastoreServiceProvider::class,

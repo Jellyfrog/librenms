@@ -42,7 +42,7 @@ class CheckInstalled
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $installed = ! config('librenms.install') && file_exists(base_path('.env'));
+        $installed = EnvHelper::isInstalled();
         $is_install_route = $request->is('install*');
 
         // further middleware will fail without an app key, init one

@@ -6,6 +6,9 @@ We put the version into the API endpoint itself: `/api/v0`. The API is
 new and still in active development. We therefore start at v0 to show
 this development state.
 
+Two later versions are in beta: [v1](v1.md), which is disabled by default,
+and [v2](v2.md). This page documents v0.
+
 ## Tokens
 
 Endpoints require authentication using an API access token. You can create and manage tokens

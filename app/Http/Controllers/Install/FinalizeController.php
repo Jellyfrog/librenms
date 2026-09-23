@@ -112,6 +112,9 @@ class FinalizeController extends InstallationController implements InstallerStep
 
         // make sure the new env is reflected live
         \Artisan::call('config:clear');
+        // composer install may have cached routes before there was a
+        // database, which leaves the v2 API out of the route table.
+        \Artisan::call('route:clear');
         if (function_exists('opcache_reset')) {
             opcache_reset();
         }
