@@ -194,7 +194,14 @@ class TwoFactorController extends Controller
                 $twoFactorSettings['fails'] = 1;
             }
             $twoFactorSettings['last'] = time();
-            UserPref::setPref($user, 'twofactor', $twoFactorSettings);
+
+            // a key being added is only saved once verified, so keep its failures in the session
+            if (Session::has('twofactoradd')) {
+                Session::put('twofactoradd', $twoFactorSettings);
+            } else {
+                UserPref::setPref($user, 'twofactor', $twoFactorSettings);
+            }
+
             throw new AuthenticationException(__('Wrong Two-Factor Token.'));
         }
 
