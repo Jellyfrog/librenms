@@ -63,7 +63,7 @@ class ComponentStatusController extends WidgetController
         $component_status = Component::query()
             ->select('status', DB::raw("count('status') as total"))
             ->groupBy('status')
-            ->where('disabled', '!=', 0)
+            ->where('disabled', 0)
             ->when($data['device_group'], fn ($query) => $query->inDeviceGroup($data['device_group']))
             ->get()->pluck('total', 'status')->toArray();
 
