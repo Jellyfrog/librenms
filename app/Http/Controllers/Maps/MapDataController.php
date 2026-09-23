@@ -590,6 +590,10 @@ class MapDataController extends Controller
                 while ($this_parents->count() > 0) {
                     $next_parents = collect();
                     foreach ($this_parents as $parent_id) {
+                        // Ignore if a parent is found that has been filtered from the device list
+                        if (! array_key_exists($parent_id, $device_list)) {
+                            continue;
+                        }
                         if (array_key_exists($parent_id, $processed_parents)) {
                             continue;
                         }
