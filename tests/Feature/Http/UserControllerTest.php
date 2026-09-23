@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use LibreNMS\Authentication\LegacyAuth;
 use LibreNMS\Tests\TestCase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -37,6 +38,7 @@ class UserControllerTest extends TestCase
         Password::defaults(fn () => Password::min(8));
 
         LibrenmsConfig::set('auth_mechanism', 'mysql');
+        LegacyAuth::reset();
     }
 
     public function testAdminWithCreatePermissionCanCreateUser(): void
@@ -108,6 +110,64 @@ class UserControllerTest extends TestCase
         ]);
         $response->assertRedirect();
         $this->assertTrue(Hash::check('new_password123', $user->fresh()->password));
+    }
+
+    public function testUserCannotChangeTheirOwnPasswordWhenNotAllowed(): void
+    {
+        $user = User::factory()->create(['password' => Hash::make('old_password'), 'enabled' => 1, 'can_modify_passwd' => 0]);
+        $user->assignRole('user');
+
+        $response = $this->actingAs($user)->put(route('users.update', $user), [
+            'old_password' => 'old_password',
+            'new_password' => 'new_password123',
+            'new_password_confirmation' => 'new_password123',
+        ]);
+
+        $this->assertTrue(Hash::check('old_password', $user->fresh()->password), 'User should NOT be able to change their own password when can_modify_passwd is disabled');
+        $response->assertSessionHasErrors('new_password');
+    }
+
+    public function testUserCanChangeTheirOwnPasswordWhenAllowed(): void
+    {
+        $user = User::factory()->create(['password' => Hash::make('old_password'), 'enabled' => 1, 'can_modify_passwd' => 1]);
+        $user->assignRole('user');
+
+        $response = $this->actingAs($user)->put(route('users.update', $user), [
+            'old_password' => 'old_password',
+            'new_password' => 'new_password123',
+            'new_password_confirmation' => 'new_password123',
+        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect();
+        $this->assertTrue(Hash::check('new_password123', $user->fresh()->password));
+    }
+
+    public function testAdminCanChangePasswordOfUserWhoCannotModifyIt(): void
+    {
+        $admin = User::factory()->create(['enabled' => 1]);
+        $admin->assignRole('admin');
+        $admin->givePermissionTo('user.update');
+
+        $targetUser = User::factory()->create([
+            'password' => Hash::make('old_password'),
+            'enabled' => 1,
+            'can_modify_passwd' => 0,
+            'username' => 'target',
+        ]);
+
+        $response = $this->actingAs($admin)->put(route('users.update', $targetUser), [
+            'enabled' => 1,
+            'can_modify_passwd' => 0,
+            'new_password' => 'new_password123',
+            'new_password_confirmation' => 'new_password123',
+        ]);
+
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect();
+        $targetUser->refresh();
+        $this->assertTrue(Hash::check('new_password123', $targetUser->password));
+        $this->assertEquals(0, (int) $targetUser->can_modify_passwd);
     }
 
     public function testUserCannotUpdateOtherUsers(): void
