@@ -7,6 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+use LibreNMS\Authentication\LegacyAuth;
 use Spatie\Permission\Models\Role;
 
 class UpdateUserRequest extends FormRequest
@@ -77,7 +78,9 @@ class UpdateUserRequest extends FormRequest
             $user = $this->route('user');
             if ($user && $user->is($this->user())) {
                 if ($this->input('new_password')) {
-                    if ($this->input('old_password')) {
+                    if (! LegacyAuth::get()->canUpdatePasswords($user->username)) {
+                        $validator->errors()->add('new_password', __('You are not allowed to change your password'));
+                    } elseif ($this->input('old_password')) {
                         if (! Hash::check($this->old_password, $user->password)) {
                             $validator->errors()->add('old_password', __('Existing password did not match'));
                         }
