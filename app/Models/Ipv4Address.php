@@ -30,6 +30,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Support\Facades\Gate;
 use LibreNMS\Interfaces\Models\Keyable;
 
 class Ipv4Address extends PortRelatedModel implements Keyable
@@ -45,6 +46,18 @@ class Ipv4Address extends PortRelatedModel implements Keyable
         'port_id',
         'context_name',
     ];
+
+    /**
+     * ipv4_addresses has no device_id column, check access through the port instead
+     */
+    public function scopeHasAccess($query, User $user)
+    {
+        if (Gate::forUser($user)->allows('viewAll', Port::class)) {
+            return $query;
+        }
+
+        return $query->whereHas('port', fn ($query) => $query->hasAccess($user));
+    }
 
     /**
      * @return BelongsTo<Ipv4Network, $this>
