@@ -77,7 +77,6 @@ class AddUserCommand extends LnmsCommand
             // cli input method
             try {
                 Validator::make(['username' => $username], ['username' => $this->usernameRules()])->validate();
-                Validator::make(['password' => $password], ['password' => $this->passwordRules()])->validate();
                 Validator::make(['roles' => $roles],
                     ['roles' => ['required', 'array', Rule::in($availableRoles)]])->validate();
                 Validator::make(['email' => $email], ['email' => ['nullable', 'email']])->validate();
