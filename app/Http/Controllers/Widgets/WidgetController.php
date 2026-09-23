@@ -128,17 +128,21 @@ abstract class WidgetController extends Controller
             $this->defaults['refresh'] ??= 60;
             $this->settings = array_replace($this->defaults, $widget ? (array) $widget->settings : []);
             $this->settings['id'] = $id;
-
-            if ($settingsView && isset($this->settings['device_group'])) {
-                $this->settings['device_group'] = DeviceGroup::find($this->settings['device_group']);
-            }
-
-            if ($settingsView && isset($this->settings['port_group'])) {
-                $this->settings['port_group'] = PortGroup::find($this->settings['port_group']);
-            }
         }
 
-        return $this->settings;
+        // Resolve groups on a copy: the settings may already be cached (e.g. by getTitle())
+        // and other callers need the raw group ids.
+        $settings = $this->settings;
+
+        if ($settingsView && isset($settings['device_group'])) {
+            $settings['device_group'] = DeviceGroup::find($settings['device_group']);
+        }
+
+        if ($settingsView && isset($settings['port_group'])) {
+            $settings['port_group'] = PortGroup::find($settings['port_group']);
+        }
+
+        return $settings;
     }
 
     /**
