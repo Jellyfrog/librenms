@@ -71,6 +71,7 @@ class EditHealthController
         ]);
 
         $sensorIds = $validated['sensor_id'];
+        $reset = false;
 
         foreach ($sensorIds as $sensorId) {
             $sensor = $device->sensors()
@@ -89,16 +90,13 @@ class EditHealthController
                     ]);
                 }
 
-                return response()->json([
-                    'status' => 'ok',
-                    'message' => 'Sensor values reset',
-                ]);
+                $reset = true;
             }
         }
 
         return response()->json([
             'status' => 'ok',
-            'message' => 'No sensors to reset',
+            'message' => $reset ? 'Sensor values reset' : 'No sensors to reset',
         ]);
     }
 
