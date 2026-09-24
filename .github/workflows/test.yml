@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'master'
+      - 'ci-mysql-*'
   pull_request:
     branches:
       - 'master'
