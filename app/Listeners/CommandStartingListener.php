@@ -57,7 +57,10 @@ class CommandStartingListener
             return;
         }
 
-        $this->ensureChannelWithStdout();
+        // keep log output out of the test runner (e.g. commands run by RefreshDatabase)
+        if (! app()->runningUnitTests()) {
+            $this->ensureChannelWithStdout();
+        }
 
         if ($verbosity >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
             Debug::set();

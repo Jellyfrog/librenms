@@ -626,7 +626,7 @@ class RunAlerts
             }
 
             if (! empty($rextra['mute'])) {
-                echo 'Muted Alert-UID #' . $alert['id'] . "\r\n";
+                Log::info("Muted Alert-UID #{$alert['id']}");
                 $noiss = true;
             }
 

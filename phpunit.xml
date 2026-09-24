@@ -7,7 +7,8 @@
          processIsolation="false"
          stopOnFailure="false"
          cacheDirectory=".phpunit.cache"
-         backupStaticProperties="false">
+         backupStaticProperties="false"
+         beStrictAboutOutputDuringTests="true">
   <testsuites>
     <testsuite name="LibreNMS Test Suite">
       <directory>tests</directory>
