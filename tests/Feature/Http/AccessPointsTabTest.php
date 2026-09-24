@@ -5,13 +5,13 @@ namespace LibreNMS\Tests\Feature\Http;
 use App\Models\AccessPoint;
 use App\Models\Device;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Tests\TestCase;
 use Spatie\Permission\Models\Role;
 
 class AccessPointsTabTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     protected function setUp(): void
     {

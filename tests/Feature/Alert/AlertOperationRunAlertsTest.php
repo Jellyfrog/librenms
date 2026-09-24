@@ -31,7 +31,7 @@ use App\Models\AlertOperation;
 use App\Models\AlertRule;
 use App\Models\AlertTransport;
 use App\Models\Device;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use LibreNMS\Alert\RunAlerts;
 use LibreNMS\Enum\AlertState;
@@ -40,7 +40,7 @@ use Mockery;
 
 final class AlertOperationRunAlertsTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     protected function setUp(): void
     {

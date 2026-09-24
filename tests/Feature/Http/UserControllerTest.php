@@ -6,7 +6,7 @@ use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use App\Models\DevicePerm;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use LibreNMS\Tests\TestCase;
@@ -15,7 +15,7 @@ use Spatie\Permission\Models\Role;
 
 class UserControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     protected function setUp(): void
     {

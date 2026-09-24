@@ -7,16 +7,14 @@ use App\Http\Requests\GraphsPageRequest;
 use App\Models\Device;
 use App\Models\Port;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Auth;
 use LibreNMS\Tests\TestCase;
-use PHPUnit\Framework\Attributes\PreserveGlobalState;
-use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Spatie\Permission\Models\Role;
 
 class GraphsPageControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     protected function setUp(): void
     {
@@ -141,8 +139,6 @@ class GraphsPageControllerTest extends TestCase
         }
     }
 
-    #[RunInSeparateProcess]
-    #[PreserveGlobalState(false)]
     public function testUnauthenticatedGraphPageRedirectsToLogin(): void
     {
         $device = Device::factory()->create();

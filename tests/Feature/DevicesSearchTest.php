@@ -4,12 +4,12 @@ namespace LibreNMS\Tests\Feature;
 
 use App\Models\Device;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Tests\TestCase;
 
 class DevicesSearchTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function test_search_returns_devices(): void
     {

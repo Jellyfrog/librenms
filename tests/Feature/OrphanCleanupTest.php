@@ -7,13 +7,13 @@ use App\Models\Link;
 use App\Models\Mempool;
 use App\Models\Port;
 use App\Models\Processor;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use LibreNMS\Tests\TestCase;
 
 class OrphanCleanupTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function test_deleting_a_device_deletes_its_local_links(): void
     {

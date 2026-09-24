@@ -7,12 +7,12 @@ use App\Models\Ipv4Mac;
 use App\Models\Ipv6Nd;
 use App\Models\Port;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Tests\TestCase;
 
 class ArpSearchTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     public function test_search_arp_by_ip_shows_ip_to_mac_binding(): void
     {

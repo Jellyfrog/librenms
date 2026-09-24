@@ -28,14 +28,14 @@ use App\Http\Controllers\Device\Tabs\ConfigController;
 use App\Http\Controllers\Device\Tabs\ShowConfigController;
 use App\Models\Device;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Http;
 use LibreNMS\Tests\TestCase;
 use Spatie\Permission\Models\Role;
 
 class DeviceConfigTabTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     /**
      * @var list<class-string<\LibreNMS\Interfaces\ConfigBackupProvider>>

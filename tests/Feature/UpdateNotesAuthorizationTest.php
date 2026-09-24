@@ -28,7 +28,7 @@ namespace LibreNMS\Tests\Feature;
 
 use App\Models\Device;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Gate;
 use LibreNMS\Tests\TestCase;
 use Spatie\Permission\Models\Permission;
@@ -36,7 +36,7 @@ use Spatie\Permission\Models\Role;
 
 final class UpdateNotesAuthorizationTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     private Device $accessible;
     private Device $other;
