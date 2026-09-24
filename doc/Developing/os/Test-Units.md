@@ -110,6 +110,18 @@ Then run `lnms device:discover snmpsim -vv` and
 `lnms device:poll snmpsim -vv`. These commands discover and poll the
 simulated device.
 
+## Simulate all devices from test data
+
+Add or update one device for each snmprec file. Each device uses the
+file name as its hostname and community. All devices use the same
+snmpsim IP and port.
+
+```bash
+lnms dev:simulate --all
+```
+
+Add `--remove` to remove the devices when you stop snmpsim.
+
 ## Snmprec format
 
 An snmprec file stores the SNMP data. The format has three columns: the

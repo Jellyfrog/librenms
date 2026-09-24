@@ -174,10 +174,13 @@ return [
             'file' => 'The file name (base name only) of the snmprec file to update or add to LibreNMS. If you do not specify a file, no device is added or updated.',
         ],
         'options' => [
+            'all' => 'Add or update a device for every snmprec file, using the community name as hostname',
             'multiple' => 'Use community name for hostname instead of snmpsim',
             'remove' => 'Remove the device after stopping',
         ],
         'added' => 'Device :hostname (:id) added',
+        'added_all' => ':count devices added or updated',
+        'file_and_all' => 'Specify a file or --all, not both',
         'exit' => 'Ctrl-C to stop',
         'removed' => 'Device :id removed',
         'updated' => 'Device :hostname (:id) updated',

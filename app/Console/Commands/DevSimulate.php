@@ -36,6 +36,7 @@ class DevSimulate extends LnmsCommand
         parent::__construct();
 
         $this->addArgument('file', InputArgument::OPTIONAL);
+        $this->addOption('all', 'a', InputOption::VALUE_NONE);
         $this->addOption('multiple', 'm', InputOption::VALUE_NONE);
         $this->addOption('remove', 'r', InputOption::VALUE_NONE);
         $this->addOption('setup-venv', mode: InputOption::VALUE_NONE);
@@ -49,6 +50,12 @@ class DevSimulate extends LnmsCommand
     public function handle(): int
     {
         $file = $this->argument('file');
+        if ($file && $this->option('all')) {
+            $this->error(trans('commands.dev:simulate.file_and_all'));
+
+            return 1;
+        }
+
         if ($file && ! file_exists(base_path("tests/snmpsim/$file.snmprec"))) {
             $this->error("$file does not exist");
 
@@ -88,17 +95,33 @@ class DevSimulate extends LnmsCommand
 
     private function started(): void
     {
-        if ($file = $this->argument('file')) {
-            $this->addDevice($file);
+        if ($this->option('all')) {
+            $this->addAllDevices();
+        } elseif ($file = $this->argument('file')) {
+            $device = $this->addDevice($file, $this->option('multiple') ? $file : 'snmpsim');
+            $this->info(trans('commands.dev:simulate.' . ($device->wasRecentlyCreated ? 'added' : 'updated'), ['hostname' => $device->hostname, 'id' => $device->device_id]));
+            $this->queueRemoval([$device->device_id]);
         }
     }
 
-    private function addDevice($community): void
+    private function addAllDevices(): void
     {
-        $hostname = $this->option('multiple') ? $community : 'snmpsim';
-        $device = Device::firstOrNew(['hostname' => $hostname]);
-        $action = $device->exists ? 'updated' : 'added';
+        $communities = $this->snmprecFiles();
+        $device_ids = [];
 
+        $this->withProgressBar($communities, function (string $community) use (&$device_ids): void {
+            // snmpsim selects the snmprec file by community, so all devices share one ip:port
+            $device_ids[] = $this->addDevice($community, $community)->device_id;
+        });
+        $this->newLine();
+
+        $this->info(trans('commands.dev:simulate.added_all', ['count' => count($device_ids)]));
+        $this->queueRemoval($device_ids);
+    }
+
+    private function addDevice(string $community, string $hostname): Device
+    {
+        $device = Device::firstOrNew(['hostname' => $hostname]);
         $device->overwrite_ip = $this->snmpsim->ip;
         $device->port = $this->snmpsim->port;
         $device->snmpver = 'v2c';
@@ -108,33 +131,51 @@ class DevSimulate extends LnmsCommand
         $device->status_reason = '';
         $device->save();
 
-        $this->info(trans("commands.dev:simulate.$action", ['hostname' => $device->hostname, 'id' => $device->device_id]));
-
-        // set up removal shutdown function if requested
-        if ($this->option('remove')) {
-            $this->queueRemoval($device->device_id);
-        }
+        return $device;
     }
 
-    private function queueRemoval($device_id): void
+    /**
+     * Set up a single removal shutdown function if requested
+     *
+     * @param  int[]  $device_ids
+     */
+    private function queueRemoval(array $device_ids): void
     {
+        if (! $this->option('remove')) {
+            return;
+        }
+
         if (function_exists('pcntl_signal')) {
             pcntl_signal(SIGINT, function (): void {
                 exit; // exit normally on SIGINT
             });
         }
 
-        register_shutdown_function(function () use ($device_id): void {
-            Device::findOrNew($device_id)->delete();
-            $this->info(trans('commands.dev:simulate.removed', ['id' => $device_id]));
+        register_shutdown_function(function () use ($device_ids): void {
+            if (function_exists('pcntl_signal')) {
+                pcntl_signal(SIGINT, SIG_IGN); // don't abort removal part way through
+            }
+
+            foreach ($device_ids as $device_id) {
+                Device::findOrNew($device_id)->delete();
+                $this->info(trans('commands.dev:simulate.removed', ['id' => $device_id]));
+            }
             exit;
         });
+    }
+
+    /**
+     * @return string[]
+     */
+    private function snmprecFiles(): array
+    {
+        return array_map(fn ($file) => basename($file, '.snmprec'), glob(base_path('tests/snmpsim/*.snmprec')));
     }
 
     public function completeArgument($name, $value)
     {
         if ($name == 'file') {
-            return collect(glob(base_path('tests/snmpsim/*.snmprec')))->map(fn ($file) => basename($file, '.snmprec'))->filter(fn ($snmprec) => ! $value || Str::startsWith($snmprec, $value))->all();
+            return collect($this->snmprecFiles())->filter(fn ($snmprec) => ! $value || Str::startsWith($snmprec, $value))->all();
         }
 
         return false;
