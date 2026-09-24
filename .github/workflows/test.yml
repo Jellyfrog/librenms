@@ -53,6 +53,7 @@ jobs:
     services:
       database:
         image: ${{ matrix.database }}
+        options: --tmpfs /var/lib/mysql:rw
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: librenms_phpunit_78hunjuybybh
