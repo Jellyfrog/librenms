@@ -17,13 +17,16 @@
     },
     "postCreateCommand": ".devcontainer/post-create.sh",
     "customizations": {
-        "vscode": {
+        "zed": {
             "extensions": [
-                "bmewburn.vscode-intelephense-client",
-                "EditorConfig.EditorConfig",
-                "laravel.vscode-laravel",
-                "open-southeners.laravel-pint",
-                "Vue.volar"
+                "blade",
+                "docker-compose",
+                "dockerfile",
+                "env",
+                "laravel",
+                "php",
+                "sql",
+                "vue"
             ]
         }
     }
