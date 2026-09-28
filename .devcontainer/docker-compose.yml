@@ -16,7 +16,7 @@ services:
       DB_TEST_DATABASE: librenms_phpunit_78hunjuybybh
       DB_TEST_USERNAME: librenms
       DB_TEST_PASSWORD: librenms
-      SNMPSIM: snmpsim:1161
+      SNMPSIM: snmpsim:161
     depends_on:
       db:
         condition: service_healthy
@@ -44,11 +44,12 @@ services:
       retries: 20
 
   snmpsim:
-    build:
-      context: snmpsim
+    image: ghcr.io/lextudio/docker-snmpsim:master
     restart: unless-stopped
+    environment:
+      SNMPTRAPD_ENABLED: 0
     volumes:
-      - ../tests/snmpsim:/snmpsim:ro
+      - ../tests/snmpsim:/usr/local/snmpsim/data:ro
 
 volumes:
   db-data:
