@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Console\LnmsCommand;
 use App\Models\Device;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use LibreNMS\Util\Snmpsim;
 use Symfony\Component\Console\Input\InputArgument;
@@ -95,27 +96,29 @@ class DevSimulate extends LnmsCommand
 
     private function started(): void
     {
-        if ($this->option('all')) {
-            $this->addAllDevices();
-        } elseif ($file = $this->argument('file')) {
-            $device = $this->addDevice($file, $this->option('multiple') ? $file : 'snmpsim');
-            $this->info(trans('commands.dev:simulate.' . ($device->wasRecentlyCreated ? 'added' : 'updated'), ['hostname' => $device->hostname, 'id' => $device->device_id]));
-            $this->queueRemoval([$device->device_id]);
+        $communities = $this->option('all') ? $this->snmprecFiles() : array_filter([$this->argument('file')]);
+        if (empty($communities)) {
+            return;
         }
-    }
 
-    private function addAllDevices(): void
-    {
-        $communities = $this->snmprecFiles();
-        $device_ids = [];
+        // snmpsim selects the snmprec file by community, so all devices share one ip:port
+        $use_community_hostname = $this->option('multiple') || $this->option('all');
 
-        $this->withProgressBar($communities, function (string $community) use (&$device_ids): void {
-            // snmpsim selects the snmprec file by community, so all devices share one ip:port
-            $device_ids[] = $this->addDevice($community, $community)->device_id;
-        });
-        $this->newLine();
+        if (count($communities) == 1) {
+            $community = reset($communities);
+            $device = $this->addDevice($community, $use_community_hostname ? $community : 'snmpsim');
+            $action = $device->wasRecentlyCreated ? 'added' : 'updated';
+            $this->info(trans("commands.dev:simulate.$action", ['hostname' => $device->hostname, 'id' => $device->device_id]));
+            $device_ids = [$device->device_id];
+        } else {
+            $device_ids = [];
+            $this->withProgressBar($communities, function (string $community) use (&$device_ids): void {
+                $device_ids[] = $this->addDevice($community, $community)->device_id;
+            });
+            $this->newLine();
+            $this->info(trans('commands.dev:simulate.added_all', ['count' => count($device_ids)]));
+        }
 
-        $this->info(trans('commands.dev:simulate.added_all', ['count' => count($device_ids)]));
         $this->queueRemoval($device_ids);
     }
 
@@ -156,10 +159,12 @@ class DevSimulate extends LnmsCommand
                 pcntl_signal(SIGINT, SIG_IGN); // don't abort removal part way through
             }
 
-            foreach ($device_ids as $device_id) {
-                Device::findOrNew($device_id)->delete();
-                $this->info(trans('commands.dev:simulate.removed', ['id' => $device_id]));
-            }
+            DB::transaction(function () use ($device_ids): void {
+                Device::whereIn('device_id', $device_ids)->get()->each(function (Device $device): void {
+                    $device->delete(); // per-model delete so the observer cleans up related data
+                    $this->info(trans('commands.dev:simulate.removed', ['id' => $device->device_id]));
+                });
+            });
             exit;
         });
     }
