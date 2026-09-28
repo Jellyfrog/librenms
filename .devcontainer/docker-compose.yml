@@ -1,0 +1,54 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspaces/librenms:cached
+    command: sleep infinity
+    environment:
+      DB_HOST: db
+      DB_DATABASE: librenms
+      DB_USERNAME: librenms
+      DB_PASSWORD: librenms
+      DB_TEST_DRIVER: mysql
+      DB_TEST_HOST: db
+      DB_TEST_DATABASE: librenms_phpunit_78hunjuybybh
+      DB_TEST_USERNAME: librenms
+      DB_TEST_PASSWORD: librenms
+      SNMPSIM: snmpsim:1161
+    depends_on:
+      db:
+        condition: service_healthy
+      snmpsim:
+        condition: service_started
+
+  db:
+    image: mariadb:lts
+    restart: unless-stopped
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: librenms
+      MARIADB_USER: librenms
+      MARIADB_PASSWORD: librenms
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./mariadb-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  snmpsim:
+    build:
+      context: snmpsim
+    restart: unless-stopped
+    volumes:
+      - ../tests/snmpsim:/snmpsim:ro
+
+volumes:
+  db-data:

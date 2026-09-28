@@ -1,0 +1,30 @@
+{
+    "name": "LibreNMS",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspaces/librenms",
+    "shutdownAction": "stopCompose",
+    "features": {
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "lts"
+        }
+    },
+    "forwardPorts": [8000],
+    "portsAttributes": {
+        "8000": {
+            "label": "LibreNMS (php artisan serve)"
+        }
+    },
+    "postCreateCommand": ".devcontainer/post-create.sh",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "bmewburn.vscode-intelephense-client",
+                "EditorConfig.EditorConfig",
+                "laravel.vscode-laravel",
+                "open-southeners.laravel-pint",
+                "Vue.volar"
+            ]
+        }
+    }
+}
