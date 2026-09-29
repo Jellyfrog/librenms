@@ -46,19 +46,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   phpstan:
-    name: PHP Static Analysis (${{ matrix.name }})
+    name: PHP Static Analysis
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - name: Default
-            config: phpstan.neon
-            new-files: true
-          - name: Legacy codebase
-            config: phpstan-legacy.neon
-          - name: Deprecated functions
-            config: phpstan-deprecated.neon
     steps:
       - name: Get composer cache directory
         id: composer-cache
@@ -100,7 +91,7 @@ jobs:
         run: composer dump --strict-psr --strict-ambiguous --no-interaction --no-scripts
 
       - name: Find new PHP files
-        if: github.event_name == 'pull_request' && matrix.new-files
+        if: github.event_name == 'pull_request'
         id: new-php-files
         run: |
           # HEAD is the PR merge commit, HEAD~1 is its first parent (base branch tip)
@@ -109,23 +100,19 @@ jobs:
           echo "files=$NEW_PHP_FILES" >> "$GITHUB_OUTPUT"
 
       - name: Run PHPStan (New files, level 6)
-        if: steps.new-php-files.outputs.files != ''
+        if: github.event_name == 'pull_request' && steps.new-php-files.outputs.files != ''
         env:
           NEW_PHP_FILES: ${{ steps.new-php-files.outputs.files }}
         run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --level=6 -- $NEW_PHP_FILES
 
       - name: Run PHPStan
-        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=${{ matrix.config }}
+        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G
 
-  # Single check to require in branch protection
-  phpstan-result:
-    name: PHP Static Analysis
-    needs: phpstan
-    if: ${{ !cancelled() }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check PHPStan results
-        run: test "${{ needs.phpstan.result }}" = success
+      - name: Run PHPStan (Legacy codebase)
+        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan-legacy.neon
+
+      - name: Run PHPStan (Deprecated functions)
+        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan-deprecated.neon
 
   rector:
     name: Rector (dry-run)
