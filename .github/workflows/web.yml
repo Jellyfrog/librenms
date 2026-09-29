@@ -21,7 +21,7 @@ jobs:
         id: composer-cache
         run: echo "dir=$(composer config --global cache-files-dir)" >> $GITHUB_OUTPUT
 
-      # hashFiles() needs the checkout, so restore the newest cache by prefix and save under the exact key later
+      # restore by prefix, hashFiles() needs the checkout so the exact key is saved after install
       - parallel:
           - name: Checkout
             uses: actions/checkout@v7
@@ -46,10 +46,6 @@ jobs:
             run: |
               sudo systemctl start mysql
               mysql --user="root" --password="root" -e "CREATE DATABASE \`librenms_phpunit_78hunjuybybh\` character set UTF8mb4 collate utf8mb4_bin;"
-
-      - name: Cache keys
-        id: cache-keys
-        run: echo "composer=${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/composer.lock') }}" >> $GITHUB_OUTPUT
 
       - name: Init env
         run: |
@@ -76,15 +72,20 @@ jobs:
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
       - name: Save composer cache
-        if: steps.composer-cache-restore.outputs.cache-matched-key != steps.cache-keys.outputs.composer
+        if: ${{ !endsWith(steps.composer-cache-restore.outputs.cache-matched-key, hashFiles('composer.lock')) }}
         background: true
         uses: actions/cache/save@v6
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ steps.cache-keys.outputs.composer }}
+          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('composer.lock') }}
 
       - name: Generate Application Key
         run: php artisan key:generate
+
+      - name: Run Laravel Server
+        id: server
+        background: true
+        run: php artisan serve --no-reload
 
       - parallel:
           - name: Migrate Database
@@ -97,11 +98,6 @@ jobs:
         id: chromedriver
         background: true
         run: ./vendor/laravel/dusk/bin/chromedriver-linux --port=9515
-
-      - name: Run Laravel Server
-        id: server
-        background: true
-        run: php artisan serve --no-reload
 
       - name: Wait for Chrome Driver and Laravel Server
         run: |

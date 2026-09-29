@@ -66,7 +66,7 @@ jobs:
         run: |
           echo "dir=$(composer config --global cache-files-dir)" >> $GITHUB_OUTPUT
       -
-        # hashFiles() needs the checkout, so restore the newest cache by prefix and save under the exact key later
+        # restore by prefix, hashFiles() needs the checkout so the exact key is saved after install
         parallel:
           -
             name: Checkout
@@ -96,12 +96,6 @@ jobs:
               key: ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-
               restore-keys: |
                 ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-
-      -
-        name: Cache keys
-        id: cache-keys
-        run: |
-          echo "composer=${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/composer.lock') }}" >> $GITHUB_OUTPUT
-          echo "pip=${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/requirements.txt') }}" >> $GITHUB_OUTPUT
       -
         name: Pip install
         id: pip
@@ -159,12 +153,12 @@ jobs:
           composer install --prefer-dist --no-interaction --no-progress
       -
         name: Save composer cache
-        if: steps.composer-cache-restore.outputs.cache-matched-key != steps.cache-keys.outputs.composer
+        if: ${{ !endsWith(steps.composer-cache-restore.outputs.cache-matched-key, hashFiles('composer.lock')) }}
         background: true
         uses: actions/cache/save@v6
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ steps.cache-keys.outputs.composer }}
+          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('composer.lock') }}
       -
         name: Start SNMPSIM
         id: snmpsim
@@ -190,12 +184,12 @@ jobs:
         wait: pip
       -
         name: Save pip cache
-        if: steps.pip-cache-restore.outputs.cache-matched-key != steps.cache-keys.outputs.pip
+        if: ${{ !endsWith(steps.pip-cache-restore.outputs.cache-matched-key, hashFiles('requirements.txt')) }}
         background: true
         uses: actions/cache/save@v6
         with:
           path: ~/.cache/pip
-          key: ${{ steps.cache-keys.outputs.pip }}
+          key: ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-${{ hashFiles('requirements.txt') }}
       -
         name: Wait for SNMPSIM
         wait: snmpsim
