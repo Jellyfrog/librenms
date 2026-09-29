@@ -127,7 +127,6 @@ jobs:
         id: pip
         background: true
         run: |
-          python3 -m pip install --upgrade pip
           python3 -m pip install --upgrade --user pylint python-memcached mysqlclient
       -
         name: Composer validate
