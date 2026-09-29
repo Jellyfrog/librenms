@@ -22,30 +22,36 @@ jobs:
         run: echo "dir=$(composer config --global cache-files-dir)" >> $GITHUB_OUTPUT
 
       # restore by prefix, hashFiles() needs the checkout so the exact key is saved after install
-      - parallel:
-          - name: Checkout
-            uses: actions/checkout@v7
-            with:
-              sparse-checkout-cone-mode: false
-              sparse-checkout: |
-                /*
-                !/tests/data/
-                !/tests/snmpsim/
-                !/mibs/
-                !/doc/
+      - name: Restore composer cache
+        id: composer-cache-restore
+        background: true
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+          restore-keys: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
 
-          - name: Restore composer cache
-            id: composer-cache-restore
-            uses: actions/cache/restore@v6
-            with:
-              path: ${{ steps.composer-cache.outputs.dir }}
-              key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
-              restore-keys: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+      - name: Create Database
+        id: database
+        background: true
+        run: |
+          sudo systemctl start mysql
+          mysql --user="root" --password="root" -e "CREATE DATABASE \`librenms_phpunit_78hunjuybybh\` character set UTF8mb4 collate utf8mb4_bin;"
 
-          - name: Create Database
-            run: |
-              sudo systemctl start mysql
-              mysql --user="root" --password="root" -e "CREATE DATABASE \`librenms_phpunit_78hunjuybybh\` character set UTF8mb4 collate utf8mb4_bin;"
+      # start checkout last, it can fail reading the event payload while other steps start
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/tests/data/
+            !/tests/snmpsim/
+            !/mibs/
+            !/doc/
+
+      - name: Wait for composer cache
+        wait: composer-cache-restore
 
       - name: Init env
         run: |
@@ -89,6 +95,9 @@ jobs:
           # detach output, the step would wait for it to close
           php artisan serve --no-reload > /tmp/server.log 2>&1 &
           timeout 60 bash -c 'until curl -so /dev/null http://127.0.0.1:8000; do sleep 0.1; done'
+
+      - name: Wait for database
+        wait: database
 
       - parallel:
           - name: Migrate Database

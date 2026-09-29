@@ -81,35 +81,41 @@ jobs:
           echo "dir=$(composer config --global cache-files-dir)" >> $GITHUB_OUTPUT
       -
         # restore by prefix, hashFiles() needs the checkout so the exact key is saved after install
-        parallel:
-          -
-            name: Checkout
-            uses: actions/checkout@v7
-          -
-            name: Set up PHP
-            uses: shivammathur/setup-php@v2
-            with:
-              php-version: ${{ matrix.php-version }}
-              tools: composer
-              coverage: none
-          -
-            name: Restore composer cache
-            id: composer-cache-restore
-            uses: actions/cache/restore@v6
-            with:
-              path: ${{ steps.composer-cache.outputs.dir }}
-              key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
-              restore-keys: |
-                ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
-          -
-            name: Restore pip cache
-            id: pip-cache-restore
-            uses: actions/cache/restore@v6
-            with:
-              path: ~/.cache/pip
-              key: ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-
-              restore-keys: |
-                ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-
+        name: Restore composer cache
+        id: composer-cache-restore
+        background: true
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+          restore-keys: |
+            ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+      -
+        name: Restore pip cache
+        id: pip-cache-restore
+        background: true
+        uses: actions/cache/restore@v6
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-
+      -
+        name: Set up PHP
+        id: php
+        background: true
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: composer
+          coverage: none
+      -
+        # start checkout last, it can fail reading the event payload while other steps start
+        name: Checkout
+        uses: actions/checkout@v7
+      -
+        name: Wait for setup
+        wait: [composer-cache-restore, pip-cache-restore, php]
       -
         name: Pip install
         id: pip

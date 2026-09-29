@@ -56,25 +56,30 @@ jobs:
         run: echo "dir=$(composer config --global cache-files-dir)" >> $GITHUB_OUTPUT
 
       # restore by prefix, hashFiles() needs the checkout so the exact key is saved after install
-      - parallel:
-          - name: Checkout Code
-            uses: actions/checkout@v7
-            with:
-              fetch-depth: 2
-              sparse-checkout-cone-mode: false
-              sparse-checkout: |
-                /*
-                !/tests/data/
-                !/tests/snmpsim/
-                !/mibs/
-                !/doc/
-          - name: Restore composer cache
-            id: composer-cache-restore
-            uses: actions/cache/restore@v6
-            with:
-              path: ${{ steps.composer-cache.outputs.dir }}
-              key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
-              restore-keys: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+      - name: Restore composer cache
+        id: composer-cache-restore
+        background: true
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+          restore-keys: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+
+      # start checkout last, it can fail reading the event payload while other steps start
+      - name: Checkout Code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/tests/data/
+            !/tests/snmpsim/
+            !/mibs/
+            !/doc/
+
+      - name: Wait for composer cache
+        wait: composer-cache-restore
 
       - name: Composer install
         run: composer install --prefer-dist --no-interaction --no-progress --no-scripts --no-autoloader
@@ -123,24 +128,29 @@ jobs:
         run: echo "dir=$(composer config --global cache-files-dir)" >> $GITHUB_OUTPUT
 
       # restore by prefix, hashFiles() needs the checkout so the exact key is saved after install
-      - parallel:
-          - name: Checkout Code
-            uses: actions/checkout@v7
-            with:
-              sparse-checkout-cone-mode: false
-              sparse-checkout: |
-                /*
-                !/tests/data/
-                !/tests/snmpsim/
-                !/mibs/
-                !/doc/
-          - name: Restore composer cache
-            id: composer-cache-restore
-            uses: actions/cache/restore@v6
-            with:
-              path: ${{ steps.composer-cache.outputs.dir }}
-              key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
-              restore-keys: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+      - name: Restore composer cache
+        id: composer-cache-restore
+        background: true
+        uses: actions/cache/restore@v6
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+          restore-keys: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+
+      # start checkout last, it can fail reading the event payload while other steps start
+      - name: Checkout Code
+        uses: actions/checkout@v7
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/tests/data/
+            !/tests/snmpsim/
+            !/mibs/
+            !/doc/
+
+      - name: Wait for composer cache
+        wait: composer-cache-restore
 
       - name: Composer install
         run: composer install --prefer-dist --no-interaction --no-progress --no-scripts --no-autoloader
