@@ -58,8 +58,8 @@ jobs:
         uses: actions/cache/restore@v6
         with:
           path: ~/.cache/composer/files
-          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
-          restore-keys: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+          key: ${{ runner.os }}-composer-
+          restore-keys: ${{ runner.os }}-composer-
 
       # start checkout last, it can fail reading the event payload while other steps start
       - name: Checkout Code
@@ -86,7 +86,7 @@ jobs:
         uses: actions/cache/save@v6
         with:
           path: ~/.cache/composer/files
-          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('composer.lock') }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
 
       - name: Composer dump
         run: composer dump --strict-psr --strict-ambiguous --no-interaction --no-scripts
@@ -126,8 +126,8 @@ jobs:
         uses: actions/cache/restore@v6
         with:
           path: ~/.cache/composer/files
-          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
-          restore-keys: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+          key: ${{ runner.os }}-composer-
+          restore-keys: ${{ runner.os }}-composer-
 
       # start checkout last, it can fail reading the event payload while other steps start
       - name: Checkout Code
@@ -153,7 +153,7 @@ jobs:
         uses: actions/cache/save@v6
         with:
           path: ~/.cache/composer/files
-          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('composer.lock') }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
 
       - name: Composer dump
         run: composer dump --strict-psr --strict-ambiguous --no-interaction --no-scripts

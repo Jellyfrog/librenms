@@ -24,8 +24,8 @@ jobs:
         uses: actions/cache/restore@v6
         with:
           path: ~/.cache/composer/files
-          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
-          restore-keys: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+          key: ${{ runner.os }}-composer-
+          restore-keys: ${{ runner.os }}-composer-
 
       - name: Create Database
         id: database
@@ -79,7 +79,7 @@ jobs:
         uses: actions/cache/save@v6
         with:
           path: ~/.cache/composer/files
-          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('composer.lock') }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
 
       - name: Generate Application Key
         run: php artisan key:generate
