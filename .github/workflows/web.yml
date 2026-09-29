@@ -17,16 +17,39 @@ jobs:
   dusk-php:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /*
-            !/tests/data/
-            !/tests/snmpsim/
-            !/mibs/
-            !/doc/
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config --global cache-files-dir)" >> $GITHUB_OUTPUT
+
+      # hashFiles() needs the checkout, so restore the newest cache by prefix and save under the exact key later
+      - parallel:
+          - name: Checkout
+            uses: actions/checkout@v7
+            with:
+              sparse-checkout-cone-mode: false
+              sparse-checkout: |
+                /*
+                !/tests/data/
+                !/tests/snmpsim/
+                !/mibs/
+                !/doc/
+
+          - name: Restore composer cache
+            id: composer-cache-restore
+            uses: actions/cache/restore@v6
+            with:
+              path: ${{ steps.composer-cache.outputs.dir }}
+              key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+              restore-keys: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+
+          - name: Create Database
+            run: |
+              sudo systemctl start mysql
+              mysql --user="root" --password="root" -e "CREATE DATABASE \`librenms_phpunit_78hunjuybybh\` character set UTF8mb4 collate utf8mb4_bin;"
+
+      - name: Cache keys
+        id: cache-keys
+        run: echo "composer=${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/composer.lock') }}" >> $GITHUB_OUTPUT
 
       - name: Init env
         run: |
@@ -46,45 +69,56 @@ jobs:
           MAIL_MAILER=log
           EOL
 
-      - name: Create Database
-        run: |
-          sudo systemctl start mysql
-          mysql --user="root" --password="root" -e "CREATE DATABASE \`librenms_phpunit_78hunjuybybh\` character set UTF8mb4 collate utf8mb4_bin;"
-
       - name: Setup SQLite
         run: sqlite3 database/testing.sqlite ""
-
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache composer
-        uses: actions/cache@v5
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
 
       - name: Install Composer Dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
+      - name: Save composer cache
+        if: steps.composer-cache-restore.outputs.cache-matched-key != steps.cache-keys.outputs.composer
+        background: true
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ steps.cache-keys.outputs.composer }}
+
       - name: Generate Application Key
         run: php artisan key:generate
 
-      - name: Migrate Database
-        run: php artisan migrate --database=testing
+      - parallel:
+          - name: Migrate Database
+            run: php artisan migrate --database=testing
 
-      - name: Upgrade Chrome Driver
-        run: php artisan dusk:chrome-driver --detect
+          - name: Upgrade Chrome Driver
+            run: php artisan dusk:chrome-driver --detect
 
       - name: Start Chrome Driver
-        run: ./vendor/laravel/dusk/bin/chromedriver-linux --port=9515 &
+        id: chromedriver
+        background: true
+        run: ./vendor/laravel/dusk/bin/chromedriver-linux --port=9515
 
       - name: Run Laravel Server
-        run: php artisan serve --no-reload &
+        id: server
+        background: true
+        run: php artisan serve --no-reload
+
+      - name: Wait for Chrome Driver and Laravel Server
+        run: |
+          timeout 60 bash -c '
+            until curl -so /dev/null http://127.0.0.1:9515/status && curl -so /dev/null http://127.0.0.1:8000; do
+              sleep 0.1
+            done
+          '
 
       - name: Run Dusk Tests
         run: php artisan dusk
+
+      - name: Stop Chrome Driver
+        cancel: chromedriver
+
+      - name: Stop Laravel Server
+        cancel: server
 
       - name: Upload Screenshots
         if: failure()

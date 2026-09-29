@@ -15,16 +15,17 @@ jobs:
   super-linter:
     permissions:
       contents: read # to fetch code (actions/checkout)
-      checks: write # to mark the status of each individual linter run
+      statuses: write # to mark the status of each individual linter run
 
     name: Lint Code Base
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
+          persist-credentials: false
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*
@@ -33,7 +34,7 @@ jobs:
             !/mibs/
 
       - name: Lint Code Base
-        uses: docker://ghcr.io/github/super-linter:slim-v4
+        uses: super-linter/super-linter/slim@v8
         env:
           VALIDATE_BASH: true
           # VALIDATE_PHP_BUILTIN: true # temp disable until it supports PHP 8.1
@@ -50,31 +51,45 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: 2
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /*
-            !/tests/data/
-            !/tests/snmpsim/
-            !/mibs/
-            !/doc/
-
       - name: Get composer cache directory
         id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+        run: echo "dir=$(composer config --global cache-files-dir)" >> $GITHUB_OUTPUT
 
-      - name: Cache composer
-        uses: actions/cache@v5
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+      # hashFiles() needs the checkout, so restore the newest cache by prefix and save under the exact key later
+      - parallel:
+          - name: Checkout Code
+            uses: actions/checkout@v7
+            with:
+              fetch-depth: 2
+              sparse-checkout-cone-mode: false
+              sparse-checkout: |
+                /*
+                !/tests/data/
+                !/tests/snmpsim/
+                !/mibs/
+                !/doc/
+          - name: Restore composer cache
+            id: composer-cache-restore
+            uses: actions/cache/restore@v6
+            with:
+              path: ${{ steps.composer-cache.outputs.dir }}
+              key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+              restore-keys: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+
+      - name: Cache keys
+        id: cache-keys
+        run: echo "composer=${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/composer.lock') }}" >> $GITHUB_OUTPUT
 
       - name: Composer install
         run: composer install --prefer-dist --no-interaction --no-progress --no-scripts --no-autoloader
+
+      - name: Save composer cache
+        if: steps.composer-cache-restore.outputs.cache-matched-key != steps.cache-keys.outputs.composer
+        background: true
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ steps.cache-keys.outputs.composer }}
 
       - name: Composer dump
         run: composer dump --strict-psr --strict-ambiguous --no-interaction --no-scripts
@@ -107,30 +122,44 @@ jobs:
     name: Rector (dry-run)
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v6
-        with:
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /*
-            !/tests/data/
-            !/tests/snmpsim/
-            !/mibs/
-            !/doc/
-
       - name: Get composer cache directory
         id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+        run: echo "dir=$(composer config --global cache-files-dir)" >> $GITHUB_OUTPUT
 
-      - name: Cache composer
-        uses: actions/cache@v5
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+      # hashFiles() needs the checkout, so restore the newest cache by prefix and save under the exact key later
+      - parallel:
+          - name: Checkout Code
+            uses: actions/checkout@v7
+            with:
+              sparse-checkout-cone-mode: false
+              sparse-checkout: |
+                /*
+                !/tests/data/
+                !/tests/snmpsim/
+                !/mibs/
+                !/doc/
+          - name: Restore composer cache
+            id: composer-cache-restore
+            uses: actions/cache/restore@v6
+            with:
+              path: ${{ steps.composer-cache.outputs.dir }}
+              key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+              restore-keys: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+
+      - name: Cache keys
+        id: cache-keys
+        run: echo "composer=${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/composer.lock') }}" >> $GITHUB_OUTPUT
 
       - name: Composer install
         run: composer install --prefer-dist --no-interaction --no-progress --no-scripts --no-autoloader
+
+      - name: Save composer cache
+        if: steps.composer-cache-restore.outputs.cache-matched-key != steps.cache-keys.outputs.composer
+        background: true
+        uses: actions/cache/save@v6
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ steps.cache-keys.outputs.composer }}
 
       - name: Composer dump
         run: composer dump --strict-psr --strict-ambiguous --no-interaction --no-scripts
