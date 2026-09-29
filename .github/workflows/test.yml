@@ -61,6 +61,19 @@ jobs:
           - 3306
     steps:
       -
+        name: Prepare MySQL
+        id: mysql
+        background: true
+        env:
+          PORT: ${{ job.services.database.ports[3306] }}
+          DATABASE: ${{ matrix.database }}
+        run: |
+          mysqladmin -h"127.0.0.1" -P"$PORT" --user=librenms --password=librenms ping --wait=5
+          if [ "$DATABASE" = "mysql:8.0" ]; then
+            mysql -h"127.0.0.1" -P"$PORT" --user=root -e "ALTER USER 'librenms'@'%' IDENTIFIED WITH mysql_native_password BY 'librenms'"
+          fi
+          mysql -h"127.0.0.1" -P"$PORT" --user=librenms --password=librenms -e 'ALTER DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'
+      -
         name: Get composer cache directory
         id: composer-cache
         run: |
@@ -69,8 +82,16 @@ jobs:
         # restore by prefix, hashFiles() needs the checkout so the exact key is saved after install
         parallel:
           -
+            # the test data is large, fetch it in the background below
             name: Checkout
             uses: actions/checkout@v7
+            with:
+              sparse-checkout-cone-mode: false
+              sparse-checkout: |
+                /*
+                !/tests/data/
+                !/tests/snmpsim/
+                !/mibs/
           -
             name: Set up PHP
             uses: shivammathur/setup-php@v2
@@ -97,25 +118,17 @@ jobs:
               restore-keys: |
                 ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-
       -
+        name: Checkout test data
+        id: test-data
+        background: true
+        run: git sparse-checkout disable
+      -
         name: Pip install
         id: pip
         background: true
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install --upgrade --user pylint python-memcached mysqlclient
-      -
-        name: Prepare MySQL
-        id: mysql
-        background: true
-        env:
-          PORT: ${{ job.services.database.ports[3306] }}
-          DATABASE: ${{ matrix.database }}
-        run: |
-          mysqladmin -h"127.0.0.1" -P"$PORT" --user=librenms --password=librenms ping --wait=5
-          if [ "$DATABASE" = "mysql:8.0" ]; then
-            mysql -h"127.0.0.1" -P"$PORT" --user=root -e "ALTER USER 'librenms'@'%' IDENTIFIED WITH mysql_native_password BY 'librenms'"
-          fi
-          mysql -h"127.0.0.1" -P"$PORT" --user=librenms --password=librenms -e 'ALTER DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'
       -
         name: Composer validate
         run: |
@@ -159,6 +172,9 @@ jobs:
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('composer.lock') }}
+      -
+        name: Wait for test data
+        wait: test-data
       -
         name: Start SNMPSIM
         id: snmpsim
