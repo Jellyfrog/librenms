@@ -164,7 +164,9 @@ jobs:
         id: snmpsim
         background: true
         run: |
+          echo "start $(date +%T.%N)"
           php lnms dev:simulate --setup-venv
+          echo "venv ready $(date +%T.%N)"
           # detach output, the step would wait for it to close
           .python_venvs/snmpsim/bin/snmpsim-command-responder-lite --data-dir=tests/snmpsim --agent-udpv4-endpoint=127.1.6.2:1162 --log-level=error --logging-method=file:/tmp/snmpsimd.log > /tmp/snmpsimd.out 2>&1 &
           # snmpsim binds the port once the data is indexed
@@ -173,6 +175,7 @@ jobs:
               sleep 0.1
             done
           '
+          echo "listening $(date +%T.%N)"
       -
         name: Wait for MySQL
         wait: mysql
