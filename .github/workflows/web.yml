@@ -17,17 +17,13 @@ jobs:
   dusk-php:
     runs-on: ubuntu-latest
     steps:
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config --global cache-files-dir)" >> $GITHUB_OUTPUT
-
       # restore by prefix, hashFiles() needs the checkout so the exact key is saved after install
       - name: Restore composer cache
         id: composer-cache-restore
         background: true
         uses: actions/cache/restore@v6
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
+          path: ~/.cache/composer/files
           key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
           restore-keys: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
 
@@ -82,7 +78,7 @@ jobs:
         background: true
         uses: actions/cache/save@v6
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
+          path: ~/.cache/composer/files
           key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('composer.lock') }}
 
       - name: Generate Application Key
