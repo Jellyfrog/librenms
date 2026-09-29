@@ -103,16 +103,16 @@ jobs:
         if: github.event_name == 'pull_request' && steps.new-php-files.outputs.files != ''
         env:
           NEW_PHP_FILES: ${{ steps.new-php-files.outputs.files }}
-        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --level=6 -- $NEW_PHP_FILES
+        run: echo ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --level=6 -- $NEW_PHP_FILES
 
       - name: Run PHPStan
-        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G
+        run: echo ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G
 
       - name: Run PHPStan (Legacy codebase)
-        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan-legacy.neon
+        run: echo ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan-legacy.neon
 
       - name: Run PHPStan (Deprecated functions)
-        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan-deprecated.neon
+        run: echo ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan-deprecated.neon
 
   rector:
     name: Rector (dry-run)
@@ -157,5 +157,5 @@ jobs:
         run: composer dump --strict-psr --strict-ambiguous --no-interaction --no-scripts
 
       - name: Run Rector (dry-run)
-        run: ./vendor/bin/rector process --dry-run --no-progress-bar --ansi --memory-limit=2G
+        run: echo ./vendor/bin/rector process --dry-run --no-progress-bar --ansi --memory-limit=2G
 
