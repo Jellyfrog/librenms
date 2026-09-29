@@ -85,7 +85,10 @@ jobs:
       - name: Run Laravel Server
         id: server
         background: true
-        run: php artisan serve --no-reload
+        run: |
+          # detach output, the step would wait for it to close
+          php artisan serve --no-reload > /tmp/server.log 2>&1 &
+          timeout 60 bash -c 'until curl -so /dev/null http://127.0.0.1:8000; do sleep 0.1; done'
 
       - parallel:
           - name: Migrate Database
@@ -97,24 +100,16 @@ jobs:
       - name: Start Chrome Driver
         id: chromedriver
         background: true
-        run: ./vendor/laravel/dusk/bin/chromedriver-linux --port=9515
+        run: |
+          # detach output, the step would wait for it to close
+          ./vendor/laravel/dusk/bin/chromedriver-linux --port=9515 > /tmp/chromedriver.log 2>&1 &
+          timeout 60 bash -c 'until curl -so /dev/null http://127.0.0.1:9515/status; do sleep 0.1; done'
 
       - name: Wait for Chrome Driver and Laravel Server
-        run: |
-          timeout 60 bash -c '
-            until curl -so /dev/null http://127.0.0.1:9515/status && curl -so /dev/null http://127.0.0.1:8000; do
-              sleep 0.1
-            done
-          '
+        wait: [chromedriver, server]
 
       - name: Run Dusk Tests
         run: php artisan dusk
-
-      - name: Stop Chrome Driver
-        cancel: chromedriver
-
-      - name: Stop Laravel Server
-        cancel: server
 
       - name: Upload Screenshots
         if: failure()
