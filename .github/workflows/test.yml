@@ -68,7 +68,8 @@ jobs:
           PORT: ${{ job.services.database.ports[3306] }}
           DATABASE: ${{ matrix.database }}
         run: |
-          mysqladmin -h"127.0.0.1" -P"$PORT" --user=librenms --password=librenms ping --wait=5
+          # the service container may not accept connections yet
+          timeout 60 bash -c 'until mysqladmin -h"127.0.0.1" -P"$PORT" --user=librenms --password=librenms ping; do sleep 1; done'
           if [ "$DATABASE" = "mysql:8.0" ]; then
             mysql -h"127.0.0.1" -P"$PORT" --user=root -e "ALTER USER 'librenms'@'%' IDENTIFIED WITH mysql_native_password BY 'librenms'"
           fi
@@ -82,16 +83,8 @@ jobs:
         # restore by prefix, hashFiles() needs the checkout so the exact key is saved after install
         parallel:
           -
-            # the test data is large, fetch it in the background below
             name: Checkout
             uses: actions/checkout@v7
-            with:
-              sparse-checkout-cone-mode: false
-              sparse-checkout: |
-                /*
-                !/tests/data/
-                !/tests/snmpsim/
-                !/mibs/
           -
             name: Set up PHP
             uses: shivammathur/setup-php@v2
@@ -117,11 +110,6 @@ jobs:
               key: ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-
               restore-keys: |
                 ${{ runner.os }}-pip-${{ secrets.CACHE_VERSION }}-
-      -
-        name: Checkout test data
-        id: test-data
-        background: true
-        run: git sparse-checkout disable
       -
         name: Pip install
         id: pip
@@ -171,9 +159,6 @@ jobs:
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('composer.lock') }}
-      -
-        name: Wait for test data
-        wait: test-data
       -
         name: Start SNMPSIM
         id: snmpsim
