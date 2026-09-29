@@ -171,7 +171,14 @@ jobs:
         background: true
         run: |
           php lnms dev:simulate --setup-venv
-          exec .python_venvs/snmpsim/bin/snmpsim-command-responder-lite --data-dir=tests/snmpsim --agent-udpv4-endpoint=127.1.6.2:1162 --log-level=error --logging-method=file:/tmp/snmpsimd.log
+          # detach output, the step would wait for it to close
+          .python_venvs/snmpsim/bin/snmpsim-command-responder-lite --data-dir=tests/snmpsim --agent-udpv4-endpoint=127.1.6.2:1162 --log-level=error --logging-method=file:/tmp/snmpsimd.log > /tmp/snmpsimd.out 2>&1 &
+          # snmpsim binds the port once the data is indexed
+          timeout 120 bash -c '
+            until ss -Hlun "sport = :1162" | grep -q "127.1.6.2:1162"; do
+              sleep 0.1
+            done
+          '
       -
         name: Wait for MySQL
         wait: mysql
@@ -191,20 +198,11 @@ jobs:
           key: ${{ steps.cache-keys.outputs.pip }}
       -
         name: Wait for SNMPSIM
-        run: |
-          # snmpsim binds the port once the data is indexed
-          timeout 180 bash -c '
-            until ss -Hlun "sport = :1162" | grep -q "127.1.6.2:1162"; do
-              sleep 0.1
-            done
-          '
+        wait: snmpsim
       -
         name: lnms dev:check ci
         run: |
           php lnms dev:check ci ${{ matrix.arguments }}
-      -
-        name: Stop SNMPSIM
-        cancel: snmpsim
       -
         name: Dump docker logs on failure
         if: failure()
@@ -213,7 +211,7 @@ jobs:
         name: Dump snmp logs
         if: failure()
         run: |
-          cat /tmp/snmpsimd.log || true
+          cat /tmp/snmpsimd.log /tmp/snmpsimd.out || true
       -
         name: Upload LibreNMS Logs
         if: failure()
