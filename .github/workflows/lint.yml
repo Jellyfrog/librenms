@@ -105,14 +105,15 @@ jobs:
           NEW_PHP_FILES: ${{ steps.new-php-files.outputs.files }}
         run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --level=6 -- $NEW_PHP_FILES
 
-      - name: Run PHPStan
-        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G
+      - parallel:
+          - name: Run PHPStan
+            run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G
 
-      - name: Run PHPStan (Legacy codebase)
-        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan-legacy.neon
+          - name: Run PHPStan (Legacy codebase)
+            run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan-legacy.neon
 
-      - name: Run PHPStan (Deprecated functions)
-        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan-deprecated.neon
+          - name: Run PHPStan (Deprecated functions)
+            run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan-deprecated.neon
 
   rector:
     name: Rector (dry-run)
