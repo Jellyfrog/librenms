@@ -118,7 +118,7 @@ jobs:
         wait: [chromedriver, server]
 
       - name: Run Dusk Tests
-        run: echo php artisan dusk
+        run: php artisan dusk
 
       - name: Upload Screenshots
         if: failure()
