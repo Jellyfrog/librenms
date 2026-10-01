@@ -90,7 +90,7 @@ jobs:
         name: Restore composer cache
         id: composer-cache
         background: true
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: ~/.cache/composer/files
           key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
@@ -99,7 +99,7 @@ jobs:
       -
         # start checkout last, it can fail reading the event payload while other steps start
         name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       -
         name: Start SNMPSIM
         id: snmpsim
@@ -155,7 +155,7 @@ jobs:
         name: Save composer cache
         if: ${{ !endsWith(steps.composer-cache.outputs.cache-matched-key, hashFiles('composer.lock')) }}
         background: true
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v6
         with:
           path: ~/.cache/composer/files
           key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('composer.lock') }}
