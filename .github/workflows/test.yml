@@ -37,46 +37,43 @@ jobs:
           -
             name: PHP 8.4
             php-version: 8.4
-            database: mariadb:11.7
+            database: ghcr.io/mariadb/mariadb:11.8
           -
             name: Other
             php-version: 8.4
-            database: mariadb:11.7
+            database: ghcr.io/mariadb/mariadb:11.8
             arguments: --full --exclude-phpunit-group=browser,mibs,external-dependencies,os
           -
             name: Other
             php-version: 8.2
             database: mysql:8.0
             arguments: --full --exclude-phpunit-group=browser,mibs,external-dependencies,os
-
-    services:
-      database:
-        image: ${{ matrix.database }}
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: librenms_phpunit_78hunjuybybh
-          MYSQL_USER: librenms
-          MYSQL_PASSWORD: librenms
-        ports:
-          - 3306
     steps:
       -
         name: Checkout
         uses: actions/checkout@v6
       -
-        name: Prepare MySQL
+        name: Start MySQL
         id: mysql
         background: true
         env:
-          PORT: ${{ job.services.database.ports[3306] }}
           DATABASE: ${{ matrix.database }}
         run: |
-          # the service container may not accept connections yet
-          timeout 60 bash -c 'until mysqladmin -h"127.0.0.1" -P"$PORT" --user=librenms --password=librenms ping; do sleep 1; done'
+          docker run -d --name database --network host \
+            -e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
+            -e MYSQL_DATABASE=librenms_phpunit_78hunjuybybh \
+            -e MYSQL_USER=librenms \
+            -e MYSQL_PASSWORD=librenms \
+            "$DATABASE"
+          # the init server runs without networking, so this waits for the real server
+          timeout 120 bash -c 'until mysqladmin -h127.0.0.1 -P3306 --user=librenms --password=librenms ping 2>/dev/null; do sleep 0.5; done' || {
+            docker logs database
+            exit 1
+          }
           if [ "$DATABASE" = "mysql:8.0" ]; then
-            mysql -h"127.0.0.1" -P"$PORT" --user=root -e "ALTER USER 'librenms'@'%' IDENTIFIED WITH mysql_native_password BY 'librenms'"
+            mysql -h127.0.0.1 -P3306 --user=root -e "ALTER USER 'librenms'@'%' IDENTIFIED WITH mysql_native_password BY 'librenms'"
           fi
-          mysql -h"127.0.0.1" -P"$PORT" --user=librenms --password=librenms -e 'ALTER DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'
+          mysql -h127.0.0.1 -P3306 --user=librenms --password=librenms -e 'ALTER DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'
       -
         name: Start SNMPSIM
         id: snmpsim
@@ -119,13 +116,13 @@ jobs:
           APP_DEBUG=true
           DB_DRIVER=mysql
           DB_HOST=127.0.0.1
-          DB_PORT=${{ job.services.database.ports[3306] }}
+          DB_PORT=3306
           DB_DATABASE=librenms_phpunit_78hunjuybybh
           DB_USERNAME=librenms
           DB_PASSWORD=librenms
           DB_TEST_DRIVER=mysql
           DB_TEST_HOST=127.0.0.1
-          DB_TEST_PORT=${{ job.services.database.ports[3306] }}
+          DB_TEST_PORT=3306
           DB_TEST_DATABASE=librenms_phpunit_78hunjuybybh
           DB_TEST_USERNAME=librenms
           DB_TEST_PASSWORD=librenms
