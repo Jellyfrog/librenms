@@ -24,11 +24,8 @@ modules:
                     index: 'mtxrOpticalTemperature.{{ $index }}'
                     skip_values:
                         -   oid: MIKROTIK-MIB::mtxrOpticalModulePresent
-                            op: '='
-                            value: 'false'
-                        -   oid: MIKROTIK-MIB::mtxrOpticalModulePresent
-                            op: '='
-                            value: 0
+                            op: regex
+                            value: '/^(0|false)$/'
                         -   oid: MIKROTIK-MIB::mtxrOpticalSupplyVoltage
                             op: '<='
                             value: 0
@@ -57,11 +54,8 @@ modules:
                     index: 'mtxrOpticalSupplyVoltage.{{ $index }}'
                     skip_values:
                         -   oid: MIKROTIK-MIB::mtxrOpticalModulePresent
-                            op: '='
-                            value: 'false'
-                        -   oid: MIKROTIK-MIB::mtxrOpticalModulePresent
-                            op: '='
-                            value: 0
+                            op: regex
+                            value: '/^(0|false)$/'
                         -   oid: MIKROTIK-MIB::mtxrOpticalSupplyVoltage
                             op: '<='
                             value: 0
@@ -104,11 +98,8 @@ modules:
                     index: 'mtxrOpticalTxBiasCurrent.{{ $index }}'
                     skip_values:
                         -   oid: MIKROTIK-MIB::mtxrOpticalModulePresent
-                            op: '='
-                            value: 'false'
-                        -   oid: MIKROTIK-MIB::mtxrOpticalModulePresent
-                            op: '='
-                            value: 0
+                            op: regex
+                            value: '/^(0|false)$/'
                         -   oid: MIKROTIK-MIB::mtxrOpticalSupplyVoltage
                             op: '<='
                             value: 0
@@ -147,11 +138,8 @@ modules:
                     index: 'mtxrOpticalTxPower.{{ $index }}'
                     skip_values:
                         -   oid: MIKROTIK-MIB::mtxrOpticalModulePresent
-                            op: '='
-                            value: 'false'
-                        -   oid: MIKROTIK-MIB::mtxrOpticalModulePresent
-                            op: '='
-                            value: 0
+                            op: regex
+                            value: '/^(0|false)$/'
                         -   oid: MIKROTIK-MIB::mtxrOpticalSupplyVoltage
                             op: '<='
                             value: 0
@@ -167,11 +155,8 @@ modules:
                     index: 'mtxrOpticalRxPower.{{ $index }}'
                     skip_values:
                         -   oid: MIKROTIK-MIB::mtxrOpticalModulePresent
-                            op: '='
-                            value: 'false'
-                        -   oid: MIKROTIK-MIB::mtxrOpticalModulePresent
-                            op: '='
-                            value: 0
+                            op: regex
+                            value: '/^(0|false)$/'
                         -   oid: MIKROTIK-MIB::mtxrOpticalSupplyVoltage
                             op: '<='
                             value: 0
