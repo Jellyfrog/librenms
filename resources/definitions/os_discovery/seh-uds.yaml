@@ -14,7 +14,7 @@ modules:
                     descr: 'Port {{ seh_usb_slot }}: {{ seh_usb_label }}'
                     group: USB Port
                     index: 'utnPortIndex.{{ $index }}'
-                    state_name: utnPortUsbSlot
+                    state_name: utnPortSlot
                     states:
                         - { value:  0, generic: 3, descr: no device }
                         - { value:  1, generic: 0, descr: connected }
@@ -45,7 +45,7 @@ modules:
                     descr: 'Port {{ seh_usb_slot }}: {{ seh_usb_label }}'
                     group: USB Port
                     index: 'utnDevIndex.{{ $index }}'
-                    state_name: utnPortUsbSlot
+                    state_name: utnPortSlot
                     states:
                         - { value:  0, generic: 3, descr: no device }
                         - { value:  1, generic: 0, descr: connected }
