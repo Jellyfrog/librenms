@@ -53,8 +53,8 @@ jobs:
         name: Checkout
         uses: actions/checkout@v6
       -
-        name: Start MySQL
-        id: mysql
+        name: Start Database
+        id: database
         background: true
         env:
           DATABASE: ${{ matrix.database }}
@@ -145,8 +145,8 @@ jobs:
         run: |
           composer install --prefer-dist --no-interaction --no-progress
       -
-        name: Wait for MySQL
-        wait: mysql
+        name: Wait for Database
+        wait: database
       -
         name: Migrate Database
         run: php artisan migrate
