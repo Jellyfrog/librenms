@@ -8,9 +8,12 @@ use LibreNMS\Tests\InMemoryDbTestCase;
 
 final class DropUnusedDeviceColumnsTest extends InMemoryDbTestCase
 {
+    private const MIGRATION = 'database/migrations/2026_09_26_000000_drop_unused_device_columns.php';
+
     public function testPingLatencyRulesMoveToDeviceStats(): void
     {
-        $this->artisan('migrate:rollback', ['--database' => $this->connection, '--step' => 1]);
+        // roll back only this migration, regardless of newer migrations
+        $this->artisan('migrate:rollback', ['--database' => $this->connection, '--path' => self::MIGRATION]);
         $this->assertTrue(Schema::hasColumn('devices', 'last_ping_timetaken'));
 
         DB::table('alert_rules')->insert([
@@ -22,7 +25,7 @@ final class DropUnusedDeviceColumnsTest extends InMemoryDbTestCase
             'query' => 'SELECT * FROM devices WHERE (devices.device_id = ?) AND devices.last_ping_timetaken > 10',
         ]);
 
-        $this->artisan('migrate', ['--database' => $this->connection]);
+        $this->artisan('migrate', ['--database' => $this->connection, '--path' => self::MIGRATION]);
 
         foreach (['last_ping', 'last_ping_timetaken', 'last_poll_attempted', 'agent_uptime'] as $column) {
             $this->assertFalse(Schema::hasColumn('devices', $column), "$column not dropped");
