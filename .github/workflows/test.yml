@@ -164,11 +164,6 @@ jobs:
         name: Dump docker logs on failure
         if: failure()
         uses: jwalton/gh-docker-logs@v2
-
-      -
-        name: Dump context
-        if: always()
-        uses: crazy-max/ghaction-dump-context@v3
       -
         name: Upload LibreNMS Logs
         if: failure()
