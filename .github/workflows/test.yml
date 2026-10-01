@@ -87,15 +87,16 @@ jobs:
               tools: composer
               coverage: none
           -
-            # restore by prefix, hashFiles() needs the checkout so the exact key is saved after install
-            name: Restore composer cache
-            id: composer-cache
+            # outside the workspace, checkout empties it. Restore by prefix, hashFiles() needs
+            # the checkout so the exact key is saved after install
+            name: Restore vendor
+            id: vendor-cache
             uses: actions/cache/restore@v6
             with:
-              path: ~/.cache/composer/files
-              key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+              path: ~/vendor
+              key: ${{ runner.os }}-vendor-php${{ matrix.php-version }}-${{ secrets.CACHE_VERSION }}-
               restore-keys: |
-                ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+                ${{ runner.os }}-vendor-php${{ matrix.php-version }}-${{ secrets.CACHE_VERSION }}-
           -
             name: Checkout
             uses: actions/checkout@v7
@@ -146,15 +147,22 @@ jobs:
       -
         name: Composer install
         run: |
+          # composer brings a restored vendor in line with composer.lock
+          if [ -d ~/vendor ]; then mv ~/vendor vendor; fi
           composer install --prefer-dist --no-interaction --no-progress
       -
-        name: Save composer cache
-        if: ${{ !endsWith(steps.composer-cache.outputs.cache-matched-key, hashFiles('composer.lock')) }}
+        # the cache path must be the same as on restore
+        name: Copy vendor for cache
+        if: ${{ !endsWith(steps.vendor-cache.outputs.cache-matched-key, hashFiles('composer.lock')) }}
+        run: cp -a vendor ~/vendor
+      -
+        name: Save vendor
+        if: ${{ !endsWith(steps.vendor-cache.outputs.cache-matched-key, hashFiles('composer.lock')) }}
         background: true
         uses: actions/cache/save@v6
         with:
-          path: ~/.cache/composer/files
-          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('composer.lock') }}
+          path: ~/vendor
+          key: ${{ runner.os }}-vendor-php${{ matrix.php-version }}-${{ secrets.CACHE_VERSION }}-${{ hashFiles('composer.lock') }}
       -
         name: Wait for Database
         wait: database
