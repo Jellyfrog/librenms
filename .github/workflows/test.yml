@@ -56,7 +56,9 @@ jobs:
         env:
           DATABASE: ${{ matrix.database }}
         run: |
-          docker run -d --name database --network host \
+          # throwaway data on tmpfs, no time zone tables
+          docker run -d --name database --network host --tmpfs /var/lib/mysql \
+            -e MYSQL_INITDB_SKIP_TZINFO=1 \
             -e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
             -e MYSQL_DATABASE=librenms_phpunit_78hunjuybybh \
             -e MYSQL_USER=librenms \
@@ -91,6 +93,8 @@ jobs:
             # the checkout so the exact key is saved after install
             name: Restore vendor
             id: vendor-cache
+            # master builds install from scratch
+            if: github.event_name != 'push'
             uses: actions/cache/restore@v6
             with:
               path: ~/vendor
@@ -153,11 +157,11 @@ jobs:
       -
         # the cache path must be the same as on restore
         name: Copy vendor for cache
-        if: ${{ !endsWith(steps.vendor-cache.outputs.cache-matched-key, hashFiles('composer.lock')) }}
+        if: ${{ github.event_name != 'push' && !endsWith(steps.vendor-cache.outputs.cache-matched-key, hashFiles('composer.lock')) }}
         run: cp -a vendor ~/vendor
       -
         name: Save vendor
-        if: ${{ !endsWith(steps.vendor-cache.outputs.cache-matched-key, hashFiles('composer.lock')) }}
+        if: ${{ github.event_name != 'push' && !endsWith(steps.vendor-cache.outputs.cache-matched-key, hashFiles('composer.lock')) }}
         background: true
         uses: actions/cache/save@v6
         with:
