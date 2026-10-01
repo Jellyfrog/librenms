@@ -112,3 +112,10 @@ jobs:
         with:
           name: console
           path: tests/Browser/console
+
+      - name: Upload LibreNMS Logs
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: librenms-logs
+          path: logs/librenms.log
