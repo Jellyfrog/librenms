@@ -1,0 +1,75 @@
+name: Bench snmpsim
+
+on:
+  push:
+    branches: [bench-snmpsim]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  bench:
+    name: ${{ matrix.variant }} ${{ matrix.rep }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [pip-nocache, pip-cache, venv-cache, docker-lite]
+        rep: [1, 2, 3]
+    env:
+      PKG: snmpsim @ git+https://github.com/librenms/snmpsim.git@v2
+      IMAGE: ghcr.io/librenms/snmpsim:v2-lite
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tests/snmpsim/
+            /.github/bench/
+
+      - name: Prepare start
+        run: echo "T0=$(date +%s.%N)" >> "$GITHUB_ENV"
+
+      - name: Restore pip cache
+        if: matrix.variant == 'pip-cache'
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/pip
+          key: bench-pip-v1
+
+      - name: Restore venv
+        id: venv
+        if: matrix.variant == 'venv-cache'
+        uses: actions/cache@v5
+        with:
+          path: .python_venvs/snmpsim
+          key: bench-venv-v1
+
+      - name: Install snmpsim
+        if: startsWith(matrix.variant, 'pip') || (matrix.variant == 'venv-cache' && steps.venv.outputs.cache-hit != 'true')
+        env:
+          PIP_NO_CACHE_DIR: ${{ matrix.variant == 'pip-nocache' && '1' || '' }}
+        run: |
+          python3 -m venv .python_venvs/snmpsim
+          .python_venvs/snmpsim/bin/pip install -q "$PKG"
+
+      - name: Pull image
+        if: matrix.variant == 'docker-lite'
+        run: docker pull -q "$IMAGE"
+
+      - name: Start and wait
+        run: |
+          T1=$(date +%s.%N)
+          if [ "${{ matrix.variant }}" = docker-lite ]; then
+            docker run -d --network host -v "$PWD/tests/snmpsim:/usr/local/snmpsim/data:ro" "$IMAGE" --agent-udpv4-endpoint=127.1.6.2:1162 > /dev/null
+          else
+            .python_venvs/snmpsim/bin/snmpsim-command-responder-lite --data-dir=tests/snmpsim --agent-udpv4-endpoint=127.1.6.2:1162 --log-level=error --logging-method=file:/tmp/snmpsimd.log &
+          fi
+          python3 .github/bench/snmp_probe.py linux 127.1.6.2 1162
+          T2=$(date +%s.%N)
+          line=$(printf 'RESULT %-12s rep=%s prepare=%6.1fs start=%6.1fs total=%6.1fs' "${{ matrix.variant }}" "${{ matrix.rep }}" \
+            "$(echo "$T1-$T0" | bc)" "$(echo "$T2-$T1" | bc)" "$(echo "$T2-$T0" | bc)")
+          echo "$line"
+          echo "$line" >> "$GITHUB_STEP_SUMMARY"
