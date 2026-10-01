@@ -13,23 +13,23 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Get composer cache directory
-      id: composer-cache
-      shell: bash
-      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-    # vendor is installed with the active PHP, keep a vendor cache per PHP version
+    # vendor is installed with the active PHP, keep the caches per PHP version
     - name: Get PHP version
       id: php-version
       shell: bash
       run: echo "version=$(php -r 'echo PHP_VERSION_ID;')" >> $GITHUB_OUTPUT
 
+    - name: Get composer cache directory
+      id: composer-cache
+      shell: bash
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
     - name: Cache composer cache
       uses: actions/cache@v6
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ inputs.cache-version }}-${{ hashFiles('**/composer.lock') }}
-        restore-keys: ${{ runner.os }}-composer-${{ inputs.cache-version }}-
+        key: ${{ runner.os }}-composer-php${{ steps.php-version.outputs.version }}-${{ inputs.cache-version }}-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-php${{ steps.php-version.outputs.version }}-${{ inputs.cache-version }}-
 
     - name: Cache vendor directory
       uses: actions/cache@v6
