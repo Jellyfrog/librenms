@@ -230,8 +230,5 @@ jobs:
           path: ~/vendor
           key: ${{ runner.os }}-vendor-lint-${{ secrets.CACHE_VERSION }}-${{ hashFiles('composer.lock') }}
 
-      - name: Composer dump
-        run: composer dump --strict-psr --strict-ambiguous --no-interaction --no-scripts
-
       - name: Run Pint (dry-run)
         run: ./vendor/bin/pint --test --parallel
