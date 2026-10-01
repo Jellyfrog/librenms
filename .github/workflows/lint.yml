@@ -57,20 +57,28 @@ jobs:
           - { name: "Deprecated", file: "phpstan-deprecated.neon" }
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 2
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /*
-            !/tests/data/
-            !/tests/snmpsim/
-            !/mibs/
-            !/doc/
+      # start checkout last, it can fail reading the event payload while other steps start
+      - parallel:
+          - name: Restore vendor
+            id: composer-restore
+            uses: $/.github/actions/composer-restore
+
+          - name: Checkout Code
+            uses: actions/checkout@v7
+            with:
+              fetch-depth: 2
+              sparse-checkout-cone-mode: false
+              sparse-checkout: |
+                /*
+                !/tests/data/
+                !/tests/snmpsim/
+                !/mibs/
+                !/doc/
 
       - name: Install PHP dependencies
         uses: $/.github/actions/composer-install
+        with:
+          cache-matched-key: ${{ steps.composer-restore.outputs.cache-matched-key }}
 
       - name: Find new PHP files
         if: github.event_name == 'pull_request' && matrix.config.name == 'Main'
@@ -95,19 +103,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v7
-        with:
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /*
-            !/tests/data/
-            !/tests/snmpsim/
-            !/mibs/
-            !/doc/
+      # start checkout last, it can fail reading the event payload while other steps start
+      - parallel:
+          - name: Restore vendor
+            id: composer-restore
+            uses: $/.github/actions/composer-restore
+
+          - name: Checkout Code
+            uses: actions/checkout@v7
+            with:
+              sparse-checkout-cone-mode: false
+              sparse-checkout: |
+                /*
+                !/tests/data/
+                !/tests/snmpsim/
+                !/mibs/
+                !/doc/
 
       - name: Install PHP dependencies
         uses: $/.github/actions/composer-install
+        with:
+          cache-matched-key: ${{ steps.composer-restore.outputs.cache-matched-key }}
 
       - name: Run Rector (dry-run)
         run: ./vendor/bin/rector process --dry-run --no-progress-bar --ansi --memory-limit=1G
@@ -117,20 +133,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v7
-        with:
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /*
-            !/tests/data/
-            !/tests/snmpsim/
-            !/mibs/
-            !/doc/
+      # start checkout last, it can fail reading the event payload while other steps start
+      - parallel:
+          - name: Restore vendor
+            id: composer-restore
+            uses: $/.github/actions/composer-restore
+
+          - name: Checkout Code
+            uses: actions/checkout@v7
+            with:
+              sparse-checkout-cone-mode: false
+              sparse-checkout: |
+                /*
+                !/tests/data/
+                !/tests/snmpsim/
+                !/mibs/
+                !/doc/
 
       - name: Install PHP dependencies
         uses: $/.github/actions/composer-install
         with:
+          cache-matched-key: ${{ steps.composer-restore.outputs.cache-matched-key }}
           dump-autoload: false
 
       - name: Run Pint (dry-run)

@@ -1,0 +1,21 @@
+name: 'Composer Restore'
+description: 'Restore the vendor cache outside the workspace, run it in parallel with actions/checkout'
+
+outputs:
+  cache-matched-key:
+    description: 'Key of the restored cache, empty when nothing was restored'
+    value: ${{ steps.restore.outputs.cache-matched-key }}
+
+runs:
+  using: 'composite'
+  steps:
+    # checkout empties the workspace, so restore outside it. composer.lock is not
+    # checked out yet, restore the newest cache by prefix and let composer install
+    # bring it in line with composer.lock
+    - name: Restore vendor
+      id: restore
+      uses: actions/cache/restore@v6
+      with:
+        path: ~/vendor
+        key: ${{ runner.os }}-vendor-
+        restore-keys: ${{ runner.os }}-vendor-

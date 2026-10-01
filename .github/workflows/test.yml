@@ -60,9 +60,14 @@ jobs:
         ports:
           - 3306
     steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v7
+      # start checkout last, it can fail reading the event payload while other steps start
+      - parallel:
+          - name: Restore vendor
+            id: composer-restore
+            uses: $/.github/actions/composer-restore
+
+          - name: Checkout
+            uses: actions/checkout@v7
       -
         name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -94,6 +99,8 @@ jobs:
 
       - name: Install PHP dependencies
         uses: $/.github/actions/composer-install
+        with:
+          cache-matched-key: ${{ steps.composer-restore.outputs.cache-matched-key }}
 
       -
         name: Cache pip
