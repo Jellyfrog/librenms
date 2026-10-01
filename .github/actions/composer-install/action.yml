@@ -22,7 +22,7 @@ runs:
     - name: Get PHP version
       id: php-version
       shell: bash
-      run: echo "version=$(php -r 'echo PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION;')" >> $GITHUB_OUTPUT
+      run: echo "version=$(php -r 'echo PHP_VERSION_ID;')" >> $GITHUB_OUTPUT
 
     - name: Cache composer cache
       uses: actions/cache@v6
