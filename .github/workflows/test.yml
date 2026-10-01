@@ -50,9 +50,6 @@ jobs:
             arguments: --full --exclude-phpunit-group=browser,mibs,external-dependencies,os
     steps:
       -
-        name: Checkout
-        uses: actions/checkout@v6
-      -
         name: Start Database
         id: database
         background: true
@@ -71,18 +68,14 @@ jobs:
             exit 1
           }
       -
-        name: Start SNMPSIM
-        id: snmpsim
+        # pulls the image, the data is only there after checkout
+        name: Create SNMPSIM
+        id: snmpsim-create
         background: true
         run: |
-          docker run -d --name snmpsim --network host --user "$(id -u):$(id -g)" \
+          docker create --name snmpsim --network host --user "$(id -u):$(id -g)" \
             -v "$GITHUB_WORKSPACE/tests/snmpsim:/usr/local/snmpsim/data:ro" \
             ghcr.io/librenms/snmpsim:v2-lite --log-level=error
-          # snmpsim binds the port once the data is indexed
-          timeout 120 bash -c 'until ss -Hlun "sport = :1161" | grep -q :1161; do sleep 0.2; done' || {
-            docker logs snmpsim
-            exit 1
-          }
       -
         name: Set up PHP
         id: php
@@ -92,6 +85,26 @@ jobs:
           php-version: ${{ matrix.php-version }}
           tools: composer
           coverage: none
+      -
+        # start checkout last, it can fail reading the event payload while other steps start
+        name: Checkout
+        id: checkout
+        background: true
+        uses: actions/checkout@v6
+      -
+        name: Wait for checkout
+        wait: [checkout, snmpsim-create]
+      -
+        name: Start SNMPSIM
+        id: snmpsim
+        background: true
+        run: |
+          docker start snmpsim
+          # snmpsim binds the port once the data is indexed
+          timeout 120 bash -c 'until ss -Hlun "sport = :1161" | grep -q :1161; do sleep 0.2; done' || {
+            docker logs snmpsim
+            exit 1
+          }
       -
         name: Cache composer
         id: composer-cache
