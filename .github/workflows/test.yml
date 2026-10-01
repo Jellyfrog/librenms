@@ -99,12 +99,7 @@ jobs:
       -
         # start checkout last, it can fail reading the event payload while other steps start
         name: Checkout
-        id: checkout
-        background: true
         uses: actions/checkout@v6
-      -
-        name: Wait for checkout
-        wait: checkout
       -
         name: Start SNMPSIM
         id: snmpsim
