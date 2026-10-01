@@ -13,12 +13,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    # vendor is installed with the active PHP, keep the caches per PHP version
-    - name: Get PHP version
-      id: php-version
-      shell: bash
-      run: echo "version=$(php -r 'echo PHP_VERSION_ID;')" >> $GITHUB_OUTPUT
-
     - name: Get composer cache directory
       id: composer-cache
       shell: bash
@@ -28,15 +22,15 @@ runs:
       uses: actions/cache@v6
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-composer-php${{ steps.php-version.outputs.version }}-${{ inputs.cache-version }}-${{ hashFiles('**/composer.lock') }}
-        restore-keys: ${{ runner.os }}-composer-php${{ steps.php-version.outputs.version }}-${{ inputs.cache-version }}-
+        key: ${{ runner.os }}-composer-${{ inputs.cache-version }}-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-${{ inputs.cache-version }}-
 
     - name: Cache vendor directory
       uses: actions/cache@v6
       with:
         path: vendor
-        key: ${{ runner.os }}-vendor-php${{ steps.php-version.outputs.version }}-${{ inputs.cache-version }}-${{ hashFiles('**/composer.lock') }}
-        restore-keys: ${{ runner.os }}-vendor-php${{ steps.php-version.outputs.version }}-${{ inputs.cache-version }}-
+        key: ${{ runner.os }}-vendor-${{ inputs.cache-version }}-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-vendor-${{ inputs.cache-version }}-
 
     - name: Composer install
       shell: bash
