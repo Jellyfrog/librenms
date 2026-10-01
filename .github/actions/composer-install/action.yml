@@ -18,6 +18,12 @@ runs:
       shell: bash
       run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
+    # vendor is installed with the active PHP, keep a vendor cache per PHP version
+    - name: Get PHP version
+      id: php-version
+      shell: bash
+      run: echo "version=$(php -r 'echo PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION;')" >> $GITHUB_OUTPUT
+
     - name: Cache composer cache
       uses: actions/cache@v6
       with:
@@ -29,8 +35,8 @@ runs:
       uses: actions/cache@v6
       with:
         path: vendor
-        key: ${{ runner.os }}-vendor-${{ inputs.cache-version }}-${{ hashFiles('**/composer.lock') }}
-        restore-keys: ${{ runner.os }}-vendor-${{ inputs.cache-version }}-
+        key: ${{ runner.os }}-vendor-php${{ steps.php-version.outputs.version }}-${{ inputs.cache-version }}-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-vendor-php${{ steps.php-version.outputs.version }}-${{ inputs.cache-version }}-
 
     - name: Composer install
       shell: bash
