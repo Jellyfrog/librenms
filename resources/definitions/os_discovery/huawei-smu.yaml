@@ -19,14 +19,14 @@ modules:
                     num_oid: '.1.3.6.1.4.1.2011.6.164.1.3.1.5.{{ $index }}'
                     divisor: 10
                     descr: Rectifier Rated Voltage
-                    index: "hwRectsRatedVoltage.{{ $index }}"
+                    index: 'ratedRectifier-{{ $index }}'
                     group: Rectifier
                 -
                     oid: HUAWEI-SITE-MONITOR-MIB::hwModifyRectsOutputVoltage
                     num_oid: '.1.3.6.1.4.1.2011.6.164.1.3.1.6.{{ $index }}'
                     divisor: 10
                     descr: Rectifier Adjusted Voltage
-                    index: "hwModifyRectsOutputVoltage.{{ $index }}"
+                    index: 'adjustedRectifier-{{ $index }}'
                     group: Rectifier
                 -
                     oid: HUAWEI-SITE-MONITOR-MIB::hwRectOutputVoltage
@@ -46,7 +46,7 @@ modules:
                     oid: HUAWEI-SITE-MONITOR-MIB::hwApOrAblVoltage
                     num_oid: '.1.3.6.1.4.1.2011.6.164.1.5.2.1.1.4.{{ $index }}'
                     descr: "AC Input (A-Phase)"
-                    index: "hwBpOrAblVoltage.{{ $index }}"
+                    index: 'acInput-{{ $index }}'
                     group: AC
                     divisor: 10
                 -
@@ -67,21 +67,21 @@ modules:
                     oid: HUAWEI-SITE-MONITOR-MIB::hwDcsTotalVoltage
                     num_oid: '.1.3.6.1.4.1.2011.6.164.1.6.1.3.{{ $index }}'
                     descr:  "DC Total Voltage"
-                    index: "hwDcsTotalVoltage.{{ $index }}"
+                    index: 'dcTotal-{{ $index }}'
                     group: DC
                     divisor: 10
                 -
                     oid: HUAWEI-SITE-MONITOR-MIB::hwDcOutputVoltage
                     num_oid: '.1.3.6.1.4.1.2011.6.164.1.6.2.1.1.4.{{ $index }}'
                     descr:  "DC Output Voltage"
-                    index: "hwDcOutputVoltage.{{ $index }}"
+                    index: 'dcOutput-{{ $index }}'
                     group: DC
                     divisor: 10
                 -
                     oid: HUAWEI-SITE-MONITOR-MIB::hwSetLvdVoltage
                     num_oid: '.1.3.6.1.4.1.2011.6.164.1.7.2.1.1.5.{{ $index }}'
                     descr: HUAWEI-SITE-MONITOR-MIB::hwLvdUnitEquipName
-                    index: "hwSetLvdVoltage.{{ $index }}"
+                    index: 'lvd-{{ $index }}'
                     group: LVD
                     divisor: 10
         current:
@@ -92,7 +92,7 @@ modules:
                     oid: HUAWEI-SITE-MONITOR-MIB::hwBattsTotalCurrent
                     num_oid: '.1.3.6.1.4.1.2011.6.164.1.4.2.1.{{ $index }}'
                     descr: Battery Current
-                    index: "hwBattsTotalCurrent.{{ $index }}"
+                    index: 'battery-{{ $index }}'
                     group: Battery
                     divisor: 10
                 -
@@ -106,7 +106,7 @@ modules:
                     oid: HUAWEI-SITE-MONITOR-MIB::hwRectsTotalCurrent
                     num_oid: '.1.3.6.1.4.1.2011.6.164.1.3.1.3.{{ $index }}'
                     descr: Rectifier Current
-                    index: "hwRectsTotalCurrent.{{ $index }}"
+                    index: 'rectifier-{{ $index }}'
                     group: Rectifier
                     divisor: 10
                 -
@@ -141,14 +141,14 @@ modules:
                     oid: HUAWEI-SITE-MONITOR-MIB::hwDcsTotalCurrent
                     num_oid: '.1.3.6.1.4.1.2011.6.164.1.6.1.4.{{ $index }}'
                     descr: DC Total Current
-                    index: "hwDcsTotalCurrent.{{ $index }}"
+                    index: 'dcTotal-{{ $index }}'
                     group: DC
                     divisor: 10
                 -
                     oid: HUAWEI-SITE-MONITOR-MIB::hwDcOutputCurrent
                     num_oid: '.1.3.6.1.4.1.2011.6.164.1.6.2.1.1.5.{{ $index }}'
                     descr: DC Output Current
-                    index: "hwDcOutputCurrent.{{ $index }}"
+                    index: 'dcOutput-{{ $index }}'
                     group: DC
                     divisor: 10
         temperature:
@@ -223,25 +223,25 @@ modules:
                     oid: HUAWEI-SITE-MONITOR-MIB::hwBattsTotalQuantity
                     num_oid: '.1.3.6.1.4.1.2011.6.164.1.4.1.3.{{ $index }}'
                     descr: "Quantity of Batteries"
-                    index: "hwBattsTotalQuantity.{{ $index }}"
+                    index: 'battery-{{ $index }}'
                     group: Battery
                 -
                     oid: HUAWEI-SITE-MONITOR-MIB::hwRectsTotalQuantity
                     num_oid: '.1.3.6.1.4.1.2011.6.164.1.3.1.4.{{ $index }}'
                     descr: "Quantity of Rectifiers"
-                    index: "hwRectsTotalQuantity.{{ $index }}"
+                    index: 'rectifier-{{ $index }}'
                     group: Rectifier
                 -
                     oid: HUAWEI-SITE-MONITOR-MIB::hwDcsTotalQuantity
                     num_oid: '.1.3.6.1.4.1.2011.6.164.1.6.1.6.{{ $index }}'
                     descr: "Quantity of DCs"
-                    index: "hwDcsTotalQuantity.{{ $index }}"
+                    index: 'dc-{{ $index }}'
                     group: DC
                 -
                     oid: HUAWEI-SITE-MONITOR-MIB::hwAcsTotalQuantity
                     num_oid: '.1.3.6.1.4.1.2011.6.164.1.5.1.4.{{ $index }}'
                     descr: "Quantity of ACs"
-                    index: "hwAcsTotalQuantity.{{ $index }}"
+                    index: 'ac-{{ $index }}'
                     group: AC
                 -
                     oid: HUAWEI-SITE-MONITOR-MIB::hwEnvTempSensorsTotalQuantity
