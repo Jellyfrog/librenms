@@ -61,8 +61,25 @@ jobs:
           - 3306
     steps:
       -
+        name: Pull SNMPSIM
+        background: true
+        run: docker pull -q ghcr.io/librenms/snmpsim:v2-lite
+      -
         name: Checkout
         uses: actions/checkout@v6
+      -
+        name: Start SNMPSIM
+        id: snmpsim
+        background: true
+        run: |
+          docker run -d --name snmpsim --network host --user "$(id -u):$(id -g)" \
+            -v "$GITHUB_WORKSPACE/tests/snmpsim:/usr/local/snmpsim/data:ro" \
+            ghcr.io/librenms/snmpsim:v2-lite --log-level=error
+          # snmpsim binds the port once the data is indexed
+          timeout 120 bash -c 'until ss -Hlun "sport = :1161" | grep -q :1161; do sleep 0.2; done' || {
+            docker logs snmpsim
+            exit 1
+          }
       -
         name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -126,11 +143,6 @@ jobs:
         run: |
           composer install --prefer-dist --no-interaction --no-progress
       -
-
-        name: Snmpsim setup
-        run: |
-          php lnms dev:simulate --setup-venv
-      -
         name: Copy seeded config
         run: cp "${GITHUB_WORKSPACE}/tests/testing_config.yaml" "${GITHUB_WORKSPACE}/database/seeders/config/"
       -
@@ -161,17 +173,12 @@ jobs:
         run: php artisan migrate
 
       -
-        name: Start SNMPSIM
-        run: |
-          .python_venvs/snmpsim/bin/snmpsim-command-responder-lite --data-dir=tests/snmpsim --agent-udpv4-endpoint=127.1.6.2:1162 --log-level=error --logging-method=file:/tmp/snmpsimd.log &
-          # Wait for snmpsim to start
-          timeout 60 bash -c '
-            until grep -q "127.1.6.2:1162" /tmp/snmpsimd.log 2>/dev/null; do
-              sleep 0.1
-            done
-          '
+        name: Wait for SNMPSIM
+        wait: snmpsim
       -
         name: lnms dev:check ci
+        env:
+          SNMPSIM: 127.0.0.1:1161
         run: |
           php lnms dev:check ci ${{ matrix.arguments }}
 
@@ -179,12 +186,6 @@ jobs:
         name: Dump docker logs on failure
         if: failure()
         uses: jwalton/gh-docker-logs@v2
-
-      -
-        name: Dump snmp logs
-        if: failure()
-        run: |
-          cat /tmp/snmpsimd.log || true
 
       -
         name: Dump context

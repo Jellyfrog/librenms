@@ -95,6 +95,13 @@ class CiHelper
 
     public function enableSnmpsim(): void
     {
+        // use an already running snmpsim, e.g. a container in CI
+        if ($external = getenv('SNMPSIM')) {
+            $this->unitEnv['SNMPSIM'] = $external;
+
+            return;
+        }
+
         if ($this->snmpsim === null) {
             $this->snmpsim = new Snmpsim('127.1.6.2', 1162);
             $this->snmpsim->setupVenv();
