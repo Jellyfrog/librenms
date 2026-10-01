@@ -95,13 +95,17 @@ class CiHelper
 
     public function enableSnmpsim(): void
     {
+        // snmpsim is started lazily in checkUnit(), only when phpunit actually runs
+        $this->unitEnv['SNMPSIM'] = '127.1.6.2:1162';
+    }
+
+    private function startSnmpsim(): void
+    {
         if ($this->snmpsim === null) {
             $this->snmpsim = new Snmpsim('127.1.6.2', 1162);
             $this->snmpsim->setupVenv();
             $this->snmpsim->start();
         }
-
-        $this->unitEnv['SNMPSIM'] = '127.1.6.2:1162';
     }
 
     public function setModules(array $modules): void
@@ -228,6 +232,10 @@ class CiHelper
                 array_push($phpunit_cmd, '--filter', '/::testOS /');
             }
             $phpunit_cmd[] = 'tests/OSModulesTest.php';
+        }
+
+        if (isset($this->unitEnv['SNMPSIM'])) {
+            $this->startSnmpsim();
         }
 
         return $this->execute('unit', $phpunit_cmd, false, $this->unitEnv);
