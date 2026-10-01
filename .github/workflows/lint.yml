@@ -57,54 +57,22 @@ jobs:
           - { name: "Deprecated", file: "phpstan-deprecated.neon" }
 
     steps:
-      # start checkout last, it can fail reading the event payload while other steps start
-      - parallel:
-          # outside the workspace, checkout empties it. Restore by prefix, hashFiles() needs
-          # the checkout so the exact key is saved after install
-          - name: Restore vendor
-            id: vendor-cache
-            # master builds install from scratch
-            if: ${{ !(github.event_name == 'push' && github.ref == 'refs/heads/master') }}
-            uses: actions/cache/restore@v6
-            with:
-              path: ~/vendor
-              key: ${{ runner.os }}-vendor-lint-${{ secrets.CACHE_VERSION }}-
-              restore-keys: |
-                ${{ runner.os }}-vendor-lint-${{ secrets.CACHE_VERSION }}-
-
-          - name: Checkout Code
-            uses: actions/checkout@v7
-            with:
-              fetch-depth: 2
-              sparse-checkout-cone-mode: false
-              sparse-checkout: |
-                /*
-                !/tests/data/
-                !/tests/snmpsim/
-                !/mibs/
-                !/doc/
-
-      - name: Composer install
-        run: |
-          # composer brings a restored vendor in line with composer.lock
-          if [ -d ~/vendor ]; then mv ~/vendor vendor; fi
-          composer install --prefer-dist --no-interaction --no-progress --no-scripts --no-autoloader
-
-      # the cache path must be the same as on restore
-      - name: Copy vendor for cache
-        if: ${{ !(github.event_name == 'push' && github.ref == 'refs/heads/master') && !endsWith(steps.vendor-cache.outputs.cache-matched-key, hashFiles('composer.lock')) }}
-        run: cp -a vendor ~/vendor
-
-      - name: Save vendor
-        if: ${{ !(github.event_name == 'push' && github.ref == 'refs/heads/master') && !endsWith(steps.vendor-cache.outputs.cache-matched-key, hashFiles('composer.lock')) }}
-        background: true
-        uses: actions/cache/save@v6
+      - name: Checkout Code
+        uses: actions/checkout@v7
         with:
-          path: ~/vendor
-          key: ${{ runner.os }}-vendor-lint-${{ secrets.CACHE_VERSION }}-${{ hashFiles('composer.lock') }}
+          fetch-depth: 2
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/tests/data/
+            !/tests/snmpsim/
+            !/mibs/
+            !/doc/
 
-      - name: Composer dump
-        run: composer dump --strict-psr --strict-ambiguous --no-interaction --no-scripts
+      - name: Install PHP dependencies
+        uses: ./.github/actions/composer-install
+        with:
+          cache-version: ${{ secrets.CACHE_VERSION }}
 
       - name: Find new PHP files
         if: github.event_name == 'pull_request' && matrix.config.name == 'Main'
@@ -129,53 +97,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # start checkout last, it can fail reading the event payload while other steps start
-      - parallel:
-          # outside the workspace, checkout empties it. Restore by prefix, hashFiles() needs
-          # the checkout so the exact key is saved after install
-          - name: Restore vendor
-            id: vendor-cache
-            # master builds install from scratch
-            if: ${{ !(github.event_name == 'push' && github.ref == 'refs/heads/master') }}
-            uses: actions/cache/restore@v6
-            with:
-              path: ~/vendor
-              key: ${{ runner.os }}-vendor-lint-${{ secrets.CACHE_VERSION }}-
-              restore-keys: |
-                ${{ runner.os }}-vendor-lint-${{ secrets.CACHE_VERSION }}-
-
-          - name: Checkout Code
-            uses: actions/checkout@v7
-            with:
-              sparse-checkout-cone-mode: false
-              sparse-checkout: |
-                /*
-                !/tests/data/
-                !/tests/snmpsim/
-                !/mibs/
-                !/doc/
-
-      - name: Composer install
-        run: |
-          # composer brings a restored vendor in line with composer.lock
-          if [ -d ~/vendor ]; then mv ~/vendor vendor; fi
-          composer install --prefer-dist --no-interaction --no-progress --no-scripts --no-autoloader
-
-      # the cache path must be the same as on restore
-      - name: Copy vendor for cache
-        if: ${{ !(github.event_name == 'push' && github.ref == 'refs/heads/master') && !endsWith(steps.vendor-cache.outputs.cache-matched-key, hashFiles('composer.lock')) }}
-        run: cp -a vendor ~/vendor
-
-      - name: Save vendor
-        if: ${{ !(github.event_name == 'push' && github.ref == 'refs/heads/master') && !endsWith(steps.vendor-cache.outputs.cache-matched-key, hashFiles('composer.lock')) }}
-        background: true
-        uses: actions/cache/save@v6
+      - name: Checkout Code
+        uses: actions/checkout@v7
         with:
-          path: ~/vendor
-          key: ${{ runner.os }}-vendor-lint-${{ secrets.CACHE_VERSION }}-${{ hashFiles('composer.lock') }}
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/tests/data/
+            !/tests/snmpsim/
+            !/mibs/
+            !/doc/
 
-      - name: Composer dump
-        run: composer dump --strict-psr --strict-ambiguous --no-interaction --no-scripts
+      - name: Install PHP dependencies
+        uses: ./.github/actions/composer-install
+        with:
+          cache-version: ${{ secrets.CACHE_VERSION }}
 
       - name: Run Rector (dry-run)
         run: ./vendor/bin/rector process --dry-run --no-progress-bar --ansi --memory-limit=1G
@@ -185,50 +121,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # start checkout last, it can fail reading the event payload while other steps start
-      - parallel:
-          # outside the workspace, checkout empties it. Restore by prefix, hashFiles() needs
-          # the checkout so the exact key is saved after install
-          - name: Restore vendor
-            id: vendor-cache
-            # master builds install from scratch
-            if: ${{ !(github.event_name == 'push' && github.ref == 'refs/heads/master') }}
-            uses: actions/cache/restore@v6
-            with:
-              path: ~/vendor
-              key: ${{ runner.os }}-vendor-lint-${{ secrets.CACHE_VERSION }}-
-              restore-keys: |
-                ${{ runner.os }}-vendor-lint-${{ secrets.CACHE_VERSION }}-
-
-          - name: Checkout Code
-            uses: actions/checkout@v7
-            with:
-              sparse-checkout-cone-mode: false
-              sparse-checkout: |
-                /*
-                !/tests/data/
-                !/tests/snmpsim/
-                !/mibs/
-                !/doc/
-
-      - name: Composer install
-        run: |
-          # composer brings a restored vendor in line with composer.lock
-          if [ -d ~/vendor ]; then mv ~/vendor vendor; fi
-          composer install --prefer-dist --no-interaction --no-progress --no-scripts --no-autoloader
-
-      # the cache path must be the same as on restore
-      - name: Copy vendor for cache
-        if: ${{ !(github.event_name == 'push' && github.ref == 'refs/heads/master') && !endsWith(steps.vendor-cache.outputs.cache-matched-key, hashFiles('composer.lock')) }}
-        run: cp -a vendor ~/vendor
-
-      - name: Save vendor
-        if: ${{ !(github.event_name == 'push' && github.ref == 'refs/heads/master') && !endsWith(steps.vendor-cache.outputs.cache-matched-key, hashFiles('composer.lock')) }}
-        background: true
-        uses: actions/cache/save@v6
+      - name: Checkout Code
+        uses: actions/checkout@v7
         with:
-          path: ~/vendor
-          key: ${{ runner.os }}-vendor-lint-${{ secrets.CACHE_VERSION }}-${{ hashFiles('composer.lock') }}
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/tests/data/
+            !/tests/snmpsim/
+            !/mibs/
+            !/doc/
+
+      - name: Install PHP dependencies
+        uses: ./.github/actions/composer-install
+        with:
+          cache-version: ${{ secrets.CACHE_VERSION }}
+          dump-autoload: false
 
       - name: Run Pint (dry-run)
         run: ./vendor/bin/pint --test --parallel

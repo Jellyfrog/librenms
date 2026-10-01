@@ -5,6 +5,10 @@ inputs:
   cache-version:
     description: 'Cache version key for Composer dependency cache'
     required: true
+  dump-autoload:
+    description: 'Generate the Composer autoloader'
+    required: false
+    default: 'true'
 
 runs:
   using: 'composite'
@@ -33,5 +37,6 @@ runs:
       run: composer install --prefer-dist --no-interaction --no-progress --no-scripts --no-autoloader
 
     - name: Composer dump-autoload
+      if: inputs.dump-autoload == 'true'
       shell: bash
       run: composer dump --strict-psr --strict-ambiguous --no-interaction --no-scripts

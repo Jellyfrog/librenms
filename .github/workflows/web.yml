@@ -33,31 +33,16 @@ jobs:
           nohup "$CHROMEWEBDRIVER/chromedriver" --port=9515 > /tmp/chromedriver.log 2>&1 &
           timeout 30 bash -c 'until curl -sf http://127.0.0.1:9515/status > /dev/null; do sleep 0.2; done'
 
-      # start checkout last, it can fail reading the event payload while other steps start
-      - parallel:
-          # outside the workspace, checkout empties it. Restore by prefix, hashFiles() needs
-          # the checkout so the exact key is saved after install
-          - name: Restore vendor
-            id: vendor-cache
-            # master builds install from scratch
-            if: github.event_name != 'push'
-            uses: actions/cache/restore@v6
-            with:
-              path: ~/vendor
-              key: ${{ runner.os }}-vendor-web-${{ secrets.CACHE_VERSION }}-
-              restore-keys: |
-                ${{ runner.os }}-vendor-web-${{ secrets.CACHE_VERSION }}-
-
-          - name: Checkout
-            uses: actions/checkout@v7
-            with:
-              sparse-checkout-cone-mode: false
-              sparse-checkout: |
-                /*
-                !/tests/data/
-                !/tests/snmpsim/
-                !/mibs/
-                !/doc/
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/tests/data/
+            !/tests/snmpsim/
+            !/mibs/
+            !/doc/
 
       - name: Init env
         run: |
@@ -80,24 +65,19 @@ jobs:
       - name: Setup SQLite
         run: sqlite3 database/testing.sqlite ""
 
-      - name: Install Composer Dependencies
-        run: |
-          # composer brings a restored vendor in line with composer.lock
-          if [ -d ~/vendor ]; then mv ~/vendor vendor; fi
-          composer install --no-progress --prefer-dist --optimize-autoloader
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-      # the cache path must be the same as on restore
-      - name: Copy vendor for cache
-        if: ${{ github.event_name != 'push' && !endsWith(steps.vendor-cache.outputs.cache-matched-key, hashFiles('composer.lock')) }}
-        run: cp -a vendor ~/vendor
-
-      - name: Save vendor
-        if: ${{ github.event_name != 'push' && !endsWith(steps.vendor-cache.outputs.cache-matched-key, hashFiles('composer.lock')) }}
-        background: true
-        uses: actions/cache/save@v6
+      - name: Cache composer
+        uses: actions/cache@v6
         with:
-          path: ~/vendor
-          key: ${{ runner.os }}-vendor-web-${{ secrets.CACHE_VERSION }}-${{ hashFiles('composer.lock') }}
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+
+      - name: Install Composer Dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
 
       - name: Generate Application Key
         run: php artisan key:generate
