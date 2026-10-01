@@ -164,10 +164,3 @@ jobs:
         name: Dump docker logs on failure
         if: failure()
         uses: jwalton/gh-docker-logs@v2
-      -
-        name: Upload LibreNMS Logs
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: librenms-logs-${{ matrix.name }}-${{ strategy.job-index }}
-          path: logs/librenms.log
