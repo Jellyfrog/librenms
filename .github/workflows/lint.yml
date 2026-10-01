@@ -70,7 +70,7 @@ jobs:
             !/doc/
 
       - name: Install PHP dependencies
-        uses: ./.github/actions/composer-install
+        uses: $/.github/actions/composer-install
         with:
           cache-version: ${{ secrets.CACHE_VERSION }}
 
@@ -109,7 +109,7 @@ jobs:
             !/doc/
 
       - name: Install PHP dependencies
-        uses: ./.github/actions/composer-install
+        uses: $/.github/actions/composer-install
         with:
           cache-version: ${{ secrets.CACHE_VERSION }}
 
@@ -133,7 +133,7 @@ jobs:
             !/doc/
 
       - name: Install PHP dependencies
-        uses: ./.github/actions/composer-install
+        uses: $/.github/actions/composer-install
         with:
           cache-version: ${{ secrets.CACHE_VERSION }}
           dump-autoload: false
