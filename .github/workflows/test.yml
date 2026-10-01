@@ -61,8 +61,35 @@ jobs:
           - 3306
     steps:
       -
+        # tests/data and tests/snmpsim are split per OS, an OS job only needs the
+        # files of its own OS letters. The other jobs exclude the os group
+        name: Select test data
+        id: test-data
+        env:
+          ARGUMENTS: ${{ matrix.arguments }}
+        run: |
+          {
+            echo 'paths<<EOF'
+            echo '/*'
+            echo '!/tests/data/*'
+            echo '!/tests/snmpsim/*'
+            if [[ $ARGUMENTS =~ --os\ ([^ ]+) ]]; then
+              for os in ${BASH_REMATCH[1]//,/ }; do
+                echo "/tests/data/$os*"
+                echo "/tests/snmpsim/$os*"
+              done
+            else
+              echo '/tests/data/misc/'
+              echo '/tests/snmpsim/snmpquerymock_regression.snmprec'
+            fi
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+      -
         name: Checkout
         uses: actions/checkout@v6
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: ${{ steps.test-data.outputs.paths }}
       -
         name: Set up PHP
         uses: shivammathur/setup-php@v2
