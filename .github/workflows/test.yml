@@ -77,29 +77,28 @@ jobs:
             -v "$GITHUB_WORKSPACE/tests/snmpsim:/usr/local/snmpsim/data:ro" \
             ghcr.io/librenms/snmpsim:v2-lite --log-level=error
       -
-        name: Set up PHP
-        id: php
-        background: true
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-version }}
-          tools: composer
-          coverage: none
-      -
-        # restore by prefix, hashFiles() needs the checkout so the exact key is saved after install
-        name: Restore composer cache
-        id: composer-cache
-        background: true
-        uses: actions/cache/restore@v6
-        with:
-          path: ~/.cache/composer/files
-          key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
-          restore-keys: |
-            ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
-      -
         # start checkout last, it can fail reading the event payload while other steps start
-        name: Checkout
-        uses: actions/checkout@v7
+        parallel:
+          -
+            name: Set up PHP
+            uses: shivammathur/setup-php@v2
+            with:
+              php-version: ${{ matrix.php-version }}
+              tools: composer
+              coverage: none
+          -
+            # restore by prefix, hashFiles() needs the checkout so the exact key is saved after install
+            name: Restore composer cache
+            id: composer-cache
+            uses: actions/cache/restore@v6
+            with:
+              path: ~/.cache/composer/files
+              key: ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+              restore-keys: |
+                ${{ runner.os }}-composer-${{ secrets.CACHE_VERSION }}-
+          -
+            name: Checkout
+            uses: actions/checkout@v7
       -
         name: Start SNMPSIM
         id: snmpsim
@@ -140,9 +139,6 @@ jobs:
       -
         name: Setup SQLite
         run: sqlite3 database/testing.sqlite ""
-      -
-        name: Wait for PHP and composer cache
-        wait: [php, composer-cache]
       -
         name: Composer validate
         run: |
