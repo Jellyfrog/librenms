@@ -112,6 +112,20 @@ jobs:
           python3 -m pip install --upgrade --user pylint python-memcached mysqlclient
 
       -
+        # Snmpsim.php has the snmpsim install spec. It follows the v2 branch, so also
+        # rebuild weekly to pick up new snmpsim commits
+        name: Get snmpsim cache key
+        id: snmpsim
+        run: |
+          echo "python=$(python3 -c 'import platform; print(platform.python_version())')" >> "$GITHUB_OUTPUT"
+          echo "week=$(date -u +%G-%V)" >> "$GITHUB_OUTPUT"
+      -
+        name: Cache snmpsim venv
+        uses: actions/cache@v5
+        with:
+          path: .python_venvs/snmpsim
+          key: ${{ runner.os }}-snmpsim-venv-${{ steps.snmpsim.outputs.python }}-${{ hashFiles('LibreNMS/Util/Snmpsim.php') }}-${{ steps.snmpsim.outputs.week }}
+      -
         name: Snmpsim setup
         run: |
           php lnms dev:simulate --setup-venv
