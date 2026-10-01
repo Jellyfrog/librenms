@@ -3,7 +3,6 @@ text: 'Alpha Power'
 type: power
 icon: alpha
 mib_dir: scte
-
 discovery:
     -
         sysObjectID:
