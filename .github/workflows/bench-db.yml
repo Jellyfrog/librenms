@@ -48,4 +48,4 @@ jobs:
       - uses: ./.github/actions/composer-install
 
       - name: Bench
-        run: .github/bench/db.sh
+        run: .github/bench/db2.sh
