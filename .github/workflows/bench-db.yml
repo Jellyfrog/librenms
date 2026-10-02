@@ -7,49 +7,13 @@ on:
 
 jobs:
   bench:
-    name: ${{ matrix.variant }} ${{ matrix.rep }}
+    name: run ${{ matrix.rep }}
     runs-on: ubuntu-26.04
     strategy:
       fail-fast: false
       matrix:
-        variant: [mysql, mysql-tuned, mysql-tmpfs, mysql-tmpfs-tuned, mariadb, mariadb-tuned, mariadb-tmpfs, mariadb-tmpfs-tuned]
-        rep: [1, 2]
-    env:
-      VARIANT: ${{ matrix.variant }}
-      SNMPSIM_VERSION: 2.0.1
+        rep: [1, 2, 3]
     steps:
-      - name: Start database
-        run: |
-          T0=$(date +%s.%N)
-          if [[ $VARIANT == mysql* ]]; then
-            if [[ $VARIANT == *tuned ]]; then
-              printf '[mysqld]\nskip-log-bin\ninnodb_flush_log_at_trx_commit=0\ninnodb_doublewrite=OFF\n' | sudo tee /etc/mysql/mysql.conf.d/zz-ci.cnf
-            fi
-            if [[ $VARIANT == *tmpfs* ]]; then
-              sudo mv /var/lib/mysql /var/lib/mysql.disk
-              sudo mkdir /var/lib/mysql
-              sudo mount -t tmpfs -o size=4g tmpfs /var/lib/mysql
-              sudo cp -a /var/lib/mysql.disk/. /var/lib/mysql/
-              sudo chown mysql:mysql /var/lib/mysql
-            fi
-            sudo systemctl start mysql
-            sql() { mysql --user=root --password=root; }
-          else
-            args=()
-            [[ $VARIANT == *tmpfs* ]] && args+=(--tmpfs /var/lib/mysql:rw)
-            cmd=()
-            [[ $VARIANT == *tuned ]] && cmd+=(--innodb-flush-log-at-trx-commit=0 --innodb-doublewrite=0)
-            docker run -d --name database -p 3306:3306 -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=1 "${args[@]}" mariadb:lts "${cmd[@]}" > /dev/null
-            until docker exec database healthcheck.sh --connect --innodb_initialized 2> /dev/null; do sleep 0.2; done
-            sql() { docker exec -i database mariadb --user=root; }
-          fi
-          sql <<'SQL'
-          CREATE DATABASE librenms_phpunit_78hunjuybybh CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-          CREATE USER 'librenms'@'%' IDENTIFIED BY 'librenms';
-          GRANT ALL PRIVILEGES ON librenms_phpunit_78hunjuybybh.* TO 'librenms'@'%';
-          SQL
-          echo "DB_READY=$(echo "$(date +%s.%N)-$T0" | bc)" >> "$GITHUB_ENV"
-
       - uses: actions/checkout@v7
 
       - uses: shivammathur/setup-php@v2
@@ -57,12 +21,6 @@ jobs:
           php-version: pre-installed
           tools: none
           coverage: none
-
-      - name: Install snmpsim
-        run: |
-          python3 -m venv .python_venvs/snmpsim
-          .python_venvs/snmpsim/bin/pip install -q "https://github.com/librenms/snmpsim/releases/download/v$SNMPSIM_VERSION/snmpsim-$SNMPSIM_VERSION-py3-none-any.whl"
-          .python_venvs/snmpsim/bin/snmpsim-command-responder-lite --daemonize --pid-file=/tmp/snmpsimd.pid --data-dir=tests/snmpsim --agent-udpv4-endpoint=127.1.6.2:1162 --log-level=error --logging-method=file:/tmp/snmpsimd.log
 
       - name: Init env
         run: |
@@ -89,24 +47,5 @@ jobs:
 
       - uses: ./.github/actions/composer-install
 
-      - name: Time migrations
-        run: |
-          t() { local s=$(date +%s.%N); "$@" > /dev/null; echo "$(date +%s.%N)-$s" | bc; }
-          echo "MIGRATE_DUMP=$(t php artisan migrate --force)" >> "$GITHUB_ENV"
-          mv database/schema/mysql-schema.sql /tmp/
-          echo "MIGRATE_FULL=$(t php artisan migrate:fresh --force)" >> "$GITHUB_ENV"
-          mv /tmp/mysql-schema.sql database/schema/
-          php artisan migrate:fresh --force > /dev/null
-
-      - name: Time tests
-        run: |
-          s=$(date +%s.%N)
-          php lnms dev:check ci --os t
-          echo "TESTS=$(echo "$(date +%s.%N)-$s" | bc)" >> "$GITHUB_ENV"
-
-      - name: Result
-        if: always()
-        run: |
-          line=$(printf 'RESULT %-20s rep=%s ready=%5.1fs migrate_dump=%5.1fs migrate_full=%5.1fs tests=%6.1fs' "$VARIANT" "${{ matrix.rep }}" "${DB_READY:-0}" "${MIGRATE_DUMP:-0}" "${MIGRATE_FULL:-0}" "${TESTS:-0}")
-          echo "$line"
-          echo "$line" >> "$GITHUB_STEP_SUMMARY"
+      - name: Bench
+        run: .github/bench/db.sh
