@@ -12,16 +12,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        variant: [setup-php-8.5, phpdismod]
+        variant: [setup-php-8.5, setup-php-pre, phpdismod]
         rep: [1, 2, 3]
     steps:
       - name: Before
         run: php -v | head -1; php -m | grep -ci xdebug || true
       - name: Set up PHP
-        if: matrix.variant == 'setup-php-8.5'
+        if: startsWith(matrix.variant, 'setup-php')
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.5'
+          php-version: ${{ matrix.variant == 'setup-php-pre' && 'pre-installed' || '8.5' }}
           tools: composer
           coverage: none
       - name: Disable Xdebug
