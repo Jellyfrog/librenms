@@ -1,0 +1,31 @@
+name: Bench setup-php
+
+on:
+  push:
+    branches: [bench-snmpsim]
+  workflow_dispatch:
+
+jobs:
+  bench:
+    name: ${{ matrix.variant }} ${{ matrix.rep }}
+    runs-on: ubuntu-26.04
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [setup-php-8.5, phpdismod]
+        rep: [1, 2, 3]
+    steps:
+      - name: Before
+        run: php -v | head -1; php -m | grep -ci xdebug || true
+      - name: Set up PHP
+        if: matrix.variant == 'setup-php-8.5'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          tools: composer
+          coverage: none
+      - name: Disable Xdebug
+        if: matrix.variant == 'phpdismod'
+        run: sudo phpdismod -v 8.5 xdebug
+      - name: After
+        run: php -v | head -1; php -m | grep -ci xdebug || true; composer --version
