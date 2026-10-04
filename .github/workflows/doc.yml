@@ -37,16 +37,8 @@ jobs:
             /resources/definitions/os_detection
             /doc
       -
-        name: Set up Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: 3.x
-      -
-        name: Install Zensical
-        run: pip install zensical==0.0.67
-      -
         name: Build docs
-        run: zensical build --clean --strict --config-file doc/zensical.toml
+        run: pipx run --spec zensical==0.0.67 zensical build --clean --strict --config-file doc/zensical.toml
       -
         name: Check GitHub Pages status
         if: github.repository == 'librenms/librenms' && github.event_name != 'pull_request' && endsWith(github.ref, github.event.repository.default_branch)
