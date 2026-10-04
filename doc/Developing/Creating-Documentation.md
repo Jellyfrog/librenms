@@ -5,7 +5,7 @@ documentation.
 
 The documentation uses the
 [markdown](https://en.wikipedia.org/wiki/Markdown) markup language.
-[mkdocs](https://www.mkdocs.org/) generates the site. A text editor is
+[Zensical](https://zensical.org/) generates the site. A text editor is
 enough to edit or create markdown. Build your documents before you
 submit them, so that you can examine the result. A section on this page
 gives the instructions.
@@ -20,7 +20,7 @@ steps:
 - Give the document a short, descriptive name. The name must match the
   search terms of the user or describe the feature.
 - To put the document into the table of contents, add it to the `nav`
-  section of `mkdocs.yml`.
+  section of `doc/.nav.yml`.
 - Put `source: path/to/file.md` on the first line. Do not include the
   leading `doc/`.
 - In the body of the document, be descriptive and simple. Some advice:
@@ -31,20 +31,19 @@ steps:
     single line in backticks and a block in triple backticks.
     - Use subheadings to organise the content.
 - After you rename a file, add a redirect for the old file in
-  `mkdocs.yml`:
-```yaml
-  - redirects:
-      redirect_maps:
-        'old/page.md': 'new/page.md'
+  `doc/zensical.toml`:
+```toml
+[project.plugins.redirects.redirect_maps]
+"old/page.md" = "new/page.md"
 ```
 
-Add the document to the correct section in `pages` of `mkdocs.yml`. The
-document is then in the correct menu, and mkdocs builds it. Without
-this step, the document never appears.
+Add the document to the correct section in `nav` of `doc/.nav.yml`. The
+document is then in the correct menu. Without this step, the document
+never appears.
 
 ## Formatting docs
 
-Our documents use Markdown with mkdocs. mkdocs obeys the markdown
+Our documents use Markdown with Zensical. Zensical obeys the markdown
 specification only. We therefore import two extra libraries:
 
 - pymdownx.tasklist
@@ -67,67 +66,47 @@ You can therefore use:
 
 ## Building docs
 
-`mkdocs` is a Python package. It builds the documents.
+`zensical` is a Python package. It builds the documents.
 
-1. Install the required packages.
-
-Make a new virtual environment and activate it:
+1. Install Zensical in a new virtual environment:
 
 ```
 python -m venv .python_venvs/docs
 source .python_venvs/docs/bin/activate
+pip install zensical
 ```
 
-```
-pip install \
- markdown-exec \
- markdown-include \
- mkdocs \
- mkdocs-awesome-pages-plugin \
- mkdocs-exclude \
- mkdocs-git-revision-date-localized-plugin \
- mkdocs-include-dir-to-nav \
- mkdocs-macros-plugin \
- mkdocs-material \
- mkdocs-minify-plugin \
- mkdocs-redirects \
- pymdown-extensions
-```
-If you get a permission error, use the user option with your build
-user. An example is `-u librenms`.
-
-2. The distribution holds the configuration file for the LibreNMS docs:
-`/opt/librenms/mkdocs.yml`. The [mkdocs configuration
-guide](https://www.mkdocs.org/user-guide/configuration/) describes the
-directives.
+2. The configuration file for the LibreNMS docs is
+`/opt/librenms/doc/zensical.toml`. The [Zensical
+documentation](https://zensical.org/docs/setup/basics/) describes the
+settings.
 
 3. Build from the librenms base directory: `cd /opt/librenms`.
 
 4. Run the build:
 
 ```
-mkdocs build
+zensical build --config-file doc/zensical.toml
 ```
 
 The command writes all the documentation in HTML format to
-`/opt/librenms/out`. Git ignores this folder.
+`/opt/librenms/doc/out`. Git ignores this folder.
 
+You can also use the official Docker image instead of installing
+Zensical:
+
+```
+docker run --rm -v "$(pwd):/librenms" -w /librenms zensical/zensical build --config-file doc/zensical.toml
+```
 
 ## Viewing docs
 
-mkdocs has its own small web server for this purpose.
+Zensical has its own small web server for this purpose.
 
 Run this command:
 
 ```
-$ mkdocs serve
-INFO    -  Building documentation...
-<..>
-INFO    -  Documentation built in 12.54 seconds
-<..>
-INFO    -  Serving on http://127.0.0.1:8000
-<..>
-INFO    -  Start watching changes
+zensical serve --config-file doc/zensical.toml
 ```
 
 Open `localhost:8000` in your browser. The full set of LibreNMS
@@ -144,7 +123,7 @@ For a build on a different machine, use this directive. The server then
 listens on all interfaces:
 
 ```
-mkdocs serve --dev-addr=0.0.0.0:8000
+zensical serve --config-file doc/zensical.toml --dev-addr=0.0.0.0:8000
 ```
 
 WARNING: do not leave this server in operation. It is not a secure web

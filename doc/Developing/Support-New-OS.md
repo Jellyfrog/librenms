@@ -3,7 +3,7 @@
 This guide explains how to add support for a new operating system or update existing OS support in LibreNMS.
 
 AI agents and automated tools can refer to the dedicated skill:
-[.agents/skills/add-os-support/SKILL.md](file:///.agents/skills/add-os-support/SKILL.md).
+[.agents/skills/add-os-support/SKILL.md](https://github.com/librenms/librenms/blob/master/.agents/skills/add-os-support/SKILL.md).
 
 ---
 

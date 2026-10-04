@@ -25,15 +25,4 @@ incomplete. If a feature is not in the list, ask us about it.
 This is a list of the supported vendors. The list can be incomplete.
 If you do not know whether LibreNMS supports your device, ask us.
 
-```sh exec="1"
-grep -h "^text: " resources/definitions/os_detection/*.yaml \
-| sed -E "s/^text: *[\"']?([^\"']+).*/\1/" \
-| sort -f -u \
-| awk '{\
-  if (last != tolower(substr($0, 0, 1))) {\
-    print "\n### "toupper(substr($0,0,1))"\n* "$0; last = tolower(substr($1, 0, 1))\
-  } else {\
-    print "* "$0\
-  }\
-}'
-```
+@= supported_vendors() =@

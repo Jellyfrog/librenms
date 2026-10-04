@@ -39,7 +39,7 @@ final class DocsTest extends TestCase
     #[Group('docs')]
     public function testDocExist(): void
     {
-        $mkdocs = Yaml::parse(file_get_contents(self::basePath('mkdocs.yml')));
+        $nav = Yaml::parse(file_get_contents(self::basePath('doc/.nav.yml')));
 
         // Paths to exclude
         $exclude_paths = [
@@ -52,9 +52,9 @@ final class DocsTest extends TestCase
         // Check for missing pages
         collect(Finder::create()->files()->in(self::basePath('doc'))->name('*.md')->notPath($exclude_paths))
             ->map(fn ($file) => $file->getRelativePathname())
-            ->diff(collect($mkdocs['nav'])->flatten()->merge($this->hidden_pages)) // grab defined pages and diff
+            ->diff(collect($nav['nav'])->flatten()->merge($this->hidden_pages)) // grab defined pages and diff
             ->each(function ($missing_doc): void {
-                $this->fail("The doc $missing_doc doesn't exist in mkdocs.yml, please add it to the relevant section");
+                $this->fail("The doc $missing_doc doesn't exist in doc/.nav.yml, please add it to the relevant section");
             });
 
         $this->expectNotToPerformAssertions();

@@ -691,7 +691,7 @@ cp /opt/librenms/misc/lnms-completion.bash /etc/bash_completion.d/
 
 ## Configure snmpd (v2c)
 
-To use SNMPv3, see the [SNMP configuration examples](../Support/SNMP-Configuration-Examples.md/#linux-snmpd-v3).
+To use SNMPv3, see the [SNMP configuration examples](../Support/SNMP-Configuration-Examples.md#linux-snmpd-v3).
 
 ```
 cp /opt/librenms/snmpd.conf.example /etc/snmp/snmpd.conf

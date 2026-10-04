@@ -1,0 +1,128 @@
+[project]
+site_name = "LibreNMS Docs"
+site_url = "https://docs.librenms.org"
+site_author = "LibreNMS"
+site_description = "LibreNMS user and developer documentation"
+docs_dir = "."
+site_dir = "out"
+repo_url = "https://github.com/librenms/librenms/"
+repo_name = "GitHub"
+edit_uri = "edit/master/doc"
+extra_css = [
+  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css",
+  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css",
+  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css",
+  "librenms.css",
+]
+extra_javascript = ["js/docs-settings-links.js"]
+
+[project.theme]
+variant = "classic"
+logo = "img/librenms.svg"
+language = "en"
+font.text = "Roboto"
+font.code = "Roboto Mono"
+features = [
+  "navigation.footer",
+  "navigation.instant",
+  "navigation.tracking",
+  "navigation.top",
+  "navigation.path",
+  "content.tabs.link",
+  "content.action.edit",
+  "content.code.copy",
+  "search.share",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "black"
+accent = "indigo"
+toggle.icon = "material/lightbulb-outline"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "black"
+accent = "indigo"
+toggle.icon = "material/lightbulb"
+toggle.name = "Switch to light mode"
+
+[project.extra]
+article_nav_top = false
+article_nav_bottom = true
+php.version_min = 8.4
+php.version_recommended = 8.5
+analytics.provider = "google"
+analytics.property = "G-K0B7KB9765"
+social = [
+  { icon = "fontawesome/brands/github", link = "https://github.com/librenms/", name = "GitHub" },
+  { icon = "fontawesome/brands/docker", link = "https://hub.docker.com/r/librenms/librenms", name = "Docker" },
+  { icon = "fontawesome/brands/discord", link = "https://discord.com/invite/librenms", name = "Discord" },
+  { icon = "fontawesome/brands/reddit", link = "https://www.reddit.com/r/LibreNMS/", name = "Reddit" },
+  { icon = "fontawesome/brands/twitter", link = "https://twitter.com/librenms", name = "Twitter" },
+  { icon = "fontawesome/brands/facebook", link = "https://www.facebook.com/LibreNMS", name = "Facebook" },
+  { icon = "fontawesome/brands/linkedin", link = "https://www.linkedin.com/company/librenms/", name = "LinkedIn" },
+]
+
+[project.markdown_extensions]
+tables = {}
+admonition = {}
+pymdownx.snippets = {}
+pymdownx.tasklist = {}
+pymdownx.tilde = {}
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid" },
+]
+pymdownx.tabbed.alternate_style = true
+pymdownx.details = {}
+pymdownx.highlight.extend_pygments_lang = [
+  { name = "php", lang = "php", options = { startinline = true } },
+]
+
+[project.plugins.macros]
+module_name = "macros"
+j2_variable_start_string = "@="
+j2_variable_end_string = "=@"
+
+[project.plugins.awesome-nav]
+
+[project.plugins.exclude]
+glob = ["zensical.toml", "macros.py"]
+
+[project.plugins.minify]
+minify_html = true
+minify_js = true
+minify_css = true
+js_files = ["js/docs-settings-links.js"]
+css_files = ["librenms.css"]
+
+[project.plugins.redirects.redirect_maps]
+"Alerting/Introduction.md" = "Alerting/index.md"
+"API/API-Docs.md" = "API/index.md"
+"Extensions/Alerting.md" = "Alerting/index.md"
+"Extensions/Email-Alerting.md" = "Alerting/Transports.md"
+"Extensions/Graphite.md" = "Extensions/metrics/Graphite.md"
+"Extensions/InfluxDB.md" = "Extensions/metrics/InfluxDB.md"
+"Extensions/InfluxDBv2.md" = "Extensions/metrics/InfluxDBv2.md"
+"Extensions/Kafka.md" = "Extensions/metrics/Kafka.md"
+"Extensions/OpenTSDB.md" = "Extensions/metrics/OpenTSDB.md"
+"Extensions/Poller-Service.md" = "Extensions/Dispatcher-Service.md"
+"Extensions/Port-Description-Parser.md" = "Extensions/Interface-Description-Parsing.md"
+"Extensions/Prometheus.md" = "Extensions/metrics/Prometheus.md"
+"General/Contributing.md" = "Developing/Getting-Started.md"
+"Installation/CentOS-image.md" = "Installation/Install-LibreNMS.md"
+"Installation/index.md" = "Installation/Install-LibreNMS.md"
+"Installation/Installation-CentOS-6-Apache-Nginx.md" = "Installation/Install-LibreNMS.md"
+"Installation/Installation-CentOS-7-Apache.md" = "Installation/Install-LibreNMS.md"
+"Installation/Installation-CentOS-7-Nginx.md" = "Installation/Install-LibreNMS.md"
+"Installation/Installation-Debian-11-Nginx.md" = "Installation/Install-LibreNMS.md"
+"Installation/Installation-Ubuntu-1604-Apache.md" = "Installation/Install-LibreNMS.md"
+"Installation/Installation-Ubuntu-1604-Nginx.md" = "Installation/Install-LibreNMS.md"
+"Installation/Installation-Ubuntu-1804-Apache.md" = "Installation/Install-LibreNMS.md"
+"Installation/Installation-Ubuntu-1804-Nginx.md" = "Installation/Install-LibreNMS.md"
+"Installation/Installing-LibreNMS.md" = "Installation/Install-LibreNMS.md"
+"Installation/Ubuntu-image.md" = "Installation/Images.md"
+"Support/Support-New-OS.md" = "Developing/Support-New-OS.md"

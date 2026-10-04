@@ -45,7 +45,7 @@
 
 This template sends a set of images, that is photos or files, and then
 the text message. LibreNMS removes each
-[signedGraphTag](../Templates.md/#signedgraphtag) helper from the
+[signedGraphTag](../Templates.md#signedgraphtag) helper from the
 message content.
 
 ```php
