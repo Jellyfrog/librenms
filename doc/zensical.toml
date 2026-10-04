@@ -8,47 +8,49 @@ site_dir = "out"
 repo_url = "https://github.com/librenms/librenms/"
 repo_name = "GitHub"
 edit_uri = "edit/master/doc"
-extra_css = [
-  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css",
-  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css",
-  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css",
-  "librenms.css",
-]
+extra_css = ["librenms.css"]
 extra_javascript = ["js/docs-settings-links.js"]
 
 [project.theme]
-variant = "classic"
 logo = "img/librenms.svg"
 language = "en"
-font.text = "Roboto"
-font.code = "Roboto Mono"
 features = [
   "navigation.footer",
   "navigation.instant",
+  "navigation.instant.prefetch",
   "navigation.tracking",
   "navigation.top",
   "navigation.path",
   "content.tabs.link",
   "content.action.edit",
   "content.code.copy",
+  "search.highlight",
   "search.share",
+  "toc.follow",
 ]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Switch to light mode"
 
 [[project.theme.palette]]
 media = "(prefers-color-scheme: light)"
 scheme = "default"
-primary = "black"
-accent = "indigo"
-toggle.icon = "material/lightbulb-outline"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/sun"
 toggle.name = "Switch to dark mode"
 
 [[project.theme.palette]]
 media = "(prefers-color-scheme: dark)"
 scheme = "slate"
-primary = "black"
-accent = "indigo"
-toggle.icon = "material/lightbulb"
-toggle.name = "Switch to light mode"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to system preference"
 
 [project.extra]
 article_nav_top = false
@@ -70,6 +72,10 @@ social = [
 [project.markdown_extensions]
 tables = {}
 admonition = {}
+attr_list = {}
+md_in_html = {}
+pymdownx.emoji.emoji_index = "zensical.extensions.emoji.twemoji"
+pymdownx.emoji.emoji_generator = "zensical.extensions.emoji.to_svg"
 pymdownx.snippets = {}
 pymdownx.tasklist = {}
 pymdownx.tilde = {}
