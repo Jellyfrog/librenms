@@ -403,7 +403,7 @@ class Cisco extends OS implements
             $qfp_usage = $entry['fiveMinute'] ?? null;
 
             if ($entQfpPhysicalIndex) {
-                $qfp_descr = $this->getCacheByIndex('entPhysicalName', 'ENTITY-MIB')[$entQfpPhysicalIndex];
+                $qfp_descr = $this->getCacheByIndex('entPhysicalName', 'ENTITY-MIB')[$entQfpPhysicalIndex] ?? null;
             }
 
             $processors[] = Processor::discover(
