@@ -43,6 +43,10 @@ class Ocnos extends OS implements EntityPhysicalDiscovery, TransceiverDiscovery
         $psus = SnmpQuery::enumStrings()->walk('IPI-CMM-CHASSIS-MIB::cmmPsuFruTable')->table(2);
         foreach ($psus as $cmmStackUnitIndex => $chassisPsu) {
             foreach ($chassisPsu as $cmmSysPSUIndex => $psu) {
+                if (! is_numeric($cmmStackUnitIndex) || ! is_numeric($cmmSysPSUIndex)) {
+                    continue;
+                }
+
                 $inventory->push(new EntPhysical([
                     'entPhysicalIndex' => $cmmStackUnitIndex * 1000 + $cmmSysPSUIndex,
                     'entPhysicalDescr' => (isset($psu['IPI-CMM-CHASSIS-MIB::cmmPsuType']) && $psu['IPI-CMM-CHASSIS-MIB::cmmPsuType'] != 'not-applicable') ? $psu['IPI-CMM-CHASSIS-MIB::cmmPsuType'] : null,
