@@ -261,7 +261,7 @@ class Mimosa extends OS implements
                 'mimosa-tx',
                 $index,
                 "Stream $index Tx Rate",
-                $entry['mimosaTxPhy'],
+                $entry['mimosaTxPhy'] ?? null,
                 1000000
             );
             $sensors[] = new WirelessSensor(
@@ -271,7 +271,7 @@ class Mimosa extends OS implements
                 'mimosa-rx',
                 $index,
                 "Stream $index Rx Rate",
-                $entry['mimosaRxPhy'],
+                $entry['mimosaRxPhy'] ?? null,
                 1000000
             );
         }
