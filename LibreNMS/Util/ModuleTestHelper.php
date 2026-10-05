@@ -451,18 +451,22 @@ class ModuleTestHelper
     }
 
     /**
-     * First location of the exception outside of vendor
+     * First locations of the exception outside of vendor
      */
     private function exceptionLocation(\Throwable $e): string
     {
+        $locations = [];
         $frames = array_merge([['file' => $e->getFile(), 'line' => $e->getLine()]], $e->getTrace());
         foreach ($frames as $frame) {
             if (isset($frame['file']) && ! str_contains($frame['file'], '/vendor/')) {
-                return str_replace(base_path() . '/', '', $frame['file']) . ':' . ($frame['line'] ?? 0);
+                $locations[] = str_replace(base_path() . '/', '', $frame['file']) . ':' . ($frame['line'] ?? 0);
+                if (count($locations) == 3) {
+                    break;
+                }
             }
         }
 
-        return $e->getFile() . ':' . $e->getLine();
+        return $locations ? implode(' < ', $locations) : $e->getFile() . ':' . $e->getLine();
     }
 
     private function listenForProblems(): void
