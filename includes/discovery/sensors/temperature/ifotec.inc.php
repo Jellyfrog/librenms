@@ -25,6 +25,10 @@
  */
 $index = 0;
 foreach ($pre_cache['ifoTemperatureTable'] ?? [] as $ifoSensor) {
+    if (! isset($ifoSensor['ifoTempValue']['oid'], $ifoSensor['ifoTempName']['value'])) {
+        continue;
+    }
+
     discover_sensor(
         null,
         'temperature',
@@ -32,14 +36,14 @@ foreach ($pre_cache['ifoTemperatureTable'] ?? [] as $ifoSensor) {
         $ifoSensor['ifoTempValue']['oid'],
         $ifoSensor['ifoTempName']['value'], // each sensor id must be unique
         'ifotecSensor',
-        $ifoSensor['ifoTempDescr']['value'],
+        $ifoSensor['ifoTempDescr']['value'] ?? '',
         10, // divider
         1, // multiplier
-        $ifoSensor['ifoTempLowThldAlarm']['value'] / 10,
-        $ifoSensor['ifoTempLowThldWarning']['value'] / 10,
-        $ifoSensor['ifoTempHighThldWarning']['value'] / 10,
-        $ifoSensor['ifoTempHighThldAlarm']['value'] / 10,
-        $ifoSensor['ifoTempValue']['value'] / 10
+        ($ifoSensor['ifoTempLowThldAlarm']['value'] ?? null) / 10,
+        ($ifoSensor['ifoTempLowThldWarning']['value'] ?? null) / 10,
+        ($ifoSensor['ifoTempHighThldWarning']['value'] ?? null) / 10,
+        ($ifoSensor['ifoTempHighThldAlarm']['value'] ?? null) / 10,
+        ($ifoSensor['ifoTempValue']['value'] ?? null) / 10
     );
 
     $index++;
