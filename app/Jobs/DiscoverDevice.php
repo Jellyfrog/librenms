@@ -114,48 +114,50 @@ EOH, $this->device->hostname, $os_group ? " ($os_group)" : '', $this->device->de
             $os = $this->handleOsChange($os);
         });
 
-        foreach ($this->moduleList->modulesWithStatus(ProcessType::Discovery, $this->device) as $module => $module_status) {
-            $should_discover = false;
-            $start_memory = memory_get_usage();
-            $module_start = microtime(true);
+        try {
+            foreach ($this->moduleList->modulesWithStatus(ProcessType::Discovery, $this->device) as $module => $module_status) {
+                $should_discover = false;
+                $start_memory = memory_get_usage();
+                $module_start = microtime(true);
 
-            try {
-                $instance = Module::fromName($module);
-                $should_discover = $instance->shouldDiscover($os, $module_status, $connectivity);
+                try {
+                    $instance = Module::fromName($module);
+                    $should_discover = $instance->shouldDiscover($os, $module_status, $connectivity);
 
-                if ($should_discover) {
-                    DiscoveringModule::dispatch($this->device, $module);
-                    Log::info("#### Load discovery module $module ####\n");
-                    Log::debug($module_status);
+                    if ($should_discover) {
+                        DiscoveringModule::dispatch($this->device, $module);
+                        Log::info("#### Load discovery module $module ####\n");
+                        Log::debug($module_status);
 
-                    if ($module_status->hasSubModules()) {
-                        LibrenmsConfig::set('discovery_submodules.' . $module, $module_status->submodules);
+                        if ($module_status->hasSubModules()) {
+                            LibrenmsConfig::set('discovery_submodules.' . $module, $module_status->submodules);
+                        }
+
+                        $instance->discover($os);
+                    }
+                } catch (Throwable $e) {
+                    // Re-throw exception if we're in running tests
+                    if (defined('PHPUNIT_RUNNING')) {
+                        throw $e;
                     }
 
-                    $instance->discover($os);
-                }
-            } catch (Throwable $e) {
-                // Re-throw exception if we're in running tests
-                if (defined('PHPUNIT_RUNNING')) {
-                    throw $e;
+                    // isolate module exceptions so they don't disrupt the discovery process
+                    Eventlog::log("Error discovering $module module: " . class_basename($e) . '. Check log file for more details.', $this->device, 'discovery', Severity::Error);
+                    report($e);
                 }
 
-                // isolate module exceptions so they don't disrupt the discovery process
-                Eventlog::log("Error discovering $module module: " . class_basename($e) . '. Check log file for more details.', $this->device, 'discovery', Severity::Error);
-                report($e);
+                if ($should_discover) {
+                    Log::info('');
+                    app(MeasurementManager::class)->printChangedStats();
+                    Module::savePerformance($module, ProcessType::Discovery, $module_start, $start_memory);
+                    Log::info("#### Unload discovery module $module ####\n");
+                    ModuleDiscovered::dispatch($this->device, $module);
+                }
             }
-
-            if ($should_discover) {
-                Log::info('');
-                app(MeasurementManager::class)->printChangedStats();
-                Module::savePerformance($module, ProcessType::Discovery, $module_start, $start_memory);
-                Log::info("#### Unload discovery module $module ####\n");
-                ModuleDiscovered::dispatch($this->device, $module);
-            }
+        } finally {
+            // Remove listener to allow this object to be garbage collected
+            Event::forget(OsChangedEvent::class);
         }
-
-        // Remove listener to allow this object to be garbage collected
-        Event::forget(OsChangedEvent::class);
     }
 
     private function handleOsChange(OS $os): OS
