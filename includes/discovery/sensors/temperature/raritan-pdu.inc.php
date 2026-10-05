@@ -33,7 +33,7 @@ if (is_array($raritan_data) && ! empty($raritan_data)) {
     $low_warn_limit = $raritan_data['unitTempLowerWarning.0'] ?? null;
     $warn_limit = $raritan_data['unitTempUpperWarning.0'] ?? null;
     $high_limit = $raritan_data['unitTempUpperCritical.0'] ?? null;
-    $current = $raritan_data['unitCpuTemp.0'] / $divisor;
+    $current = \LibreNMS\Util\Number::cast($raritan_data['unitCpuTemp.0'] ?? null) / $divisor;
     discover_sensor(null, 'temperature', $device, $oid, $tmp_index, 'raritan', $descr, $divisor, 1, $low_limit, $low_limit, $warn_limit, $high_limit, $current);
 }
 
