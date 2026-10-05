@@ -65,7 +65,7 @@ if ($oids) {
     [$oid,$current] = explode(' ', $oids);
     $type = 'apc';
     $descr = 'Input';
-    discover_sensor(null, 'frequency', $device, $oid, $index, $type, $descr, $divisor, '1', null, null, null, null, $current / $divisor);
+    discover_sensor(null, 'frequency', $device, $oid, $index, $type, $descr, $divisor, '1', null, null, null, null, \LibreNMS\Util\Number::cast($current) / $divisor);
 }
 
 // upsHighPrecOutputFrequency
@@ -87,5 +87,5 @@ if ($oids) {
     [$oid,$current] = explode(' ', $oids);
     $type = 'apc';
     $descr = 'Output';
-    discover_sensor(null, 'frequency', $device, $oid, $index, $type, $descr, $divisor, '1', null, null, null, null, $current / $divisor);
+    discover_sensor(null, 'frequency', $device, $oid, $index, $type, $descr, $divisor, '1', null, null, null, null, \LibreNMS\Util\Number::cast($current) / $divisor);
 }
