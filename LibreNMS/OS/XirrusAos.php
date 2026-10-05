@@ -65,7 +65,7 @@ class XirrusAos extends OS implements
             $assoc = snmpwalk_cache_oid($this->getDeviceArray(), 'XIRRUS-MIB::stationAssociationIAP', [], 'XIRRUS-MIB');
             foreach ($assoc as $s) {
                 $radio = array_pop($s);
-                $associations[$radio] = (int) $associations[$radio] + 1;
+                $associations[$radio] = ($associations[$radio] ?? 0) + 1;
             }
             unset($radio);
             unset($assoc);
