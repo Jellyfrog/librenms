@@ -16,7 +16,7 @@ $cur_oid = '.1.3.6.1.4.1.674.10892.1.700.12.1.6.';
 
 if (is_array($temp)) {
     foreach ($temp as $index => $entry) {
-        $descr = $temp[$index]['coolingDeviceLocationName'];
+        $descr = $temp[$index]['coolingDeviceLocationName'] ?? '';
         (isset($temp[$index]['coolingDeviceReading'])) ? $value = $temp[$index]['coolingDeviceReading'] : $value = null;
         (isset($temp[$index]['coolingDeviceLowerCriticalThreshold'])) ? $lowlimit = $temp[$index]['coolingDeviceLowerCriticalThreshold'] : $lowlimit = null;
         (isset($temp[$index]['coolingDeviceLowerNonCriticalThreshold'])) ? $low_warn_limit = $temp[$index]['coolingDeviceLowerNonCriticalThreshold'] : $low_warn_limit = null;
