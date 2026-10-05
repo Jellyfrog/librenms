@@ -433,12 +433,12 @@ class Timos extends OS implements MplsDiscovery, MplsPolling, TransceiverDiscove
                     'mplsTunnelCHopIndex' => $mplsTunnelCHopIndex,
                     'lsp_path_id' => $lsp_path_id,
                     'device_id' => $this->getDeviceId(),
-                    'mplsTunnelCHopAddrType' => $value['vRtrMplsTunnelCHopAddrType'],
-                    'mplsTunnelCHopIpv4Addr' => $value['vRtrMplsTunnelCHopIpv4Addr'],
+                    'mplsTunnelCHopAddrType' => $value['vRtrMplsTunnelCHopAddrType'] ?? null,
+                    'mplsTunnelCHopIpv4Addr' => $value['vRtrMplsTunnelCHopIpv4Addr'] ?? null,
                     'mplsTunnelCHopIpv6Addr' => $value['vRtrMplsTunnelCHopIpv6Addr'] ?? null,
                     'mplsTunnelCHopAsNumber' => $value['vRtrMplsTunnelCHopAsNumber'] ?? null,
-                    'mplsTunnelCHopStrictOrLoose' => $value['vRtrMplsTunnelCHopStrictOrLoose'],
-                    'mplsTunnelCHopRouterId' => $value['vRtrMplsTunnelCHopRtrID'],
+                    'mplsTunnelCHopStrictOrLoose' => $value['vRtrMplsTunnelCHopStrictOrLoose'] ?? null,
+                    'mplsTunnelCHopRouterId' => $value['vRtrMplsTunnelCHopRtrID'] ?? null,
                 ]);
             });
     }
