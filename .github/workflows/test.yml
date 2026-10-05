@@ -24,12 +24,14 @@ jobs:
       matrix:
         php-version:
           - pre-installed
+        # OS data set first letters, grouped by test time. Every
+        # first character a-z0-9 must be covered exactly once.
         arguments:
           - --os a
           - --os b,c,d
           - --os e,f
-          - --os g,h,i
-          - --os j,k,l,m,n
+          - --os g,h,i,j,k
+          - --os l,m,n
           - --os o,p,q,r,s
           - --os t
           - --os u,v,w,x,y,z,0,1,2,3,4,5,6,7,8,9
