@@ -40,8 +40,7 @@ resources/views/menu/custom.blade.php
 
 # Docs #
 ########
-out
-librenms_theme
+/doc/out/
 
 bin/
 lib/
