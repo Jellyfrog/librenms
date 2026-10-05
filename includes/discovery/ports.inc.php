@@ -3,6 +3,7 @@
 // Build SNMP Cache Array
 use App\Facades\LibrenmsConfig;
 use App\Models\PortGroup;
+use Illuminate\Support\Facades\Schema;
 use LibreNMS\Enum\PortAssociationMode;
 
 $descrSnmpFlags = '-OQUs';
@@ -125,6 +126,8 @@ if ($device['os'] == 'ekinops') {
 }
 
 $default_port_group = LibrenmsConfig::get('default_port_group');
+// only store known columns, misbehaving agents may return unrelated oids
+$port_columns = array_flip(Schema::getColumnListing('ports'));
 
 // New interface detection
 foreach ($port_stats as $ifIndex => $snmp_data) {
@@ -134,6 +137,7 @@ foreach ($port_stats as $ifIndex => $snmp_data) {
 
     if (is_port_valid($snmp_data, $device)) {
         port_fill_missing_and_trim($snmp_data, $device);
+        $snmp_data = array_intersect_key($snmp_data, $port_columns);
 
         if ($device['os'] == 'vmware-vcsa' && preg_match('/Device ([a-z0-9]+) at .*/', (string) $snmp_data['ifDescr'], $matches)) {
             $snmp_data['ifName'] = $matches[1];
