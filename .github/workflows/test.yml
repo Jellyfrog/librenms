@@ -120,9 +120,9 @@ jobs:
         timeout-minutes: 2
         run: |
           python3 -m venv .python_venvs/snmpsim
-          .python_venvs/snmpsim/bin/pip install -q "https://github.com/librenms/snmpsim/releases/download/v$SNMPSIM_VERSION/snmpsim-$SNMPSIM_VERSION-py3-none-any.whl"
+          .python_venvs/snmpsim/bin/pip install -q "snmpsim @ git+https://github.com/librenms/snmpsim.git@chaos"
           # returns once snmpsim answers, fails with the error otherwise
-          .python_venvs/snmpsim/bin/snmpsim-command-responder-lite --daemonize --pid-file=/tmp/snmpsimd.pid --data-dir=tests/snmpsim --agent-udpv4-endpoint=127.1.6.2:1162 --log-level=error --logging-method=file:/tmp/snmpsimd.log
+          .python_venvs/snmpsim/bin/snmpsim-command-responder-lite --daemonize --pid-file=/tmp/snmpsimd.pid --data-dir=tests/snmpsim --agent-udpv4-endpoint=127.1.6.2:1162 --log-level=error --logging-method=file:/tmp/snmpsimd.log --chaos --chaos-rate=1
       -
         # pre-installed uses the runner's PHP as is, a version number makes
         # setup-php update it. The runner already has composer
