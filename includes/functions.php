@@ -103,7 +103,7 @@ function is_port_valid($port, $device)
         }
     }
 
-    $ifDescr = $port['ifDescr'];
+    $ifDescr = $port['ifDescr'] ?? '';
     $ifName = $port['ifName'] ?? '';
     $ifAlias = $port['ifAlias'] ?? '';
     $ifType = $port['ifType'] ?? '';
