@@ -27,6 +27,9 @@ if (is_array($voss_fan)) {
     foreach ($voss_fan as $oid => $array) {
         $state = current($array);
         $split_oid = explode('.', (string) $oid);
+        if (count($split_oid) < 2) {
+            continue;
+        }
         $tray_num = $split_oid[count($split_oid) - 2];
         $fan_num = $split_oid[count($split_oid) - 1];
         $current_oid = ".1.3.6.1.4.1.2272.1.101.1.1.4.1.4.$tray_num.$fan_num";
