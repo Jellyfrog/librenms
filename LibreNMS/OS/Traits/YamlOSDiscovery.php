@@ -149,7 +149,11 @@ trait YamlOSDiscovery
 
     private function fetch(array $oids, $numeric)
     {
-        return snmp_get_multi_oid($this->getDeviceArray(), $oids, $numeric ? '-OUQn' : '-OUQ');
+        if (empty($oids)) {
+            return [];
+        }
+
+        return SnmpQuery::device($this->getDevice())->options($numeric ? '-OUQn' : '-OUQ')->get($oids)->values();
     }
 
     private function replaceStringsInFields(Device $device, array $os_yaml): void
