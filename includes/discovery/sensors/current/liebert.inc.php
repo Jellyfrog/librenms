@@ -34,13 +34,13 @@ $psline_data = snmpwalk_cache_oid($device, 'lgpPduPsLineTable', [], 'LIEBERT-GP-
 $ec_input_rated = snmp_getnext($device, 'lgpPduPsEntryEcInputRated', '-OUqsev', 'LIEBERT-GP-PDU-MIB', 'liebert');
 
 foreach (array_keys($psline_data) as $index) {
-    $low_limit_p = $psline_data[$index]['lgpPduPsLineEntryEcThrshldUndrAlarm'] / 100;
-    $high_warn_limit_p = $psline_data[$index]['lgpPduPsLineEntryEcThrshldOvrWarn'] / 100;
-    $high_limit_p = $psline_data[$index]['lgpPduPsLineEntryEcThrshldOvrAlarm'] / 100;
+    $low_limit_p = ($psline_data[$index]['lgpPduPsLineEntryEcThrshldUndrAlarm'] ?? null) / 100;
+    $high_warn_limit_p = ($psline_data[$index]['lgpPduPsLineEntryEcThrshldOvrWarn'] ?? null) / 100;
+    $high_limit_p = ($psline_data[$index]['lgpPduPsLineEntryEcThrshldOvrAlarm'] ?? null) / 100;
 
     $oid = '.1.3.6.1.4.1.476.1.42.3.8.30.40.1.22.' . $index;
     $type = 'liebert';
-    $descr = 'Total Input Line ' . $psline_data[$index]['lgpPduPsLineEntryId'];
+    $descr = 'Total Input Line ' . ($psline_data[$index]['lgpPduPsLineEntryId'] ?? null);
     $divisor = 100;
     $multiplier = 1;
 
@@ -49,7 +49,7 @@ foreach (array_keys($psline_data) as $index) {
     $high_warn_limit = $ec_input_rated * $high_warn_limit_p;
     $high_limit = $ec_input_rated * $high_limit_p;
 
-    $current = $psline_data[$index]['lgpPduPsLineEntryEcHundredths'];
+    $current = $psline_data[$index]['lgpPduPsLineEntryEcHundredths'] ?? null;
 
     discover_sensor(
         null,
@@ -78,12 +78,12 @@ unset($psline_data);
 $ps_data = snmpwalk_cache_oid($device, 'lgpPduPsTable', [], 'LIEBERT-GP-PDU-MIB', 'liebert', '-OQUse');
 
 foreach (array_keys($ps_data) as $index) {
-    $high_warn_limit_p = $ps_data[$index]['lgpPduPsEntryEcNeutralThrshldOvrWarn'] / 100;
-    $high_limit_p = $ps_data[$index]['lgpPduPsEntryEcNeutralThrshldOvrAlarm'] / 100;
+    $high_warn_limit_p = ($ps_data[$index]['lgpPduPsEntryEcNeutralThrshldOvrWarn'] ?? null) / 100;
+    $high_limit_p = ($ps_data[$index]['lgpPduPsEntryEcNeutralThrshldOvrAlarm'] ?? null) / 100;
 
     $oid = '.1.3.6.1.4.1.476.1.42.3.8.30.20.1.70.' . $index;
     $type = 'liebert';
-    $descr = trim('Neutral ' . $ps_data[$index]['lgpPduPsEntryId']);
+    $descr = trim('Neutral ' . ($ps_data[$index]['lgpPduPsEntryId'] ?? null));
     $divisor = 10;
     $multiplier = 1;
 
@@ -92,7 +92,7 @@ foreach (array_keys($ps_data) as $index) {
     $high_warn_limit = $ec_input_rated * $high_warn_limit_p;
     $high_limit = $ec_input_rated * $high_limit_p;
 
-    $current = $ps_data[$index]['lgpPduPsEntryEcNeutral'];
+    $current = $ps_data[$index]['lgpPduPsEntryEcNeutral'] ?? null;
 
     discover_sensor(
         null,
@@ -121,13 +121,13 @@ unset($ps_data);
 $rb_data = snmpwalk_cache_oid($device, 'lgpPduRbTable', [], 'LIEBERT-GP-PDU-MIB', 'liebert', '-OQUse');
 
 foreach (array_keys($rb_data) as $index) {
-    $low_limit_p = $rb_data[$index]['lgpPduRbEntryEcThrshldUndrAlm'] / 100;
-    $high_warn_limit_p = $rb_data[$index]['lgpPduRbEntryEcThrshldOvrWarn'] / 100;
-    $high_limit_p = $rb_data[$index]['lgpPduRbEntryEcThrshldOvrAlm'] / 100;
+    $low_limit_p = ($rb_data[$index]['lgpPduRbEntryEcThrshldUndrAlm'] ?? null) / 100;
+    $high_warn_limit_p = ($rb_data[$index]['lgpPduRbEntryEcThrshldOvrWarn'] ?? null) / 100;
+    $high_limit_p = ($rb_data[$index]['lgpPduRbEntryEcThrshldOvrAlm'] ?? null) / 100;
 
     $oid = '.1.3.6.1.4.1.476.1.42.3.8.40.20.1.130.' . $index;
     $type = 'liebert';
-    $descr = 'RMS ' . $rb_data[$index]['lgpPduRbEntryUsrLabel'];
+    $descr = 'RMS ' . ($rb_data[$index]['lgpPduRbEntryUsrLabel'] ?? null);
     $divisor = 100;
     $multiplier = 1;
 
@@ -136,7 +136,7 @@ foreach (array_keys($rb_data) as $index) {
     $high_warn_limit = $ec_input_rated * $high_warn_limit_p;
     $high_limit = $ec_input_rated * $high_limit_p;
 
-    $current = $rb_data[$index]['lgpPduRbEntryEcHundredths'];
+    $current = $rb_data[$index]['lgpPduRbEntryEcHundredths'] ?? null;
     $group = 'Line to Neutral';
 
     discover_sensor(
