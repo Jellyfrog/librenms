@@ -47,6 +47,7 @@ use SnmpQuery;
 class Ospf implements Module
 {
     // columns without a default, rows missing one of them can't be stored
+    private const REQUIRED_PORT_COLUMNS = ['ospfIfIpAddress', 'ospfAddressLessIf', 'ospfIfAreaId'];
     private const REQUIRED_AREA_COLUMNS = ['ospfImportAsExtern', 'ospfSpfRuns', 'ospfAreaBdrRtrCount', 'ospfAsBdrRtrCount', 'ospfAreaLsaCount', 'ospfAreaLsaCksumSum', 'ospfAreaSummary', 'ospfAreaStatus'];
 
     /**
@@ -164,6 +165,10 @@ class Ospf implements Module
                 ->hideMib()->enumStrings()
                 ->walk('OSPF-MIB::ospfIfTable')
                 ->mapTable(function ($ospf_port, $ip, $ifIndex) use ($context_name, $os) {
+                    if (! Arr::has($ospf_port, self::REQUIRED_PORT_COLUMNS)) {
+                        return null;
+                    }
+
                     // find port_id
                     $ospf_port['port_id'] = (int) PortCache::getIdFromIfIndex($ifIndex, $os->getDevice());
                     if ($ospf_port['port_id'] == 0) {
@@ -175,7 +180,8 @@ class Ospf implements Module
                         'ospf_port_id' => "$ip.$ifIndex",
                         'context_name' => $context_name,
                     ], $ospf_port);
-                });
+                })
+                ->filter();
 
             // cleanup
             $os->getDevice()->ospfPorts()
