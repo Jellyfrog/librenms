@@ -434,7 +434,7 @@ class Edgecos extends OS implements MempoolsDiscovery, ProcessorDiscovery, Trans
                         'sensor_index' => "edgecos-switchFanOperSpeed.$unit.$index",
                         'sensor_type' => 'edgecos',
                         'sensor_descr' => "Fan $unit.$index speed",
-                        'sensor_current' => $data['switchFanOperSpeed'],
+                        'sensor_current' => $data['switchFanOperSpeed'] ?? null,
                     ]));
                 }
 
