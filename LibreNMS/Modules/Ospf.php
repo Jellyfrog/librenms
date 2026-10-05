@@ -33,6 +33,7 @@ use App\Models\OspfInstance;
 use App\Models\OspfNbr;
 use App\Models\OspfPort;
 use App\Observers\ModuleModelObserver;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use LibreNMS\Interfaces\Data\DataStorageInterface;
@@ -45,6 +46,9 @@ use SnmpQuery;
 
 class Ospf implements Module
 {
+    // columns without a default, rows missing one of them can't be stored
+    private const REQUIRED_AREA_COLUMNS = ['ospfImportAsExtern', 'ospfSpfRuns', 'ospfAreaBdrRtrCount', 'ospfAsBdrRtrCount', 'ospfAreaLsaCount', 'ospfAreaLsaCksumSum', 'ospfAreaSummary', 'ospfAreaStatus'];
+
     /**
      * @inheritDoc
      */
@@ -138,11 +142,12 @@ class Ospf implements Module
             $ospf_areas = SnmpQuery::context($context_name)
                 ->hideMib()->enumStrings()
                 ->walk('OSPF-MIB::ospfAreaTable')
-                ->mapTable(fn ($ospf_area, $ospf_area_id) => OspfArea::updateOrCreate([
+                ->mapTable(fn ($ospf_area, $ospf_area_id) => Arr::has($ospf_area, self::REQUIRED_AREA_COLUMNS) ? OspfArea::updateOrCreate([
                     'device_id' => $os->getDeviceId(),
                     'ospfAreaId' => $ospf_area_id,
                     'context_name' => $context_name,
-                ], $ospf_area));
+                ], $ospf_area) : null)
+                ->filter();
 
             // cleanup
             $os->getDevice()->ospfAreas()
