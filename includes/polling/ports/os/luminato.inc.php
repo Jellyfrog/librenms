@@ -35,7 +35,7 @@ if (! array_key_exists('ifSpeed', Arr::first($port_stats))) {
 foreach ($port_stats as $key => $data) {
     // emulate ifOperStatus if missing
     if (empty($data['ifOperStatus'])) {
-        $port_stats[$key]['ifOperStatus'] = $data['ifConnectorPresent'] ? 'up' : 'down';
+        $port_stats[$key]['ifOperStatus'] = ($data['ifConnectorPresent'] ?? false) ? 'up' : 'down';
     }
 
     // ifHighSpeed is always broken and ver >= 20 ifSpeed is actually ifHighSpeed
