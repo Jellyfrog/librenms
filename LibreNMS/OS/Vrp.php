@@ -264,35 +264,27 @@ class Vrp extends OS implements
     public function pollOS(DataStorageInterface $datastore): void
     {
         // Polling the Wireless data TODO port to module
-        $apTable = snmpwalk_group($this->getDeviceArray(), 'hwWlanApName', 'HUAWEI-WLAN-AP-MIB', 2);
+        $apTable = SnmpQuery::hideMib()->walk('HUAWEI-WLAN-AP-MIB::hwWlanApName')->table(1);
 
         //Check for existence of at least 1 AP to continue the polling)
         if (! empty($apTable)) {
-            $apTableOids = [
-                'hwWlanApSn',
-                'hwWlanApTypeInfo',
-            ];
-            foreach ($apTableOids as $apTableOid) {
-                $apTable = snmpwalk_group($this->getDeviceArray(), $apTableOid, 'HUAWEI-WLAN-AP-MIB', 2, $apTable);
-            }
-
-            $apRadioTableOids = [ // hwWlanRadioInfoTable
-                'hwWlanRadioMac',
-                'hwWlanRadioChUtilizationRate',
-                'hwWlanRadioChInterferenceRate',
-                'hwWlanRadioActualEIRP',
-                'hwWlanRadioType',
-                'hwWlanRadioWorkingChannel',
-            ];
+            $apTable = SnmpQuery::hideMib()->walk([
+                'HUAWEI-WLAN-AP-MIB::hwWlanApSn',
+                'HUAWEI-WLAN-AP-MIB::hwWlanApTypeInfo',
+            ])->table(1, $apTable);
 
             $clientPerRadio = [];
-            $radioTable = [];
-            foreach ($apRadioTableOids as $apRadioTableOid) {
-                $radioTable = snmpwalk_group($this->getDeviceArray(), $apRadioTableOid, 'HUAWEI-WLAN-AP-RADIO-MIB', 2, $radioTable);
-            }
+            $radioTable = SnmpQuery::hideMib()->walk([ // hwWlanRadioInfoTable
+                'HUAWEI-WLAN-AP-RADIO-MIB::hwWlanRadioMac',
+                'HUAWEI-WLAN-AP-RADIO-MIB::hwWlanRadioChUtilizationRate',
+                'HUAWEI-WLAN-AP-RADIO-MIB::hwWlanRadioChInterferenceRate',
+                'HUAWEI-WLAN-AP-RADIO-MIB::hwWlanRadioActualEIRP',
+                'HUAWEI-WLAN-AP-RADIO-MIB::hwWlanRadioType',
+                'HUAWEI-WLAN-AP-RADIO-MIB::hwWlanRadioWorkingChannel',
+            ])->table(2);
 
             $numClients = 0;
-            $vapInfoTable = snmpwalk_group($this->getDeviceArray(), 'hwWlanVapStaOnlineCnt', 'HUAWEI-WLAN-VAP-MIB', 3);
+            $vapInfoTable = SnmpQuery::hideMib()->walk('HUAWEI-WLAN-VAP-MIB::hwWlanVapStaOnlineCnt')->table(3);
             foreach ($vapInfoTable as $ap_id => $ap) {
                 //Convert mac address (hh:hh:hh:hh:hh:hh) to dec OID (ddd.ddd.ddd.ddd.ddd.ddd)
                 //$a_index_oid = implode(".", array_map("hexdec", explode(":", $ap_id)));
