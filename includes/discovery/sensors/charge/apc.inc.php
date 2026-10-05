@@ -13,7 +13,7 @@ if (! empty($oids)) {
     $sensorType = 'apc';
     $current_oid = '.1.3.6.1.4.1.318.1.1.1.2.3.1.0';
     $index = 0;
-    $current_val = ($current / $precision);
+    $current_val = (\LibreNMS\Util\Number::cast($current) / $precision);
     $lowlimit = 0;
     $warnlimit = 10;
     $descr = 'Battery Charge';
