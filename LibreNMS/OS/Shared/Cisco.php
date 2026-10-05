@@ -184,7 +184,7 @@ class Cisco extends OS implements
         $cemp = snmpwalk_cache_multi_oid($this->getDeviceArray(), 'cempMemPoolTable', [], 'CISCO-ENHANCED-MEMPOOL-MIB');
 
         foreach (Arr::wrap($cemp) as $index => $entry) {
-            if (is_numeric($entry['cempMemPoolUsed']) && $entry['cempMemPoolValid'] == 'true') {
+            if (is_numeric($entry['cempMemPoolUsed'] ?? null) && ($entry['cempMemPoolValid'] ?? null) == 'true') {
                 [$entPhysicalIndex] = explode('.', (string) $index);
                 $entPhysicalName = $this->getCacheByIndex('entPhysicalName', 'ENTITY-MIB');
                 $descr = ucwords((isset($entPhysicalName[$entPhysicalIndex]) ? "{$entPhysicalName[$entPhysicalIndex]} - " : '') . $entry['cempMemPoolName']);
