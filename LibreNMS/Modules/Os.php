@@ -175,7 +175,7 @@ class Os implements Module
     private function sysContact(\LibreNMS\OS $os): void
     {
         $device = $os->getDevice();
-        $device->sysContact = snmp_get($os->getDeviceArray(), 'sysContact.0', '-Ovq', 'SNMPv2-MIB');
+        $device->sysContact = \SnmpQuery::device($device)->get('SNMPv2-MIB::sysContact.0')->value();
         $device->sysContact = str_replace(['', '"', '\n', 'not set'], '', $device->sysContact);
         if (empty($device->sysContact)) {
             $device->sysContact = null;
