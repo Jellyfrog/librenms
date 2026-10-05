@@ -44,8 +44,8 @@ $allowedResources = [
 
 if (! empty($resrcData)) {
     foreach ($resrcData as $grpId => $grpData) {
-        foreach ($grpData as $memberId => $memberData) {
-            foreach ($memberData as $resrcId => $entry) {
+        foreach (\Illuminate\Support\Arr::wrap($grpData) as $memberId => $memberData) {
+            foreach (\Illuminate\Support\Arr::wrap($memberData) as $resrcId => $entry) {
                 if (isset($entry['tmnxNatIsaMemberResrcName'], $entry['tmnxNatIsaMemberResrcVal'])) {
                     $name = $entry['tmnxNatIsaMemberResrcName'];
 
