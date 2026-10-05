@@ -39,5 +39,5 @@ foreach ($port_stats as $key => $data) {
     }
 
     // ifHighSpeed is always broken and ver >= 20 ifSpeed is actually ifHighSpeed
-    $port_stats[$key]['ifHighSpeed'] = ($ver < 20 ? $data['ifSpeed'] / 1000000 : $data['ifSpeed']);
+    $port_stats[$key]['ifHighSpeed'] = ($ver < 20 ? ($data['ifSpeed'] ?? 0) / 1000000 : ($data['ifSpeed'] ?? null));
 }
