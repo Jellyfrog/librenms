@@ -27,7 +27,7 @@ if (isset($oids) && $oids) {
             $warnlimit_oid = '.1.3.6.1.4.1.318.1.1.12.2.2.1.1.3.' . $index;
             // rPDULoadPhaseConfigNearOverloadThreshold
             $phase = SnmpQuery::get($phase_oid)->value();
-            $current = (SnmpQuery::get($current_oid)->value() / $precision);
+            $current = (\LibreNMS\Util\Number::cast(SnmpQuery::get($current_oid)->value()) / $precision);
             $limit = SnmpQuery::get($limit_oid)->value();
             // No / $precision here! Nice, APC!
             $lowlimit = SnmpQuery::get($lowlimit_oid)->value();
@@ -74,7 +74,7 @@ if (isset($oids) && $oids) {
             $warnlimit_oid = '.1.3.6.1.4.1.318.1.1.12.2.2.1.1.3.' . $phasenum;
             // rPDULoadPhaseConfigNearOverloadThreshold
             $phase = SnmpQuery::get($phase_oid)->value();
-            $current = (SnmpQuery::get($current_oid)->value() / $precision);
+            $current = (\LibreNMS\Util\Number::cast(SnmpQuery::get($current_oid)->value()) / $precision);
             $limit = SnmpQuery::get($limit_oid)->value();
             // No / $precision here! Nice, APC!
             $lowlimit = SnmpQuery::get($lowlimit_oid)->value();
@@ -125,7 +125,7 @@ if (isset($oids) && $oids) {
             $warnlimit_oid = '.1.3.6.1.4.1.318.1.1.12.2.4.1.1.3.' . $banknum;
             // rPDULoadBankConfigNearOverloadThreshold
             $bank = SnmpQuery::get($bank_oid)->value();
-            $current = (SnmpQuery::get($current_oid)->value() / $precision);
+            $current = (\LibreNMS\Util\Number::cast(SnmpQuery::get($current_oid)->value()) / $precision);
             $limit = SnmpQuery::get($limit_oid)->value();
             $lowlimit = SnmpQuery::get($lowlimit_oid)->value();
             $warnlimit = SnmpQuery::get($warnlimit_oid)->value();
@@ -164,7 +164,7 @@ if (isset($oids) && $oids) {
             $name_oid = '.1.3.6.1.4.1.318.1.1.26.9.4.3.1.3.' . $index;
             // rPDU2OutletMeteredStatusName
             $voltage = SnmpQuery::get($voltage_oid)->value();
-            $current = (SnmpQuery::get($current_oid)->value() / $precision);
+            $current = (\LibreNMS\Util\Number::cast(SnmpQuery::get($current_oid)->value()) / $precision);
 
             $limit = null;
             $lowlimit = null;
@@ -201,7 +201,7 @@ if (isset($oids) && $oids) {
     $warnlimit_oid = '.1.3.6.1.4.1.318.1.1.8.4.16.1.4.1';
     // atsConfigPhaseNearOverLoadThreshold
     $index = 1;
-    $current = (SnmpQuery::get($current_oid)->value() / $precision);
+    $current = (\LibreNMS\Util\Number::cast(SnmpQuery::get($current_oid)->value()) / $precision);
     $limit = SnmpQuery::get($limit_oid)->value();
     // No / $precision here! Nice, APC!
     $lowlimit = SnmpQuery::get($lowlimit_oid)->value();
@@ -246,7 +246,7 @@ foreach ($oids as $index => $data) {
     if (isset($data['upsHighPrecOutputCurrent'])) {
         $current_oid = '.1.3.6.1.4.1.318.1.1.1.4.3.4.' . $index;
         $divisor = 10;
-        $current = $data['upsHighPrecOutputCurrent'] / $divisor;
+        $current = \LibreNMS\Util\Number::cast($data['upsHighPrecOutputCurrent']) / $divisor;
     } else {
         $current_oid = '.1.3.6.1.4.1.318.1.1.1.9.3.3.1.4.' . $index;
         $divisor = 10;
