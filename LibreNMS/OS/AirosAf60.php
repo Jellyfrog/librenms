@@ -86,8 +86,8 @@ class AirosAf60 extends OS implements
         $oids = snmpwalk_cache_oid($this->getDeviceArray(), 'af60StaRemoteSNR', $oids, 'UI-AF60-MIB', 'ubnt', '-OteQUsb');
 
         foreach ($oids as $index => $entry) {
-            $sensors[] = new WirelessSensor(WirelessSensorType::Snr, $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.11.1.3.1.4.' . $index, 'airos-af60-l', 1, 'Local SNR', $entry['af60StaSNR'], 1); //UI-AF60-MIB::af60StaSNR
-            $sensors[] = new WirelessSensor(WirelessSensorType::Snr, $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.11.1.3.1.19.' . $index, 'airos-af60-r', 1, 'Remote SNR', $entry['af60StaRemoteSNR'], 1); //UI-AF60-MIB::af60StaRemoteSNR
+            $sensors[] = new WirelessSensor(WirelessSensorType::Snr, $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.11.1.3.1.4.' . $index, 'airos-af60-l', 1, 'Local SNR', $entry['af60StaSNR'] ?? null, 1); //UI-AF60-MIB::af60StaSNR
+            $sensors[] = new WirelessSensor(WirelessSensorType::Snr, $this->getDeviceId(), '.1.3.6.1.4.1.41112.1.11.1.3.1.19.' . $index, 'airos-af60-r', 1, 'Remote SNR', $entry['af60StaRemoteSNR'] ?? null, 1); //UI-AF60-MIB::af60StaRemoteSNR
         }
 
         return $sensors;
