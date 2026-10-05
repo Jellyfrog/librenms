@@ -42,11 +42,11 @@ if ($outlet_oids) {
             // outletLoadValue: "A non-negative value indicates the measured load in milli Amps"
             $outlet_oid = ".1.3.6.1.4.1.13742.4.1.2.2.1.4.$outletsuffix";
             $outlet_descr = SnmpQuery::get("PDU-MIB::outletLabel.$outletsuffix")->value();
-            $outlet_low_warn_limit = SnmpQuery::get("PDU-MIB::outletCurrentLowerWarning.$outletsuffix")->value() / $divisor;
-            $outlet_low_limit = SnmpQuery::get("PDU-MIB::outletCurrentLowerCritical.$outletsuffix")->value() / $divisor;
-            $outlet_high_warn_limit = SnmpQuery::get("PDU-MIB::outletCurrentUpperWarning.$outletsuffix")->value() / $divisor;
-            $outlet_high_limit = SnmpQuery::get("PDU-MIB::outletCurrentUpperCritical.$outletsuffix")->value() / $divisor;
-            $outlet_current = SnmpQuery::get("PDU-MIB::outletCurrent.$outletsuffix")->value() / $divisor;
+            $outlet_low_warn_limit = \LibreNMS\Util\Number::cast(SnmpQuery::get("PDU-MIB::outletCurrentLowerWarning.$outletsuffix")->value()) / $divisor;
+            $outlet_low_limit = \LibreNMS\Util\Number::cast(SnmpQuery::get("PDU-MIB::outletCurrentLowerCritical.$outletsuffix")->value()) / $divisor;
+            $outlet_high_warn_limit = \LibreNMS\Util\Number::cast(SnmpQuery::get("PDU-MIB::outletCurrentUpperWarning.$outletsuffix")->value()) / $divisor;
+            $outlet_high_limit = \LibreNMS\Util\Number::cast(SnmpQuery::get("PDU-MIB::outletCurrentUpperCritical.$outletsuffix")->value()) / $divisor;
+            $outlet_current = \LibreNMS\Util\Number::cast(SnmpQuery::get("PDU-MIB::outletCurrent.$outletsuffix")->value()) / $divisor;
             if ($outlet_current >= 0) {
                 discover_sensor(null, 'current', $device, $outlet_oid, $outlet_insert_index, 'raritan', $outlet_descr, $divisor, $multiplier, $outlet_low_limit, $outlet_low_warn_limit, $outlet_high_warn_limit, $outlet_high_limit, $outlet_current);
             }
