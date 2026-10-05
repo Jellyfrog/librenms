@@ -427,7 +427,7 @@ class ModuleTestHelper
         try {
             $callback();
         } catch (\Throwable $e) {
-            $this->problems[] = "[$type $this->capturing_module] " . $e::class . ': ' . $e->getMessage();
+            $this->problems[] = "[$type $this->capturing_module] " . $e::class . ': ' . $e->getMessage() . ' @ ' . $this->exceptionLocation($e);
 
             throw $e;
         } finally {
@@ -448,6 +448,21 @@ class ModuleTestHelper
             Log::setDefaultDriver($log_driver);
             ob_end_clean();
         }
+    }
+
+    /**
+     * First location of the exception outside of vendor
+     */
+    private function exceptionLocation(\Throwable $e): string
+    {
+        $frames = array_merge([['file' => $e->getFile(), 'line' => $e->getLine()]], $e->getTrace());
+        foreach ($frames as $frame) {
+            if (isset($frame['file']) && ! str_contains($frame['file'], '/vendor/')) {
+                return str_replace(base_path() . '/', '', $frame['file']) . ':' . ($frame['line'] ?? 0);
+            }
+        }
+
+        return $e->getFile() . ':' . $e->getLine();
     }
 
     private function listenForProblems(): void
