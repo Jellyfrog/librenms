@@ -122,7 +122,7 @@ jobs:
           python3 -m venv .python_venvs/snmpsim
           .python_venvs/snmpsim/bin/pip install -q "snmpsim @ git+https://github.com/librenms/snmpsim.git@chaos"
           # returns once snmpsim answers, fails with the error otherwise
-          .python_venvs/snmpsim/bin/snmpsim-command-responder-lite --daemonize --pid-file=/tmp/snmpsimd.pid --data-dir=tests/snmpsim --agent-udpv4-endpoint=127.1.6.2:1162 --log-level=error --logging-method=file:/tmp/snmpsimd.log --chaos --chaos-rate=1
+          .python_venvs/snmpsim/bin/snmpsim-command-responder-lite --daemonize --pid-file=/tmp/snmpsimd.pid --data-dir=tests/snmpsim --agent-udpv4-endpoint=127.1.6.2:1162 --log-level=error --logging-method=file:/tmp/snmpsimd.log --chaos=protocol --chaos-rate=1
       -
         # pre-installed uses the runner's PHP as is, a version number makes
         # setup-php update it. The runner already has composer
