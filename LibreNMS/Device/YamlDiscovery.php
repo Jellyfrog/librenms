@@ -294,7 +294,7 @@ class YamlDiscovery
                     Log::debug("Using $value from \$pre_cache[$name][$index][$name] for $name");
 
                     return $value;
-                } elseif (isset($pre_fetched[$name][$index])) {
+                } elseif (isset($pre_fetched[$name][$index]) && ! is_array($pre_fetched[$name][$index])) {
                     $value = $pre_fetched[$name][$index];
                     Log::debug("Using $value from \$pre_cache[$name][$index] for $name");
 
