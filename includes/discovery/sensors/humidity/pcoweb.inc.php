@@ -36,7 +36,7 @@ $humidities = [
 ];
 
 foreach ($humidities as $humidity) {
-    $current = (SnmpQuery::get($humidity['mib'])->value() / $humidity['precision']);
+    $current = (\LibreNMS\Util\Number::cast(SnmpQuery::get($humidity['mib'])->value()) / $humidity['precision']);
 
     $high_limit = null;
     $low_limit = null;
