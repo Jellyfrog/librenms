@@ -216,6 +216,9 @@ if (! empty($peers)) {
                         }
                         foreach ($bgpPeersStats as $key => $value) {
                             $oid = explode('.', (string) $key, 4);
+                            if (count($oid) < 4) {
+                                continue;
+                            }
                             $vrfInstance = $oid[1];
                             $address = $oid[3];
                             if ($oid[2] > 4) { //ipv6 so we have to translate
