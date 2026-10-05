@@ -250,7 +250,7 @@ foreach ($oids as $index => $data) {
     } else {
         $current_oid = '.1.3.6.1.4.1.318.1.1.1.9.3.3.1.4.' . $index;
         $divisor = 10;
-        $current = $data['upsPhaseOutputCurrent'] / $divisor;
+        $current = \LibreNMS\Util\Number::cast($data['upsPhaseOutputCurrent'] ?? null) / $divisor;
     }
     if ($current >= -1) {
         discover_sensor(null, 'current', $device, $current_oid, $index, $type, $descr, $divisor, 1, null, null, null, null, $current);
