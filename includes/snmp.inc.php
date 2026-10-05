@@ -70,14 +70,7 @@ function snmp_exec(string $cmd, array|string|null $oids, array|string|null $opti
         device: DeviceCache::get($device['device_id'] ?? DeviceCache::getPrimary()->device_id),
     ));
 
-    $raw = $response->raw();
-
-    // devices may return non UTF-8 strings, convert them line by line so valid lines are untouched
-    if (! StringHelpers::isValidUtf8($raw)) {
-        $raw = implode(PHP_EOL, array_map(StringHelpers::inferEncoding(...), explode(PHP_EOL, $raw)));
-    }
-
-    return $raw;
+    return $response->raw();
 }
 
 /**
