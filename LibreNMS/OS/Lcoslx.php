@@ -193,8 +193,8 @@ class Lcoslx extends OS implements
 
         $sensors = [];
         foreach ($data as $index => $entry) {
-            $bssid = $ipv4addresses[$index];
-            if (isset($sensors[$bssid])) {
+            $bssid = $ipv4addresses[$index] ?? null;
+            if ($bssid === null || isset($sensors[$bssid])) {
                 continue;
             }
 
@@ -231,8 +231,8 @@ class Lcoslx extends OS implements
 
         $sensors = [];
         foreach ($data as $index => $entry) {
-            $bssid = $ipv4addresses[$index];
-            if (isset($sensors[$bssid])) {
+            $bssid = $ipv4addresses[$index] ?? null;
+            if ($bssid === null || isset($sensors[$bssid])) {
                 continue;
             }
 
