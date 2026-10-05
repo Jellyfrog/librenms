@@ -26,7 +26,7 @@
 $airos_eth_stat = snmpwalk_cache_oid($device, 'afLTUethConnected', [], 'UBNT-AFLTU-MIB', null, '-OteQUsb');
 
 foreach ($port_stats as $index => $afport_stats) {
-    if ($afport_stats['ifDescr'] == 'eth0') {
+    if (($afport_stats['ifDescr'] ?? null) == 'eth0') {
         if (isset($airos_eth_stat[0]['afLTUethConnected'])) {
             $port_stats[$index]['ifOperStatus'] = ($airos_eth_stat[0]['afLTUethConnected'] == 1 ? 'up' : 'down');
         } else {
