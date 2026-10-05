@@ -23,7 +23,7 @@ if (isset($pre_cache['sdbDevOutMtActualVoltage']) && is_array($pre_cache['sdbDev
     foreach ($pre_cache['sdbDevOutMtActualVoltage'] ?? [] as $sdbDevOutMtIndex => $sdbDevOutMtActualVoltage) {
         $name = trim((string) $pre_cache['sdbDevOutName'][$sdbDevOutMtIndex], '"');
         $voltage_oid = ".1.3.6.1.4.1.31034.12.1.1.2.7.2.1.7.$unit.$sdbDevOutMtIndex";
-        $voltage = $sdbDevOutMtActualVoltage / $divisor;
+        $voltage = \LibreNMS\Util\Number::cast($sdbDevOutMtActualVoltage) / $divisor;
         $serial_input = $pre_cache['sdbDevIdSerialNumber'][$unit] . ' Outlet ' . $sdbDevOutMtIndex;
         $descr = $name ?: "$serial_input Voltage";
 
