@@ -27,13 +27,17 @@
 namespace LibreNMS\Util;
 
 use App\Actions\Device\ValidateDeviceAndCreate;
+use App\Events\DiscoveringModule;
+use App\Events\PollingModule;
 use App\Facades\LibrenmsConfig;
 use App\Jobs\DiscoverDevice;
 use App\Jobs\PollDevice;
 use App\Models\Device;
 use DeviceCache;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use LibreNMS\Exceptions\FileNotFoundException;
 use LibreNMS\Exceptions\InvalidModuleException;
@@ -51,6 +55,11 @@ class ModuleTestHelper
     private array $poller_module_output = [];
     private string $discovery_output;
     private string $poller_output;
+    /** @var string[] */
+    private array $problems = [];
+    private bool $listening = false;
+    private ?string $capturing = null;
+    private string $capturing_module = '';
 
     // Definitions
     // ignore these when dumping all modules
@@ -289,30 +298,8 @@ class ModuleTestHelper
         $data = [];  // array to hold dumped data
 
         // Run discovery
-        $save_debug = Debug::isEnabled();
-        $save_vedbug = Debug::isVerbose();
-        $log_driver = Log::getDefaultDriver();
-
-        if ($this->quiet) {
-            Debug::setOnly();
-            Debug::setVerbose();
-            Debug::enableCliDebugOutput();
-        }
-        ob_start();
-        Log::setDefaultDriver('stdout');
-
-        (new DiscoverDevice($device_id, $this->modules))->handle();
-
-        $this->discovery_output = ob_get_contents();
-        if ($this->quiet) {
-            Debug::setOnly($save_debug);
-            Debug::setVerbose($save_vedbug);
-            Debug::disableCliDebugOutput();
-        } else {
-            ob_flush();
-        }
-        Log::setDefaultDriver($log_driver);
-        ob_end_clean();
+        $this->problems = [];
+        $this->runCaptured('discovery', fn () => (new DiscoverDevice($device_id, $this->modules))->handle());
 
         $this->qPrint(PHP_EOL);
 
@@ -325,26 +312,7 @@ class ModuleTestHelper
         DeviceCache::get($device_id)->refresh(); // refresh the device
 
         // Run the poller
-        if ($this->quiet) {
-            Debug::setOnly();
-            Debug::setVerbose();
-            Debug::enableCliDebugOutput();
-        }
-        ob_start();
-        Log::setDefaultDriver('stdout');
-
-        (new PollDevice($device_id, $this->modules))->handle();
-
-        $this->poller_output = ob_get_contents();
-        if ($this->quiet) {
-            Debug::setOnly($save_debug);
-            Debug::setVerbose($save_vedbug);
-            Debug::disableCliDebugOutput();
-        } else {
-            ob_flush();
-        }
-        Log::setDefaultDriver($log_driver);
-        ob_end_clean();
+        $this->runCaptured('poller', fn () => (new PollDevice($device_id, $this->modules))->handle());
 
         // Parse polled modules
         $this->poller_module_output = $this->extractModuleOutput($this->poller_output, 'poller');
@@ -434,6 +402,79 @@ class ModuleTestHelper
         }
 
         return $output;
+    }
+
+    /**
+     * Run discovery or polling, capturing its output and any warnings, errors or exceptions it produced
+     */
+    private function runCaptured(string $type, callable $callback): void
+    {
+        $this->listenForProblems();
+        $save_debug = Debug::isEnabled();
+        $save_verbose = Debug::isVerbose();
+        $log_driver = Log::getDefaultDriver();
+
+        if ($this->quiet) {
+            Debug::setOnly();
+            Debug::setVerbose();
+            Debug::enableCliDebugOutput();
+        }
+        ob_start();
+        Log::setDefaultDriver('stdout');
+        $this->capturing = $type;
+        $this->capturing_module = '';
+
+        try {
+            $callback();
+        } catch (\Throwable $e) {
+            $this->problems[] = "[$type $this->capturing_module] " . $e::class . ': ' . $e->getMessage();
+
+            throw $e;
+        } finally {
+            $this->capturing = null;
+            $output = (string) ob_get_contents();
+            if ($type == 'discovery') {
+                $this->discovery_output = $output;
+            } else {
+                $this->poller_output = $output;
+            }
+            if ($this->quiet) {
+                Debug::setOnly($save_debug);
+                Debug::setVerbose($save_verbose);
+                Debug::disableCliDebugOutput();
+            } else {
+                ob_flush();
+            }
+            Log::setDefaultDriver($log_driver);
+            ob_end_clean();
+        }
+    }
+
+    private function listenForProblems(): void
+    {
+        if ($this->listening) {
+            return;
+        }
+        $this->listening = true;
+
+        Event::listen([DiscoveringModule::class, PollingModule::class], function (DiscoveringModule|PollingModule $event): void {
+            $this->capturing_module = $event->module;
+        });
+        Event::listen(MessageLogged::class, function (MessageLogged $event): void {
+            if ($this->capturing && in_array($event->level, ['warning', 'error', 'critical', 'emergency'])) {
+                $this->problems[] = "[$this->capturing $this->capturing_module] $event->level: $event->message";
+            }
+        });
+    }
+
+    /**
+     * Warnings, errors and exceptions from the last discovery and poller run
+     *
+     * @return string[]
+     */
+    public function getProblems(): array
+    {
+        return $this->problems;
     }
 
     /**

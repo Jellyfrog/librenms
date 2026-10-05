@@ -112,6 +112,11 @@ final class OSModulesTest extends DBTestCase
             $results = $helper->generateTestData($this->getSnmpsimIp(), $this->getSnmpsimPort());
         } catch (FileNotFoundException|InvalidModuleException $e) {
             $this->fail($e->getMessage());
+        } finally {
+            // show warnings, errors and exceptions even when the data matches
+            if (isset($helper) && $problems = $helper->getProblems()) {
+                fwrite(STDERR, PHP_EOL . Color::colorize('bg-yellow', "OS $os" . ($variant ? "_$variant" : '') . ' logged problems:') . PHP_EOL . implode(PHP_EOL, $problems) . PHP_EOL);
+            }
         }
 
         if (is_null($results)) {
