@@ -212,7 +212,7 @@ class Cisco extends OS implements
 
         $cmp = snmpwalk_cache_oid($this->getDeviceArray(), 'ciscoMemoryPool', [], 'CISCO-MEMORY-POOL-MIB');
         foreach (Arr::wrap($cmp) as $index => $entry) {
-            if (is_numeric($entry['ciscoMemoryPoolUsed']) && is_numeric($index)) {
+            if (is_numeric($entry['ciscoMemoryPoolUsed'] ?? null) && is_numeric($index)) {
                 $mempools->push((new Mempool([
                     'mempool_index' => $index,
                     'mempool_type' => 'cmp',
