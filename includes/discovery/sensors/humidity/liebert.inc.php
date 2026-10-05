@@ -43,7 +43,7 @@ foreach ($lib_data as $index => $data) {
     }
 
     if (is_numeric($current)) {
-        $descr = $data['lgpEnvHumidityDescrRel'];
+        $descr = $data['lgpEnvHumidityDescrRel'] ?? '';
         discover_sensor(null, 'humidity', $device, $oid, $new_index, 'liebert', $descr, $divisor, 1, $low_limit, null, null, $high_limit, $current / $divisor);
     }
 }
