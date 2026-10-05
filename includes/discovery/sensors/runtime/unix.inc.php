@@ -34,7 +34,7 @@ if (! empty($snmpData)) {
     ];
     foreach ($snmpData as $index => $upsData) {
         if (isset($upsnut[$index])) {
-            $value = intval($upsData['nsExtendOutLine']) / 60;
+            $value = intval($upsData['nsExtendOutLine'] ?? 0) / 60;
             if (! empty($value)) {
                 $oid = Oid::of('NET-SNMP-EXTEND-MIB::nsExtendOutLine."ups-nut".' . $index)->toNumeric();
                 discover_sensor(
