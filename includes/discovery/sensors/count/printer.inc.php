@@ -29,7 +29,7 @@ foreach ($walk as $index => $data) {
         null,
         null,
         null,
-        $data['prtMarkerLifeCount'],
+        $data['prtMarkerLifeCount'] ?? null,
     );
 
     discover_sensor(
@@ -46,7 +46,7 @@ foreach ($walk as $index => $data) {
         null,
         null,
         null,
-        $data['prtMarkerPowerOnCount'],
+        $data['prtMarkerPowerOnCount'] ?? null,
     );
 
     break; // only discover the first ones, others mostly duplicate
