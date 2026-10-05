@@ -288,8 +288,8 @@ class Vrp extends OS implements
             foreach ($vapInfoTable as $ap_id => $ap) {
                 //Convert mac address (hh:hh:hh:hh:hh:hh) to dec OID (ddd.ddd.ddd.ddd.ddd.ddd)
                 //$a_index_oid = implode(".", array_map("hexdec", explode(":", $ap_id)));
-                foreach ($ap as $r_id => $radio) {
-                    foreach ($radio as $ssid) {
+                foreach (Arr::wrap($ap) as $r_id => $radio) {
+                    foreach (Arr::wrap($radio) as $ssid) {
                         $clientPerRadio[$ap_id][$r_id] = ($clientPerRadio[$ap_id][$r_id] ?? 0) + ($ssid['hwWlanVapStaOnlineCnt'] ?? 0);
                         $numClients += ($ssid['hwWlanVapStaOnlineCnt'] ?? 0);
                     }
@@ -313,7 +313,11 @@ class Vrp extends OS implements
             $aps = new Collection;
 
             foreach ($radioTable as $ap_id => $ap) {
-                foreach ($ap as $r_id => $radio) {
+                foreach (Arr::wrap($ap) as $r_id => $radio) {
+                    if (! is_array($radio)) {
+                        continue;
+                    }
+
                     $channel = $radio['hwWlanRadioWorkingChannel'] ?? 0;
                     $mac = $radio['hwWlanRadioMac'] ?? '';
                     $name = ($apTable[$ap_id]['hwWlanApName'] ?? '') . ' Radio ' . $r_id;
