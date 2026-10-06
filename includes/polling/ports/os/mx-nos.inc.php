@@ -21,7 +21,9 @@ foreach ($tcstStat_port_stats as $index => $moxaport_stats) {
 }
 
 foreach ($PortMib_port as $index => $moxaport) {
-    $port_stats[$index]['ifAlias'] = $moxaport['MOXA-PORT-MIB::portConfigDescription'];
+    if (isset($moxaport['MOXA-PORT-MIB::portConfigDescription'])) {
+        $port_stats[$index]['ifAlias'] = $moxaport['MOXA-PORT-MIB::portConfigDescription'];
+    }
 }
 unset($PortMib_port);
 unset($tcstStat_port_stats);
