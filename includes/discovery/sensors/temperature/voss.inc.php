@@ -17,7 +17,7 @@ $rcChasFan = snmpwalk_cache_multi_oid($device, 'rcChasFanAmbientTemperature', []
 if (is_array($rcChasFan)) {
     foreach (array_keys($rcChasFan) as $index) {
         $descr = 'VOSS Fan ' . $index . ' temperature';
-        $value = $rcChasFan[$index]['rcChasFanAmbientTemperature'];
+        $value = $rcChasFan[$index]['rcChasFanAmbientTemperature'] ?? null;
         $var1 = 'rcChasFanAmbientTemperature';
         $oid = '.1.3.6.1.4.1.2272.1.4.7.1.1.3.' . $index;
         discover_sensor(null, 'temperature', $device, $oid, "$var1.$index", 'avaya-vsp', $descr, '1', '1', null, null, null, null, $value);
