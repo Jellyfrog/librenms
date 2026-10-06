@@ -36,7 +36,7 @@ if ($apc_env_data) {
     $apc_env_data = snmpwalk_cache_oid($device, 'iemStatusProbesTable', $apc_env_data, 'PowerNet-MIB');
 
     foreach (array_keys($apc_env_data) as $index) {
-        $descr = $apc_env_data[$index]['iemStatusProbeName'];
+        $descr = $apc_env_data[$index]['iemStatusProbeName'] ?? '';
         $current = $apc_env_data[$index]['iemStatusProbeCurrentHumid'];
         $sensorType = 'apc';
         $oid = '.1.3.6.1.4.1.318.1.1.10.2.3.2.1.6.' . $index;
