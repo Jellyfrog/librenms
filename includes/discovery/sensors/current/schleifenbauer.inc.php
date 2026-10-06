@@ -24,10 +24,10 @@ if (isset($pre_cache['sdbDevOutMtActualCurrent']) && is_array($pre_cache['sdbDev
     $unit = current($pre_cache['sdbMgmtCtrlDevUnitAddress']);
 
     foreach ($pre_cache['sdbDevOutMtActualCurrent'] as $sdbDevOutMtIndex => $sdbDevOutMtActualCurrent) {
-        $name = trim((string) $pre_cache['sdbDevOutName'][$sdbDevOutMtIndex], '"');
+        $name = trim((string) ($pre_cache['sdbDevOutName'][$sdbDevOutMtIndex] ?? ''), '"');
         $current_oid = ".1.3.6.1.4.1.31034.12.1.1.2.7.2.1.5.$unit.$sdbDevOutMtIndex";
         $current = \LibreNMS\Util\Number::cast($sdbDevOutMtActualCurrent) / $divisor;
-        $serial_output = $pre_cache['sdbDevIdSerialNumber'][$unit] . ' Outlet ' . $sdbDevOutMtIndex;
+        $serial_output = ($pre_cache['sdbDevIdSerialNumber'][$unit] ?? '') . ' Outlet ' . $sdbDevOutMtIndex;
         $descr = $name ?: "$serial_output RMS Current";
         $warn_limit = $pre_cache['sdbDevOutMtMaxAmps'][$sdbDevOutMtIndex] / $divisor;
         $high_limit = $pre_cache['sdbDevCfMaximumLoad'][$unit];

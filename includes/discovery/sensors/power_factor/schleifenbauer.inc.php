@@ -22,10 +22,10 @@ if (isset($pre_cache['sdbDevOutMtPowerFactor']) && is_array($pre_cache['sdbDevOu
     $unit = current($pre_cache['sdbMgmtCtrlDevUnitAddress']);
 
     foreach ($pre_cache['sdbDevOutMtPowerFactor'] as $sdbDevOutMtIndex => $sdbDevOutMtPowerFactor) {
-        $name = trim((string) $pre_cache['sdbDevOutName'][$sdbDevOutMtIndex], '"');
+        $name = trim((string) ($pre_cache['sdbDevOutName'][$sdbDevOutMtIndex] ?? ''), '"');
         $power_factor_oid = ".1.3.6.1.4.1.31034.12.1.1.2.7.2.1.4.$unit.$sdbDevOutMtIndex";
         $power_factor = $sdbDevOutMtPowerFactor / $divisor;
-        $serial_input = $pre_cache['sdbDevIdSerialNumber'][$unit] . ' Outlet ' . $sdbDevOutMtIndex;
+        $serial_input = ($pre_cache['sdbDevIdSerialNumber'][$unit] ?? '') . ' Outlet ' . $sdbDevOutMtIndex;
         $descr = $name ?: "$serial_input Power Factor";
 
         // See includes/discovery/entity-physical/schleifenbauer.inc.php for an explanation why we set this as the entPhysicalIndex.

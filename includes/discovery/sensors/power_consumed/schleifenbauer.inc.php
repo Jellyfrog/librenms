@@ -20,9 +20,9 @@ if (isset($pre_cache['sdbDevOutMtKWhTotal']) && is_array($pre_cache['sdbDevOutMt
     $unit = current($pre_cache['sdbMgmtCtrlDevUnitAddress']);
 
     foreach ($pre_cache['sdbDevOutMtKWhTotal'] ?? [] as $sdbDevOutMtIndex => $sdbDevOutMtKWhTotal) {
-        $name = trim((string) $pre_cache['sdbDevOutName'][$sdbDevOutMtIndex], '"');
+        $name = trim((string) ($pre_cache['sdbDevOutName'][$sdbDevOutMtIndex] ?? ''), '"');
         $power_consumed_oid = ".1.3.6.1.4.1.31034.12.1.1.2.7.2.1.2.$unit.$sdbDevOutMtIndex";
-        $serial_input = $pre_cache['sdbDevIdSerialNumber'][$unit] . ' Outlet ' . $sdbDevOutMtIndex;
+        $serial_input = ($pre_cache['sdbDevIdSerialNumber'][$unit] ?? '') . ' Outlet ' . $sdbDevOutMtIndex;
         $descr = $name ?: "$serial_input Lifetime kWh Total";
 
         // See includes/discovery/entity-physical/schleifenbauer.inc.php for an explanation why we set this as the entPhysicalIndex.
