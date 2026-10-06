@@ -213,6 +213,11 @@ class Xdsl implements Module
                 'xdsl2ChStatusActDataRateXtuc' => $data['xdsl2ChStatusActDataRate']['xtuc'] ?? 0,
             ]);
 
+            if (! $portVdsl->port_id) {
+                Log::warning("XDSL: Skipping port (ifIndex $ifIndex) - port not found");
+                continue;
+            }
+
             foreach ($this->vdslTenthValues as $oid) {
                 if (isset($data[$oid])) {
                     $data[$oid] /= 10;
