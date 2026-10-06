@@ -55,7 +55,7 @@ if ($apc_env_data) {
 $apc_env_data = snmpwalk_cache_oid($device, 'emsProbeStatus', [], 'PowerNet-MIB');
 
 foreach (array_keys($apc_env_data) as $index) {
-    if ($apc_env_data[$index]['emsProbeStatusProbeCommStatus'] != 'commsNeverDiscovered') {
+    if (isset($apc_env_data[$index]['emsProbeStatusProbeCommStatus']) && $apc_env_data[$index]['emsProbeStatusProbeCommStatus'] != 'commsNeverDiscovered') {
         $descr = $apc_env_data[$index]['emsProbeStatusProbeName'];
         $current = $apc_env_data[$index]['emsProbeStatusProbeHumidity'];
         $sensorType = 'apc';
