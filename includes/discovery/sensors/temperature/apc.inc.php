@@ -134,7 +134,7 @@ if ($oids !== false) {
     $index = 0;
     if ($set_oids !== false) {
         [, $set_point_raw] = explode(' ', $set_oids);
-        $set_point = ($set_point_raw / $precision);
+        $set_point = (\LibreNMS\Util\Number::cast($set_point_raw) / $precision);
         $descr = 'Supply Temp - Setpoint: ' . $set_point . '°C';
     } else {
         $descr = 'Supply Temperature';
@@ -156,7 +156,7 @@ if ($oids !== false) {
     $index = 1;
     if ($set_oids !== false) {
         [, $set_point_raw] = explode(' ', $set_oids);
-        $set_point = ($set_point_raw / $precision);
+        $set_point = (\LibreNMS\Util\Number::cast($set_point_raw) / $precision);
         $descr = 'Return Temp - Setpoint: ' . $set_point . '°C';
     } else {
         $descr = 'Return Temperature';
@@ -177,7 +177,7 @@ if ($oids !== false) {
     $index = 2;
     if ($set_oids !== false) {
         [, $set_point_raw] = explode(' ', $set_oids);
-        $set_point = ($set_point_raw / $precision);
+        $set_point = (\LibreNMS\Util\Number::cast($set_point_raw) / $precision);
         $descr = 'Remote Temp - Setpoint: ' . $set_point . '°C';
     } else {
         $descr = 'Remote Temperature';
