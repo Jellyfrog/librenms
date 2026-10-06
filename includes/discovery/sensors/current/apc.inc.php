@@ -170,10 +170,10 @@ if (isset($oids) && $oids) {
             $lowlimit = null;
             $warnlimit = null;
 
-            if ($voltage) {
-                $limit = (SnmpQuery::get($limit_oid)->value() / $voltage);
-                $lowlimit = (SnmpQuery::get($lowlimit_oid)->value() / $voltage);
-                $warnlimit = (SnmpQuery::get($warnlimit_oid)->value() / $voltage);
+            if (is_numeric($voltage) && $voltage != 0) {
+                $limit = (\LibreNMS\Util\Number::cast(SnmpQuery::get($limit_oid)->value()) / $voltage);
+                $lowlimit = (\LibreNMS\Util\Number::cast(SnmpQuery::get($lowlimit_oid)->value()) / $voltage);
+                $warnlimit = (\LibreNMS\Util\Number::cast(SnmpQuery::get($warnlimit_oid)->value()) / $voltage);
             }
 
             $descr = 'Outlet ' . $index . ' - ' . SnmpQuery::get($name_oid)->value();
