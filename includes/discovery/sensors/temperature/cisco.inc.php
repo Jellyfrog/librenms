@@ -30,6 +30,6 @@ if (is_array($temp)) {
     $cur_oid = '.1.3.6.1.4.1.9.9.661.1.1.1.12.';
     foreach ($temp as $index => $entry) {
         $descr = SnmpQuery::get('ENTITY-MIB::entPhysicalName.' . $index)->value();
-        discover_sensor(null, 'temperature', $device, $cur_oid . $index, $index, 'cisco', $descr, '1', '1', null, null, null, $temp[$index]['ciscoEnvMonTemperatureThreshold'] ?? null, $temp[$index]['c3gModemTemperature'], 'snmp', $index);
+        discover_sensor(null, 'temperature', $device, $cur_oid . $index, $index, 'cisco', $descr, '1', '1', null, null, null, $temp[$index]['ciscoEnvMonTemperatureThreshold'] ?? null, $temp[$index]['c3gModemTemperature'] ?? null, 'snmp', $index);
     }
 }
