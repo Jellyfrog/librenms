@@ -41,7 +41,7 @@ if (is_array($raritan_data) && ! empty($raritan_data)) {
 $oids = snmpwalk_cache_multi_oid($device, 'externalSensorTable', [], 'PDU-MIB');
 $offset = 0;
 foreach ($oids as $index => $sensor) {
-    if ($sensor['externalSensorType'] == 'temperature') {
+    if (($sensor['externalSensorType'] ?? null) == 'temperature') {
         $oid = ".1.3.6.1.4.1.13742.4.3.3.1.41.$index";
         $descr = $sensor['externalSensorName'];
         $temp_current = $sensor['externalSensorValue'];
