@@ -108,6 +108,9 @@ if ($oids) {
     $temps['.1.3.6.1.4.1.318.1.1.13.3.2.2.2.26'] = 'Leaving Fluid'; //airIRRCUnitStatusLeavingFluidTemperatureMetric
     foreach ($temps as $obj => $descr) {
         $oids = snmp_get($device, $obj . '.0', '-OsqnU', 'PowerNet-MIB');
+        if (! str_contains((string) $oids, ' ')) {
+            continue;
+        }
         [$oid,$current] = explode(' ', $oids);
         $divisor = 10;
         $sensorType = substr($descr, 0, 2);
