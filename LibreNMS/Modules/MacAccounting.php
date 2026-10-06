@@ -119,10 +119,11 @@ class MacAccounting implements Module
         $macs = $os->pollMacAccounting($os->getDevice()->macAccounting->keyBy->getCompositeKey());
 
         ModuleModelObserver::observe(\App\Models\MacAccounting::class);
-        $os->getDevice()->macAccounting()->saveMany($macs->each(function (\App\Models\MacAccounting $mac): void {
+        $macs = $macs->each(function (\App\Models\MacAccounting $mac): void {
             $mac->port_id ??= PortCache::getIdFromIfIndex($mac->ifIndex); // ensure port_id is filled (if new)
-            $mac->fillRates();
-        }));
+        })->filter(fn (\App\Models\MacAccounting $mac) => $mac->port_id !== null); // skip macs on unknown ports
+
+        $os->getDevice()->macAccounting()->saveMany($macs->each(fn (\App\Models\MacAccounting $mac) => $mac->fillRates()));
 
         $rrd_def = RrdDefinition::make()
             ->addDataset('IN', 'COUNTER', 0, 12500000000)
