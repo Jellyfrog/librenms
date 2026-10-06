@@ -62,7 +62,7 @@ if (count($bgpPeersCache) > 0 || count($bgpPeersCache_ietf) == 0) {
         }
 
         $oid = explode('.', (string) $key);
-        $vrfInstance = $value['hwBgpPeerVrfName'];
+        $vrfInstance = $value['hwBgpPeerVrfName'] ?? '';
         if ($oid[0] == 0) {
             $vrfInstance = '';
             $value['hwBgpPeerVrfName'] = '';
