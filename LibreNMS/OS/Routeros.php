@@ -215,7 +215,7 @@ class Routeros extends OS implements
                 '.1.3.6.1.4.1.14988.1.1.1.8.1.6.' . $index,
                 'mikrotik-60g',
                 $index,
-                '60G: ' . $entry['mtxrWl60GSsid'],
+                '60G: ' . ($entry['mtxrWl60GSsid'] ?? ''),
                 $entry['mtxrWl60GFreq']
             );
         }
@@ -241,7 +241,7 @@ class Routeros extends OS implements
                 '.1.3.6.1.4.1.14988.1.1.1.8.1.12.' . $index,
                 'mikrotik',
                 $index,
-                '60G: ' . $entry['mtxrWl60GSsid'],
+                '60G: ' . ($entry['mtxrWl60GSsid'] ?? ''),
                 $entry['mtxrWl60GRssi']
             );
         }
@@ -267,7 +267,7 @@ class Routeros extends OS implements
                 '.1.3.6.1.4.1.14988.1.1.1.8.1.8.' . $index,
                 'mikrotik',
                 $index,
-                '60G: ' . $entry['mtxrWl60GSsid'],
+                '60G: ' . ($entry['mtxrWl60GSsid'] ?? ''),
                 $entry['mtxrWl60GSignal']
             );
         }
@@ -373,7 +373,7 @@ class Routeros extends OS implements
                 '.1.3.6.1.4.1.14988.1.1.1.8.1.13.' . $index,
                 'mikrotik-60g-tx',
                 $index,
-                '60G: ' . $entry['mtxrWl60GSsid'],
+                '60G: ' . ($entry['mtxrWl60GSsid'] ?? ''),
                 $entry['mtxrWl60GPhyRate'],
                 1000000
             );
