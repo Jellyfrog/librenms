@@ -48,6 +48,7 @@ class Ospf implements Module
 {
     // columns without a default, rows missing one of them can't be stored
     private const REQUIRED_PORT_COLUMNS = ['ospfIfIpAddress', 'ospfAddressLessIf', 'ospfIfAreaId'];
+    private const REQUIRED_NBR_COLUMNS = ['ospfNbrIpAddr', 'ospfNbrAddressLessIndex', 'ospfNbrRtrId', 'ospfNbrOptions', 'ospfNbrPriority', 'ospfNbrState', 'ospfNbrEvents', 'ospfNbrLsRetransQLen', 'ospfNbmaNbrStatus', 'ospfNbmaNbrPermanence', 'ospfNbrHelloSuppressed'];
     private const REQUIRED_AREA_COLUMNS = ['ospfImportAsExtern', 'ospfSpfRuns', 'ospfAreaBdrRtrCount', 'ospfAsBdrRtrCount', 'ospfAreaLsaCount', 'ospfAreaLsaCksumSum', 'ospfAreaSummary', 'ospfAreaStatus'];
 
     /**
@@ -198,6 +199,10 @@ class Ospf implements Module
                 ->hideMib()->enumStrings()
                 ->walk('OSPF-MIB::ospfNbrTable')
                 ->mapTable(function ($ospf_nbr, $ip, $ifIndex) use ($context_name, $os) {
+                    if (! Arr::has($ospf_nbr, self::REQUIRED_NBR_COLUMNS)) {
+                        return null;
+                    }
+
                     // get neighbor port_id
                     $ospf_nbr['port_id'] = PortCache::getIdFromIp($ip, $context_name); // search all devices
 
@@ -206,7 +211,8 @@ class Ospf implements Module
                         'ospf_nbr_id' => "$ip.$ifIndex",
                         'context_name' => $context_name,
                     ], $ospf_nbr);
-                });
+                })
+                ->filter();
 
             // cleanup
             $os->getDevice()->ospfNbrs()
