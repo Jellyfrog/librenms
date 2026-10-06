@@ -52,9 +52,9 @@ $oids = snmpwalk_cache_oid($device, 'chStackUnitSysType', $oids, 'F10-S-SERIES-C
 
 if (is_array($oids)) {
     foreach ($oids as $index => $entry) {
-        $descr = 'Unit ' . $index . ' ' . $entry['chStackUnitSysType'];
+        $descr = 'Unit ' . $index . ' ' . ($entry['chStackUnitSysType'] ?? '');
         $oid = '.1.3.6.1.4.1.6027.3.10.1.2.2.1.14.' . $index;
-        $current = $entry['chStackUnitTemp'];
+        $current = $entry['chStackUnitTemp'] ?? null;
         discover_sensor(null, 'temperature', $device, $oid, $index, 'ftos-sseries', $descr, '1', '1', null, null, null, null, $current);
     }
 }
