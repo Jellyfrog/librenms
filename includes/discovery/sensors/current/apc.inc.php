@@ -224,6 +224,9 @@ if ($phasecount > 2) {
 }
 if (isset($in_oids)) {
     foreach ($in_oids as $index => $data) {
+        if (! isset($data['upsPhaseInputCurrent'])) {
+            continue;
+        }
         $type = 'apcUPS';
         $current_oid = '.1.3.6.1.4.1.318.1.1.1.9.2.3.1.6.' . $index;
         $divisor = 10;
