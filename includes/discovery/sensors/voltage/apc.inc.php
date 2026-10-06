@@ -21,7 +21,7 @@ if ($oids) {
     [$oid,$current] = explode(' ', $oids);
     $type = 'apc';
     $descr = 'Battery Bus';
-    discover_sensor(null, 'voltage', $device, $oid, $index, $type, $descr, $divisor, '1', null, null, null, null, $current / $divisor);
+    discover_sensor(null, 'voltage', $device, $oid, $index, $type, $descr, $divisor, '1', null, null, null, null, \LibreNMS\Util\Number::cast($current) / $divisor);
 }
 unset($oids);
 
@@ -117,7 +117,7 @@ if ($phasecount > 2) {
         [$oid,$current] = explode(' ', $oids);
         $type = 'apc';
         $descr = 'Input';
-        discover_sensor(null, 'voltage', $device, $oid, $index, $type, $descr, $divisor, '1', null, null, null, null, $current / $divisor);
+        discover_sensor(null, 'voltage', $device, $oid, $index, $type, $descr, $divisor, '1', null, null, null, null, \LibreNMS\Util\Number::cast($current) / $divisor);
     }
     // upsHighPrecOutputVoltage
     $oids = snmp_get($device, '.1.3.6.1.4.1.318.1.1.1.4.3.1.0', '-OsqnU');
@@ -136,7 +136,7 @@ if ($phasecount > 2) {
         [$oid,$current] = explode(' ', $oids);
         $type = 'apc';
         $descr = 'Output';
-        discover_sensor(null, 'voltage', $device, $oid, $index, $type, $descr, $divisor, '1', null, null, null, null, $current / $divisor);
+        discover_sensor(null, 'voltage', $device, $oid, $index, $type, $descr, $divisor, '1', null, null, null, null, \LibreNMS\Util\Number::cast($current) / $divisor);
     }
     // rPDUIdentDeviceLinetoLineVoltage
     $oids = snmp_get($device, '.1.3.6.1.4.1.318.1.1.12.1.15.0', '-OsqnU');
