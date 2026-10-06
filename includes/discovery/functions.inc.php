@@ -696,7 +696,7 @@ function add_bgp_peer($device, $peer)
             'bgpPeerInUpdateElapsedTime' => 0,
         ];
         dbInsert($bgpPeers, 'bgpPeers');
-        if (LibrenmsConfig::get('autodiscovery.bgp')) {
+        if (LibrenmsConfig::get('autodiscovery.bgp') && IP::isValid($peer['ip'])) {
             $name = gethostbyaddr($peer['ip']);
             discover_new_device($name, $device, 'BGP');
         }
