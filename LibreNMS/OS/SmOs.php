@@ -157,7 +157,7 @@ class SmOs extends OS implements
                 'sm-os',
                 "radioPrx.$index",
                 'Received Power Level',
-                $entry['radioPrx']
+                $entry['radioPrx'] ?? null
             );
             $sensors[] = new WirelessSensor(
                 WirelessSensorType::Power,
