@@ -17,7 +17,7 @@ $divisor = '10';
 
 if (is_array($temp)) {
     foreach ($temp as $index => $entry) {
-        $descr = $temp[$index]['temperatureProbeLocationName'];
+        $descr = $temp[$index]['temperatureProbeLocationName'] ?? '';
         (isset($temp[$index]['temperatureProbeReading'])) ? $value = $temp[$index]['temperatureProbeReading'] / $divisor : $value = null;
         (isset($temp[$index]['temperatureProbeLowerCriticalThreshold'])) ? $lowlimit = $temp[$index]['temperatureProbeLowerCriticalThreshold'] / $divisor : $lowlimit = null;
         (isset($temp[$index]['temperatureProbeLowerNonCriticalThreshold'])) ? $low_warn_limit = $temp[$index]['temperatureProbeLowerNonCriticalThreshold'] / $divisor : $low_warn_limit = null;
