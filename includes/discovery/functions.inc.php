@@ -151,7 +151,7 @@ function discover_sensor($unused, $class, $device, $oid, $index, $type, $descr, 
         'sensor_limit_low' => $low_limit,
         'sensor_limit_low_warn' => $low_warn_limit,
         'sensor_current' => $current,
-        'entPhysicalIndex' => $entPhysicalIndex,
+        'entPhysicalIndex' => strlen((string) $entPhysicalIndex) <= 16 ? $entPhysicalIndex : null, // ignore bogus indexes longer than the column
         'entPhysicalIndex_measured' => $entPhysicalIndex_measured,
         'user_func' => $user_func,
         'group' => $group,
