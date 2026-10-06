@@ -458,12 +458,12 @@ class Junos extends \LibreNMS\OS implements SlaDiscovery, OSPolling, SlaPolling,
             return $QBridgeMibVlans;
         }
 
-        $vlans = SnmpQuery::enumStrings()->walk('JUNIPER-VLAN-MIB::jnxExVlanTable')->mapTable(fn ($data, $vlanId) => new Vlan([
+        $vlans = SnmpQuery::enumStrings()->walk('JUNIPER-VLAN-MIB::jnxExVlanTable')->mapTable(fn ($data, $vlanId) => isset($data['JUNIPER-VLAN-MIB::jnxExVlanTag']) ? new Vlan([
             'vlan_vlan' => $data['JUNIPER-VLAN-MIB::jnxExVlanTag'],
-            'vlan_domain' => $data['JUNIPER-VLAN-MIB::jnxExVlanPortGroupInstance'],
-            'vlan_type' => $data['JUNIPER-VLAN-MIB::jnxExVlanType'],
-            'vlan_name' => $data['JUNIPER-VLAN-MIB::jnxExVlanName'],
-        ]));
+            'vlan_domain' => $data['JUNIPER-VLAN-MIB::jnxExVlanPortGroupInstance'] ?? null,
+            'vlan_type' => $data['JUNIPER-VLAN-MIB::jnxExVlanType'] ?? null,
+            'vlan_name' => $data['JUNIPER-VLAN-MIB::jnxExVlanName'] ?? null,
+        ]) : null)->filter();
 
         if ($vlans->isNotEmpty()) {
             return $vlans;
