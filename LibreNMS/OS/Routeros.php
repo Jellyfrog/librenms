@@ -486,7 +486,7 @@ class Routeros extends OS implements
                 'routeros',
                 $index,
                 $name[$index] . ': Signal RSRQ',
-                $entry['mtxrLTEModemSignalRSRQ']
+                $entry['mtxrLTEModemSignalRSRQ'] ?? null
             );
         }
 
@@ -517,7 +517,7 @@ class Routeros extends OS implements
                 'routeros',
                 $index,
                 $name[$index] . ': Signal RSRP',
-                $entry['mtxrLTEModemSignalRSRP']
+                $entry['mtxrLTEModemSignalRSRP'] ?? null
             );
         }
 
@@ -548,7 +548,7 @@ class Routeros extends OS implements
                 'routeros',
                 $index,
                 $name[$index] . ': Signal SINR',
-                $entry['mtxrLTEModemSignalSINR']
+                $entry['mtxrLTEModemSignalSINR'] ?? null
             );
         }
 
