@@ -59,16 +59,16 @@ if ($apc_env_data) {
 
     foreach (array_keys($apc_env_data) as $index) {
         // APC connected(2), disconnected(1)
-        if ($apc_env_data[$index]['iemStatusProbeStatus'] != 1) {
-            $descr = $apc_env_data[$index]['iemStatusProbeName'];
-            $current = $apc_env_data[$index]['iemStatusProbeCurrentTemp'];
+        if (isset($apc_env_data[$index]['iemStatusProbeStatus']) && $apc_env_data[$index]['iemStatusProbeStatus'] != 1) {
+            $descr = $apc_env_data[$index]['iemStatusProbeName'] ?? '';
+            $current = $apc_env_data[$index]['iemStatusProbeCurrentTemp'] ?? null;
             $sensorType = 'apc';
             $oid = '.1.3.6.1.4.1.318.1.1.10.2.3.2.1.4.' . $index;
             // APC enum disabled(1), enabled(2)
-            $low_limit = ($apc_env_data[$index]['iemConfigProbeMinTempEnable'] != 1 ? $apc_env_data[$index]['iemConfigProbeMinTempThreshold'] : null);
-            $low_warn_limit = ($apc_env_data[$index]['iemConfigProbeLowTempEnable'] != 1 ? $apc_env_data[$index]['iemConfigProbeLowTempThreshold'] : null);
-            $high_warn_limit = ($apc_env_data[$index]['iemConfigProbeHighTempEnable'] != 1 ? $apc_env_data[$index]['iemConfigProbeHighTempThreshold'] : null);
-            $high_limit = ($apc_env_data[$index]['iemConfigProbeMaxTempEnable'] != 1 ? $apc_env_data[$index]['iemConfigProbeMaxTempThreshold'] : null);
+            $low_limit = (($apc_env_data[$index]['iemConfigProbeMinTempEnable'] ?? 1) != 1 ? ($apc_env_data[$index]['iemConfigProbeMinTempThreshold'] ?? null) : null);
+            $low_warn_limit = (($apc_env_data[$index]['iemConfigProbeLowTempEnable'] ?? 1) != 1 ? ($apc_env_data[$index]['iemConfigProbeLowTempThreshold'] ?? null) : null);
+            $high_warn_limit = (($apc_env_data[$index]['iemConfigProbeHighTempEnable'] ?? 1) != 1 ? ($apc_env_data[$index]['iemConfigProbeHighTempThreshold'] ?? null) : null);
+            $high_limit = (($apc_env_data[$index]['iemConfigProbeMaxTempEnable'] ?? 1) != 1 ? ($apc_env_data[$index]['iemConfigProbeMaxTempThreshold'] ?? null) : null);
 
             if ($current > 0) {
                 // Temperature = 0 -> Sensor not available
@@ -81,15 +81,15 @@ if ($apc_env_data) {
 $apc_env_data = snmpwalk_cache_oid($device, 'emsProbeStatus', [], 'PowerNet-MIB');
 
 foreach (array_keys($apc_env_data) as $index) {
-    if ($apc_env_data[$index]['emsProbeStatusProbeCommStatus'] != 'commsNeverDiscovered') {
-        $descr = $apc_env_data[$index]['emsProbeStatusProbeName'];
-        $current = $apc_env_data[$index]['emsProbeStatusProbeTemperature'];
+    if (isset($apc_env_data[$index]['emsProbeStatusProbeCommStatus']) && $apc_env_data[$index]['emsProbeStatusProbeCommStatus'] != 'commsNeverDiscovered') {
+        $descr = $apc_env_data[$index]['emsProbeStatusProbeName'] ?? '';
+        $current = $apc_env_data[$index]['emsProbeStatusProbeTemperature'] ?? null;
         $sensorType = 'apc';
         $oid = '.1.3.6.1.4.1.318.1.1.10.3.13.1.1.3.' . $index;
-        $low_limit = $apc_env_data[$index]['emsProbeStatusProbeMinTempThresh'];
-        $low_warn_limit = $apc_env_data[$index]['emsProbeStatusProbeLowTempThresh'];
-        $high_warn_limit = $apc_env_data[$index]['emsProbeStatusProbeHighTempThresh'];
-        $high_limit = $apc_env_data[$index]['emsProbeStatusProbeMaxTempThresh'];
+        $low_limit = $apc_env_data[$index]['emsProbeStatusProbeMinTempThresh'] ?? null;
+        $low_warn_limit = $apc_env_data[$index]['emsProbeStatusProbeLowTempThresh'] ?? null;
+        $high_warn_limit = $apc_env_data[$index]['emsProbeStatusProbeHighTempThresh'] ?? null;
+        $high_limit = $apc_env_data[$index]['emsProbeStatusProbeMaxTempThresh'] ?? null;
 
         discover_sensor(null, 'temperature', $device, $oid, $index, $sensorType, $descr, '1', '1', $low_limit, $low_warn_limit, $high_warn_limit, $high_limit, $current);
     }
