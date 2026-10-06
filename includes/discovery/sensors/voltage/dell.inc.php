@@ -28,7 +28,7 @@ $cur_oid = '.1.3.6.1.4.1.674.10892.1.600.20.1.6.';
 
 foreach ((array) $temp as $index => $entry) {
     $descr = $entry['voltageProbeLocationName'] ?? '';
-    if ($entry['voltageProbeType'] != 'voltageProbeTypeIsDiscrete') {
+    if (($entry['voltageProbeType'] ?? null) != 'voltageProbeTypeIsDiscrete') {
         $divisor = 1000;
         (isset($entry['voltageProbeReading'])) ? $value = $entry['voltageProbeReading'] : $value = null;
         (isset($entry['voltageProbeLowerCriticalThreshold'])) ? $lowlimit = $entry['voltageProbeLowerCriticalThreshold'] / $divisor : $lowlimit = null;
