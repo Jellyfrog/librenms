@@ -13,10 +13,10 @@ if ($apc_env_data) {
             $sensorType = 'apc';
             $oid = '.1.3.6.1.4.1.318.1.1.25.1.2.1.7.' . $index;
 
-            $low_limit = ($apc_env_data[$index]['uioSensorConfigMinHumidityEnable'] != 'disabled' ? $apc_env_data[$index]['uioSensorConfigMinHumidityThreshold'] : null);
-            $low_warn_limit = ($apc_env_data[$index]['uioSensorConfigLowHumidityEnable'] != 'disabled' ? $apc_env_data[$index]['uioSensorConfigLowHumidityThreshold'] : null);
-            $high_warn_limit = ($apc_env_data[$index]['uioSensorConfigHighHumidityEnable'] != 'disabled' ? $apc_env_data[$index]['uioSensorConfigHighHumidityThreshold'] : null);
-            $high_limit = ($apc_env_data[$index]['uioSensorConfigMaxHumidityEnable'] != 'disabled' ? $apc_env_data[$index]['uioSensorConfigMaxHumidityThreshold'] : null);
+            $low_limit = (($apc_env_data[$index]['uioSensorConfigMinHumidityEnable'] ?? 'disabled') != 'disabled' ? ($apc_env_data[$index]['uioSensorConfigMinHumidityThreshold'] ?? null) : null);
+            $low_warn_limit = (($apc_env_data[$index]['uioSensorConfigLowHumidityEnable'] ?? 'disabled') != 'disabled' ? ($apc_env_data[$index]['uioSensorConfigLowHumidityThreshold'] ?? null) : null);
+            $high_warn_limit = (($apc_env_data[$index]['uioSensorConfigHighHumidityEnable'] ?? 'disabled') != 'disabled' ? ($apc_env_data[$index]['uioSensorConfigHighHumidityThreshold'] ?? null) : null);
+            $high_limit = (($apc_env_data[$index]['uioSensorConfigMaxHumidityEnable'] ?? 'disabled') != 'disabled' ? ($apc_env_data[$index]['uioSensorConfigMaxHumidityThreshold'] ?? null) : null);
 
             // universalInputOutput sensor entries all have an sub-index, presumably to allow for multiple sensors in the
             // future. Here we remove the sub-index from the first entry, so 1.1 becomes 1, 2.1 becomes 2, etc. However any
@@ -37,13 +37,13 @@ if ($apc_env_data) {
 
     foreach (array_keys($apc_env_data) as $index) {
         $descr = $apc_env_data[$index]['iemStatusProbeName'] ?? '';
-        $current = $apc_env_data[$index]['iemStatusProbeCurrentHumid'];
+        $current = $apc_env_data[$index]['iemStatusProbeCurrentHumid'] ?? null;
         $sensorType = 'apc';
         $oid = '.1.3.6.1.4.1.318.1.1.10.2.3.2.1.6.' . $index;
-        $low_limit = ($apc_env_data[$index]['iemConfigProbeMinHumidEnable'] != 'disabled' ? $apc_env_data[$index]['iemConfigProbeMinHumidThreshold'] : null);
-        $low_warn_limit = ($apc_env_data[$index]['iemConfigProbeLowHumidEnable'] != 'disabled' ? $apc_env_data[$index]['iemConfigProbeLowHumidThreshold'] : null);
-        $high_warn_limit = ($apc_env_data[$index]['iemConfigProbeHighHumidEnable'] != 'disabled' ? $apc_env_data[$index]['iemConfigProbeHighHumidThreshold'] : null);
-        $high_limit = ($apc_env_data[$index]['iemConfigProbeMaxHumidEnable'] != 'disabled' ? $apc_env_data[$index]['iemConfigProbeMaxHumidThreshold'] : null);
+        $low_limit = (($apc_env_data[$index]['iemConfigProbeMinHumidEnable'] ?? 'disabled') != 'disabled' ? ($apc_env_data[$index]['iemConfigProbeMinHumidThreshold'] ?? null) : null);
+        $low_warn_limit = (($apc_env_data[$index]['iemConfigProbeLowHumidEnable'] ?? 'disabled') != 'disabled' ? ($apc_env_data[$index]['iemConfigProbeLowHumidThreshold'] ?? null) : null);
+        $high_warn_limit = (($apc_env_data[$index]['iemConfigProbeHighHumidEnable'] ?? 'disabled') != 'disabled' ? ($apc_env_data[$index]['iemConfigProbeHighHumidThreshold'] ?? null) : null);
+        $high_limit = (($apc_env_data[$index]['iemConfigProbeMaxHumidEnable'] ?? 'disabled') != 'disabled' ? ($apc_env_data[$index]['iemConfigProbeMaxHumidThreshold'] ?? null) : null);
 
         if ($current > 0) {
             // Humidity = 0 -> Sensor not available
