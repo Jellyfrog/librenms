@@ -189,10 +189,10 @@ if ($oids !== false) {
 $cooling_unit = snmpwalk_cache_oid($device, 'coolingUnitExtendedAnalogEntry', [], 'PowerNet-MIB');
 foreach ($cooling_unit as $index => $data) {
     $cur_oid = '.1.3.6.1.4.1.318.1.1.27.1.6.1.2.1.3.' . $index;
-    $descr = $data['coolingUnitExtendedAnalogDescription'];
+    $descr = $data['coolingUnitExtendedAnalogDescription'] ?? '';
     $scale = $data['coolingUnitExtendedAnalogScale'] ?? null;
     $value = $data['coolingUnitExtendedAnalogValue'] ?? null;
-    if (preg_match('/Temperature/', (string) $descr) && $data['coolingUnitExtendedAnalogUnits'] == 'C' && $value >= 0) {
+    if (preg_match('/Temperature/', (string) $descr) && ($data['coolingUnitExtendedAnalogUnits'] ?? null) == 'C' && $value >= 0) {
         discover_sensor(null, 'temperature', $device, $cur_oid, $cur_oid, 'apc', $descr, $scale, 1, null, null, null, null, $value);
     }
 }
@@ -202,7 +202,7 @@ foreach ($pre_cache['cooling_unit_analog'] as $index => $data) {
     $descr = $data['coolingUnitStatusAnalogDescription'] ?? '';
     $scale = $data['coolingUnitStatusAnalogScale'] ?? null;
     $value = $data['coolingUnitStatusAnalogValue'] ?? null;
-    if (preg_match('/Temperature/', (string) $descr) && $data['coolingUnitStatusAnalogUnits'] == 'C' && $value >= 0) {
+    if (preg_match('/Temperature/', (string) $descr) && ($data['coolingUnitStatusAnalogUnits'] ?? null) == 'C' && $value >= 0) {
         discover_sensor(null, 'temperature', $device, $cur_oid, $cur_oid, 'apc', $descr, $scale, 1, null, null, null, null, $value);
     }
 }
