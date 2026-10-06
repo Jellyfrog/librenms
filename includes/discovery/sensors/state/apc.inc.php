@@ -113,9 +113,12 @@ unset($cooling_unit);
 $relays = snmpwalk_cache_oid($device, 'emsOutputRelayControlEntry', [], 'PowerNet-MIB');
 foreach ($relays as $index => $data) {
     $cur_oid = '.1.3.6.1.4.1.318.1.1.10.3.2.1.1.3.' . $index;
+    if (! isset($data['emsOutputRelayControlOutputRelayName'])) {
+        continue;
+    }
     $state_name = $data['emsOutputRelayControlOutputRelayName'];
 
-    $current = apc_relay_state($data['emsOutputRelayControlOutputRelayCommand']);
+    $current = apc_relay_state($data['emsOutputRelayControlOutputRelayCommand'] ?? null);
     if (is_numeric($current)) {
         app('sensor-discovery')->discover(new Sensor([
             'poller_type' => 'snmp',
