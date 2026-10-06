@@ -126,7 +126,7 @@ if ($oids !== false) {
     echo 'APC Portable Supply Temp ';
     [$oid,$current_raw] = explode(' ', $oids);
     $precision = 10;
-    $current = ($current_raw / $precision);
+    $current = (\LibreNMS\Util\Number::cast($current_raw) / $precision);
     $sensorType = 'apc';
     $index = 0;
     if ($set_oids !== false) {
@@ -148,7 +148,7 @@ if ($oids !== false) {
     echo 'APC Portable Return Temp ';
     [$oid,$current_raw] = explode(' ', $oids);
     $precision = 10;
-    $current = ($current_raw / $precision);
+    $current = (\LibreNMS\Util\Number::cast($current_raw) / $precision);
     $sensorType = 'apc';
     $index = 1;
     if ($set_oids !== false) {
@@ -169,7 +169,7 @@ if ($oids !== false) {
     echo 'APC Portable Remote Temp ';
     [$oid,$current_raw] = explode(' ', $oids);
     $precision = 10;
-    $current = ($current_raw / $precision);
+    $current = (\LibreNMS\Util\Number::cast($current_raw) / $precision);
     $sensorType = 'apc';
     $index = 2;
     if ($set_oids !== false) {
