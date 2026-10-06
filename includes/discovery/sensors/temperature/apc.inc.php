@@ -19,7 +19,7 @@ if ($oids) {
     $index = 0;
     $descr = 'Internal Temperature';
 
-    discover_sensor(null, 'temperature', $device, $oid, $index, $sensorType, $descr, $precision, '1', null, null, null, null, $current / $precision);
+    discover_sensor(null, 'temperature', $device, $oid, $index, $sensorType, $descr, $precision, '1', null, null, null, null, \LibreNMS\Util\Number::cast($current) / $precision);
 }
 
 // Environmental monitoring on UPSes etc
