@@ -191,7 +191,7 @@ class Mimosa extends OS implements
                 'mimosa-ptp-tx',
                 $index,
                 sprintf('Tx Power: %s Chain', $this->getPolarization($polar[$index] ?? null)),
-                $entry['mimosaTxPower'],
+                $entry['mimosaTxPower'] ?? null,
                 1,
                 10
             );
@@ -202,7 +202,7 @@ class Mimosa extends OS implements
                 'mimosa-ptp-rx',
                 $index,
                 sprintf('Rx Power: %s Chain', $this->getPolarization($polar[$index] ?? null)),
-                $entry['mimosaRxPower'],
+                $entry['mimosaRxPower'] ?? null,
                 1,
                 10
             );
