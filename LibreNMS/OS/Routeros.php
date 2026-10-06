@@ -452,7 +452,7 @@ class Routeros extends OS implements
                 '.1.3.6.1.4.1.14988.1.1.1.9.1.10.' . $index,
                 'mikrotik',
                 $index,
-                '60G: Sta > ' . $entry['mtxrWl60GStaRemote'],
+                '60G: Sta > ' . ($entry['mtxrWl60GStaRemote'] ?? ''),
                 $entry['mtxrWl60GStaDistance'],
                 1,
                 100000
