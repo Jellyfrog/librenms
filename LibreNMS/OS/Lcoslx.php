@@ -208,7 +208,7 @@ class Lcoslx extends OS implements
                 '.1.3.6.1.4.1.2356.13.1.3.44.1.10.' . Mac::parse($bssid)->oid() . '.0',
                 'lcoslx',
                 $index,
-                'CCQ ' . $entry['lcosLXStatusWLANStationEntryNetworkName'] . " $bssid",
+                'CCQ ' . ($entry['lcosLXStatusWLANStationEntryNetworkName'] ?? '') . " $bssid",
                 $entry['lcosLXStatusWLANStationEntryPhySignal']
             );
         }
@@ -243,7 +243,7 @@ class Lcoslx extends OS implements
                     '.1.3.6.1.4.1.2356.13.1.3.32.1.50.' . Mac::parse($bssid)->oid() . '.0',
                     'lcos-tx',
                     $bssid,
-                    'TX Rate ' . $entry['lcosLXStatusWLANStationEntryNetworkName'] . " $bssid",
+                    'TX Rate ' . ($entry['lcosLXStatusWLANStationEntryNetworkName'] ?? '') . " $bssid",
                     $entry['lcosLXStatusWLANStationEntryEffTxRate'],
                     1000000
                 );
@@ -255,7 +255,7 @@ class Lcoslx extends OS implements
                     '.1.3.6.1.4.1.2356.13.1.3.32.1.51.' . Mac::parse($bssid)->oid() . '.0',
                     'lcos-rx',
                     $bssid,
-                    'RX Rate ' . $entry['lcosLXStatusWLANStationEntryNetworkName'] . " $bssid",
+                    'RX Rate ' . ($entry['lcosLXStatusWLANStationEntryNetworkName'] ?? '') . " $bssid",
                     $entry['lcosLXStatusWLANStationEntryEffRxRate'],
                     1000000
                 );
