@@ -567,6 +567,9 @@ class Vrp extends OS implements
         foreach ($staTable as $ssid => $sta) {
             $ssid_oid_array = []; // keep all OIDs of different freqs for a single SSID, to compute each SSID sta count, all freqs included
             foreach ($sta as $staFreq => $count) {
+                if (! isset($oidMap[$staFreq])) {
+                    continue;
+                }
                 $oid = $oidMap[$staFreq] . Oid::encodeString($ssid);
                 $ssid_oid_array[] = $oid;
                 $ssid_total_oid_array[] = $oid;
