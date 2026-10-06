@@ -4,7 +4,7 @@ $airos_stats = snmpwalk_cache_oid($device, '.1.3.6.1.4.1.41112.1.3.3.1', [], 'UB
 
 if (isset($airos_stats[1]['rxOctetsOK'])) {
     foreach ($port_stats as $index => $afport_stats) {
-        if ($afport_stats['ifDescr'] == 'eth0') {
+        if (($afport_stats['ifDescr'] ?? null) == 'eth0') {
             $port_stats[$index]['ifOperStatus'] = 'up'; // if may be marked as down
             $port_stats[$index]['ifInOctets'] = $airos_stats[1]['rxOctetsOK'];
             $port_stats[$index]['ifOutOctets'] = $airos_stats[1]['txOctetsOK'];
