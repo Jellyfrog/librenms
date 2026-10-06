@@ -39,6 +39,9 @@ if (is_numeric($temp)) {
 $cooling_status = snmpwalk_cache_oid($device, 'coolingUnitStatusDiscreteEntry', [], 'PowerNet-MIB');
 foreach ($cooling_status as $index => $data) {
     $cur_oid = '.1.3.6.1.4.1.318.1.1.27.1.4.2.2.1.4.' . $index;
+    if (! isset($data['coolingUnitStatusDiscreteDescription'])) {
+        continue;
+    }
     $state_name = $data['coolingUnitStatusDiscreteDescription'];
     $value = $data['coolingUnitStatusDiscreteValueAsInteger'] ?? null;
 
@@ -136,6 +139,9 @@ unset(
 $switched = snmpwalk_cache_oid($device, 'emsOutletControlEntry', [], 'PowerNet-MIB');
 foreach ($switched as $index => $data) {
     $cur_oid = '.1.3.6.1.4.1.318.1.1.10.3.3.1.1.3.' . $index;
+    if (! isset($data['emsOutletControlOutletName'])) {
+        continue;
+    }
     $state_name = $data['emsOutletControlOutletName'];
 
     $current = apc_relay_state($data['emsOutletControlOutletCommand']);
