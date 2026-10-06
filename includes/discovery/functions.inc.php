@@ -592,6 +592,9 @@ function build_bgp_peers($device, $data, $peer2)
     foreach ($peers ? explode("\n", $peers) : [] as $peer) {
         $local_ip = null;
         if ($peer2 === true) {
+            if (! str_contains($peer, '.')) {
+                continue;
+            }
             [$ver, $peer] = explode('.', $peer, 2);
         }
         [$peer_ip, $peer_as] = explode(' ', $peer);
