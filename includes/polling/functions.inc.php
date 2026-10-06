@@ -412,7 +412,7 @@ function json_app_get($device, $extend, $min_version = 1)
             }
             throw new JsonAppBase64DecodeException('Base64 decode failed.', $orig_output, -7);
         }
-        $output = gzdecode($output);
+        $output = @gzdecode($output); // failure is handled below
         if (! $output) {
             if (Debug::isEnabled()) {
                 echo "Decoding GZip failed...\n\n";
