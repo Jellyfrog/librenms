@@ -7,7 +7,7 @@ use App\Jobs\RunMaintenanceCommand;
 use App\Models\MaintenanceJobRun;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schedule;
 use LibreNMS\Util\Time;
 use Symfony\Component\Process\Process;
@@ -207,7 +207,7 @@ Schedule::job(new RunMaintenanceCommand('maintenance:cache-peeringdb'))
 Schedule::command('queue:work', ['maintenance', '--stop-when-empty'])
     ->name('maintenance queue worker')
     ->everyMinute()
-    ->when(fn () => DB::table('jobs')->where('queue', 'maintenance')->exists())
+    ->when(fn () => Queue::connection('maintenance')->size() > 0)
     ->onOneServer()
     ->withoutOverlapping(MaintenanceJob::MAX_RUNTIME / 60)
     ->runInBackground()

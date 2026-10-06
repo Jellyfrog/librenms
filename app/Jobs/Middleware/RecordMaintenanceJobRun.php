@@ -20,12 +20,13 @@ class RecordMaintenanceJobRun
     public function handle(MaintenanceJob $job, Closure $next): mixed
     {
         $createdAt = $job->job?->payload()['createdAt'] ?? null;
+        $started = now();
 
         $run = MaintenanceJobRun::create([
             'job' => $job->displayName(),
             'poller_name' => LibrenmsConfig::get('distributed_poller_name'),
-            'queued_at' => $createdAt ? Carbon::createFromTimestamp($createdAt) : null,
-            'started_at' => now(),
+            'queued_at' => $createdAt ? Carbon::createFromTimestamp($createdAt, $started->getTimezone()) : null,
+            'started_at' => $started,
             'status' => MaintenanceJobRun::STATUS_RUNNING,
         ]);
 
@@ -46,7 +47,7 @@ class RecordMaintenanceJobRun
             $finished = now();
             $run->update([
                 'finished_at' => $finished,
-                'duration_ms' => (int) $run->started_at->diffInMilliseconds($finished),
+                'duration_ms' => (int) $started->diffInMilliseconds($finished),
                 'status' => $status,
                 'exception' => $error,
             ]);
