@@ -28,6 +28,7 @@ use Exception;
 use Illuminate\Support\Facades\Cache;
 use LibreNMS\ValidationResult;
 use LibreNMS\Validator;
+use Symfony\Component\Process\Process;
 
 class Scheduler extends BaseValidation
 {
@@ -50,7 +51,30 @@ class Scheduler extends BaseValidation
         if (! $scheduler_working) {
             $commands = $this->generateCommands($validator);
             $validator->result(ValidationResult::fail('Scheduler is not running')->setFix($commands));
+
+            return;
         }
+
+        if ($this->legacyTimerActive()) {
+            $validator->result(ValidationResult::warn('Scheduler is run by the old librenms-scheduler.timer, background tasks such as the maintenance queue worker are killed when it exits')
+                ->setFix(array_merge(['sudo systemctl disable --now librenms-scheduler.timer', 'sudo rm /etc/systemd/system/librenms-scheduler.timer'], $this->generateCommands($validator))));
+        }
+    }
+
+    /**
+     * The old oneshot timer kills everything run in the background when schedule:run exits
+     */
+    private function legacyTimerActive(): bool
+    {
+        $systemctl_bin = LibrenmsConfig::locateBinary('systemctl');
+        if (! is_executable($systemctl_bin)) {
+            return false;
+        }
+
+        $process = new Process([$systemctl_bin, 'is-active', '--quiet', 'librenms-scheduler.timer']);
+        $process->run();
+
+        return $process->isSuccessful();
     }
 
     /**
@@ -67,14 +91,13 @@ class Scheduler extends BaseValidation
             // systemd exists
             if ($base_dir === '/opt/librenms') {
                 // standard install dir
-                $commands[] = 'sudo cp /opt/librenms/dist/librenms-scheduler.service /opt/librenms/dist/librenms-scheduler.timer /etc/systemd/system/';
+                $commands[] = 'sudo cp /opt/librenms/dist/librenms-scheduler.service /etc/systemd/system/';
             } else {
                 // non-standard install dir
                 $commands[] = "sudo sh -c 'sed \"s#/opt/librenms#$base_dir#\" $base_dir/dist/librenms-scheduler.service > /etc/systemd/system/librenms-scheduler.service'";
-                $commands[] = "sudo sh -c 'sed \"s#/opt/librenms#$base_dir#\" $base_dir/dist/librenms-scheduler.timer > /etc/systemd/system/librenms-scheduler.timer'";
             }
-            $commands[] = 'sudo systemctl enable librenms-scheduler.timer';
-            $commands[] = 'sudo systemctl start librenms-scheduler.timer';
+            $commands[] = 'sudo systemctl daemon-reload';
+            $commands[] = 'sudo systemctl enable --now librenms-scheduler.service';
 
             return $commands;
         }

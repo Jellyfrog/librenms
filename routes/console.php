@@ -10,6 +10,7 @@ use App\Console\Commands\MaintenanceRefreshSslCertificates;
 use App\Facades\LibrenmsConfig;
 use App\Jobs\PingCheck;
 use App\Models\Eventlog;
+use App\Models\MaintenanceJobRun;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schedule;
@@ -169,6 +170,21 @@ Schedule::call(function (): void {
 
 // schedule maintenance, should be after all others
 $maintenance_log_file = LibrenmsConfig::get('log_dir') . '/maintenance.log';
+
+// Maintenance queue worker, processes App\Jobs\MaintenanceJob jobs one at a time.
+// Runs in the background so long jobs do not block the scheduler and exits when the queue is empty.
+Schedule::command('queue:work', ['maintenance', '--queue=maintenance', '--stop-when-empty', '--timeout=0', '--tries=1'])
+    ->name('maintenance queue worker')
+    ->everyMinute()
+    ->onOneServer()
+    ->withoutOverlapping(1440)
+    ->runInBackground()
+    ->appendOutputTo($maintenance_log_file);
+
+Schedule::command('model:prune', ['--model' => [MaintenanceJobRun::class]])
+    ->dailyAt(Time::pseudoRandomBetween('00:00', '00:59'))
+    ->onOneServer()
+    ->appendOutputTo($maintenance_log_file);
 
 Schedule::command(MaintenanceFetchOuis::class)
     ->weeklyOn(0, Time::pseudoRandomBetween('01:00', '01:59'))
