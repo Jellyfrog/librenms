@@ -9,12 +9,12 @@ use App\Console\Commands\MaintenanceFetchRSS;
 use App\Console\Commands\MaintenanceRefreshSslCertificates;
 use App\Facades\LibrenmsConfig;
 use App\Jobs\PingCheck;
-use App\Models\Eventlog;
+use App\Jobs\RunMaintenanceCommand;
 use App\Models\MaintenanceJobRun;
+use Illuminate\Console\Scheduling\CallbackEvent;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schedule;
-use LibreNMS\Enum\Severity;
 use LibreNMS\Util\Time;
 use Symfony\Component\Process\Process;
 
@@ -181,53 +181,44 @@ Schedule::command('queue:work', ['maintenance', '--queue=maintenance', '--stop-w
     ->runInBackground()
     ->appendOutputTo($maintenance_log_file);
 
+// Maintenance commands are queued on the maintenance queue, see App\Jobs\MaintenanceJob
+$scheduleMaintenance = function (string $command): CallbackEvent {
+    $job = new RunMaintenanceCommand($command);
+
+    return Schedule::job($job)->name($job->displayName());
+};
+
 Schedule::command('model:prune', ['--model' => [MaintenanceJobRun::class]])
     ->dailyAt(Time::pseudoRandomBetween('00:00', '00:59'))
     ->onOneServer()
     ->appendOutputTo($maintenance_log_file);
 
-Schedule::command(MaintenanceFetchOuis::class)
+$scheduleMaintenance(MaintenanceFetchOuis::class)
     ->weeklyOn(0, Time::pseudoRandomBetween('01:00', '01:59'))
-    ->onOneServer()
-    ->appendOutputTo($maintenance_log_file)
-    ->onFailure(fn () => Eventlog::log('The scheduled command maintenance:fetch-ouis failed to run. Check the maintenance.log for details.', null, 'maintenance', Severity::Error));
+    ->onOneServer();
 
-Schedule::command(MaintenanceCleanupNetworks::class)
+$scheduleMaintenance(MaintenanceCleanupNetworks::class)
     ->weeklyOn(0, Time::pseudoRandomBetween('02:00', '02:59'))
-    ->onOneServer()
-    ->appendOutputTo($maintenance_log_file)
-    ->onFailure(fn () => Eventlog::log('The scheduled command maintenance:cleanup-networks failed to run. Check the maintenance.log for details.', null, 'maintenance', Severity::Error));
+    ->onOneServer();
 
-Schedule::command(MaintenanceFetchRSS::class)
+$scheduleMaintenance(MaintenanceFetchRSS::class)
     ->dailyAt(Time::pseudoRandomBetween('03:00', '03:59'))
-    ->onOneServer()
-    ->appendOutputTo($maintenance_log_file)
-    ->onFailure(fn () => Eventlog::log('The scheduled command maintenance:fetch-rss failed to run. Check the maintenance.log for details.', null, 'maintenance', Severity::Error));
+    ->onOneServer();
 
-Schedule::command(MaintenanceCleanupSyslog::class)
+$scheduleMaintenance(MaintenanceCleanupSyslog::class)
     ->hourlyAt(17)
-    ->onOneServer()
-    ->withoutOverlapping()
-    ->appendOutputTo($maintenance_log_file)
-    ->onFailure(fn () => Eventlog::log('The scheduled command maintenance:cleanup-syslog failed to run. Check the maintenance.log for details.', null, 'maintenance', Severity::Error));
+    ->onOneServer();
 
-Schedule::command(MaintenanceDiscoverSslCertificates::class)
+$scheduleMaintenance(MaintenanceDiscoverSslCertificates::class)
     ->dailyAt(Time::pseudoRandomBetween('04:00', '04:59'))
     ->onOneServer()
-    ->appendOutputTo($maintenance_log_file)
-    ->when(fn () => LibrenmsConfig::get('ssl_certificates.auto_discover', false))
-    ->onFailure(fn () => Eventlog::log('The scheduled command maintenance:discover-ssl-certificates failed to run. Check the maintenance.log for details.', null, 'maintenance', Severity::Error));
+    ->when(fn () => LibrenmsConfig::get('ssl_certificates.auto_discover', false));
 
-Schedule::command(MaintenanceRefreshSslCertificates::class)
+$scheduleMaintenance(MaintenanceRefreshSslCertificates::class)
     ->dailyAt(Time::pseudoRandomBetween('05:00', '05:59'))
-    ->onOneServer()
-    ->appendOutputTo($maintenance_log_file)
-    ->onFailure(fn () => Eventlog::log('The scheduled command maintenance:refresh-ssl-certificates failed to run. Check the maintenance.log for details.', null, 'maintenance', Severity::Error));
+    ->onOneServer();
 
-Schedule::command(MaintenanceCachePeeringdb::class)
+$scheduleMaintenance(MaintenanceCachePeeringdb::class)
     ->dailyAt(Time::pseudoRandomBetween('06:00', '06:59'))
     ->onOneServer()
-    ->withoutOverlapping()
-    ->appendOutputTo($maintenance_log_file)
-    ->when(fn () => LibrenmsConfig::get('peeringdb.enabled'))
-    ->onFailure(fn () => Eventlog::log('The scheduled command maintenance:cache-peeringdb failed to run. Check the maintenance.log for details.', null, 'maintenance', Severity::Error));
+    ->when(fn () => LibrenmsConfig::get('peeringdb.enabled'));

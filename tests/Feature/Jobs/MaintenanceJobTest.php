@@ -2,7 +2,9 @@
 
 namespace LibreNMS\Tests\Feature\Jobs;
 
+use App\Console\Commands\MaintenanceCleanupSyslog;
 use App\Jobs\MaintenanceJob;
+use App\Jobs\RunMaintenanceCommand;
 use App\Models\Eventlog;
 use App\Models\MaintenanceJobRun;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -65,6 +67,25 @@ final class MaintenanceJobTest extends DBTestCase
         Artisan::call('model:prune', ['--model' => [MaintenanceJobRun::class]]);
 
         $this->assertSame(['new'], MaintenanceJobRun::pluck('job')->all());
+    }
+
+    public function testRunMaintenanceCommandRecordsCommandName(): void
+    {
+        RunMaintenanceCommand::dispatch(MaintenanceCleanupSyslog::class, ['days' => 30]);
+        $this->work();
+
+        $run = MaintenanceJobRun::where('job', 'maintenance:cleanup-syslog')->sole();
+        $this->assertSame(MaintenanceJobRun::STATUS_SUCCESS, $run->status);
+    }
+
+    public function testRunMaintenanceCommandFailsOnNonZeroExit(): void
+    {
+        RunMaintenanceCommand::dispatch(MaintenanceCleanupSyslog::class, ['days' => 'invalid']);
+        $this->work();
+
+        $run = MaintenanceJobRun::where('job', 'maintenance:cleanup-syslog')->sole();
+        $this->assertSame(MaintenanceJobRun::STATUS_FAILED, $run->status);
+        $this->assertStringContainsString('exited with code 1', (string) $run->exception);
     }
 
     private function work(): void
