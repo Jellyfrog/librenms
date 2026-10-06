@@ -168,7 +168,7 @@ class Ciscowlc extends Cisco implements
         foreach ($counts as $index => $count) {
             $oid = '.1.3.6.1.4.1.14179.2.1.1.1.38.' . $index;
             $total_oids[] = $oid;
-            $total += $count;
+            $total += \LibreNMS\Util\Number::cast($count);
 
             $sensors[] = new WirelessSensor(
                 WirelessSensorType::Clients,
