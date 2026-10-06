@@ -109,7 +109,7 @@ class Mimosa extends OS implements
                 '.1.3.6.1.4.1.43356.2.1.2.6.1.1.6.' . $index,
                 'mimosa-ptp',
                 $index,
-                sprintf($descr, $this->getPolarization($polar[$index])),
+                sprintf($descr, $this->getPolarization($polar[$index] ?? null)),
                 $frequency
             );
         }
@@ -158,7 +158,7 @@ class Mimosa extends OS implements
                 '.1.3.6.1.4.1.43356.2.1.2.6.1.1.4.' . $index,
                 'mimosa',
                 $index,
-                sprintf('Rx Noise: %s Chain', $this->getPolarization($polar[$index])),
+                sprintf('Rx Noise: %s Chain', $this->getPolarization($polar[$index] ?? null)),
                 $entry['mimosaRxNoise'],
                 1,
                 10
@@ -190,7 +190,7 @@ class Mimosa extends OS implements
                 '.1.3.6.1.4.1.43356.2.1.2.6.1.1.2.' . $index,
                 'mimosa-ptp-tx',
                 $index,
-                sprintf('Tx Power: %s Chain', $this->getPolarization($polar[$index])),
+                sprintf('Tx Power: %s Chain', $this->getPolarization($polar[$index] ?? null)),
                 $entry['mimosaTxPower'],
                 1,
                 10
@@ -201,7 +201,7 @@ class Mimosa extends OS implements
                 '.1.3.6.1.4.1.43356.2.1.2.6.1.1.3.' . $index,
                 'mimosa-ptp-rx',
                 $index,
-                sprintf('Rx Power: %s Chain', $this->getPolarization($polar[$index])),
+                sprintf('Rx Power: %s Chain', $this->getPolarization($polar[$index] ?? null)),
                 $entry['mimosaRxPower'],
                 1,
                 10
@@ -298,7 +298,7 @@ class Mimosa extends OS implements
                 '.1.3.6.1.4.1.43356.2.1.2.6.1.1.5.' . $index,
                 'mimosa',
                 $index,
-                sprintf('SNR: %s Chain', $this->getPolarization($polar[$index])),
+                sprintf('SNR: %s Chain', $this->getPolarization($polar[$index] ?? null)),
                 $entry['mimosaSNR'],
                 1,
                 10
