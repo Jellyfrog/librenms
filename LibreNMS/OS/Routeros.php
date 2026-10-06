@@ -541,7 +541,7 @@ class Routeros extends OS implements
         $qos = $qos->concat(\SnmpQuery::walk('MIKROTIK-MIB::mtxrQueueTreeTable')->mapTable(function ($data, $qosIndex) {
             $thisQos = new Qos([
                 'device_id' => $this->getDeviceId(),
-                'port_id' => PortCache::getIdFromIfIndex(hexdec((string) $data['MIKROTIK-MIB::mtxrQueueTreeParentIndex']), $this->getDevice()),
+                'port_id' => PortCache::getIdFromIfIndex(hexdec((string) ($data['MIKROTIK-MIB::mtxrQueueTreeParentIndex'] ?? '')), $this->getDevice()),
                 'type' => 'routeros_tree',
                 'title' => $data['MIKROTIK-MIB::mtxrQueueTreeName'],
                 'snmp_idx' => $qosIndex,
@@ -551,7 +551,7 @@ class Routeros extends OS implements
             ]);
 
             // Save this child -> parent index into the collection for use in setQosParents();
-            $this->qosIdxToParent->get('routeros_tree')->put($qosIndex, hexdec((string) $data['MIKROTIK-MIB::mtxrQueueTreeParentIndex']));
+            $this->qosIdxToParent->get('routeros_tree')->put($qosIndex, hexdec((string) ($data['MIKROTIK-MIB::mtxrQueueTreeParentIndex'] ?? '')));
 
             return $thisQos;
         }));
