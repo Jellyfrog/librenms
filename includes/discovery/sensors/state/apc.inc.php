@@ -173,7 +173,7 @@ foreach ($pre_cache['mem_sensors_status'] as $index => $data) {
         ? $data['memSensorsStatusSensorName'] . ' - ' . ($data['memSensorsStatusSensorLocation'] ?? '')
         : null;
 
-    if ($data['memSensorsCommStatus']) {
+    if (! empty($data['memSensorsCommStatus'])) {
         $cur_oid = '.1.3.6.1.4.1.318.1.1.10.4.2.3.1.7.' . $index;
         $current = $data['memSensorsCommStatus'];
         if (is_numeric($current)) {
