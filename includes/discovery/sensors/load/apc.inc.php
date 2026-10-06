@@ -39,7 +39,7 @@ if ($phasecount > 1) {
         } else {
             $current_oid = '.1.3.6.1.4.1.318.1.1.1.4.3.3';
             $value = explode(' ', $oids);
-            $current = $value[1] / $item['divisor'];
+            $current = \LibreNMS\Util\Number::cast($value[1] ?? null) / $item['divisor'];
         }
         if (! empty($oids)) {
             d_echo($oids);
