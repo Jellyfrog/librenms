@@ -201,7 +201,7 @@ foreach ($pre_cache['mem_sensors_status'] as $index => $data) {
         }
     }
 
-    if ($data['memSensorsAlarmStatus']) {
+    if (! empty($data['memSensorsAlarmStatus'])) {
         $cur_oid = '.1.3.6.1.4.1.318.1.1.10.4.2.3.1.8.' . $index;
         $current = $data['memSensorsAlarmStatus'];
         if (is_numeric($current)) {
