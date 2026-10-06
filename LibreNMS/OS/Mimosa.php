@@ -159,7 +159,7 @@ class Mimosa extends OS implements
                 'mimosa',
                 $index,
                 sprintf('Rx Noise: %s Chain', $this->getPolarization($polar[$index] ?? null)),
-                $entry['mimosaRxNoise'],
+                $entry['mimosaRxNoise'] ?? null,
                 1,
                 10
             );
