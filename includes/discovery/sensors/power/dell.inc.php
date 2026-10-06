@@ -27,7 +27,7 @@ $temp = snmpwalk_cache_multi_oid($device, 'amperageProbeTableEntry', [], 'MIB-De
 $cur_oid = '.1.3.6.1.4.1.674.10892.1.600.30.1.6.';
 
 foreach ((array) $temp as $index => $entry) {
-    $descr = $entry['amperageProbeLocationName'];
+    $descr = $entry['amperageProbeLocationName'] ?? '';
     if ($entry['amperageProbeType'] === 'amperageProbeTypeIsSystemWatts') {
         $divisor = 1;
         (isset($entry['amperageProbeReading'])) ? $value = $entry['amperageProbeReading'] : $value = null;
