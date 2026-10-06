@@ -76,10 +76,13 @@ unset($cooling_status);
 $cooling_unit = snmpwalk_cache_oid($device, 'coolingUnitExtendedDiscreteEntry', [], 'PowerNet-MIB');
 foreach ($cooling_unit as $index => $data) {
     $cur_oid = '.1.3.6.1.4.1.318.1.1.27.1.6.2.2.1.4.' . $index;
+    if (! isset($data['coolingUnitExtendedDiscreteDescription'])) {
+        continue;
+    }
     $state_name = $data['coolingUnitExtendedDiscreteDescription'];
     $value = $data['coolingUnitExtendedDiscreteValueAsInteger'] ?? null;
 
-    $tmp_states = explode(',', (string) $data['coolingUnitExtendedDiscreteIntegerReferenceKey']);
+    $tmp_states = explode(',', (string) ($data['coolingUnitExtendedDiscreteIntegerReferenceKey'] ?? ''));
     $translations = [];
     foreach ($tmp_states as $ref) {
         preg_match('/([\w ]+)\\(([\d]+)\\)/', $ref, $matches);
