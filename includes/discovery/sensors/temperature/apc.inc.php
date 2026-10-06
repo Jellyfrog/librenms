@@ -212,7 +212,7 @@ foreach ($pre_cache['mem_sensors_status'] as $index => $data) {
     $descr = ($data['memSensorsStatusSensorName'] ?? '') . ' - ' . ($data['memSensorsStatusSensorLocation'] ?? '');
     $divisor = 1;
     $multiplier = 1;
-    $value = $data['memSensorsTemperature'];
+    $value = $data['memSensorsTemperature'] ?? null;
     if (is_numeric($value)) {
         $user_func = null;
         if ($pre_cache['memSensorsStatusSysTempUnits'] === 'fahrenheit') {
