@@ -91,6 +91,10 @@ class Routeros extends OS implements
 
         $data = $this->getCacheTable('MIKROTIK-MIB::mtxrWlApTable');
         foreach ($data as $index => $entry) {
+            if (! is_array($entry)) {
+                continue;
+            }
+
             // skip sensors with no data (nv2 should report 1 client, but doesn't report ccq)
             if ($entry['mtxrWlApClientCount'] > 0 && $entry['mtxrWlApOverallTxCCQ'] == 0) {
                 continue;
@@ -110,6 +114,10 @@ class Routeros extends OS implements
 
         $data = $this->getCacheTable('MIKROTIK-MIB::mtxrWlStatTable');
         foreach ($data as $index => $entry) {
+            if (! is_array($entry)) {
+                continue;
+            }
+
             $freq = $entry['mtxrWlStatFreq'] ? substr((string) $entry['mtxrWlStatFreq'], 0, 1) . 'G' : 'SSID';
             if (empty($entry['mtxrWlStatTxCCQ']) && empty($entry['mtxrWlStatRxCCQ'])) {
                 continue;
@@ -148,6 +156,10 @@ class Routeros extends OS implements
         $sensors = [];
         $data = $this->getCacheTable('MIKROTIK-MIB::mtxrWlApTable');
         foreach ($data as $index => $entry) {
+            if (! is_array($entry)) {
+                continue;
+            }
+
             $freq = ! empty($entry['mtxrWlApFreq']) ? substr((string) $entry['mtxrWlApFreq'], 0, 1) . 'G' : 'SSID';
 
             $sensors[] = new WirelessSensor(
@@ -175,6 +187,10 @@ class Routeros extends OS implements
         $sensors = [];
         $data = $this->getCacheTable('MIKROTIK-MIB::mtxrWlApTable');
         foreach ($data as $index => $entry) {
+            if (! is_array($entry)) {
+                continue;
+            }
+
             if ($entry['mtxrWlApFreq'] === '0') {
                 continue;
             }
@@ -192,6 +208,10 @@ class Routeros extends OS implements
 
         $data = $this->getCacheTable('MIKROTIK-MIB::mtxrWlStatTable');
         foreach ($data as $index => $entry) {
+            if (! is_array($entry)) {
+                continue;
+            }
+
             if ($entry['mtxrWlStatFreq'] === '0') {
                 continue;
             }
@@ -209,6 +229,10 @@ class Routeros extends OS implements
 
         $data = $this->getCacheTable('MIKROTIK-MIB::mtxrWl60GTable');
         foreach ($data as $index => $entry) {
+            if (! is_array($entry)) {
+                continue;
+            }
+
             $sensors[] = new WirelessSensor(
                 WirelessSensorType::Frequency,
                 $this->getDeviceId(),
@@ -235,6 +259,10 @@ class Routeros extends OS implements
         $data = $this->getCacheTable('MIKROTIK-MIB::mtxrWl60GTable');
 
         foreach ($data as $index => $entry) {
+            if (! is_array($entry)) {
+                continue;
+            }
+
             $sensors[] = new WirelessSensor(
                 WirelessSensorType::Rssi,
                 $this->getDeviceId(),
@@ -261,6 +289,10 @@ class Routeros extends OS implements
         $data = $this->getCacheTable('MIKROTIK-MIB::mtxrWl60GTable');
 
         foreach ($data as $index => $entry) {
+            if (! is_array($entry)) {
+                continue;
+            }
+
             $sensors[] = new WirelessSensor(
                 WirelessSensorType::Quality,
                 $this->getDeviceId(),
@@ -286,6 +318,10 @@ class Routeros extends OS implements
         $data = $this->getCacheTable('MIKROTIK-MIB::mtxrWlApTable');
 
         foreach ($data as $index => $entry) {
+            if (! is_array($entry)) {
+                continue;
+            }
+
             $freq = ! empty($entry['mtxrWlApFreq']) ? substr((string) $entry['mtxrWlApFreq'], 0, 1) . 'G' : 'SSID';
 
             $sensors[] = new WirelessSensor(
@@ -314,6 +350,10 @@ class Routeros extends OS implements
 
         $data = $this->getCacheTable('MIKROTIK-MIB::mtxrWlApTable');
         foreach ($data as $index => $entry) {
+            if (! is_array($entry)) {
+                continue;
+            }
+
             if ($entry['mtxrWlApTxRate'] === '0' && $entry['mtxrWlApRxRate'] === '0') {
                 continue;  // no data
             }
@@ -341,6 +381,10 @@ class Routeros extends OS implements
 
         $data = $this->getCacheTable('MIKROTIK-MIB::mtxrWlStatTable');
         foreach ($data as $index => $entry) {
+            if (! is_array($entry)) {
+                continue;
+            }
+
             if ($entry['mtxrWlStatTxRate'] === '0' && $entry['mtxrWlStatRxRate'] === '0') {
                 continue;  // no data
             }
@@ -367,6 +411,10 @@ class Routeros extends OS implements
 
         $data = $this->getCacheTable('MIKROTIK-MIB::mtxrWl60GTable');
         foreach ($data as $index => $entry) {
+            if (! is_array($entry)) {
+                continue;
+            }
+
             $sensors[] = new WirelessSensor(
                 WirelessSensorType::Rate,
                 $this->getDeviceId(),
@@ -394,6 +442,10 @@ class Routeros extends OS implements
 
         $data = $this->getCacheTable('MIKROTIK-MIB::mtxrWl60GStaTable');
         foreach ($data as $index => $entry) {
+            if (! is_array($entry)) {
+                continue;
+            }
+
             $sensors[] = new WirelessSensor(
                 WirelessSensorType::Distance,
                 $this->getDeviceId(),
@@ -422,6 +474,10 @@ class Routeros extends OS implements
 
         $sensors = [];
         foreach ($data as $index => $entry) {
+            if (! is_array($entry)) {
+                continue;
+            }
+
             $name = $this->getCacheByIndex('MIKROTIK-MIB::mtxrInterfaceStatsName');
             $sensors[] = new WirelessSensor(
                 WirelessSensorType::Rsrq,
@@ -449,6 +505,10 @@ class Routeros extends OS implements
 
         $sensors = [];
         foreach ($data as $index => $entry) {
+            if (! is_array($entry)) {
+                continue;
+            }
+
             $name = $this->getCacheByIndex('MIKROTIK-MIB::mtxrInterfaceStatsName');
             $sensors[] = new WirelessSensor(
                 WirelessSensorType::Rsrp,
@@ -476,6 +536,10 @@ class Routeros extends OS implements
 
         $sensors = [];
         foreach ($data as $index => $entry) {
+            if (! is_array($entry)) {
+                continue;
+            }
+
             $name = $this->getCacheByIndex('MIKROTIK-MIB::mtxrInterfaceStatsName');
             $sensors[] = new WirelessSensor(
                 WirelessSensorType::Sinr,
