@@ -26,9 +26,9 @@ namespace LibreNMS\Validations;
 use App\Facades\LibrenmsConfig;
 use Exception;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Process;
 use LibreNMS\ValidationResult;
 use LibreNMS\Validator;
-use Symfony\Component\Process\Process;
 
 class Scheduler extends BaseValidation
 {
@@ -48,46 +48,34 @@ class Scheduler extends BaseValidation
             return;
         }
 
+        $systemctl_bin = LibrenmsConfig::locateBinary('systemctl');
+        $has_systemd = is_executable($systemctl_bin);
+
         if (! $scheduler_working) {
-            $commands = $this->generateCommands($validator);
+            $commands = $this->generateCommands($validator, $has_systemd);
             $validator->result(ValidationResult::fail('Scheduler is not running')->setFix($commands));
 
             return;
         }
 
-        if ($this->legacyTimerActive()) {
+        // the old oneshot timer kills everything run in the background when schedule:run exits
+        if ($has_systemd && Process::run([$systemctl_bin, 'is-active', '--quiet', 'librenms-scheduler.timer'])->successful()) {
             $validator->result(ValidationResult::warn('Scheduler is run by the old librenms-scheduler.timer, background tasks such as the maintenance queue worker are killed when it exits')
-                ->setFix(array_merge(['sudo systemctl disable --now librenms-scheduler.timer', 'sudo rm /etc/systemd/system/librenms-scheduler.timer'], $this->generateCommands($validator))));
+                ->setFix(array_merge(['sudo systemctl disable --now librenms-scheduler.timer', 'sudo rm /etc/systemd/system/librenms-scheduler.timer'], $this->generateCommands($validator, $has_systemd))));
         }
-    }
-
-    /**
-     * The old oneshot timer kills everything run in the background when schedule:run exits
-     */
-    private function legacyTimerActive(): bool
-    {
-        $systemctl_bin = LibrenmsConfig::locateBinary('systemctl');
-        if (! is_executable($systemctl_bin)) {
-            return false;
-        }
-
-        $process = new Process([$systemctl_bin, 'is-active', '--quiet', 'librenms-scheduler.timer']);
-        $process->run();
-
-        return $process->isSuccessful();
     }
 
     /**
      * @param  Validator  $validator
+     * @param  bool  $has_systemd
      * @return array
      */
-    private function generateCommands(Validator $validator): array
+    private function generateCommands(Validator $validator, bool $has_systemd): array
     {
         $commands = [];
-        $systemctl_bin = LibrenmsConfig::locateBinary('systemctl');
         $base_dir = rtrim($validator->getBaseDir(), '/');
 
-        if (is_executable($systemctl_bin)) {
+        if ($has_systemd) {
             // systemd exists
             if ($base_dir === '/opt/librenms') {
                 // standard install dir

@@ -1,19 +1,13 @@
 <?php
 
-use App\Console\Commands\MaintenanceCachePeeringdb;
-use App\Console\Commands\MaintenanceCleanupNetworks;
-use App\Console\Commands\MaintenanceCleanupSyslog;
-use App\Console\Commands\MaintenanceDiscoverSslCertificates;
-use App\Console\Commands\MaintenanceFetchOuis;
-use App\Console\Commands\MaintenanceFetchRSS;
-use App\Console\Commands\MaintenanceRefreshSslCertificates;
 use App\Facades\LibrenmsConfig;
+use App\Jobs\MaintenanceJob;
 use App\Jobs\PingCheck;
 use App\Jobs\RunMaintenanceCommand;
 use App\Models\MaintenanceJobRun;
-use Illuminate\Console\Scheduling\CallbackEvent;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schedule;
 use LibreNMS\Util\Time;
 use Symfony\Component\Process\Process;
@@ -171,54 +165,50 @@ Schedule::call(function (): void {
 // schedule maintenance, should be after all others
 $maintenance_log_file = LibrenmsConfig::get('log_dir') . '/maintenance.log';
 
-// Maintenance queue worker, processes App\Jobs\MaintenanceJob jobs one at a time.
-// Runs in the background so long jobs do not block the scheduler and exits when the queue is empty.
-Schedule::command('queue:work', ['maintenance', '--queue=maintenance', '--stop-when-empty', '--timeout=0', '--tries=1'])
-    ->name('maintenance queue worker')
-    ->everyMinute()
-    ->onOneServer()
-    ->withoutOverlapping(1440)
-    ->runInBackground()
-    ->appendOutputTo($maintenance_log_file);
-
-// Maintenance commands are queued on the maintenance queue, see App\Jobs\MaintenanceJob
-$scheduleMaintenance = function (string $command): CallbackEvent {
-    $job = new RunMaintenanceCommand($command);
-
-    return Schedule::job($job)->name($job->displayName());
-};
-
 Schedule::command('model:prune', ['--model' => [MaintenanceJobRun::class]])
     ->dailyAt(Time::pseudoRandomBetween('00:00', '00:59'))
     ->onOneServer()
     ->appendOutputTo($maintenance_log_file);
 
-$scheduleMaintenance(MaintenanceFetchOuis::class)
+// Maintenance commands are queued on the maintenance queue, see App\Jobs\MaintenanceJob
+Schedule::job(new RunMaintenanceCommand('maintenance:fetch-ouis'))
     ->weeklyOn(0, Time::pseudoRandomBetween('01:00', '01:59'))
     ->onOneServer();
 
-$scheduleMaintenance(MaintenanceCleanupNetworks::class)
+Schedule::job(new RunMaintenanceCommand('maintenance:cleanup-networks'))
     ->weeklyOn(0, Time::pseudoRandomBetween('02:00', '02:59'))
     ->onOneServer();
 
-$scheduleMaintenance(MaintenanceFetchRSS::class)
+Schedule::job(new RunMaintenanceCommand('maintenance:fetch-rss'))
     ->dailyAt(Time::pseudoRandomBetween('03:00', '03:59'))
     ->onOneServer();
 
-$scheduleMaintenance(MaintenanceCleanupSyslog::class)
+Schedule::job(new RunMaintenanceCommand('maintenance:cleanup-syslog'))
     ->hourlyAt(17)
     ->onOneServer();
 
-$scheduleMaintenance(MaintenanceDiscoverSslCertificates::class)
+Schedule::job(new RunMaintenanceCommand('maintenance:discover-ssl-certificates'))
     ->dailyAt(Time::pseudoRandomBetween('04:00', '04:59'))
     ->onOneServer()
     ->when(fn () => LibrenmsConfig::get('ssl_certificates.auto_discover', false));
 
-$scheduleMaintenance(MaintenanceRefreshSslCertificates::class)
+Schedule::job(new RunMaintenanceCommand('maintenance:refresh-ssl-certificates'))
     ->dailyAt(Time::pseudoRandomBetween('05:00', '05:59'))
     ->onOneServer();
 
-$scheduleMaintenance(MaintenanceCachePeeringdb::class)
+Schedule::job(new RunMaintenanceCommand('maintenance:cache-peeringdb'))
     ->dailyAt(Time::pseudoRandomBetween('06:00', '06:59'))
     ->onOneServer()
     ->when(fn () => LibrenmsConfig::get('peeringdb.enabled'));
+
+// Maintenance queue worker, processes App\Jobs\MaintenanceJob jobs one at a time.
+// Runs in the background so long jobs do not block the scheduler and exits when the queue is empty.
+// Defined after the jobs so jobs queued this minute are picked up right away.
+Schedule::command('queue:work', ['maintenance', '--stop-when-empty'])
+    ->name('maintenance queue worker')
+    ->everyMinute()
+    ->when(fn () => DB::table('jobs')->where('queue', 'maintenance')->exists())
+    ->onOneServer()
+    ->withoutOverlapping(MaintenanceJob::MAX_RUNTIME / 60)
+    ->runInBackground()
+    ->appendOutputTo($maintenance_log_file);

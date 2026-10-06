@@ -24,6 +24,9 @@ abstract class MaintenanceJob implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable;
 
+    /** Longest a maintenance job may run, in seconds, before it is considered dead */
+    public const MAX_RUNTIME = 86400;
+
     /** Maintenance jobs can run for hours, never time out */
     public int $timeout = 0;
 
@@ -31,25 +34,19 @@ abstract class MaintenanceJob implements ShouldQueue, ShouldBeUnique
     public int $tries = 1;
 
     /** Release the unique lock after this many seconds, in case a run was killed */
-    public int $uniqueFor = 86400;
+    public int $uniqueFor = self::MAX_RUNTIME;
 
     public function __construct()
     {
         $this->onConnection('maintenance');
-        $this->onQueue('maintenance');
     }
 
     /**
-     * Name used for uniqueness and in maintenance_job_runs.
+     * Name used in the schedule, queue payload and maintenance_job_runs.
      */
     public function displayName(): string
     {
         return static::class;
-    }
-
-    public function uniqueId(): string
-    {
-        return $this->displayName();
     }
 
     /**

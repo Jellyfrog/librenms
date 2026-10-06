@@ -29,29 +29,27 @@ class RecordMaintenanceJobRun
             'status' => MaintenanceJobRun::STATUS_RUNNING,
         ]);
 
-        $start = hrtime(true);
+        $status = MaintenanceJobRun::STATUS_FAILED;
+        $error = null;
 
         try {
             $result = $next($job);
-        } catch (Throwable $e) {
-            $run->update([
-                'finished_at' => now(),
-                'duration_ms' => intdiv(hrtime(true) - $start, 1_000_000),
-                'status' => MaintenanceJobRun::STATUS_FAILED,
-                'exception' => $e->getMessage(),
-            ]);
+            $status = MaintenanceJobRun::STATUS_SUCCESS;
 
-            Eventlog::log("Maintenance job {$job->displayName()} failed: {$e->getMessage()}", null, 'maintenance', Severity::Error);
+            return $result;
+        } catch (Throwable $e) {
+            $error = $e->getMessage();
+            Eventlog::log("Maintenance job {$job->displayName()} failed: $error", null, 'maintenance', Severity::Error);
 
             throw $e;
+        } finally {
+            $finished = now();
+            $run->update([
+                'finished_at' => $finished,
+                'duration_ms' => (int) $run->started_at->diffInMilliseconds($finished),
+                'status' => $status,
+                'exception' => $error,
+            ]);
         }
-
-        $run->update([
-            'finished_at' => now(),
-            'duration_ms' => intdiv(hrtime(true) - $start, 1_000_000),
-            'status' => MaintenanceJobRun::STATUS_SUCCESS,
-        ]);
-
-        return $result;
     }
 }

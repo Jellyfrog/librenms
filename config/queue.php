@@ -22,7 +22,7 @@ return [
             'connection' => env('DB_QUEUE_CONNECTION'),
             'table' => env('DB_QUEUE_TABLE', 'jobs'),
             'queue' => 'maintenance',
-            'retry_after' => 86400,
+            'retry_after' => App\Jobs\MaintenanceJob::MAX_RUNTIME,
             'after_commit' => false,
         ],
     ],
