@@ -638,6 +638,9 @@ function build_cbgp_peers($device, $peer, $af_data, $peer2)
     $af_list = [];
     foreach ($af_data as $k => $v) {
         if ($peer2 === true) {
+            if (! str_contains((string) $k, '.')) {
+                continue;
+            }
             [,$k] = explode('.', (string) $k, 2);
         }
 
