@@ -290,7 +290,7 @@ class Unifi extends OS implements
                 'unifi-tx',
                 $radio_name,
                 "Tx Power ($radio_name)",
-                $entry['unifiVapTxPower']
+                $entry['unifiVapTxPower'] ?? null
             );
         }
 
