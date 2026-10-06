@@ -188,7 +188,7 @@ class Unifi extends OS implements
                     'unifi',
                     $index,
                     "SSID: {$ssids[$index]} ({$vap_radios[$index]})",
-                    min($entry['unifiVapCcq'] / $this->ccqDivisor, 100),
+                    min(\LibreNMS\Util\Number::cast($entry['unifiVapCcq'] ?? null) / $this->ccqDivisor, 100),
                     1,
                     $this->ccqDivisor
                 );
