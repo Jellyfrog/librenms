@@ -378,9 +378,8 @@ main () {
 
                 # List all tasks to do after pull in the order of execution
                 status_run 'Updating SQL-Schema' './lnms migrate --force --no-interaction --isolated'
-                # Let running queue workers and scheduled commands pick up the new code
+                # Let running queue workers pick up the new code
                 status_run 'Restarting queue workers' './lnms queue:restart --no-interaction'
-                status_run 'Interrupting scheduler' './lnms schedule:interrupt --no-interaction'
                 status_run 'Cleaning up DB' "$DAILY_SCRIPT cleanup"
             ;;
             cleanup)
