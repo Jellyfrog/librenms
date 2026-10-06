@@ -180,7 +180,7 @@ class Unifi extends OS implements
 
         $sensors = [];
         foreach ($ccq_oids as $index => $entry) {
-            if ($ssids[$index]) { // don't discover ssids with empty names
+            if (! empty($ssids[$index])) { // don't discover ssids with empty names
                 $sensors[] = new WirelessSensor(
                     WirelessSensorType::Ccq,
                     $this->getDeviceId(),
