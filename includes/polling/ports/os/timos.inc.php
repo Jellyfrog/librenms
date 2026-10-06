@@ -67,7 +67,7 @@ foreach ($timos_stats as $index => $value) {
             $timos_ports[$index][$ifEntry] = $value[$ifVrtrEntry];
         }
     }
-    if (empty($timos_ports[$index]['ifDescr'])) {
+    if (empty($timos_ports[$index]['ifDescr']) && isset($timos_ports[$index]['ifName'])) {
         $timos_ports[$index]['ifDescr'] = $timos_ports[$index]['ifName'];
     }
 }
