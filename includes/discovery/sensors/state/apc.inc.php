@@ -274,10 +274,10 @@ if (isset($apcContactData['uioInputContactStatusTableSize']) && $apcContactData[
 
     foreach (array_keys($apcContactData) as $index) {
         // APC disabled (1), enabled (2)
-        if ($apcContactData[$index]['iemConfigContactEnable'] == 2) {
-            $current = $apcContactData[$index]['iemStatusContactStatus'];
+        if (($apcContactData[$index]['iemConfigContactEnable'] ?? null) == 2 && isset($apcContactData[$index]['iemConfigContactName'])) {
+            $current = $apcContactData[$index]['iemStatusContactStatus'] ?? null;
             $cur_oid = '.1.3.6.1.4.1.318.1.1.10.2.3.4.1.3.' . $index;
-            $severity = $apcContactData[$index]['iemConfigContactSeverity'];
+            $severity = $apcContactData[$index]['iemConfigContactSeverity'] ?? null;
 
             // APC critical (1), warning (2)
             // LibreNMS warning (1), critical (2)
