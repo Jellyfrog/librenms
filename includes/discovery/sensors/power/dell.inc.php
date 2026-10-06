@@ -28,7 +28,7 @@ $cur_oid = '.1.3.6.1.4.1.674.10892.1.600.30.1.6.';
 
 foreach ((array) $temp as $index => $entry) {
     $descr = $entry['amperageProbeLocationName'] ?? '';
-    if ($entry['amperageProbeType'] === 'amperageProbeTypeIsSystemWatts') {
+    if (($entry['amperageProbeType'] ?? null) === 'amperageProbeTypeIsSystemWatts') {
         $divisor = 1;
         (isset($entry['amperageProbeReading'])) ? $value = $entry['amperageProbeReading'] : $value = null;
         (isset($entry['amperageProbeLowerCriticalThreshold'])) ? $lowlimit = $entry['amperageProbeLowerCriticalThreshold'] / $divisor : $lowlimit = null;
