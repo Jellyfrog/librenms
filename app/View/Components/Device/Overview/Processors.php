@@ -25,8 +25,10 @@ class Processors extends Component
         $this->showDetails = LibrenmsConfig::get('cpu_details_overview') === true;
         $this->processorGroups = $device->processors
             ->groupBy('processor_type')
-            ->map(fn (EloquentCollection $processors): array => [
-                'processors' => $processors->values(),
+            ->map(fn (Collection $processors): array => [
+                'processors' => $processors
+                    ->map(fn (Processor $processor): Processor => $processor)
+                    ->values(),
                 'usage' => (int) ceil($processors->avg('processor_usage')),
                 'warning' => $processors->avg('processor_perc_warn'),
             ],
