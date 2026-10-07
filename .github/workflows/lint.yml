@@ -51,8 +51,6 @@ jobs:
   phpstan:
     name: PHP Static Analysis
     runs-on: ubuntu-latest
-    env:
-      PHPSTAN_CACHE_KEY: phpstan-result-cache-${{ github.run_id }}-${{ github.run_attempt }}
 
     steps:
       # start checkout last, it can fail reading the event payload while other steps start
@@ -143,7 +141,7 @@ jobs:
           path: |
             /tmp/phpstan/resultCache*.php
             /tmp/phpstan/schema.hash
-          key: ${{ env.PHPSTAN_CACHE_KEY }}
+          key: phpstan-result-cache-${{ github.run_id }}
 
   rector:
     name: Rector (dry-run)
