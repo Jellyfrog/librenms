@@ -51,6 +51,8 @@ jobs:
   phpstan:
     name: PHP Static Analysis
     runs-on: ubuntu-latest
+    env:
+      PHPSTAN: ./vendor/bin/phpstan analyze -v --no-interaction --memory-limit=4G
 
     steps:
       # start checkout last, it can fail reading the event payload while other steps start
@@ -108,19 +110,19 @@ jobs:
         if: github.event_name == 'pull_request' && steps.new-php-files.outputs.files != ''
         env:
           NEW_PHP_FILES: ${{ steps.new-php-files.outputs.files }}
-        run: ./vendor/bin/phpstan analyze -v --no-interaction --memory-limit=4G --level=6 -- $NEW_PHP_FILES
+        run: $PHPSTAN --level=6 -- $NEW_PHP_FILES
 
       - name: Run PHPStan (Main)
         if: ${{ !cancelled() && steps.composer-install.outcome == 'success' }}
-        run: ./vendor/bin/phpstan analyze -v --no-interaction --memory-limit=4G --configuration=phpstan.neon
+        run: $PHPSTAN --configuration=phpstan.neon
 
       - name: Run PHPStan (Legacy)
         if: ${{ !cancelled() && steps.composer-install.outcome == 'success' }}
-        run: ./vendor/bin/phpstan analyze -v --no-interaction --memory-limit=4G --configuration=phpstan-legacy.neon
+        run: $PHPSTAN --configuration=phpstan-legacy.neon
 
       - name: Run PHPStan (Deprecated)
         if: ${{ !cancelled() && steps.composer-install.outcome == 'success' }}
-        run: ./vendor/bin/phpstan analyze -v --no-interaction --memory-limit=4G --configuration=phpstan-deprecated.neon
+        run: $PHPSTAN --configuration=phpstan-deprecated.neon
 
       # always fill the cache on the default branch. Other branches only save when nothing was restored
       # (dependencies or schema changed), their cache is only visible to the same branch
@@ -133,7 +135,7 @@ jobs:
         uses: actions/cache/save@v6
         with:
           path: /tmp/phpstan/resultCache*.php
-          key: phpstan-result-cache-${{ hashFiles('composer.lock', 'database/migrations/**', 'database/schema/**') }}-${{ github.run_id }}
+          key: ${{ steps.phpstan-cache-restore.outputs.cache-primary-key }}${{ github.run_id }}
 
   rector:
     name: Rector (dry-run)
