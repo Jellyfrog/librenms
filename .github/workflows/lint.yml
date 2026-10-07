@@ -51,6 +51,11 @@ jobs:
   phpstan:
     name: PHP Static Analysis
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # to fetch code (actions/checkout)
+      actions: write # to delete superseded result caches
+    env:
+      PHPSTAN_CACHE_KEY: phpstan-result-cache-${{ github.run_id }}-${{ github.run_attempt }}
 
     steps:
       # start checkout last, it can fail reading the event payload while other steps start
@@ -65,12 +70,15 @@ jobs:
               key: ${{ runner.os }}-vendor-
               restore-keys: ${{ runner.os }}-vendor-
 
-          # PHPStan's default tmpDir (sys_get_temp_dir()/phpstan), outside the workspace
+          # only the result caches from PHPStan's default tmpDir (sys_get_temp_dir()/phpstan),
+          # outside the workspace. Saved on the default branch only, restore the newest by prefix
           - name: Restore PHPStan result cache
             uses: actions/cache/restore@v6
             with:
-              path: /tmp/phpstan
-              key: phpstan-result-cache-${{ github.run_id }}
+              path: |
+                /tmp/phpstan/resultCache*.php
+                /tmp/phpstan/schema.hash
+              key: phpstan-result-cache-
               restore-keys: phpstan-result-cache-
 
           - name: Checkout Code
@@ -86,9 +94,21 @@ jobs:
                 !/doc/
 
       - name: Install PHP dependencies
+        id: composer-install
         uses: ./.github/actions/composer-install
         with:
           cache-matched-key: ${{ steps.composer-restore.outputs.cache-matched-key }}
+
+      # model property types come from the migrations, which the result cache does not track
+      - name: Invalidate PHPStan result cache on schema changes
+        run: |
+          SCHEMA_HASH=$(find database/migrations database/schema -type f -print0 | sort -z | xargs -0 sha256sum | sha256sum | cut -d' ' -f1)
+          if [ "$(cat /tmp/phpstan/schema.hash 2>/dev/null)" != "$SCHEMA_HASH" ]; then
+            echo "Database schema changed, discarding the result cache"
+            rm -f /tmp/phpstan/resultCache*.php
+          fi
+          mkdir -p /tmp/phpstan
+          echo "$SCHEMA_HASH" > /tmp/phpstan/schema.hash
 
       - name: Find new PHP files
         if: github.event_name == 'pull_request'
@@ -106,24 +126,37 @@ jobs:
         run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --level=6 -- $NEW_PHP_FILES
 
       - name: Run PHPStan (Main)
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.composer-install.outcome == 'success' }}
         run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan.neon
 
       - name: Run PHPStan (Legacy)
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.composer-install.outcome == 'success' }}
         run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan-legacy.neon
 
       - name: Run PHPStan (Deprecated)
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.composer-install.outcome == 'success' }}
         run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan-deprecated.neon
 
       # the cache is only filled on the default branch, most PRs run the pipeline once
       - name: Save PHPStan result cache
-        if: ${{ !cancelled() && github.event_name == 'push' && github.ref_name == github.event.repository.default_branch }}
+        id: phpstan-cache-save
+        if: ${{ !cancelled() && steps.composer-install.outcome == 'success' && github.event_name == 'push' && github.ref_name == github.event.repository.default_branch }}
         uses: actions/cache/save@v6
         with:
-          path: /tmp/phpstan
-          key: phpstan-result-cache-${{ github.run_id }}
+          path: |
+            /tmp/phpstan/resultCache*.php
+            /tmp/phpstan/schema.hash
+          key: ${{ env.PHPSTAN_CACHE_KEY }}
+
+      # caches are immutable, so every save is a new entry and only the newest is restored
+      - name: Delete superseded PHPStan result caches
+        if: ${{ !cancelled() && steps.phpstan-cache-save.outcome == 'success' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh cache list --repo "$GITHUB_REPOSITORY" --key phpstan-result-cache- --limit 100 --json key --jq '.[].key' \
+            | grep -vxF "$PHPSTAN_CACHE_KEY" \
+            | xargs -r -n1 gh cache delete --repo "$GITHUB_REPOSITORY" || true
 
   rector:
     name: Rector (dry-run)
