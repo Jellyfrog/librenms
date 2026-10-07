@@ -118,19 +118,19 @@ jobs:
         if: github.event_name == 'pull_request' && steps.new-php-files.outputs.files != ''
         env:
           NEW_PHP_FILES: ${{ steps.new-php-files.outputs.files }}
-        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --level=6 -- $NEW_PHP_FILES
+        run: ./vendor/bin/phpstan analyze -v --no-interaction --memory-limit=4G --level=6 -- $NEW_PHP_FILES
 
       - name: Run PHPStan (Main)
         if: ${{ !cancelled() && steps.composer-install.outcome == 'success' }}
-        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan.neon
+        run: ./vendor/bin/phpstan analyze -v --no-interaction --memory-limit=4G --configuration=phpstan.neon
 
       - name: Run PHPStan (Legacy)
         if: ${{ !cancelled() && steps.composer-install.outcome == 'success' }}
-        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan-legacy.neon
+        run: ./vendor/bin/phpstan analyze -v --no-interaction --memory-limit=4G --configuration=phpstan-legacy.neon
 
       - name: Run PHPStan (Deprecated)
         if: ${{ !cancelled() && steps.composer-install.outcome == 'success' }}
-        run: ./vendor/bin/phpstan analyze --no-interaction --memory-limit=4G --configuration=phpstan-deprecated.neon
+        run: ./vendor/bin/phpstan analyze -v --no-interaction --memory-limit=4G --configuration=phpstan-deprecated.neon
 
       # the cache is only filled on the default branch, most PRs run the pipeline once
       - name: Save PHPStan result cache
