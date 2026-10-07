@@ -65,17 +65,6 @@ jobs:
               key: ${{ runner.os }}-vendor-
               restore-keys: ${{ runner.os }}-vendor-
 
-          # only the result caches from PHPStan's default tmpDir (sys_get_temp_dir()/phpstan),
-          # outside the workspace. Saved on the default branch only, restore the newest by prefix
-          - name: Restore PHPStan result cache
-            uses: actions/cache/restore@v6
-            with:
-              path: |
-                /tmp/phpstan/resultCache*.php
-                /tmp/phpstan/schema.hash
-              key: phpstan-result-cache-
-              restore-keys: phpstan-result-cache-
-
           - name: Checkout Code
             uses: actions/checkout@v7
             with:
@@ -88,22 +77,22 @@ jobs:
                 !/mibs/
                 !/doc/
 
-      - name: Install PHP dependencies
-        id: composer-install
-        uses: ./.github/actions/composer-install
-        with:
-          cache-matched-key: ${{ steps.composer-restore.outputs.cache-matched-key }}
+      - parallel:
+          - name: Install PHP dependencies
+            id: composer-install
+            uses: ./.github/actions/composer-install
+            with:
+              cache-matched-key: ${{ steps.composer-restore.outputs.cache-matched-key }}
 
-      # model property types come from the migrations, which the result cache does not track
-      - name: Invalidate PHPStan result cache on schema changes
-        run: |
-          SCHEMA_HASH=$(find database/migrations database/schema -type f -print0 | sort -z | xargs -0 sha256sum | sha256sum | cut -d' ' -f1)
-          if [ "$(cat /tmp/phpstan/schema.hash 2>/dev/null)" != "$SCHEMA_HASH" ]; then
-            echo "Database schema changed, discarding the result cache"
-            rm -f /tmp/phpstan/resultCache*.php
-          fi
-          mkdir -p /tmp/phpstan
-          echo "$SCHEMA_HASH" > /tmp/phpstan/schema.hash
+          # the result caches from PHPStan's default tmpDir (sys_get_temp_dir()/phpstan). Model property
+          # types come from the migrations, which the result cache does not track, so only restore a
+          # cache built against the same schema and dependencies
+          - name: Restore PHPStan result cache
+            uses: actions/cache/restore@v6
+            with:
+              path: /tmp/phpstan/resultCache*.php
+              key: phpstan-result-cache-${{ hashFiles('composer.lock', 'database/migrations/**', 'database/schema/**') }}-
+              restore-keys: phpstan-result-cache-${{ hashFiles('composer.lock', 'database/migrations/**', 'database/schema/**') }}-
 
       - name: Find new PHP files
         if: github.event_name == 'pull_request'
@@ -138,10 +127,8 @@ jobs:
         if: ${{ !cancelled() && steps.composer-install.outcome == 'success' }}
         uses: actions/cache/save@v6
         with:
-          path: |
-            /tmp/phpstan/resultCache*.php
-            /tmp/phpstan/schema.hash
-          key: phpstan-result-cache-${{ github.run_id }}
+          path: /tmp/phpstan/resultCache*.php
+          key: phpstan-result-cache-${{ hashFiles('composer.lock', 'database/migrations/**', 'database/schema/**') }}-${{ github.run_id }}
 
   rector:
     name: Rector (dry-run)
