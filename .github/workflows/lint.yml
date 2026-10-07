@@ -51,9 +51,6 @@ jobs:
   phpstan:
     name: PHP Static Analysis
     runs-on: ubuntu-latest
-    permissions:
-      contents: read # to fetch code (actions/checkout)
-      actions: write # to delete superseded result caches
     env:
       PHPSTAN_CACHE_KEY: phpstan-result-cache-${{ github.run_id }}-${{ github.run_attempt }}
 
@@ -139,24 +136,14 @@ jobs:
 
       # the cache is only filled on the default branch, most PRs run the pipeline once
       - name: Save PHPStan result cache
-        id: phpstan-cache-save
-        if: ${{ !cancelled() && steps.composer-install.outcome == 'success' && github.event_name == 'push' && github.ref_name == github.event.repository.default_branch }}
+        # TODO temporarily saved on all branches, restore: && github.event_name == 'push' && github.ref_name == github.event.repository.default_branch
+        if: ${{ !cancelled() && steps.composer-install.outcome == 'success' }}
         uses: actions/cache/save@v6
         with:
           path: |
             /tmp/phpstan/resultCache*.php
             /tmp/phpstan/schema.hash
           key: ${{ env.PHPSTAN_CACHE_KEY }}
-
-      # caches are immutable, so every save is a new entry and only the newest is restored
-      - name: Delete superseded PHPStan result caches
-        if: ${{ !cancelled() && steps.phpstan-cache-save.outcome == 'success' }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh cache list --repo "$GITHUB_REPOSITORY" --key phpstan-result-cache- --limit 100 --json key --jq '.[].key' \
-            | grep -vxF "$PHPSTAN_CACHE_KEY" \
-            | xargs -r -n1 gh cache delete --repo "$GITHUB_REPOSITORY" || true
 
   rector:
     name: Rector (dry-run)
