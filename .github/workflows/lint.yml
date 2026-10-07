@@ -126,7 +126,7 @@ jobs:
       # (dependencies or schema changed), their cache is only visible to the same branch
       - name: Save PHPStan result cache
         if: >-
-          ${{ !cancelled() && steps.composer-install.outcome == 'success' && (
+          ${{ !cancelled() && (
             (github.event_name == 'push' && github.ref_name == github.event.repository.default_branch)
             || steps.phpstan-cache-restore.outputs.cache-matched-key == ''
           ) }}
