@@ -88,6 +88,7 @@ jobs:
           # types come from the migrations, which the result cache does not track, so only restore a
           # cache built against the same schema and dependencies
           - name: Restore PHPStan result cache
+            id: phpstan-cache-restore
             uses: actions/cache/restore@v6
             with:
               path: /tmp/phpstan/resultCache*.php
@@ -121,10 +122,14 @@ jobs:
         if: ${{ !cancelled() && steps.composer-install.outcome == 'success' }}
         run: ./vendor/bin/phpstan analyze -v --no-interaction --memory-limit=4G --configuration=phpstan-deprecated.neon
 
-      # the cache is only filled on the default branch, most PRs run the pipeline once
+      # always fill the cache on the default branch. Other branches only save when nothing was restored
+      # (dependencies or schema changed), their cache is only visible to the same branch
       - name: Save PHPStan result cache
-        # TODO temporarily saved on all branches, restore: && github.event_name == 'push' && github.ref_name == github.event.repository.default_branch
-        if: ${{ !cancelled() && steps.composer-install.outcome == 'success' }}
+        if: >-
+          ${{ !cancelled() && steps.composer-install.outcome == 'success' && (
+            (github.event_name == 'push' && github.ref_name == github.event.repository.default_branch)
+            || steps.phpstan-cache-restore.outputs.cache-matched-key == ''
+          ) }}
         uses: actions/cache/save@v6
         with:
           path: /tmp/phpstan/resultCache*.php
