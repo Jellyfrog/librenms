@@ -39,8 +39,8 @@
 namespace LibreNMS\Alert\Transport;
 
 use LibreNMS\Alert\Transport;
-use LibreNMS\Enum\AlertRuleSeverity;
 use LibreNMS\Enum\AlertState;
+use LibreNMS\Enum\Severity;
 use LibreNMS\Exceptions\AlertTransportDeliveryException;
 use LibreNMS\Util\Http;
 
@@ -57,13 +57,13 @@ class Pushover extends Transport
         // Entities are html encoded so this will cause them to be displayed correctly in pushover alerts
         $data['html'] = '1';
 
-        $severity = AlertRuleSeverity::tryFrom((string) $alert_data['severity']);
-        if ($severity === AlertRuleSeverity::Critical) {
+        $severity = Severity::fromAlertRule($alert_data['severity']);
+        if ($severity === Severity::Error) {
             $data['priority'] = 1;
             if (! empty($options['sound_critical'])) {
                 $data['sound'] = $options['sound_critical'];
             }
-        } elseif ($severity === AlertRuleSeverity::Warning) {
+        } elseif ($severity === Severity::Warning) {
             $data['priority'] = 0;
             if (! empty($options['sound_warning'])) {
                 $data['sound'] = $options['sound_warning'];

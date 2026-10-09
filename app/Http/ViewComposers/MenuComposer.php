@@ -55,7 +55,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
-use LibreNMS\Enum\AlertRuleSeverity;
 use LibreNMS\Enum\WirelessSensorType;
 use LibreNMS\Interfaces\Plugins\Hooks\MenuEntryHook;
 use LibreNMS\Plugins;
@@ -297,9 +296,9 @@ class MenuComposer
             ->pluck('count', 'severity');
         $vars['alert_count'] = $alert_counts->sum();
 
-        if ($alert_counts->has(AlertRuleSeverity::Critical->value)) {
+        if ($alert_counts->has('critical')) {
             $vars['alert_menu_class'] = 'danger';
-        } elseif ($alert_counts->has(AlertRuleSeverity::Warning->value)) {
+        } elseif ($alert_counts->has('warning')) {
             $vars['alert_menu_class'] = 'warning';
         } else {
             $vars['alert_menu_class'] = 'success';

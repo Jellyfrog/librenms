@@ -26,8 +26,8 @@
 namespace LibreNMS\Alert\Transport;
 
 use LibreNMS\Alert\Transport;
-use LibreNMS\Enum\AlertRuleSeverity;
 use LibreNMS\Enum\AlertState;
+use LibreNMS\Enum\Severity;
 use LibreNMS\Exceptions\AlertTransportDeliveryException;
 use LibreNMS\Util\Http;
 
@@ -54,7 +54,7 @@ class Ilert extends Transport
             'alertKey' => (string) $alert_data['alert_id'],
             'summary' => $alert_data['title'],
             'details' => $alert_data['msg'],
-            'priority' => ($alert_data['severity'] == AlertRuleSeverity::Critical->value) ? 'HIGH' : 'LOW',
+            'priority' => (Severity::fromAlertRule($alert_data['severity']) === Severity::Error) ? 'HIGH' : 'LOW',
         ];
 
         $tmp_msg = json_decode((string) $alert_data['msg'], true);

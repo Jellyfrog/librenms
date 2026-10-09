@@ -24,13 +24,14 @@
 
 namespace App\Models;
 
+use App\Casts\AlertRuleSeverity;
 use App\Casts\CompressedJson;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use LibreNMS\Enum\AlertRuleSeverity;
 use LibreNMS\Enum\AlertState;
+use LibreNMS\Enum\Severity;
 
 /**
  * @property int $id
@@ -42,7 +43,7 @@ use LibreNMS\Enum\AlertState;
  * @property int $state
  * @property int $alerted
  * @property int $open
- * @property AlertRuleSeverity|null $severity
+ * @property Severity|null $severity
  * @property string|null $note
  * @property array<string, mixed> $info
  * @property array<string, mixed> $details

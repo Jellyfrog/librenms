@@ -20,8 +20,8 @@ namespace LibreNMS\Alert\Transport;
 
 use App\Facades\DeviceCache;
 use LibreNMS\Alert\Transport;
-use LibreNMS\Enum\AlertRuleSeverity;
 use LibreNMS\Enum\AlertState;
+use LibreNMS\Enum\Severity;
 use LibreNMS\Exceptions\AlertTransportDeliveryException;
 
 class Splunk extends Transport
@@ -33,11 +33,11 @@ class Splunk extends Transport
         $severity = 6; // Default severity is 6 (Informational)
         $device = DeviceCache::get($alert_data['device_id']); // for event logging
 
-        switch (AlertRuleSeverity::tryFrom((string) $alert_data['severity'])) {
-            case AlertRuleSeverity::Critical:
+        switch (Severity::fromAlertRule($alert_data['severity'])) {
+            case Severity::Error:
                 $severity = 2;
                 break;
-            case AlertRuleSeverity::Warning:
+            case Severity::Warning:
                 $severity = 4;
                 break;
         }

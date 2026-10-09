@@ -381,6 +381,18 @@ final class BasicApiTest extends DBTestCase
         $this->assertSame('https://example.org/keep', $rule->fresh()->proc);
     }
 
+    public function testGetRuleReturnsSeverityString(): void
+    {
+        /** @var User $user */
+        $user = User::factory()->admin()->create();
+        $token = $user->createToken('test');
+        $rule = AlertRule::factory()->create(['severity' => 'warning']);
+
+        $this->json('GET', "/api/v0/rules/$rule->id", [], ['X-Auth-Token' => $token->plainTextToken])
+            ->assertStatus(200)
+            ->assertJsonPath('rules.0.severity', 'warning');
+    }
+
     public function testGetDevice(): void
     {
         /** @var User $admin */

@@ -34,7 +34,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use LibreNMS\Alert\AlertUtil;
-use LibreNMS\Enum\AlertRuleSeverity;
 use LibreNMS\Enum\AlertState;
 use LibreNMS\Enum\Severity;
 use LibreNMS\Util\Html;
@@ -364,11 +363,11 @@ class AlertsController extends TableController
             : ' class="collapse"';
     }
 
-    private function severityIcon(?AlertRuleSeverity $severity, int $state): string
+    private function severityIcon(?Severity $severity, int $state): string
     {
         $severity = $state === AlertState::ACKNOWLEDGED
             ? Severity::Notice
-            : ($severity?->toSeverity() ?? Severity::Unknown);
+            : ($severity ?? Severity::Unknown);
 
         $label = Html::severityToLabel($severity, '&nbsp;', class: 'alert-status');
         if ($state === AlertState::WORSE) {

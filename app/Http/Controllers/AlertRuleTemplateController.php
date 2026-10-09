@@ -44,7 +44,7 @@ class AlertRuleTemplateController extends Controller
             'name' => $alertRule->name . ' - Copy',
             'builder' => $alertRule->builder,
             'extra' => $this->extraWithDefaults((array) $alertRule->extra),
-            'severity' => $alertRule->severity->value,
+            'severity' => $alertRule->severity->toAlertRule(),
             'invert_map' => $alertRule->invert_map,
             'alert_operation_id' => $alertRule->alert_operation_id,
             'operations' => $alertRule->toOperationsApiArray(),

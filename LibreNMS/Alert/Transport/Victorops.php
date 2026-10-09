@@ -26,8 +26,8 @@
 namespace LibreNMS\Alert\Transport;
 
 use LibreNMS\Alert\Transport;
-use LibreNMS\Enum\AlertRuleSeverity;
 use LibreNMS\Enum\AlertState;
+use LibreNMS\Enum\Severity;
 use LibreNMS\Exceptions\AlertTransportDeliveryException;
 use LibreNMS\Util\Http;
 
@@ -48,9 +48,9 @@ class Victorops extends Transport
         $protocol['message_type'] = match ($alert_data['state']) {
             AlertState::RECOVERED => 'RECOVERY',
             AlertState::ACKNOWLEDGED => 'ACKNOWLEDGEMENT',
-            default => match (AlertRuleSeverity::tryFrom((string) $alert_data['severity'])) {
-                AlertRuleSeverity::Ok => 'INFO',
-                AlertRuleSeverity::Warning => 'WARNING',
+            default => match (Severity::fromAlertRule($alert_data['severity'])) {
+                Severity::Ok => 'INFO',
+                Severity::Warning => 'WARNING',
                 default => 'CRITICAL',
             },
         };

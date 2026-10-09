@@ -3,7 +3,7 @@
 namespace LibreNMS\Alert\Transport;
 
 use LibreNMS\Alert\Transport;
-use LibreNMS\Enum\AlertRuleSeverity;
+use LibreNMS\Enum\Severity;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Exchange\AMQPExchangeType;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -29,10 +29,10 @@ class Canopsis extends Transport
         $ch->exchange_declare($exchange, AMQPExchangeType::TOPIC, false, true, false);
 
         // Create Canopsis event, see: https://github.com/capensis/canopsis/wiki/Event-specification
-        $state = match (AlertRuleSeverity::tryFrom((string) $alert_data['severity'])) {
-            AlertRuleSeverity::Ok => 0,
-            AlertRuleSeverity::Warning => 2,
-            AlertRuleSeverity::Critical => 3,
+        $state = match (Severity::fromAlertRule($alert_data['severity'])) {
+            Severity::Ok => 0,
+            Severity::Warning => 2,
+            Severity::Error => 3,
             default => 0,
         };
         $msg_body = [

@@ -207,7 +207,7 @@ class AlertLogController extends TableController
             'hostname' => '<div class="incident">' . Url::modernDeviceLink($model->device) . '<div id="incident' . $model->id . '" class="collapse">' . $fault_detail . '</div></div>',
             'alert_rule' => $alert_rule,
             'status' => $status,
-            'severity' => $model->rule?->severity?->value,
+            'severity' => $model->rule?->severity->toAlertRule(),
         ];
     }
 
@@ -236,7 +236,7 @@ class AlertLogController extends TableController
             $item->device?->displayName(),
             $item->rule_id,
             $item->rule?->name,
-            $item->rule?->severity?->value,
+            $item->rule?->severity->toAlertRule(),
             json_encode($item->details),
         ];
     }

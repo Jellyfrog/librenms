@@ -34,7 +34,7 @@ use App\Models\DeviceGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use LibreNMS\Enum\AlertRuleSeverity;
+use LibreNMS\Enum\Severity;
 use LibreNMS\Util\Url;
 
 class AlertMapController extends WidgetController
@@ -105,7 +105,7 @@ class AlertMapController extends WidgetController
                 $totals[$sev] += $n;
             });
 
-            if (! $settings['show_ok_devices'] && $worst_severity === AlertRuleSeverity::Ok) {
+            if (! $settings['show_ok_devices'] && $worst_severity === Severity::Ok) {
                 continue;
             }
 
@@ -130,7 +130,7 @@ class AlertMapController extends WidgetController
         match ($order_by) {
             'severity' => usort($data,
                 // reverse sort as worse severities have higher values
-                fn ($l, $r) => $r['severity']->rank() <=> $l['severity']->rank() ?:
+                fn ($l, $r) => $r['severity']->value <=> $l['severity']->value ?:
                 strcasecmp((string) $l['label'], (string) $r['label'])),
             'label' => usort($data, fn ($l, $r) => strcasecmp((string) $l['label'], (string) $r['label'])),
             // device display name (tooltip starts with the display name)
@@ -167,7 +167,7 @@ class AlertMapController extends WidgetController
         return $tooltip;
     }
 
-    private function parseDeviceSeverity(Device $device, AlertRuleSeverity $severity, bool $compact = false): array
+    private function parseDeviceSeverity(Device $device, Severity $severity, bool $compact = false): array
     {
         if ($device->disabled) {
             return ['disabled', 'blackbg'];
@@ -176,23 +176,23 @@ class AlertMapController extends WidgetController
         }
 
         return match ($severity) {
-            AlertRuleSeverity::Ok => ['ok', $compact ? 'alert-map-compact-ok' : 'label-success'],
-            AlertRuleSeverity::Warning => ['warning', $compact ? 'alert-map-compact-warning' : 'label-warning'],
-            AlertRuleSeverity::Critical => ['critical', $compact ? 'alert-map-compact-critical' : 'label-danger'],
+            Severity::Ok => ['ok', $compact ? 'alert-map-compact-ok' : 'label-success'],
+            Severity::Warning => ['warning', $compact ? 'alert-map-compact-warning' : 'label-warning'],
+            default => ['critical', $compact ? 'alert-map-compact-critical' : 'label-danger'],
         };
     }
 
     /**
-     * @return array{AlertRuleSeverity, array<string, int>}
+     * @return array{Severity, array<string, int>}
      */
     private function getDeviceAlerts(Device $device): array
     {
-        $worst_severity = AlertRuleSeverity::Ok;
+        $worst_severity = Severity::Ok;
 
         $severities = [
-            AlertRuleSeverity::Ok->value => 0,
-            AlertRuleSeverity::Warning->value => 0,
-            AlertRuleSeverity::Critical->value => 0,
+            'ok' => 0,
+            'warning' => 0,
+            'critical' => 0,
         ];
 
         foreach ($device->alerts as $alert) {
@@ -201,8 +201,8 @@ class AlertMapController extends WidgetController
                 continue;
             }
 
-            $severities[$severity->value]++;
-            if ($severity->rank() > $worst_severity->rank()) {
+            $severities[$severity->toAlertRule()]++;
+            if ($severity->value > $worst_severity->value) {
                 $worst_severity = $severity;
             }
         }

@@ -26,19 +26,20 @@
 
 namespace App\Models;
 
+use App\Casts\AlertRuleSeverity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Gate;
-use LibreNMS\Enum\AlertRuleSeverity;
 use LibreNMS\Enum\AlertState;
+use LibreNMS\Enum\Severity;
 
 /**
  * @property int $id
  * @property string $name
- * @property AlertRuleSeverity $severity
+ * @property Severity $severity
  * @property array<string, mixed>|null $extra
  * @property bool|int $disabled
  * @property string|null $proc

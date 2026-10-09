@@ -26,8 +26,8 @@ namespace LibreNMS\Alert\Transport;
 use App\Facades\LibrenmsConfig;
 use Illuminate\Support\Facades\Log;
 use LibreNMS\Alert\Transport;
-use LibreNMS\Enum\AlertRuleSeverity;
 use LibreNMS\Enum\AlertState;
+use LibreNMS\Enum\Severity;
 use LibreNMS\Exceptions\AlertTransportDeliveryException;
 use LibreNMS\Util\Http;
 
@@ -136,11 +136,11 @@ class Sensu extends Transport
             return self::OK;
         }
 
-        return match (AlertRuleSeverity::tryFrom($severity)) {
-            AlertRuleSeverity::Ok => self::OK,
-            AlertRuleSeverity::Warning => self::WARNING,
-            AlertRuleSeverity::Critical => self::CRITICAL,
-            null => self::UNKNOWN,
+        return match (Severity::fromAlertRule($severity)) {
+            Severity::Ok => self::OK,
+            Severity::Warning => self::WARNING,
+            Severity::Error => self::CRITICAL,
+            default => self::UNKNOWN,
         };
     }
 
