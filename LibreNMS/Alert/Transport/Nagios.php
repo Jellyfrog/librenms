@@ -25,6 +25,7 @@
 namespace LibreNMS\Alert\Transport;
 
 use LibreNMS\Alert\Transport;
+use LibreNMS\Enum\AlertRuleSeverity;
 use LibreNMS\Exceptions\AlertTransportDeliveryException;
 
 class Nagios extends Transport
@@ -49,7 +50,7 @@ class Nagios extends Transport
         $format .= strtotime((string) $alert_data['timestamp']) . "\t";
         $format .= $alert_data['hostname'] . "\t";
         $format .= md5((string) $alert_data['rule']) . "\t"; //FIXME: Better entity
-        $format .= ($alert_data['state'] ? $alert_data['severity'] : 'ok') . "\t";
+        $format .= ($alert_data['state'] ? $alert_data['severity'] : AlertRuleSeverity::Ok->value) . "\t";
         $format .= "0\t";
         $format .= "0\t";
         $format .= str_replace("\n", '', nl2br((string) $alert_data['msg'])) . "\t";

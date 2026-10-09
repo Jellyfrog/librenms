@@ -3,6 +3,7 @@
 namespace LibreNMS\Alert\Transport;
 
 use LibreNMS\Alert\Transport;
+use LibreNMS\Enum\AlertRuleSeverity;
 use LibreNMS\Enum\AlertState;
 use LibreNMS\Exceptions\AlertTransportDeliveryException;
 use LibreNMS\Util\Http;
@@ -13,11 +14,12 @@ class Wled extends Transport
     {
         $host = $this->config['wled-host'];
 
+        $severity = AlertRuleSeverity::tryFrom((string) $alert_data['severity']);
         if ($alert_data['state'] === AlertState::RECOVERED) {
             $wled_preset = $this->config['wled-recovery'];
-        } elseif ($alert_data['severity'] === 'critical') {
+        } elseif ($severity === AlertRuleSeverity::Critical) {
             $wled_preset = $this->config['wled-critical'];
-        } elseif ($alert_data['severity'] === 'warning') {
+        } elseif ($severity === AlertRuleSeverity::Warning) {
             $wled_preset = $this->config['wled-warning'];
         }
 

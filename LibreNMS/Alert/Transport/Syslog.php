@@ -19,6 +19,7 @@
 namespace LibreNMS\Alert\Transport;
 
 use LibreNMS\Alert\Transport;
+use LibreNMS\Enum\AlertRuleSeverity;
 use LibreNMS\Enum\AlertState;
 use LibreNMS\Exceptions\AlertTransportDeliveryException;
 
@@ -55,12 +56,12 @@ class Syslog extends Transport
             $syslog_port = $this->config['syslog-port'];
         }
 
-        switch ($alert_data['severity']) {
-            case 'critical':
+        switch (AlertRuleSeverity::tryFrom((string) $alert_data['severity'])) {
+            case AlertRuleSeverity::Critical:
                 $severity = 2;
                 $sev_txt = 'Critical';
                 break;
-            case 'warning':
+            case AlertRuleSeverity::Warning:
                 $severity = 4;
                 $sev_txt = 'Warning';
                 break;

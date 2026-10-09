@@ -26,6 +26,7 @@ namespace LibreNMS\Alert\Transport;
 use App\Facades\LibrenmsConfig;
 use Illuminate\Support\Facades\Log;
 use LibreNMS\Alert\Transport;
+use LibreNMS\Enum\AlertRuleSeverity;
 use LibreNMS\Enum\AlertState;
 use LibreNMS\Exceptions\AlertTransportDeliveryException;
 use LibreNMS\Util\Http;
@@ -37,12 +38,6 @@ class Sensu extends Transport
     public const WARNING = 1;
     public const CRITICAL = 2;
     public const UNKNOWN = 3;
-
-    private static array $status = [
-        'ok' => self::OK,
-        'warning' => self::WARNING,
-        'critical' => self::CRITICAL,
-    ];
 
     public function deliverAlert(array $alert_data): bool
     {
@@ -141,7 +136,12 @@ class Sensu extends Transport
             return self::OK;
         }
 
-        return self::$status[$severity] ?? self::UNKNOWN;
+        return match (AlertRuleSeverity::tryFrom($severity)) {
+            AlertRuleSeverity::Ok => self::OK,
+            AlertRuleSeverity::Warning => self::WARNING,
+            AlertRuleSeverity::Critical => self::CRITICAL,
+            null => self::UNKNOWN,
+        };
     }
 
     private function getEntityName(array $obj): string

@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use LibreNMS\Enum\AlertRuleSeverity;
 use LibreNMS\Enum\AlertState;
 
 /**
@@ -41,7 +42,7 @@ use LibreNMS\Enum\AlertState;
  * @property int $state
  * @property int $alerted
  * @property int $open
- * @property string|null $severity
+ * @property AlertRuleSeverity|null $severity
  * @property string|null $note
  * @property array<string, mixed> $info
  * @property array<string, mixed> $details
@@ -70,6 +71,7 @@ class AlertFault extends DeviceRelatedModel
 
     protected $casts = [
         'info' => 'array',
+        'severity' => AlertRuleSeverity::class,
         'details' => CompressedJson::class,
         'first_seen' => 'datetime',
         'last_seen' => 'datetime',

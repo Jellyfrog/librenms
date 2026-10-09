@@ -65,7 +65,7 @@ class AlertRuleController extends Controller
             'proc' => $alertRule->proc,
             'notes' => $alertRule->notes,
             'builder' => $alertRule->builder,
-            'severity' => $alertRule->severity,
+            'severity' => $alertRule->severity->value,
             'adv_query' => $alertRule->query,
             'invert_map' => $alertRule->invert_map,
             'notify_per_entity' => $alertRule->notify_per_entity,

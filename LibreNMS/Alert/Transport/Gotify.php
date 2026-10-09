@@ -26,6 +26,7 @@
 namespace LibreNMS\Alert\Transport;
 
 use LibreNMS\Alert\Transport;
+use LibreNMS\Enum\AlertRuleSeverity;
 use LibreNMS\Exceptions\AlertTransportDeliveryException;
 use LibreNMS\Util\Http;
 
@@ -43,9 +44,9 @@ class Gotify extends Transport
          * 4-7 + Sound      = Warning
          * 8-10 + Vibration = Critical
          */
-        $priority = match ($alert_data['severity']) {
-            'critical' => 8,
-            'warning' => 4,
+        $priority = match (AlertRuleSeverity::tryFrom((string) $alert_data['severity'])) {
+            AlertRuleSeverity::Critical => 8,
+            AlertRuleSeverity::Warning => 4,
             default => 0,
         };
 

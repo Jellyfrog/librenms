@@ -30,6 +30,7 @@ use App\Models\AlertOperation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
+use LibreNMS\Enum\AlertRuleSeverity;
 
 class AlertRuleRequest extends FormRequest
 {
@@ -50,7 +51,7 @@ class AlertRuleRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255', Rule::when($this->route()->getActionMethod() === 'store', Rule::unique((app()->environment('testing') ? 'testing.' : '') . 'alert_rules', 'name'))],
-            'severity' => ['required', 'string', 'max:32'],
+            'severity' => ['required', Rule::enum(AlertRuleSeverity::class)],
 
             'override_query' => ['sometimes', 'boolean'],
             'builder_json' => ['required_unless:override_query,on', 'json'],

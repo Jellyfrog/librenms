@@ -44,7 +44,7 @@ class AlertRuleTemplateController extends Controller
             'name' => $alertRule->name . ' - Copy',
             'builder' => $alertRule->builder,
             'extra' => $this->extraWithDefaults((array) $alertRule->extra),
-            'severity' => $alertRule->severity ?: LibrenmsConfig::get('alert_rule.severity'),
+            'severity' => $alertRule->severity->value,
             'invert_map' => $alertRule->invert_map,
             'alert_operation_id' => $alertRule->alert_operation_id,
             'operations' => $alertRule->toOperationsApiArray(),

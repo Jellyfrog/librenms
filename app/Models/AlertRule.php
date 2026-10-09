@@ -32,12 +32,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Gate;
+use LibreNMS\Enum\AlertRuleSeverity;
 use LibreNMS\Enum\AlertState;
 
 /**
  * @property int $id
  * @property string $name
- * @property string $severity
+ * @property AlertRuleSeverity $severity
  * @property array<string, mixed>|null $extra
  * @property bool|int $disabled
  * @property string|null $proc
@@ -96,6 +97,7 @@ class AlertRule extends BaseModel
             'alert_operation_id' => 'integer',
             'notify_per_entity' => 'boolean',
             'max_entities' => 'integer',
+            'severity' => AlertRuleSeverity::class,
         ];
     }
 

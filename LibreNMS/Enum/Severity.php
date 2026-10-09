@@ -16,11 +16,6 @@ enum Severity: int
      */
     public static function fromAlertRule(?string $severity): self
     {
-        return match ($severity) {
-            'ok' => self::Ok,
-            'warning' => self::Warning,
-            'critical' => self::Error,
-            default => self::Unknown,
-        };
+        return AlertRuleSeverity::tryFrom((string) $severity)?->toSeverity() ?? self::Unknown;
     }
 }
