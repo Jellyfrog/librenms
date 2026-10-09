@@ -51,6 +51,13 @@ jobs:
   phpstan:
     name: PHP Static Analysis
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { name: "Main", file: "phpstan.neon" }
+          - { name: "Legacy", file: "phpstan-legacy.neon" }
+          - { name: "Deprecated", file: "phpstan-deprecated.neon" }
     env:
       PHPSTAN: ./vendor/bin/phpstan analyze -v --no-interaction --memory-limit=4G
 
@@ -81,24 +88,25 @@ jobs:
 
       - parallel:
           - name: Install PHP dependencies
-            id: composer-install
             uses: ./.github/actions/composer-install
             with:
               cache-matched-key: ${{ steps.composer-restore.outputs.cache-matched-key }}
 
-          # the result caches from PHPStan's default tmpDir (sys_get_temp_dir()/phpstan). Model property
-          # types come from the migrations, which the result cache does not track, so only restore a
-          # cache built against the same schema and dependencies
+          # PHPStan and larastan write their caches to PHPStan's default tmpDir (sys_get_temp_dir()/phpstan).
+          # Model property types come from the migrations, which the result cache does not track, so only
+          # restore a cache built against the same schema. Dependency changes are handled by PHPStan itself
           - name: Restore PHPStan result cache
             id: phpstan-cache-restore
             uses: actions/cache/restore@v6
             with:
-              path: /tmp/phpstan/resultCache*.php
-              key: phpstan-result-cache-${{ hashFiles('composer.lock', 'database/migrations/**', 'database/schema/**') }}-
-              restore-keys: phpstan-result-cache-${{ hashFiles('composer.lock', 'database/migrations/**', 'database/schema/**') }}-
+              path: |
+                /tmp/phpstan/resultCache*.php
+                /tmp/phpstan/larastan_migrations_*.cache
+              key: phpstan-result-cache-${{ matrix.config.name }}-${{ hashFiles('database/migrations/**', 'database/schema/**') }}-
+              restore-keys: phpstan-result-cache-${{ matrix.config.name }}-${{ hashFiles('database/migrations/**', 'database/schema/**') }}-
 
       - name: Find new PHP files
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && matrix.config.name == 'Main'
         id: new-php-files
         run: |
           # HEAD is the PR merge commit, HEAD~1 is its first parent (base branch tip)
@@ -107,25 +115,16 @@ jobs:
           echo "files=$NEW_PHP_FILES" >> "$GITHUB_OUTPUT"
 
       - name: Run PHPStan (New files, level 6)
-        if: github.event_name == 'pull_request' && steps.new-php-files.outputs.files != ''
+        if: github.event_name == 'pull_request' && matrix.config.name == 'Main' && steps.new-php-files.outputs.files != ''
         env:
           NEW_PHP_FILES: ${{ steps.new-php-files.outputs.files }}
         run: $PHPSTAN --level=6 -- $NEW_PHP_FILES
 
-      - name: Run PHPStan (Main)
-        if: ${{ !cancelled() && steps.composer-install.outcome == 'success' }}
-        run: $PHPSTAN --configuration=phpstan.neon
-
-      - name: Run PHPStan (Legacy)
-        if: ${{ !cancelled() && steps.composer-install.outcome == 'success' }}
-        run: $PHPSTAN --configuration=phpstan-legacy.neon
-
-      - name: Run PHPStan (Deprecated)
-        if: ${{ !cancelled() && steps.composer-install.outcome == 'success' }}
-        run: $PHPSTAN --configuration=phpstan-deprecated.neon
+      - name: Run PHPStan (${{ matrix.config.name }})
+        run: $PHPSTAN --configuration=${{ matrix.config.file }}
 
       # always fill the cache on the default branch. Other branches only save when nothing was restored
-      # (dependencies or schema changed), their cache is only visible to the same branch
+      # (schema changed), their cache is only visible to the same branch
       - name: Save PHPStan result cache
         if: >-
           ${{ !cancelled() && (
@@ -134,7 +133,9 @@ jobs:
           ) }}
         uses: actions/cache/save@v6
         with:
-          path: /tmp/phpstan/resultCache*.php
+          path: |
+            /tmp/phpstan/resultCache*.php
+            /tmp/phpstan/larastan_migrations_*.cache
           key: ${{ steps.phpstan-cache-restore.outputs.cache-primary-key }}${{ github.run_id }}
 
   rector:
