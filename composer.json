@@ -74,7 +74,7 @@
         "phpstan/phpstan-mockery": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpunit/phpunit": "^11.5.33 || ^12.3.7",
-        "rector/rector": "^2.6"
+        "rector/rector": "^2.7"
     },
     "suggest": {
         "ext-gmp": "Used for browser push notifications",
