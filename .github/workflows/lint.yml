@@ -169,8 +169,30 @@ jobs:
         with:
           cache-matched-key: ${{ steps.composer-restore.outputs.cache-matched-key }}
 
+      # Rector writes its cache to sys_get_temp_dir()/rector_cached_files. It only stores a content hash
+      # of each file that needed no changes, it does not track what a file depends on, so a changed
+      # parent class or vendor package does not invalidate the files using it. Key on composer.lock and
+      # never restore on the default branch, so its full run catches what a cached PR run missed
+      - name: Restore Rector cache
+        id: rector-cache-restore
+        if: github.event_name != 'push' || github.ref_name != github.event.repository.default_branch
+        uses: actions/cache/restore@v6
+        with:
+          path: /tmp/rector_cached_files
+          key: rector-cache-${{ hashFiles('composer.lock') }}-
+          restore-keys: rector-cache-${{ hashFiles('composer.lock') }}-
+
       - name: Run Rector (dry-run)
-        run: ./vendor/bin/rector process --dry-run --no-progress-bar --ansi --memory-limit=1G
+        run: ./vendor/bin/rector process --dry-run --no-progress-bar --output-format=github --memory-limit=1G
+
+      # the default branch always saves its full run. Other branches only save when nothing was restored
+      # (dependencies changed), their cache is only visible to the same branch
+      - name: Save Rector cache
+        if: ${{ !cancelled() && steps.rector-cache-restore.outputs.cache-matched-key == '' }}
+        uses: actions/cache/save@v6
+        with:
+          path: /tmp/rector_cached_files
+          key: rector-cache-${{ hashFiles('composer.lock') }}-${{ github.run_id }}
 
   pint:
     name: Pint (dry-run)
