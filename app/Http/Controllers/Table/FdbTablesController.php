@@ -155,7 +155,7 @@ class FdbTablesController extends TableController
     public function formatItem(Model $model): array
     {
         $mac = Mac::parse($model->mac_address);
-        $ips = $model->ipv4Addresses->pluck('ipv4_address')->unique();
+        $ips = $model->ipv4Addresses->pluck('ipv4_address');
 
         $item = [
             'device' => Blade::render('<x-device-link :device="$device"/>', ['device' => $model->device]),

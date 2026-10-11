@@ -950,7 +950,6 @@ class Device extends BaseModel
     }
 
     /**
-     * @return HasMany<Ipv4Mac, $this>
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\MacAccounting, $this>
      */
     public function macAccounting(): HasMany
