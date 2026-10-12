@@ -1571,7 +1571,7 @@ function list_alerts(Illuminate\Http\Request $request): JsonResponse
 
     $severity = $request->input('severity');
     if ($severity) {
-        if (in_array($severity, array_map(fn (Severity $s) => $s->toAlertRule(), Severity::alertRuleCases()))) {
+        if (in_array($severity, Severity::alertRuleValues())) {
             $param[] = $severity;
             $sql .= ' AND `R`.severity=?';
         }
@@ -1772,7 +1772,7 @@ function add_edit_rule(Illuminate\Http\Request $request)
     }
 
     $severity = $data['severity'] ?? null;
-    $sevs = array_map(fn (Severity $s) => $s->toAlertRule(), Severity::alertRuleCases());
+    $sevs = Severity::alertRuleValues();
     if (! in_array($severity, $sevs, true)) {
         return api_error(400, 'Missing the severity');
     }

@@ -51,7 +51,7 @@ class AlertRuleRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255', Rule::when($this->route()->getActionMethod() === 'store', Rule::unique((app()->environment('testing') ? 'testing.' : '') . 'alert_rules', 'name'))],
-            'severity' => ['required', Rule::in(array_map(fn (Severity $s) => $s->toAlertRule(), Severity::alertRuleCases()))],
+            'severity' => ['required', Rule::in(Severity::alertRuleValues())],
 
             'override_query' => ['sometimes', 'boolean'],
             'builder_json' => ['required_unless:override_query,on', 'json'],

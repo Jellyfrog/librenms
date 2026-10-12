@@ -48,4 +48,14 @@ enum Severity: int
     {
         return [self::Ok, self::Warning, self::Error];
     }
+
+    /**
+     * Severity strings that are valid for an alert rule (ok, warning, critical).
+     *
+     * @return list<string>
+     */
+    public static function alertRuleValues(): array
+    {
+        return array_map(fn (self $severity) => $severity->toAlertRule(), self::alertRuleCases());
+    }
 }
