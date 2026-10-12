@@ -45,7 +45,9 @@ class PortVlan extends PortRelatedModel implements Keyable
     {
         $relation = $this->belongsTo(Vlan::class, 'vlan', 'vlan_vlan');
 
-        return $this->device_id === null
+        // has/count queries build the relation without its base constraints, even from a loaded model,
+        // and are correlated with the ports_vlans table. Otherwise it is loaded for this port vlan.
+        return $relation->getBaseQuery()->wheres === []
             ? $relation->whereColumn('vlans.device_id', 'ports_vlans.device_id')
             : $relation->where('vlans.device_id', $this->device_id);
     }

@@ -115,9 +115,28 @@ final class VlanRelationsTest extends DBTestCase
     {
         $this->otherPortVlan->delete();
 
-        $this->assertEquals([$this->vlan->vlan_id], Vlan::has('ports')->pluck('vlan_id')->all());
+        $vlanIds = [$this->vlan->vlan_id, $this->otherVlan->vlan_id];
+
+        $this->assertEquals([$this->vlan->vlan_id], Vlan::whereKey($vlanIds)->has('ports')->pluck('vlan_id')->all());
         $this->assertEquals(1, Vlan::withCount('ports')->find($this->vlan->vlan_id)->ports_count);
         $this->assertEquals(0, Vlan::withCount('ports')->find($this->otherVlan->vlan_id)->ports_count);
+    }
+
+    public function testVlanPortsExistenceQueryFromLoadedModels(): void
+    {
+        $this->otherPortVlan->delete();
+
+        // aggregates on loaded models build the relation from the first model, it must not be scoped to its device
+        $vlanIds = [$this->vlan->vlan_id, $this->otherVlan->vlan_id];
+        $vlans = Vlan::whereKey($vlanIds)->orderBy('vlan_id')->get()->loadCount('ports');
+
+        $this->assertEquals([1, 0], $vlans->pluck('ports_count')->all());
+        $this->assertEquals([$this->vlan->vlan_id], $this->otherVlan->newQuery()->whereKey($vlanIds)->has('ports')->pluck('vlan_id')->all());
+    }
+
+    public function testVlanPortsWithoutDevice(): void
+    {
+        $this->assertCount(0, (new Vlan(['vlan_vlan' => 100]))->ports);
     }
 
     public function testVlanFdbEntries(): void
@@ -146,7 +165,19 @@ final class VlanRelationsTest extends DBTestCase
     {
         $this->otherVlan->delete();
 
-        $this->assertEquals([$this->portVlan->port_vlan_id], PortVlan::has('deviceVlan')->pluck('port_vlan_id')->all());
+        $portVlanIds = [$this->portVlan->port_vlan_id, $this->otherPortVlan->port_vlan_id];
+
+        $this->assertEquals([$this->portVlan->port_vlan_id], PortVlan::whereKey($portVlanIds)->has('deviceVlan')->pluck('port_vlan_id')->all());
+    }
+
+    public function testPortVlanDeviceVlanExistenceQueryFromLoadedModels(): void
+    {
+        $this->otherVlan->delete();
+
+        // aggregates on loaded models build the relation from the first model, it must not be scoped to its device
+        $portVlans = PortVlan::whereKey([$this->portVlan->port_vlan_id, $this->otherPortVlan->port_vlan_id])->orderBy('port_vlan_id')->get()->loadCount('deviceVlan');
+
+        $this->assertEquals([1, 0], $portVlans->pluck('device_vlan_count')->all());
     }
 
     public function testPortsFdbVlan(): void
