@@ -1,6 +1,6 @@
 <?php
 
-namespace LibreNMS\Tests\Unit\Models;
+namespace LibreNMS\Tests\Feature;
 
 use App\Models\Device;
 use App\Models\Port;
