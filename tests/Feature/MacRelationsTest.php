@@ -1,6 +1,6 @@
 <?php
 
-namespace LibreNMS\Tests\Unit\Models;
+namespace LibreNMS\Tests\Feature;
 
 use App\Models\Device;
 use App\Models\Ipv4Mac;
@@ -140,6 +140,23 @@ final class MacRelationsTest extends DBTestCase
     public function testFdbIpv4AddressesFromOtherDevice(): void
     {
         $this->assertEquals(['192.0.2.10'], $this->fdb->ipv4Addresses->pluck('ipv4_address')->all());
+    }
+
+    public function testFdbWithoutArpOrNdHasNoAddresses(): void
+    {
+        /** @var PortsFdb $fdb */
+        $fdb = PortsFdb::factory()->create([
+            'device_id' => $this->switch->device_id,
+            'port_id' => $this->switchPort->port_id,
+            'mac_address' => '66778899aabb',
+        ]);
+
+        $this->assertEmpty($fdb->ipv4Addresses);
+        $this->assertEmpty($fdb->ipv6Addresses);
+
+        $eagerLoaded = PortsFdb::with(['ipv4Addresses', 'ipv6Addresses'])->findOrFail($fdb->ports_fdb_id);
+        $this->assertEmpty($eagerLoaded->ipv4Addresses);
+        $this->assertEmpty($eagerLoaded->ipv6Addresses);
     }
 
     public function testFdbIpv4AddressesAreNotDuplicated(): void

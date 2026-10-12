@@ -39,6 +39,10 @@ class PortsFdb extends PortRelatedModel
      * ports or contexts, only return it once.
      * The returned models are partial and only contain mac_address and ipv4_address.
      *
+     * The deduplication only applies when loading the models. Aggregates built from this relation
+     * (count(), withCount(), has() with a count) still count every matching row, and ordering by a
+     * column that is not selected (id, port_id, ...) fails on MySQL.
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Ipv4Mac, $this>
      */
     public function ipv4Addresses(): HasMany
@@ -49,7 +53,7 @@ class PortsFdb extends PortRelatedModel
     }
 
     /**
-     * Matched on mac address only, see ipv4Addresses()
+     * Matched on mac address only, the same limitations as ipv4Addresses() apply.
      * The returned models are partial and only contain mac_address and ipv6_address.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Ipv6Nd, $this>
