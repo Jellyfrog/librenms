@@ -87,7 +87,7 @@ return [
         AuthorizationException::class => 403,
     ],
 
-    // Its static files have to be in the web root, at vendor/api-platform.
+    // Its static files are served through the html/vendor/api-platform symlink.
     'swagger_ui' => [
         'enabled' => true,
         // documents the bearer token in the OpenAPI description

@@ -21,7 +21,7 @@ class ApiPlatformServiceProvider extends ServiceProvider
      * Not the commands that build the route cache: API Platform reads the
      * database schema of its resources, and that cache has to build without one.
      */
-    private const COMMANDS = ['route:list', 'api:openapi:export', 'api-platform:install'];
+    private const COMMANDS = ['route:list', 'api:openapi:export'];
 
     /** Set by tests of the API before the application is created. */
     public static bool $forTesting = false;
