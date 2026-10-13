@@ -146,8 +146,10 @@ class Sensor
             return;
         }
 
+        // state names are only unique within an os
+        $os = (string) $this->device->os;
         $usedStates = $stateSensors->pluck('sensor_type');
-        $existingStateIndexes = StateIndex::whereIn('state_name', $usedStates)->get()->keyBy('state_name');
+        $existingStateIndexes = StateIndex::where('os', $os)->whereIn('state_name', $usedStates)->get()->keyBy('state_name');
 
         foreach ($usedStates as $stateName) {
             // make sure the state translations were given for this state name
@@ -162,7 +164,7 @@ class Sensor
             // create new state indexes
             if ($stateIndex == null) {
                 try {
-                    $stateIndex = StateIndex::create(['state_name' => $stateName]);
+                    $stateIndex = StateIndex::create(['os' => $os, 'state_name' => $stateName]);
                     $existingStateIndexes->put($stateName, $stateIndex);
                 } catch (UniqueConstraintViolationException) {
                     Eventlog::log("Duplicate state name $stateName (with case mismatch)", $this->device, 'sensor', Severity::Error, $stateSensors->where('sensor_type', $stateName)->first()?->sensor_id);

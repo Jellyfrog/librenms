@@ -77,6 +77,47 @@ final class YamlSchemaTest extends TestCase
         $this->validateYamlFilesAgainstSchema(resource_path('definitions/os_discovery'), resource_path('definitions/schema/discovery_schema.json'));
     }
 
+    #[TestDox('State names have a single set of states per OS')]
+    public function testStateNamesHaveOneSetOfStatesPerOs(): void
+    {
+        $conflicts = [];
+
+        foreach ($this->listFiles(resource_path('definitions/os_discovery/*.yaml')) as $filename => $file) {
+            $os = substr((string) $filename, 0, -5);
+            $seen = [];
+
+            foreach (Yaml::parseFile($file)['modules']['sensors']['state']['data'] ?? [] as $sensor) {
+                if (! isset($sensor['states'])) {
+                    continue;
+                }
+
+                // state names are stored once per os, so every use of a name must translate values the same way
+                $stateName = strtolower((string) ($sensor['state_name'] ?? $sensor['oid']));
+                $states = array_column(array_map(fn ($state) => [$state['value'], $state['descr'] . ' (' . $state['generic'] . ')'], $sensor['states']), 1, 0);
+                ksort($states);
+
+                $seen[$stateName] ??= $states;
+                if ($seen[$stateName] !== $states) {
+                    $conflicts[$os][$stateName] = $sensor['state_name'] ?? $sensor['oid'];
+                }
+            }
+        }
+
+        $messages = [];
+        foreach ($conflicts as $os => $stateNames) {
+            foreach (array_diff($stateNames, $this->conflictingStateNames[$os] ?? []) as $stateName) {
+                $messages[] = "$os.yaml: state_name '$stateName' is defined with different states, use a distinct state_name for each set of states";
+            }
+        }
+        foreach ($this->conflictingStateNames as $os => $stateNames) {
+            foreach (array_diff($stateNames, $conflicts[$os] ?? []) as $stateName) {
+                $messages[] = "$os.yaml: state_name '$stateName' no longer conflicts, remove it from \$conflictingStateNames";
+            }
+        }
+
+        $this->assertEmpty($messages, implode("\n", $messages));
+    }
+
     private function validateYamlFilesAgainstSchema(string $dir, string $schema_file): void
     {
         $errors = [];
@@ -93,6 +134,24 @@ final class YamlSchemaTest extends TestCase
         $count = count($errors);
         $this->assertEmpty($errors, implode("\n", $errors) . "\nFiles with errors: $count\n\n");
     }
+
+    /**
+     * State names that are defined with different states inside one os definition.
+     * Sensors using these can show the states of the other definition, do not add to this list, fix them instead.
+     *
+     * @var array<string, string[]>
+     */
+    private array $conflictingStateNames = [
+        'eltex-mes23xx' => ['rlPhdUnitEnvParamEntry'],
+        'microsens-g6' => ['statusOverallStatus'],
+        'morningstar-mppt' => ['chargeState', 'loadState'],
+        'moxa-etherdevice' => ['couplingMode', 'turboChainPort1Status', 'turboChainPort2Status'],
+        'panos' => ['panSysHaStateEnum'],
+        'raritan-pdu' => ['PDU2-MIB::externalSensorMeasurementsTable'],
+        'samlex' => ['transferTypes'],
+        'ssu2000' => ['staClkTable'],
+        'uhp' => ['Current redundancy state'],
+    ];
 
     private function listFiles($pattern): array
     {

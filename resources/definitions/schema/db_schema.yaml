@@ -2424,10 +2424,11 @@ ssl_certificates:
 state_indexes:
   Columns:
     - { Field: state_index_id, Type: 'int unsigned', 'Null': false, Extra: auto_increment }
+    - { Field: os, Type: varchar(32), 'Null': false, Extra: '', Default: '' }
     - { Field: state_name, Type: varchar(64), 'Null': false, Extra: '' }
   Indexes:
     PRIMARY: { Name: PRIMARY, Columns: [state_index_id], Unique: true, Type: BTREE }
-    state_indexes_state_name_unique: { Name: state_indexes_state_name_unique, Columns: [state_name], Unique: true, Type: BTREE }
+    state_indexes_os_state_name_unique: { Name: state_indexes_os_state_name_unique, Columns: [os, state_name], Unique: true, Type: BTREE }
 state_translations:
   Columns:
     - { Field: state_translation_id, Type: 'int unsigned', 'Null': false, Extra: auto_increment }

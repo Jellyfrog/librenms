@@ -4027,7 +4027,7 @@
                 },
                 {
                     "state_name": "controllerState",
-                    "state_descr": "nonrecoverable",
+                    "state_descr": "nonRecoverable",
                     "state_value": 6,
                     "state_generic_value": 2
                 },

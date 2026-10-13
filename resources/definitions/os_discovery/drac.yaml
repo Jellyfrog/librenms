@@ -269,7 +269,7 @@ modules:
                         - { value: 3, descr: ok, generic: 0 }
                         - { value: 4, descr: nonCritical, generic: 1 }
                         - { value: 5, descr: critical, generic: 2 }
-                        - { value: 6, descr: nonrecoverable, generic: 2}
+                        - { value: 6, descr: nonRecoverable, generic: 2}
                 -
                     oid: IDRAC-MIB-SMIv2::controllerTable
                     value: IDRAC-MIB-SMIv2::controllerComponentStatus

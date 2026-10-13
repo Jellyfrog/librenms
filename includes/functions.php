@@ -193,7 +193,7 @@ function port_fill_missing_and_trim(&$port, $device)
  * For for backward compatibility:
  *   Returns null if $states is empty, $state_name already exists, and contains state translations
  *
- * @param  string  $state_name  the unique name for this state translation
+ * @param  string  $state_name  the name for this state translation, unique within the os of the device
  * @param  array  $states  array of states, each must contain keys: descr, graph, value, generic
  * @return void
  */

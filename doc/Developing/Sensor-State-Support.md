@@ -63,6 +63,11 @@ the generic state 0, 1, 2, or 3:
     Here, the descr field is only a label on the screen. It is not the
     input of the conversion, because the state input is a number.
 
+!!! note
+    The states are stored once for each OS and state_name. All sensors
+    of an OS that use the same state_name must use the same states. Use
+    a different state_name for each different list of states.
+
 ## YAML Example
 
 For YAML based state discovery:
