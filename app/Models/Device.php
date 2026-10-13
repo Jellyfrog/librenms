@@ -2,6 +2,17 @@
 
 namespace App\Models;
 
+use ApiPlatform\Laravel\Eloquent\Filter\BooleanFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\DateFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\EqualsFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link as ApiLink;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Facades\DeviceCache;
 use App\Facades\LibrenmsConfig;
 use App\Models\Traits\Filterable;
@@ -32,6 +43,7 @@ use LibreNMS\Util\IP;
 use LibreNMS\Util\Rewrite;
 use LibreNMS\Util\Time;
 use LibreNMS\Util\Url;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @property-read int|null $ports_count
@@ -41,6 +53,78 @@ use LibreNMS\Util\Url;
  * @method static \Database\Factories\DeviceFactory factory(...$parameters)
  */
 #[ObservedBy([DeviceObserver::class])]
+#[ApiResource(
+    shortName: 'Device',
+    description: 'A monitored device.',
+    operations: [
+        new GetCollection(uriTemplate: '/devices{._format}'),
+        new Get(
+            uriTemplate: '/devices/{id}{._format}',
+            uriVariables: ['id' => new ApiLink(fromClass: self::class, identifiers: ['device_id'])],
+            requirements: ['id' => '\d+'],
+        ),
+        new GetCollection(
+            uriTemplate: '/locations/{location_id}/devices{._format}',
+            uriVariables: ['location_id' => new ApiLink(fromClass: Location::class, toProperty: 'location')],
+            requirements: ['location_id' => '\d+'],
+            description: 'The devices at a location.',
+        ),
+    ],
+)]
+// The API field names: lowercase snake_case, no repeated resource name, singular.
+#[ApiProperty(property: 'device_id', identifier: true, serialize: new SerializedName('id'))]
+#[ApiProperty(property: 'sysName', serialize: new SerializedName('sys_name'))]
+#[ApiProperty(property: 'sysObjectID', serialize: new SerializedName('sys_object_id'))]
+#[ApiProperty(property: 'sysDescr', serialize: new SerializedName('sys_descr'))]
+#[ApiProperty(property: 'sysContact', serialize: new SerializedName('sys_contact'))]
+#[ApiProperty(property: 'bgpLocalAs', serialize: new SerializedName('bgp_local_as'))]
+#[ApiProperty(property: 'override_sysLocation', serialize: new SerializedName('override_sys_location'))]
+#[ApiProperty(property: 'features', serialize: new SerializedName('feature'))]
+#[ApiProperty(property: 'notes', serialize: new SerializedName('note'))]
+// API Platform leaves the foreign key of a relation out unless it is named
+#[ApiProperty(property: 'location_id')]
+// Never exposed: the SNMP credentials and connection settings
+#[ApiProperty(property: 'community', readable: false, writable: false)]
+#[ApiProperty(property: 'authlevel', readable: false, writable: false)]
+#[ApiProperty(property: 'authname', readable: false, writable: false)]
+#[ApiProperty(property: 'authpass', readable: false, writable: false)]
+#[ApiProperty(property: 'authalgo', readable: false, writable: false)]
+#[ApiProperty(property: 'cryptopass', readable: false, writable: false)]
+#[ApiProperty(property: 'cryptoalgo', readable: false, writable: false)]
+#[ApiProperty(property: 'snmpver', readable: false, writable: false)]
+#[ApiProperty(property: 'port', readable: false, writable: false)]
+#[ApiProperty(property: 'transport', readable: false, writable: false)]
+#[ApiProperty(property: 'timeout', readable: false, writable: false)]
+#[ApiProperty(property: 'retries', readable: false, writable: false)]
+// Related resources are referred to by their id only, here location_id
+#[ApiProperty(property: 'location', readable: false, writable: false)]
+// The dependency tree is not part of the API yet
+#[ApiProperty(property: 'parents', readable: false, writable: false)]
+#[ApiProperty(property: 'children', readable: false, writable: false)]
+#[QueryParameter(key: 'hostname', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'display', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'hardware', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'serial', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'version', filter: PartialSearchFilter::class)]
+#[QueryParameter(key: 'os', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'type', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'location_id', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'poller_group', filter: EqualsFilter::class)]
+#[QueryParameter(key: 'status', filter: BooleanFilter::class)]
+#[QueryParameter(key: 'disabled', filter: BooleanFilter::class)]
+#[QueryParameter(key: 'ignore', filter: BooleanFilter::class)]
+#[QueryParameter(key: 'last_polled', filter: DateFilter::class)]
+#[QueryParameter(key: 'order[id]', filter: OrderFilter::class, property: 'device_id')]
+#[QueryParameter(key: 'order[hostname]', filter: OrderFilter::class, property: 'hostname')]
+#[QueryParameter(key: 'order[display]', filter: OrderFilter::class, property: 'display')]
+#[QueryParameter(key: 'order[os]', filter: OrderFilter::class, property: 'os')]
+#[QueryParameter(key: 'order[type]', filter: OrderFilter::class, property: 'type')]
+#[QueryParameter(key: 'order[status]', filter: OrderFilter::class, property: 'status')]
+#[QueryParameter(key: 'order[uptime]', filter: OrderFilter::class, property: 'uptime')]
+#[QueryParameter(key: 'order[inserted]', filter: OrderFilter::class, property: 'inserted')]
+#[QueryParameter(key: 'order[last_polled]', filter: OrderFilter::class, property: 'last_polled')]
+#[QueryParameter(key: 'order[last_discovered]', filter: OrderFilter::class, property: 'last_discovered')]
+#[QueryParameter(key: 'order[last_ping]', filter: OrderFilter::class, property: 'last_ping')]
 class Device extends BaseModel
 {
     use PivotEventTrait, HasFactory, Filterable;

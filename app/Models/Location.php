@@ -26,6 +26,14 @@
 
 namespace App\Models;
 
+use ApiPlatform\Laravel\Eloquent\Filter\BooleanFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\OrderFilter;
+use ApiPlatform\Laravel\Eloquent\Filter\PartialSearchFilter;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\QueryParameter;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -33,10 +41,28 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Gate;
 use LibreNMS\Util\Dns;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 /**
  * @method static \Database\Factories\LocationFactory factory(...$parameters)
  */
+#[ApiResource(
+    shortName: 'Location',
+    description: 'A place devices are located at.',
+    operations: [
+        new GetCollection(uriTemplate: '/locations{._format}'),
+        new Get(uriTemplate: '/locations/{id}{._format}', requirements: ['id' => '\d+']),
+    ],
+)]
+// a resource does not repeat its own name in its fields
+#[ApiProperty(property: 'location', serialize: new SerializedName('name'))]
+// The devices have a route of their own, /locations/{id}/devices, limited to what the user may see
+#[ApiProperty(property: 'devices', readable: false, writable: false)]
+#[QueryParameter(key: 'name', filter: PartialSearchFilter::class, property: 'location')]
+#[QueryParameter(key: 'fixed_coordinates', filter: BooleanFilter::class)]
+#[QueryParameter(key: 'order[id]', filter: OrderFilter::class, property: 'id')]
+#[QueryParameter(key: 'order[name]', filter: OrderFilter::class, property: 'location')]
+#[QueryParameter(key: 'order[timestamp]', filter: OrderFilter::class, property: 'timestamp')]
 class Location extends Model
 {
     use HasFactory;
