@@ -51,6 +51,8 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\EnforceJson::class, // must be before auth
             \App\Http\Middleware\LegacyExternalAuth::class, // must be before auth
+            \App\Http\Middleware\EnsureApiV1Enabled::class, // a disabled API is a 404, not a 401
+            \App\Http\Middleware\Api\AuthenticateApiSession::class, // must be before auth
             \Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class,
             \Illuminate\Routing\Middleware\ThrottleRequestsWithRedis::class,
@@ -62,8 +64,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         new \App\Exceptions\ErrorReporting($exceptions);
 
-        $exceptions->map(
-            \Binaryk\LaravelRestify\Exceptions\RepositoryNotFoundException::class,
-            fn (\Binaryk\LaravelRestify\Exceptions\RepositoryNotFoundException $e) => new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException($e->getMessage(), $e),
-        );
+        // An API client that sends no Accept header gets a 401, not a redirect to the login page.
+        $exceptions->render(fn (\Illuminate\Auth\AuthenticationException $e, \Illuminate\Http\Request $request) => $request->is('api/*') && ! $request->expectsJson()
+            ? response()->json(['type' => '/errors/401', 'title' => 'An error occurred', 'status' => 401, 'detail' => $e->getMessage()], 401, ['Content-Type' => 'application/problem+json'])
+            : null);
     })->create();

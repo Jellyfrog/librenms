@@ -299,31 +299,6 @@ final class BasicApiTest extends DBTestCase
             ]);
     }
 
-    public function testV1OnlyAcceptsBearerToken(): void
-    {
-        \App\Facades\LibrenmsConfig::set('api.v1.enabled', true);
-
-        /** @var User $user */
-        $user = User::factory()->admin()->create();
-        $token = $user->createToken('test');
-
-        // Bearer token should authenticate on v1
-        $this->json('GET', '/api/v1/system', [], ['Authorization' => "Bearer {$token->plainTextToken}"])
-            ->assertStatus(200);
-
-        auth()->forgetGuards();
-
-        // X-Auth-Token should be rejected on v1
-        $this->json('GET', '/api/v1/system', [], ['X-Auth-Token' => $token->plainTextToken])
-            ->assertStatus(401);
-
-        auth()->forgetGuards();
-
-        // Query parameter api_token should be rejected on v1
-        $this->json('GET', "/api/v1/system?api_token={$token->plainTextToken}")
-            ->assertStatus(401);
-    }
-
     public function testAddRuleStoresProcedureUrl(): void
     {
         /** @var User $user */

@@ -11,6 +11,19 @@
 |
 */
 
+// The v1 API is served by API Platform, see config/api-platform.php. Health is
+// the exception: it has to answer without a database or a token, and API
+// Platform needs the database to load.
+Route::get('v1/health', App\Http\Controllers\Api\V1\HealthController::class)
+    ->middleware([
+        App\Http\Middleware\EnforceJsonApi::class,
+        App\Http\Middleware\FormatJsonApiError::class,
+        App\Http\Middleware\EnsureApiV1Enabled::class,
+        'throttle:60,1',
+    ])
+    ->withoutMiddleware('auth:sanctum')
+    ->name('api.v1.health');
+
 Route::prefix('v0')->group(function (): void {
     Route::get('ping', fn () => response()->json(['message' => 'pong']))->name('ping');
     Route::get('system', [App\Api\Controllers\LegacyApiController::class, 'server_info'])->name('server_info');

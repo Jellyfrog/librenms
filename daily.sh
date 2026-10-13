@@ -297,6 +297,8 @@ main () {
 
         # Clear caches before update
         status_run 'Clearing caches' 'php artisan optimize:clear'
+        # the v1 API keeps its resource metadata in the file store, which optimize:clear does not touch
+        status_run 'Clearing API cache' 'php artisan cache:clear file'
 
         # Restore composer files if user installed plugins
         git checkout --quiet -- composer.json composer.lock
