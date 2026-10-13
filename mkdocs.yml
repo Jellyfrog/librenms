@@ -61,8 +61,6 @@ plugins:
   - markdown-exec
   - search
   - include_dir_to_nav
-  - swagger-ui-tag:
-      supportedSubmitMethods: []
   - exclude:
       glob:
         - "Dockerfile"
