@@ -9,5 +9,6 @@ RUN \
     'mkdocs-git-revision-date-localized-plugin' \
     'mkdocs-macros-plugin' \
     'mkdocs-include-dir-to-nav' \
+    'mkdocs-swagger-ui-tag' \
     'pymdown-extensions' \
   && rm -rf /tmp/*

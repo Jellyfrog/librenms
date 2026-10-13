@@ -1,0 +1,3767 @@
+{
+    "openapi": "3.2.0",
+    "info": {
+        "title": "LibreNMS API",
+        "description": "The LibreNMS v1 API (beta).",
+        "contact": {
+            "name": "",
+            "url": "",
+            "email": ""
+        },
+        "license": {
+            "name": "",
+            "url": ""
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/",
+            "description": ""
+        }
+    ],
+    "paths": {
+        "/api/v1/devices": {
+            "get": {
+                "operationId": "api_apiv1devices_get_collection",
+                "tags": [
+                    "Device"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Device collection",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "description": "Device.jsonapi collection.",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/JsonApiCollectionBaseSchema"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": {
+                                                                "type": "string"
+                                                            },
+                                                            "attributes": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "_id": {
+                                                                        "readOnly": true,
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "inserted": {
+                                                                        "readOnly": true,
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ],
+                                                                        "format": "date-time"
+                                                                    },
+                                                                    "hostname": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "sys_name": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "display": {
+                                                                        "readOnly": true,
+                                                                        "type": "string"
+                                                                    },
+                                                                    "display_template": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "ip": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "overwrite_ip": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "snmp_disable": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "bgp_local_as": {
+                                                                        "readOnly": true,
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "sys_object_id": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "snmpEngineID": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "sys_descr": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "sys_contact": {
+                                                                        "readOnly": true,
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "version": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "hardware": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "feature": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "os": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "status": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "status_reason": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "ignore": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "disabled": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "uptime": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "last_polled": {
+                                                                        "readOnly": true,
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ],
+                                                                        "format": "date-time"
+                                                                    },
+                                                                    "last_polled_timetaken": {
+                                                                        "readOnly": true,
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "last_discovered_timetaken": {
+                                                                        "readOnly": true,
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "last_discovered": {
+                                                                        "readOnly": true,
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ],
+                                                                        "format": "date-time"
+                                                                    },
+                                                                    "purpose": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "_type": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "serial": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "icon": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "poller_group": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "override_sys_location": {
+                                                                        "type": [
+                                                                            "boolean",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "note": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "port_association_mode": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "max_depth": {
+                                                                        "readOnly": true,
+                                                                        "type": "string"
+                                                                    },
+                                                                    "disable_notify": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "ignore_status": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "mtu_status": {
+                                                                        "readOnly": true,
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "location_id": {}
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "type",
+                                                            "id"
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Device"
+                                    }
+                                }
+                            },
+                            "application/ld+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Device.jsonld collection.",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/HydraCollectionBaseSchema"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "required": [
+                                                "member"
+                                            ],
+                                            "properties": {
+                                                "member": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Device.jsonld"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/hal+json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Device.jsonhal"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Retrieves the collection of Device resources.",
+                "description": "Retrieves the collection of Device resources.",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The collection page number",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "itemsPerPage",
+                        "in": "query",
+                        "description": "The number of items per page",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 50,
+                            "minimum": 0,
+                            "maximum": 500
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "hostname",
+                        "in": "query",
+                        "description": "Device hostname",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "display",
+                        "in": "query",
+                        "description": "Device display",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "hardware",
+                        "in": "query",
+                        "description": "Device hardware",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "serial",
+                        "in": "query",
+                        "description": "Device serial",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "version",
+                        "in": "query",
+                        "description": "Device version",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "os",
+                        "in": "query",
+                        "description": "Device os",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Device type",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "location_id",
+                        "in": "query",
+                        "description": "Device location_id",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "poller_group",
+                        "in": "query",
+                        "description": "Device poller_group",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Device status",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "disabled",
+                        "in": "query",
+                        "description": "Device disabled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "ignore",
+                        "in": "query",
+                        "description": "Device ignore",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "last_polled[eq]",
+                        "in": "query",
+                        "description": "Device last_polled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "date"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "last_polled[gt]",
+                        "in": "query",
+                        "description": "Device last_polled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "date"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "last_polled[lt]",
+                        "in": "query",
+                        "description": "Device last_polled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "date"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "last_polled[gte]",
+                        "in": "query",
+                        "description": "Device last_polled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "date"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "last_polled[lte]",
+                        "in": "query",
+                        "description": "Device last_polled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "date"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[id]",
+                        "in": "query",
+                        "description": "Device order[id]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[hostname]",
+                        "in": "query",
+                        "description": "Device order[hostname]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[display]",
+                        "in": "query",
+                        "description": "Device order[display]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[os]",
+                        "in": "query",
+                        "description": "Device order[os]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[type]",
+                        "in": "query",
+                        "description": "Device order[type]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[status]",
+                        "in": "query",
+                        "description": "Device order[status]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[uptime]",
+                        "in": "query",
+                        "description": "Device order[uptime]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[inserted]",
+                        "in": "query",
+                        "description": "Device order[inserted]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[last_polled]",
+                        "in": "query",
+                        "description": "Device order[last_polled]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[last_discovered]",
+                        "in": "query",
+                        "description": "Device order[last_discovered]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[last_ping]",
+                        "in": "query",
+                        "description": "Device order[last_ping]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/devices/{id}": {
+            "get": {
+                "operationId": "api_apiv1devices_id_get",
+                "tags": [
+                    "Device"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Device resource",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Device.jsonapi"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Device"
+                                }
+                            },
+                            "application/ld+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Device.jsonld"
+                                }
+                            },
+                            "application/hal+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Device.jsonhal"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "links": {}
+                    }
+                },
+                "summary": "Retrieves a Device resource.",
+                "description": "Retrieves a Device resource.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Device identifier",
+                        "required": true,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "simple",
+                        "explode": false
+                    },
+                    {
+                        "name": "hostname",
+                        "in": "query",
+                        "description": "Device hostname",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "display",
+                        "in": "query",
+                        "description": "Device display",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "hardware",
+                        "in": "query",
+                        "description": "Device hardware",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "serial",
+                        "in": "query",
+                        "description": "Device serial",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "version",
+                        "in": "query",
+                        "description": "Device version",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "os",
+                        "in": "query",
+                        "description": "Device os",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Device type",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "location_id",
+                        "in": "query",
+                        "description": "Device location_id",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "poller_group",
+                        "in": "query",
+                        "description": "Device poller_group",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Device status",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "disabled",
+                        "in": "query",
+                        "description": "Device disabled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "ignore",
+                        "in": "query",
+                        "description": "Device ignore",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "last_polled[eq]",
+                        "in": "query",
+                        "description": "Device last_polled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "date"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "last_polled[gt]",
+                        "in": "query",
+                        "description": "Device last_polled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "date"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "last_polled[lt]",
+                        "in": "query",
+                        "description": "Device last_polled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "date"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "last_polled[gte]",
+                        "in": "query",
+                        "description": "Device last_polled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "date"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "last_polled[lte]",
+                        "in": "query",
+                        "description": "Device last_polled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "date"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[id]",
+                        "in": "query",
+                        "description": "Device order[id]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[hostname]",
+                        "in": "query",
+                        "description": "Device order[hostname]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[display]",
+                        "in": "query",
+                        "description": "Device order[display]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[os]",
+                        "in": "query",
+                        "description": "Device order[os]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[type]",
+                        "in": "query",
+                        "description": "Device order[type]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[status]",
+                        "in": "query",
+                        "description": "Device order[status]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[uptime]",
+                        "in": "query",
+                        "description": "Device order[uptime]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[inserted]",
+                        "in": "query",
+                        "description": "Device order[inserted]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[last_polled]",
+                        "in": "query",
+                        "description": "Device order[last_polled]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[last_discovered]",
+                        "in": "query",
+                        "description": "Device order[last_discovered]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[last_ping]",
+                        "in": "query",
+                        "description": "Device order[last_ping]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/locations/{location_id}/devices": {
+            "get": {
+                "operationId": "api_apiv1locations_location_iddevices_get_collection",
+                "tags": [
+                    "Device"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Device collection",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "description": "Device.jsonapi collection.",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/JsonApiCollectionBaseSchema"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": {
+                                                                "type": "string"
+                                                            },
+                                                            "attributes": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "_id": {
+                                                                        "readOnly": true,
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "inserted": {
+                                                                        "readOnly": true,
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ],
+                                                                        "format": "date-time"
+                                                                    },
+                                                                    "hostname": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "sys_name": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "display": {
+                                                                        "readOnly": true,
+                                                                        "type": "string"
+                                                                    },
+                                                                    "display_template": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "ip": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "overwrite_ip": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "snmp_disable": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "bgp_local_as": {
+                                                                        "readOnly": true,
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "sys_object_id": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "snmpEngineID": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "sys_descr": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "sys_contact": {
+                                                                        "readOnly": true,
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "version": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "hardware": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "feature": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "os": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "status": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "status_reason": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "ignore": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "disabled": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "uptime": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "last_polled": {
+                                                                        "readOnly": true,
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ],
+                                                                        "format": "date-time"
+                                                                    },
+                                                                    "last_polled_timetaken": {
+                                                                        "readOnly": true,
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "last_discovered_timetaken": {
+                                                                        "readOnly": true,
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "last_discovered": {
+                                                                        "readOnly": true,
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ],
+                                                                        "format": "date-time"
+                                                                    },
+                                                                    "purpose": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "_type": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "serial": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "icon": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "poller_group": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "override_sys_location": {
+                                                                        "type": [
+                                                                            "boolean",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "note": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "port_association_mode": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "max_depth": {
+                                                                        "readOnly": true,
+                                                                        "type": "string"
+                                                                    },
+                                                                    "disable_notify": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "ignore_status": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "mtu_status": {
+                                                                        "readOnly": true,
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "location_id": {}
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "type",
+                                                            "id"
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Device"
+                                    }
+                                }
+                            },
+                            "application/ld+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Device.jsonld collection.",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/HydraCollectionBaseSchema"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "required": [
+                                                "member"
+                                            ],
+                                            "properties": {
+                                                "member": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Device.jsonld"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/hal+json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Device.jsonhal"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Retrieves the collection of Device resources.",
+                "description": "Retrieves the collection of Device resources.",
+                "parameters": [
+                    {
+                        "name": "location_id",
+                        "in": "path",
+                        "description": "Location identifier",
+                        "required": true,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "simple",
+                        "explode": false
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The collection page number",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "itemsPerPage",
+                        "in": "query",
+                        "description": "The number of items per page",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 50,
+                            "minimum": 0,
+                            "maximum": 500
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "hostname",
+                        "in": "query",
+                        "description": "Device hostname",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "display",
+                        "in": "query",
+                        "description": "Device display",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "hardware",
+                        "in": "query",
+                        "description": "Device hardware",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "serial",
+                        "in": "query",
+                        "description": "Device serial",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "version",
+                        "in": "query",
+                        "description": "Device version",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "os",
+                        "in": "query",
+                        "description": "Device os",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Device type",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "location_id",
+                        "in": "query",
+                        "description": "Device location_id",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "poller_group",
+                        "in": "query",
+                        "description": "Device poller_group",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Device status",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "disabled",
+                        "in": "query",
+                        "description": "Device disabled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "ignore",
+                        "in": "query",
+                        "description": "Device ignore",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "last_polled[eq]",
+                        "in": "query",
+                        "description": "Device last_polled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "date"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "last_polled[gt]",
+                        "in": "query",
+                        "description": "Device last_polled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "date"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "last_polled[lt]",
+                        "in": "query",
+                        "description": "Device last_polled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "date"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "last_polled[gte]",
+                        "in": "query",
+                        "description": "Device last_polled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "date"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "last_polled[lte]",
+                        "in": "query",
+                        "description": "Device last_polled",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "date"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[id]",
+                        "in": "query",
+                        "description": "Device order[id]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[hostname]",
+                        "in": "query",
+                        "description": "Device order[hostname]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[display]",
+                        "in": "query",
+                        "description": "Device order[display]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[os]",
+                        "in": "query",
+                        "description": "Device order[os]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[type]",
+                        "in": "query",
+                        "description": "Device order[type]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[status]",
+                        "in": "query",
+                        "description": "Device order[status]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[uptime]",
+                        "in": "query",
+                        "description": "Device order[uptime]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[inserted]",
+                        "in": "query",
+                        "description": "Device order[inserted]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[last_polled]",
+                        "in": "query",
+                        "description": "Device order[last_polled]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[last_discovered]",
+                        "in": "query",
+                        "description": "Device order[last_discovered]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[last_ping]",
+                        "in": "query",
+                        "description": "Device order[last_ping]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/locations": {
+            "get": {
+                "operationId": "api_apiv1locations_get_collection",
+                "tags": [
+                    "Location"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Location collection",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "description": "Location.jsonapi collection.",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/JsonApiCollectionBaseSchema"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": {
+                                                                "type": "string"
+                                                            },
+                                                            "attributes": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "_id": {
+                                                                        "readOnly": true,
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "lat": {
+                                                                        "type": [
+                                                                            "number",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "lng": {
+                                                                        "type": [
+                                                                            "number",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "timestamp": {
+                                                                        "readOnly": true,
+                                                                        "type": "string",
+                                                                        "format": "date-time"
+                                                                    },
+                                                                    "fixed_coordinates": {
+                                                                        "readOnly": true,
+                                                                        "type": "boolean"
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "type",
+                                                            "id"
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Location"
+                                    }
+                                }
+                            },
+                            "application/ld+json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "Location.jsonld collection.",
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/HydraCollectionBaseSchema"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "required": [
+                                                "member"
+                                            ],
+                                            "properties": {
+                                                "member": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Location.jsonld"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "application/hal+json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Location.jsonhal"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "summary": "Retrieves the collection of Location resources.",
+                "description": "Retrieves the collection of Location resources.",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The collection page number",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "itemsPerPage",
+                        "in": "query",
+                        "description": "The number of items per page",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 50,
+                            "minimum": 0,
+                            "maximum": 500
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Location name",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "fixed_coordinates",
+                        "in": "query",
+                        "description": "Location fixed_coordinates",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[id]",
+                        "in": "query",
+                        "description": "Location order[id]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[name]",
+                        "in": "query",
+                        "description": "Location order[name]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[timestamp]",
+                        "in": "query",
+                        "description": "Location order[timestamp]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/locations/{id}": {
+            "get": {
+                "operationId": "api_apiv1locations_id_get",
+                "tags": [
+                    "Location"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Location resource",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Location.jsonapi"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Location"
+                                }
+                            },
+                            "application/ld+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Location.jsonld"
+                                }
+                            },
+                            "application/hal+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Location.jsonhal"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "links": {}
+                    }
+                },
+                "summary": "Retrieves a Location resource.",
+                "description": "Retrieves a Location resource.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Location identifier",
+                        "required": true,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "simple",
+                        "explode": false
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Location name",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "fixed_coordinates",
+                        "in": "query",
+                        "description": "Location fixed_coordinates",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[id]",
+                        "in": "query",
+                        "description": "Location order[id]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[name]",
+                        "in": "query",
+                        "description": "Location order[name]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    },
+                    {
+                        "name": "order[timestamp]",
+                        "in": "query",
+                        "description": "Location order[timestamp]",
+                        "required": false,
+                        "deprecated": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc",
+                                "ASC",
+                                "DESC"
+                            ]
+                        },
+                        "style": "form",
+                        "explode": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/system": {
+            "get": {
+                "operationId": "api_apiv1system_get",
+                "tags": [
+                    "System"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "System resource",
+                        "content": {
+                            "application/vnd.api+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/System.jsonapi"
+                                }
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/System"
+                                }
+                            },
+                            "application/ld+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/System.jsonld"
+                                }
+                            },
+                            "application/hal+json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/System.jsonhal"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "links": {}
+                    }
+                },
+                "summary": "Retrieves a System resource.",
+                "description": "Retrieves a System resource.",
+                "parameters": []
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Device": {
+                "type": "object",
+                "description": "A monitored device.",
+                "properties": {
+                    "id": {
+                        "readOnly": true,
+                        "type": "integer"
+                    },
+                    "inserted": {
+                        "readOnly": true,
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "hostname": {
+                        "type": "string"
+                    },
+                    "sys_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "display": {
+                        "readOnly": true,
+                        "type": "string"
+                    },
+                    "display_template": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "ip": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "overwrite_ip": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "snmp_disable": {
+                        "type": "boolean"
+                    },
+                    "bgp_local_as": {
+                        "readOnly": true,
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "sys_object_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "snmpEngineID": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "sys_descr": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "sys_contact": {
+                        "readOnly": true,
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "version": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "hardware": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "feature": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "os": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "status_reason": {
+                        "type": "string"
+                    },
+                    "ignore": {
+                        "type": "boolean"
+                    },
+                    "disabled": {
+                        "type": "boolean"
+                    },
+                    "uptime": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "last_polled": {
+                        "readOnly": true,
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "last_polled_timetaken": {
+                        "readOnly": true,
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "last_discovered_timetaken": {
+                        "readOnly": true,
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "last_discovered": {
+                        "readOnly": true,
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "purpose": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "serial": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "icon": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "poller_group": {
+                        "type": "string"
+                    },
+                    "override_sys_location": {
+                        "type": [
+                            "boolean",
+                            "null"
+                        ]
+                    },
+                    "note": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "port_association_mode": {
+                        "type": "string"
+                    },
+                    "max_depth": {
+                        "readOnly": true,
+                        "type": "string"
+                    },
+                    "disable_notify": {
+                        "type": "boolean"
+                    },
+                    "ignore_status": {
+                        "type": "boolean"
+                    },
+                    "mtu_status": {
+                        "readOnly": true,
+                        "type": "boolean"
+                    },
+                    "location_id": {}
+                }
+            },
+            "Device.jsonapi": {
+                "properties": {
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string"
+                            },
+                            "attributes": {
+                                "type": "object",
+                                "properties": {
+                                    "_id": {
+                                        "readOnly": true,
+                                        "type": "integer"
+                                    },
+                                    "inserted": {
+                                        "readOnly": true,
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "date-time"
+                                    },
+                                    "hostname": {
+                                        "type": "string"
+                                    },
+                                    "sys_name": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "display": {
+                                        "readOnly": true,
+                                        "type": "string"
+                                    },
+                                    "display_template": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "ip": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "overwrite_ip": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "snmp_disable": {
+                                        "type": "boolean"
+                                    },
+                                    "bgp_local_as": {
+                                        "readOnly": true,
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "sys_object_id": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "snmpEngineID": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "sys_descr": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "sys_contact": {
+                                        "readOnly": true,
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "version": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "hardware": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "feature": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "os": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "status_reason": {
+                                        "type": "string"
+                                    },
+                                    "ignore": {
+                                        "type": "boolean"
+                                    },
+                                    "disabled": {
+                                        "type": "boolean"
+                                    },
+                                    "uptime": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "last_polled": {
+                                        "readOnly": true,
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "date-time"
+                                    },
+                                    "last_polled_timetaken": {
+                                        "readOnly": true,
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "last_discovered_timetaken": {
+                                        "readOnly": true,
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "last_discovered": {
+                                        "readOnly": true,
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "date-time"
+                                    },
+                                    "purpose": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "_type": {
+                                        "type": "string"
+                                    },
+                                    "serial": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "icon": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "poller_group": {
+                                        "type": "string"
+                                    },
+                                    "override_sys_location": {
+                                        "type": [
+                                            "boolean",
+                                            "null"
+                                        ]
+                                    },
+                                    "note": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "port_association_mode": {
+                                        "type": "string"
+                                    },
+                                    "max_depth": {
+                                        "readOnly": true,
+                                        "type": "string"
+                                    },
+                                    "disable_notify": {
+                                        "type": "boolean"
+                                    },
+                                    "ignore_status": {
+                                        "type": "boolean"
+                                    },
+                                    "mtu_status": {
+                                        "readOnly": true,
+                                        "type": "boolean"
+                                    },
+                                    "location_id": {}
+                                }
+                            }
+                        },
+                        "required": [
+                            "type",
+                            "id"
+                        ]
+                    }
+                }
+            },
+            "Device.jsonhal": {
+                "type": "object",
+                "description": "A monitored device.",
+                "properties": {
+                    "id": {
+                        "readOnly": true,
+                        "type": "integer"
+                    },
+                    "inserted": {
+                        "readOnly": true,
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "hostname": {
+                        "type": "string"
+                    },
+                    "sys_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "display": {
+                        "readOnly": true,
+                        "type": "string"
+                    },
+                    "display_template": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "ip": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "overwrite_ip": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "snmp_disable": {
+                        "type": "boolean"
+                    },
+                    "bgp_local_as": {
+                        "readOnly": true,
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "sys_object_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "snmpEngineID": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "sys_descr": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "sys_contact": {
+                        "readOnly": true,
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "version": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "hardware": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "feature": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "os": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "status_reason": {
+                        "type": "string"
+                    },
+                    "ignore": {
+                        "type": "boolean"
+                    },
+                    "disabled": {
+                        "type": "boolean"
+                    },
+                    "uptime": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "last_polled": {
+                        "readOnly": true,
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "last_polled_timetaken": {
+                        "readOnly": true,
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "last_discovered_timetaken": {
+                        "readOnly": true,
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "last_discovered": {
+                        "readOnly": true,
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "purpose": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "serial": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "icon": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "poller_group": {
+                        "type": "string"
+                    },
+                    "override_sys_location": {
+                        "type": [
+                            "boolean",
+                            "null"
+                        ]
+                    },
+                    "note": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "port_association_mode": {
+                        "type": "string"
+                    },
+                    "max_depth": {
+                        "readOnly": true,
+                        "type": "string"
+                    },
+                    "disable_notify": {
+                        "type": "boolean"
+                    },
+                    "ignore_status": {
+                        "type": "boolean"
+                    },
+                    "mtu_status": {
+                        "readOnly": true,
+                        "type": "boolean"
+                    },
+                    "location_id": {}
+                }
+            },
+            "Device.jsonld": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/HydraItemBaseSchema"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "readOnly": true,
+                                "type": "integer"
+                            },
+                            "inserted": {
+                                "readOnly": true,
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "format": "date-time"
+                            },
+                            "hostname": {
+                                "type": "string"
+                            },
+                            "sys_name": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "display": {
+                                "readOnly": true,
+                                "type": "string"
+                            },
+                            "display_template": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "ip": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "overwrite_ip": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "snmp_disable": {
+                                "type": "boolean"
+                            },
+                            "bgp_local_as": {
+                                "readOnly": true,
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "sys_object_id": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "snmpEngineID": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "sys_descr": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "sys_contact": {
+                                "readOnly": true,
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "version": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "hardware": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "feature": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "os": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "status": {
+                                "type": "string"
+                            },
+                            "status_reason": {
+                                "type": "string"
+                            },
+                            "ignore": {
+                                "type": "boolean"
+                            },
+                            "disabled": {
+                                "type": "boolean"
+                            },
+                            "uptime": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "last_polled": {
+                                "readOnly": true,
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "format": "date-time"
+                            },
+                            "last_polled_timetaken": {
+                                "readOnly": true,
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "last_discovered_timetaken": {
+                                "readOnly": true,
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "last_discovered": {
+                                "readOnly": true,
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "format": "date-time"
+                            },
+                            "purpose": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "type": {
+                                "type": "string"
+                            },
+                            "serial": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "icon": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "poller_group": {
+                                "type": "string"
+                            },
+                            "override_sys_location": {
+                                "type": [
+                                    "boolean",
+                                    "null"
+                                ]
+                            },
+                            "note": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "port_association_mode": {
+                                "type": "string"
+                            },
+                            "max_depth": {
+                                "readOnly": true,
+                                "type": "string"
+                            },
+                            "disable_notify": {
+                                "type": "boolean"
+                            },
+                            "ignore_status": {
+                                "type": "boolean"
+                            },
+                            "mtu_status": {
+                                "readOnly": true,
+                                "type": "boolean"
+                            },
+                            "location_id": {}
+                        }
+                    }
+                ],
+                "description": "A monitored device."
+            },
+            "HydraCollectionBaseSchema": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/HydraCollectionBaseSchemaNoPagination"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "view": {
+                                "type": "object",
+                                "properties": {
+                                    "@id": {
+                                        "type": "string",
+                                        "format": "iri-reference"
+                                    },
+                                    "@type": {
+                                        "type": "string"
+                                    },
+                                    "first": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "iri-reference"
+                                    },
+                                    "last": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "iri-reference"
+                                    },
+                                    "previous": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "iri-reference"
+                                    },
+                                    "next": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "iri-reference"
+                                    }
+                                },
+                                "example": {
+                                    "@id": "string",
+                                    "@type": "string",
+                                    "first": "string",
+                                    "last": "string",
+                                    "previous": "string",
+                                    "next": "string"
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            "HydraCollectionBaseSchemaNoPagination": {
+                "type": "object",
+                "properties": {
+                    "totalItems": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "search": {
+                        "type": "object",
+                        "properties": {
+                            "@type": {
+                                "type": "string"
+                            },
+                            "template": {
+                                "type": "string"
+                            },
+                            "variableRepresentation": {
+                                "type": "string"
+                            },
+                            "mapping": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "@type": {
+                                            "type": "string"
+                                        },
+                                        "variable": {
+                                            "type": "string"
+                                        },
+                                        "property": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "required": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "HydraItemBaseSchema": {
+                "type": "object",
+                "properties": {
+                    "@context": {
+                        "oneOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "@vocab": {
+                                        "type": "string"
+                                    },
+                                    "hydra": {
+                                        "type": "string",
+                                        "enum": [
+                                            "http://www.w3.org/ns/hydra/core#"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "@vocab",
+                                    "hydra"
+                                ],
+                                "additionalProperties": true
+                            }
+                        ]
+                    },
+                    "@id": {
+                        "type": "string"
+                    },
+                    "@type": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "@id",
+                    "@type"
+                ]
+            },
+            "JsonApiCollectionBaseSchema": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/JsonApiCollectionBaseSchemaNoPagination"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "links": {
+                                "type": "object",
+                                "properties": {
+                                    "first": {
+                                        "type": "string",
+                                        "format": "iri-reference"
+                                    },
+                                    "prev": {
+                                        "type": "string",
+                                        "format": "iri-reference"
+                                    },
+                                    "next": {
+                                        "type": "string",
+                                        "format": "iri-reference"
+                                    },
+                                    "last": {
+                                        "type": "string",
+                                        "format": "iri-reference"
+                                    }
+                                },
+                                "example": {
+                                    "first": "string",
+                                    "prev": "string",
+                                    "next": "string",
+                                    "last": "string"
+                                }
+                            },
+                            "meta": {
+                                "type": "object",
+                                "properties": {
+                                    "itemsPerPage": {
+                                        "type": "integer",
+                                        "minimum": 0
+                                    },
+                                    "currentPage": {
+                                        "type": "integer",
+                                        "minimum": 0
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            "JsonApiCollectionBaseSchemaNoPagination": {
+                "type": "object",
+                "properties": {
+                    "links": {
+                        "type": "object",
+                        "properties": {
+                            "self": {
+                                "type": "string",
+                                "format": "iri-reference"
+                            }
+                        },
+                        "example": {
+                            "self": "string"
+                        }
+                    },
+                    "meta": {
+                        "type": "object",
+                        "properties": {
+                            "totalItems": {
+                                "type": "integer",
+                                "minimum": 0
+                            }
+                        }
+                    },
+                    "data": {
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "data"
+                ]
+            },
+            "Location": {
+                "type": "object",
+                "description": "A place devices are located at.",
+                "properties": {
+                    "id": {
+                        "readOnly": true,
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "lat": {
+                        "type": [
+                            "number",
+                            "null"
+                        ]
+                    },
+                    "lng": {
+                        "type": [
+                            "number",
+                            "null"
+                        ]
+                    },
+                    "timestamp": {
+                        "readOnly": true,
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "fixed_coordinates": {
+                        "readOnly": true,
+                        "type": "boolean"
+                    }
+                }
+            },
+            "Location.jsonapi": {
+                "properties": {
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string"
+                            },
+                            "attributes": {
+                                "type": "object",
+                                "properties": {
+                                    "_id": {
+                                        "readOnly": true,
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "lat": {
+                                        "type": [
+                                            "number",
+                                            "null"
+                                        ]
+                                    },
+                                    "lng": {
+                                        "type": [
+                                            "number",
+                                            "null"
+                                        ]
+                                    },
+                                    "timestamp": {
+                                        "readOnly": true,
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "fixed_coordinates": {
+                                        "readOnly": true,
+                                        "type": "boolean"
+                                    }
+                                }
+                            }
+                        },
+                        "required": [
+                            "type",
+                            "id"
+                        ]
+                    }
+                }
+            },
+            "Location.jsonhal": {
+                "type": "object",
+                "description": "A place devices are located at.",
+                "properties": {
+                    "id": {
+                        "readOnly": true,
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "lat": {
+                        "type": [
+                            "number",
+                            "null"
+                        ]
+                    },
+                    "lng": {
+                        "type": [
+                            "number",
+                            "null"
+                        ]
+                    },
+                    "timestamp": {
+                        "readOnly": true,
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "fixed_coordinates": {
+                        "readOnly": true,
+                        "type": "boolean"
+                    }
+                }
+            },
+            "Location.jsonld": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/HydraItemBaseSchema"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "readOnly": true,
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "lat": {
+                                "type": [
+                                    "number",
+                                    "null"
+                                ]
+                            },
+                            "lng": {
+                                "type": [
+                                    "number",
+                                    "null"
+                                ]
+                            },
+                            "timestamp": {
+                                "readOnly": true,
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "fixed_coordinates": {
+                                "readOnly": true,
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                ],
+                "description": "A place devices are located at."
+            },
+            "System": {
+                "type": "object",
+                "description": "This LibreNMS install, and how much of it the current user may see.",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "version": {
+                        "type": "string"
+                    },
+                    "device_count": {
+                        "type": "integer"
+                    },
+                    "port_count": {
+                        "type": "integer"
+                    },
+                    "sensor_count": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "System.jsonapi": {
+                "properties": {
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string"
+                            },
+                            "attributes": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "version": {
+                                        "type": "string"
+                                    },
+                                    "device_count": {
+                                        "type": "integer"
+                                    },
+                                    "port_count": {
+                                        "type": "integer"
+                                    },
+                                    "sensor_count": {
+                                        "type": "integer"
+                                    }
+                                }
+                            }
+                        },
+                        "required": [
+                            "type",
+                            "id"
+                        ]
+                    }
+                }
+            },
+            "System.jsonhal": {
+                "type": "object",
+                "description": "This LibreNMS install, and how much of it the current user may see.",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "version": {
+                        "type": "string"
+                    },
+                    "device_count": {
+                        "type": "integer"
+                    },
+                    "port_count": {
+                        "type": "integer"
+                    },
+                    "sensor_count": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "System.jsonld": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/HydraItemBaseSchema"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "version": {
+                                "type": "string"
+                            },
+                            "device_count": {
+                                "type": "integer"
+                            },
+                            "port_count": {
+                                "type": "integer"
+                            },
+                            "sensor_count": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                ],
+                "description": "This LibreNMS install, and how much of it the current user may see."
+            }
+        },
+        "responses": {},
+        "parameters": {},
+        "examples": {},
+        "requestBodies": {},
+        "headers": {},
+        "securitySchemes": {
+            "token": {
+                "type": "http",
+                "description": "Value for the http bearer parameter.",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "security": [
+        {
+            "token": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "System",
+            "description": "This LibreNMS install, and how much of it the current user may see."
+        },
+        {
+            "name": "Device",
+            "description": "A monitored device."
+        },
+        {
+            "name": "Location",
+            "description": "A place devices are located at."
+        }
+    ],
+    "webhooks": {}
+}
