@@ -388,10 +388,10 @@ class Rrd extends BaseDatastore
         $separator = '-';
 
         $rrdfile_array = $this->getRrdFiles($device['hostname']);
+        // trailing separator so app_id 1 does not match app_id 12 and category pools does not match poolsX
         if ($category) {
-            $pattern = sprintf('%s-%s-%s-%s', 'app', $app_name, $app_id, $category);
+            $pattern = sprintf('%s-%s-%s-%s-', 'app', $app_name, $app_id, $category);
         } else {
-            // trailing separator so app_id 1 does not match app_id 12
             $pattern = sprintf('%s-%s-%s-', 'app', $app_name, $app_id);
         }
 

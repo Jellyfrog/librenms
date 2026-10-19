@@ -62,6 +62,22 @@ class RrdApplicationArraysTest extends TestCase
         $this->assertSame(['pools-poolB'], $rrd->getRrdApplicationArrays($device, 12, 'dhcp-stats', 'pools'));
     }
 
+    public function testCategoryIsMatchedExactly(): void
+    {
+        $this->createRrdFiles([
+            'app-dhcp-stats-1-pools',
+            'app-dhcp-stats-1-pools-poolA',
+            'app-dhcp-stats-1-poolsX-poolC',
+            'app-cape-1-pkg___-___-foo',
+        ]);
+
+        $rrd = new Rrd();
+        $device = ['hostname' => 'testhost'];
+
+        $this->assertSame(['pools-poolA'], $rrd->getRrdApplicationArrays($device, 1, 'dhcp-stats', 'pools'));
+        $this->assertSame(['pkg___-___-foo'], $rrd->getRrdApplicationArrays($device, 1, 'cape', 'pkg___-___'));
+    }
+
     /**
      * @param  list<string>  $names
      */
