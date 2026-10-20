@@ -14,6 +14,8 @@ return [
     'title' => 'Sensors',
     'category' => [
         'stack' => 'Stack',
+        'controller_nodes' => 'Controller Nodes',
+        'ap_licenses' => 'AP Licenses',
     ],
     'airflow' => [
         'short' => 'Airflow',

@@ -12,6 +12,8 @@ enum SensorCategory: string
     use EnumToArray;
 
     case Stack = 'stack';
+    case ControllerNodes = 'controller_nodes';
+    case ApLicenses = 'ap_licenses';
 
     public function label(): string
     {
@@ -22,6 +24,8 @@ enum SensorCategory: string
     {
         return match ($this) {
             self::Stack => 'th-large',
+            self::ControllerNodes => 'server',
+            self::ApLicenses => 'key',
         };
     }
 }

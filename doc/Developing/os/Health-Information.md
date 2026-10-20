@@ -137,7 +137,9 @@ the string to the equivalent OID representation.
   and not with the generic sensors. You must also set
   `entPhysicalIndex` to ifIndex
 - `category` (optional): the category of the sensor: `stack` for stack
-  and virtual chassis member sensors. On the device Overview page,
+  and virtual chassis member sensors, `controller_nodes` for wireless
+  controller cluster node sensors, `ap_licenses` for access point
+  license sensors. On the device Overview page,
   sensors of any class in the same category share one panel, and
   `group` still groups them inside it. Sensors without a category show
   in the panel of their sensor class.
