@@ -613,7 +613,8 @@ modules:
                     value: HUAWEI-STACK-MIB::hwMemberStackRole
                     num_oid: '.1.3.6.1.4.1.2011.5.25.183.1.20.1.3.{{ $index }}'
                     descr: 'Unit {{ $index }} {{ HUAWEI-STACK-MIB::hwMemberStackDeviceType }} Status'
-                    group: Stack
+                    group: 'Unit {{ $index }}'
+                    category: stack
                     state_name: hwMemberStackRole
                     states:
                         - { descr: Standalone, value: 0, generic: 3 }
@@ -625,7 +626,8 @@ modules:
                     value: HUAWEI-STACK-MIB::hwStackPortStatus
                     num_oid: '.1.3.6.1.4.1.2011.5.25.183.1.21.1.5.{{ $index }}'
                     descr: 'Unit {{ $subindex0 }} stack-port {{ $subindex1 }} Status'
-                    group: Stack
+                    group: 'Unit {{ $subindex0 }}'
+                    category: stack
                     state_name: hwStackPortStatus
                     states:
                         - { descr: Up, value: 1, generic: 0 }

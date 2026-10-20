@@ -705,7 +705,7 @@
                     "sensor_type": "hpStackOperStatus",
                     "sensor_descr": "Stack State",
                     "group": null,
-                    "category": null,
+                    "category": "stack",
                     "sensor_divisor": 1,
                     "sensor_multiplier": 1,
                     "sensor_current": 1,

@@ -12,6 +12,7 @@
  */
 
 use Illuminate\Support\Facades\Log;
+use LibreNMS\Enum\SensorCategory;
 use LibreNMS\Enum\SensorType;
 
 $role_data = SnmpQuery::walk('CISCO-STACKWISE-MIB::cswSwitchRole')->values();
@@ -32,10 +33,10 @@ $tables = [
     ['num_oid' => '.1.3.6.1.4.1.9.9.176.1.1.2.',        'oid' => 'CISCO-RF-MIB::cRFStatusUnitState',                            'state_name' => 'cRFStatusUnitState',              'descr' => 'VSS Device State'],
     ['num_oid' => '.1.3.6.1.4.1.9.9.176.1.1.4.',        'oid' => 'CISCO-RF-MIB::cRFStatusPeerUnitState',                        'state_name' => 'cRFStatusPeerUnitState',          'descr' => 'VSS Peer State'],
     ['num_oid' => '.1.3.6.1.4.1.9.9.176.1.2.16.',       'oid' => 'CISCO-RF-MIB::cRFCfgRedundancyOperMode',                      'state_name' => 'cRFCfgRedundancyOperMode',        'descr' => 'VSS Mode'],
-    ['num_oid' => '.1.3.6.1.4.1.9.9.500.1.1.3.',        'oid' => 'CISCO-STACKWISE-MIB::cswGlobals',                             'state_name' => 'cswRingRedundant',                'descr' => 'Stack Ring - Redundant'],
-    ['num_oid' => '.1.3.6.1.4.1.9.9.500.1.2.1.1.3.',    'oid' => 'CISCO-STACKWISE-MIB::cswSwitchRole',                          'state_name' => 'cswSwitchRole',                   'descr' => 'Stack Role - Switch#'],
-    ['num_oid' => '.1.3.6.1.4.1.9.9.500.1.2.1.1.6.',    'oid' => 'CISCO-STACKWISE-MIB::cswSwitchState',                         'state_name' => 'cswSwitchState',                  'descr' => 'Stack State - Switch#'],
-    ['num_oid' => '.1.3.6.1.4.1.9.9.500.1.2.2.1.1.',    'oid' => 'CISCO-STACKWISE-MIB::cswStackPortOperStatus',                 'state_name' => 'cswStackPortOperStatus',          'descr' => 'Stack Port Status - '],
+    ['num_oid' => '.1.3.6.1.4.1.9.9.500.1.1.3.',        'oid' => 'CISCO-STACKWISE-MIB::cswGlobals',                             'state_name' => 'cswRingRedundant',                'descr' => 'Stack Ring - Redundant', 'category' => SensorCategory::Stack],
+    ['num_oid' => '.1.3.6.1.4.1.9.9.500.1.2.1.1.3.',    'oid' => 'CISCO-STACKWISE-MIB::cswSwitchRole',                          'state_name' => 'cswSwitchRole',                   'descr' => 'Stack Role - Switch#', 'category' => SensorCategory::Stack],
+    ['num_oid' => '.1.3.6.1.4.1.9.9.500.1.2.1.1.6.',    'oid' => 'CISCO-STACKWISE-MIB::cswSwitchState',                         'state_name' => 'cswSwitchState',                  'descr' => 'Stack State - Switch#', 'category' => SensorCategory::Stack],
+    ['num_oid' => '.1.3.6.1.4.1.9.9.500.1.2.2.1.1.',    'oid' => 'CISCO-STACKWISE-MIB::cswStackPortOperStatus',                 'state_name' => 'cswStackPortOperStatus',          'descr' => 'Stack Port Status - ', 'category' => SensorCategory::Stack],
     ['num_oid' => '.1.3.6.1.4.1.9.9.601.1.3.1.1.4.',    'oid' => 'CISCO-RESILIENT-ETHERNET-PROTOCOL-MIB::crepSegmentComplete',  'state_name' => 'crepSegmentComplete',             'descr' => 'REP State - Segment '],
 ];
 
@@ -213,9 +214,11 @@ foreach ($tables as $tablevalue) {
                 } elseif ($state_name == 'cswSwitchRole') {
                     $swrolenumber++;
                     $descr = $tablevalue['descr'] . $swrolenumber;
+                    $state_group = 'Switch ' . $swrolenumber;
                 } elseif ($state_name == 'cswSwitchState') {
                     $swstatenumber++;
                     $descr = $tablevalue['descr'] . $swstatenumber;
+                    $state_group = 'Switch ' . $swstatenumber;
                 } elseif ($state_name == 'cswStackPortOperStatus') {
                     // stack ports may not be in the ports table, fall back to the device's own name
                     $port = PortCache::getByIfIndex($index, $device['device_id']);
@@ -228,7 +231,7 @@ foreach ($tables as $tablevalue) {
                 } elseif ($state_name == 'crepSegmentComplete') {
                     $descr = $tablevalue['descr'] . $index;
                 }
-                discover_sensor(null, SensorType::State, $device, $cur_oid . $index, $index, $state_name, trim((string) $descr), 1, 1, null, null, null, null, $entry[$state_name], 'snmp', $index, null, null, $state_group);
+                discover_sensor(null, SensorType::State, $device, $cur_oid . $index, $index, $state_name, trim((string) $descr), 1, 1, null, null, null, null, $entry[$state_name], 'snmp', $index, null, null, $state_group, category: $tablevalue['category'] ?? null);
             }
         }
     }
