@@ -126,6 +126,7 @@ class OverviewController implements DeviceTab
      * Sensor panels: one panel per sensor category, then one panel per sensor class for sensors without a category
      *
      * @return Collection<int, array{
+     *     category: string|null,
      *     title: string,
      *     icon: string,
      *     href: string,
@@ -183,6 +184,7 @@ class OverviewController implements DeviceTab
                 $healthVars = $classes->count() === 1 ? ['vars' => 'metric=' . $classes->first()] : [];
 
                 return [
+                    'category' => $category->value,
                     'title' => $category->label(),
                     'icon' => 'fa fa-' . $category->icon(),
                     'href' => route('device', ['device' => $device->device_id, 'tab' => 'health'] + $healthVars),
@@ -193,6 +195,7 @@ class OverviewController implements DeviceTab
         $classPanels = collect($sensorOrder)
             ->filter(fn (SensorType $sensorClass): bool => $classSensors->has($sensorClass->value))
             ->map(fn (SensorType $sensorClass): array => [
+                'category' => null,
                 'title' => $sensorClass->label(),
                 'icon' => 'fa fa-' . $sensorClass->icon(),
                 'href' => route('device', ['device' => $device->device_id, 'tab' => 'health', 'vars' => 'metric=' . $sensorClass->value]),
