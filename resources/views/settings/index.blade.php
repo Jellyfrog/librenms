@@ -14,6 +14,7 @@
                 lang: {
                     copied: {{ Js::from(__('Link copied to clipboard')) }},
                     copyFailed: {{ Js::from(__('Could not copy link')) }},
+                    invalidJson: {{ Js::from(__('Invalid JSON')) }},
                 },
              })"
              class="librenms-settings"

@@ -1,5 +1,6 @@
 import debounce from "lodash/debounce";
 import isEqual from "lodash/isEqual";
+import isObjectLike from "lodash/isObjectLike";
 
 const clone = (value) => (value === undefined ? undefined : JSON.parse(JSON.stringify(value)));
 
@@ -530,8 +531,31 @@ export function settingArraySubKeyed() {
             });
         },
 
-        updateSubItem(index, subindex, value) {
-            if (this.subGroups[index][subindex] === value) return;
+        // nested values (such as a socialite attribute_map) are edited as json
+        displaySubItem(value) {
+            return isObjectLike(value) ? JSON.stringify(value) : value;
+        },
+
+        updateSubItem(index, subindex, input) {
+            const current = this.subGroups[index][subindex];
+            let value = input.value;
+
+            if (isObjectLike(current)) {
+                const reject = () => {
+                    toastr.error(this.lang?.invalidJson ?? "Invalid JSON");
+                    input.value = this.displaySubItem(current);
+                };
+
+                try {
+                    value = JSON.parse(value);
+                } catch {
+                    return reject();
+                }
+
+                if (!isObjectLike(value)) return reject();
+            }
+
+            if (isEqual(current, value)) return;
             this.update((groups) => (groups[index][subindex] = value));
         },
 

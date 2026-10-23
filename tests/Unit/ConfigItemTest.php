@@ -3,6 +3,7 @@
 namespace LibreNMS\Tests\Unit;
 
 use LibreNMS\Tests\TestCase;
+use LibreNMS\Util\DynamicConfig;
 use LibreNMS\Util\DynamicConfigItem;
 
 final class ConfigItemTest extends TestCase
@@ -93,5 +94,14 @@ final class ConfigItemTest extends TestCase
         $this->assertFalse($array_keys_not_empty->checkValue(['' => []]));
         $this->assertFalse($array_keys_not_empty->checkValue([' ' => []]));
         $this->assertFalse($array_keys_not_empty->checkValue([null => []]));
+    }
+
+    public function testSocialiteAttributeMapValidation(): void
+    {
+        $socialite = (new DynamicConfig())->get('auth.socialite.configs');
+
+        $this->assertTrue($socialite->checkValue(['saml2' => ['client_id' => 'foo']]));
+        $this->assertTrue($socialite->checkValue(['saml2' => ['attribute_map' => ['email' => 'email']]]));
+        $this->assertFalse($socialite->checkValue(['saml2' => ['attribute_map' => '[object Object]']]));
     }
 }
