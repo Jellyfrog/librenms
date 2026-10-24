@@ -70,21 +70,24 @@ class AlertLog extends DeviceRelatedModel
      */
     public static function severityStats(Builder $query): array
     {
-        $dateFormat = LibrenmsConfig::get('alert_graph_date_format', '%Y-%m-%d');
+        $dateFormat = self::phpDateFormat(LibrenmsConfig::get('alert_graph_date_format', '%Y-%m-%d'));
 
-        $stats = $query
-            ->join('alert_rules', 'alert_log.rule_id', '=', 'alert_rules.id')
+        $items = $query
             ->where('alert_log.state', '!=', AlertLogState::Clear->value)
-            ->selectRaw('DATE_FORMAT(alert_log.time_logged, ?) as date, COUNT(alert_log.rule_id) as total, alert_rules.severity', [$dateFormat])
-            ->groupBy('date', 'alert_rules.severity')
-            ->toBase()
-            ->get();
-
-        $items = $stats->map(fn ($row) => [
-            'x' => (string) $row->date,
-            'y' => (int) $row->total,
-            'group' => (string) $row->severity,
-        ])->values()->all();
+            ->whereHas('rule')
+            ->with('rule:id,severity')
+            ->orderBy('alert_log.time_logged')
+            ->get(['alert_log.rule_id', 'alert_log.time_logged'])
+            ->groupBy([
+                fn (AlertLog $log) => $log->time_logged->format($dateFormat),
+                fn (AlertLog $log) => (string) $log->rule->severity,
+            ])
+            ->flatMap(fn ($severities, $date) => $severities->map(fn ($logs, $severity) => [
+                'x' => (string) $date,
+                'y' => $logs->count(),
+                'group' => (string) $severity,
+            ])->values())
+            ->values()->all();
 
         $firstDate = array_first($items)['x'] ?? null;
         $lastDate = array_last($items)['x'] ?? null;
@@ -94,6 +97,20 @@ class AlertLog extends DeviceRelatedModel
             'items' => $items,
             'zoom_max' => ($firstDate && $lastDate) ? abs(strtotime($firstDate) - strtotime($lastDate)) * 1000 : 0,
         ];
+    }
+
+    /**
+     * Convert the MySQL DATE_FORMAT() style alert_graph_date_format setting to a PHP date format
+     */
+    private static function phpDateFormat(string $format): string
+    {
+        $specifiers = [
+            'a' => 'D', 'b' => 'M', 'c' => 'n', 'd' => 'd', 'e' => 'j', 'H' => 'H', 'h' => 'h', 'I' => 'h',
+            'i' => 'i', 'k' => 'G', 'l' => 'g', 'M' => 'F', 'm' => 'm', 'p' => 'A', 'S' => 's', 's' => 's',
+            'W' => 'l', 'Y' => 'Y', 'y' => 'y', '%' => '%',
+        ];
+
+        return preg_replace_callback('/%(.)|(.)/s', fn ($m) => isset($m[2]) ? '\\' . $m[2] : ($specifiers[$m[1]] ?? '\\' . $m[1]), $format);
     }
 
     /**
