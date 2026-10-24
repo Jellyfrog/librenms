@@ -17,6 +17,7 @@ use App\Facades\DeviceCache;
 use App\Facades\LibrenmsConfig;
 use App\Facades\PortCache;
 use App\Models\BgpPeer;
+use App\Models\BgpPeerCbgp;
 use App\Models\Eventlog;
 use App\Models\Port;
 use Illuminate\Support\Facades\Log;
@@ -570,21 +571,23 @@ function add_bgp_peer($device, $peer)
             'bgpPeerFsmEstablishedTime' => 0,
             'bgpPeerInUpdateElapsedTime' => 0,
         ];
-        dbInsert($bgpPeers, 'bgpPeers');
+        BgpPeer::forceCreate($bgpPeers);
         if (LibrenmsConfig::get('autodiscovery.bgp')) {
             $name = gethostbyaddr($peer['ip']);
             discover_new_device($name, $device, 'BGP');
         }
         Log::info('+', ['nlb' => true]);
     } else {
-        dbUpdate(['bgpPeerRemoteAs' => $peer['as'], 'astext' => $peer['astext']], 'bgpPeers', 'device_id=? AND bgpPeerIdentifier=?', [$device['device_id'], $peer['ip']]);
+        BgpPeer::where('device_id', $device['device_id'])
+            ->where('bgpPeerIdentifier', $peer['ip'])
+            ->update(['bgpPeerRemoteAs' => $peer['as'], 'astext' => $peer['astext']]);
         Log::info('.', ['nlb' => true]);
     }
 }
 
 function add_cbgp_peer($device, $peer, $afi, $safi)
 {
-    if (dbFetchCell('SELECT COUNT(*) from `bgpPeers_cbgp` WHERE device_id = ? AND bgpPeerIdentifier = ? AND afi=? AND safi=?', [$device['device_id'], $peer['ip'], $afi, $safi]) == 0) {
+    if (BgpPeerCbgp::where('device_id', $device['device_id'])->where('bgpPeerIdentifier', $peer['ip'])->where('afi', $afi)->where('safi', $safi)->doesntExist()) {
         $cbgp = [
             'device_id' => $device['device_id'],
             'bgpPeerIdentifier' => $peer['ip'],
@@ -610,7 +613,7 @@ function add_cbgp_peer($device, $peer, $afi, $safi)
             'WithdrawnPrefixes_delta' => 0,
             'WithdrawnPrefixes_prev' => 0,
         ];
-        dbInsert($cbgp, 'bgpPeers_cbgp');
+        BgpPeerCbgp::forceCreate($cbgp);
     }
 }
 
