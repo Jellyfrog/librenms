@@ -98,6 +98,7 @@ return [
             'prefix' => '',
             'strict' => true,
             'engine' => null,
+            'foreign_key_constraints' => true, // sqlite only
         ],
 
         'testing_memory' => [
