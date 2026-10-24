@@ -14,6 +14,14 @@ use PHPUnit\Framework\Attributes\DataProvider;
  */
 final class AlertFiltersTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // the expected SQL is written in the MySQL dialect, compile it with the MySQL grammar on any test database driver
+        config(['database.default' => 'mysql']);
+    }
+
     /**
      * @return array<string, array{class-string<AlertFault|AlertLog>}>
      */
