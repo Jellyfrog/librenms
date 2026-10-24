@@ -114,7 +114,8 @@ class NeighborFinder
             return null;
         }
 
-        $device_ids = Device::query()->whereIn('sysName', $this->nameVariants($name))->limit(2)->pluck('device_id');
+        // sysName is stored lowercase
+        $device_ids = Device::query()->whereIn('sysName', $this->nameVariants(strtolower($name)))->limit(2)->pluck('device_id');
 
         if ($device_ids->count() > 1) {
             Log::debug("More than one device found with sysName '$name'");
