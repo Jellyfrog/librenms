@@ -2495,40 +2495,35 @@ function create_edit_bill(Illuminate\Http\Request $request)
         }
     }
 
-    $bill = [];
+    $bill_keys = [
+        'bill_name',
+        'bill_type',
+        'bill_cdr',
+        'bill_day',
+        'bill_quota',
+        'bill_custid',
+        'bill_ref',
+        'bill_notes',
+        'dir_95th',
+    ];
+
     //find existing bill for update
-    $bill_id = (int) ($data['bill_id'] ?? 0);
-    $bills = dbFetchRows("SELECT * FROM `bills` WHERE `bill_id` = $bill_id LIMIT 1");
+    $bill = \App\Models\Bill::find((int) ($data['bill_id'] ?? 0));
 
     // update existing bill
-    if (is_array($bills) && count($bills) == 1) {
-        if ($request->user()->cannot('update', \App\Models\Bill::find($bill_id))) {
+    if ($bill) {
+        if ($request->user()->cannot('update', $bill)) {
             return api_error(403, 'Insufficient permissions to update this bill');
         }
 
-        $bill = $bills[0];
-
         foreach ($data as $bill_key => $bill_value) {
             $res = check_bill_key_value($bill_key, $bill_value);
-            if ($res === true) {
-                $bill[$bill_key] = $bill_value;
-            } else {
+            if ($res !== true) {
                 return $res;
             }
         }
-        $update_data = [
-            'bill_name' => $bill['bill_name'],
-            'bill_type' => $bill['bill_type'],
-            'bill_cdr' => $bill['bill_cdr'],
-            'bill_day' => $bill['bill_day'],
-            'bill_quota' => $bill['bill_quota'],
-            'bill_custid' => $bill['bill_custid'],
-            'bill_ref' => $bill['bill_ref'],
-            'bill_notes' => $bill['bill_notes'],
-            'dir_95th' => $bill['dir_95th'],
-        ];
-        $update = dbUpdate($update_data, 'bills', 'bill_id=?', [$bill_id]);
-        if ($update === false || $update < 0) {
+
+        if (! $bill->fill(Arr::only($data, $bill_keys))->save()) {
             return api_error(500, 'Failed to update existing bill');
         }
     } else {
@@ -2536,18 +2531,6 @@ function create_edit_bill(Illuminate\Http\Request $request)
         if (array_key_exists('bill_id', $data)) {
             return api_error(500, 'Argument bill_id is not allowed on bill create (auto assigned)');
         }
-
-        $bill_keys = [
-            'bill_name',
-            'bill_type',
-            'bill_cdr',
-            'bill_day',
-            'bill_quota',
-            'bill_custid',
-            'bill_ref',
-            'bill_notes',
-            'dir_95th',
-        ];
 
         if ($data['bill_type'] == 'quota') {
             $data['bill_cdr'] = 0;
@@ -2568,44 +2551,32 @@ function create_edit_bill(Illuminate\Http\Request $request)
 
         foreach ($bill_keys as $bill_key) {
             $res = check_bill_key_value($bill_key, $data[$bill_key]);
-            if ($res === true) {
-                $bill[$bill_key] = $data[$bill_key];
-            } else {
+            if ($res !== true) {
                 return $res;
             }
         }
 
-        $bill_id = dbInsert(
-            [
-                'bill_name' => $bill['bill_name'],
-                'bill_type' => $bill['bill_type'],
-                'bill_cdr' => $bill['bill_cdr'],
-                'bill_day' => $bill['bill_day'],
-                'bill_quota' => $bill['bill_quota'],
-                'bill_custid' => $bill['bill_custid'],
-                'bill_ref' => $bill['bill_ref'],
-                'bill_notes' => $bill['bill_notes'],
-                'dir_95th' => $bill['dir_95th'],
-            ],
-            'bills'
-        );
-
-        if ($bill_id === null) {
-            return api_error(500, 'Failed to create new bill');
-        }
+        $bill = \App\Models\Bill::create(array_merge(Arr::only($data, $bill_keys), [
+            'rate_95th_in' => 0,
+            'rate_95th_out' => 0,
+            'rate_95th' => 0,
+            'total_data' => 0,
+            'total_data_in' => 0,
+            'total_data_out' => 0,
+            'rate_average' => 0,
+            'rate_average_in' => 0,
+            'rate_average_out' => 0,
+            'bill_last_calc' => now(),
+            'bill_autoadded' => 0,
+        ]));
     }
 
     // set previously checked ports
     if (is_array($ports_add)) {
-        \App\Models\BillPort::where('bill_id', $bill_id)->delete();
-        if (count($ports_add) > 0) {
-            foreach ($ports_add as $port_id) {
-                dbInsert(['bill_id' => $bill_id, 'port_id' => $port_id, 'bill_port_autoadded' => 0], 'bill_ports');
-            }
-        }
+        $bill->ports()->sync(array_fill_keys($ports_add, ['bill_port_autoadded' => 0]));
     }
 
-    return api_success($bill_id, 'bill_id');
+    return api_success($bill->bill_id, 'bill_id');
 }
 
 function update_device(Illuminate\Http\Request $request)
