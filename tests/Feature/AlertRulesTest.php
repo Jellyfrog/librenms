@@ -1408,9 +1408,9 @@ class AlertRulesTest extends TestCase
     public function testRunRulesConvertsBinaryIp(): void
     {
         $device = Device::factory()->create(['status' => 0]);
-        // MySQL INET6_ATON converts string to binary
+        // binary literal of 192.0.2.1, like INET6_ATON() returns
         $rule = AlertRule::factory()->create([
-            'query' => 'SELECT INET6_ATON("192.0.2.1") AS ip FROM devices WHERE device_id = ?',
+            'query' => "SELECT X'C0000201' AS ip FROM devices WHERE device_id = ?",
         ]);
 
         $alertRules = new AlertRules($device);
