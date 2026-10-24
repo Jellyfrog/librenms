@@ -3,13 +3,13 @@
 namespace App\Jobs;
 
 use App\Facades\LibrenmsConfig;
+use App\Models\Device;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use LibreNMS\Util\ModuleList;
 
@@ -61,44 +61,43 @@ class DispatchPollingWork implements ShouldQueue, ShouldBeUniqueUntilProcessing
             return;
         }
 
-        // seconds until due, measured from the start of the previous run (last_* is recorded at the end of the run)
-        $poll_wait = 'UNIX_TIMESTAMP(`last_polled`) - COALESCE(`last_polled_timetaken`, 0) + ? - UNIX_TIMESTAMP()';
-        $discovery_wait = 'UNIX_TIMESTAMP(`last_discovered`) - COALESCE(`last_discovered_timetaken`, 0) + ? - UNIX_TIMESTAMP()';
-        // new devices are not polled until discovered, a rediscover request (last_discovered null) keeps polling
-        $new_device = '`last_discovered` IS NULL AND `last_polled` IS NULL';
-
         // based on the python dispatcher (LibreNMS/service.py)
-        $devices = DB::table('devices')
-            ->select(['device_id', 'poller_group'])
-            ->selectRaw("IF($new_device, 0, COALESCE($poll_wait <= ?, 1)) AS `poll`", [$this->poll_interval, self::LOOKAHEAD])
-            // polling retries down devices, only new devices rely on discovery for that
-            ->selectRaw("IF(`status` = 0, $new_device, COALESCE($discovery_wait <= ?, 1)) AS `discover`", [$this->discovery_interval, self::LOOKAHEAD])
-            ->selectRaw("$poll_wait AS `poll_wait`", [$this->poll_interval])
-            ->selectRaw("$discovery_wait AS `discovery_wait`", [$this->discovery_interval])
+        $devices = Device::query()
+            ->select(['device_id', 'poller_group', 'status', 'last_polled', 'last_polled_timetaken', 'last_discovered', 'last_discovered_timetaken'])
             ->where('disabled', 0)
-            ->havingRaw('`poll` OR `discover`')
-            ->orderByRaw('`last_discovered` IS NULL DESC')
-            ->orderBy('last_polled_timetaken', 'desc')
+            ->orderByRaw('last_discovered IS NULL DESC')
+            ->orderByDesc('last_polled_timetaken')
             ->get();
 
         $modules = ModuleList::fromUserOverrides([]);
         $discovered = [];
         $polled = [];
+        $now = time();
 
         foreach ($devices as $device) {
-            if ($this->discover && $device->discover) {
+            // seconds until due, measured from the start of the previous run (last_* is recorded at the end of the run)
+            $poll_wait = $device->last_polled ? $device->last_polled->getTimestamp() - (int) $device->last_polled_timetaken + $this->poll_interval - $now : null;
+            $discovery_wait = $device->last_discovered ? $device->last_discovered->getTimestamp() - (int) $device->last_discovered_timetaken + $this->discovery_interval - $now : null;
+            // new devices are not polled until discovered, a rediscover request (last_discovered null) keeps polling
+            $new_device = $device->last_discovered === null && $device->last_polled === null;
+
+            $poll = ! $new_device && ($poll_wait === null || $poll_wait <= self::LOOKAHEAD);
+            // polling retries down devices, only new devices rely on discovery for that
+            $discover = $device->status ? ($discovery_wait === null || $discovery_wait <= self::LOOKAHEAD) : $new_device;
+
+            if ($this->discover && $discover) {
                 DiscoverDevice::dispatch($device->device_id, $modules)
                     ->onConnection($this->pollingQueueConnection)
                     ->onQueue($device->poller_group ? "discovery-$device->poller_group" : 'discovery')
-                    ->delay($this->delay($device->discovery_wait));
+                    ->delay($this->delay($discovery_wait));
                 $discovered[] = $device->device_id;
             }
 
-            if ($this->poll && $device->poll) {
+            if ($this->poll && $poll) {
                 PollDevice::dispatch($device->device_id, $modules)
                     ->onConnection($this->pollingQueueConnection)
                     ->onQueue($device->poller_group ? "poll-$device->poller_group" : 'poll')
-                    ->delay($this->delay($device->poll_wait));
+                    ->delay($this->delay($poll_wait));
                 $polled[] = $device->device_id;
             }
         }
