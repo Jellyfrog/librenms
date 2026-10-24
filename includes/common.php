@@ -18,6 +18,7 @@
  */
 
 use App\Facades\LibrenmsConfig;
+use Illuminate\Support\Facades\Schema;
 use LibreNMS\Util\IP;
 use LibreNMS\Util\Laravel;
 
@@ -248,7 +249,7 @@ function get_port_id($ports_mapped, $port, $port_association_mode)
 function ResolveGlues($tables, $target, $x = 0, $hist = [], $last = [])
 {
     if (count($tables) == 1 && $x != 0) {
-        if (dbFetchCell('SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_NAME = ? && COLUMN_NAME = ?', [$tables[0], $target]) == 1) {
+        if (Schema::hasColumn($tables[0], $target)) {
             return array_merge($last, [$tables[0] . '.' . $target]);
         } else {
             return false;
@@ -279,31 +280,33 @@ function ResolveGlues($tables, $target, $x = 0, $hist = [], $last = [])
                 ]);
             }
 
-            $glues = dbFetchRows('SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_NAME = ? && COLUMN_NAME LIKE "%\_id"', [$table]);
-            if (count($glues) == 1 && $glues[0]['COLUMN_NAME'] != $target) {
+            $glues = array_values(array_filter(Schema::getColumnListing($table), fn ($column) => str_ends_with((string) $column, '_id')));
+            if (count($glues) == 1 && $glues[0] != $target) {
                 //Search for new candidates to expand
                 $ntables = [];
-                [$tmp] = explode('_', (string) $glues[0]['COLUMN_NAME'], 2);
+                [$tmp] = explode('_', (string) $glues[0], 2);
                 $ntables[] = $tmp;
                 $ntables[] = $tmp . 's';
-                $tmp = dbFetchRows('SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_NAME LIKE "' . substr((string) $table, 0, -1) . '_%" && TABLE_NAME != "' . $table . '"');
-                foreach ($tmp as $expand) {
-                    $ntables[] = $expand['TABLE_NAME'];
+                $prefix = substr((string) $table, 0, -1);
+                foreach (Schema::getTableListing(schemaQualified: false) as $expand) {
+                    if ($expand != $table && strlen((string) $expand) > strlen($prefix) && str_starts_with((string) $expand, $prefix)) {
+                        $ntables[] = $expand;
+                    }
                 }
-                $tmp = ResolveGlues($ntables, $target, $x++, array_merge($tables, $ntables), array_merge($last, [$table . '.' . $glues[0]['COLUMN_NAME']]));
+                $tmp = ResolveGlues($ntables, $target, $x++, array_merge($tables, $ntables), array_merge($last, [$table . '.' . $glues[0]]));
                 if (is_array($tmp)) {
                     return $tmp;
                 }
             } else {
                 foreach ($glues as $glue) {
-                    if ($glue['COLUMN_NAME'] == $target) {
+                    if ($glue == $target) {
                         return array_merge($last, [$table . '.' . $target]);
                     } else {
-                        [$tmp] = explode('_', (string) $glue['COLUMN_NAME']);
+                        [$tmp] = explode('_', (string) $glue);
                         $tmp .= 's';
                         if (! in_array($tmp, $tables) && ! in_array($tmp, $hist)) {
                             //Expand table
-                            $tmp = ResolveGlues([$tmp], $target, $x++, array_merge($tables, [$tmp]), array_merge($last, [$table . '.' . $glue['COLUMN_NAME']]));
+                            $tmp = ResolveGlues([$tmp], $target, $x++, array_merge($tables, [$tmp]), array_merge($last, [$table . '.' . $glue]));
                             if (is_array($tmp)) {
                                 return $tmp;
                             }
