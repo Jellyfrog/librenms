@@ -36,7 +36,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
     {
         parent::boot();
 
-        // name Horizon after the node so it matches the node's settings, a reload briefly runs two Horizons
+        // name Horizon after the node so it matches the node's settings
         MasterSupervisor::$nameResolver = fn (): string => WorkerNode::masterBasename();
 
         // only the master reads the supervisor config, LibreNMS config includes database settings once the app has booted
@@ -45,7 +45,7 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
                 $this->app->make(WorkerNode::class)->start();
             }
         });
-        Event::listen(MasterSupervisorLooped::class, fn () => $this->app->make(WorkerNode::class)->looped());
+        Event::listen(MasterSupervisorLooped::class, fn (MasterSupervisorLooped $event) => $this->app->make(WorkerNode::class)->looped($event->master));
         Event::listen(JobProcessing::class, function (JobProcessing $event): void {
             QueueStatus::jobStarted($event->job);
             $this->app->make(WorkerNode::class)->jobStarted($event->job);
