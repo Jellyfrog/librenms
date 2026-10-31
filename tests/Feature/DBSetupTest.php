@@ -34,11 +34,12 @@ use LibreNMS\Tests\DBTestCase;
 final class DBSetupTest extends DBTestCase
 {
     protected $db_name;
-    protected $connection = 'testing';
+    protected $connection;
 
     protected function setUp(): void
     {
         parent::setUp();
+        $this->connection = DB::getDefaultConnection();
         $this->db_name = DB::connection($this->connection)->getDatabaseName();
     }
 
@@ -64,6 +65,8 @@ final class DBSetupTest extends DBTestCase
 
     public function testCheckDBCollation(): void
     {
+        $this->requireMysql();
+
         $collation = DB::connection($this->connection)->select(DB::raw("SELECT DEFAULT_CHARACTER_SET_NAME, DEFAULT_COLLATION_NAME FROM information_schema.SCHEMATA S WHERE schema_name = '$this->db_name' AND  ( DEFAULT_CHARACTER_SET_NAME != 'utf8mb4' OR DEFAULT_COLLATION_NAME NOT IN ('utf8mb4_unicode_ci', 'utf8mb4_uca1400_ai_ci'))")->getValue(DB::connection($this->connection)->getQueryGrammar()));
         if (isset($collation[0])) {
             $error = implode(' ', (array) $collation[0]);
@@ -75,6 +78,8 @@ final class DBSetupTest extends DBTestCase
 
     public function testCheckTableCollation(): void
     {
+        $this->requireMysql();
+
         $collation = DB::connection($this->connection)->select(DB::raw("SELECT T.TABLE_NAME, C.CHARACTER_SET_NAME, C.COLLATION_NAME FROM information_schema.TABLES AS T, information_schema.COLLATION_CHARACTER_SET_APPLICABILITY AS C WHERE C.collation_name = T.table_collation AND T.table_schema = '$this->db_name' AND  ( C.CHARACTER_SET_NAME != 'utf8mb4' OR C.COLLATION_NAME NOT IN ('utf8mb4_unicode_ci', 'utf8mb4_uca1400_ai_ci') );")->getValue(DB::connection($this->connection)->getQueryGrammar()));
         $error = '';
         foreach ($collation as $data) {
@@ -85,6 +90,8 @@ final class DBSetupTest extends DBTestCase
 
     public function testCheckColumnCollation(): void
     {
+        $this->requireMysql();
+
         $collation = DB::connection($this->connection)->select(DB::raw("SELECT TABLE_NAME, COLUMN_NAME, CHARACTER_SET_NAME, COLLATION_NAME FROM information_schema.COLUMNS  WHERE TABLE_SCHEMA = '$this->db_name'  AND  ( CHARACTER_SET_NAME != 'utf8mb4' OR COLLATION_NAME NOT IN ('utf8mb4_unicode_ci', 'utf8mb4_uca1400_ai_ci') );")->getValue(DB::connection($this->connection)->getQueryGrammar()));
         $error = '';
         foreach ($collation as $data) {
@@ -95,6 +102,8 @@ final class DBSetupTest extends DBTestCase
 
     public function testSqlMode(): void
     {
+        $this->requireMysql();
+
         $result = DB::connection($this->connection)->selectOne(DB::raw('SELECT @@version AS version, @@sql_mode AS mode')->getValue(DB::connection($this->connection)->getQueryGrammar()));
         preg_match('/([0-9.]+)(?:-(\w+))?/', (string) $result->version, $matches);
         $version = $matches[1] ?? null;
@@ -113,6 +122,8 @@ final class DBSetupTest extends DBTestCase
 
     public function testValidateSchema(): void
     {
+        $this->requireMysql();
+
         $file = resource_path('definitions/schema/db_schema.yaml');
         if (is_file($file)) {
             DB::connection($this->connection)->statement('SET time_zone = "+00:00";');
@@ -127,6 +138,13 @@ final class DBSetupTest extends DBTestCase
             $message .= "If you have changed the schema, make sure you update it with: lnms schema:dump\n";
 
             $this->assertEquals($master_schema, $current_schema, $message);
+        }
+    }
+
+    private function requireMysql(): void
+    {
+        if (! in_array(DB::connection($this->connection)->getDriverName(), ['mysql', 'mariadb'])) {
+            $this->markTestSkipped('MySQL specific test');
         }
     }
 }
