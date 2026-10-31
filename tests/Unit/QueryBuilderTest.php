@@ -26,6 +26,7 @@
 
 namespace LibreNMS\Tests\Unit;
 
+use Illuminate\Support\Facades\DB;
 use LibreNMS\Alerting\QueryBuilderFluentParser;
 use LibreNMS\Tests\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -56,7 +57,10 @@ final class QueryBuilderTest extends TestCase
         $this->assertEquals($sql, $qb->toSql());
 
         $qbq = $qb->toQuery();
-        $this->assertEquals($query[0], $qbq->toSql(), 'Fluent SQL does not match');
+        $expected = DB::getDriverName() == 'sqlite'
+            ? str_replace('`', '"', (string) $query[0]) // test data uses MySQL identifier quoting
+            : $query[0];
+        $this->assertEquals($expected, $qbq->toSql(), 'Fluent SQL does not match');
         $this->assertEquals($query[1], $qbq->getBindings(), 'Fluent bindings do not match');
     }
 
