@@ -36,7 +36,8 @@ use LibreNMS\Util\Laravel;
  */
 function dbInsert($data, $table): ?int
 {
-    $sql = 'INSERT IGNORE INTO `' . $table . '` (`' . implode('`,`', array_keys($data)) . '`)  VALUES (' . implode(',', dbPlaceHolders($data)) . ')';
+    $insert = Eloquent::DB()->getDriverName() == 'sqlite' ? 'INSERT OR IGNORE' : 'INSERT IGNORE';
+    $sql = $insert . ' INTO `' . $table . '` (`' . implode('`,`', array_keys($data)) . '`)  VALUES (' . implode(',', dbPlaceHolders($data)) . ')';
 
     try {
         $result = Eloquent::DB()->insert($sql, (array) $data);

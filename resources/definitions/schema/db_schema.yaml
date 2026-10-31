@@ -316,21 +316,21 @@ bills:
     - { Field: bill_cdr, Type: bigint, 'Null': true, Extra: '' }
     - { Field: bill_day, Type: int, 'Null': false, Extra: '', Default: '1' }
     - { Field: bill_quota, Type: bigint, 'Null': true, Extra: '' }
-    - { Field: rate_95th_in, Type: bigint, 'Null': false, Extra: '' }
-    - { Field: rate_95th_out, Type: bigint, 'Null': false, Extra: '' }
-    - { Field: rate_95th, Type: bigint, 'Null': false, Extra: '' }
+    - { Field: rate_95th_in, Type: bigint, 'Null': false, Extra: '', Default: '0' }
+    - { Field: rate_95th_out, Type: bigint, 'Null': false, Extra: '', Default: '0' }
+    - { Field: rate_95th, Type: bigint, 'Null': false, Extra: '', Default: '0' }
     - { Field: dir_95th, Type: varchar(3), 'Null': false, Extra: '' }
-    - { Field: total_data, Type: bigint, 'Null': false, Extra: '' }
-    - { Field: total_data_in, Type: bigint, 'Null': false, Extra: '' }
-    - { Field: total_data_out, Type: bigint, 'Null': false, Extra: '' }
-    - { Field: rate_average_in, Type: bigint, 'Null': false, Extra: '' }
-    - { Field: rate_average_out, Type: bigint, 'Null': false, Extra: '' }
-    - { Field: rate_average, Type: bigint, 'Null': false, Extra: '' }
-    - { Field: bill_last_calc, Type: datetime, 'Null': false, Extra: '' }
+    - { Field: total_data, Type: bigint, 'Null': false, Extra: '', Default: '0' }
+    - { Field: total_data_in, Type: bigint, 'Null': false, Extra: '', Default: '0' }
+    - { Field: total_data_out, Type: bigint, 'Null': false, Extra: '', Default: '0' }
+    - { Field: rate_average_in, Type: bigint, 'Null': false, Extra: '', Default: '0' }
+    - { Field: rate_average_out, Type: bigint, 'Null': false, Extra: '', Default: '0' }
+    - { Field: rate_average, Type: bigint, 'Null': false, Extra: '', Default: '0' }
+    - { Field: bill_last_calc, Type: datetime, 'Null': true, Extra: '' }
     - { Field: bill_custid, Type: varchar(64), 'Null': false, Extra: '' }
     - { Field: bill_ref, Type: varchar(64), 'Null': false, Extra: '' }
     - { Field: bill_notes, Type: varchar(256), 'Null': false, Extra: '' }
-    - { Field: bill_autoadded, Type: tinyint, 'Null': false, Extra: '' }
+    - { Field: bill_autoadded, Type: tinyint, 'Null': false, Extra: '', Default: '0' }
   Indexes:
     PRIMARY: { Name: PRIMARY, Columns: [bill_id], Unique: true, Type: BTREE }
 bill_data:
