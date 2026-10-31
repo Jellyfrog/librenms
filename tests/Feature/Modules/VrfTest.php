@@ -218,7 +218,9 @@ final class VrfTest extends DBTestCase
             $this->vrf('1', 'red', ['context' => 'ctx-red']),
         ], ['ctx-a', 'vrf-b', 'ctx-red']);
 
-        $this->assertSame(['ctx-a', 'ctx-red', 'vrf-b', 'missing'], $module->probed);
+        $this->assertSame(['ctx-a', 'ctx-red'], array_slice($module->probed, 0, 2));
+        // contexts users added are probed after the VRFs the device lists, in database row order
+        $this->assertEqualsCanonicalizing(['vrf-b', 'missing'], array_slice($module->probed, 2));
         $this->assertSame(
             ['VRF-A' => ['ctx-a', true], 'missing' => ['missing', false], 'red' => ['ctx-red', true], 'vrf-b' => ['vrf-b', true]],
             $this->contexts(),
@@ -346,16 +348,23 @@ final class VrfTest extends DBTestCase
         Port::factory()->create(['device_id' => $this->device->device_id, 'ifIndex' => 7, 'ifVrf' => $vrf->vrf_id]);
         Port::factory()->create(['device_id' => $this->device->device_id, 'ifIndex' => 3, 'ifVrf' => $vrf->vrf_id]);
 
+        // column order depends on the database, SQLite appends columns added by migrations
+        $dump = array_map(function (array $vrf): array {
+            ksort($vrf);
+
+            return $vrf;
+        }, (new Vrf)->dump($this->device, 'discovery')['vrfs']);
+
         $this->assertSame([[
-            'vrf_oid' => '2',
-            'vrf_name' => 'vprn2',
+            'bgpLocalAs' => 65000,
             'context_name' => null,
             'context_verified' => false,
-            'bgpLocalAs' => 65000,
-            'mplsVpnVrfRouteDistinguisher' => '65000:2',
-            'mplsVpnVrfDescription' => '',
             'ifIndices' => '3,7',
-        ]], (new Vrf)->dump($this->device, 'discovery')['vrfs']);
+            'mplsVpnVrfDescription' => '',
+            'mplsVpnVrfRouteDistinguisher' => '65000:2',
+            'vrf_name' => 'vprn2',
+            'vrf_oid' => '2',
+        ]], $dump);
     }
 
     /**
