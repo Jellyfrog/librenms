@@ -914,6 +914,13 @@
             "order": 18,
             "type": "text"
         },
+        "auth_ldap_phoneattr": {
+            "default": "mobile",
+            "group": "auth",
+            "section": "ldap",
+            "order": 19,
+            "type": "text"
+        },
         "auth_ldap_group": {
             "default": "",
             "group": "auth",
@@ -6644,7 +6651,6 @@
         "reporting.throttle": {
             "default": 30,
             "type": "integer",
-            "units": "seconds",
             "group": "system",
             "section": "reporting",
             "order": 3
