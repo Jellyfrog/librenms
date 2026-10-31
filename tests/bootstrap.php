@@ -13,3 +13,6 @@ require_once 'includes/rewrites.php';
 require_once 'includes/html/functions.inc.php';
 require_once 'includes/discovery/functions.inc.php';
 require_once 'includes/polling/functions.inc.php';
+
+// SQLite test databases (DB_CONNECTION=testing_persistent or testing_memory) lack the MySQL functions LibreNMS uses
+\LibreNMS\Tests\SqliteMysqlFunctions::register();
