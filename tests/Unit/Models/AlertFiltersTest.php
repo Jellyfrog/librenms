@@ -105,8 +105,8 @@ final class AlertFiltersTest extends TestCase
     public function testStateIsQualified(): void
     {
         // alert_log is joined to a grouped subquery that also has a state column
-        $this->assertStringContainsString('`alert_log`.`state` = ?', AlertLog::query()->applyFilters(['state' => ['in' => 'ok,alerted']])->toSql());
-        $this->assertStringContainsString('where not ((`alert_faults`.`state` = ?))', AlertFault::query()->applyFilters(['state' => ['neq' => 'acknowledged']])->toSql());
+        $this->assertStringContainsString('`alert_log`.`state` = ?', $this->sql(AlertLog::query()->applyFilters(['state' => ['in' => 'ok,alerted']])));
+        $this->assertStringContainsString('where not ((`alert_faults`.`state` = ?))', $this->sql(AlertFault::query()->applyFilters(['state' => ['neq' => 'acknowledged']])));
     }
 
     /**
@@ -164,19 +164,19 @@ final class AlertFiltersTest extends TestCase
     {
         foreach ([AlertFault::class, AlertLog::class] as $model) {
             $query = $model::query()->applyFilters($filter);
-            $this->assertStringEndsWith('.`' . $expected, $query->toSql());
-            $this->assertStringNotContainsString('exists', $query->toSql());
+            $this->assertStringEndsWith('.`' . $expected, $this->sql($query));
+            $this->assertStringNotContainsString('exists', $this->sql($query));
             $this->assertSame($bindings, $query->getBindings());
         }
     }
 
     public function testUnreachable(): void
     {
-        $unreachable = AlertFault::query()->applyFilters(['unreachable' => ['eq' => '1']])->toSql();
+        $unreachable = $this->sql(AlertFault::query()->applyFilters(['unreachable' => ['eq' => '1']]));
         $this->assertStringContainsString('exists (select * from `device_relationships`', $unreachable);
         $this->assertStringContainsString('and not exists (select * from `device_relationships` inner join `devices` as `parent_devices`', $unreachable);
 
-        $reachable = AlertFault::query()->applyFilters(['unreachable' => ['eq' => '0']])->toSql();
+        $reachable = $this->sql(AlertFault::query()->applyFilters(['unreachable' => ['eq' => '0']]));
         $this->assertStringContainsString('(not exists (select * from `device_relationships`', $reachable);
         $this->assertStringContainsString('or exists (select * from `device_relationships` inner join', $reachable);
     }
@@ -214,9 +214,21 @@ final class AlertFiltersTest extends TestCase
      */
     private function assertSql(string $expected, array $bindings, Builder $query): void
     {
-        $this->assertStringContainsString($expected, $query->toSql());
+        $this->assertStringContainsString($expected, $this->sql($query));
         foreach ($bindings as $binding) {
             $this->assertContains($binding, $query->getBindings());
         }
+    }
+
+    /**
+     * SQL with MySQL identifier quoting, so expectations are independent of the test database driver
+     *
+     * @param  Builder<covariant \Illuminate\Database\Eloquent\Model>  $query
+     */
+    private function sql(Builder $query): string
+    {
+        $sql = $query->toSql();
+
+        return $query->getModel()->getConnection()->getDriverName() == 'sqlite' ? str_replace('"', '`', $sql) : $sql;
     }
 }
