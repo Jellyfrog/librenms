@@ -68,15 +68,18 @@ class DispatchPollingWork implements ShouldQueue, ShouldBeUniqueUntilProcessing
         $new_device = '`last_discovered` IS NULL AND `last_polled` IS NULL';
 
         // based on the python dispatcher (LibreNMS/service.py)
-        $devices = DB::table('devices')
-            ->select(['device_id', 'poller_group'])
+        $schedule = DB::table('devices')
+            ->select(['device_id', 'poller_group', 'last_discovered', 'last_polled_timetaken'])
             ->selectRaw("IF($new_device, 0, COALESCE($poll_wait <= ?, 1)) AS `poll`", [$this->poll_interval, self::LOOKAHEAD])
             // polling retries down devices, only new devices rely on discovery for that
             ->selectRaw("IF(`status` = 0, $new_device, COALESCE($discovery_wait <= ?, 1)) AS `discover`", [$this->discovery_interval, self::LOOKAHEAD])
             ->selectRaw("$poll_wait AS `poll_wait`", [$this->poll_interval])
             ->selectRaw("$discovery_wait AS `discovery_wait`", [$this->discovery_interval])
-            ->where('disabled', 0)
-            ->havingRaw('`poll` OR `discover`')
+            ->where('disabled', 0);
+
+        // a derived table instead of HAVING, SQLite does not allow HAVING without GROUP BY
+        $devices = DB::query()->fromSub($schedule, 'devices')
+            ->whereRaw('(`poll` OR `discover`)')
             ->orderByRaw('`last_discovered` IS NULL DESC')
             ->orderBy('last_polled_timetaken', 'desc')
             ->get();
