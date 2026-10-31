@@ -150,7 +150,8 @@ class NeighborFinder
             return null;
         }
 
-        $device_ids = Device::query()->whereIn('sysName', $this->nameVariants($name))
+        // sysName is stored lowercase, compare in lowercase so it does not depend on the database collation
+        $device_ids = Device::query()->whereIn('sysName', array_map(strtolower(...), $this->nameVariants($name)))
             ->when($candidates !== null, fn ($query) => $query->whereIn('device_id', $candidates))
             ->limit(2)->pluck('device_id');
 
