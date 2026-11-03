@@ -38,10 +38,16 @@
 
 namespace LibreNMS\Alert\Transport;
 
+use Illuminate\Notifications\AnonymousNotifiable;
 use LibreNMS\Alert\Transport;
 use LibreNMS\Enum\AlertState;
 use LibreNMS\Exceptions\AlertTransportDeliveryException;
 use LibreNMS\Util\Http;
+use NotificationChannels\Pushover\Exceptions\CouldNotSendNotification;
+use NotificationChannels\Pushover\Exceptions\ServiceCommunicationError;
+use NotificationChannels\Pushover\Pushover as PushoverClient;
+use NotificationChannels\Pushover\PushoverMessage;
+use NotificationChannels\Pushover\PushoverReceiver;
 
 class Pushover extends Transport
 {
@@ -49,45 +55,45 @@ class Pushover extends Transport
     {
         $options = $this->parseUserOptions($this->config['options'] ?? '');
 
-        $url = 'https://api.pushover.net/1/messages.json';
-        $data = [];
-        $data['token'] = $this->config['appkey'];
-        $data['user'] = $this->config['userkey'];
-        // Entities are html encoded so this will cause them to be displayed correctly in pushover alerts
-        $data['html'] = '1';
+        // Entities are html encoded so html() will cause them to be displayed correctly in pushover alerts
+        $message = PushoverMessage::create((string) $alert_data['msg'])
+            ->title((string) $alert_data['title'])
+            ->html();
 
         if ($alert_data['severity'] == 'critical') {
-            $data['priority'] = 1;
+            $message->highPriority();
             if (! empty($options['sound_critical'])) {
-                $data['sound'] = $options['sound_critical'];
+                $message->sound($options['sound_critical']);
             }
         } elseif ($alert_data['severity'] == 'warning') {
-            $data['priority'] = 0;
+            $message->normalPriority();
             if (! empty($options['sound_warning'])) {
-                $data['sound'] = $options['sound_warning'];
+                $message->sound($options['sound_warning']);
             }
         }
 
         if ($alert_data['state'] == AlertState::RECOVERED) {
-            $data['priority'] = 0;
+            $message->normalPriority();
             if (! empty($options['sound_ok'])) {
-                $data['sound'] = $options['sound_ok'];
+                $message->sound($options['sound_ok']);
             }
         }
 
-        $data['title'] = $alert_data['title'];
-        $data['message'] = $alert_data['msg'];
-        if ($options) {
-            $data = array_merge($data, $options);
+        $receiver = PushoverReceiver::withUserKey($this->config['userkey']);
+
+        // Unset message fields are null and would be sent as empty values, so remove them.
+        // User options are free form and can set fields PushoverMessage does not know, so merge them here.
+        // This calls the client directly as PushoverChannel swallows connection errors.
+        $fields = array_filter($message->toArray(), fn ($value) => $value !== null);
+        $params = array_merge($fields, $receiver->toArray(), $options);
+
+        try {
+            (new PushoverClient(Http::guzzleClient(), $this->config['appkey']))->send($params, new AnonymousNotifiable);
+        } catch (CouldNotSendNotification|ServiceCommunicationError $e) {
+            throw new AlertTransportDeliveryException($alert_data, $e->getCode(), $e->getMessage(), $message->content, $params);
         }
 
-        $res = Http::client()->asForm()->post($url, $data);
-
-        if ($res->successful()) {
-            return true;
-        }
-
-        throw new AlertTransportDeliveryException($alert_data, $res->status(), $res->body(), $data['message'], $data);
+        return true;
     }
 
     public static function configTemplate(): array

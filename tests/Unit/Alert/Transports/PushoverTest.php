@@ -2,13 +2,17 @@
 
 namespace LibreNMS\Tests\Unit\Alert\Transports;
 
+use App\Facades\LibrenmsConfig;
 use App\Models\AlertTransport;
-use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use LibreNMS\Alert\Transport\Pushover;
 use LibreNMS\Enum\AlertState;
 use LibreNMS\Exceptions\AlertTransportDeliveryException;
 use LibreNMS\Tests\TestCase;
 use LibreNMS\Tests\Traits\CapturesTransportRequests;
+use LibreNMS\Util\Version;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 final class PushoverTest extends TestCase
@@ -60,13 +64,36 @@ final class PushoverTest extends TestCase
 
     public function testApiErrorThrows(): void
     {
-        Http::fake(['api.pushover.net/*' => Http::response('{"status":0,"errors":["invalid token"]}', 400)]);
+        $this->fakeGuzzle(new Response(400, [], '{"status":0,"errors":["invalid token"]}'));
 
         $this->expectException(AlertTransportDeliveryException::class);
         $this->expectExceptionCode(400);
         $this->expectExceptionMessage('invalid token');
 
         $this->transport('')->deliverAlert($this->fakeAlert());
+    }
+
+    public function testConnectionErrorThrows(): void
+    {
+        $this->fakeGuzzle(new ConnectException('Connection refused', new Request('POST', 'https://api.pushover.net')));
+
+        $this->expectException(AlertTransportDeliveryException::class);
+        $this->expectExceptionMessage('Connection refused');
+
+        $this->transport('')->deliverAlert($this->fakeAlert());
+    }
+
+    public function testUsesLibrenmsHttpSettings(): void
+    {
+        LibrenmsConfig::set('https_proxy', 'http://proxy.example.com:3128');
+        $history = $this->fakeGuzzle(new Response(200));
+
+        $this->transport('')->deliverAlert($this->fakeAlert());
+
+        $this->assertSame('LibreNMS/' . Version::VERSION, $history[0]['request']->getHeaderLine('User-Agent'));
+        $this->assertSame('http://proxy.example.com:3128', $history[0]['options']['proxy']['https']);
+        $this->assertSame(30, $history[0]['options']['timeout']);
+        $this->assertSame(10, $history[0]['options']['connect_timeout']);
     }
 
     private function transport(string $options): Pushover

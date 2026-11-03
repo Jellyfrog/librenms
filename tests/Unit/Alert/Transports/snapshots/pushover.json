@@ -5,12 +5,13 @@
             "url": "https://api.pushover.net/1/messages.json",
             "headers": {
                 "Content-Type": [
-                    "application/x-www-form-urlencoded"
+                    "multipart/form-data"
                 ]
             },
             "data": {
                 "html": "1",
                 "message": "This is a test alert",
+                "monospace": "0",
                 "priority": "1",
                 "title": "Testing transport from LibreNMS",
                 "token": "test-app-key",
@@ -25,12 +26,13 @@
             "url": "https://api.pushover.net/1/messages.json",
             "headers": {
                 "Content-Type": [
-                    "application/x-www-form-urlencoded"
+                    "multipart/form-data"
                 ]
             },
             "data": {
                 "html": "1",
                 "message": "This is a test alert",
+                "monospace": "0",
                 "priority": "1",
                 "title": "Testing transport from LibreNMS",
                 "token": "test-app-key",
@@ -45,12 +47,13 @@
             "url": "https://api.pushover.net/1/messages.json",
             "headers": {
                 "Content-Type": [
-                    "application/x-www-form-urlencoded"
+                    "multipart/form-data"
                 ]
             },
             "data": {
                 "html": "1",
                 "message": "This is a test alert",
+                "monospace": "0",
                 "priority": "1",
                 "sound": "siren",
                 "sound_critical": "siren",
@@ -69,12 +72,13 @@
             "url": "https://api.pushover.net/1/messages.json",
             "headers": {
                 "Content-Type": [
-                    "application/x-www-form-urlencoded"
+                    "multipart/form-data"
                 ]
             },
             "data": {
                 "html": "1",
                 "message": "This is a test alert",
+                "monospace": "0",
                 "title": "Testing transport from LibreNMS",
                 "token": "test-app-key",
                 "user": "test-user-key"
@@ -88,13 +92,14 @@
             "url": "https://api.pushover.net/1/messages.json",
             "headers": {
                 "Content-Type": [
-                    "application/x-www-form-urlencoded"
+                    "multipart/form-data"
                 ]
             },
             "data": {
                 "expire ": "300",
                 "html": "1",
                 "message": "This is a test alert",
+                "monospace": "0",
                 "priority": "2",
                 "retry": "60",
                 "title": "Custom title",
@@ -110,12 +115,13 @@
             "url": "https://api.pushover.net/1/messages.json",
             "headers": {
                 "Content-Type": [
-                    "application/x-www-form-urlencoded"
+                    "multipart/form-data"
                 ]
             },
             "data": {
                 "html": "1",
                 "message": "This is a test alert",
+                "monospace": "0",
                 "priority": "0",
                 "title": "Testing transport from LibreNMS",
                 "token": "test-app-key",
@@ -130,12 +136,13 @@
             "url": "https://api.pushover.net/1/messages.json",
             "headers": {
                 "Content-Type": [
-                    "application/x-www-form-urlencoded"
+                    "multipart/form-data"
                 ]
             },
             "data": {
                 "html": "1",
                 "message": "This is a test alert",
+                "monospace": "0",
                 "priority": "0",
                 "sound": "magic",
                 "sound_critical": "siren",
@@ -154,12 +161,13 @@
             "url": "https://api.pushover.net/1/messages.json",
             "headers": {
                 "Content-Type": [
-                    "application/x-www-form-urlencoded"
+                    "multipart/form-data"
                 ]
             },
             "data": {
                 "html": "1",
                 "message": "Line one\nLine two &lt;tag&gt; 100% a+b=c",
+                "monospace": "0",
                 "priority": "1",
                 "title": "Räksmörgås & <b>bold</b>",
                 "token": "test-app-key",
@@ -174,12 +182,13 @@
             "url": "https://api.pushover.net/1/messages.json",
             "headers": {
                 "Content-Type": [
-                    "application/x-www-form-urlencoded"
+                    "multipart/form-data"
                 ]
             },
             "data": {
                 "html": "1",
                 "message": "This is a test alert",
+                "monospace": "0",
                 "priority": "0",
                 "title": "Testing transport from LibreNMS",
                 "token": "test-app-key",
@@ -194,12 +203,13 @@
             "url": "https://api.pushover.net/1/messages.json",
             "headers": {
                 "Content-Type": [
-                    "application/x-www-form-urlencoded"
+                    "multipart/form-data"
                 ]
             },
             "data": {
                 "html": "1",
                 "message": "This is a test alert",
+                "monospace": "0",
                 "priority": "0",
                 "sound": "bike",
                 "sound_critical": "siren",

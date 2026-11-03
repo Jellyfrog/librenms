@@ -27,6 +27,7 @@
 namespace LibreNMS\Util;
 
 use App\Facades\LibrenmsConfig;
+use GuzzleHttp\Client;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http as LaravelHttp;
 
@@ -46,5 +47,25 @@ class Http
         ])->withHeaders([
             'User-Agent' => LibrenmsConfig::get('project_name') . '/' . Version::VERSION, // we don't need fine version here, just rough
         ]);
+    }
+
+    /**
+     * Create a plain Guzzle client for libraries that require one, with the same proxy, User-Agent
+     * and timeouts as client(). Guzzle has no timeout by default and throws on http errors.
+     */
+    public static function guzzleClient(): Client
+    {
+        return app(Client::class, ['config' => [
+            'connect_timeout' => 10,
+            'timeout' => 30,
+            'proxy' => [
+                'http' => Proxy::http(),
+                'https' => Proxy::https(),
+                'no' => Proxy::ignore(),
+            ],
+            'headers' => [
+                'User-Agent' => LibrenmsConfig::get('project_name') . '/' . Version::VERSION,
+            ],
+        ]]);
     }
 }

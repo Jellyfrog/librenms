@@ -3,6 +3,11 @@
 namespace LibreNMS\Tests\Traits;
 
 use App\Models\Device;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use LibreNMS\Alert\AlertData;
@@ -40,15 +45,38 @@ trait CapturesTransportRequests
     }
 
     /**
-     * Deliver the alert with HTTP faked and return the normalized requests it made.
+     * Deliver the alert with HTTP faked and return the normalized requests it made,
+     * through either Laravel's Http client or a Guzzle client from Http::guzzleClient().
      */
     protected function captureRequests(Transport $transport, array $alert): array
     {
         Http::fake();
+        $history = $this->fakeGuzzle(new Response(200));
 
         $this->assertTrue($transport->deliverAlert($alert));
 
-        return Http::recorded()->map(fn (array $pair) => $this->normalizeRequest($pair[0]))->values()->all();
+        $requests = Http::recorded()->map(fn (array $pair) => $pair[0])->values()->all();
+        foreach ($history as $transaction) {
+            $requests[] = new Request($transaction['request']);
+        }
+
+        return array_map($this->normalizeRequest(...), $requests);
+    }
+
+    /**
+     * Make Http::guzzleClient() answer with the given response or exception, without network access.
+     * The returned object fills with Guzzle's history entries: request, response, error and options.
+     */
+    protected function fakeGuzzle(mixed $response): \ArrayObject
+    {
+        $history = new \ArrayObject;
+        $container = $history; // history() takes it by reference, which loses the type for static analysis
+        $stack = HandlerStack::create(new MockHandler([$response]));
+        $stack->push(Middleware::history($container));
+
+        $this->app->bind(Client::class, fn ($app, array $params) => new Client(['handler' => $stack] + ($params['config'] ?? [])));
+
+        return $history;
     }
 
     protected function assertMatchesTransportSnapshot(string $transport, string $scenario, array $actual): void
@@ -78,9 +106,14 @@ trait CapturesTransportRequests
         $headers = array_diff_key($request->headers(), array_flip(self::IGNORED_HEADERS));
         ksort($headers);
 
+        if (isset($headers['Content-Type'])) {
+            $headers['Content-Type'] = preg_replace('/;\s*boundary=.*/', '', $headers['Content-Type']); // random per request
+        }
+
         $data = match (true) {
             $request->isJson() => json_decode($request->body(), true),
             $request->isForm() => $this->decodeForm($request->body()),
+            $request->isMultipart() => $this->decodeMultipart($request),
             default => null,
         };
 
@@ -106,6 +139,20 @@ trait CapturesTransportRequests
         foreach (array_filter(explode('&', $body)) as $pair) {
             [$name, $value] = explode('=', $pair, 2) + [1 => ''];
             $fields[urldecode($name)] = urldecode($value);
+        }
+
+        return $fields;
+    }
+
+    private function decodeMultipart(Request $request): array
+    {
+        preg_match('/boundary=(.+)$/', $request->header('Content-Type')[0], $boundary);
+
+        $fields = [];
+        foreach (explode('--' . $boundary[1], $request->body()) as $part) {
+            if (preg_match('/name="([^"]*)".*?\r\n\r\n(.*)\r\n$/s', $part, $matches)) {
+                $fields[$matches[1]] = $matches[2];
+            }
         }
 
         return $fields;
