@@ -1,0 +1,215 @@
+{
+    "acknowledged": [
+        {
+            "method": "POST",
+            "url": "https://api.pushover.net/1/messages.json",
+            "headers": {
+                "Content-Type": [
+                    "application/x-www-form-urlencoded"
+                ]
+            },
+            "data": {
+                "html": "1",
+                "message": "This is a test alert",
+                "priority": "1",
+                "title": "Testing transport from LibreNMS",
+                "token": "test-app-key",
+                "user": "test-user-key"
+            },
+            "body": null
+        }
+    ],
+    "critical": [
+        {
+            "method": "POST",
+            "url": "https://api.pushover.net/1/messages.json",
+            "headers": {
+                "Content-Type": [
+                    "application/x-www-form-urlencoded"
+                ]
+            },
+            "data": {
+                "html": "1",
+                "message": "This is a test alert",
+                "priority": "1",
+                "title": "Testing transport from LibreNMS",
+                "token": "test-app-key",
+                "user": "test-user-key"
+            },
+            "body": null
+        }
+    ],
+    "critical with sounds": [
+        {
+            "method": "POST",
+            "url": "https://api.pushover.net/1/messages.json",
+            "headers": {
+                "Content-Type": [
+                    "application/x-www-form-urlencoded"
+                ]
+            },
+            "data": {
+                "html": "1",
+                "message": "This is a test alert",
+                "priority": "1",
+                "sound": "siren",
+                "sound_critical": "siren",
+                "sound_ok": "magic",
+                "sound_warning": "bike",
+                "title": "Testing transport from LibreNMS",
+                "token": "test-app-key",
+                "user": "test-user-key"
+            },
+            "body": null
+        }
+    ],
+    "ok severity": [
+        {
+            "method": "POST",
+            "url": "https://api.pushover.net/1/messages.json",
+            "headers": {
+                "Content-Type": [
+                    "application/x-www-form-urlencoded"
+                ]
+            },
+            "data": {
+                "html": "1",
+                "message": "This is a test alert",
+                "title": "Testing transport from LibreNMS",
+                "token": "test-app-key",
+                "user": "test-user-key"
+            },
+            "body": null
+        }
+    ],
+    "options override fields": [
+        {
+            "method": "POST",
+            "url": "https://api.pushover.net/1/messages.json",
+            "headers": {
+                "Content-Type": [
+                    "application/x-www-form-urlencoded"
+                ]
+            },
+            "data": {
+                "expire ": "300",
+                "html": "1",
+                "message": "This is a test alert",
+                "priority": "2",
+                "retry": "60",
+                "title": "Custom title",
+                "token": "test-app-key",
+                "user": "test-user-key"
+            },
+            "body": null
+        }
+    ],
+    "recovered": [
+        {
+            "method": "POST",
+            "url": "https://api.pushover.net/1/messages.json",
+            "headers": {
+                "Content-Type": [
+                    "application/x-www-form-urlencoded"
+                ]
+            },
+            "data": {
+                "html": "1",
+                "message": "This is a test alert",
+                "priority": "0",
+                "title": "Testing transport from LibreNMS",
+                "token": "test-app-key",
+                "user": "test-user-key"
+            },
+            "body": null
+        }
+    ],
+    "recovered with sounds": [
+        {
+            "method": "POST",
+            "url": "https://api.pushover.net/1/messages.json",
+            "headers": {
+                "Content-Type": [
+                    "application/x-www-form-urlencoded"
+                ]
+            },
+            "data": {
+                "html": "1",
+                "message": "This is a test alert",
+                "priority": "0",
+                "sound": "magic",
+                "sound_critical": "siren",
+                "sound_ok": "magic",
+                "sound_warning": "bike",
+                "title": "Testing transport from LibreNMS",
+                "token": "test-app-key",
+                "user": "test-user-key"
+            },
+            "body": null
+        }
+    ],
+    "special characters": [
+        {
+            "method": "POST",
+            "url": "https://api.pushover.net/1/messages.json",
+            "headers": {
+                "Content-Type": [
+                    "application/x-www-form-urlencoded"
+                ]
+            },
+            "data": {
+                "html": "1",
+                "message": "Line one\nLine two &lt;tag&gt; 100% a+b=c",
+                "priority": "1",
+                "title": "Räksmörgås & <b>bold</b>",
+                "token": "test-app-key",
+                "user": "test-user-key"
+            },
+            "body": null
+        }
+    ],
+    "warning": [
+        {
+            "method": "POST",
+            "url": "https://api.pushover.net/1/messages.json",
+            "headers": {
+                "Content-Type": [
+                    "application/x-www-form-urlencoded"
+                ]
+            },
+            "data": {
+                "html": "1",
+                "message": "This is a test alert",
+                "priority": "0",
+                "title": "Testing transport from LibreNMS",
+                "token": "test-app-key",
+                "user": "test-user-key"
+            },
+            "body": null
+        }
+    ],
+    "warning with sounds": [
+        {
+            "method": "POST",
+            "url": "https://api.pushover.net/1/messages.json",
+            "headers": {
+                "Content-Type": [
+                    "application/x-www-form-urlencoded"
+                ]
+            },
+            "data": {
+                "html": "1",
+                "message": "This is a test alert",
+                "priority": "0",
+                "sound": "bike",
+                "sound_critical": "siren",
+                "sound_ok": "magic",
+                "sound_warning": "bike",
+                "title": "Testing transport from LibreNMS",
+                "token": "test-app-key",
+                "user": "test-user-key"
+            },
+            "body": null
+        }
+    ]
+}
