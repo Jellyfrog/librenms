@@ -43,6 +43,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use LibreNMS\Alerting\QueryBuilderParser;
+use LibreNMS\Enum\AlertLogState;
 use LibreNMS\Enum\AlertState;
 use LibreNMS\Enum\MaintenanceStatus;
 use LibreNMS\Enum\Severity;
@@ -262,7 +263,7 @@ readonly class AlertRules
             'rule_id' => $fault->rule_id,
             'device_id' => $fault->device_id,
             'fault_id' => $fault->id,
-            'state' => $state,
+            'state' => AlertLogState::fromAlertState($state),
             'time_logged' => $now,
             'details' => $details,
         ]);
@@ -388,7 +389,7 @@ readonly class AlertRules
             'rule_id' => $rule->id,
             'device_id' => $this->device->device_id,
             'fault_id' => null,
-            'state' => $state,
+            'state' => AlertLogState::fromAlertState($state),
             'time_logged' => Carbon::now(),
             'details' => ['rule' => $rows, 'contacts' => AlertUtil::getContacts($rows)],
         ]);

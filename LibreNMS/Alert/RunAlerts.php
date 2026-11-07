@@ -41,6 +41,7 @@ use App\Models\ApplicationMetric;
 use App\Models\Eventlog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use LibreNMS\Enum\AlertLogState;
 use LibreNMS\Enum\AlertRuleOperationPhase;
 use LibreNMS\Enum\AlertState;
 use LibreNMS\Enum\MaintenanceStatus;
@@ -184,7 +185,7 @@ class RunAlerts
         } elseif ($alert['state'] == AlertState::RECOVERED) {
             // Alert is now cleared. Scope to the same problem when notifying per entity.
             $previousLogQuery = AlertLog::query()
-                ->whereNotIn('state', [AlertState::ACKNOWLEDGED, AlertState::RECOVERED])
+                ->whereNotIn('state', [AlertLogState::Acknowledged, AlertLogState::Recovered, AlertLogState::Clear])
                 ->where('rule_id', $alert['rule_id'])
                 ->where('device_id', $alert['device_id'])
                 ->where('id', '<', $alert['id']);
@@ -214,8 +215,7 @@ class RunAlerts
             // escalation count; writing 0 there would restart that timer.
             $currentLog = AlertLog::query()->find($alert['id']);
             if ($currentLog instanceof AlertLog) {
-                $logState = $currentLog->state instanceof \BackedEnum ? $currentLog->state->value : (int) $currentLog->state;
-                if (! in_array($logState, [AlertState::ACTIVE, AlertState::WORSE, AlertState::BETTER, AlertState::CHANGED], true)) {
+                if (! $currentLog->state->isActive()) {
                     $currentDetails = $currentLog->details;
                     $currentDetails['count'] = 0;
                     $currentLog->details = $currentDetails;

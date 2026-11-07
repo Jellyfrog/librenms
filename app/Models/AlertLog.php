@@ -12,7 +12,10 @@ use LibreNMS\Enum\AlertLogState;
 
 class AlertLog extends DeviceRelatedModel
 {
-    use AlertFilters;
+    use AlertFilters {
+        filterStateValue as private traitFilterStateValue;
+        filterStateName as private traitFilterStateName;
+    }
     use HasFactory;
 
     public const UPDATED_AT = null;
@@ -52,7 +55,6 @@ class AlertLog extends DeviceRelatedModel
     protected static function filterStates(): array
     {
         return [
-            'ok' => [AlertLogState::Clear->value, __('Ok (recovered)')],
             'alerted' => [AlertLogState::Active->value, __('Alert')],
             'acknowledged' => [AlertLogState::Acknowledged->value, __('Acknowledged')],
             'worse' => [AlertLogState::Worse->value, __('Worse')],
@@ -60,6 +62,24 @@ class AlertLog extends DeviceRelatedModel
             'changed' => [AlertLogState::Changed->value, __('Changed')],
             'recovered' => [AlertLogState::Recovered->value, __('Recovered')],
         ];
+    }
+
+    /**
+     * Recoveries used to be logged as Clear (0); they are Recovered now. Keep "ok" and 0 from
+     * older urls working as aliases for recovered.
+     */
+    public static function filterStateValue(mixed $state): ?int
+    {
+        if (strtolower((string) $state) === 'ok' || (is_numeric($state) && (int) $state === AlertLogState::Clear->value)) {
+            return AlertLogState::Recovered->value;
+        }
+
+        return self::traitFilterStateValue($state);
+    }
+
+    public static function filterStateName(int $value): ?string
+    {
+        return self::traitFilterStateName($value === AlertLogState::Clear->value ? AlertLogState::Recovered->value : $value);
     }
 
     /**
@@ -74,7 +94,7 @@ class AlertLog extends DeviceRelatedModel
 
         $stats = $query
             ->join('alert_rules', 'alert_log.rule_id', '=', 'alert_rules.id')
-            ->where('alert_log.state', '!=', AlertLogState::Clear->value)
+            ->whereNotIn('alert_log.state', [AlertLogState::Clear, AlertLogState::Recovered])
             ->selectRaw('DATE_FORMAT(alert_log.time_logged, ?) as date, COUNT(alert_log.rule_id) as total, alert_rules.severity', [$dateFormat])
             ->groupBy('date', 'alert_rules.severity')
             ->toBase()
