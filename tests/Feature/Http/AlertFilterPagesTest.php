@@ -113,7 +113,7 @@ final class AlertFilterPagesTest extends InMemoryDbTestCase
         $this->actingAs($admin)->get('/alert-log?device_id=5&state=0&severity[]=3&severity[]=9')
             ->assertRedirect(route('alert-log', ['filter' => [
                 'device_id' => ['eq' => 5],
-                'state' => ['eq' => 'ok'],
+                'state' => ['eq' => 'recovered'],
                 'rule.severity' => ['in' => 'critical'],
             ]]));
 

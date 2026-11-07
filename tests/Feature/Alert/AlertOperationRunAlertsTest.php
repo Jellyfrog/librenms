@@ -43,6 +43,7 @@ use Illuminate\Support\Facades\DB;
 use LibreNMS\Alert\AlertRules;
 use LibreNMS\Alert\AlertUtil;
 use LibreNMS\Alert\RunAlerts;
+use LibreNMS\Enum\AlertLogState;
 use LibreNMS\Enum\AlertState;
 use LibreNMS\Tests\TestCase;
 use Mockery;
@@ -460,7 +461,7 @@ final class AlertOperationRunAlertsTest extends TestCase
             ->firstOrFail();
         $recoveredLog = AlertLog::query()
             ->where('fault_id', $recovered->id)
-            ->where('state', AlertState::RECOVERED)
+            ->where('state', AlertLogState::Recovered)
             ->orderByDesc('id')
             ->firstOrFail();
         $betterLog = AlertLog::query()
@@ -621,7 +622,7 @@ final class AlertOperationRunAlertsTest extends TestCase
             ->firstOrFail();
         $recoveredLog = AlertLog::query()
             ->where('fault_id', $recovered->id)
-            ->where('state', AlertState::RECOVERED)
+            ->where('state', AlertLogState::Recovered)
             ->orderByDesc('id')
             ->firstOrFail();
 
@@ -677,7 +678,7 @@ final class AlertOperationRunAlertsTest extends TestCase
             'rule_id' => $context['rule']->id,
             'device_id' => $context['device']->device_id,
             'fault_id' => $recovered->id,
-            'state' => AlertState::RECOVERED,
+            'state' => AlertLogState::Recovered,
             'details' => ['rule' => [['entity' => 'recovered']], 'contacts' => []],
         ]);
         AlertLog::create([
@@ -735,7 +736,7 @@ final class AlertOperationRunAlertsTest extends TestCase
             'rule_id' => $context['rule']->id,
             'device_id' => $context['device']->device_id,
             'fault_id' => $recovered->id,
-            'state' => AlertState::RECOVERED,
+            'state' => AlertLogState::Recovered,
             'details' => ['rule' => [['entity' => 'recovered']], 'contacts' => []],
         ]);
         Alert::query()
@@ -784,7 +785,7 @@ final class AlertOperationRunAlertsTest extends TestCase
             'rule_id' => $context['rule']->id,
             'device_id' => $context['device']->device_id,
             'fault_id' => $fault->id,
-            'state' => AlertState::RECOVERED,
+            'state' => AlertLogState::Recovered,
             'details' => ['rule' => [], 'contacts' => [], 'interval' => time()],
         ]);
 
@@ -858,7 +859,7 @@ final class AlertOperationRunAlertsTest extends TestCase
             'rule_id' => $context['rule']->id,
             'device_id' => $context['device']->device_id,
             'fault_id' => $fault->id,
-            'state' => AlertState::RECOVERED,
+            'state' => AlertLogState::Recovered,
             'details' => ['rule' => [], 'contacts' => []],
         ]);
         Alert::query()
@@ -1051,7 +1052,7 @@ final class AlertOperationRunAlertsTest extends TestCase
             'rule_id' => $context['rule']->id,
             'device_id' => $context['device']->device_id,
             'fault_id' => $recovered->id,
-            'state' => AlertState::RECOVERED,
+            'state' => AlertLogState::Recovered,
             'details' => ['rule' => [['entity' => 'recovered']], 'contacts' => []],
         ]);
 
@@ -1294,7 +1295,7 @@ final class AlertOperationRunAlertsTest extends TestCase
             'rule_id' => $rule->id,
             'device_id' => $device->device_id,
             'fault_id' => $fault->id,
-            'state' => AlertState::RECOVERED,
+            'state' => AlertLogState::Recovered,
             'details' => ['rule' => $fault->details['rule'] ?? [], 'contacts' => []],
         ]);
         Alert::query()

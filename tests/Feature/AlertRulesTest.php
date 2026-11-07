@@ -14,6 +14,7 @@ use App\Models\Storage;
 use Illuminate\Support\Carbon;
 use LibreNMS\Alert\AlertRules;
 use LibreNMS\Alert\AlertUtil;
+use LibreNMS\Enum\AlertLogState;
 use LibreNMS\Enum\AlertState;
 use LibreNMS\Enum\Severity;
 use LibreNMS\Tests\TestCase;
@@ -283,7 +284,7 @@ class AlertRulesTest extends TestCase
         $this->assertDatabaseHas('alert_log', [
             'device_id' => $device->device_id,
             'rule_id' => $rule->id,
-            'state' => AlertState::RECOVERED,
+            'state' => AlertLogState::Recovered->value,
         ]);
         $this->assertDatabaseHas('alert_faults', [
             'device_id' => $device->device_id,
@@ -525,7 +526,7 @@ class AlertRulesTest extends TestCase
                 : ($preserve && ! $added ? AlertState::ACKNOWLEDGED : AlertState::ACTIVE);
             $this->assertSame($expected, (int) $fault->state);
             $this->assertSame($recovered || ($preserve && ! $added) ? AlertState::ACKNOWLEDGED : 0, (int) $fault->alerted);
-            $this->assertSame($recovered ? [AlertState::ACTIVE, AlertState::RECOVERED] : [AlertState::ACTIVE],
+            $this->assertSame($recovered ? [AlertLogState::Active->value, AlertLogState::Recovered->value] : [AlertLogState::Active->value],
                 AlertLog::query()->where('fault_id', $fault->id)->orderBy('id')->toBase()->pluck('state')->all());
         }
 
@@ -945,7 +946,7 @@ class AlertRulesTest extends TestCase
         $this->assertDatabaseHas('alert_log', [
             'device_id' => $device->device_id,
             'rule_id' => $rule->id,
-            'state' => AlertState::RECOVERED,
+            'state' => AlertLogState::Recovered->value,
         ]);
 
         $this->assertDatabaseHas('alert_faults', [

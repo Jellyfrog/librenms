@@ -69,12 +69,14 @@ final class AlertFiltersTest extends TestCase
     public function testStateFilterUsesNames(): void
     {
         $this->assertSame([1], AlertLog::query()->applyFilters(['state' => ['eq' => 'alerted']])->getBindings());
-        $this->assertSame([0, 4], AlertLog::query()->applyFilters(['state' => ['in' => 'ok,better']])->getBindings());
+        $this->assertSame([6, 4], AlertLog::query()->applyFilters(['state' => ['in' => 'recovered,better']])->getBindings());
+        // recoveries used to be logged as 0, "ok" and 0 from older urls now mean recovered
+        $this->assertSame([6, 6], AlertLog::query()->applyFilters(['state' => ['in' => 'ok,0']])->getBindings());
         $this->assertSame([2], AlertFault::query()->applyFilters(['state' => ['neq' => 'acknowledged']])->getBindings());
         $this->assertSame([3], AlertFault::query()->applyFilters(['state' => ['eq' => '3']])->getBindings(), 'numeric states from older urls');
         // a label or unknown name must not be cast to 0 (Clear) by the database
         $this->assertSame([-1], AlertLog::query()->applyFilters(['state' => ['eq' => 'Alert']])->getBindings());
-        $this->assertSame('ok', AlertLog::filterStateName(0));
+        $this->assertSame('recovered', AlertLog::filterStateName(0));
         $this->assertNull(AlertFault::filterStateName(0));
     }
 
