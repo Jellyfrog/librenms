@@ -8,7 +8,6 @@ use App\Models\AlertFault;
 use App\Models\Eventlog;
 use Illuminate\Http\Request;
 use LibreNMS\Alert\AlertRules;
-use LibreNMS\Alert\AlertUtil;
 use LibreNMS\Enum\AlertState;
 use LibreNMS\Enum\Severity;
 
@@ -22,18 +21,19 @@ class AlertController extends Controller
         }
 
         $this->validate($request, [
-            'state' => 'required|int',
+            'state' => 'nullable|int', // legacy client hint; the stored fault state decides
             'ack_msg' => 'nullable|string',
             'ack_until_clear' => 'nullable|in:0,1,true,false',
         ]);
 
-        $state = $request->input('state');
+        // Decide from the stored fault state, not the client-supplied one, so a stale page
+        // cannot (un)ack a fault that has since recovered or changed state.
         $state_description = '';
         $newState = null;
-        if ($state == AlertState::ACKNOWLEDGED) {
+        if ($fault->canUnacknowledge()) {
             $newState = AlertState::ACTIVE;
             $state_description = 'UnAck';
-        } elseif ($state >= AlertState::ACTIVE) {
+        } elseif ($fault->canAcknowledge()) {
             $newState = AlertState::ACKNOWLEDGED;
             $state_description = 'Ack';
         }
@@ -52,13 +52,7 @@ class AlertController extends Controller
         $note_suffix = "$timestamp - $state_description ($username) " . $ack_msg;
 
         $fault->loadMissing('rule');
-        $rule = $fault->rule;
-        $openCount = $rule !== null
-            ? AlertUtil::openEntityCountForRuleDevice($rule->id, (int) $fault->device_id)
-            : 1;
-        $targets = ($rule !== null && AlertUtil::shouldNotifyPerEntity($rule, $openCount))
-            ? collect([$fault])
-            : AlertFault::query()->where('rule_id', $fault->rule_id)->where('device_id', $fault->device_id)->where('open', 1)->get();
+        $targets = $fault->acknowledgementTargets($newState === AlertState::ACKNOWLEDGED);
 
         $saved = false;
         foreach ($targets as $target) {

@@ -30,6 +30,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Collection;
+use LibreNMS\Alert\AlertUtil;
 use LibreNMS\Enum\AlertState;
 
 /**
@@ -181,6 +183,61 @@ class AlertFault extends DeviceRelatedModel
     public function scopeAcknowledged($query): Builder
     {
         return $query->where('state', AlertState::ACKNOWLEDGED);
+    }
+
+    /**
+     * Open faults that may be acknowledged. Recovered faults stay open (state RECOVERED) until
+     * their recovery notification is dispatched and must never be pulled back into an active state.
+     *
+     * @param  Builder<AlertFault>  $query
+     * @return Builder<AlertFault>
+     */
+    public function scopeAcknowledgeable($query): Builder
+    {
+        return $query->where('open', 1)->where('state', '!=', AlertState::RECOVERED);
+    }
+
+    /**
+     * Open faults that may be un-acknowledged (only those currently acknowledged).
+     *
+     * @param  Builder<AlertFault>  $query
+     * @return Builder<AlertFault>
+     */
+    public function scopeUnacknowledgeable($query): Builder
+    {
+        return $query->where('open', 1)->where('state', AlertState::ACKNOWLEDGED);
+    }
+
+    public function canAcknowledge(): bool
+    {
+        return (int) $this->open === 1 && (int) $this->state !== AlertState::RECOVERED;
+    }
+
+    public function canUnacknowledge(): bool
+    {
+        return (int) $this->open === 1 && (int) $this->state === AlertState::ACKNOWLEDGED;
+    }
+
+    /**
+     * The faults an (un)acknowledgement of this fault applies to: just this fault while the rule
+     * notifies per entity, otherwise every eligible open fault for the same rule and device.
+     * Faults not eligible for the action (e.g. pending recoveries) are never returned.
+     *
+     * @return Collection<int, AlertFault>
+     */
+    public function acknowledgementTargets(bool $acknowledge): Collection
+    {
+        $rule = $this->relationLoaded('rule') ? $this->rule : AlertRule::query()->find($this->rule_id);
+        $perEntity = $rule !== null && AlertUtil::shouldNotifyPerEntity(
+            $rule,
+            AlertUtil::openEntityCountForRuleDevice((int) $this->rule_id, (int) $this->device_id)
+        );
+
+        $query = $perEntity
+            ? self::query()->whereKey($this->getKey())
+            : self::query()->where('rule_id', $this->rule_id)->where('device_id', $this->device_id);
+
+        return ($acknowledge ? $query->acknowledgeable() : $query->unacknowledgeable())->get();
     }
 
     // ---- Define Relationships ----

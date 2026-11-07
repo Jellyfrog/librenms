@@ -67,7 +67,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use LibreNMS\Alert\AlertData;
 use LibreNMS\Alert\AlertRules;
-use LibreNMS\Alert\AlertUtil;
 use LibreNMS\Alerting\QueryBuilderParser;
 use LibreNMS\Billing;
 use LibreNMS\Enum\AlertState;
@@ -1964,26 +1963,6 @@ function delete_rule(Illuminate\Http\Request $request)
     return api_error(400, 'Invalid rule id has been provided');
 }
 
-/**
- * @return \Illuminate\Support\Collection<int, AlertFault>
- */
-function api_alert_fault_action_targets(int $fault_id, int $device_id, int $rule_id): \Illuminate\Support\Collection
-{
-    $rule = \App\Models\AlertRule::query()->find($rule_id);
-    if ($rule !== null && AlertUtil::shouldNotifyPerEntity(
-        $rule,
-        AlertUtil::openEntityCountForRuleDevice($rule_id, $device_id)
-    )) {
-        return AlertFault::query()->whereKey($fault_id)->get();
-    }
-
-    return AlertFault::query()
-        ->where('device_id', $device_id)
-        ->where('rule_id', $rule_id)
-        ->where('open', 1)
-        ->get();
-}
-
 function ack_alert(Illuminate\Http\Request $request)
 {
     $fault_id = $request->route('id');
@@ -2002,7 +1981,7 @@ function ack_alert(Illuminate\Http\Request $request)
         return api_error(403, 'Insufficient permissions to update this alert');
     }
 
-    $targets = api_alert_fault_action_targets((int) $fault->id, (int) $fault->device_id, (int) $fault->rule_id);
+    $targets = $fault->acknowledgementTargets(acknowledge: true);
 
     $updated = false;
     foreach ($targets as $target) {
@@ -2050,7 +2029,7 @@ function unmute_alert(Illuminate\Http\Request $request)
         return api_error(403, 'Insufficient permissions to update this alert');
     }
 
-    $targets = api_alert_fault_action_targets((int) $fault->id, (int) $fault->device_id, (int) $fault->rule_id);
+    $targets = $fault->acknowledgementTargets(acknowledge: false);
 
     $updated = false;
     foreach ($targets as $target) {
