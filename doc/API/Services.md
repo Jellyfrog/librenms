@@ -7,7 +7,7 @@ Route: `/api/v0/services`
 Input:
 
 - state: it returns only the services in this state. The valid values
-  are 0=Ok, 1=Warning, and 2=Critical.
+  are 0=Ok, 1=Warning, 2=Critical, and 3=Unknown.
 - type: the service type. The search uses SQL LIKE. For tcp, use
   `type=tcp`. For http, use `type=http`.
 
@@ -73,7 +73,7 @@ Route: `/api/v0/services/:hostname`
 
 Input:
 
-- state: only which have a certain state (valid options are 0=Ok, 1=Warning, 2=Critical).
+- state: only which have a certain state (valid options are 0=Ok, 1=Warning, 2=Critical, 3=Unknown).
 - type: service type, used sql LIKE to find services, so for tcp, use
   type=tcp for http use type=http
 

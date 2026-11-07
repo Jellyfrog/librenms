@@ -100,12 +100,10 @@ require 'includes/html/modal/delete_service.inc.php';
                 $where = '';
 
                 if (isset($vars['state'])) {
-                    if ($vars['state'] == 'ok') {
-                        $state = '0';
-                    } elseif ($vars['state'] == 'critical') {
-                        $state = '2';
-                    } elseif ($vars['state'] == 'warning') {
-                        $state = '1';
+                    foreach (\LibreNMS\Enum\ServiceStatus::cases() as $status_case) {
+                        if ($vars['state'] == strtolower($status_case->name)) {
+                            $state = $status_case->value;
+                        }
                     }
                 }
 
@@ -143,19 +141,9 @@ require 'includes/html/modal/delete_service.inc.php';
                     $services = dbFetchRows("SELECT * FROM `services` WHERE `device_id` = ? $where ORDER BY service_type, service_name", $sql_param);
                     $services_count = count($services);
                     foreach ($services as $service) {
-                        if ($service['service_status'] == '2') {
-                            $label = 'label-danger';
-                            $title = 'CRITICAL';
-                        } elseif ($service['service_status'] == '1') {
-                            $label = 'label-warning';
-                            $title = 'WARNING';
-                        } elseif ($service['service_status'] == '0') {
-                            $label = 'label-success';
-                            $title = 'OK';
-                        } else {
-                            $label = 'label-info';
-                            $title = 'UNKNOWN';
-                        }
+                        $svc_status = \LibreNMS\Enum\ServiceStatus::fromExitCode((int) $service['service_status']);
+                        $label = $svc_status->labelClass();
+                        $title = strtoupper($svc_status->label());
 
                         $service_iteration++;
 

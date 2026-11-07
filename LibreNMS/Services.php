@@ -30,6 +30,7 @@ use App\Facades\DeviceCache;
 use App\Facades\LibrenmsConfig;
 use App\Models\Eventlog;
 use App\Models\Service as ServiceModel;
+use LibreNMS\Enum\ServiceStatus;
 use LibreNMS\Enum\Severity;
 use LibreNMS\Util\Clean;
 
@@ -74,7 +75,7 @@ class Services
             'service_desc' => $desc,
             'service_param' => $param,
             'service_ignore' => $ignore,
-            'service_status' => 3,
+            'service_status' => ServiceStatus::Unknown,
             'service_message' => 'Service not yet checked',
             'service_ds' => '{}',
             'service_disabled' => $disabled,

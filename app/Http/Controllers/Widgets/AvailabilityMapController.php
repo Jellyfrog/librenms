@@ -34,6 +34,7 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use LibreNMS\Enum\ServiceStatus;
 use LibreNMS\Util\Url;
 
 class AvailabilityMapController extends WidgetController
@@ -159,7 +160,7 @@ class AvailabilityMapController extends WidgetController
             }
 
             $data[] = [
-                'status' => $service->service_status,
+                'status' => $service->service_status->value,
                 'link' => Url::deviceUrl($service->device),
                 'tooltip' => $this->getServiceTooltip($service),
                 'label' => $this->getServiceLabel($service),
@@ -267,14 +268,11 @@ class AvailabilityMapController extends WidgetController
 
     private function parseServiceState(Service $service): array
     {
-        if ($service->service_status == 0) {
-            return ['up', 'label-success'];
-        }
-
-        if ($service->service_status == 1) {
-            return ['warn', 'label-warning'];
-        }
-
-        return ['down', 'label-danger'];
+        // The map only has up/warn/down: unknown means the state could not be determined, not that the service is down
+        return match ($service->service_status) {
+            ServiceStatus::Ok => ['up', 'label-success'],
+            ServiceStatus::Warning, ServiceStatus::Unknown => ['warn', 'label-warning'],
+            ServiceStatus::Critical => ['down', 'label-danger'],
+        };
     }
 }

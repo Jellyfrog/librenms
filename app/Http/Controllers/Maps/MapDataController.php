@@ -796,7 +796,7 @@ class MapDataController extends Controller
                 'id' => $service->service_id,
                 'name' => $service->service_name,
                 'type' => $service->service_type,
-                'status' => $service->service_status,
+                'status' => $service->service_status->value,
                 'icon' => $service->device->icon,
                 'icontitle' => $service->device->icon ? str_replace(['.svg', '.png'], '', basename((string) $service->device->icon)) : $service->device->os,
                 'device_name' => $service->device->shortDisplayName(),

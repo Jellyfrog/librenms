@@ -4,6 +4,7 @@ use App\Facades\LibrenmsConfig;
 use App\Models\Eventlog;
 use App\Models\Service;
 use LibreNMS\Alert\AlertRules;
+use LibreNMS\Enum\ServiceStatus;
 use LibreNMS\Enum\Severity;
 use LibreNMS\RRD\RrdDefinition;
 use LibreNMS\Util\Clean;
@@ -12,7 +13,7 @@ use LibreNMS\Util\IP;
 function poll_service($service)
 {
     $update = [];
-    $old_status = $service['service_status'];
+    $old_status = ServiceStatus::fromExitCode((int) $service['service_status']);
     $service['service_type'] = Clean::fileName($service['service_type']);
     $service['service_ip'] = IP::isValid($service['service_ip']) ? $service['service_ip'] : Clean::fileName($service['service_ip']);
     $service['hostname'] = IP::isValid($service['hostname']) ? $service['hostname'] : Clean::fileName($service['hostname']);
@@ -36,7 +37,8 @@ function poll_service($service)
     // Some debugging
     d_echo("\nNagios Service - $service_id\n");
     // the check_service function runs $check_cmd through escapeshellcmd, so
-    [$new_status, $msg, $perf] = check_service($check_cmd, $check_parser ?? null);
+    [$exit_code, $msg, $perf] = check_service($check_cmd, $check_parser ?? null);
+    $new_status = ServiceStatus::fromExitCode((int) $exit_code);
     d_echo("Response: $msg\n");
 
     // If we have performance data we will store it.
@@ -77,24 +79,22 @@ function poll_service($service)
         app('Datastore')->put($service, 'services', $tags, $fields);
     }
 
-    if ($old_status != $new_status) {
+    // Compare the raw stored value so out-of-range exit codes stored by older versions get normalized
+    if ((int) $service['service_status'] !== $new_status->value) {
         // Status has changed, update.
         $update['service_changed'] = time();
-        $update['service_status'] = $new_status;
+        $update['service_status'] = $new_status->value;
         $update['service_message'] = $msg;
 
-        // TODO: Put the 3 lines below in a function getStatus(int) ?
-        $status_text = [0 => 'OK', 1 => 'Warning', 3 => 'Unknown'];
-        $old_status_text = $status_text[$old_status] ?? 'Critical';
-        $new_status_text = $status_text[$new_status] ?? 'Critical';
-
-        Eventlog::log(
-            "Service {$service['service_name']} ({$service['service_type']})' changed status from $old_status_text to $new_status_text - {$service['service_desc']} - $msg",
-            $service['device_id'],
-            'service',
-            Severity::Warning,
-            $service['service_id']
-        );
+        if ($old_status !== $new_status) {
+            Eventlog::log(
+                "Service {$service['service_name']} ({$service['service_type']})' changed status from {$old_status->label()} to {$new_status->label()} - {$service['service_desc']} - $msg",
+                $service['device_id'],
+                'service',
+                Severity::Warning,
+                $service['service_id']
+            );
+        }
 
         // Run alert rules due to status changed
         $rules = new AlertRules($service['device_id']);
