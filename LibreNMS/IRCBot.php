@@ -29,6 +29,7 @@ use App\Models\Service;
 use App\Models\User;
 use LibreNMS\DB\Eloquent;
 use LibreNMS\Enum\AlertState;
+use LibreNMS\Enum\ServiceStatus;
 use LibreNMS\Util\Mail;
 use LibreNMS\Util\Number;
 use LibreNMS\Util\Time;
@@ -965,24 +966,33 @@ class IRCBot
             case 'service':
             case 'srv':
                 $status_counts = [];
-                $status_colors = [0 => 'green', 3 => 'lightblue', 1 => 'yellow', 2 => 'red'];
+                $status_colors = [
+                    ServiceStatus::Ok->value => 'green',
+                    ServiceStatus::Unknown->value => 'lightblue',
+                    ServiceStatus::Warning->value => 'yellow',
+                    ServiceStatus::Critical->value => 'red',
+                ];
                 $srvcount = Service::hasAccess($this->user['user'])->count();
                 $srvign = Service::hasAccess($this->user['user'])->isIgnored()->count();
                 $srvdis = Service::hasAccess($this->user['user'])->isDisabled()->count();
-                $service_status = Service::hasAccess($this->user['user'])->isActive()->groupBy('service_status')
-                    ->select('service_status', \DB::raw('count(*) as count'))->get()
-                    ->pluck('count', 'service_status');
+                $service_status = [];
+                $raw_counts = Service::hasAccess($this->user['user'])->isActive()->groupBy('service_status')
+                    ->select('service_status', \DB::raw('count(*) as count'))->toBase()->get();
+                foreach ($raw_counts as $row) {
+                    $status = ServiceStatus::fromExitCode((int) $row->service_status)->value;
+                    $service_status[$status] = ($service_status[$status] ?? 0) + $row->count;
+                }
 
                 foreach ($status_colors as $status => $color) {
-                    if ($service_status->has($status)) {
-                        $status_counts[$status] = $this->_color($service_status->get($status), $color);
+                    if (isset($service_status[$status])) {
+                        $status_counts[$status] = $this->_color($service_status[$status], $color);
                         $srvcount = $this->_color($srvcount, $color, null, 'bold'); // upgrade the main count color
                     } else {
                         $status_counts[$status] = 0;
                     }
                 }
 
-                $msg = "Services: $srvcount ({$status_counts[0]} up, {$status_counts[2]} down, {$status_counts[1]} warning, {$status_counts[3]} unknown, $srvign ignored, $srvdis disabled)";
+                $msg = "Services: $srvcount ({$status_counts[ServiceStatus::Ok->value]} up, {$status_counts[ServiceStatus::Critical->value]} down, {$status_counts[ServiceStatus::Warning->value]} warning, {$status_counts[ServiceStatus::Unknown->value]} unknown, $srvign ignored, $srvdis disabled)";
                 break;
 
             default:

@@ -196,7 +196,7 @@
                             compactclass = 'availability-map-oldview-box-up';
                             state = 'up';
                             service_up_count++;
-                        } else if (service['status'] == 1) {
+                        } else if (service['status'] == 1 || service['status'] == 3) { // warning or unknown
                             fullclass = 'label-warning';
                             compactclass = 'availability-map-oldview-box-warn';
                             state = 'warn';

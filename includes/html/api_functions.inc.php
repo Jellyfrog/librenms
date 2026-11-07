@@ -3501,8 +3501,12 @@ function list_arp(Illuminate\Http\Request $request)
 
 function list_services(Illuminate\Http\Request $request)
 {
-    if ($request->has('state') && ! is_numeric($request->input('state'))) {
-        return api_error(400, 'No valid service state provided, valid option is 0=Ok, 1=Warning, 2=Critical');
+    $state = null;
+    if ($request->has('state')) {
+        $state = is_numeric($request->input('state')) ? \LibreNMS\Enum\ServiceStatus::tryFrom((int) $request->input('state')) : null;
+        if ($state === null) {
+            return api_error(400, 'No valid service state provided, valid option is 0=Ok, 1=Warning, 2=Critical, 3=Unknown');
+        }
     }
 
     $hostname = $request->route('hostname');
@@ -3512,7 +3516,7 @@ function list_services(Illuminate\Http\Request $request)
     }
 
     $services = Service::hasAccess($request->user())
-        ->when($request->has('state'), fn ($query) => $query->where('service_status', $request->input('state'))
+        ->when($state !== null, fn ($query) => $query->where('service_status', $state->value)
             ->where('service_disabled', 0)
             ->where('service_ignore', 0))
         ->when($request->has('type'), fn ($query) => $query->where('service_type', 'like', $request->input('type')))

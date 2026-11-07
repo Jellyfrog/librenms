@@ -7,6 +7,7 @@ use App\Models\Service;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
+use LibreNMS\Enum\ServiceStatus;
 
 class Services extends Component
 {
@@ -24,9 +25,9 @@ class Services extends Component
     {
         $this->counts = [
             'total' => $device->services->count(),
-            'ok' => $device->services->where('service_status', 0)->count(),
-            'warning' => $device->services->where('service_status', 1)->count(),
-            'critical' => $device->services->where('service_status', 2)->count(),
+            'ok' => $device->services->where('service_status', ServiceStatus::Ok)->count(),
+            'warning' => $device->services->where('service_status', ServiceStatus::Warning)->count(),
+            'critical' => $device->services->where('service_status', ServiceStatus::Critical)->count(),
         ];
         $this->servicesUrl = route('device', ['device' => $device->device_id, 'tab' => 'services']);
         $this->serviceLabels = $device->services->map(function (Service $service): array {
@@ -34,12 +35,8 @@ class Services extends Component
 
             return [
                 'service' => $service,
-                'status' => match ((int) $service->service_status) {
-                    0 => 'success',
-                    1 => 'warning',
-                    2 => 'danger',
-                    default => 'default',
-                },
+                // there is no lnms-btn-info, show unknown as default
+                'status' => $service->service_status === ServiceStatus::Unknown ? 'default' : $service->service_status->cssClass(),
                 'name' => filled($service->service_name) && $service->service_name !== $type
                     ? "{$service->service_name} ($type)"
                     : $type,

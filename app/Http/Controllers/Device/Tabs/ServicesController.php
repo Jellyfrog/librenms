@@ -70,12 +70,7 @@ class ServicesController implements DeviceTab
             ->hasAccess($request->user())
             ->get()
             ->map(function ($service) use ($view) {
-                $statusClass = match ((int) $service->service_status) {
-                    0 => 'label-success',
-                    1 => 'label-warning',
-                    2 => 'label-danger',
-                    default => 'label-info',
-                };
+                $statusClass = $service->service_status->labelClass();
 
                 $graphs = [];
                 if ($view === 'details') {
