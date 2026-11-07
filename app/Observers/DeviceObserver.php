@@ -51,6 +51,8 @@ class DeviceObserver
             Log::debug('Device availability updated for ' . $device->hostname . ' to ' . ($device->status ? 'up' : 'down') . ' due to ' . $device->status_reason);
 
             app(UpdateDeviceOutage::class)->execute($device);
+        } elseif ($device->isDirty('disabled') && $device->disabled) {
+            app(UpdateDeviceOutage::class)->execute($device); // closes the outage, a disabled device is not monitored
         }
 
         // key attribute changes

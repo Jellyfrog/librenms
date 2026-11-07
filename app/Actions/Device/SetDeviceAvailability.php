@@ -24,7 +24,12 @@ class SetDeviceAvailability
         $changed = $device->isDirty('status');
 
         if ($commit) {
-            $device->save();
+            $device->save(); // a status change updates outages via DeviceObserver
+
+            // still down: an outage may be due now even without a status change (e.g. maintenance just ended)
+            if (! $changed && ! $device->status) {
+                app(UpdateDeviceOutage::class)->execute($device);
+            }
         }
 
         return $changed;
