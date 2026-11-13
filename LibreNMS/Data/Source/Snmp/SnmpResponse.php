@@ -26,6 +26,7 @@
 
 namespace LibreNMS\Data\Source\Snmp;
 
+use App\Facades\LibrenmsConfig;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use LibreNMS\Exceptions\SnmpException;
@@ -77,6 +78,20 @@ class SnmpResponse implements \Stringable
         }
 
         return ! empty($lines) ? implode("\n", $lines) . "\n" : ($this->errorMessage ?? '');
+    }
+
+    /**
+     * Create a response from values as printed by net-snmp (php-snmp), cleaned like the cli output
+     *
+     * @param  array<string, mixed>  $printed
+     * @param  array<int, string>  $command
+     */
+    public static function fromPrinted(array $printed, string $stderr = '', int $exitCode = 0, array $command = []): self
+    {
+        $unescape = (bool) LibrenmsConfig::get('snmp.unescape');
+        $values = array_map(fn ($value): string => self::normalizeValue((string) $value, $unescape), $printed);
+
+        return new self($values, $stderr, $exitCode, $command);
     }
 
     /**
