@@ -115,7 +115,30 @@ jobs:
             if: contains(matrix.arguments, '--full')
             run: |
               sudo apt update
-              sudo apt install -y rrdtool rrdcached subversion php8.5-rrd
+              sudo apt install -y -o DPkg::Lock::Timeout=120 rrdtool rrdcached subversion php8.5-rrd
+
+          # librenms-snmp replaces the snmp extension shipped with PHP, it needs PHP 8.5+.
+          # purge, remove keeps its snmp.ini and pie enables the extension with an ini of its own
+          - name: Remove php snmp
+            if: matrix.php-version == 'pre-installed'
+            run: sudo apt-get purge -y -o DPkg::Lock::Timeout=120 php8.5-snmp
+
+          - name: Install librenms-snmp
+            if: matrix.php-version == 'pre-installed'
+            timeout-minutes: 5
+            env:
+              GITHUB_TOKEN: ${{ github.token }}
+            run: |
+              sudo curl -fsSL -o /usr/local/bin/pie https://github.com/php/pie/releases/latest/download/pie.phar
+              sudo chmod +x /usr/local/bin/pie
+              # pie runs as root, it cannot ask for the sudo password in a non-interactive terminal
+              sudo --preserve-env=GITHUB_TOKEN pie repository:add vcs https://github.com/jellyfrog/pie-snmp
+              # both install snmp.so, wait for the purge so it does not remove ours
+              while dpkg-query -W php8.5-snmp > /dev/null 2>&1; do sleep 1; done
+              sudo --preserve-env=GITHUB_TOKEN pie install jellyfrog/snmp
+              # fail when snmp is loaded twice
+              if php -r '' 2>&1 | grep 'already loaded'; then exit 1; fi
+              php -r 'defined("SNMP_LIBRENMS_VERSION") || exit(1); echo "librenms-snmp ", SNMP_LIBRENMS_VERSION, PHP_EOL;'
 
           - name: Checkout
             uses: actions/checkout@v7
@@ -141,22 +164,6 @@ jobs:
           extensions: rrd
           tools: none
           coverage: none
-      -
-        # librenms-snmp replaces the snmp extension shipped with PHP, it needs PHP 8.5+
-        name: Install librenms-snmp
-        if: matrix.php-version == 'pre-installed'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          sudo apt-get remove -y php8.5-snmp
-          sudo curl -fsSL -o /usr/local/bin/pie https://github.com/php/pie/releases/latest/download/pie.phar
-          sudo chmod +x /usr/local/bin/pie
-          # pie runs as root, it cannot ask for the sudo password in a non-interactive terminal
-          sudo --preserve-env=GITHUB_TOKEN pie repository:add vcs https://github.com/jellyfrog/pie-snmp
-          sudo --preserve-env=GITHUB_TOKEN pie install jellyfrog/snmp
-          php -r 'defined("SNMP_LIBRENMS_VERSION") || exit(1); echo "librenms-snmp ", SNMP_LIBRENMS_VERSION, PHP_EOL;'
-          # seeded with the other test config, run the tests on the php-snmp backend
-          echo 'snmp.backend: phpsnmp' > database/seeders/config/snmp_backend.yaml
       -
         name: Disable Xdebug
         background: true

@@ -37,6 +37,7 @@ use DeviceCache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use LibreNMS\Data\Source\Snmp\PhpSnmp;
 use LibreNMS\Enum\PollingMethodType;
 use LibreNMS\Enum\SecretType;
 use LibreNMS\Exceptions\FileNotFoundException;
@@ -79,6 +80,11 @@ class ModuleTestHelper
         LibrenmsConfig::set('graphite.enable', false);
         LibrenmsConfig::set('prometheus.enable', false);
         LibrenmsConfig::set('kafka.enable', false);
+
+        // test the php-snmp backend where librenms-snmp is installed
+        if (PhpSnmp::isLibrenmsExtension()) {
+            LibrenmsConfig::set('snmp.backend', 'phpsnmp');
+        }
     }
 
     /**

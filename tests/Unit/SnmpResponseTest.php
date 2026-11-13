@@ -540,13 +540,9 @@ HOST-RESOURCES-MIB::hrStorageUsed.36 = 127044934
         $this->assertSame($expected, SnmpResponse::normalizeValue($printed));
     }
 
-    #[DataProvider('printedValues')]
+    #[DataProvider('singleLinePrintedValues')]
     public function testBackendsParseValuesAlike(string $printed, ?string $expected): void
     {
-        if (str_contains($printed, "\n")) {
-            $this->markTestSkipped('cli output is line based');
-        }
-
         // the cli backend parses printed lines, the php-snmp backend gets the values per oid
         $cli = new RawSnmpResponse("IF-MIB::ifAlias[1] = $printed\n");
         $value = SnmpResponse::normalizeValue($printed);
@@ -554,6 +550,16 @@ HOST-RESOURCES-MIB::hrStorageUsed.36 = 127044934
 
         $this->assertSame($expected ?? '', $cli->value());
         $this->assertSame($cli->values(), $php->values());
+    }
+
+    /**
+     * cli output is line based, multi-line values can't be parsed from a single line
+     *
+     * @return array<string, array{string, ?string}>
+     */
+    public static function singleLinePrintedValues(): array
+    {
+        return array_filter(self::printedValues(), fn ($case) => ! str_contains($case[0], "\n"));
     }
 
     /**
