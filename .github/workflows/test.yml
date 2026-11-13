@@ -52,7 +52,8 @@ jobs:
     env:
       # keep in sync with LibreNMS/Util/Snmpsim.php
       SNMPSIM_VERSION: 2.0.3
-      NETSNMP_VERSION: 5.10.rc1
+      # branch, tag or commit
+      NETSNMP_REF: master
     steps:
       -
         # mysql is the runner's own MySQL, anything else is a docker image
@@ -118,12 +119,12 @@ jobs:
               sudo apt update
               sudo apt install -y rrdtool rrdcached subversion php8.5-rrd
 
-          # test the cli backend with the net-snmp release candidate
-          - name: Install net-snmp ${{ env.NETSNMP_VERSION }}
+          # test the cli backend with net-snmp from git
+          - name: Install net-snmp ${{ env.NETSNMP_REF }}
             timeout-minutes: 10
             run: |
               mkdir -p /tmp/net-snmp
-              curl -fsSL "https://github.com/net-snmp/net-snmp/archive/refs/tags/v$NETSNMP_VERSION.tar.gz" | tar -xz -C /tmp/net-snmp --strip-components=1
+              curl -fsSL "https://github.com/net-snmp/net-snmp/archive/$NETSNMP_REF.tar.gz" | tar -xz -C /tmp/net-snmp --strip-components=1
               cd /tmp/net-snmp
               ./configure --prefix=/opt/net-snmp --with-defaults --disable-agent --disable-manuals --disable-scripts \
                 --disable-embedded-perl --without-perl-modules --with-mibs="" LDFLAGS="-Wl,-rpath,/opt/net-snmp/lib" > /dev/null
