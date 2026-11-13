@@ -268,6 +268,10 @@ class PhpSnmp implements SnmpBackendInterface
         if ($res === false) {
             $res = [];
         }
+        $unescape = (bool) LibrenmsConfig::get('snmp.unescape');
+        foreach ($res as $oid => $value) {
+            $res[$oid] = SnmpResponse::normalizeValue((string) $value, $unescape);
+        }
         foreach ($missing as $k => $v) {
             $res[$k] = $v;
         }

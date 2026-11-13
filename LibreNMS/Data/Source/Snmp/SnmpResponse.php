@@ -79,6 +79,23 @@ class SnmpResponse implements \Stringable
         return ! empty($lines) ? implode("\n", $lines) . "\n" : ($this->errorMessage ?? '');
     }
 
+    /**
+     * Clean a value as printed by net-snmp: remove the quotes around strings and unescape them
+     */
+    public static function normalizeValue(string $value, bool $unescape = false): string
+    {
+        if ($unescape) {
+            $value = stripslashes($value);
+        }
+
+        if (strlen($value) > 1 && str_starts_with($value, '"') && str_ends_with($value, '"')) {
+            // remove only the surrounding quotes, an escaped quote at the end belongs to the value
+            return trim(stripslashes(substr($value, 1, -1)), " \n\r");
+        }
+
+        return trim($value);
+    }
+
     public function isValid(bool $ignore_partial = false): bool
     {
         if ($ignore_partial) {
