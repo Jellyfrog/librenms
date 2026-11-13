@@ -151,8 +151,9 @@ jobs:
           sudo apt-get remove -y php8.5-snmp
           sudo curl -fsSL -o /usr/local/bin/pie https://github.com/php/pie/releases/latest/download/pie.phar
           sudo chmod +x /usr/local/bin/pie
-          pie repository:add vcs https://github.com/jellyfrog/pie-snmp
-          pie install jellyfrog/snmp
+          # pie runs as root, it cannot ask for the sudo password in a non-interactive terminal
+          sudo --preserve-env=GITHUB_TOKEN pie repository:add vcs https://github.com/jellyfrog/pie-snmp
+          sudo --preserve-env=GITHUB_TOKEN pie install jellyfrog/snmp
           php -r 'defined("SNMP_LIBRENMS_VERSION") || exit(1); echo "librenms-snmp ", SNMP_LIBRENMS_VERSION, PHP_EOL;'
           # seeded with the other test config, run the tests on the php-snmp backend
           echo 'snmp.backend: phpsnmp' > database/seeders/config/snmp_backend.yaml
