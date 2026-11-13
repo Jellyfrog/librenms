@@ -129,7 +129,7 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
      * librenms-snmp adds SNMP::$use_bulk, SNMP::$no_display_hint, snmp_translate(),
      * snmp_init_mib($dirs, $mibs) and udp6/tcp/tcp6 transports to PHP's own extension
      */
-    private static function isLibrenmsExtension(): bool
+    public static function isLibrenmsExtension(): bool
     {
         return defined('SNMP_LIBRENMS_VERSION');
     }
