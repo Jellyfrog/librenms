@@ -98,7 +98,14 @@ class AppServiceProvider extends ServiceProvider
 
             return $app->make(NetSnmp::class);
         });
-        $this->app->bind(SnmpTranslatorInterface::class, NetSnmp::class);
+        $this->app->bind(SnmpTranslatorInterface::class, function (Application $app) {
+            // PhpSnmp falls back to the cli when the extension has no snmp_translate()
+            if (LibrenmsConfig::get('snmp.backend') === 'phpsnmp') {
+                return $app->make(PhpSnmp::class);
+            }
+
+            return $app->make(NetSnmp::class);
+        });
         $this->app->bind(SnmpQueryInterface::class, SnmpQueryBuilder::class);
 
         $this->app->singleton(RrdBackendInterface::class, function (Application $app) {

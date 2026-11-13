@@ -27,14 +27,18 @@
 namespace LibreNMS\Data\Source\Snmp;
 
 use App\Facades\LibrenmsConfig;
+use Illuminate\Support\Str;
 use LibreNMS\Enum\SnmpOidOutput;
 use LibreNMS\Enum\SnmpQuickPrint;
 use LibreNMS\Enum\SnmpStringOutput;
 use LibreNMS\Polling\Method\Config\SnmpConfig;
+use LibreNMS\Util\Oid;
 use LibreNMS\Util\Rewrite;
 
-class PhpSnmp implements SnmpBackendInterface
+class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
 {
+    private static ?string $loadedMibs = null;
+
     /**
      * @param  string[]  $oids
      */
@@ -47,8 +51,7 @@ class PhpSnmp implements SnmpBackendInterface
 
     public function walk(string $target, string $oid, SnmpConfig $config, SnmpQueryOptions $options): SnmpResponse
     {
-        // php-snmp always walks v2c/v3 with GETBULK, net-snmp can walk without it
-        $snmp = $config->bulk && $options->allowBulk ? $this->buildSnmp($target, $config, $options) : null;
+        $snmp = $this->buildSnmp($target, $config, $options);
 
         return $snmp ? $this->runCommand('walk', $snmp, $config, [$oid], $options) : new NetSnmp()->walk($target, $oid, $config, $options);
     }
@@ -63,6 +66,28 @@ class PhpSnmp implements SnmpBackendInterface
         return $snmp ? $this->runCommand('getnext', $snmp, $config, $oids, $options) : new NetSnmp()->next($target, $oids, $config, $options);
     }
 
+    public function translate(string $oid, SnmpQueryOptions $options): string
+    {
+        if (! self::isLibrenmsExtension()) {
+            return new NetSnmp()->translate($oid, $options);
+        }
+
+        if ($options->oidFormat == SnmpOidOutput::Numeric && new Oid($oid)->isNumeric()) {
+            return Str::start($oid, '.');
+        }
+
+        $this->initMibs($options, [$oid]);
+
+        // snmp_translate() always looks up bare names like snmptranslate -IR, returns false if it can't
+        $result = snmp_translate($oid, match ($options->oidFormat) { /** @phpstan-ignore function.notFound */
+            SnmpOidOutput::Numeric => \Snmp\OidOutput::Numeric, /** @phpstan-ignore class.notFound */
+            SnmpOidOutput::Module => \Snmp\OidOutput::Module, /** @phpstan-ignore class.notFound */
+            default => \Snmp\OidOutput::Suffix, /** @phpstan-ignore class.notFound */
+        });
+
+        return is_string($result) ? $result : '';
+    }
+
     /**
      * Build a SNMP object from arguments
      */
@@ -74,18 +99,39 @@ class PhpSnmp implements SnmpBackendInterface
 
         $snmp = new \SNMP(
             $this->snmpver($config->version),
-            Rewrite::addIpv6Brackets($target) . ':' . $config->port,
+            $this->hostname($target, $config),
             $this->communityOrUsername($config, $options->context),
             $config->timeout * 1000000,
             $config->retries,
         );
 
         $snmp->max_oids = max($config->maxOid, 1);
+        if (self::isLibrenmsExtension()) {
+            $snmp->use_bulk = $config->bulk && $options->allowBulk; /** @phpstan-ignore property.notFound */
+        }
         $this->setSecurityOptions($snmp, $config, $options->context);
         $this->setOptions($snmp, $options);
-        $this->initMibs($options);
 
         return $snmp;
+    }
+
+    /**
+     * librenms-snmp accepts a net-snmp transport prefix, build the same target as the cli
+     */
+    private function hostname(string $target, SnmpConfig $config): string
+    {
+        return self::isLibrenmsExtension()
+            ? NetSnmpOptions::target($target, $config)
+            : Rewrite::addIpv6Brackets($target) . ':' . $config->port;
+    }
+
+    /**
+     * librenms-snmp adds SNMP::$use_bulk, SNMP::$no_display_hint, snmp_translate(),
+     * snmp_init_mib($dirs, $mibs) and udp6/tcp/tcp6 transports to PHP's own extension
+     */
+    private static function isLibrenmsExtension(): bool
+    {
+        return defined('SNMP_LIBRENMS_VERSION');
     }
 
     private function communityOrUsername(SnmpConfig $config, string $context): string
@@ -113,17 +159,17 @@ class PhpSnmp implements SnmpBackendInterface
             return false;
         }
 
-        if ($config->transport !== 'udp') {
+        if ($config->transport !== 'udp' && ! self::isLibrenmsExtension()) {
             return false;
         }
 
-        // Do not use php-snmp if bulk operations are not allowed
-        if(! $config->bulk || ! $options->allowBulk) {
+        // walking without GETBULK needs SNMP::$use_bulk (librenms-snmp), v1 walks always use GETNEXT
+        if ($config->version !== 'v1' && (! $config->bulk || ! $options->allowBulk) && ! self::isLibrenmsExtension()) {
             return false;
         }
 
-        // php-snmp does not support display hits being disabled (non-default)
-        if(! $options->applyDisplayHints) {
+        // disabling display hints needs SNMP::$no_display_hint
+        if (! $options->applyDisplayHints && ! self::isLibrenmsExtension()) {
             return false;
         }
 
@@ -144,7 +190,9 @@ class PhpSnmp implements SnmpBackendInterface
     {
         $authlevel = strtolower((string) $config->authlevel);
         $authalgo = match (strtoupper((string) $config->authalgo)) {
+            'SHA-224' => 'SHA224', // librenms-snmp only, php's own extension throws a ValueError and worksFor() falls back
             'SHA-256' => 'SHA256',
+            'SHA-384' => 'SHA384', // librenms-snmp only
             'SHA-512' => 'SHA512',
             default => $config->authalgo,
         };
@@ -179,6 +227,9 @@ class PhpSnmp implements SnmpBackendInterface
         $snmp->dont_print_units = ! $options->printUnits; /** @phpstan-ignore property.notFound */
         $snmp->escape_quotes = $options->escapeQuotes; /** @phpstan-ignore property.notFound */
         $snmp->print_hex_text = $options->printHexText; /** @phpstan-ignore property.notFound */
+        if (self::isLibrenmsExtension()) {
+            $snmp->no_display_hint = ! $options->applyDisplayHints; /** @phpstan-ignore property.notFound */
+        }
         $snmp->setStringOutputFormat($this->getStringOutput($options->stringFormat)); /** @phpstan-ignore method.notFound */
         $snmp->setOidOutputFormat($this->getOidOutput($options->oidFormat)); /** @phpstan-ignore method.notFound */
     }
@@ -213,19 +264,47 @@ class PhpSnmp implements SnmpBackendInterface
         };
     }
 
-    private function initMibs(SnmpQueryOptions $options): void
+    /**
+     * @param  string[]  $oids
+     */
+    private function initMibs(SnmpQueryOptions $options, array $oids): void
     {
+        // net-snmp also loads MIBs on demand for oids like MIB::name, the cli forgets them when it exits
+        $onDemand = [];
+        foreach ($oids as $oid) {
+            $module = Oid::of($oid)->getMib();
+            if ($module !== '' && ! in_array($module, $options->mibs, true)) {
+                $onDemand[$module] = true;
+            }
+        }
+        ksort($onDemand);
+
+        // the MIB tree is process global, only rebuild it when it would differ from the one the cli builds
+        $mibDirs = $options->mibDirs ?: [LibrenmsConfig::get('mib_dir')];
+        $mibs = array_values(array_filter($options->mibs, fn (string $mib): bool => $mib !== ''));
+        $mibKey = serialize([$options->allowUnderscores, $mibDirs, $mibs, array_keys($onDemand)]);
+        if ($mibKey === self::$loadedMibs) {
+            return;
+        }
+        self::$loadedMibs = $mibKey;
+
         // Set the MIB allow underscore options
         snmp_set_mib_option(\Snmp\Mib::AllowUnderscores, $options->allowUnderscores); /** @phpstan-ignore function.notFound, class.notFound */
+        if (self::isLibrenmsExtension()) {
+            // build the tree from exactly these modules and their imports, like the cli does with -M dirs -m A:B:C
+            snmp_init_mib(implode(':', $mibDirs), $mibs); /** @phpstan-ignore function.notFound */
 
-        // Reset the loaded MIB tree with the configured mib dirs
-        snmp_init_mib(implode(':', $options->mibDirs ?: [LibrenmsConfig::get('mib_dir')])); /** @phpstan-ignore function.notFound */
+            return;
+        }
+
+        // older extension: reset the loaded MIB tree (net-snmp default MIBs) with the configured mib dirs
+        snmp_init_mib(implode(':', $mibDirs)); /** @phpstan-ignore function.notFound */
 
         // Load all explicit MIBs
-        foreach ($options->mibs as $mib) {
-            foreach (($options->mibDirs ?: [LibrenmsConfig::get('mib_dir')]) as $dir) {
+        foreach ($mibs as $mib) {
+            foreach ($mibDirs as $dir) {
                 $mibfile = "$dir/$mib";
-                if (file_exists($mibfile)) {
+                if (is_file($mibfile)) {
                     snmp_read_mib($mibfile);
 
                     break;
@@ -241,6 +320,8 @@ class PhpSnmp implements SnmpBackendInterface
      */
     private function runCommand(string $cmd, \SNMP $snmp, SnmpConfig $config, array $oids, SnmpQueryOptions $options): SnmpResponse
     {
+        $this->initMibs($options, $oids);
+
         // PHP-SNMP generates some errors - set the error handler to capture them
         $missing = [];
         $errors = '';
@@ -265,18 +346,12 @@ class PhpSnmp implements SnmpBackendInterface
 
         restore_error_handler();
 
-        if ($res === false) {
-            $res = [];
-        }
-        foreach ($missing as $k => $v) {
-            $res[$k] = $v;
-        }
-
         return SnmpResponse::fromPrinted(
-            $res,
+            array_replace($res ?: [], $missing),
             $errors,
             $errors ? 1 : 0,
             ["php-snmp-$cmd", ...$oids],
+            $options,
         );
     }
 }

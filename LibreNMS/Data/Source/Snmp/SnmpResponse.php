@@ -29,8 +29,10 @@ namespace LibreNMS\Data\Source\Snmp;
 use App\Facades\LibrenmsConfig;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use LibreNMS\Enum\SnmpQuickPrint;
 use LibreNMS\Exceptions\SnmpException;
 use LibreNMS\Util\Oid;
+use LibreNMS\Util\StringHelpers;
 use Log;
 
 class SnmpResponse implements \Stringable
@@ -39,6 +41,7 @@ class SnmpResponse implements \Stringable
     protected const STDERR_ERROR_REGEX = '/(Timeout: No Response from .*|snmp\w+: Timeout|Unknown user name|Authentication failure|Error: OID not increasing: .*)/';
     protected const BAD_STRING_REGEX = '/(No Such Instance|No Such Object|No more variables left).*/';
     protected const BAD_VALUE_REGEX = '/(No Such Instance|No Such Object|at this OID|this MIB View|End of MIB| = NULL$).*/';
+    protected const WRONG_TYPE_REGEX = '/Wrong Type \(should be .*\): /';
 
     /**
      * @var array<string, string> <oid, value>
@@ -50,12 +53,14 @@ class SnmpResponse implements \Stringable
     /**
      * @param  array<string, string>  $rawValues
      * @param  array<int, string>  $command
+     * @param  SnmpQueryOptions|null  $options  output options of the query, raw() prints the values like net-snmp would
      */
     public function __construct(
         protected array $rawValues = [],
         public readonly string $stderr = '',
         public readonly int $exitCode = 0,
         public readonly array $command = [],
+        protected readonly ?SnmpQueryOptions $options = null,
     ) {
         foreach ($this->rawValues as $oid => $val) {
             if (preg_match(self::BAD_STRING_REGEX, (string) $val, $matches)) {
@@ -74,7 +79,11 @@ class SnmpResponse implements \Stringable
         $lines = [];
         $source = ! empty($this->rawValues) ? $this->rawValues : $this->values;
         foreach ($source as $oid => $val) {
-            $lines[] = $oid !== '' ? "$oid = $val" : (string) $val;
+            $lines[] = match (true) {
+                $oid === '' || $this->options?->valueOnly => (string) $val,
+                $this->options?->quickPrint == SnmpQuickPrint::NoEquals => "$oid $val",
+                default => "$oid = $val",
+            };
         }
 
         return ! empty($lines) ? implode("\n", $lines) . "\n" : ($this->errorMessage ?? '');
@@ -86,29 +95,44 @@ class SnmpResponse implements \Stringable
      * @param  array<string, mixed>  $printed
      * @param  array<int, string>  $command
      */
-    public static function fromPrinted(array $printed, string $stderr = '', int $exitCode = 0, array $command = []): self
+    public static function fromPrinted(array $printed, string $stderr = '', int $exitCode = 0, array $command = [], ?SnmpQueryOptions $options = null): self
     {
         $unescape = (bool) LibrenmsConfig::get('snmp.unescape');
-        $values = array_map(fn ($value): string => self::normalizeValue((string) $value, $unescape), $printed);
+        $values = [];
+        foreach ($printed as $oid => $value) {
+            $value = self::normalizeValue((string) $value, $unescape);
+            if ($value !== null) {
+                $values[$oid] = $value;
+            }
+        }
 
-        return new self($values, $stderr, $exitCode, $command);
+        return new self($values, $stderr, $exitCode, $command, $options);
     }
 
     /**
-     * Clean a value as printed by net-snmp: remove the quotes around strings and unescape them
+     * Clean a value as printed by net-snmp: strip the Wrong Type prefix, quotes and escapes, and fix the encoding
+     *
+     * @return string|null null for values to drop (ASN NULL)
      */
-    public static function normalizeValue(string $value, bool $unescape = false): string
+    public static function normalizeValue(string $value, bool $unescape = false, bool $inferEncoding = true): ?string
     {
+        $value = (string) preg_replace(self::WRONG_TYPE_REGEX, '', $value);
+        if ($value === 'NULL') {
+            return null;
+        }
+
         if ($unescape) {
             $value = stripslashes($value);
         }
 
         if (strlen($value) > 1 && str_starts_with($value, '"') && str_ends_with($value, '"')) {
             // remove only the surrounding quotes, an escaped quote at the end belongs to the value
-            return trim(stripslashes(substr($value, 1, -1)), " \n\r");
+            $value = trim(stripslashes(substr($value, 1, -1)), " \n\r");
+        } else {
+            $value = trim($value);
         }
 
-        return trim($value);
+        return $inferEncoding ? (string) StringHelpers::inferEncoding($value) : $value;
     }
 
     public function isValid(bool $ignore_partial = false): bool
@@ -352,6 +376,7 @@ class SnmpResponse implements \Stringable
             $this->stderr . $response->stderr,
             $this->exitCode ?: $response->exitCode,
             $response->command ?: $this->command,
+            $this->options ?? $response->options,
         );
 
         $newResponse->errorMessage = $this->errorMessage ?: $response->errorMessage;

@@ -56,13 +56,21 @@ class NetSnmpOptions
             array_push($cmd, '-r', (string) $config->retries);
         }
 
+        return [...$cmd, self::target($target, $config), ...$oids];
+    }
+
+    /**
+     * net-snmp agent address: transport:host:port, ipv6 hosts in brackets with a 6 transport
+     */
+    public static function target(string $target, SnmpConfig $config): string
+    {
         $transport = $config->transport;
         if (IPv6::isValid($target)) {
             $target = "[$target]";
             $transport = Str::finish($transport, '6');
         }
 
-        return [...$cmd, "$transport:$target:$config->port", ...$oids];
+        return "$transport:$target:$config->port";
     }
 
     /**

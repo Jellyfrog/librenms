@@ -52,7 +52,7 @@ class RawSnmpResponse extends SnmpResponse
             command: $command,
         );
 
-        $this->raw = (string) preg_replace('/Wrong Type \(should be .*\): /', '', $output);
+        $this->raw = (string) preg_replace(self::WRONG_TYPE_REGEX, '', $output);
     }
 
     protected function findBadString(): ?string
@@ -100,11 +100,10 @@ class RawSnmpResponse extends SnmpResponse
                 $line = strtok(PHP_EOL);
             }
 
-            $value = self::normalizeValue($value, $unescape);
-
-            $this->values[$oid] = $this->inferValueEncoding
-                ? StringHelpers::inferEncoding($value)
-                : $value;
+            $value = self::normalizeValue($value, $unescape, $this->inferValueEncoding);
+            if ($value !== null) {
+                $this->values[$oid] = $value;
+            }
         }
 
         return $this->values;
@@ -130,6 +129,7 @@ class RawSnmpResponse extends SnmpResponse
                 $this->stderr . $response->stderr,
                 $this->exitCode ?: $response->exitCode,
                 $response->command ?: $this->command,
+                $response->options,
             );
         }
 
