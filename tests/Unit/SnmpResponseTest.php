@@ -31,6 +31,7 @@ use LibreNMS\Data\Source\Snmp\RawSnmpResponse;
 use LibreNMS\Data\Source\Snmp\SnmpResponse;
 use LibreNMS\Exceptions\SnmpException;
 use LibreNMS\Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class SnmpResponseTest extends TestCase
 {
@@ -529,6 +530,47 @@ HOST-RESOURCES-MIB::hrStorageUsed.36 = 127044934
             'IF-MIB::ifAlias[1]' => '',
             'IF-MIB::ifAlias[2]' => '"',
         ], $response->values());
+    }
+
+    #[DataProvider('printedValues')]
+    public function testNormalizeValue(string $printed, string $expected): void
+    {
+        $this->assertSame($expected, SnmpResponse::normalizeValue($printed));
+    }
+
+    #[DataProvider('printedValues')]
+    public function testBackendsParseValuesAlike(string $printed, string $expected): void
+    {
+        // the cli backend parses printed lines, the php-snmp backend gets the values per oid
+        $cli = new RawSnmpResponse("IF-MIB::ifAlias[1] = $printed\n");
+        $php = new SnmpResponse(['IF-MIB::ifAlias[1]' => SnmpResponse::normalizeValue($printed)]);
+
+        $this->assertSame($expected, $cli->value());
+        $this->assertSame($cli->values(), $php->values());
+    }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function printedValues(): array
+    {
+        return [
+            'plain' => ['lo', 'lo'],
+            'surrounding whitespace' => [' 42 ', '42'],
+            'quoted string' => ['"Linux box"', 'Linux box'],
+            'escaped quotes' => ['"say \\"hi\\""', 'say "hi"'],
+            'string wrapped in quotes' => ['"\\"quoted\\""', '"quoted"'],
+            'string starting with a quote' => ['"\\"admin\\" login failed"', '"admin" login failed'],
+            'whitespace inside quotes' => ['" padded "', 'padded'],
+            'empty quoted' => ['""', ''],
+            'single quote char' => ['"', '"'],
+        ];
+    }
+
+    public function testNormalizeValueUnescape(): void
+    {
+        $this->assertSame('a\\b', SnmpResponse::normalizeValue('a\\b'));
+        $this->assertSame('ab', SnmpResponse::normalizeValue('a\\b', unescape: true));
     }
 
     public function testConnectionError(): void

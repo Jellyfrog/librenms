@@ -80,6 +80,7 @@ class RawSnmpResponse extends SnmpResponse
 
         $this->inferValueEncoding ??= ! StringHelpers::isValidUtf8($this->raw);
         $this->values = [];
+        $unescape = (bool) LibrenmsConfig::get('snmp.unescape');
         $line = strtok($this->raw, PHP_EOL);
         while ($line !== false) {
             if (preg_match(self::BAD_VALUE_REGEX, $line)) {
@@ -99,16 +100,7 @@ class RawSnmpResponse extends SnmpResponse
                 $line = strtok(PHP_EOL);
             }
 
-            if (LibrenmsConfig::get('snmp.unescape')) {
-                $value = stripslashes($value);
-            }
-
-            if (strlen($value) > 1 && str_starts_with($value, '"') && str_ends_with($value, '"')) {
-                // remove only the surrounding quotes, an escaped quote at the end belongs to the value
-                $value = trim(stripslashes(substr($value, 1, -1)), " \n\r");
-            } else {
-                $value = trim($value);
-            }
+            $value = self::normalizeValue($value, $unescape);
 
             $this->values[$oid] = $this->inferValueEncoding
                 ? StringHelpers::inferEncoding($value)
