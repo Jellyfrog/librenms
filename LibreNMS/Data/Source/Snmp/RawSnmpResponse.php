@@ -52,7 +52,7 @@ class RawSnmpResponse extends SnmpResponse
             command: $command,
         );
 
-        $this->raw = (string) preg_replace('/Wrong Type \(should be .*\): /', '', $output);
+        $this->raw = (string) preg_replace(self::WRONG_TYPE_REGEX, '', $output);
     }
 
     protected function findBadString(): ?string
@@ -80,6 +80,7 @@ class RawSnmpResponse extends SnmpResponse
 
         $this->inferValueEncoding ??= ! StringHelpers::isValidUtf8($this->raw);
         $this->values = [];
+        $unescape = (bool) LibrenmsConfig::get('snmp.unescape');
         $line = strtok($this->raw, PHP_EOL);
         while ($line !== false) {
             if (preg_match(self::BAD_VALUE_REGEX, $line)) {
@@ -99,19 +100,10 @@ class RawSnmpResponse extends SnmpResponse
                 $line = strtok(PHP_EOL);
             }
 
-            if (LibrenmsConfig::get('snmp.unescape')) {
-                $value = stripslashes($value);
+            $value = self::normalizeValue($value, $unescape, $this->inferValueEncoding);
+            if ($value !== null) {
+                $this->values[$oid] = $value;
             }
-
-            if (str_starts_with($value, '"') && str_ends_with($value, '"')) {
-                $value = trim(stripslashes($value), "\" \n\r");
-            } else {
-                $value = trim($value);
-            }
-
-            $this->values[$oid] = $this->inferValueEncoding
-                ? StringHelpers::inferEncoding($value)
-                : $value;
         }
 
         return $this->values;
@@ -137,6 +129,7 @@ class RawSnmpResponse extends SnmpResponse
                 $this->stderr . $response->stderr,
                 $this->exitCode ?: $response->exitCode,
                 $response->command ?: $this->command,
+                $response->options,
             );
         }
 
