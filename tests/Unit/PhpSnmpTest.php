@@ -68,11 +68,43 @@ class PhpSnmpTest extends TestCase
         $config = SnmpConfig::make($defaults, $secret);
 
         $this->assertTrue($method->invoke($backend, $config, new SnmpQueryOptions));
-        $this->assertFalse($method->invoke($backend, SnmpConfig::make(['version' => 'v1'] + $defaults, $secret), new SnmpQueryOptions));
-        $this->assertFalse($method->invoke($backend, SnmpConfig::make(['transport' => 'tcp'] + $defaults, $secret), new SnmpQueryOptions));
-        $this->assertFalse($method->invoke($backend, SnmpConfig::make(['bulk' => false] + $defaults, $secret), new SnmpQueryOptions));
-        $this->assertFalse($method->invoke($backend, $config, new SnmpQueryOptions(allowBulk: false)));
-        $this->assertFalse($method->invoke($backend, $config, new SnmpQueryOptions(applyDisplayHints: false)));
+        // transports other than udp, non-bulk walks and disabled display hints need librenms-snmp
+        $librenmsExtension = defined('SNMP_LIBRENMS_VERSION');
+        foreach (['udp6', 'tcp', 'tcp6'] as $transport) {
+            $this->assertSame($librenmsExtension, $method->invoke($backend, SnmpConfig::make(['transport' => $transport] + $defaults, $secret), new SnmpQueryOptions), $transport);
+        }
+        // v1 has no GETBULK, SNMP::walk() always uses GETNEXT for it
+        $this->assertTrue($method->invoke($backend, SnmpConfig::make(['version' => 'v1'] + $defaults, $secret), new SnmpQueryOptions));
+        $this->assertSame($librenmsExtension, $method->invoke($backend, SnmpConfig::make(['bulk' => false] + $defaults, $secret), new SnmpQueryOptions));
+        $this->assertSame($librenmsExtension, $method->invoke($backend, $config, new SnmpQueryOptions(allowBulk: false)));
+        $this->assertSame($librenmsExtension, $method->invoke($backend, $config, new SnmpQueryOptions(applyDisplayHints: false)));
+    }
+
+    public function testHostname(): void
+    {
+        if (! class_exists(\SNMP::class)) {
+            $this->assertBackendUnavailable();
+
+            return;
+        }
+
+        $method = new \ReflectionMethod(PhpSnmp::class, 'hostname');
+        $backend = new PhpSnmp;
+        $defaults = $this->backendDefaults();
+        $secret = new SnmpCommunitySecretData(community: 'public');
+        $prefixed = defined('SNMP_LIBRENMS_VERSION');
+
+        foreach ([
+            ['udp', '192.0.2.1', 'udp:192.0.2.1:161', '192.0.2.1:161'],
+            ['tcp', '192.0.2.1', 'tcp:192.0.2.1:161', '192.0.2.1:161'],
+            ['udp', '2001:db8::1', 'udp6:[2001:db8::1]:161', '[2001:db8::1]:161'],
+            ['tcp', '2001:db8::1', 'tcp6:[2001:db8::1]:161', '[2001:db8::1]:161'],
+            ['udp6', '2001:db8::1', 'udp6:[2001:db8::1]:161', '[2001:db8::1]:161'],
+            ['udp', 'host.example.com', 'udp:host.example.com:161', 'host.example.com:161'],
+        ] as [$transport, $target, $withPrefix, $withoutPrefix]) {
+            $config = SnmpConfig::make(['transport' => $transport, 'port' => 161] + $defaults, $secret);
+            $this->assertSame($prefixed ? $withPrefix : $withoutPrefix, $method->invoke($backend, $target, $config), "$transport $target");
+        }
     }
 
     public function testCommunityAndUsername(): void
@@ -121,6 +153,8 @@ class PhpSnmpTest extends TestCase
             ['authNoPriv', 'SHA-512', 'AES', ['authNoPriv', 'SHA512', 'authpass', '', '', 'vrf1']],
             ['authNoPriv', 'sha-256', 'AES', ['authNoPriv', 'SHA256', 'authpass', '', '', 'vrf1']],
             ['authNoPriv', 'MD5', 'AES', ['authNoPriv', 'MD5', 'authpass', '', '', 'vrf1']],
+            ['authNoPriv', 'SHA-224', 'AES', ['authNoPriv', 'SHA224', 'authpass', '', '', 'vrf1']],
+            ['authPriv', 'SHA-384', 'AES', ['authPriv', 'SHA384', 'authpass', 'AES', 'privpass', 'vrf1']],
             ['noAuthNoPriv', 'SHA-224', 'AES-256', ['noAuthNoPriv', '', '', '', '', 'vrf1']],
         ] as [$level, $authalgo, $cryptoalgo, $expected]) {
             $config = SnmpConfig::make($defaults, new SnmpV3SecretData(
