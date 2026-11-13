@@ -604,7 +604,18 @@ HOST-RESOURCES-MIB::hrStorageUsed.36 = 127044934
         ], $response->values());
         $this->assertFalse($response->isValid());
         $this->assertSame(['php-snmp-get'], $response->command);
-        $this->assertStringStartsWith("Linux box\nsay \"hi\"\n1\n", $response->raw());
+        // raw() prints the values as net-snmp did, like the cli output legacy code parses
+        $this->assertStringStartsWith("\"Linux box\"\n\"say \\\"hi\\\"\"\nWrong Type (should be OCTET STRING): NULL\n1\n", $response->raw());
+    }
+
+    public function testAppendIgnoresFailedOids(): void
+    {
+        // walking two columns where the second is not supported
+        $response = SnmpResponse::fromPrinted(['IF-MIB::ifAlias.1' => '"uplink"'])
+            ->append(SnmpResponse::fromPrinted(['IF-MIB::ifHighSpeed' => 'No Such Instance currently exists at this OID']));
+
+        $this->assertTrue($response->isValid());
+        $this->assertSame(['IF-MIB::ifAlias.1' => 'uplink'], $response->values());
     }
 
     public function testNormalizeValueOptions(): void

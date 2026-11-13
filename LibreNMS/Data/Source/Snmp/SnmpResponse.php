@@ -90,23 +90,31 @@ class SnmpResponse implements \Stringable
     }
 
     /**
-     * Create a response from values as printed by net-snmp (php-snmp), cleaned like the cli output
+     * Create a response from values as printed by net-snmp (php-snmp), values() are cleaned like the cli output
+     *
+     * raw() keeps the values as printed, like the cli output that legacy code parses:
+     * quoted strings (an empty string is "") and ASN NULL rows. Legacy snmpwalk_group() counts
+     * the NULL rows (e.g. rfc1628 names a single line "Output Phase 1" when the other lines
+     * are NULL). That is arguably wrong, but the cli output is the reference for now.
      *
      * @param  array<string, mixed>  $printed
      * @param  array<int, string>  $command
      */
     public static function fromPrinted(array $printed, string $stderr = '', int $exitCode = 0, array $command = [], ?SnmpQueryOptions $options = null): self
     {
+        $response = new self(array_map(strval(...), $printed), $stderr, $exitCode, $command, $options);
+
         $unescape = (bool) LibrenmsConfig::get('snmp.unescape');
-        $values = [];
-        foreach ($printed as $oid => $value) {
-            $value = self::normalizeValue((string) $value, $unescape);
-            if ($value !== null) {
-                $values[$oid] = $value;
+        foreach ($response->values as $oid => $value) {
+            $value = self::normalizeValue($value, $unescape);
+            if ($value === null) {
+                unset($response->values[$oid]);
+            } else {
+                $response->values[$oid] = $value;
             }
         }
 
-        return new self($values, $stderr, $exitCode, $command, $options);
+        return $response;
     }
 
     /**
@@ -372,7 +380,8 @@ class SnmpResponse implements \Stringable
     public function append(SnmpResponse $response): SnmpResponse
     {
         $newResponse = new SnmpResponse(
-            array_merge($this->rawValues ?: $this->values, ! empty($response->rawValues) ? $response->rawValues : $response->values()),
+            // only the values, a failed oid (No Such Instance) must not invalidate the others, like the cli output
+            array_merge($this->values(), $response->values()),
             $this->stderr . $response->stderr,
             $this->exitCode ?: $response->exitCode,
             $response->command ?: $this->command,
