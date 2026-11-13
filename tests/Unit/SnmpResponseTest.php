@@ -567,6 +567,24 @@ HOST-RESOURCES-MIB::hrStorageUsed.36 = 127044934
         ];
     }
 
+    public function testFromPrinted(): void
+    {
+        $response = SnmpResponse::fromPrinted([
+            'SNMPv2-MIB::sysDescr.0' => '"Linux box"',
+            'SNMPv2-MIB::sysContact.0' => '"say \\"hi\\""',
+            'IF-MIB::ifIndex.1' => 1,
+            'IF-MIB::ifAlias.1' => 'No Such Instance currently exists at this OID',
+        ], command: ['php-snmp-get']);
+
+        $this->assertSame([
+            'SNMPv2-MIB::sysDescr.0' => 'Linux box',
+            'SNMPv2-MIB::sysContact.0' => 'say "hi"',
+            'IF-MIB::ifIndex.1' => '1',
+        ], $response->values());
+        $this->assertFalse($response->isValid());
+        $this->assertSame(['php-snmp-get'], $response->command);
+    }
+
     public function testNormalizeValueUnescape(): void
     {
         $this->assertSame('a\\b', SnmpResponse::normalizeValue('a\\b'));
