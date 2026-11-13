@@ -134,14 +134,6 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
         return defined('SNMP_LIBRENMS_VERSION');
     }
 
-    /**
-     * TODO remove the fallback in exec() once librenms-snmp with SNMP::$quicke_print is released
-     */
-    private static function hasQuickePrint(): bool
-    {
-        return property_exists(\SNMP::class, 'quicke_print');
-    }
-
     private function communityOrUsername(SnmpConfig $config, string $context): string
     {
         if ($config->version === 'v3') {
@@ -237,8 +229,6 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
         $snmp->print_hex_text = $options->printHexText; /** @phpstan-ignore property.notFound */
         if (self::isLibrenmsExtension()) {
             $snmp->no_display_hint = ! $options->applyDisplayHints; /** @phpstan-ignore property.notFound */
-        }
-        if (self::hasQuickePrint()) {
             // -OQ also sets QUICKE_PRINT, which hides the "Wrong Type (should be X): " prefix
             $snmp->quicke_print = ($options->quickPrint == SnmpQuickPrint::Equals); /** @phpstan-ignore property.notFound */
         }
@@ -358,14 +348,8 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
 
         restore_error_handler();
 
-        $res = $res ?: [];
-        if ($options->quickPrint == SnmpQuickPrint::Equals && ! self::hasQuickePrint()) {
-            // without QUICKE_PRINT net-snmp prints the prefix the cli -OQ hides
-            $res = (array) preg_replace('/^Wrong Type \(should be [^)]*\): /', '', $res);
-        }
-
         return SnmpResponse::fromPrinted(
-            array_replace($res, $missing),
+            array_replace($res ?: [], $missing),
             $errors,
             $errors ? 1 : 0,
             ["php-snmp-$cmd", ...$oids],
