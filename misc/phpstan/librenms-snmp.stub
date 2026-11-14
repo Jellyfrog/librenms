@@ -1,0 +1,19 @@
+<?php
+
+// PHPStan stub for the librenms-snmp extension (https://github.com/jellyfrog/pie-snmp), which replaces
+// PHP's ext/snmp. The methods it adds to existing classes are declared with @method here; the new
+// constants and classes are in librenms-snmp.php (scanFiles), because a stub cannot declare new symbols.
+
+/**
+ * @method array<int|string, array<string, mixed>>|false walkTable(string $objectId, int $maxRepetitions = -1, int $nonRepeaters = -1) rows keyed by the numeric index tail, each with a decoded 'index' list and the columns by label
+ */
+class SNMP
+{
+}
+
+/**
+ * @method array<int|string, mixed>|null getPartialResult() the rows fetched before the error, null when there are none
+ */
+class SNMPException extends RuntimeException
+{
+}

@@ -76,7 +76,7 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
         $this->initMibs($options, [$oid]);
 
         try {
-            $rows = $snmp->walkTable($oid, $config->maxRepeaters > 0 ? $config->maxRepeaters : 10, 0); /** @phpstan-ignore method.notFound */
+            $rows = $snmp->walkTable($oid, $config->maxRepeaters > 0 ? $config->maxRepeaters : 10, 0);
         } catch (\SNMPException $e) {
             return SnmpTable::fromException($e);
         }
@@ -282,7 +282,7 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
         $snmp->setStringOutputFormat($this->getStringOutput($options->stringFormat)); /** @phpstan-ignore method.notFound */
         $snmp->setOidOutputFormat($this->getOidOutput($options->oidFormat)); /** @phpstan-ignore method.notFound */
         if (self::supportsNative()) {
-            $snmp->valueretrieval = SNMP_VALUE_NATIVE | ($options->numericEnums ? 0 : SNMP_VALUE_ENUM_LABELS) | ($options->valueTypes ? SNMP_VALUE_OBJECT : 0); /** @phpstan-ignore constant.notFound */
+            $snmp->valueretrieval = SNMP_VALUE_NATIVE | ($options->numericEnums ? 0 : SNMP_VALUE_ENUM_LABELS) | ($options->valueTypes ? SNMP_VALUE_OBJECT : 0);
             $snmp->exceptions_enabled = \SNMP::ERRNO_ANY;
         }
     }

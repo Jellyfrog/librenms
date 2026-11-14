@@ -31,6 +31,10 @@ parameters:
 
     scanFiles:
         - vendor/amenadiel/jpgraph/src/config.inc.php
+        - misc/phpstan/librenms-snmp.php
+
+    stubFiles:
+        - misc/phpstan/librenms-snmp.stub
 
     level: 5
 

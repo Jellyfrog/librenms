@@ -275,7 +275,7 @@ class PhpSnmpTest extends TestCase
         // the MIB tree is process global, rebuild the default one for later tests
         (new \ReflectionProperty(PhpSnmp::class, 'loadedMibs'))->setValue(null, ['dirs' => [], 'mibs' => [], 'underscores' => null]);
         if (PhpSnmp::isLibrenmsExtension()) {
-            snmp_init_mib();
+            snmp_init_mib(); /** @phpstan-ignore function.notFound */
         }
         parent::tearDown();
     }
@@ -298,7 +298,7 @@ class PhpSnmpTest extends TestCase
 
         $this->assertSame(['ENTITY-MIB', 'IF-MIB'], $before['mibs']);
         $this->assertSame($before, $loaded->getValue());
-        $this->assertSame('.1.3.6.1.2.1.2.2.1.2', snmp_translate('IF-MIB::ifDescr', \Snmp\OidOutput::Numeric));
+        $this->assertSame('.1.3.6.1.2.1.2.2.1.2', snmp_translate('IF-MIB::ifDescr', \Snmp\OidOutput::Numeric)); /** @phpstan-ignore function.notFound, class.notFound */
     }
 
     public function testInitMibsKeepsCurrentDirsFirst(): void

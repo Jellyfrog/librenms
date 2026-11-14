@@ -84,7 +84,7 @@ class SnmpResponse implements \Stringable
      */
     public static function fromNative(array $values, array $command = [], ?\SNMPException $error = null, ?SnmpQueryOptions $options = null): self
     {
-        $values = array_replace($error?->getPartialResult() ?? [], $values); /** @phpstan-ignore method.notFound */
+        $values = array_replace($error?->getPartialResult() ?? [], $values);
 
         return self::buildNative($values, $error?->getMessage() ?? '', $error ? 1 : 0, $command, $options, $error?->getCode() ?? 0);
     }

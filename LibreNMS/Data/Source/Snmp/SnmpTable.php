@@ -26,7 +26,7 @@ namespace LibreNMS\Data\Source\Snmp;
 readonly class SnmpTable
 {
     /**
-     * @param  array<string, array<string, mixed>>  $rows
+     * @param  array<int|string, array<string, mixed>>  $rows
      */
     public function __construct(
         private array $rows = [],
@@ -40,11 +40,11 @@ readonly class SnmpTable
      */
     public static function fromException(\SNMPException $e): self
     {
-        return new self($e->getPartialResult() ?? [], $e->getCode(), $e->getMessage()); /** @phpstan-ignore method.notFound */
+        return new self($e->getPartialResult() ?? [], $e->getCode(), $e->getMessage());
     }
 
     /**
-     * @return array<string, array<string, mixed>>
+     * @return array<int|string, array<string, mixed>>
      */
     public function rows(): array
     {
