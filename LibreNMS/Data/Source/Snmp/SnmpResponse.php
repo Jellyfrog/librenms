@@ -79,7 +79,7 @@ class SnmpResponse implements \Stringable
     /**
      * Create a response from librenms-snmp SNMP_VALUE_NATIVE values: nothing is parsed or normalized
      *
-     * @param  array<string, int|float|string|null|\Snmp\Varbind>  $values
+     * @param  array<string, int|float|string|null|\Snmp\Varbind|\stdClass>  $values
      * @param  array<int, string>  $command
      */
     public static function fromNative(array $values, array $command = [], ?\SNMPException $error = null, ?SnmpQueryOptions $options = null): self
@@ -90,7 +90,7 @@ class SnmpResponse implements \Stringable
     }
 
     /**
-     * @param  array<string, int|float|string|null|\Snmp\Varbind>  $values
+     * @param  array<string, int|float|string|null|\Snmp\Varbind|\stdClass>  $values
      * @param  array<int, string>  $command
      */
     private static function buildNative(array $values, string $stderr, int $exitCode, array $command, ?SnmpQueryOptions $options, int $errorCode): self
@@ -100,18 +100,20 @@ class SnmpResponse implements \Stringable
         $response->rawValues = $values;
 
         foreach ($values as $oid => $value) {
-            if ($value instanceof \Snmp\Varbind) {
-                $response->badString ??= self::varbindText($value);
+            // SNMP_VALUE_OBJECT wraps the value in {type, value}
+            $bare = is_object($value) && property_exists($value, 'value') ? $value->value : $value;
+            if ($bare instanceof \Snmp\Varbind) {
+                $response->badString ??= self::varbindText($bare);
                 continue;
             }
-            $response->values[$oid] = $value;
+            $response->values[$oid] = $bare;
         }
 
         return $response;
     }
 
     /**
-     * @return array<string, int|float|string|null|\Snmp\Varbind>
+     * @return array<string, int|float|string|null|\Snmp\Varbind|\stdClass> bare values, or {type, value} objects with SnmpQueryOptions::$valueTypes
      */
     public function rawValues(): array
     {
@@ -133,6 +135,7 @@ class SnmpResponse implements \Stringable
         $source = ! empty($this->rawValues) ? $this->rawValues : $this->values;
         foreach ($source as $oid => $val) {
             if ($this->native) {
+                $val = is_object($val) && property_exists($val, 'value') ? $val->value : $val;
                 $val = $val instanceof \Snmp\Varbind ? self::varbindText($val) : ($val ?? 'NULL');
             }
             $lines[] = match (true) {

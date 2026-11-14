@@ -15,7 +15,10 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use LibreNMS\Data\Source\Snmp\PhpSnmp;
+use LibreNMS\Data\Source\Snmp\SnmpQueryOptions;
 use LibreNMS\Data\Source\Snmp\SnmpResponse;
+use LibreNMS\Enum\SnmpOidOutput;
 use LibreNMS\Util\Debug;
 use LibreNMS\Util\Mac;
 use LibreNMS\Util\Module;
@@ -146,7 +149,8 @@ class DevCollectSnmprec extends LnmsCommand
         $this->printSavingAs($snmprecFile);
 
         $data = $this->runWithProgress(
-            fn () => SnmpQuery::device($device)->options(['-OUneb', '-Ih'])->walk('.'),
+            fn () => $this->queryTyped($device, 'snmpwalk', '.', '', [], [])
+                ?? SnmpQuery::device($device)->options(['-OUneb', '-Ih'])->walk('.'),
             __('commands.dev:collect-snmprec.capturing_data')
         );
         if ($data->getExitCode() !== 0) {
@@ -155,7 +159,7 @@ class DevCollectSnmprec extends LnmsCommand
             return 1;
         }
 
-        if (! $this->saveSnmprec($snmprecFile, ['' => [$this->convertSnmpToSnmprec($data)]])) {
+        if (! $this->saveSnmprec($snmprecFile, ['' => [$this->convertResponse($data)]])) {
             return 1;
         }
 
@@ -241,7 +245,7 @@ class DevCollectSnmprec extends LnmsCommand
                 }
             }
 
-            $parsed = $this->convertSnmpToSnmprec($event->response);
+            $parsed = $this->convertResponse($event->response);
 
             // Re-query if bulk response couldn't be parsed into numeric snmprec lines
             if (empty($parsed) && ! empty($event->oids)) {
@@ -306,19 +310,87 @@ class DevCollectSnmprec extends LnmsCommand
                 ->context($event->options->context)
                 ->mibDir(implode(':', $event->options->mibDirs));
 
-            $data = match ($event->method) {
-                'snmpget' => $query->get($oid),
-                'snmpgetnext' => $query->next($oid),
-                default => $query->walk($oid),
-            };
+            $data = $this->queryTyped($device, $event->method, $oid, $event->options->context, $event->options->mibs, $event->options->mibDirs)
+                ?? match ($event->method) {
+                    'snmpget' => $query->get($oid),
+                    'snmpgetnext' => $query->next($oid),
+                    default => $query->walk($oid),
+                };
 
             if ($data->getExitCode() === 0) {
-                $reParsed = $this->convertSnmpToSnmprec($data);
+                $reParsed = $this->convertResponse($data);
                 if (! empty($reParsed)) {
                     $snmprecDataByContext[$event->options->context][] = $reParsed;
                 }
             }
         }
+    }
+
+    /**
+     * Query through php-snmp with typed values, null when that is not possible (then the cli text path is used)
+     *
+     * @param  string[]  $mibs
+     * @param  string[]  $mibDirs
+     */
+    private function queryTyped(Device $device, string $method, string $oid, string $context, array $mibs, array $mibDirs): ?SnmpResponse
+    {
+        if (! PhpSnmp::supportsNative() || LibrenmsConfig::get('snmp.backend') !== 'phpsnmp') {
+            return null;
+        }
+
+        $options = SnmpQueryOptions::quickPrint();
+        $options->oidFormat = SnmpOidOutput::Numeric;
+        $options->valueTypes = true;
+        $options->mibs = $mibs ?: $options->mibs;
+
+        $query = SnmpQuery::device($device)->options($options)->context($context)->mibDir(implode(':', $mibDirs));
+        $data = match ($method) {
+            'snmpget' => $query->get($oid),
+            'snmpgetnext' => $query->next($oid),
+            default => $query->walk($oid),
+        };
+
+        // another backend answered (no typed objects), let the caller use the text path
+        $typed = array_filter($data->rawValues(), is_object(...));
+
+        return $data->getExitCode() === 0 && ! empty($typed) ? $data : null;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function convertResponse(SnmpResponse $response): array
+    {
+        $typed = array_filter($response->rawValues(), fn ($value) => is_object($value) && property_exists($value, 'type'));
+
+        return ! empty($typed) ? $this->convertTypedToSnmprec($response) : $this->convertSnmpToSnmprec($response);
+    }
+
+    /**
+     * snmprec lines from typed php-snmp values: the ASN type is the snmprec tag
+     *
+     * @return array<int, string>
+     */
+    private function convertTypedToSnmprec(SnmpResponse $response): array
+    {
+        $lines = [];
+        foreach ($response->rawValues() as $oid => $typed) {
+            if (! is_object($typed) || ! property_exists($typed, 'type') || $typed->value instanceof \Snmp\Varbind) {
+                continue;
+            }
+            $oid = ltrim($oid, '.');
+            $value = $typed->value;
+            $lines[] = match ($typed->type) {
+                SNMP_OCTET_STR => ctype_print((string) $value) || $value === ''
+                    ? "$oid|4|$value"
+                    : "$oid|4x|" . bin2hex((string) $value),
+                SNMP_OBJECT_ID => "$oid|6|" . ltrim((string) $value, '.'),
+                SNMP_NULL => "$oid|5|",
+                default => "$oid|{$typed->type}|$value",
+            };
+        }
+
+        return $lines;
     }
 
     /**

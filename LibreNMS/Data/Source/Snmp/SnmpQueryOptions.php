@@ -64,6 +64,9 @@ class SnmpQueryOptions
         public bool $valueOnly = false,
         public bool $extendedIndex = false,
         public bool $allowUnderscores = false,
+
+        // php-snmp only: return {type, value} objects, for snmprec capture
+        public bool $valueTypes = false,
     ) {
     }
 

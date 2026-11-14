@@ -282,7 +282,7 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
         $snmp->setStringOutputFormat($this->getStringOutput($options->stringFormat)); /** @phpstan-ignore method.notFound */
         $snmp->setOidOutputFormat($this->getOidOutput($options->oidFormat)); /** @phpstan-ignore method.notFound */
         if (self::supportsNative()) {
-            $snmp->valueretrieval = SNMP_VALUE_NATIVE | ($options->numericEnums ? 0 : SNMP_VALUE_ENUM_LABELS); /** @phpstan-ignore constant.notFound */
+            $snmp->valueretrieval = SNMP_VALUE_NATIVE | ($options->numericEnums ? 0 : SNMP_VALUE_ENUM_LABELS) | ($options->valueTypes ? SNMP_VALUE_OBJECT : 0); /** @phpstan-ignore constant.notFound */
             $snmp->exceptions_enabled = \SNMP::ERRNO_ANY;
         }
     }

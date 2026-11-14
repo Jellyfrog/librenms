@@ -480,6 +480,7 @@ class SnmpQueryBuilder implements SnmpQueryInterface
                 (int) $this->options->numericIndexes,
                 (int) $this->options->numericEnums,
                 (int) $this->options->tolerateUnorderedIndexes,
+                (int) $this->options->valueTypes,
                 implode(';', $this->options->mibs),
                 implode(';', $this->options->mibDirs),
             ]),

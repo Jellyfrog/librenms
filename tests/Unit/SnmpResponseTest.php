@@ -788,4 +788,20 @@ HOST-RESOURCES-MIB::hrStorageUsed.36 = 127044934
         $this->assertSame('café', $response->text('A::descr.0'));
         $this->assertSame(['A::descr.0' => 'café', 'A::n.0' => 5], $response->text());
     }
+
+    public function testFromNativeUnwrapsTypedObjects(): void
+    {
+        if (! defined('SNMP_VALUE_NATIVE')) {
+            $this->markTestSkipped('librenms-snmp with SNMP_VALUE_NATIVE required');
+        }
+
+        $response = SnmpResponse::fromNative([
+            '.1.3.6.1.2.1.1.3.0' => (object) ['type' => SNMP_TIMETICKS, 'value' => 5],
+            '.1.3.6.1.2.1.1.1.1' => (object) ['type' => 129, 'value' => \Snmp\Varbind::NoSuchInstance],
+        ]);
+
+        $this->assertSame(['.1.3.6.1.2.1.1.3.0' => 5], $response->values());
+        $this->assertSame(SNMP_TIMETICKS, $response->rawValues()['.1.3.6.1.2.1.1.3.0']->type);
+        $this->assertStringContainsString('.1.3.6.1.2.1.1.3.0 = 5', $response->raw());
+    }
 }
