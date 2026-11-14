@@ -27,6 +27,7 @@
 namespace LibreNMS\Data\Source\Snmp;
 
 use App\Facades\LibrenmsConfig;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use LibreNMS\Enum\SnmpOidOutput;
 use LibreNMS\Enum\SnmpQuickPrint;
@@ -44,6 +45,9 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
     private static ?string $loadedMibsKey = null;
 
     private readonly PhpSnmpSessions $sessions;
+
+    /** @var string[] warnings of the running native request, see captureWarnings() */
+    private array $warnings = [];
 
     public function __construct(?PhpSnmpSessions $sessions = null)
     {
@@ -69,19 +73,33 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
 
     public function walkTable(string $target, string $oid, SnmpConfig $config, SnmpQueryOptions $options): SnmpTable
     {
-        $snmp = $this->buildSnmp($target, $config, $options);
-        if ($snmp === null || ! self::supportsNative()) {
+        if (! self::supportsNative()) {
             throw new \LogicException('walkTable() needs librenms-snmp 0.0.2');
+        }
+        $snmp = $this->buildSnmp($target, $config, $options);
+        if ($snmp === null) {
+            // there is no net-snmp fallback for walkTable()
+            return new SnmpTable([], \SNMP::ERRNO_GENERIC, 'php-snmp does not support these SNMP settings (SNMPv3 algorithm or transport)');
         }
         $this->initMibs($options, [$oid]);
 
+        $this->captureWarnings();
         try {
             $rows = $snmp->walkTable($oid, $config->maxRepeaters > 0 ? $config->maxRepeaters : 10, 0);
         } catch (\SNMPException $e) {
             return SnmpTable::fromException($e);
+        } finally {
+            restore_error_handler();
         }
 
-        return new SnmpTable(is_array($rows) ? $rows : []);
+        if ($rows === false && $this->hasFailed($snmp)) {
+            return SnmpTable::fromException($this->failedRequest($snmp, 'walkTable'));
+        }
+        foreach ($this->warnings as $warning) {
+            Log::debug("php-snmp walkTable: $warning");
+        }
+
+        return new SnmpTable($rows ?: []);
     }
 
     /**
@@ -287,6 +305,39 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
         }
     }
 
+    /**
+     * Native mode reports errors as SNMPException, but keep any warning (and its text) away from the
+     * framework error handler: it would abort the poll module in debug mode.
+     * The messages go to $this->warnings until restore_error_handler().
+     */
+    private function captureWarnings(): void
+    {
+        $this->warnings = [];
+        set_error_handler(function (int $severity, string $message): bool {
+            $this->warnings[] = $message;
+
+            return true;
+        }, E_WARNING | E_USER_WARNING);
+    }
+
+    /**
+     * A request that returned false reported an error (errno or warning), not just no data
+     */
+    private function hasFailed(\SNMP $snmp): bool
+    {
+        return $snmp->getErrno() !== 0 || $this->warnings !== [];
+    }
+
+    /**
+     * A request returned false without an SNMPException: build one so the error reaches the response
+     */
+    private function failedRequest(\SNMP $snmp, string $cmd): \SNMPException
+    {
+        $message = $snmp->getError() ?: implode("\n", $this->warnings) ?: "php-snmp $cmd failed";
+
+        return new \SNMPException($message, $snmp->getErrno() ?: \SNMP::ERRNO_GENERIC);
+    }
+
     private function snmpver(string $version): int
     {
         return match ($version) {
@@ -398,6 +449,7 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
         $this->initMibs($options, $oids);
 
         if (self::supportsNative()) {
+            $this->captureWarnings();
             try {
                 $values = match ($cmd) {
                     'get' => $snmp->get($oids),
@@ -407,6 +459,15 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
                 };
             } catch (\SNMPException $e) {
                 return SnmpResponse::fromNative([], ["php-snmp-$cmd", ...$oids], $e, $options);
+            } finally {
+                restore_error_handler();
+            }
+
+            if ($values === false && $this->hasFailed($snmp)) {
+                return SnmpResponse::fromNative([], ["php-snmp-$cmd", ...$oids], $this->failedRequest($snmp, $cmd), $options);
+            }
+            foreach ($this->warnings as $warning) {
+                Log::debug("php-snmp $cmd: $warning");
             }
 
             return SnmpResponse::fromNative(is_array($values) ? $values : [], ["php-snmp-$cmd", ...$oids], null, $options);

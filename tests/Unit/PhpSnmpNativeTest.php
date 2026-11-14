@@ -3,11 +3,13 @@
 namespace LibreNMS\Tests\Unit;
 
 use LibreNMS\Data\Source\Snmp\PhpSnmp;
+use LibreNMS\Data\Source\Snmp\PhpSnmpSessions;
 use LibreNMS\Data\Source\Snmp\SnmpQueryOptions;
 use LibreNMS\Enum\SnmpOidOutput;
 use LibreNMS\Polling\Method\Config\SnmpConfig;
 use LibreNMS\Polling\Method\Methods\SnmpPollingMethod;
 use LibreNMS\Polling\Secrets\Data\SnmpCommunitySecretData;
+use LibreNMS\Polling\Secrets\Data\SnmpV3SecretData;
 use LibreNMS\Tests\TestCase;
 
 class PhpSnmpNativeTest extends TestCase
@@ -99,5 +101,55 @@ class PhpSnmpNativeTest extends TestCase
         $this->assertSame(['.1.3.6.1.2.1.88.1.1.1' => 1, '.1.3.6.1.2.1.88.1.1.2' => 2], $response->values());
         $this->assertSame(\SNMP::ERRNO_TIMEOUT, $response->errorCode);
         $this->assertTrue($response->hasConnectionError());
+    }
+
+    public function testOpenFailureIsConnectionError(): void
+    {
+        $this->config(); // skips without librenms-snmp 0.0.2
+        $response = (new PhpSnmp)->get('127.0.0.1', ['.1.3.6.1.2.1.1.1.0'],
+            SnmpConfig::make(['transport' => 'tcp', 'port' => 1, 'timeout' => 0.1, 'retries' => 0] + (new SnmpPollingMethod)->defaults(), new SnmpCommunitySecretData(community: 'x')),
+            new SnmpQueryOptions);
+
+        $this->assertSame(\SNMP::ERRNO_GENERIC, $response->errorCode);
+        $this->assertTrue($response->hasConnectionError());
+        $this->assertStringContainsString('Could not open snmp connection', $response->getErrorMessage());
+    }
+
+    public function testFalseWithoutExceptionIsError(): void
+    {
+        $this->config(); // skips without librenms-snmp 0.0.2
+        $config = SnmpConfig::make(['transport' => 'udp'] + (new SnmpPollingMethod)->defaults(), new SnmpCommunitySecretData(community: 'x'));
+        $sessions = new PhpSnmpSessions;
+        // an \SNMP object that fails without an SNMPException, like an open error before librenms-snmp threw one
+        $failing = new class(\SNMP::VERSION_2c, '127.0.0.1', 'x') extends \SNMP
+        {
+            public function get(array|string $objectId, bool $preserveKeys = false): mixed
+            {
+                trigger_error('Could not open snmp connection: test', E_USER_WARNING);
+
+                return false;
+            }
+        };
+        $sessions->get(hash('xxh128', serialize(['127.0.0.1', $config, ''])), fn () => $failing);
+
+        $response = (new PhpSnmp($sessions))->get('127.0.0.1', ['.1.3.6.1.2.1.1.1.0'], $config, new SnmpQueryOptions);
+
+        $this->assertFalse($response->isValid());
+        $this->assertSame(\SNMP::ERRNO_GENERIC, $response->errorCode);
+        $this->assertTrue($response->hasConnectionError());
+        $this->assertSame('Could not open snmp connection: test', $response->getErrorMessage());
+    }
+
+    public function testWalkTableWithUnsupportedSecurityIsInvalid(): void
+    {
+        $this->config(); // skips without librenms-snmp 0.0.2
+        $config = SnmpConfig::make(['transport' => 'udp'] + (new SnmpPollingMethod)->defaults(),
+            new SnmpV3SecretData(authname: 'u', authlevel: 'authNoPriv', authpass: 'password1', authalgo: 'BOGUS'));
+
+        $table = (new PhpSnmp)->walkTable('127.0.0.1', 'IF-MIB::ifTable', $config, new SnmpQueryOptions);
+
+        $this->assertFalse($table->isValid());
+        $this->assertSame([], $table->rows());
+        $this->assertNotSame('', $table->errorMessage);
     }
 }
