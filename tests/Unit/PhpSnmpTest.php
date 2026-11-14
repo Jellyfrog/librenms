@@ -268,4 +268,25 @@ class PhpSnmpTest extends TestCase
         $this->assertFalse($result);
         $this->assertNotEmpty($warnings);
     }
+
+    public function testInitMibsOnlyGrows(): void
+    {
+        if (! PhpSnmp::isLibrenmsExtension()) {
+            $this->markTestSkipped('librenms-snmp required');
+        }
+
+        $init = new \ReflectionMethod(PhpSnmp::class, 'initMibs');
+        $loaded = new \ReflectionProperty(PhpSnmp::class, 'loadedMibs');
+        $backend = new PhpSnmp;
+        $loaded->setValue(null, ['dirs' => [], 'mibs' => [], 'underscores' => null]);
+
+        $init->invoke($backend, new SnmpQueryOptions(mibs: ['IF-MIB']), []);
+        $init->invoke($backend, new SnmpQueryOptions(mibs: ['ENTITY-MIB']), []);
+        $before = $loaded->getValue();
+        $init->invoke($backend, new SnmpQueryOptions(mibs: ['IF-MIB']), []);
+
+        $this->assertSame(['ENTITY-MIB', 'IF-MIB'], $before['mibs']);
+        $this->assertSame($before, $loaded->getValue());
+        $this->assertSame('.1.3.6.1.2.1.2.2.1.2', snmp_translate('IF-MIB::ifDescr', \Snmp\OidOutput::Numeric));
+    }
 }

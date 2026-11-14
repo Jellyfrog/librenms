@@ -37,7 +37,11 @@ use LibreNMS\Util\Rewrite;
 
 class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
 {
-    private static ?string $loadedMibs = null;
+    /** @var array{dirs: string[], mibs: string[], underscores: bool|null} the MIB tree of the librenms-snmp extension, it only grows */
+    private static array $loadedMibs = ['dirs' => [], 'mibs' => [], 'underscores' => null];
+
+    /** key of the MIB tree built for the stock extension */
+    private static ?string $loadedMibsKey = null;
 
     private readonly PhpSnmpSessions $sessions;
 
@@ -311,23 +315,41 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
         }
         ksort($onDemand);
 
-        // the MIB tree is process global, only rebuild it when it would differ from the one the cli builds
         $mibDirs = $options->mibDirs ?: [LibrenmsConfig::get('mib_dir')];
         $mibs = array_values(array_filter($options->mibs, fn (string $mib): bool => $mib !== ''));
-        $mibKey = serialize([$options->allowUnderscores, $mibDirs, $mibs, array_keys($onDemand)]);
-        if ($mibKey === self::$loadedMibs) {
+
+        if (self::isLibrenmsExtension()) {
+            // the MIB tree is process global and snmp_init_mib() rebuilds it from scratch, so only call it
+            // when something is missing and then load everything seen so far: the tree never shrinks
+            $missingDirs = array_diff($mibDirs, self::$loadedMibs['dirs']);
+            $missingMibs = array_diff($mibs, self::$loadedMibs['mibs']);
+            if (! $missingDirs && ! $missingMibs && self::$loadedMibs['underscores'] === $options->allowUnderscores) {
+                return;
+            }
+
+            // MIBs net-snmp loads on demand (MIB::name oids) are not added: loading them explicitly changes how
+            // numeric oids resolve (junose, iosxe polling broke), the cli does not load them up front either
+            // the first dir containing a MIB wins, so this request's dirs (OS specific ones first) go before the old ones
+            $dirs = array_values(array_unique([...$mibDirs, ...self::$loadedMibs['dirs']]));
+            $all = array_values(array_unique([...self::$loadedMibs['mibs'], ...$mibs]));
+            sort($all);
+            self::$loadedMibs = ['dirs' => $dirs, 'mibs' => $all, 'underscores' => $options->allowUnderscores];
+
+            snmp_set_mib_option(\Snmp\Mib::AllowUnderscores, $options->allowUnderscores); /** @phpstan-ignore function.notFound, class.notFound */
+            snmp_init_mib(implode(':', $dirs), $all); /** @phpstan-ignore function.notFound */
+
             return;
         }
-        self::$loadedMibs = $mibKey;
+
+        // stock extension: only rebuild when the request differs from the loaded tree
+        $mibKey = serialize([$options->allowUnderscores, $mibDirs, $mibs, array_keys($onDemand)]);
+        if ($mibKey === self::$loadedMibsKey) {
+            return;
+        }
+        self::$loadedMibsKey = $mibKey;
 
         // Set the MIB allow underscore options
         snmp_set_mib_option(\Snmp\Mib::AllowUnderscores, $options->allowUnderscores); /** @phpstan-ignore function.notFound, class.notFound */
-        if (self::isLibrenmsExtension()) {
-            // build the tree from exactly these modules and their imports, like the cli does with -M dirs -m A:B:C
-            snmp_init_mib(implode(':', $mibDirs), $mibs); /** @phpstan-ignore function.notFound */
-
-            return;
-        }
 
         // older extension: reset the loaded MIB tree (net-snmp default MIBs) with the configured mib dirs
         snmp_init_mib(implode(':', $mibDirs)); /** @phpstan-ignore function.notFound */
