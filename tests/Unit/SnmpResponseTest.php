@@ -666,4 +666,59 @@ HOST-RESOURCES-MIB::hrStorageUsed.36 = 127044934
         $this->expectException(SnmpException::class);
         new SnmpResponse([], "Timeout: No Response from udp:192.0.2.1:161.\n", 1)->throwIfConnectionError();
     }
+
+    public function testFromNativeKeepsTypes(): void
+    {
+        if (! defined('SNMP_VALUE_NATIVE')) {
+            $this->markTestSkipped('librenms-snmp with SNMP_VALUE_NATIVE required');
+        }
+
+        $response = SnmpResponse::fromNative([
+            'IF-MIB::ifIndex[1]' => 1,
+            'IF-MIB::ifDescr[1]' => "eth0\x00",
+            'IF-MIB::ifSpeed[1]' => 1000000000,
+            'IF-MIB::ifAlias[1]' => null,
+            'IF-MIB::ifName[1]' => \Snmp\Varbind::NoSuchInstance,
+        ], ['php-snmp-walk', 'IF-MIB::ifTable']);
+
+        $this->assertSame([
+            'IF-MIB::ifIndex[1]' => 1,
+            'IF-MIB::ifDescr[1]' => "eth0\x00",
+            'IF-MIB::ifSpeed[1]' => 1000000000,
+            'IF-MIB::ifAlias[1]' => null,
+        ], $response->values());
+        $this->assertSame(\Snmp\Varbind::NoSuchInstance, $response->rawValues()['IF-MIB::ifName[1]']);
+        $this->assertSame(1, $response->value('IF-MIB::ifIndex'));
+        $this->assertSame(0, $response->errorCode);
+        $this->assertFalse($response->isValid());
+        $this->assertTrue($response->isValid(true));
+        $this->assertSame("IF-MIB::ifIndex[1] = 1\nIF-MIB::ifDescr[1] = eth0\x00\nIF-MIB::ifSpeed[1] = 1000000000\nIF-MIB::ifAlias[1] = NULL\nIF-MIB::ifName[1] = No Such Instance currently exists at this OID\n", $response->raw());
+    }
+
+    public function testFromNativeError(): void
+    {
+        if (! defined('SNMP_VALUE_NATIVE')) {
+            $this->markTestSkipped('librenms-snmp with SNMP_VALUE_NATIVE required');
+        }
+
+        $response = SnmpResponse::fromNative([], ['php-snmp-get'], new \SNMPException('No response from udp:127.0.0.1:1', \SNMP::ERRNO_TIMEOUT));
+
+        $this->assertFalse($response->isValid());
+        $this->assertSame(\SNMP::ERRNO_TIMEOUT, $response->errorCode);
+        $this->assertSame(1, $response->getExitCode());
+        $this->assertTrue($response->hasConnectionError());
+        $this->assertSame('No response from udp:127.0.0.1:1', $response->getErrorMessage());
+    }
+
+    public function testFromNativeAppendKeepsTypes(): void
+    {
+        if (! defined('SNMP_VALUE_NATIVE')) {
+            $this->markTestSkipped('librenms-snmp with SNMP_VALUE_NATIVE required');
+        }
+
+        $a = SnmpResponse::fromNative(['A::a.0' => 1]);
+        $b = SnmpResponse::fromNative(['A::b.0' => null, 'A::c.0' => \Snmp\Varbind::NoSuchObject]);
+
+        $this->assertSame(['A::a.0' => 1, 'A::b.0' => null], $a->append($b)->values());
+    }
 }

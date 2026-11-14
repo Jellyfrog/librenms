@@ -49,6 +49,7 @@ class SnmpResponse implements \Stringable
     protected array $values = [];
     protected ?string $badString = null;
     protected ?string $errorMessage = null;
+    protected bool $native = false;
 
     /**
      * @param  array<string, string>  $rawValues
@@ -61,6 +62,7 @@ class SnmpResponse implements \Stringable
         public readonly int $exitCode = 0,
         public readonly array $command = [],
         protected readonly ?SnmpQueryOptions $options = null,
+        public readonly int $errorCode = 0,
     ) {
         foreach ($this->rawValues as $oid => $val) {
             if (preg_match(self::BAD_STRING_REGEX, (string) $val, $matches)) {
@@ -74,11 +76,54 @@ class SnmpResponse implements \Stringable
         }
     }
 
+    /**
+     * Create a response from librenms-snmp SNMP_VALUE_NATIVE values: nothing is parsed or normalized
+     *
+     * @param  array<string, int|float|string|null|\Snmp\Varbind>  $values
+     * @param  array<int, string>  $command
+     */
+    public static function fromNative(array $values, array $command = [], ?\SNMPException $error = null, ?SnmpQueryOptions $options = null): self
+    {
+        $response = new self([], $error?->getMessage() ?? '', $error ? 1 : 0, $command, $options, $error?->getCode() ?? 0);
+        $response->native = true;
+        $response->rawValues = $values;
+
+        foreach ($values as $oid => $value) {
+            if ($value instanceof \Snmp\Varbind) {
+                $response->badString ??= self::varbindText($value);
+                continue;
+            }
+            $response->values[$oid] = $value;
+        }
+
+        return $response;
+    }
+
+    /**
+     * @return array<string, int|float|string|null|\Snmp\Varbind>
+     */
+    public function rawValues(): array
+    {
+        return $this->rawValues;
+    }
+
+    private static function varbindText(\Snmp\Varbind $varbind): string
+    {
+        return match ($varbind) {
+            \Snmp\Varbind::NoSuchObject => 'No Such Object available on this agent at this OID',
+            \Snmp\Varbind::NoSuchInstance => 'No Such Instance currently exists at this OID',
+            \Snmp\Varbind::EndOfMibView => 'No more variables left in this MIB View (It is past the end of the MIB tree)',
+        };
+    }
+
     public function raw(): string
     {
         $lines = [];
         $source = ! empty($this->rawValues) ? $this->rawValues : $this->values;
         foreach ($source as $oid => $val) {
+            if ($this->native) {
+                $val = $val instanceof \Snmp\Varbind ? self::varbindText($val) : ($val ?? 'NULL');
+            }
             $lines[] = match (true) {
                 $oid === '' || $this->options?->valueOnly => (string) $val,
                 $this->options?->quickPrint == SnmpQuickPrint::NoEquals => "$oid $val",
@@ -151,7 +196,7 @@ class SnmpResponse implements \Stringable
 
         $this->errorMessage = '';
 
-        $badString = $this->getStderrError() ?? $this->findBadString();
+        $badString = ($this->native && $this->exitCode !== 0 ? $this->stderr : null) ?? $this->getStderrError() ?? $this->findBadString();
         $isEmpty = $this->isEmpty();
 
         if ($badString !== null || $isEmpty) {
@@ -183,6 +228,10 @@ class SnmpResponse implements \Stringable
      */
     public function hasConnectionError(): bool
     {
+        if ($this->errorCode === \SNMP::ERRNO_TIMEOUT) {
+            return true;
+        }
+
         return (bool) preg_match('/Timeout: No Response from|snmp\w+: Timeout|No response from|Unknown user name|Authentication failure|authorizationError/i', $this->stderr);
     }
 
@@ -224,7 +273,7 @@ class SnmpResponse implements \Stringable
      *
      * @throws \LibreNMS\Exceptions\InvalidOidException
      */
-    public function value(array|string $oids = [], bool $forceNumeric = false): string
+    public function value(array|string $oids = [], bool $forceNumeric = false): int|float|string|null
     {
         $values = $this->values();
 
@@ -379,6 +428,13 @@ class SnmpResponse implements \Stringable
 
     public function append(SnmpResponse $response): SnmpResponse
     {
+        if ($this->native || $response->native) {
+            $new = self::fromNative(array_merge($this->values(), $response->values()), $response->command ?: $this->command, null, $this->options ?? $response->options);
+            $new->errorMessage = $this->errorMessage ?: $response->errorMessage;
+
+            return $new;
+        }
+
         $newResponse = new SnmpResponse(
             // only the values, a failed oid (No Such Instance) must not invalidate the others, like the cli output
             array_merge($this->values(), $response->values()),
@@ -413,6 +469,6 @@ class SnmpResponse implements \Stringable
 
     public function __sleep()
     {
-        return ['values', 'rawValues', 'badString', 'exitCode', 'stderr', 'command', 'errorMessage'];
+        return ['values', 'rawValues', 'badString', 'exitCode', 'stderr', 'command', 'errorMessage', 'native', 'errorCode'];
     }
 }
