@@ -758,4 +758,34 @@ HOST-RESOURCES-MIB::hrStorageUsed.36 = 127044934
         $this->assertNull($response->value('A::b.0'));
         $this->assertNull($response->value('A::b'));
     }
+
+    public function testFromNativeKeepsPartialRows(): void
+    {
+        if (! defined('SNMP_VALUE_NATIVE')) {
+            $this->markTestSkipped('librenms-snmp with SNMP_VALUE_NATIVE required');
+        }
+
+        $e = new \SNMPException('No response from udp:10.0.0.1:161', \SNMP::ERRNO_TIMEOUT);
+        (new \ReflectionProperty(\SNMPException::class, 'partialResult'))->setValue($e, ['A::a.1' => 1, 'A::a.2' => 2]);
+
+        $response = SnmpResponse::fromNative([], ['php-snmp-walk', 'A::a'], $e);
+
+        $this->assertSame(['A::a.1' => 1, 'A::a.2' => 2], $response->values());
+        $this->assertFalse($response->isValid());
+        $this->assertTrue($response->isValid(true));
+        $this->assertTrue($response->hasConnectionError());
+    }
+
+    public function testTextInfersEncodingOnRequest(): void
+    {
+        if (! defined('SNMP_VALUE_NATIVE')) {
+            $this->markTestSkipped('librenms-snmp with SNMP_VALUE_NATIVE required');
+        }
+
+        $response = SnmpResponse::fromNative(['A::descr.0' => "caf\xe9", 'A::n.0' => 5]);
+
+        $this->assertSame("caf\xe9", $response->value('A::descr.0'));
+        $this->assertSame('café', $response->text('A::descr.0'));
+        $this->assertSame(['A::descr.0' => 'café', 'A::n.0' => 5], $response->text());
+    }
 }

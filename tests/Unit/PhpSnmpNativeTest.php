@@ -12,7 +12,7 @@ use LibreNMS\Tests\TestCase;
 
 class PhpSnmpNativeTest extends TestCase
 {
-    private function config(): SnmpConfig
+    private function config(array $overrides = []): SnmpConfig
     {
         $sim = getenv('SNMPSIM') ?: '';
         if (! PhpSnmp::supportsNative() || $sim === '') {
@@ -20,7 +20,7 @@ class PhpSnmpNativeTest extends TestCase
         }
         [, $port] = explode(':', $sim);
 
-        return SnmpConfig::make(['transport' => 'udp', 'port' => (int) $port, 'timeout' => 1, 'retries' => 0] + (new SnmpPollingMethod)->defaults(),
+        return SnmpConfig::make(['transport' => 'udp', 'port' => (int) $port, 'timeout' => 1, 'retries' => 0] + $overrides + (new SnmpPollingMethod)->defaults(),
             new SnmpCommunitySecretData(community: 'phpsnmp_native'));
     }
 
@@ -77,5 +77,17 @@ class PhpSnmpNativeTest extends TestCase
         $this->assertSame(\SNMP::ERRNO_TIMEOUT, $response->errorCode);
         $this->assertTrue($response->hasConnectionError());
         $this->assertSame([], $response->values());
+    }
+
+    /**
+     * getnext walk: a bulk response would arrive (or time out) as a whole, so no rows come before the delayed one
+     */
+    public function testWalkTimeoutKeepsRows(): void
+    {
+        $response = (new PhpSnmp)->walk($this->target(), '.1.3.6.1.2.1.88.1.1', $this->config(['bulk' => false]), new SnmpQueryOptions(oidFormat: SnmpOidOutput::Numeric));
+
+        $this->assertSame(['.1.3.6.1.2.1.88.1.1.1' => 1, '.1.3.6.1.2.1.88.1.1.2' => 2], $response->values());
+        $this->assertSame(\SNMP::ERRNO_TIMEOUT, $response->errorCode);
+        $this->assertTrue($response->hasConnectionError());
     }
 }

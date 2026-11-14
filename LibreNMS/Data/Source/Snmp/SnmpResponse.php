@@ -84,6 +84,8 @@ class SnmpResponse implements \Stringable
      */
     public static function fromNative(array $values, array $command = [], ?\SNMPException $error = null, ?SnmpQueryOptions $options = null): self
     {
+        $values = array_replace($error?->getPartialResult() ?? [], $values); /** @phpstan-ignore method.notFound */
+
         return self::buildNative($values, $error?->getMessage() ?? '', $error ? 1 : 0, $command, $options, $error?->getCode() ?? 0);
     }
 
@@ -205,7 +207,18 @@ class SnmpResponse implements \Stringable
 
         $this->errorMessage = '';
 
-        $badString = ($this->native && $this->exitCode !== 0 ? $this->stderr : null) ?? $this->getStderrError() ?? $this->findBadString();
+        if ($this->native) {
+            $badString = $this->exitCode !== 0 ? $this->stderr : $this->badString;
+            if ($badString !== null || $this->isEmpty()) {
+                $this->errorMessage = $badString ?? 'Empty Output';
+
+                return false;
+            }
+
+            return true;
+        }
+
+        $badString = $this->getStderrError() ?? $this->findBadString();
         $isEmpty = $this->isEmpty();
 
         if ($badString !== null || $isEmpty) {
@@ -237,8 +250,8 @@ class SnmpResponse implements \Stringable
      */
     public function hasConnectionError(): bool
     {
-        if ($this->native && $this->errorCode === \SNMP::ERRNO_TIMEOUT) {
-            return true;
+        if ($this->native) {
+            return in_array($this->errorCode, [\SNMP::ERRNO_TIMEOUT, \SNMP::ERRNO_GENERIC], true);
         }
 
         return (bool) preg_match('/Timeout: No Response from|snmp\w+: Timeout|No response from|Unknown user name|Authentication failure|authorizationError/i', $this->stderr);
@@ -323,6 +336,18 @@ class SnmpResponse implements \Stringable
         }
 
         return '';
+    }
+
+    /**
+     * Values with string encoding fixed for display and storage; native values stay raw bytes
+     *
+     * @return array<string, mixed>|int|float|string|null
+     */
+    public function text(array|string $oids = []): array|int|float|string|null
+    {
+        $fix = fn ($v) => is_string($v) ? (string) StringHelpers::inferEncoding($v) : $v;
+
+        return $oids === [] ? array_map($fix, $this->values()) : $fix($this->value($oids));
     }
 
     public function values(): array
