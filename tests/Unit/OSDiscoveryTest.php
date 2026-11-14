@@ -54,7 +54,7 @@ final class OSDiscoveryTest extends TestCase
 
         self::$unchecked_files = array_flip(array_filter(
             array_map(fn ($file) => basename($file, '.snmprec'), glob($glob)),
-            fn ($file) => ! Str::contains($file, '@') && ! in_array($file, ['snmpquerymock_regression', 'snmprec_regression'], true)
+            fn ($file) => ! Str::contains($file, '@') && ! in_array($file, ['snmpquerymock_regression', 'snmprec_regression', 'phpsnmp_native'], true)
         ));
     }
 
