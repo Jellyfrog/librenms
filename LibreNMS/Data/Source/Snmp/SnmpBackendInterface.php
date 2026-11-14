@@ -64,6 +64,7 @@ interface SnmpBackendInterface
     /**
      * Walk a table and return its rows keyed by index, with native column values.
      * Needs a backend with native values (librenms-snmp), others throw \LogicException.
+     * Request errors, and security settings the backend cannot use, give an invalid SnmpTable (see isValid()).
      */
     public function walkTable(string $target, string $oid, SnmpConfig $config, SnmpQueryOptions $options): SnmpTable;
 

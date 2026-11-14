@@ -141,6 +141,7 @@ interface SnmpQueryInterface
     /**
      * Walk a table (table, entry or column oid) and return its rows keyed by index with native values.
      * Only available on the php-snmp backend with librenms-snmp, otherwise throws \LogicException.
+     * Request errors, and security settings php-snmp cannot use, give an invalid SnmpTable (see isValid()).
      */
     public function walkTable(string $oid): SnmpTable;
 
