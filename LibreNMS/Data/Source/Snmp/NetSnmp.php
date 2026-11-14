@@ -58,6 +58,11 @@ readonly class NetSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
         return $this->runCommand($this->optionsParser->buildCli('snmpwalk', $target, [$oid], $config, $options));
     }
 
+    public function walkTable(string $target, string $oid, SnmpConfig $config, SnmpQueryOptions $options): SnmpTable
+    {
+        throw new \LogicException('walkTable() is not available on the cli backend yet');
+    }
+
     /**
      * @param  string[]  $oids
      */

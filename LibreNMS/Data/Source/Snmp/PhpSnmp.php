@@ -67,6 +67,23 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
         return $snmp ? $this->runCommand('walk', $snmp, $config, [$oid], $options) : new NetSnmp()->walk($target, $oid, $config, $options);
     }
 
+    public function walkTable(string $target, string $oid, SnmpConfig $config, SnmpQueryOptions $options): SnmpTable
+    {
+        $snmp = $this->buildSnmp($target, $config, $options);
+        if ($snmp === null || ! self::supportsNative()) {
+            throw new \LogicException('walkTable() needs librenms-snmp 0.0.2');
+        }
+        $this->initMibs($options, [$oid]);
+
+        try {
+            $rows = $snmp->walkTable($oid, $config->maxRepeaters > 0 ? $config->maxRepeaters : 10, 0); /** @phpstan-ignore method.notFound */
+        } catch (\SNMPException $e) {
+            return SnmpTable::fromException($e);
+        }
+
+        return new SnmpTable(is_array($rows) ? $rows : []);
+    }
+
     /**
      * @param  string[]  $oids
      */

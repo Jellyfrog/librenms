@@ -139,6 +139,12 @@ interface SnmpQueryInterface
     public function walk($oid): SnmpResponse;
 
     /**
+     * Walk a table (table, entry or column oid) and return its rows keyed by index with native values.
+     * Only available on the php-snmp backend with librenms-snmp, otherwise throws \LogicException.
+     */
+    public function walkTable(string $oid): SnmpTable;
+
+    /**
      * snmpnext for the given oid
      * snmpnext retrieves the first oid after the given oid.
      *

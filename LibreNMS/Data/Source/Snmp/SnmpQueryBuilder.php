@@ -276,6 +276,18 @@ class SnmpQueryBuilder implements SnmpQueryInterface
     }
 
     /**
+     * Walk a table (table, entry or column oid) and return its rows keyed by index with native values.
+     */
+    public function walkTable(string $oid): SnmpTable
+    {
+        $config = $this->prepareQuery();
+        $target = $this->device->pollerTarget();
+        $options = $this->options->createPerWalkInstance($this->device->os ?? 'generic', $oid);
+
+        return $this->backend->walkTable($target, $oid, $config, $options);
+    }
+
+    /**
      * snmpnext for the given oid
      * snmpnext retrieves the first oid after the given oid.
      *

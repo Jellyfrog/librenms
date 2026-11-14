@@ -62,6 +62,12 @@ interface SnmpBackendInterface
     public function walk(string $target, string $oid, SnmpConfig $config, SnmpQueryOptions $options): SnmpResponse;
 
     /**
+     * Walk a table and return its rows keyed by index, with native column values.
+     * Needs a backend with native values (librenms-snmp), others throw \LogicException.
+     */
+    public function walkTable(string $target, string $oid, SnmpConfig $config, SnmpQueryOptions $options): SnmpTable;
+
+    /**
      * snmpgetnext for one or more OIDs — fetches the first OID after each
      * given OID. Same batching contract as get().
      *

@@ -30,6 +30,7 @@ use Exception;
 use LibreNMS\Data\Source\Snmp\SnmpBackendInterface;
 use LibreNMS\Data\Source\Snmp\SnmpQueryOptions;
 use LibreNMS\Data\Source\Snmp\SnmpResponse;
+use LibreNMS\Data\Source\Snmp\SnmpTable;
 use LibreNMS\Data\Source\Snmp\SnmpTranslatorInterface;
 use LibreNMS\Enum\SnmpOidOutput;
 use LibreNMS\Polling\Method\Config\SnmpConfig;
@@ -102,6 +103,11 @@ class SnmprecSnmpBackend implements SnmpBackendInterface
         Log::debug("[SNMP] snmpwalk $community $num_oid");
 
         return new SnmpResponse($results);
+    }
+
+    public function walkTable(string $target, string $oid, SnmpConfig $config, SnmpQueryOptions $options): SnmpTable
+    {
+        throw new \LogicException('walkTable() is not available on the snmprec backend');
     }
 
     /**

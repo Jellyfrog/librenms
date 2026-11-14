@@ -58,6 +58,16 @@ class PhpSnmpNativeTest extends TestCase
         $this->assertSame('up', $response->value());
     }
 
+    public function testWalkTable(): void
+    {
+        $table = (new PhpSnmp)->walkTable($this->target(), 'IF-MIB::ifTable', $this->config(), new SnmpQueryOptions);
+
+        $this->assertTrue($table->isValid());
+        $this->assertSame([1], $table->rows()['1']['index']);
+        $this->assertSame('up', $table->rows()['1']['ifAdminStatus']);
+        $this->assertSame(1000000000, $table->rows()['1']['ifSpeed']);
+    }
+
     public function testMissingInstanceIsMarkerNotWarning(): void
     {
         $response = (new PhpSnmp)->get($this->target(), ['.1.3.6.1.2.1.1.1.0', '.1.3.6.1.2.1.1.1.1'], $this->config(), new SnmpQueryOptions(oidFormat: SnmpOidOutput::Numeric));
