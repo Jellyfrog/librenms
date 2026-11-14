@@ -254,7 +254,9 @@ class SnmpResponse implements \Stringable
     public function hasConnectionError(): bool
     {
         if ($this->native) {
-            return in_array($this->errorCode, [\SNMP::ERRNO_TIMEOUT, \SNMP::ERRNO_GENERIC], true);
+            // an error status of authorizationError is the agent rejecting the request, like the text path
+            return in_array($this->errorCode, [\SNMP::ERRNO_TIMEOUT, \SNMP::ERRNO_GENERIC], true)
+                || ($this->errorCode === \SNMP::ERRNO_ERROR_IN_REPLY && str_contains($this->stderr, 'authorizationError'));
         }
 
         return (bool) preg_match('/Timeout: No Response from|snmp\w+: Timeout|No response from|Unknown user name|Authentication failure|authorizationError/i', $this->stderr);

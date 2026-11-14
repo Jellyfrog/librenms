@@ -112,8 +112,8 @@ class DiscoverDevice implements ShouldQueue, ShouldBeUnique
 
             DeviceDiscovered::dispatch($this->device);
         } finally {
+            app(PhpSnmpSessions::class)->flush(); // first: flush() never throws, save() can
             $this->device?->save(); // make sure device changes are saved even if discovery fails
-            app(PhpSnmpSessions::class)->flush();
         }
 
         // retry down devices, the last attempt succeeds, a down device is not a failed job

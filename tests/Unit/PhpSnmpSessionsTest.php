@@ -36,4 +36,29 @@ class PhpSnmpSessionsTest extends TestCase
         $sessions->flush();
         $this->assertSame(0, $sessions->count());
     }
+
+    public function testFlushSwallowsCloseErrors(): void
+    {
+        if (! PhpSnmp::supportsNative()) {
+            $this->markTestSkipped('librenms-snmp with SNMP_VALUE_NATIVE required');
+        }
+
+        $sessions = new PhpSnmpSessions;
+        $failing = new class(\SNMP::VERSION_2c, '127.0.0.1', 'public') extends \SNMP
+        {
+            public function close(): bool
+            {
+                throw new \RuntimeException('close failed');
+            }
+        };
+        $open = new \SNMP(\SNMP::VERSION_2c, '127.0.0.1', 'public');
+        $sessions->get('a', fn () => $failing);
+        $sessions->get('b', fn () => $open);
+
+        $sessions->flush();
+
+        $this->assertSame(0, $sessions->count());
+        $this->expectException(\Error::class); // b was closed too
+        $open->get('.1.3.6.1.2.1.1.1.0');
+    }
 }

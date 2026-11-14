@@ -27,12 +27,21 @@ class PhpSnmpSessions
         return $this->sessions[$key];
     }
 
+    /**
+     * Close all sessions. Never throws: it runs in finally blocks of the poll and discovery jobs.
+     */
     public function flush(): void
     {
-        foreach ($this->sessions as $snmp) {
-            $snmp->close();
+        $sessions = $this->sessions;
+        $this->sessions = []; // detach first, a failing close() must not leave sessions behind
+
+        foreach ($sessions as $snmp) {
+            try {
+                $snmp->close();
+            } catch (\Throwable) {
+                // the object is dropped anyway, its session is freed with it
+            }
         }
-        $this->sessions = [];
     }
 
     public function count(): int

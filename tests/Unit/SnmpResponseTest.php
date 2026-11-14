@@ -710,6 +710,19 @@ HOST-RESOURCES-MIB::hrStorageUsed.36 = 127044934
         $this->assertSame('No response from udp:127.0.0.1:1', $response->getErrorMessage());
     }
 
+    public function testFromNativeAuthorizationErrorIsConnectionError(): void
+    {
+        if (! defined('SNMP_VALUE_NATIVE')) {
+            $this->markTestSkipped('librenms-snmp with SNMP_VALUE_NATIVE required');
+        }
+
+        $denied = SnmpResponse::fromNative([], [], new \SNMPException("Error in packet at '.1.3.6.1.2.1.1.1.0': (authorizationError) access denied", \SNMP::ERRNO_ERROR_IN_REPLY));
+        $noSuchName = SnmpResponse::fromNative([], [], new \SNMPException("Error in packet at '.1.3.6.1.2.1.1.99.0': (noSuchName) There is no such variable name in this MIB.", \SNMP::ERRNO_ERROR_IN_REPLY));
+
+        $this->assertTrue($denied->hasConnectionError());
+        $this->assertFalse($noSuchName->hasConnectionError());
+    }
+
     public function testFromNativeAppendKeepsTypes(): void
     {
         if (! defined('SNMP_VALUE_NATIVE')) {
