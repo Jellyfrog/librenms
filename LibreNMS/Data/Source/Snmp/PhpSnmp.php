@@ -134,6 +134,14 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
         return defined('SNMP_LIBRENMS_VERSION');
     }
 
+    /**
+     * librenms-snmp 0.0.2+ returns native values (SNMP_VALUE_NATIVE), Snmp\Varbind markers and SNMPException errors
+     */
+    public static function supportsNative(): bool
+    {
+        return defined('SNMP_VALUE_NATIVE');
+    }
+
     private function communityOrUsername(SnmpConfig $config, string $context): string
     {
         if ($config->version === 'v3') {
@@ -234,6 +242,10 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
         }
         $snmp->setStringOutputFormat($this->getStringOutput($options->stringFormat)); /** @phpstan-ignore method.notFound */
         $snmp->setOidOutputFormat($this->getOidOutput($options->oidFormat)); /** @phpstan-ignore method.notFound */
+        if (self::supportsNative()) {
+            $snmp->valueretrieval = SNMP_VALUE_NATIVE | ($options->numericEnums ? 0 : SNMP_VALUE_ENUM_LABELS); /** @phpstan-ignore constant.notFound */
+            $snmp->exceptions_enabled = \SNMP::ERRNO_ANY;
+        }
     }
 
     private function snmpver(string $version): int
@@ -323,6 +335,21 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
     private function runCommand(string $cmd, \SNMP $snmp, SnmpConfig $config, array $oids, SnmpQueryOptions $options): SnmpResponse
     {
         $this->initMibs($options, $oids);
+
+        if (self::supportsNative()) {
+            try {
+                $values = match ($cmd) {
+                    'get' => $snmp->get($oids),
+                    'getnext' => $snmp->getnext($oids),
+                    'walk' => $snmp->walk($oids, false, $config->maxRepeaters > 0 ? $config->maxRepeaters : 10, 0),
+                    default => throw new \Exception("SNMP command $cmd is not supported"),
+                };
+            } catch (\SNMPException $e) {
+                return SnmpResponse::fromNative([], ["php-snmp-$cmd", ...$oids], $e, $options);
+            }
+
+            return SnmpResponse::fromNative(is_array($values) ? $values : [], ["php-snmp-$cmd", ...$oids], null, $options);
+        }
 
         // PHP-SNMP generates some errors - set the error handler to capture them
         $missing = [];
