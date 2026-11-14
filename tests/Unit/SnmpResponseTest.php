@@ -721,4 +721,41 @@ HOST-RESOURCES-MIB::hrStorageUsed.36 = 127044934
 
         $this->assertSame(['A::a.0' => 1, 'A::b.0' => null], $a->append($b)->values());
     }
+
+    public function testHasConnectionErrorWithoutNativeDoesNotNeedSnmpClass(): void
+    {
+        // a non-native response must not evaluate \SNMP::ERRNO_TIMEOUT (fatal without ext-snmp)
+        $this->assertFalse((new SnmpResponse([], 'x', 1))->hasConnectionError());
+        $this->assertTrue((new SnmpResponse([], 'Timeout: No Response from 127.0.0.1', 1))->hasConnectionError());
+    }
+
+    public function testFromNativeAppendKeepsErrors(): void
+    {
+        if (! defined('SNMP_VALUE_NATIVE')) {
+            $this->markTestSkipped('librenms-snmp with SNMP_VALUE_NATIVE required');
+        }
+
+        $good = SnmpResponse::fromNative(['A::a.0' => 1]);
+        $bad = SnmpResponse::fromNative([], [], new \SNMPException('No response from udp:127.0.0.1:1', \SNMP::ERRNO_TIMEOUT));
+
+        foreach ([$good->append($bad), $bad->append($good)] as $merged) {
+            $this->assertFalse($merged->isValid());
+            $this->assertTrue($merged->hasConnectionError());
+            $this->assertSame(\SNMP::ERRNO_TIMEOUT, $merged->errorCode);
+            $this->assertSame(1, $merged->getExitCode());
+            $this->assertSame(['A::a.0' => 1], $merged->values());
+        }
+    }
+
+    public function testFromNativeValueNull(): void
+    {
+        if (! defined('SNMP_VALUE_NATIVE')) {
+            $this->markTestSkipped('librenms-snmp with SNMP_VALUE_NATIVE required');
+        }
+
+        $response = SnmpResponse::fromNative(['A::b.0' => null]);
+        $this->assertNull($response->value());
+        $this->assertNull($response->value('A::b.0'));
+        $this->assertNull($response->value('A::b'));
+    }
 }

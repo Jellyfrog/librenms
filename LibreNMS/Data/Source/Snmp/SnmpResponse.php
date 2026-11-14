@@ -84,7 +84,16 @@ class SnmpResponse implements \Stringable
      */
     public static function fromNative(array $values, array $command = [], ?\SNMPException $error = null, ?SnmpQueryOptions $options = null): self
     {
-        $response = new self([], $error?->getMessage() ?? '', $error ? 1 : 0, $command, $options, $error?->getCode() ?? 0);
+        return self::buildNative($values, $error?->getMessage() ?? '', $error ? 1 : 0, $command, $options, $error?->getCode() ?? 0);
+    }
+
+    /**
+     * @param  array<string, int|float|string|null|\Snmp\Varbind>  $values
+     * @param  array<int, string>  $command
+     */
+    private static function buildNative(array $values, string $stderr, int $exitCode, array $command, ?SnmpQueryOptions $options, int $errorCode): self
+    {
+        $response = new self([], $stderr, $exitCode, $command, $options, $errorCode);
         $response->native = true;
         $response->rawValues = $values;
 
@@ -228,7 +237,7 @@ class SnmpResponse implements \Stringable
      */
     public function hasConnectionError(): bool
     {
-        if ($this->errorCode === \SNMP::ERRNO_TIMEOUT) {
+        if ($this->native && $this->errorCode === \SNMP::ERRNO_TIMEOUT) {
             return true;
         }
 
@@ -290,7 +299,7 @@ class SnmpResponse implements \Stringable
                 $oid = Oid::of($oid)->toNumeric();
             }
 
-            if (isset($values[$oid]) && $values[$oid] !== '') {
+            if (array_key_exists($oid, $values) && $values[$oid] !== '') {
                 return $values[$oid];
             }
 
@@ -308,7 +317,7 @@ class SnmpResponse implements \Stringable
         foreach ($oids as $oid) {
             $dot_index_oid = preg_replace('/\.([^.]+)/', '[$1]', (string) $oid);
             // if new oid is different and exists and is not an empty string
-            if ($dot_index_oid !== $oid && isset($values[$dot_index_oid]) && $values[$dot_index_oid] !== '') {
+            if ($dot_index_oid !== $oid && array_key_exists($dot_index_oid, $values) && $values[$dot_index_oid] !== '') {
                 return $values[$dot_index_oid];
             }
         }
@@ -429,7 +438,14 @@ class SnmpResponse implements \Stringable
     public function append(SnmpResponse $response): SnmpResponse
     {
         if ($this->native || $response->native) {
-            $new = self::fromNative(array_merge($this->values(), $response->values()), $response->command ?: $this->command, null, $this->options ?? $response->options);
+            $new = self::buildNative(
+                array_merge($this->values(), $response->values()),
+                $this->stderr . $response->stderr,
+                $this->exitCode ?: $response->exitCode,
+                $response->command ?: $this->command,
+                $this->options ?? $response->options,
+                $this->errorCode ?: $response->errorCode,
+            );
             $new->errorMessage = $this->errorMessage ?: $response->errorMessage;
 
             return $new;
