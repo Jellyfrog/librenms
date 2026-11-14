@@ -2,6 +2,7 @@
 
 namespace LibreNMS\Tests\Unit;
 
+use App\Facades\LibrenmsConfig;
 use LibreNMS\Data\Source\Snmp\NetSnmpOptions;
 use LibreNMS\Data\Source\Snmp\PhpSnmp;
 use LibreNMS\Data\Source\Snmp\SnmpQueryOptions;
@@ -269,6 +270,16 @@ class PhpSnmpTest extends TestCase
         $this->assertNotEmpty($warnings);
     }
 
+    protected function tearDown(): void
+    {
+        // the MIB tree is process global, rebuild the default one for later tests
+        (new \ReflectionProperty(PhpSnmp::class, 'loadedMibs'))->setValue(null, ['dirs' => [], 'mibs' => [], 'underscores' => null]);
+        if (PhpSnmp::isLibrenmsExtension()) {
+            snmp_init_mib();
+        }
+        parent::tearDown();
+    }
+
     public function testInitMibsOnlyGrows(): void
     {
         if (! PhpSnmp::isLibrenmsExtension()) {
@@ -288,5 +299,28 @@ class PhpSnmpTest extends TestCase
         $this->assertSame(['ENTITY-MIB', 'IF-MIB'], $before['mibs']);
         $this->assertSame($before, $loaded->getValue());
         $this->assertSame('.1.3.6.1.2.1.2.2.1.2', snmp_translate('IF-MIB::ifDescr', \Snmp\OidOutput::Numeric));
+    }
+
+    public function testInitMibsKeepsCurrentDirsFirst(): void
+    {
+        if (! PhpSnmp::isLibrenmsExtension()) {
+            $this->markTestSkipped('librenms-snmp required');
+        }
+
+        $init = new \ReflectionMethod(PhpSnmp::class, 'initMibs');
+        $loaded = new \ReflectionProperty(PhpSnmp::class, 'loadedMibs');
+        $backend = new PhpSnmp;
+        $loaded->setValue(null, ['dirs' => [], 'mibs' => [], 'underscores' => null]);
+        $base = rtrim(LibrenmsConfig::get('mib_dir'), '/');
+        $a = ["$base/juniper", "$base/"];
+        $b = ["$base/cisco", $base];
+
+        $init->invoke($backend, new SnmpQueryOptions(mibDirs: $a, mibs: ['IF-MIB']), []);
+        $init->invoke($backend, new SnmpQueryOptions(mibDirs: $b, mibs: ['IF-MIB']), []);
+        $this->assertSame(["$base/cisco", $base, "$base/juniper"], $loaded->getValue()['dirs']);
+
+        // A again: nothing is missing but the dirs of A must lead the list
+        $init->invoke($backend, new SnmpQueryOptions(mibDirs: $a, mibs: ['IF-MIB']), []);
+        $this->assertSame(["$base/juniper", $base, "$base/cisco"], $loaded->getValue()['dirs']);
     }
 }

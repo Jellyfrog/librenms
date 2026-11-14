@@ -305,31 +305,25 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
      */
     private function initMibs(SnmpQueryOptions $options, array $oids): void
     {
-        // net-snmp also loads MIBs on demand for oids like MIB::name, the cli forgets them when it exits
-        $onDemand = [];
-        foreach ($oids as $oid) {
-            $module = Oid::of($oid)->getMib();
-            if ($module !== '' && ! in_array($module, $options->mibs, true)) {
-                $onDemand[$module] = true;
-            }
-        }
-        ksort($onDemand);
-
         $mibDirs = $options->mibDirs ?: [LibrenmsConfig::get('mib_dir')];
         $mibs = array_values(array_filter($options->mibs, fn (string $mib): bool => $mib !== ''));
 
         if (self::isLibrenmsExtension()) {
+            // "mibs" and "mibs/" are the same dir
+            $mibDirs = array_values(array_unique(array_map(fn (string $dir): string => rtrim($dir, '/') ?: $dir, $mibDirs)));
+
             // the MIB tree is process global and snmp_init_mib() rebuilds it from scratch, so only call it
             // when something is missing and then load everything seen so far: the tree never shrinks
             $missingDirs = array_diff($mibDirs, self::$loadedMibs['dirs']);
             $missingMibs = array_diff($mibs, self::$loadedMibs['mibs']);
-            if (! $missingDirs && ! $missingMibs && self::$loadedMibs['underscores'] === $options->allowUnderscores) {
+            // the first dir containing a MIB wins, so this request's dirs (OS specific ones first) must lead
+            $dirsLead = array_slice(self::$loadedMibs['dirs'], 0, count($mibDirs)) === $mibDirs;
+            if (! $missingDirs && ! $missingMibs && $dirsLead && self::$loadedMibs['underscores'] === $options->allowUnderscores) {
                 return;
             }
 
             // MIBs net-snmp loads on demand (MIB::name oids) are not added: loading them explicitly changes how
             // numeric oids resolve (junose, iosxe polling broke), the cli does not load them up front either
-            // the first dir containing a MIB wins, so this request's dirs (OS specific ones first) go before the old ones
             $dirs = array_values(array_unique([...$mibDirs, ...self::$loadedMibs['dirs']]));
             $all = array_values(array_unique([...self::$loadedMibs['mibs'], ...$mibs]));
             sort($all);
@@ -340,6 +334,16 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
 
             return;
         }
+
+        // net-snmp also loads MIBs on demand for oids like MIB::name, the cli forgets them when it exits
+        $onDemand = [];
+        foreach ($oids as $oid) {
+            $module = Oid::of($oid)->getMib();
+            if ($module !== '' && ! in_array($module, $options->mibs, true)) {
+                $onDemand[$module] = true;
+            }
+        }
+        ksort($onDemand);
 
         // stock extension: only rebuild when the request differs from the loaded tree
         $mibKey = serialize([$options->allowUnderscores, $mibDirs, $mibs, array_keys($onDemand)]);
