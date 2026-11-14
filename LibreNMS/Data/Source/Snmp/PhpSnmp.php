@@ -39,6 +39,13 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
 {
     private static ?string $loadedMibs = null;
 
+    private readonly PhpSnmpSessions $sessions;
+
+    public function __construct(?PhpSnmpSessions $sessions = null)
+    {
+        $this->sessions = $sessions ?? new PhpSnmpSessions;
+    }
+
     /**
      * @param  string[]  $oids
      */
@@ -97,19 +104,30 @@ class PhpSnmp implements SnmpBackendInterface, SnmpTranslatorInterface
             return null;
         }
 
-        $snmp = new \SNMP(
-            $this->snmpver($config->version),
-            $this->hostname($target, $config),
-            $this->communityOrUsername($config, $options->context),
-            $config->timeout * 1000000,
-            $config->retries,
-        );
+        $make = function () use ($target, $config, $options): ?\SNMP {
+            $snmp = new \SNMP(
+                $this->snmpver($config->version),
+                $this->hostname($target, $config),
+                $this->communityOrUsername($config, $options->context),
+                $config->timeout * 1000000,
+                $config->retries,
+            );
+
+            return $this->setSecurityOptions($snmp, $config, $options->context) ? $snmp : null;
+        };
+
+        // the session is reused, security setup is done once, the rest is applied on every query
+        $snmp = self::supportsNative()
+            ? $this->sessions->get(hash('xxh128', serialize([$target, $config, $options->context])), $make)
+            : $make();
+        if ($snmp === null) {
+            return null;
+        }
 
         $snmp->max_oids = max($config->maxOid, 1);
         if (self::isLibrenmsExtension()) {
             $snmp->use_bulk = $config->bulk && $options->allowBulk; /** @phpstan-ignore property.notFound */
         }
-        $this->setSecurityOptions($snmp, $config, $options->context);
         $this->setOptions($snmp, $options);
 
         return $snmp;

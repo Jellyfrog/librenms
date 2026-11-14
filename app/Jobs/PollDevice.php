@@ -24,6 +24,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Jobs\SyncJob;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use LibreNMS\Data\Source\Snmp\PhpSnmpSessions;
 use LibreNMS\Enum\PollingMethodType;
 use LibreNMS\Enum\ProcessType;
 use LibreNMS\Enum\Severity;
@@ -97,6 +98,15 @@ class PollDevice implements ShouldQueue, ShouldBeUnique
      * Execute the job.
      */
     public function handle(): void
+    {
+        try {
+            $this->poll();
+        } finally {
+            app(PhpSnmpSessions::class)->flush(); // also when the poll fails, DevicePolled is not dispatched then
+        }
+    }
+
+    private function poll(): void
     {
         if (! $this->initDevice()) {
             return; // deleted or moved to another poller group after it was queued

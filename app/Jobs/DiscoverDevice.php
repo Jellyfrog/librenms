@@ -24,6 +24,7 @@ use Illuminate\Queue\Jobs\SyncJob;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
+use LibreNMS\Data\Source\Snmp\PhpSnmpSessions;
 use LibreNMS\Enum\ProcessType;
 use LibreNMS\Enum\Severity;
 use LibreNMS\Interfaces\SupportsSubmodules;
@@ -112,6 +113,7 @@ class DiscoverDevice implements ShouldQueue, ShouldBeUnique
             DeviceDiscovered::dispatch($this->device);
         } finally {
             $this->device?->save(); // make sure device changes are saved even if discovery fails
+            app(PhpSnmpSessions::class)->flush();
         }
 
         // retry down devices, the last attempt succeeds, a down device is not a failed job
