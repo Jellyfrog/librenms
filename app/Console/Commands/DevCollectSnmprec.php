@@ -380,14 +380,21 @@ class DevCollectSnmprec extends LnmsCommand
             }
             $oid = ltrim($oid, '.');
             $value = $typed->value;
-            $lines[] = match ($typed->type) {
+            $line = match ($typed->type) {
                 SNMP_OCTET_STR => ctype_print((string) $value) || $value === ''
                     ? "$oid|4|$value"
-                    : "$oid|4x|" . bin2hex((string) $value),
+                    : "$oid|4x|" . strtoupper(bin2hex((string) $value)),
                 SNMP_OBJECT_ID => "$oid|6|" . ltrim((string) $value, '.'),
                 SNMP_NULL => "$oid|5|",
-                default => "$oid|{$typed->type}|$value",
+                68 => "$oid|68x|" . strtoupper(bin2hex((string) $value)), // Opaque is raw bytes
+                2, 64, 65, 66, 67, 70 => "$oid|{$typed->type}|$value", // integer, ip, counter32, gauge, timeticks, counter64
+                default => null, // floats and anything else have no safe snmprec text form
             };
+            if ($line === null) {
+                Log::debug("dev:collect-snmprec skipped $oid, unsupported type {$typed->type}");
+                continue;
+            }
+            $lines[] = $line;
         }
 
         return $lines;

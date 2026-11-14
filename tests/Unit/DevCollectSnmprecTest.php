@@ -30,10 +30,37 @@ class DevCollectSnmprecTest extends TestCase
             '1.3.6.1.2.1.1.1.0|4|Linux box',
             '1.3.6.1.2.1.1.2.0|6|1.3.6.1.4.1.8072',
             '1.3.6.1.2.1.1.3.0|67|5',
-            '1.3.6.1.2.1.2.2.1.6.1|4x|001a2b',
+            '1.3.6.1.2.1.2.2.1.6.1|4x|001A2B',
             '1.3.6.1.2.1.4.20.1.1.10.0.0.1|64|10.0.0.1',
             '1.3.6.1.2.1.31.1.1.1.6.1|70|18446744073709551615',
             '1.3.6.1.2.1.31.1.1.1.18.1|5|',
+        ], $method->invoke(app(DevCollectSnmprec::class), $response));
+    }
+
+    public function testOtherTypesAndSkips(): void
+    {
+        if (! defined('SNMP_VALUE_NATIVE')) {
+            $this->markTestSkipped('librenms-snmp with SNMP_VALUE_NATIVE required');
+        }
+
+        $response = SnmpResponse::fromNative([
+            '.1.1' => (object) ['type' => SNMP_INTEGER, 'value' => -3],
+            '.1.2' => (object) ['type' => 65, 'value' => 7],
+            '.1.3' => (object) ['type' => 66, 'value' => 8],
+            '.1.4' => (object) ['type' => SNMP_OCTET_STR, 'value' => ''],
+            '.1.5' => (object) ['type' => SNMP_OPAQUE, 'value' => "\x9f\x78\x04"],
+            '.1.6' => (object) ['type' => 120, 'value' => 1.5],
+            '.1.7' => (object) ['type' => 121, 'value' => 2.5],
+        ]);
+
+        $method = new \ReflectionMethod(DevCollectSnmprec::class, 'convertTypedToSnmprec');
+
+        $this->assertSame([
+            '1.1|2|-3',
+            '1.2|65|7',
+            '1.3|66|8',
+            '1.4|4|',
+            '1.5|68x|9F7804',
         ], $method->invoke(app(DevCollectSnmprec::class), $response));
     }
 }
