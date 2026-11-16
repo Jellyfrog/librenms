@@ -1,0 +1,28 @@
+name: Rebuild mibs.librenms.org
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'mibs/**'
+      - 'tests/snmpsim/**'
+
+permissions: {}
+
+jobs:
+  dispatch:
+    if: github.repository == 'librenms/librenms'
+    runs-on: ubuntu-slim
+
+    steps:
+      - name: Trigger the site build
+        env:
+          # fine-grained token or GitHub App token with Contents: write on librenms/mibs.librenms.org
+          TOKEN: ${{ secrets.MIB_SITE_TOKEN }}
+        run: |
+          curl -fsS -X POST \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/librenms/mibs.librenms.org/dispatches \
+            -d "{\"event_type\": \"librenms-mibs-updated\", \"client_payload\": {\"sha\": \"$GITHUB_SHA\"}}"
