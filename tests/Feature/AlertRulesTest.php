@@ -15,18 +15,16 @@ use LibreNMS\Alert\AlertRules;
 use LibreNMS\Alert\AlertUtil;
 use LibreNMS\Enum\AlertState;
 use LibreNMS\Enum\Severity;
-use PHPUnit\Framework\Attributes\DataProvider;
 
-
-beforeEach(function () {
+beforeEach(function (): void {
     $this->dbSetUp();
 });
 
-afterEach(function () {
+afterEach(function (): void {
     $this->dbTearDown();
 });
 
-test('run rules skips under maintenance', function () {
+test('run rules skips under maintenance', function (): void {
     $device = Device::factory()->create();
 
     $schedule = \App\Models\AlertSchedule::forceCreate([
@@ -45,7 +43,7 @@ test('run rules skips under maintenance', function () {
     expect($result)->toBeFalse();
 });
 
-test('run rules disable alerting', function () {
+test('run rules disable alerting', function (): void {
     $device = Device::factory()->create(['disable_notify' => 1]);
     $rule = AlertRule::factory()->create();
 
@@ -70,7 +68,7 @@ test('run rules disable alerting', function () {
     ]);
 });
 
-test('run rules triggers alert', function () {
+test('run rules triggers alert', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -111,7 +109,7 @@ test('run rules triggers alert', function () {
     expect($log->fault_id)->toBe($fault->id, 'alert_log should be linked to the fault via fault_id');
 });
 
-test('run rules updates existing alert', function () {
+test('run rules updates existing alert', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -137,7 +135,7 @@ test('run rules updates existing alert', function () {
     ]);
 });
 
-test('run rules no change on active alert', function () {
+test('run rules no change on active alert', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -187,7 +185,7 @@ test('run rules no change on active alert', function () {
     expect($problem->details)->toHaveKey('rule');
 });
 
-test('run rules keeps acknowledged alert until clear when unchanged', function () {
+test('run rules keeps acknowledged alert until clear when unchanged', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -221,7 +219,7 @@ test('run rules keeps acknowledged alert until clear when unchanged', function (
     ]);
 });
 
-test('run rules keeps acknowledged until change when unchanged', function () {
+test('run rules keeps acknowledged until change when unchanged', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -246,7 +244,7 @@ test('run rules keeps acknowledged until change when unchanged', function () {
     ]);
 });
 
-test('run rules records recovery while acknowledged until clear', function () {
+test('run rules records recovery while acknowledged until clear', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -277,7 +275,7 @@ test('run rules records recovery while acknowledged until clear', function () {
     ]);
 });
 
-test('run rules records new entity while acknowledged until clear', function () {
+test('run rules records new entity while acknowledged until clear', function (): void {
     $device = Device::factory()->create();
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM processors WHERE device_id = ? AND processor_usage >= 90',
@@ -314,7 +312,7 @@ test('run rules records new entity while acknowledged until clear', function () 
         ->count())->toEqual(1);
 });
 
-test('run rules unacknowledges when until clear is false and worse', function () {
+test('run rules unacknowledges when until clear is false and worse', function (): void {
     $device = Device::factory()->create();
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM processors WHERE device_id = ? AND processor_usage >= 90',
@@ -351,7 +349,7 @@ test('run rules unacknowledges when until clear is false and worse', function ()
         ->count())->toEqual(2);
 });
 
-test('run rules unacknowledges when until clear is false and better', function () {
+test('run rules unacknowledges when until clear is false and better', function (): void {
     $device = Device::factory()->create();
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM processors WHERE device_id = ? AND processor_usage >= 90',
@@ -386,7 +384,7 @@ test('run rules unacknowledges when until clear is false and better', function (
     expect($keepFault->fresh()->state)->toBe(AlertState::ACTIVE);
 });
 
-test('run rules unacknowledges when until clear is false and changed', function () {
+test('run rules unacknowledges when until clear is false and changed', function (): void {
     $device = Device::factory()->create();
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM processors WHERE device_id = ? AND processor_usage >= 90',
@@ -455,7 +453,7 @@ dataset('acknowledgementModes', function () {
     }
 });
 
-test('fault acknowledgements follow effective mode', function (array $before, array $after, bool $perEntity, int $limit, bool $untilClear, bool $preserve) {
+test('fault acknowledgements follow effective mode', function (array $before, array $after, bool $perEntity, int $limit, bool $untilClear, bool $preserve): void {
     $device = Device::factory()->create();
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM ports WHERE device_id = ? AND ifOperStatus = "down"',
@@ -505,7 +503,7 @@ test('fault acknowledgements follow effective mode', function (array $before, ar
     expect(AlertLog::query()->count())->toBe($logCount);
 })->with('acknowledgementModes');
 
-test('pending recoveries do not count towards acknowledgement mode', function () {
+test('pending recoveries do not count towards acknowledgement mode', function (): void {
     $device = Device::factory()->create();
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM ports WHERE device_id = ? AND ifOperStatus = "down"',
@@ -530,7 +528,7 @@ test('pending recoveries do not count towards acknowledgement mode', function ()
     expect(AlertUtil::openEntityCountForRuleDevice($rule->id, $device->device_id))->toBe(2);
 });
 
-test('acknowledgement mode is scoped to rule and device', function () {
+test('acknowledgement mode is scoped to rule and device', function (): void {
     $a = Device::factory()->create();
     $b = Device::factory()->create();
     $rule = AlertRule::factory()->create([
@@ -574,7 +572,7 @@ test('acknowledgement mode is scoped to rule and device', function () {
         ->where('state', AlertState::ACKNOWLEDGED)->count())->toBe(2);
 });
 
-test('run rules re notifies when entities replaced while already changed', function () {
+test('run rules re notifies when entities replaced while already changed', function (): void {
     $device = Device::factory()->create();
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM processors WHERE device_id = ? AND processor_usage >= 90',
@@ -631,7 +629,7 @@ test('run rules re notifies when entities replaced while already changed', funct
         ->count())->toEqual(2, 'A second same-count replacement must log another CHANGED transition');
 });
 
-test('sync alert state for rule marks acknowledged when all faults acked', function () {
+test('sync alert state for rule marks acknowledged when all faults acked', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -665,7 +663,7 @@ test('sync alert state for rule marks acknowledged when all faults acked', funct
     ]);
 });
 
-test('sync alert state logs worse transition when requested', function () {
+test('sync alert state logs worse transition when requested', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -713,7 +711,7 @@ test('sync alert state logs worse transition when requested', function () {
     expect($log->details['rule'] ?? [])->toHaveCount(2, 'Worse entry should snapshot all open fault rows');
 });
 
-test('sync alert state does not log worse transition by default', function () {
+test('sync alert state does not log worse transition by default', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -755,7 +753,7 @@ test('sync alert state does not log worse transition by default', function () {
         ->count())->toEqual(0, 'No rule-level worse entry should be logged without the flag');
 });
 
-test('sync alert state retains alerted on recovery so recovery notifies', function () {
+test('sync alert state retains alerted on recovery so recovery notifies', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -795,7 +793,7 @@ test('sync alert state retains alerted on recovery so recovery notifies', functi
     ]);
 });
 
-test('sync alert state restores alerted on recovery after better reset', function () {
+test('sync alert state restores alerted on recovery after better reset', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -831,7 +829,7 @@ test('sync alert state restores alerted on recovery after better reset', functio
     ]);
 });
 
-test('sync alert state does not restore alerted when problem was never notified', function () {
+test('sync alert state does not restore alerted when problem was never notified', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -866,7 +864,7 @@ test('sync alert state does not restore alerted when problem was never notified'
     ]);
 });
 
-test('run rules clears alert', function () {
+test('run rules clears alert', function (): void {
     $device = Device::factory()->create(['status' => 1]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -914,7 +912,7 @@ test('run rules clears alert', function () {
     ]);
 });
 
-test('run rules preserves fault alerted on recovery', function () {
+test('run rules preserves fault alerted on recovery', function (): void {
     $device = Device::factory()->create(['status' => 1]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -950,7 +948,7 @@ test('run rules preserves fault alerted on recovery', function () {
     ]);
 });
 
-test('run rules reactivates open recovered fault when entity returns', function () {
+test('run rules reactivates open recovered fault when entity returns', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -991,7 +989,7 @@ test('run rules reactivates open recovered fault when entity returns', function 
     ]);
 });
 
-test('run rules inverts result', function () {
+test('run rules inverts result', function (): void {
     $device = Device::factory()->create(['status' => 1]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 1',
@@ -1009,7 +1007,7 @@ test('run rules inverts result', function () {
     ]);
 });
 
-test('run rules handles query error', function () {
+test('run rules handles query error', function (): void {
     $device = Device::factory()->create();
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT invalid_column FROM devices WHERE device_id = ?',
@@ -1025,7 +1023,7 @@ test('run rules handles query error', function () {
     ]);
 });
 
-test('rules filtering', function () {
+test('rules filtering', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $otherDevice = Device::factory()->create(['status' => 0]);
 
@@ -1070,7 +1068,7 @@ test('rules filtering', function () {
     ]);
 });
 
-test('rules filtering inverted', function () {
+test('rules filtering inverted', function (): void {
     $device = Device::factory()->create(['status' => 0]);
 
     // 1. Rule mapped to this device, BUT inverted - should NOT trigger
@@ -1105,7 +1103,7 @@ test('rules filtering inverted', function () {
     ]);
 });
 
-test('rules filtering groups', function () {
+test('rules filtering groups', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     [$group, $otherGroup] = \App\Models\DeviceGroup::factory()->count(2)->create();
     $group->devices()->attach($device->device_id);
@@ -1137,7 +1135,7 @@ test('rules filtering groups', function () {
     ]);
 });
 
-test('rules filtering locations', function () {
+test('rules filtering locations', function (): void {
     $location = \App\Models\Location::factory()->create();
     $device = Device::factory()->create(['status' => 0, 'location_id' => $location->id]);
 
@@ -1169,15 +1167,15 @@ test('rules filtering locations', function () {
     ]);
 });
 
-test('run rules handles worse state as no change', function () {
+test('run rules handles worse state as no change', function (): void {
     runActiveStateTest(AlertState::WORSE);
 });
 
-test('run rules handles better state as no change', function () {
+test('run rules handles better state as no change', function (): void {
     runActiveStateTest(AlertState::BETTER);
 });
 
-test('run rules handles changed state as no change', function () {
+test('run rules handles changed state as no change', function (): void {
     runActiveStateTest(AlertState::CHANGED);
 });
 
@@ -1271,7 +1269,7 @@ function runActiveStateTest(int $state): void
     expect($problem->details)->toHaveKey('contacts');
 }
 
-test('run rules with device id', function () {
+test('run rules with device id', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -1287,7 +1285,7 @@ test('run rules with device id', function () {
     ]);
 });
 
-test('run rules skips disabled rule', function () {
+test('run rules skips disabled rule', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -1303,7 +1301,7 @@ test('run rules skips disabled rule', function () {
     ]);
 });
 
-test('run rules uses query builder json', function () {
+test('run rules uses query builder json', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $builderJson = [
         'condition' => 'AND',
@@ -1330,7 +1328,7 @@ test('run rules uses query builder json', function () {
     ]);
 });
 
-test('run rules skips empty sql', function () {
+test('run rules skips empty sql', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $rule = AlertRule::factory()->create([
         'query' => '',
@@ -1347,7 +1345,7 @@ test('run rules skips empty sql', function () {
     ]);
 });
 
-test('run rules converts binary ip', function () {
+test('run rules converts binary ip', function (): void {
     $device = Device::factory()->create(['status' => 0]);
 
     // MySQL INET6_ATON converts string to binary
@@ -1368,7 +1366,7 @@ test('run rules converts binary ip', function () {
     expect($details['rule'][0]['ip'])->toEqual('192.0.2.1');
 });
 
-test('run rules recovery without pre existing alert', function () {
+test('run rules recovery without pre existing alert', function (): void {
     $device = Device::factory()->create(['status' => 1]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -1384,7 +1382,7 @@ test('run rules recovery without pre existing alert', function () {
     ]);
 });
 
-test('run rules no change on active alert without log', function () {
+test('run rules no change on active alert without log', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     $rule = AlertRule::factory()->create([
         'query' => 'SELECT * FROM devices WHERE device_id = ? AND status = 0',
@@ -1411,7 +1409,7 @@ test('run rules no change on active alert without log', function () {
     // AlertLog was not created beforehand, and shouldn't cause errors.
 });
 
-test('run rules inverts result to trigger alert', function () {
+test('run rules inverts result to trigger alert', function (): void {
     $device = Device::factory()->create(['status' => 1]);
 
     // The query returns empty for status = 0.
@@ -1442,7 +1440,7 @@ dataset('warnThresholdModels', function () {
     ];
 });
 
-test('warn threshold rule respects null threshold', function (string $modelClass, string $table, string $percentField, string $warnField) {
+test('warn threshold rule respects null threshold', function (string $modelClass, string $table, string $percentField, string $warnField): void {
     $device = Device::factory()->create();
     $rule = AlertRule::factory()->create([
         'query' => '',

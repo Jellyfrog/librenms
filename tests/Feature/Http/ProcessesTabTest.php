@@ -14,7 +14,7 @@ beforeEach(function () {
     Role::findOrCreate('user');
 });
 
-function admin(): User
+function processesTabAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -33,7 +33,7 @@ test('authorized user can render processes tab', function () {
         'command' => '/usr/sbin/snmpd -Lsd -Lf /dev/null',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(processesTabAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'processes']))
         ->assertOk()
         ->assertSee('1234')
@@ -54,7 +54,7 @@ test('authorized user can sort processes', function () {
         'user' => 'alpha',
     ]);
 
-    $response = $this->actingAs(admin())
+    $response = $this->actingAs(processesTabAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'processes', 'order' => 'user', 'by' => 'asc']))
         ->assertOk();
 
@@ -69,7 +69,7 @@ test('invalid sort parameters fail validation', function () {
     $device = Device::factory()->create();
     Process::factory()->for($device)->create();
 
-    $this->actingAs(admin())
+    $this->actingAs(processesTabAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'processes', 'order' => 'invalid_col', 'by' => 'invalid_dir']))
         ->assertSessionHasErrors(['order', 'by']);
 });

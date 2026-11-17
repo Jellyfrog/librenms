@@ -9,7 +9,7 @@ use App\Models\User;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-test('search arp by ip shows ip to mac binding', function () {
+test('search arp by ip shows ip to mac binding', function (): void {
     $user = User::factory()->admin()->create(['enabled' => true]);
     $device = Device::factory()->create();
     $port = Port::factory()->create(['device_id' => $device->device_id]);
@@ -34,7 +34,7 @@ test('search arp by ip shows ip to mac binding', function () {
     $this->assertStringContainsString('00:11:22:33:44:55', $name);
 });
 
-test('search arp by mac returns arp tables group', function () {
+test('search arp by mac returns arp tables group', function (): void {
     $user = User::factory()->admin()->create(['enabled' => true]);
     $device = Device::factory()->create();
     $port = Port::factory()->create(['device_id' => $device->device_id]);
@@ -59,7 +59,7 @@ test('search arp by mac returns arp tables group', function () {
     $this->assertStringContainsString('00:11:22:33:44:55', $name);
 });
 
-test('search ndp by ipv6 shows ip to mac binding', function () {
+test('search ndp by ipv6 shows ip to mac binding', function (): void {
     $user = User::factory()->admin()->create(['enabled' => true]);
     $device = Device::factory()->create();
     $port = Port::factory()->create(['device_id' => $device->device_id]);
@@ -83,7 +83,7 @@ test('search ndp by ipv6 shows ip to mac binding', function () {
     $this->assertStringContainsString('/device/' . $device->device_id . '/ports/view=nd', $url);
 });
 
-test('search arp subtitle shows device and port', function () {
+test('search arp subtitle shows device and port', function (): void {
     $user = User::factory()->admin()->create(['enabled' => true]);
     $device = Device::factory()->create();
     $port = Port::factory()->create(['device_id' => $device->device_id, 'ifDescr' => 'GigabitEthernet0/0']);
@@ -105,7 +105,7 @@ test('search arp subtitle shows device and port', function () {
     $this->assertStringContainsString('GigabitEthernet0/0', $subtitle);
 });
 
-test('search arp summarizes multiple locations', function () {
+test('search arp summarizes multiple locations', function (): void {
     $user = User::factory()->admin()->create(['enabled' => true]);
     $device1 = Device::factory()->create();
     $device2 = Device::factory()->create();
@@ -124,7 +124,7 @@ test('search arp summarizes multiple locations', function () {
     $this->assertStringContainsString('Seen on 2 device(s) / 2 port(s)', $results[0]['subtitle']);
 });
 
-test('search returns empty when arp disabled', function () {
+test('search returns empty when arp disabled', function (): void {
     \LibrenmsConfig::set('librenms.webui.global_search.arp', false);
 
     $user = User::factory()->admin()->create(['enabled' => true]);

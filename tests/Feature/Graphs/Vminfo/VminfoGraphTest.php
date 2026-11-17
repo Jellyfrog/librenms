@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Data\Graphing\GraphParameters;
 use App\Graphs\GraphAccess;
 use App\Graphs\GraphFactory;
@@ -14,9 +13,9 @@ use App\Models\Vminfo;
 use Illuminate\Support\Facades\Gate;
 use LibreNMS\Exceptions\NoGraphData;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(LibreNMS\Tests\TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-test('graph types resolve to classes', function () {
+test('graph types resolve to classes', function (): void {
     $factory = app(GraphFactory::class);
 
     expect($factory->graphFor(new GraphParameters(['type' => 'vminfo_cpu', 'id' => 1])))->toBeInstanceOf(CpuGraph::class);
@@ -24,7 +23,7 @@ test('graph types resolve to classes', function () {
     expect($factory->subtypes('vminfo'))->toEqualCanonicalizing(['cpu', 'mem', 'disk', 'diskio_bits', 'diskio_ops', 'net']);
 });
 
-test('series use the metrics of the vm', function () {
+test('series use the metrics of the vm', function (): void {
     $device = Device::factory()->create(['hostname' => 'pve.example.com']);
     $vm = Vminfo::factory()->for($device)->create(['vm_type' => 'proxmox', 'vmwVmVMID' => 100]);
 
@@ -38,7 +37,7 @@ test('series use the metrics of the vm', function () {
     expect($net['out']->style->invert)->toBeTrue();
 });
 
-test('title and page context', function () {
+test('title and page context', function (): void {
     $device = Device::factory()->create();
     $vm = Vminfo::factory()->for($device)->create(['vmwVmDisplayName' => 'web']);
 
@@ -49,7 +48,7 @@ test('title and page context', function () {
     expect($graph->getPageContext()->subtitle)->toBe(' :: VM :: web');
 });
 
-test('missing vm has no data', function () {
+test('missing vm has no data', function (): void {
     $graph = new CpuGraph(new GraphParameters(['type' => 'vminfo_cpu', 'id' => 999999]));
 
     expect(app(GraphAccess::class)->trusted(fn () => $graph->authorize()))->toBeFalse();
@@ -58,7 +57,7 @@ test('missing vm has no data', function () {
     $graph->getSeries();
 });
 
-test('authorizes based on the vm', function () {
+test('authorizes based on the vm', function (): void {
     $vm = Vminfo::factory()->create();
     $graph = new CpuGraph(new GraphParameters(['type' => 'vminfo_cpu', 'id' => $vm->id]));
 

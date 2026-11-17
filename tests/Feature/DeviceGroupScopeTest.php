@@ -4,7 +4,7 @@ uses(\LibreNMS\Tests\InMemoryDbTestCase::class);
 use App\Models\Device;
 use App\Models\DeviceGroup;
 
-test('device group scopes accept collections', function () {
+test('device group scopes accept collections', function (): void {
     $group = DeviceGroup::factory()->create();
     $inGroup = Device::factory()->create();
     $free = Device::factory()->create();

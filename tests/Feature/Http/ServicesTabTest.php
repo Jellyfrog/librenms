@@ -9,12 +9,12 @@ use Spatie\Permission\Models\Role;
 
 uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     Role::findOrCreate('admin');
     Role::findOrCreate('user');
 });
 
-function admin(): User
+function servicesAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -22,7 +22,7 @@ function admin(): User
     return $admin;
 }
 
-test('authorized user can render services tab', function () {
+test('authorized user can render services tab', function (): void {
     $device = Device::factory()->create();
     Service::factory()->for($device)->create([
         'service_type' => 'http',
@@ -34,7 +34,7 @@ test('authorized user can render services tab', function () {
         'service_disabled' => 0,
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(servicesAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'services']))
         ->assertOk()
         ->assertSee('HTTP Web Server Check')
@@ -42,7 +42,7 @@ test('authorized user can render services tab', function () {
         ->assertSee('HTTP OK');
 });
 
-test('authorized user can render services details view', function () {
+test('authorized user can render services details view', function (): void {
     $device = Device::factory()->create();
     Service::factory()->for($device)->create([
         'service_type' => 'ping',
@@ -54,14 +54,14 @@ test('authorized user can render services details view', function () {
         'service_disabled' => 0,
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(servicesAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'services', 'view' => 'details']))
         ->assertOk()
         ->assertSee('Ping Check')
         ->assertSee('Round Trip Average');
 });
 
-test('services view validation fails on invalid view', function () {
+test('services view validation fails on invalid view', function (): void {
     $device = Device::factory()->create();
     Service::factory()->for($device)->create([
         'service_type' => 'http',
@@ -69,12 +69,12 @@ test('services view validation fails on invalid view', function () {
         'service_disabled' => 0,
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(servicesAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'services', 'view' => 'invalid']))
         ->assertInvalid(['view']);
 });
 
-test('user without service permission gets forbidden', function () {
+test('user without service permission gets forbidden', function (): void {
     $device = Device::factory()->create();
     Service::factory()->for($device)->create([
         'service_type' => 'http',

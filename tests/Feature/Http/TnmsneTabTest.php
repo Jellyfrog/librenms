@@ -1,20 +1,18 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\Device;
 use App\Models\TnmsneInfo;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 
+uses(LibreNMS\Tests\TestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-beforeEach(function () {
+beforeEach(function (): void {
     Role::findOrCreate('admin');
     Role::findOrCreate('user');
 });
 
-function admin(): User
+function tnmsneAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -22,13 +20,13 @@ function admin(): User
     return $admin;
 }
 
-test('authorized user can render tnmsne tab', function () {
+test('authorized user can render tnmsne tab', function (): void {
     $device = Device::factory()->create(['os' => 'coriant']);
     TnmsneInfo::factory()->for($device)->create([
         'neName' => 'Coriant-Node-Alpha',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(tnmsneAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'tnmsne']))
         ->assertOk()
         ->assertSee('Coriant NE Hardware')
@@ -36,7 +34,7 @@ test('authorized user can render tnmsne tab', function () {
         ->assertSee(route('table.tnmsne'));
 });
 
-test('user without access gets forbidden', function () {
+test('user without access gets forbidden', function (): void {
     $device = Device::factory()->create(['os' => 'coriant']);
     TnmsneInfo::factory()->for($device)->create();
 

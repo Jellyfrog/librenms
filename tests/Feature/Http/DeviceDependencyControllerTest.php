@@ -13,7 +13,7 @@ beforeEach(function () {
     Role::findOrCreate('user');
 });
 
-function admin(): User
+function dependencyAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -21,7 +21,7 @@ function admin(): User
     return $admin;
 }
 
-function user(): User
+function dependencyUser(): User
 {
     $user = User::factory()->create(['enabled' => 1]);
     $user->assignRole('user');
@@ -30,7 +30,7 @@ function user(): User
 }
 
 test('admin can view page', function () {
-    $this->actingAs(admin())
+    $this->actingAs(dependencyAdmin())
         ->get(route('device-dependencies.index'))
         ->assertOk()
         ->assertSee('x-data="deviceDependencies"', false)
@@ -38,7 +38,7 @@ test('admin can view page', function () {
 });
 
 test('user cannot view page', function () {
-    $this->actingAs(user())
+    $this->actingAs(dependencyUser())
         ->get(route('device-dependencies.index'))
         ->assertForbidden();
 });
@@ -48,7 +48,7 @@ test('table lists devices with parents', function () {
     $child = Device::factory()->create(['hostname' => 'dep-child.example.com']);
     $child->parents()->attach($parent);
 
-    $response = $this->actingAs(admin())
+    $response = $this->actingAs(dependencyAdmin())
         ->postJson(route('table.device-dependencies'), ['searchPhrase' => 'dep-', 'rowCount' => -1])
         ->assertOk();
 
@@ -66,7 +66,7 @@ test('table search matches parent hostname', function () {
     $child = Device::factory()->create(['hostname' => 'other-child.example.com']);
     $child->parents()->attach($parent);
 
-    $response = $this->actingAs(admin())
+    $response = $this->actingAs(dependencyAdmin())
         ->postJson(route('table.device-dependencies'), ['searchPhrase' => 'uniq-parent-search'])
         ->assertOk();
 
@@ -83,7 +83,7 @@ test('table sorts by parent hostname', function () {
     $childOfB->parents()->attach($parentB);
     $childOfA->parents()->attach($parentA);
 
-    $sorted = fn (string $direction) => array_column($this->actingAs(admin())
+    $sorted = fn (string $direction) => array_column($this->actingAs(dependencyAdmin())
         ->postJson(route('table.device-dependencies'), ['searchPhrase' => 'sortdep-', 'rowCount' => -1, 'sort' => ['parents' => $direction]])
         ->assertOk()
         ->json('rows'), 'device_id');
@@ -93,7 +93,7 @@ test('table sorts by parent hostname', function () {
 });
 
 test('user cannot view table', function () {
-    $this->actingAs(user())
+    $this->actingAs(dependencyUser())
         ->postJson(route('table.device-dependencies'))
         ->assertForbidden();
 });
@@ -103,7 +103,7 @@ test('update sets parents for devices', function () {
     [$child1, $child2] = Device::factory()->count(2)->create();
     $child1->parents()->attach($old_parent);
 
-    $this->actingAs(admin())
+    $this->actingAs(dependencyAdmin())
         ->putJson(route('device-dependencies.update'), [
             'device_ids' => [$child1->device_id, $child2->device_id],
             'parent_ids' => [$parent1->device_id, $parent2->device_id],
@@ -120,7 +120,7 @@ test('update without parents clears dependencies', function () {
     $child = Device::factory()->create();
     $child->parents()->attach($parent);
 
-    $this->actingAs(admin())
+    $this->actingAs(dependencyAdmin())
         ->putJson(route('device-dependencies.update'), ['device_ids' => [$child->device_id]])
         ->assertOk()
         ->assertJson(['message' => 'Device dependencies have been removed']);
@@ -131,7 +131,7 @@ test('update without parents clears dependencies', function () {
 test('update rejects self dependency and unknown devices', function () {
     $device = Device::factory()->create();
 
-    $this->actingAs(admin())
+    $this->actingAs(dependencyAdmin())
         ->putJson(route('device-dependencies.update'), [
             'device_ids' => [$device->device_id],
             'parent_ids' => [$device->device_id, 999999999],
@@ -139,7 +139,7 @@ test('update rejects self dependency and unknown devices', function () {
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['parent_ids.0', 'parent_ids.1']);
 
-    $this->actingAs(admin())
+    $this->actingAs(dependencyAdmin())
         ->putJson(route('device-dependencies.update'), ['parent_ids' => [$device->device_id]])
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['device_ids']);
@@ -151,7 +151,7 @@ test('user cannot update dependencies', function () {
     $parent = Device::factory()->create();
     $child = Device::factory()->create();
 
-    $this->actingAs(user())
+    $this->actingAs(dependencyUser())
         ->putJson(route('device-dependencies.update'), [
             'device_ids' => [$child->device_id],
             'parent_ids' => [$parent->device_id],
@@ -168,7 +168,7 @@ test('destroy clears children of parents', function () {
     $child2->parents()->attach([$parent->device_id, $other_parent->device_id]);
     $other_child->parents()->attach($other_parent);
 
-    $this->actingAs(admin())
+    $this->actingAs(dependencyAdmin())
         ->deleteJson(route('device-dependencies.destroy'), ['parent_ids' => [$parent->device_id]])
         ->assertOk();
 
@@ -188,7 +188,7 @@ test('user cannot destroy dependencies', function () {
     $child = Device::factory()->create();
     $child->parents()->attach($parent);
 
-    $this->actingAs(user())
+    $this->actingAs(dependencyUser())
         ->deleteJson(route('device-dependencies.destroy'), ['parent_ids' => [$parent->device_id]])
         ->assertForbidden();
 

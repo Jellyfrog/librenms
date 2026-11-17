@@ -6,7 +6,7 @@ use App\Models\Secret;
 use LibreNMS\Enum\PollingMethodType;
 use LibreNMS\Enum\SecretType;
 
-test('known types are cast', function () {
+test('known types are cast', function (): void {
     $secret = new Secret(['secret_type' => SecretType::SnmpV3]);
     expect($secret->secret_type)->toBe(SecretType::SnmpV3);
     expect($secret->typeName())->toBe('snmp-v3');
@@ -17,7 +17,7 @@ test('known types are cast', function () {
     expect($method->toArray()['method_type'])->toBe('icmp');
 });
 
-test('unknown types keep the stored value', function () {
+test('unknown types keep the stored value', function (): void {
     $secret = new Secret(['secret_type' => 'future-secret']);
     expect($secret->secret_type)->toBe(SecretType::Unknown);
     expect($secret->typeName())->toBe('future-secret');
@@ -35,12 +35,12 @@ test('unknown types keep the stored value', function () {
     expect($method->isDirty('method_type'))->toBeFalse();
 });
 
-test('another enum is rejected', function () {
+test('another enum is rejected', function (): void {
     $this->expectException(\InvalidArgumentException::class);
     new DevicePollingMethod(['method_type' => SecretType::Ipmi]);
 });
 
-test('unknown secret values are all masked', function () {
+test('unknown secret values are all masked', function (): void {
     $definition = SecretType::Unknown->definition();
     $data = ['pin' => '0', 'flag' => false, 'token' => 'abc', 'empty' => '', 'none' => null];
     $masked = $definition->mask($data);
@@ -49,7 +49,7 @@ test('unknown secret values are all masked', function () {
     expect($definition->unmask($masked, $data))->toBe($data);
 });
 
-test('unknown is not valid input', function () {
+test('unknown is not valid input', function (): void {
     expect(SecretType::tryFromKnown('unknown'))->toBeNull();
     expect(PollingMethodType::tryFromKnown('unknown'))->toBeNull();
     expect(PollingMethodType::tryFromKnown('snmp'))->toBe(PollingMethodType::Snmp);

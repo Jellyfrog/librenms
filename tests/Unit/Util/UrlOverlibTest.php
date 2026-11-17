@@ -5,7 +5,7 @@ use App\Facades\LibrenmsConfig;
 use LibreNMS\Util\Url;
 
 
-beforeEach(function () {
+beforeEach(function (): void {
     LibrenmsConfig::set('web_mouseover', true);
 });
 
@@ -20,7 +20,7 @@ function mouseover(string $html): string
     return $dom->getElementsByTagName('a')->item(0)->getAttribute('onmouseover');
 }
 
-test('overlib content escapes text', function () {
+test('overlib content escapes text', function (): void {
     $content = Url::overlibContent(['type' => 'storage_usage', 'id' => 1], "host - C:\\ ');alert(1);// <img src=x onerror=alert(2)>");
     $script = mouseover(Url::overlibLink('#', 'text', $content));
 
@@ -31,7 +31,7 @@ test('overlib content escapes text', function () {
     $this->assertStringContainsString('C:\\\\ ', $script);
 });
 
-test('overlib link keeps encoded entities as text', function () {
+test('overlib link keeps encoded entities as text', function (): void {
     $script = mouseover(Url::overlibLink('#', 'text', 'name &#039;);alert(1);// &lt;img src=x onerror=alert(2)&gt;'));
 
     $this->assertStringNotContainsString("');alert(1)", $script);
@@ -39,7 +39,7 @@ test('overlib link keeps encoded entities as text', function () {
     $this->assertStringContainsString('&#039;);alert(1);// &lt;img src=x onerror=alert(2)&gt;', $script);
 });
 
-test('overlib link preserves markup', function () {
+test('overlib link preserves markup', function (): void {
     $script = mouseover(Url::overlibLink('/graphs', 'text', "<div class=\\'test\\'><img src=\\'/graph.php?a=1&b=2\\' /></div>"));
 
     $this->assertStringContainsString("<div class=\\'test\\'><img src=\\'/graph.php?a=1&b=2\\' /></div>", $script);

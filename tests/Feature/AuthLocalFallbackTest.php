@@ -1,30 +1,27 @@
 <?php
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Facades\LibrenmsConfig;
-use \LibreNMS\Authentication\AuthorizerBase;
 use App\Models\User;
 use App\Providers\LegacyUserProvider;
+use LibreNMS\Authentication\AuthorizerBase;
 use LibreNMS\Authentication\LegacyAuth;
 use LibreNMS\Exceptions\AuthenticationException;
-use PHPUnit\Framework\Attributes\DataProvider;
 
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-beforeEach(function () {
+beforeEach(function (): void {
     $this->originalMechanism = LibrenmsConfig::get('auth_mechanism');
     LibrenmsConfig::set('auth_mechanism', 'ldap');
     LibrenmsConfig::set('auth_fallback_local', true);
 });
 
-afterEach(function () {
+afterEach(function (): void {
     LibrenmsConfig::set('auth_mechanism', $this->originalMechanism);
     LibrenmsConfig::set('auth_fallback_local', false);
     LegacyAuth::reset();
 });
 
-test('local user logs in when the configured auth does not know them', function () {
+test('local user logs in when the configured auth does not know them', function (): void {
     useAuthorizer(['bob' => 'dir-pass']);
     $local = localUser('admin', 'local-pass');
     $provider = new LegacyUserProvider();
@@ -42,7 +39,7 @@ test('local user logs in when the configured auth does not know them', function 
     expect($provider->retrieveByCredentials(['username' => 'admin', 'password' => 'local-pass']))->toBeNull();
 });
 
-test('local user logs in when the configured auth is down', function (string $failing) {
+test('local user logs in when the configured auth is down', function (string $failing): void {
     useAuthorizer(['bob' => 'dir-pass'], failing: $failing);
     $local = localUser('admin', 'local-pass');
     $provider = new LegacyUserProvider();
@@ -66,7 +63,7 @@ dataset('outages', function () {
     ];
 });
 
-test('external auth does not fall back to local users', function () {
+test('external auth does not fall back to local users', function (): void {
     LibrenmsConfig::set('auth_mechanism', 'http-auth');
     useAuthorizer(['bob' => 'dir-pass'], external: true);
     localUser('admin', 'local-pass');
@@ -74,7 +71,7 @@ test('external auth does not fall back to local users', function () {
     expect(new LegacyUserProvider()->retrieveByCredentials(['username' => 'admin', 'password' => 'local-pass']))->toBeNull();
 });
 
-test('known user is not checked against the local password', function () {
+test('known user is not checked against the local password', function (): void {
     useAuthorizer(['bob' => 'dir-pass']);
     localUser('bob', 'local-pass');
     $provider = new LegacyUserProvider();
@@ -85,7 +82,7 @@ test('known user is not checked against the local password', function () {
     expect($provider->validateCredentials($found, ['username' => 'bob', 'password' => 'local-pass']))->toBeFalse();
 });
 
-test('user created on login is preferred over the local user', function () {
+test('user created on login is preferred over the local user', function (): void {
     // like radius: the user is only known after a successful authenticate()
     LibrenmsConfig::set('auth_mechanism', 'radius');
     useAuthorizer(['bob' => 'radius-pass'], knownAfterLogin: true);
@@ -113,14 +110,21 @@ function useAuthorizer(array $users, ?string $failing = null, bool $knownAfterLo
 {
     $authorizer = new class($users, $failing, $knownAfterLogin, $external) extends AuthorizerBase
     {
+        /** @var array<string, bool> */
+        private array $loggedIn = [];
+
         /**
          * @param  array<string, string>  $users
          */
-        function __construct(private readonly array $users, private readonly ?string $failing, private readonly bool $knownAfterLogin, private readonly bool $external)
-        {
+        public function __construct(
+            private readonly array $users,
+            private readonly ?string $failing,
+            private readonly bool $knownAfterLogin,
+            private readonly bool $external,
+        ) {
         }
 
-        function authIsExternal()
+        public function authIsExternal()
         {
             return $this->external;
         }
@@ -128,7 +132,7 @@ function useAuthorizer(array $users, ?string $failing = null, bool $knownAfterLo
         /**
          * @param  array<string, mixed>  $credentials
          */
-        function authenticate($credentials)
+        public function authenticate($credentials)
         {
             if ($this->failing === 'authenticate') {
                 throw new \ErrorException("ldap_bind(): Unable to bind to server: Can't contact LDAP server");
@@ -143,12 +147,12 @@ function useAuthorizer(array $users, ?string $failing = null, bool $knownAfterLo
             return true;
         }
 
-        function userExists($username, $throw_exception = false)
+        public function userExists($username, $throw_exception = false)
         {
             return isset($this->users[$username]);
         }
 
-        function getUserid($username)
+        public function getUserid($username)
         {
             if ($this->failing === 'lookup') {
                 throw new \ErrorException("ldap_search(): Search: Can't contact LDAP server");
@@ -163,7 +167,7 @@ function useAuthorizer(array $users, ?string $failing = null, bool $knownAfterLo
         /**
          * @return array<string, mixed>|false
          */
-        function getUser($user_id)
+        public function getUser($user_id)
         {
             return isset($this->users[$user_id]) ? ['username' => $user_id] : false;
         }

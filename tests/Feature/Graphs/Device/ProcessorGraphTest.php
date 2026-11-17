@@ -12,14 +12,14 @@ use LibreNMS\Exceptions\NoGraphData;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     LibrenmsConfig::shouldReceive('get')->byDefault()->andReturnUsing(fn ($key, $default = null) => $default);
     LibrenmsConfig::shouldReceive('get')->with('mono_font')->byDefault()->andReturn('DejaVuSansMono');
     LibrenmsConfig::shouldReceive('get')->with('display_sysname')->byDefault()->andReturn('hostname');
     LibrenmsConfig::shouldReceive('getOsSetting')->byDefault()->andReturn(false);
 });
 
-test('it returns correct series', function () {
+test('it returns correct series', function (): void {
     $device = Device::factory()->create();
     $processor = Processor::factory()->create([
         'device_id' => $device->device_id,
@@ -39,7 +39,7 @@ test('it returns correct series', function () {
     expect($series["proc_{$processor->processor_id}"]->metric->tags['hostname'])->toEqual($device->hostname);
 });
 
-test('it returns a series per processor', function () {
+test('it returns a series per processor', function (): void {
     $device = Device::factory()->create();
     Processor::factory()->count(2)->sequence(['processor_index' => 0], ['processor_index' => 1])->create([
         'device_id' => $device->device_id,
@@ -54,7 +54,7 @@ test('it returns a series per processor', function () {
     expect($metrics[1]->tags)->toEqual(['hostname' => $device->hostname, 'type' => 'hr', 'index' => 1]);
 });
 
-test('it reports missing processors', function () {
+test('it reports missing processors', function (): void {
     $device = Device::factory()->create();
     $graph = new ProcessorGraph(new GraphParameters(['type' => 'device_processor', 'device' => $device->device_id]));
 
@@ -64,7 +64,7 @@ test('it reports missing processors', function () {
     app(GraphAccess::class)->trusted(fn () => $graph->getDebugCommand());
 });
 
-test('it authorizes based on device', function () {
+test('it authorizes based on device', function (): void {
     $device = Device::factory()->create();
 
     $graph = new ProcessorGraph(new GraphParameters(['type' => 'device_processor', 'device' => $device->device_id]));
@@ -79,7 +79,7 @@ test('it authorizes based on device', function () {
     expect($graph->authorize())->toBeTrue();
 });
 
-test('it allows trusted guests', function () {
+test('it allows trusted guests', function (): void {
     $device = Device::factory()->create();
 
     $graph = new ProcessorGraph(new GraphParameters(['type' => 'device_processor', 'device' => $device->device_id]));
@@ -89,7 +89,7 @@ test('it allows trusted guests', function () {
     expect(app(GraphAccess::class)->trusted(fn () => $graph->authorize()))->toBeTrue();
 });
 
-test('it refuses guests without anonymous graphs', function () {
+test('it refuses guests without anonymous graphs', function (): void {
     $device = Device::factory()->create();
 
     $graph = new ProcessorGraph(new GraphParameters(['type' => 'device_processor', 'device' => $device->device_id]));
@@ -99,7 +99,7 @@ test('it refuses guests without anonymous graphs', function () {
     expect($graph->authorize())->toBeFalse();
 });
 
-test('stacked processors are drawn as their share of the total', function () {
+test('stacked processors are drawn as their share of the total', function (): void {
     $device = Device::factory()->create();
     Processor::factory()->count(2)->sequence(['processor_index' => 0], ['processor_index' => 1])->create(['device_id' => $device->device_id, 'processor_type' => 'hr']);
     LibrenmsConfig::shouldReceive('getOsSetting')->andReturn(true);

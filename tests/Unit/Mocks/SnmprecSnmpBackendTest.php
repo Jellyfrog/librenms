@@ -27,7 +27,6 @@
  * @author     Josh Thomas-Ward <josh.thomasward@pelagicai.com>
  */
 
-uses(\LibreNMS\Tests\TestCase::class);
 use LibreNMS\Data\Source\Snmp\SnmpBackendInterface;
 use LibreNMS\Data\Source\Snmp\SnmpQueryOptions;
 use LibreNMS\Enum\SnmpOidOutput;
@@ -36,10 +35,10 @@ use LibreNMS\Polling\Method\Methods\SnmpPollingMethod;
 use LibreNMS\Polling\Secrets\Data\SnmpCommunitySecretData;
 use LibreNMS\Tests\Mocks\SnmprecSnmpBackend;
 
-uses(\LibreNMS\Tests\SnmpsimHelpers::class);
+uses(LibreNMS\Tests\TestCase::class, LibreNMS\Tests\SnmpsimHelpers::class);
 
-private const string FIXTURE = 'snmpquerymock_regression';
-private const string BASE_OID = '1.3.6.1.2.1.2.2.1.2';
+const SNMPREC_FIXTURE = 'snmpquerymock_regression';
+const SNMPREC_BASE_OID = '1.3.6.1.2.1.2.2.1.2';
 
 function makeBackend(): SnmprecSnmpBackend
 {
@@ -48,7 +47,7 @@ function makeBackend(): SnmprecSnmpBackend
 
 function makeConfig(): SnmpConfig
 {
-    return SnmpConfig::make((new SnmpPollingMethod)->defaults(), new SnmpCommunitySecretData(community: self::FIXTURE));
+    return SnmpConfig::make((new SnmpPollingMethod)->defaults(), new SnmpCommunitySecretData(community: SNMPREC_FIXTURE));
 }
 
 function makeNumericOptions(): SnmpQueryOptions
@@ -59,9 +58,9 @@ function makeNumericOptions(): SnmpQueryOptions
     return $options;
 }
 
-test('walk does not match numerically adjacent subtrees', function () {
+test('walk does not match numerically adjacent subtrees', function (): void {
     $values = makeBackend()
-        ->walk('localhost', self::BASE_OID, makeConfig(), makeNumericOptions())
+        ->walk('localhost', SNMPREC_BASE_OID, makeConfig(), makeNumericOptions())
         ->values();
 
     // base OID is "1.3.6.1.2.1.2.2.1.2"; siblings "1.3.6.1.2.1.2.20.x" and
@@ -72,9 +71,9 @@ test('walk does not match numerically adjacent subtrees', function () {
     expect($values)->not->toContain('sibling-subtree-21');
 });
 
-test('walk returns each row with full oid suffix', function () {
+test('walk returns each row with full oid suffix', function (): void {
     $values = makeBackend()
-        ->walk('localhost', self::BASE_OID, makeConfig(), makeNumericOptions())
+        ->walk('localhost', SNMPREC_BASE_OID, makeConfig(), makeNumericOptions())
         ->values();
 
     expect($values)->toBe([
@@ -84,12 +83,12 @@ test('walk returns each row with full oid suffix', function () {
     ]);
 });
 
-test('direct backend get and walk', function () {
+test('direct backend get and walk', function (): void {
     $backend = makeBackend();
     $config = makeConfig();
     $options = makeNumericOptions();
 
-    $walkResponse = $backend->walk('localhost', self::BASE_OID, $config, $options);
+    $walkResponse = $backend->walk('localhost', SNMPREC_BASE_OID, $config, $options);
     expect($walkResponse->isValid())->toBeTrue();
     expect($walkResponse->values())->toBe([
         '.1.3.6.1.2.1.2.2.1.2.1' => 'eth0',
@@ -97,7 +96,7 @@ test('direct backend get and walk', function () {
         '.1.3.6.1.2.1.2.2.1.2.3' => 'eth2',
     ]);
 
-    $getResponse = $backend->get('localhost', [self::BASE_OID . '.1', self::BASE_OID . '.2'], $config, $options);
+    $getResponse = $backend->get('localhost', [SNMPREC_BASE_OID . '.1', SNMPREC_BASE_OID . '.2'], $config, $options);
     expect($getResponse->isValid())->toBeTrue();
     expect($getResponse->values())->toBe([
         '.1.3.6.1.2.1.2.2.1.2.1' => 'eth0',
@@ -105,7 +104,7 @@ test('direct backend get and walk', function () {
     ]);
 });
 
-test('numeric output matches real net snmp', function () {
+test('numeric output matches real net snmp', function (): void {
     $this->requireSnmpsim();
 
     $mock = makeBackend();
@@ -119,13 +118,13 @@ test('numeric output matches real net snmp', function () {
             'retries' => 0,
         ] + (new SnmpPollingMethod)->defaults(),
         new SnmpCommunitySecretData(
-            community: self::FIXTURE,
+            community: SNMPREC_FIXTURE,
         ),
     );
     $options = makeNumericOptions();
 
-    expect($mock->walk($target, self::BASE_OID, $config, $options)->values())->toBe($real->walk($target, self::BASE_OID, $config, $options)->values(), 'mock walk output diverges from real net-snmp');
-    expect($mock->get($target, [self::BASE_OID . '.1'], $config, $options)->values())->toBe($real->get($target, [self::BASE_OID . '.1'], $config, $options)->values(), 'mock get output diverges from real net-snmp');
-    expect($mock->get($target, [self::BASE_OID . '.99'], $config, $options)->values())->toBe($real->get($target, [self::BASE_OID . '.99'], $config, $options)->values(), 'mock get output for a missing OID diverges from real net-snmp');
-    expect($mock->next($target, [self::BASE_OID], $config, $options)->values())->toBe($real->next($target, [self::BASE_OID], $config, $options)->values(), 'mock getnext output diverges from real net-snmp');
+    expect($mock->walk($target, SNMPREC_BASE_OID, $config, $options)->values())->toBe($real->walk($target, SNMPREC_BASE_OID, $config, $options)->values(), 'mock walk output diverges from real net-snmp');
+    expect($mock->get($target, [SNMPREC_BASE_OID . '.1'], $config, $options)->values())->toBe($real->get($target, [SNMPREC_BASE_OID . '.1'], $config, $options)->values(), 'mock get output diverges from real net-snmp');
+    expect($mock->get($target, [SNMPREC_BASE_OID . '.99'], $config, $options)->values())->toBe($real->get($target, [SNMPREC_BASE_OID . '.99'], $config, $options)->values(), 'mock get output for a missing OID diverges from real net-snmp');
+    expect($mock->next($target, [SNMPREC_BASE_OID], $config, $options)->values())->toBe($real->next($target, [SNMPREC_BASE_OID], $config, $options)->values(), 'mock getnext output diverges from real net-snmp');
 });

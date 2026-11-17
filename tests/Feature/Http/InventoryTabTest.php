@@ -10,12 +10,12 @@ use Spatie\Permission\Models\Role;
 
 uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     Role::findOrCreate('admin');
     Role::findOrCreate('user');
 });
 
-function admin(): User
+function inventoryAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -23,7 +23,7 @@ function admin(): User
     return $admin;
 }
 
-test('authorized user can render inventory ent physical tab', function () {
+test('authorized user can render inventory ent physical tab', function (): void {
     $device = Device::factory()->create();
     EntPhysical::factory()->for($device)->create([
         'entPhysicalIndex' => 1,
@@ -33,14 +33,14 @@ test('authorized user can render inventory ent physical tab', function () {
         'entPhysicalClass' => 'chassis',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(inventoryAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'inventory']))
         ->assertOk()
         ->assertSee('Chassis 1')
         ->assertSee('Catalyst 3850');
 });
 
-test('authorized user can render inventory ent physical with single sensor', function () {
+test('authorized user can render inventory ent physical with single sensor', function (): void {
     $device = Device::factory()->create();
     EntPhysical::factory()->for($device)->create([
         'entPhysicalIndex' => 1,
@@ -56,7 +56,7 @@ test('authorized user can render inventory ent physical with single sensor', fun
         'sensor_prev' => 35.0,
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(inventoryAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'inventory']))
         ->assertOk()
         ->assertSee('Temperature Sensor 1')
@@ -64,7 +64,7 @@ test('authorized user can render inventory ent physical with single sensor', fun
         ->assertDontSee(__('Sensors') . ':');
 });
 
-test('authorized user can render inventory ent physical with multiple sensors', function () {
+test('authorized user can render inventory ent physical with multiple sensors', function (): void {
     $device = Device::factory()->create();
     EntPhysical::factory()->for($device)->create([
         'entPhysicalIndex' => 1,
@@ -87,7 +87,7 @@ test('authorized user can render inventory ent physical with multiple sensors', 
         'sensor_prev' => 5.0,
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(inventoryAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'inventory']))
         ->assertOk()
         ->assertSee('Power Supply 1')
@@ -98,7 +98,7 @@ test('authorized user can render inventory ent physical with multiple sensors', 
         ->assertSee(route('graphs', ['type' => 'sensor_current', 'id' => $sensor2->sensor_id]));
 });
 
-test('authorized user can render inventory hr device tab', function () {
+test('authorized user can render inventory hr device tab', function (): void {
     $device = Device::factory()->create();
     HrDevice::factory()->for($device)->create([
         'hrDeviceIndex' => 1,
@@ -113,7 +113,7 @@ test('authorized user can render inventory hr device tab', function () {
         'processor_usage' => 25,
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(inventoryAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'inventory']))
         ->assertOk()
         ->assertSee('Intel Xeon CPU E5-2680')
@@ -123,7 +123,7 @@ test('authorized user can render inventory hr device tab', function () {
         ->assertSee(route('graphs', ['type' => 'processor_usage', 'from' => '-1d', 'id' => $processor->processor_id]));
 });
 
-test('user without inventory permission gets forbidden', function () {
+test('user without inventory permission gets forbidden', function (): void {
     $device = Device::factory()->create();
     EntPhysical::factory()->for($device)->create([
         'entPhysicalIndex' => 1,

@@ -1,24 +1,19 @@
 <?php
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use App\Models\Secret;
 use LibreNMS\Enum\SecretType;
 use LibreNMS\Scan\ScanOptions;
-use PHPUnit\Framework\Attributes\TestDox;
 
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class, LibreNMS\Tests\Traits\FakesNetworkTools::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-uses(\LibreNMS\Tests\Traits\FakesNetworkTools::class);
-
-beforeEach(function () {
+beforeEach(function (): void {
     $this->fakeFping([]);
     LibrenmsConfig::set('snmp.default_credentials', []);
 });
 
-test('no network', function () {
+test('Needs a network when nets is not set', function (): void {
     LibrenmsConfig::set('nets', []);
 
     $this->artisan('scan:network')
@@ -26,13 +21,13 @@ test('no network', function () {
         ->assertExitCode(1);
 });
 
-test('invalid network', function () {
+test('Rejects an invalid network', function (): void {
     $this->artisan('scan:network', ['network' => ['not-an-ip']])
         ->expectsOutputToContain(__('commands.scan:network.errors.invalid_network', ['network' => 'not-an-ip']))
         ->assertExitCode(2);
 });
 
-test('missing fping', function () {
+test('Stops when fping is missing', function (): void {
     $this->setBinary('fping', '/nonexistent/fping');
 
     $this->artisan('scan:network', ['network' => ['192.0.2.1/32']])
@@ -40,7 +35,7 @@ test('missing fping', function () {
         ->assertExitCode(3);
 });
 
-test('nets setting', function () {
+test('Scans the nets setting, with the scan alias', function (): void {
     LibrenmsConfig::set('nets', ['192.0.2.0/30']);
 
     $this->artisan('scan')
@@ -48,21 +43,21 @@ test('nets setting', function () {
         ->assertExitCode(0);
 });
 
-test('several networks', function () {
+test('Takes several networks, prints a symbol for each address', function (): void {
     $this->artisan('scan:network', ['network' => ['192.0.2.0/30', '192.0.2.4/31']])
         ->expectsOutput('.')
         ->expectsOutputToContain('Scanned 4 addresses in')
         ->assertExitCode(0);
 });
 
-test('legend', function () {
+test('Prints the legend', function (): void {
     $this->artisan('scan:network', ['network' => ['192.0.2.1/32'], '--legend' => true])
         ->expectsOutputToContain(__('commands.scan:network.legend'))
         ->expectsOutputToContain(__('commands.scan:network.outcomes.Excluded'))
         ->assertExitCode(0);
 });
 
-test('excluded', function () {
+test('Excluded addresses are not counted as scanned', function (): void {
     LibrenmsConfig::set('autodiscovery.nets-exclude', ['192.0.2.1/32', 'not-a-network']);
 
     $this->artisan('scan:network', ['network' => ['192.0.2.0/30']])
@@ -72,7 +67,7 @@ test('excluded', function () {
         ->assertExitCode(0);
 });
 
-test('verbose', function () {
+test('Verbose output names each address and why', function (): void {
     Device::factory()->create(['hostname' => 'known.example.com', 'ip' => '192.0.2.1']);
 
     $this->artisan('scan:network', ['network' => ['192.0.2.1/32'], '-v' => true])
@@ -83,13 +78,13 @@ test('verbose', function () {
         ->assertExitCode(0);
 });
 
-test('no snmp credentials', function () {
+test('Warns without default SNMP credentials', function (): void {
     $this->artisan('scan:network', ['network' => ['192.0.2.1/32']])
         ->expectsOutputToContain(__('commands.scan:network.errors.no_snmp_credentials'))
         ->assertExitCode(0);
 });
 
-test('default snmp configs', function () {
+test('Probes with the default SNMP credentials in order', function (): void {
     $v3 = Secret::factory()->create(['secret_type' => SecretType::SnmpV3, 'data' => ['authlevel' => 'noAuthNoPriv', 'authname' => 'scanner']]);
     $v2c = Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => 'scan-community']]);
     Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => 'not-a-default']]);

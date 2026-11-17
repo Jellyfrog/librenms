@@ -14,7 +14,7 @@ use Spatie\Permission\Models\Role;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     Role::findOrCreate('admin');
     Role::findOrCreate('user');
 
@@ -26,15 +26,15 @@ beforeEach(function () {
     LibrenmsConfig::set('billing.base', 1000);
 });
 
-test('index page renders', function () {
-    $this->actingAs(admin())
+test('index page renders', function (): void {
+    $this->actingAs(billAdmin())
         ->get(route('bills.index'))
         ->assertOk()
         ->assertSee(route('table.bills'), false)
         ->assertSee(__('Add Traffic Bill'));
 });
 
-test('index prefills create form from port', function () {
+test('index prefills create form from port', function (): void {
     $device = Device::factory()->create();
     $port = Port::factory()->create([
         'device_id' => $device->device_id,
@@ -42,7 +42,7 @@ test('index prefills create form from port', function () {
         'port_descr_circuit' => 'CIRCUIT-42',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(billAdmin())
         ->get(route('bills.index', ['port' => $port->port_id]))
         ->assertOk()
         ->assertSee('value="Customer Uplink"', false)
@@ -50,19 +50,19 @@ test('index prefills create form from port', function () {
         ->assertSee('createBill: true', false);
 });
 
-test('index requires billing enabled', function () {
+test('index requires billing enabled', function (): void {
     LibrenmsConfig::set('enable_billing', 0);
 
-    $this->actingAs(user())
+    $this->actingAs(billUser())
         ->get(route('bills.index'))
         ->assertForbidden();
 });
 
-test('admin can create cdr bill with port', function () {
+test('admin can create cdr bill with port', function (): void {
     $device = Device::factory()->create();
     $port = Port::factory()->create(['device_id' => $device->device_id]);
 
-    $response = $this->actingAs(admin())->post(route('bill.store'), [
+    $response = $this->actingAs(billAdmin())->post(route('bill.store'), [
         'bill_name' => 'New CDR Bill',
         'bill_type' => 'cdr',
         'bill_day' => 3,
@@ -84,8 +84,8 @@ test('admin can create cdr bill with port', function () {
     $this->assertDatabaseHas('bill_ports', ['bill_id' => $bill->bill_id, 'port_id' => $port->port_id]);
 });
 
-test('admin can create quota bill without port', function () {
-    $this->actingAs(admin())->post(route('bill.store'), [
+test('admin can create quota bill without port', function (): void {
+    $this->actingAs(billAdmin())->post(route('bill.store'), [
         'bill_name' => 'New Quota Bill',
         'bill_type' => 'quota',
         'bill_day' => 1,
@@ -100,10 +100,10 @@ test('admin can create quota bill without port', function () {
     expect($bill->ports()->count())->toEqual(0);
 });
 
-test('units honor binary billing base', function () {
+test('units honor binary billing base', function (): void {
     LibrenmsConfig::set('billing.base', 1024);
 
-    $this->actingAs(admin())->post(route('bill.store'), [
+    $this->actingAs(billAdmin())->post(route('bill.store'), [
         'bill_name' => 'Binary Bill',
         'bill_type' => 'quota',
         'bill_day' => 1,
@@ -114,22 +114,22 @@ test('units honor binary billing base', function () {
     $bill = Bill::where('bill_name', 'Binary Bill')->firstOrFail();
     expect($bill->bill_quota)->toEqual(1610612736);
 
-    $this->actingAs(admin())
+    $this->actingAs(billAdmin())
         ->get(route('bill.edit', $bill))
         ->assertSee('name="bill_quota" value="1.5"', false)
         ->assertSee('<option value="GB" selected', false);
 });
 
-test('create bill validates input', function () {
-    $this->actingAs(admin())
+test('create bill validates input', function (): void {
+    $this->actingAs(billAdmin())
         ->post(route('bill.store'), ['bill_type' => 'bogus', 'bill_day' => 40])
         ->assertSessionHasErrors(['bill_name', 'bill_type', 'bill_day']);
 
     expect(Bill::count())->toEqual(0);
 });
 
-test('user cannot create bill', function () {
-    $this->actingAs(user())->post(route('bill.store'), [
+test('user cannot create bill', function (): void {
+    $this->actingAs(billUser())->post(route('bill.store'), [
         'bill_name' => 'Nope',
         'bill_type' => 'quota',
         'bill_day' => 1,
@@ -138,8 +138,8 @@ test('user cannot create bill', function () {
     expect(Bill::count())->toEqual(0);
 });
 
-test('admin can view all bill pages', function () {
-    $admin = admin();
+test('admin can view all bill pages', function (): void {
+    $admin = billAdmin();
     $device = Device::factory()->create();
     $port = Port::factory()->create(['device_id' => $device->device_id, 'ifName' => 'eth-billed', 'ifDescr' => 'eth-billed', 'ifAlias' => 'Billed Uplink']);
     $bill = Bill::factory()->create([
@@ -178,16 +178,16 @@ test('admin can view all bill pages', function () {
         ->assertSee('<option value="GB" selected', false);
 });
 
-test('user without bill access cannot view bill', function () {
+test('user without bill access cannot view bill', function (): void {
     $bill = Bill::factory()->create();
 
-    $this->actingAs(user())
+    $this->actingAs(billUser())
         ->get(route('bill.show', $bill))
         ->assertForbidden();
 });
 
-test('user with bill access can view but not edit', function () {
-    $user = user();
+test('user with bill access can view but not edit', function (): void {
+    $user = billUser();
     $bill = Bill::factory()->create(['bill_name' => 'My Bill']);
     BillPerm::query()->insert(['user_id' => $user->user_id, 'bill_id' => $bill->bill_id]);
 
@@ -203,8 +203,8 @@ test('user with bill access can view but not edit', function () {
         ->assertForbidden();
 });
 
-test('legacy urls redirect', function () {
-    $admin = admin();
+test('legacy urls redirect', function (): void {
+    $admin = billAdmin();
     $bill = Bill::factory()->create();
 
     $this->actingAs($admin)->get("bill/bill_id={$bill->bill_id}")
@@ -215,8 +215,8 @@ test('legacy urls redirect', function () {
         ->assertRedirect(route('bill.edit', $bill));
 });
 
-test('table lists current period with filters', function () {
-    $admin = admin();
+test('table lists current period with filters', function (): void {
+    $admin = billAdmin();
     $over = Bill::factory()->create(['bill_name' => 'Over Bill', 'bill_type' => 'cdr', 'bill_cdr' => 1000, 'rate_95th' => 2000]);
     Bill::factory()->create(['bill_name' => 'Under Bill', 'bill_type' => 'quota', 'bill_quota' => 1000, 'total_data' => 500]);
 
@@ -245,8 +245,8 @@ test('table lists current period with filters', function () {
     $this->assertStringContainsString('Under Bill', $response->json('rows.0.bill_name'));
 });
 
-test('table lists previous period', function () {
-    $admin = admin();
+test('table lists previous period', function (): void {
+    $admin = billAdmin();
     $bill = Bill::factory()->create(['bill_name' => 'Historic Bill', 'bill_type' => 'quota']);
     Bill::factory()->create(['bill_name' => 'No History Bill']);
     createHistory($bill, now()->subMonth()->subDays(5), now()->subDays(5));
@@ -262,8 +262,8 @@ test('table lists previous period', function () {
     expect($row['actions'])->toEqual('');
 });
 
-test('table only shows permitted bills', function () {
-    $user = user();
+test('table only shows permitted bills', function (): void {
+    $user = billUser();
     $mine = Bill::factory()->create(['bill_name' => 'Mine']);
     Bill::factory()->create(['bill_name' => 'Not Mine']);
     BillPerm::query()->insert(['user_id' => $user->user_id, 'bill_id' => $mine->bill_id]);
@@ -275,7 +275,7 @@ test('table only shows permitted bills', function () {
     expect($response->json('rows.0.actions'))->toEqual('');
 });
 
-function admin(): User
+function billAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -283,7 +283,7 @@ function admin(): User
     return $admin;
 }
 
-function user(): User
+function billUser(): User
 {
     $user = User::factory()->create(['enabled' => 1]);
     $user->assignRole('user');

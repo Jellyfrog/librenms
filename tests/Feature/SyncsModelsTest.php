@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Discovery\Sensor as SensorDiscovery;
 use App\Models\Device;
 use App\Models\Mempool;
@@ -9,12 +8,11 @@ use App\Models\Storage;
 use App\Models\WirelessSensor;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use PHPUnit\Framework\Attributes\DataProvider;
+use LibreNMS\DB\SyncsModels;
 
+uses(LibreNMS\Tests\TestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-private const array DISCOVERED_LIMITS = [
+const SYNCS_DISCOVERED_LIMITS = [
     'sensor_limit' => 70,
     'sensor_limit_warn' => 60,
     'sensor_limit_low_warn' => 3,
@@ -24,47 +22,45 @@ private const array DISCOVERED_LIMITS = [
 /**
  * @return array<string, array{class-string<Mempool|Storage>, string, string, string}>
  */
-dataset('warnThresholdModels', function () {
-    return [
-        'storage' => [Storage::class, 'storage', 'storage_descr', 'storage_perc_warn'],
-        'mempool' => [Mempool::class, 'mempools', 'mempool_descr', 'mempool_perc_warn'],
-    ];
-});
+dataset('warnThresholdModels', [
+    'storage' => [Storage::class, 'storage', 'storage_descr', 'storage_perc_warn'],
+    'mempool' => [Mempool::class, 'mempools', 'mempool_descr', 'mempool_perc_warn'],
+]);
 
-test('sync keeps warn threshold on existing models', function (string $modelClass, string $relationship, string $descrField, string $warnField) {
+test('sync keeps warn threshold on existing models', function (string $modelClass, string $relationship, string $descrField, string $warnField): void {
     $device = Device::factory()->create();
     $existing = $modelClass::factory()->for($device)->createQuietly([$warnField => null]);
 
-    syncModels($device, $relationship, discovered($existing, [$descrField => 'renamed', $warnField => 80]));
+    syncOne($device, $relationship, discovered($existing, [$descrField => 'renamed', $warnField => 80]));
 
     $existing->refresh();
     expect($existing->$descrField)->toBe('renamed');
     expect($existing->$warnField)->toBeNull();
 })->with('warnThresholdModels');
 
-test('sync sets warn threshold on new models', function (string $modelClass, string $relationship, string $descrField, string $warnField) {
+test('sync sets warn threshold on new models', function (string $modelClass, string $relationship, string $descrField, string $warnField): void {
     $device = Device::factory()->create();
 
-    syncModels($device, $relationship, $modelClass::factory()->make([$warnField => 42]));
+    syncOne($device, $relationship, $modelClass::factory()->make([$warnField => 42]));
 
     expect($device->$relationship()->first()->$warnField)->toBe(42);
 })->with('warnThresholdModels');
 
-test('fill new keeps warn threshold', function (string $modelClass, string $relationship, string $descrField, string $warnField) {
+test('fill new keeps warn threshold', function (string $modelClass, string $relationship, string $descrField, string $warnField): void {
     $device = Device::factory()->create();
     $existing = $modelClass::factory()->for($device)->createQuietly([$warnField => 60]);
 
-    $filled = fillNew($existing, discovered($existing, [$descrField => 'renamed', $warnField => 80]));
+    $filled = fillNewOne($existing, discovered($existing, [$descrField => 'renamed', $warnField => 80]));
 
     expect($filled->$descrField)->toBe('renamed');
     expect($filled->$warnField)->toBe(60);
 })->with('warnThresholdModels');
 
-test('sensor discovery keeps custom limits', function () {
+test('sensor discovery keeps custom limits', function (): void {
     $device = Device::factory()->create();
     $existing = existingSensor(Sensor::class, $device, ['sensor_custom' => 'Yes', 'sensor_limit' => 50]);
 
-    discoverSensor($existing, ['sensor_descr' => 'renamed'] + self::DISCOVERED_LIMITS);
+    discoverSensor($existing, ['sensor_descr' => 'renamed'] + SYNCS_DISCOVERED_LIMITS);
 
     $existing->refresh();
     expect($existing->sensor_descr)->toBe('renamed');
@@ -73,7 +69,7 @@ test('sensor discovery keeps custom limits', function () {
     expect($existing->sensor_limit_warn)->toBeNull();
 });
 
-test('sensor discovery updates limits', function () {
+test('sensor discovery updates limits', function (): void {
     $device = Device::factory()->create();
     $existing = existingSensor(Sensor::class, $device, ['sensor_limit' => 50, 'sensor_limit_warn' => 40]);
 
@@ -84,22 +80,22 @@ test('sensor discovery updates limits', function () {
     expect($existing->sensor_limit_warn)->toEqual(40, 'Limits not provided by discovery are kept');
 });
 
-test('sensor discovery applies limits after reset', function () {
+test('sensor discovery applies limits after reset', function (): void {
     $device = Device::factory()->create();
     $existing = existingSensor(Sensor::class, $device, ['sensor_custom' => 'Reset', 'sensor_limit' => 50]);
 
-    discoverSensor($existing, self::DISCOVERED_LIMITS);
+    discoverSensor($existing, SYNCS_DISCOVERED_LIMITS);
 
     $existing->refresh();
     expect($existing->sensor_custom)->toBe('No');
     expect($existing->sensor_limit)->toEqual(70);
 });
 
-test('sync keeps custom wireless sensor limits', function () {
+test('sync keeps custom wireless sensor limits', function (): void {
     $device = Device::factory()->create();
     $existing = existingSensor(WirelessSensor::class, $device, ['sensor_custom' => 'Yes', 'sensor_limit' => 50]);
 
-    syncModels($device, 'wirelessSensors', discovered($existing, ['sensor_descr' => 'renamed'] + self::DISCOVERED_LIMITS));
+    syncOne($device, 'wirelessSensors', discovered($existing, ['sensor_descr' => 'renamed'] + SYNCS_DISCOVERED_LIMITS));
 
     $existing->refresh();
     expect($existing->sensor_descr)->toBe('renamed');
@@ -108,11 +104,12 @@ test('sync keeps custom wireless sensor limits', function () {
     expect($existing->sensor_limit_warn)->toBeNull();
 });
 
-test('sync only fills empty wireless sensor limits', function () {
+// Removing custom limits clears them, so discovery can set them again
+test('sync only fills empty wireless sensor limits', function (): void {
     $device = Device::factory()->create();
     $existing = existingSensor(WirelessSensor::class, $device, ['sensor_limit' => 50]);
 
-    syncModels($device, 'wirelessSensors', discovered($existing, self::DISCOVERED_LIMITS));
+    syncOne($device, 'wirelessSensors', discovered($existing, SYNCS_DISCOVERED_LIMITS));
 
     $existing->refresh();
     expect($existing->sensor_limit)->toEqual(50);
@@ -166,21 +163,23 @@ function discoverSensor(Sensor $existing, array $attributes): void
         ->sync(sensor_class: $discovered->sensor_class, poller_type: $discovered->poller_type);
 }
 
-function syncModels(Device $device, string $relationship, Model $discovered): void
+function syncOne(Device $device, string $relationship, Model $discovered): void
 {
-    syncModels($device, $relationship, new Collection([$discovered]));
+    modelSyncer()->syncModels($device, $relationship, new Collection([$discovered]));
 }
 
-function fillNew(Model $existing, Model $discovered): Model
+function fillNewOne(Model $existing, Model $discovered): Model
 {
-    return fillNew(new Collection([$existing]), new Collection([$discovered]))->first();
+    return modelSyncer()->fillNew(new Collection([$existing]), new Collection([$discovered]))->first();
 }
 
 function modelSyncer(): object
 {
     return new class
     {
-        uses(\LibreNMS\DB\SyncsModels::class);
-        
+        use SyncsModels {
+            syncModels as public;
+            fillNew as public;
+        }
     };
 }

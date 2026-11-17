@@ -25,7 +25,6 @@
  * @copyright  2026 LibreNMS
  */
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\ConfigBackup\ConfigBackupManager;
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
@@ -33,10 +32,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Spatie\Permission\Models\Role;
 
+uses(LibreNMS\Tests\TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
-
-beforeEach(function () {
+beforeEach(function (): void {
     $this->originalProviders = ConfigBackupManager::$providers;
     ConfigBackupManager::$providers = [
         \App\ConfigBackup\Providers\UnimusProvider::class,
@@ -52,11 +50,11 @@ beforeEach(function () {
     LibrenmsConfig::set('unimus.token', 'test-token');
 });
 
-afterEach(function () {
+afterEach(function (): void {
     ConfigBackupManager::$providers = $this->originalProviders;
 });
 
-function admin(): User
+function configBackupAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -64,7 +62,7 @@ function admin(): User
     return $admin;
 }
 
-test('invariant1 chronological ordering', function () {
+test('invariant1 chronological ordering', function (): void {
     $device = Device::factory()->create();
 
     Http::fake([
@@ -79,7 +77,7 @@ test('invariant1 chronological ordering', function () {
         ], 200),
     ]);
 
-    $response = $this->actingAs(admin())
+    $response = $this->actingAs(configBackupAdmin())
         ->getJson(route('device.config.backups', ['device' => $device->device_id, 'page' => 0]))
         ->assertOk();
 
@@ -92,16 +90,16 @@ test('invariant1 chronological ordering', function () {
     expect($backups[1]['date'])->toBeGreaterThan($backups[2]['date']);
 });
 
-test('invariant5 diff rejects identical revisions', function () {
+test('invariant5 diff rejects identical revisions', function (): void {
     $device = Device::factory()->create();
 
-    $this->actingAs(admin())
+    $this->actingAs(configBackupAdmin())
         ->getJson(route('device.config.diff', ['device' => $device->device_id, 'orig' => 10, 'rev' => 10]))
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['rev']);
 });
 
-test('invariant9 backup list omits full content', function () {
+test('invariant9 backup list omits full content', function (): void {
     $device = Device::factory()->create();
 
     Http::fake([
@@ -114,13 +112,13 @@ test('invariant9 backup list omits full content', function () {
         ], 200),
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(configBackupAdmin())
         ->getJson(route('device.config.backups', ['device' => $device->device_id, 'page' => 0]))
         ->assertOk()
         ->assertJsonPath('backups.0.content', null);
 });
 
-test('invariant14 diff normalizes to standard groups', function () {
+test('invariant14 diff normalizes to standard groups', function (): void {
     $device = Device::factory()->create();
 
     Http::fake([
@@ -149,7 +147,7 @@ test('invariant14 diff normalizes to standard groups', function () {
         ], 200),
     ]);
 
-    $response = $this->actingAs(admin())
+    $response = $this->actingAs(configBackupAdmin())
         ->getJson(route('device.config.diff', ['device' => $device->device_id, 'orig' => 1, 'rev' => 2]))
         ->assertOk();
 
@@ -164,7 +162,7 @@ test('invariant14 diff normalizes to standard groups', function () {
     expect($groups[1]['revised'][0]['text'])->toBe('interface GigabitEthernet0/1');
 });
 
-test('invariant13 identical diff contract', function () {
+test('invariant13 identical diff contract', function (): void {
     $device = Device::factory()->create();
 
     Http::fake([
@@ -183,7 +181,7 @@ test('invariant13 identical diff contract', function () {
         ], 200),
     ]);
 
-    $response = $this->actingAs(admin())
+    $response = $this->actingAs(configBackupAdmin())
         ->getJson(route('device.config.diff', ['device' => $device->device_id, 'orig' => 1, 'rev' => 2]))
         ->assertOk();
 
@@ -193,7 +191,7 @@ test('invariant13 identical diff contract', function () {
     expect(array_filter($groups, fn ($g) => in_array($g['type'], ['INSERTED', 'DELETED', 'CHANGED'])))->toBeEmpty();
 });
 
-test('invariant4 binary backups flagged', function () {
+test('invariant4 binary backups flagged', function (): void {
     $device = Device::factory()->create();
 
     Http::fake([
@@ -206,29 +204,29 @@ test('invariant4 binary backups flagged', function () {
         ], 200),
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(configBackupAdmin())
         ->getJson(route('device.config.backups', ['device' => $device->device_id, 'page' => 0]))
         ->assertOk()
         ->assertJsonPath('backups.0.type', 'BINARY');
 });
 
-test('invariant10 history boundaries', function () {
+test('invariant10 history boundaries', function (): void {
     $device = Device::factory()->create();
 
-    $this->actingAs(admin())
+    $this->actingAs(configBackupAdmin())
         ->getJson(route('device.config.backups', ['device' => $device->device_id, 'page' => -1]))
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['page']);
 });
 
-test('view enshrines keyboard shortcuts and interaction contract', function () {
+test('view enshrines keyboard shortcuts and interaction contract', function (): void {
     $device = Device::factory()->create();
 
     Http::fake([
         'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
     ]);
 
-    $view = $this->actingAs(admin())
+    $view = $this->actingAs(configBackupAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'config']))
         ->assertOk();
 

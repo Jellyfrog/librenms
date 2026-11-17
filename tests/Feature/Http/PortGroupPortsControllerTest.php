@@ -8,15 +8,14 @@ use App\Models\User;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-
 uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     Role::findOrCreate('admin');
     Role::findOrCreate('user');
 });
 
-function admin(): User
+function portGroupAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -24,7 +23,7 @@ function admin(): User
     return $admin;
 }
 
-function user(): User
+function portGroupUser(): User
 {
     $user = User::factory()->create(['enabled' => 1]);
     $user->assignRole('user');
@@ -35,7 +34,7 @@ function user(): User
 /**
  * @param  array<string, mixed>  $attributes
  */
-function port(Device $device, array $attributes = []): Port
+function portGroupPort(Device $device, array $attributes = []): Port
 {
     return Port::factory()->for($device)->create(array_merge([
         'ifName' => 'eth' . fake()->unique()->numberBetween(0, 10000),
@@ -53,7 +52,7 @@ function port(Device $device, array $attributes = []): Port
  */
 function listedPortIds(PortGroup $group, array $query, ?User $user = null): array
 {
-    $response = $this->actingAs($user ?? admin())
+    $response = test()->actingAs($user ?? portGroupAdmin())
         ->getJson(route('port-groups.ports.list', $group) . '?' . http_build_query($query))
         ->assertOk();
 
@@ -63,10 +62,10 @@ function listedPortIds(PortGroup $group, array $query, ?User $user = null): arra
     return $ids;
 }
 
-test('admin can view page', function () {
+test('admin can view page', function (): void {
     $group = PortGroup::factory()->create(['name' => 'Uplinks']);
 
-    $response = $this->actingAs(admin())
+    $response = $this->actingAs(portGroupAdmin())
         ->get(route('port-groups.ports', $group))
         ->assertOk()
         ->assertSee('Uplinks')
@@ -79,41 +78,41 @@ test('admin can view page', function () {
     // every table component includes the shared script, it must only be output once
     expect(substr_count($response->getContent(), 'window.LibreNMS.selectableTable ='))->toBe(1);
 
-    $this->actingAs(admin())
+    $this->actingAs(portGroupAdmin())
         ->get(route('port-groups.index'))
         ->assertOk()
         ->assertSee(route('port-groups.ports', $group->id), false)
         ->assertSee(route('portgroup.graph', $group->id), false);
 });
 
-test('user cannot manage ports', function () {
+test('user cannot manage ports', function (): void {
     $group = PortGroup::factory()->create();
-    $port = port(Device::factory()->create());
+    $port = portGroupPort(Device::factory()->create());
 
-    $this->actingAs(user())
+    $this->actingAs(portGroupUser())
         ->get(route('port-groups.ports', $group))
         ->assertForbidden();
 
-    $this->actingAs(user())
+    $this->actingAs(portGroupUser())
         ->getJson(route('port-groups.ports.list', $group))
         ->assertForbidden();
 
-    $this->actingAs(user())
+    $this->actingAs(portGroupUser())
         ->postJson(route('port-groups.ports.update', $group), ['action' => 'add', 'ids' => [$port->port_id]])
         ->assertForbidden();
 
     expect($group->ports()->count())->toBe(0);
 });
 
-test('list by membership', function () {
+test('list by membership', function (): void {
     $group = PortGroup::factory()->create();
     $device = Device::factory()->create();
-    $member = port($device);
-    $other = port($device);
+    $member = portGroupPort($device);
+    $other = portGroupPort($device);
     $group->ports()->attach($member);
 
     expect(listedPortIds($group, ['membership' => 'members']))->toBe([$member->port_id]);
-    $this->actingAs(admin())
+    $this->actingAs(portGroupAdmin())
         ->getJson(route('port-groups.ports.list', $group) . '?membership=members')
         ->assertJsonPath('data.0.member', true)
         ->assertJsonMissingPath('links')
@@ -121,7 +120,7 @@ test('list by membership', function () {
     expect(listedPortIds($group, ['membership' => 'available']))->not->toContain($member->port_id);
     expect(listedPortIds($group, ['membership' => 'available']))->toContain($other->port_id);
 
-    $response = $this->actingAs(admin())
+    $response = $this->actingAs(portGroupAdmin())
         ->getJson(route('port-groups.ports.list', $group) . '?' . http_build_query([
             'membership' => 'all',
             'filter' => ['device_id' => ['eq' => $device->device_id]],
@@ -137,27 +136,27 @@ test('list by membership', function () {
     expect($response->json('data.0.device'))->toBe($device->display);
 });
 
-test('sort by device display name', function () {
+test('sort by device display name', function (): void {
     $group = PortGroup::factory()->create();
-    $first = port(Device::factory()->create(['hostname' => 'zz.example.com', 'display_template' => 'aa-switch']));
-    $second = port(Device::factory()->create(['hostname' => 'aa.example.com', 'display_template' => 'zz-switch']));
+    $first = portGroupPort(Device::factory()->create(['hostname' => 'zz.example.com', 'display_template' => 'aa-switch']));
+    $second = portGroupPort(Device::factory()->create(['hostname' => 'aa.example.com', 'display_template' => 'zz-switch']));
     $group->ports()->attach([$first->port_id, $second->port_id]);
 
-    $response = $this->actingAs(admin())
+    $response = $this->actingAs(portGroupAdmin())
         ->getJson(route('port-groups.ports.list', $group) . '?membership=members&sort=device')
         ->assertOk();
 
     expect(array_column($response->json('data'), 'port_id'))->toBe([$first->port_id, $second->port_id]);
 });
 
-test('list port with missing device', function () {
+test('list port with missing device', function (): void {
     $group = PortGroup::factory()->create();
     $device = Device::factory()->create();
-    $port = port($device);
+    $port = portGroupPort($device);
     $group->ports()->attach($port);
     $device->deleteQuietly();
 
-    $this->actingAs(admin())
+    $this->actingAs(portGroupAdmin())
         ->getJson(route('port-groups.ports.list', $group) . '?membership=members')
         ->assertOk()
         ->assertJsonPath('data.0.port_id', $port->port_id)
@@ -165,28 +164,28 @@ test('list port with missing device', function () {
         ->assertJsonPath('data.0.device_url', null);
 });
 
-test('list filters', function () {
+test('list filters', function (): void {
     $group = PortGroup::factory()->create();
     $device = Device::factory()->create();
-    $uplink = port($device, ['ifAlias' => 'core uplink']);
-    port($device, ['ifAlias' => 'customer']);
-    $down = port($device, ['ifAlias' => 'spare', 'ifOperStatus' => 'down']);
+    $uplink = portGroupPort($device, ['ifAlias' => 'core uplink']);
+    portGroupPort($device, ['ifAlias' => 'customer']);
+    $down = portGroupPort($device, ['ifAlias' => 'spare', 'ifOperStatus' => 'down']);
 
     $base = ['membership' => 'available', 'filter' => ['device_id' => ['eq' => $device->device_id]]];
     expect(listedPortIds($group, array_merge_recursive($base, ['filter' => ['search' => ['contains' => 'uplink']]])))->toBe([$uplink->port_id]);
     expect(listedPortIds($group, array_merge_recursive($base, ['filter' => ['state' => ['eq' => 'down']]])))->toBe([$down->port_id]);
 
-    $this->actingAs(admin())
+    $this->actingAs(portGroupAdmin())
         ->getJson(route('port-groups.ports.list', $group) . '?membership=bogus')
         ->assertUnprocessable();
 });
 
-test('add and remove selected ports', function () {
+test('add and remove selected ports', function (): void {
     $group = PortGroup::factory()->create();
     $device = Device::factory()->create();
-    $ports = collect([port($device), port($device), port($device)]);
+    $ports = collect([portGroupPort($device), portGroupPort($device), portGroupPort($device)]);
 
-    $this->actingAs(admin())
+    $this->actingAs(portGroupAdmin())
         ->postJson(route('port-groups.ports.update', $group), ['action' => 'add', 'ids' => $ports->pluck('port_id')->all()])
         ->assertOk()
         ->assertJsonPath('updated', 3)
@@ -194,13 +193,13 @@ test('add and remove selected ports', function () {
         ->assertJsonPath('message', '3 ports added');
 
     // adding again does not duplicate
-    $this->actingAs(admin())
+    $this->actingAs(portGroupAdmin())
         ->postJson(route('port-groups.ports.update', $group), ['action' => 'add', 'ids' => [$ports[0]->port_id]])
         ->assertOk()
         ->assertJsonPath('updated', 0)
         ->assertJsonPath('members', 3);
 
-    $this->actingAs(admin())
+    $this->actingAs(portGroupAdmin())
         ->postJson(route('port-groups.ports.update', $group), ['action' => 'remove', 'ids' => [$ports[0]->port_id, $ports[1]->port_id]])
         ->assertOk()
         ->assertJsonPath('updated', 2)
@@ -210,14 +209,14 @@ test('add and remove selected ports', function () {
     expect($group->ports()->pluck('ports.port_id')->all())->toBe([$ports[2]->port_id]);
 });
 
-test('add and remove all matching ports', function () {
+test('add and remove all matching ports', function (): void {
     $group = PortGroup::factory()->create();
     $device = Device::factory()->create();
-    $up = [port($device), port($device)];
-    $down = port($device, ['ifOperStatus' => 'down']);
-    $otherDevice = port(Device::factory()->create());
+    $up = [portGroupPort($device), portGroupPort($device)];
+    $down = portGroupPort($device, ['ifOperStatus' => 'down']);
+    $otherDevice = portGroupPort(Device::factory()->create());
 
-    $this->actingAs(admin())
+    $this->actingAs(portGroupAdmin())
         ->postJson(route('port-groups.ports.update', $group), [
             'action' => 'add',
             'all' => true,
@@ -234,7 +233,7 @@ test('add and remove all matching ports', function () {
     $group->ports()->attach($otherDevice);
 
     // remove only matching members
-    $this->actingAs(admin())
+    $this->actingAs(portGroupAdmin())
         ->postJson(route('port-groups.ports.update', $group), [
             'action' => 'remove',
             'all' => true,
@@ -248,32 +247,32 @@ test('add and remove all matching ports', function () {
     expect($group->ports()->pluck('ports.port_id')->all())->toEqualCanonicalizing([$down->port_id, $otherDevice->port_id]);
 });
 
-test('invalid updates are rejected', function () {
+test('invalid updates are rejected', function (): void {
     $group = PortGroup::factory()->create();
 
-    $this->actingAs(admin())
+    $this->actingAs(portGroupAdmin())
         ->postJson(route('port-groups.ports.update', $group), ['action' => 'add'])
         ->assertUnprocessable();
 
-    $this->actingAs(admin())
+    $this->actingAs(portGroupAdmin())
         ->postJson(route('port-groups.ports.update', $group), ['action' => 'delete', 'ids' => [1]])
         ->assertUnprocessable();
 
-    $this->actingAs(admin())
+    $this->actingAs(portGroupAdmin())
         ->postJson(route('port-groups.ports.update', $group), ['action' => 'add', 'all' => false])
         ->assertUnprocessable();
 });
 
-test('limited user only manages accessible ports', function () {
+test('limited user only manages accessible ports', function (): void {
     Permission::findOrCreate('port-group.update');
-    $user = user();
+    $user = portGroupUser();
     $user->givePermissionTo('port-group.update');
     $accessible = Device::factory()->create();
     $user->devicesOwned()->attach($accessible->device_id);
 
     $group = PortGroup::factory()->create();
-    $mine = port($accessible);
-    $hidden = port(Device::factory()->create());
+    $mine = portGroupPort($accessible);
+    $hidden = portGroupPort(Device::factory()->create());
 
     expect(listedPortIds($group, ['membership' => 'available'], $user))->not->toContain($hidden->port_id);
 

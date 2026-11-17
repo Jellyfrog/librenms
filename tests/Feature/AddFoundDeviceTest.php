@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Actions\Device\AddFoundDevice;
 use App\Actions\Device\AutoDiscoverDevice;
 use App\Facades\LibrenmsConfig;
@@ -13,12 +12,10 @@ use LibreNMS\Data\Source\Snmp\RawSnmpResponse;
 use LibreNMS\Data\Source\Snmp\SnmpBackendInterface;
 use LibreNMS\Enum\DeviceAddOutcome;
 use LibreNMS\Enum\SecretType;
-use PHPUnit\Framework\Attributes\TestDox;
 
+uses(\LibreNMS\Tests\DBTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-test('unreachable', function () {
+test('A device that does not reply to SNMP is unreachable, with the reason', function (): void {
     mockNoSnmpReply();
 
     $result = app(AddFoundDevice::class)->execute(new Device(['hostname' => 'no-snmp.example.com']));
@@ -28,7 +25,7 @@ test('unreachable', function () {
     expect(Device::where('hostname', 'no-snmp.example.com')->exists())->toBeFalse();
 });
 
-test('auto discovery logs reason', function () {
+test('Autodiscovery logs why a neighbor was not added', function (): void {
     mockNoSnmpReply();
     LibrenmsConfig::set('nets', ['192.0.2.0/24']);
     LibrenmsConfig::set('discovery_by_ip', true);
@@ -51,9 +48,9 @@ function mockNoSnmpReply(): void
 
     $fping = Mockery::mock(Fping::class);
     $fping->shouldReceive('ping')->andReturn(FpingResponse::artificialUp());
-    $this->app->instance(Fping::class, $fping);
+    app()->instance(Fping::class, $fping);
 
     $backend = Mockery::mock(SnmpBackendInterface::class);
     $backend->shouldReceive('get')->andReturn(new RawSnmpResponse('', 'Timeout', 1));
-    $this->app->instance(SnmpBackendInterface::class, $backend);
+    app()->instance(SnmpBackendInterface::class, $backend);
 }

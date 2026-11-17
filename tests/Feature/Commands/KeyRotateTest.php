@@ -1,10 +1,11 @@
 <?php
 
-uses(\LibreNMS\Tests\InMemoryDbTestCase::class);
 use App\Facades\LibrenmsConfig;
 use Illuminate\Encryption\Encrypter;
 
-test('rotates without interaction', function () {
+uses(LibreNMS\Tests\InMemoryDbTestCase::class);
+
+test('rotates without interaction', function (): void {
     $cipher = config('app.cipher');
     $oldKey = Encrypter::generateKey($cipher);
     $newKey = Encrypter::generateKey($cipher);

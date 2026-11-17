@@ -4,10 +4,8 @@ uses(\LibreNMS\Tests\DBTestCase::class);
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use PHPUnit\Framework\Attributes\DataProvider;
 
-
-beforeEach(function () {
+beforeEach(function (): void {
     $this->previousConnection = DB::getDefaultConnection();
     config(['database.connections.cache_migration' => array_replace(config('database.connections.testing'), [
         'prefix' => 'cache_expiration_test_',
@@ -19,7 +17,7 @@ beforeEach(function () {
     (require base_path('database/migrations/2020_09_24_000500_create_cache_locks_table.php'))->up();
 });
 
-afterEach(function () {
+afterEach(function (): void {
     Schema::dropIfExists('cache_locks');
     Schema::dropIfExists('cache');
     DB::purge('cache_migration');
@@ -27,20 +25,20 @@ afterEach(function () {
 
 });
 
-test('missing expiration indexes are added without duplicating existing ones', function (array $indexedTables) {
+test('missing expiration indexes are added without duplicating existing ones', function (array $indexedTables): void {
     foreach ($indexedTables as $tableName) {
         Schema::table($tableName, function (Blueprint $table): void {
             $table->index('expiration');
         });
     }
 
-    migration()->up();
+    cacheExpirationMigration()->up();
 
     expect(Schema::hasIndex('cache', 'cache_expiration_index'))->toBeTrue();
     expect(Schema::hasIndex('cache_locks', 'cache_locks_expiration_index'))->toBeTrue();
 })->with('existingIndexes');
 
-test('legacy lock table uses dynamic row format and keeps locks', function () {
+test('legacy lock table uses dynamic row format and keeps locks', function (): void {
     if (! in_array(DB::getDriverName(), ['mysql', 'mariadb'], true)) {
         $this->markTestSkipped('InnoDB row formats require MySQL or MariaDB.');
     }
@@ -49,7 +47,7 @@ test('legacy lock table uses dynamic row format and keeps locks', function () {
     $lock = ['key' => str_repeat('a', 255), 'owner' => 'existing-owner', 'expiration' => 2000000000];
     DB::table('cache_locks')->insert($lock);
 
-    migration()->up();
+    cacheExpirationMigration()->up();
 
     $status = DB::selectOne('SHOW TABLE STATUS WHERE Name = ?', ['cache_expiration_test_cache_locks']);
     expect($status->Row_format)->toBe('Dynamic');
@@ -69,7 +67,7 @@ dataset('existingIndexes', function () {
     ];
 });
 
-function migration(): object
+function cacheExpirationMigration(): object
 {
     return require base_path('database/migrations/2026_09_22_000001_add_expiration_index_to_cache_table.php');
 }

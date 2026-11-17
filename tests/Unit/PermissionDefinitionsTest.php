@@ -1,32 +1,35 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Keeps resources/definitions/permissions.yaml in sync with the policies and lang/en/permissions.php
+ */
+uses(\LibreNMS\Tests\TestCase::class);
 
 /**
  * Checked by a policy, but nothing calls the ability, so they are not offered
  */
-private const array NOT_GRANTABLE = [
+const PERMISSIONS_NOT_GRANTABLE = [
     'inventory.delete',
     'inventory.update',
     'port.forceDelete',
     'port.restore',
 ];
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->definitions = Yaml::parseFile(resource_path('definitions/permissions.yaml'));
 });
 
-test('groups only contain their own permissions', function () {
+test('groups only contain their own permissions', function (): void {
     foreach ($this->definitions['groups'] as $group => $permissions) {
         foreach ($permissions as $permission) {
-            expect($permission)->toStartWith("$group.");
+            $this->assertStringStartsWith("$group.", $permission);
         }
     }
 });
 
-test('every permission has label and description', function () {
+test('every permission has label and description', function (): void {
     foreach (allPermissions() as $permission) {
         [$group, $action] = explode('.', $permission, 2);
 
@@ -36,27 +39,27 @@ test('every permission has label and description', function () {
     }
 });
 
-test('risky permissions exist and explain why', function () {
-    expect($this->definitions['risky'])->not->toBeEmpty();
+test('risky permissions exist and explain why', function (): void {
+    $this->assertNotEmpty($this->definitions['risky']);
     $this->assertNotSame('permissions.rbac.risky', __('permissions.rbac.risky'));
 
     foreach ($this->definitions['risky'] as $permission) {
-        expect(allPermissions())->toContain($permission, "$permission is not defined");
+        $this->assertContains($permission, allPermissions(), "$permission is not defined");
         $this->assertNotSame("permissions.$permission.risk", __("permissions.$permission.risk"), "$permission has no risk text");
     }
 });
 
-test('only risky permissions have risk text', function () {
+test('only risky permissions have risk text', function (): void {
     foreach (__('permissions') as $group => $translations) {
         foreach ($translations as $action => $translation) {
             if (is_array($translation) && isset($translation['risk'])) {
-                expect($this->definitions['risky'])->toContain("$group.$action", "$group.$action has risk text, but is not listed as risky");
+                $this->assertContains("$group.$action", $this->definitions['risky'], "$group.$action has risk text, but is not listed as risky");
             }
         }
     }
 });
 
-test('every policy permission is defined', function () {
+test('every policy permission is defined', function (): void {
     $defined = allPermissions();
 
     foreach (glob(app_path('Policies/*Policy.php')) as $file) {
@@ -68,8 +71,8 @@ test('every policy permission is defined', function () {
         preg_match_all("/hasGlobalPermission\(\\\$user, '([^']+)'/", $source, $matches);
         foreach (array_unique($matches[1]) as $action) {
             $permission = "$prefix.$action";
-            if (! in_array($permission, self::NOT_GRANTABLE)) {
-                expect($defined)->toContain($permission, basename($file) . " checks $permission");
+            if (! in_array($permission, PERMISSIONS_NOT_GRANTABLE)) {
+                $this->assertContains($permission, $defined, basename($file) . " checks $permission");
             }
         }
     }
@@ -80,5 +83,5 @@ test('every policy permission is defined', function () {
  */
 function allPermissions(): array
 {
-    return [...array_merge(...array_values($this->definitions['groups'])), ...$this->definitions['hidden']];
+    return [...array_merge(...array_values(test()->definitions['groups'])), ...test()->definitions['hidden']];
 }

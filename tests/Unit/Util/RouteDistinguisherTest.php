@@ -22,10 +22,9 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-uses(\LibreNMS\Tests\TestCase::class);
 use LibreNMS\Util\RouteDistinguisher;
-use PHPUnit\Framework\Attributes\DataProvider;
 
+uses(LibreNMS\Tests\TestCase::class);
 
 /**
  * @return array<string, array{0: string|null, 1: string|null}>
@@ -47,6 +46,6 @@ dataset('routeDistinguisherProvider', function () {
     ];
 });
 
-test('parse', function (?string $value, ?string $expected) {
+test('parse', function (?string $value, ?string $expected): void {
     expect(RouteDistinguisher::parse($value))->toBe($expected);
 })->with('routeDistinguisherProvider');

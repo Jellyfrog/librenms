@@ -34,7 +34,7 @@ use Spatie\Permission\Models\Role;
 
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     Role::findOrCreate('user');
 
     $this->location = Location::factory()->create();
@@ -61,21 +61,21 @@ function runAuth(string $type, array $vars, bool $auth = false): array
     return ['auth' => $auth, 'devices' => $devices];
 }
 
-test('location graph only includes permitted devices', function () {
+test('location graph only includes permitted devices', function (): void {
     $result = runAuth('location', ['id' => $this->location->id]);
 
     expect($result['auth'])->toBeTrue();
     expect(array_column($result['devices'], 'device_id'))->toEqual([$this->accessible->device_id]);
 });
 
-test('location graph guest auth includes all devices', function () {
+test('location graph guest auth includes all devices', function (): void {
     $result = runAuth('location', ['id' => $this->location->id], true);
 
     expect($result['auth'])->toBeTrue();
     expect(array_column($result['devices'], 'device_id'))->toEqualCanonicalizing([$this->accessible->device_id, $this->other->device_id]);
 });
 
-test('location graph denied without permitted devices', function () {
+test('location graph denied without permitted devices', function (): void {
     $otherLocation = Location::factory()->create();
     Device::factory()->create(['location_id' => $otherLocation->id]);
 
@@ -85,18 +85,18 @@ test('location graph denied without permitted devices', function () {
     expect($result['devices'])->toBeEmpty();
 });
 
-test('smokeping graph requires permission on graphed device', function () {
+test('smokeping graph requires permission on graphed device', function (): void {
     expect(runAuth('smokeping', ['device' => $this->accessible->device_id, 'src' => $this->accessible->device_id])['auth'])->toBeTrue();
     expect(runAuth('smokeping', ['device' => $this->other->device_id, 'src' => $this->accessible->device_id])['auth'])->toBeFalse();
 });
 
-test('smokeping graph requires permission on peer device', function () {
+test('smokeping graph requires permission on peer device', function (): void {
     expect(runAuth('smokeping', ['device' => $this->accessible->device_id, 'src' => $this->other->device_id])['auth'])->toBeFalse();
     expect(runAuth('smokeping', ['device' => $this->accessible->device_id, 'dest' => $this->other->device_id])['auth'])->toBeFalse();
     expect(runAuth('smokeping', ['device' => $this->accessible->device_id, 'dest' => $this->accessible->device_id])['auth'])->toBeTrue();
 });
 
-test('customer graph only includes permitted ports', function () {
+test('customer graph only includes permitted ports', function (): void {
     $accessiblePort = Port::factory()->for($this->accessible)->create(['port_descr_type' => 'cust', 'port_descr_descr' => 'Acme']);
     Port::factory()->for($this->other)->create(['port_descr_type' => 'cust', 'port_descr_descr' => 'Acme']);
 
@@ -108,7 +108,7 @@ test('customer graph only includes permitted ports', function () {
     }
 });
 
-test('customer graph guest auth includes all ports', function () {
+test('customer graph guest auth includes all ports', function (): void {
     $accessiblePort = Port::factory()->for($this->accessible)->create(['port_descr_type' => 'cust', 'port_descr_descr' => 'Acme']);
     $otherPort = Port::factory()->for($this->other)->create(['port_descr_type' => 'cust', 'port_descr_descr' => 'Acme']);
 
@@ -118,7 +118,7 @@ test('customer graph guest auth includes all ports', function () {
     expect($result['ports'])->toEqualCanonicalizing([$accessiblePort->port_id, $otherPort->port_id]);
 });
 
-test('customer graph denied without permitted ports', function () {
+test('customer graph denied without permitted ports', function (): void {
     Port::factory()->for($this->other)->create(['port_descr_type' => 'cust', 'port_descr_descr' => 'Acme']);
     Port::factory()->for($this->accessible)->create(['port_descr_type' => 'core', 'port_descr_descr' => 'Acme']);
 

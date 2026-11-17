@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Actions\Device\UpdateDeviceOutage;
 use App\Facades\LibrenmsConfig;
 use App\Models\AlertSchedule;
@@ -9,13 +8,13 @@ use App\Models\DeviceOutage;
 use Carbon\Carbon;
 use LibreNMS\Enum\MaintenanceBehavior;
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->action = app(UpdateDeviceOutage::class);
 });
 
-test('closes open outage when device comes up', function () {
+test('closes open outage when device comes up', function (): void {
     $device = Device::factory()->create(['status' => 1]);
     DeviceOutage::factory()->open()->create(['device_id' => $device->device_id]);
 
@@ -25,7 +24,7 @@ test('closes open outage when device comes up', function () {
     expect($device->outages()->first()->up_again)->not->toBeNull();
 });
 
-test('closes open outage when device comes up during maintenance', function () {
+test('closes open outage when device comes up during maintenance', function (): void {
     LibrenmsConfig::set('graphing.availability_consider_maintenance', true);
 
     $device = Device::factory()->create(['status' => 1]);
@@ -44,7 +43,7 @@ test('closes open outage when device comes up during maintenance', function () {
     expect($device->outages()->first()->up_again)->not->toBeNull();
 });
 
-test('does nothing when device up with no open outage', function () {
+test('does nothing when device up with no open outage', function (): void {
     $device = Device::factory()->create(['status' => 1]);
     DeviceOutage::factory()->closed()->create(['device_id' => $device->device_id]);
 
@@ -54,7 +53,7 @@ test('does nothing when device up with no open outage', function () {
     expect($device->outages()->first()->up_again)->not->toBeNull();
 });
 
-test('opens new outage when device goes down', function () {
+test('opens new outage when device goes down', function (): void {
     $device = Device::factory()->create(['status' => 0]);
 
     $this->action->execute($device);
@@ -63,7 +62,7 @@ test('opens new outage when device goes down', function () {
     expect($device->outages()->first()->up_again)->toBeNull();
 });
 
-test('does not open duplicate outage when one already open', function () {
+test('does not open duplicate outage when one already open', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     DeviceOutage::factory()->open()->create(['device_id' => $device->device_id]);
 
@@ -72,7 +71,7 @@ test('does not open duplicate outage when one already open', function () {
     expect($device->outages()->get())->toHaveCount(1);
 });
 
-test('does not open outage during maintenance when consider maintenance enabled', function () {
+test('does not open outage during maintenance when consider maintenance enabled', function (): void {
     LibrenmsConfig::set('graphing.availability_consider_maintenance', true);
 
     $device = Device::factory()->create(['status' => 0]);
@@ -88,7 +87,7 @@ test('does not open outage during maintenance when consider maintenance enabled'
     expect($device->outages()->get())->toHaveCount(0);
 });
 
-test('saving status change to up closes open outage', function () {
+test('saving status change to up closes open outage', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     DeviceOutage::factory()->open()->create(['device_id' => $device->device_id]);
 
@@ -98,7 +97,7 @@ test('saving status change to up closes open outage', function () {
     expect($device->outages()->whereNull('up_again')->first())->toBeNull('Outage must be closed when the device status is saved as up');
 });
 
-test('saving status change to down opens outage', function () {
+test('saving status change to down opens outage', function (): void {
     $device = Device::factory()->create(['status' => 1]);
 
     $device->status = 0;
@@ -108,7 +107,7 @@ test('saving status change to down opens outage', function () {
     expect($device->outages()->first()->up_again)->toBeNull();
 });
 
-test('saving without status change leaves outages alone', function () {
+test('saving without status change leaves outages alone', function (): void {
     $device = Device::factory()->create(['status' => 0]);
     DeviceOutage::factory()->open()->create(['device_id' => $device->device_id]);
 
@@ -119,7 +118,7 @@ test('saving without status change leaves outages alone', function () {
     expect($device->outages()->first()->up_again)->toBeNull();
 });
 
-test('opens outage during maintenance when consider maintenance disabled', function () {
+test('opens outage during maintenance when consider maintenance disabled', function (): void {
     LibrenmsConfig::set('graphing.availability_consider_maintenance', false);
 
     $device = Device::factory()->create(['status' => 0]);

@@ -14,7 +14,7 @@ use LibreNMS\Polling\Method\Config\SnmpConfig;
 
 uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-test('creates device and polling methods for v2c', function () {
+test('creates device and polling methods for v2c', function (): void {
     $creator = new LegacyDeviceCreator(
         hostname: 'router1.example.com',
         display_template: '{{ $hostname }}',
@@ -57,7 +57,7 @@ test('creates device and polling methods for v2c', function () {
     expect($secret->data)->toBe(['community' => 'secret-community']);
 });
 
-test('creates device and polling methods for v3', function () {
+test('creates device and polling methods for v3', function (): void {
     $creator = new LegacyDeviceCreator(
         hostname: 'switch1.example.com',
         snmpver: 'v3',
@@ -86,7 +86,7 @@ test('creates device and polling methods for v3', function () {
     expect($secret->data['authlevel'])->toEqual('authPriv');
 });
 
-test('without credentials the defaults are used', function () {
+test('without credentials the defaults are used', function (): void {
     $creator = new LegacyDeviceCreator(hostname: 'defaults.example.com');
 
     $snmpMethod = $creator->getPollingMethods($creator->getDevice())->firstWhere('method_type', PollingMethodType::Snmp);
@@ -94,7 +94,7 @@ test('without credentials the defaults are used', function () {
     expect($snmpMethod->secret)->toBeNull();
 });
 
-test('explicit credentials matching the defaults are kept', function () {
+test('explicit credentials matching the defaults are kept', function (): void {
     $creator = new LegacyDeviceCreator(hostname: 'explicit.example.com', snmpver: 'v3', authname: 'root', authlevel: 'noAuthNoPriv', authalgo: 'MD5', cryptoalgo: 'AES');
 
     $secret = $creator->getPollingMethods($creator->getDevice())->firstWhere('method_type', PollingMethodType::Snmp)->secret;
@@ -102,7 +102,7 @@ test('explicit credentials matching the defaults are kept', function () {
     expect($secret->data)->toEqual(['authlevel' => 'noAuthNoPriv', 'authname' => 'root', 'authalgo' => 'MD5', 'cryptoalgo' => 'AES']);
 });
 
-test('explicit auth level is credentials', function () {
+test('explicit auth level is credentials', function (): void {
     $creator = new LegacyDeviceCreator(hostname: 'authlevel.example.com', snmpver: 'v3', authlevel: 'noAuthNoPriv');
 
     $secret = $creator->getPollingMethods($creator->getDevice())->firstWhere('method_type', PollingMethodType::Snmp)->secret;
@@ -112,7 +112,7 @@ test('explicit auth level is credentials', function () {
     // default
 });
 
-test('only aversion tries the default credentials for that version', function () {
+test('only a version tries the default credentials for that version', function (): void {
     $v3 = snmpSecret(['authlevel' => 'noAuthNoPriv', 'authname' => 'user'], SecretType::SnmpV3);
     $first = snmpSecret(['community' => 'first']);
     $second = snmpSecret(['community' => 'second']);
@@ -143,7 +143,7 @@ test('only aversion tries the default credentials for that version', function ()
     expect($snmpMethod->settings['version'])->toBe('v1');
 });
 
-test('v3 values without acommunity try the default communities', function () {
+test('v3 values without a community try the default communities', function (): void {
     // API clients send every field, the v3 defaults are not a v2c credential
     $creator = new LegacyDeviceCreator(hostname: 'v2c-defaults.example.com', snmpver: 'v2c', authlevel: 'noAuthNoPriv', authalgo: 'MD5');
     $snmpMethod = $creator->getPollingMethods($creator->getDevice())->firstWhere('method_type', PollingMethodType::Snmp);
@@ -153,7 +153,7 @@ test('v3 values without acommunity try the default communities', function () {
     expect($snmpMethod->settings['version'])->toBe('v2c');
 });
 
-test('forced add with only aversion uses the first default for that version', function () {
+test('forced add with only a version uses the first default for that version', function (): void {
     $v2c = snmpSecret(['community' => 'first']);
     $v3 = snmpSecret(['authlevel' => 'authNoPriv', 'authname' => 'user', 'authpass' => 'password1'], SecretType::SnmpV3);
     LibrenmsConfig::set('snmp.default_credentials', [$v2c->id, $v3->id]);
@@ -164,7 +164,7 @@ test('forced add with only aversion uses the first default for that version', fu
     expect($device->pollingMethod(PollingMethodType::Snmp)->secret_id)->toBe($v3->id);
 });
 
-test('ping only omits snmp method', function () {
+test('ping only omits snmp method', function (): void {
     $creator = new LegacyDeviceCreator(
         hostname: 'ping-host.example.com',
         ping_only: true,
@@ -184,7 +184,7 @@ test('ping only omits snmp method', function () {
     expect($methods->firstWhere('method_type', PollingMethodType::Snmp))->toBeNull();
 });
 
-test('icmp check disabled omits icmp method', function () {
+test('icmp check disabled omits icmp method', function (): void {
     LibrenmsConfig::set('icmp_check', false);
 
     $creator = new LegacyDeviceCreator(hostname: 'no-icmp.example.com', snmpver: 'v2c', community: 'public');

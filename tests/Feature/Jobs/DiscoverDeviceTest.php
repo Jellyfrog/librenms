@@ -16,14 +16,11 @@ use LibreNMS\Enum\PollingMethodType;
 use LibreNMS\Polling\Method\Methods\UnixAgentPollingMethod;
 use LibreNMS\Polling\PerDeviceMethodResults;
 use LibreNMS\Util\ModuleList;
-use PHPUnit\Framework\Attributes\DataProvider;
-
 
 uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
 uses(\LibreNMS\Tests\Traits\FakesPollingMethods::class);
 
-test('down device is retried and not marked as discovered', function () {
+test('down device is retried and not marked as discovered', function (): void {
     $device = Device::factory()->create(['hostname' => '192.0.2.1', 'status' => 0, 'last_discovered' => null]);
     fakeAvailability(false);
 
@@ -35,7 +32,7 @@ test('down device is retried and not marked as discovered', function () {
     }
 });
 
-test('down device is not retried on the last attempt', function () {
+test('down device is not retried on the last attempt', function (): void {
     $device = Device::factory()->create(['hostname' => '192.0.2.1', 'status' => 0, 'last_discovered' => null]);
     fakeAvailability(false);
 
@@ -47,7 +44,7 @@ test('down device is not retried on the last attempt', function () {
     expect($device->fresh()->last_discovered)->toBeNull('a down device should not be marked as discovered');
 });
 
-test('down device is not retried when run directly', function () {
+test('down device is not retried when run directly', function (): void {
     $device = Device::factory()->create(['hostname' => '192.0.2.1', 'status' => 0, 'last_discovered' => null]);
     fakeAvailability(false);
 
@@ -56,7 +53,7 @@ test('down device is not retried when run directly', function () {
     expect($device->fresh()->last_discovered)->toBeNull('a down device should not be marked as discovered');
 });
 
-test('up device is marked as discovered', function () {
+test('up device is marked as discovered', function (): void {
     $this->freezeSecond();
     $device = Device::factory()->create(['hostname' => '192.0.2.1', 'status' => 1, 'last_discovered' => null]);
     fakeAvailability(true);
@@ -68,7 +65,7 @@ test('up device is marked as discovered', function () {
     expect($device->last_discovered_timetaken)->not->toBeNull();
 });
 
-test('device module setting overrides polling method', function (?int $setting, bool $expected) {
+test('device module setting overrides polling method', function (?int $setting, bool $expected): void {
     Event::fake([DiscoveringModule::class]);
     LibrenmsConfig::set('discovery_modules', ['mempools' => false]);
     $device = Device::factory()->create(['hostname' => '192.0.2.1', 'status' => 1]);
@@ -94,7 +91,7 @@ dataset('deviceModuleSettings', function () {
     ];
 });
 
-test('deleted device is skipped', function () {
+test('deleted device is skipped', function (): void {
     $device = Device::factory()->create();
     $device_id = $device->device_id;
     $device->delete();
@@ -106,7 +103,7 @@ test('deleted device is skipped', function () {
     expect(Device::count())->toBe($count, 'a deleted device should not be recreated');
 });
 
-test('device moved to another poller group is skipped', function () {
+test('device moved to another poller group is skipped', function (): void {
     $device = Device::factory()->create(['hostname' => '192.0.2.1', 'poller_group' => 2]);
     $availability = fakeAvailability(true);
     $modules = ModuleList::fromUserOverrides(['availability']);
@@ -117,7 +114,7 @@ test('device moved to another poller group is skipped', function () {
     expect($availability->checks)->toBe(0, 'a job queued for the old poller group should not run');
 });
 
-test('unique per queue', function () {
+test('unique per queue', function (): void {
     $modules = ModuleList::fromUserOverrides([]);
 
     $this->assertNotEquals(
@@ -130,7 +127,7 @@ test('unique per queue', function () {
     );
 });
 
-test('retries match polling', function () {
+test('retries match polling', function (): void {
     $discover = new DiscoverDevice(1, ModuleList::fromUserOverrides([]));
     $poll = new PollDevice(1, ModuleList::fromUserOverrides([]));
 
@@ -139,7 +136,7 @@ test('retries match polling', function () {
     expect($discover->backoff())->toHaveCount($discover->tries - 1);
 });
 
-test('poll lock covers retries', function () {
+test('poll lock covers retries', function (): void {
     $poll = new PollDevice(1, ModuleList::fromUserOverrides([]));
 
     // a slow poll does not outlast it, a lock left behind holds up the device for a timeout and a poll interval at most
@@ -149,13 +146,15 @@ test('poll lock covers retries', function () {
 
 function fakeAvailability(bool $up): object
 {
-    return $this->app->instance(CheckDeviceAvailability::class, new class($up)
+    return app()->instance(CheckDeviceAvailability::class, new class($up)
     {
-        function __construct(private readonly bool $up)
+        public int $checks = 0;
+
+        public function __construct(private readonly bool $up)
         {
         }
 
-        function execute(PerDeviceMethodResults $methodResults, bool $commit = false): bool
+        public function execute(PerDeviceMethodResults $methodResults, bool $commit = false): bool
         {
             $device = $methodResults->device;
             $this->checks++;

@@ -1,11 +1,10 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\User;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(LibreNMS\Tests\TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-test('risky permissions are marked', function () {
+test('risky permissions are marked', function (): void {
     $user = User::factory()->admin()->create(['enabled' => true]);
 
     $this->actingAs($user)

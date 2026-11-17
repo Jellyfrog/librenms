@@ -1,11 +1,10 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Facades\LibrenmsConfig;
 use LibreNMS\ValidationResult;
 use LibreNMS\Validations\Rrd\CheckRrdcachedConnectivity;
-use PHPUnit\Framework\Attributes\DataProvider;
 
+uses(LibreNMS\Tests\TestCase::class);
 
 /**
  * @return array<string, array{string, string}>
@@ -19,7 +18,7 @@ dataset('unreachable', function () {
     ];
 });
 
-test('unreachable', function (string $address, string $message) {
+test('unreachable', function (string $address, string $message): void {
     LibrenmsConfig::set('rrdcached', $address);
 
     $result = (new CheckRrdcachedConnectivity)->validate();
@@ -28,7 +27,7 @@ test('unreachable', function (string $address, string $message) {
     $this->assertStringContainsString($message, $result->getMessage());
 })->with('unreachable');
 
-test('connects', function () {
+test('connects', function (): void {
     $server = stream_socket_server('tcp://127.0.0.1:0');
     LibrenmsConfig::set('rrdcached', (string) stream_socket_get_name($server, false));
 

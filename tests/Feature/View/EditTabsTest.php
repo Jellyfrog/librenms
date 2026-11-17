@@ -13,7 +13,7 @@ use Spatie\Permission\Models\Role;
 
 uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-function deviceWithMethods(PollingMethodType ...$types): Device
+function editTabsDeviceWithMethods(PollingMethodType ...$types): Device
 {
     $device = Device::factory()->create();
     foreach ($types as $type) {
@@ -24,7 +24,7 @@ function deviceWithMethods(PollingMethodType ...$types): Device
 }
 
 test('data tabs are shown when the device has that data', function () {
-    $device = deviceWithMethods(PollingMethodType::UnixAgent);
+    $device = editTabsDeviceWithMethods(PollingMethodType::UnixAgent);
     Mempool::factory()->for($device)->create();
     Storage::factory()->for($device)->create();
 
@@ -37,12 +37,12 @@ test('data tabs are shown when the device has that data', function () {
 });
 
 test('applications tab needs snmp', function () {
-    expect((new EditTabs(deviceWithMethods(PollingMethodType::Snmp)))->tabs)->toHaveKey('apps');
-    $this->assertArrayNotHasKey('apps', (new EditTabs(deviceWithMethods(PollingMethodType::UnixAgent)))->tabs);
+    expect((new EditTabs(editTabsDeviceWithMethods(PollingMethodType::Snmp)))->tabs)->toHaveKey('apps');
+    $this->assertArrayNotHasKey('apps', (new EditTabs(editTabsDeviceWithMethods(PollingMethodType::UnixAgent)))->tabs);
 });
 
 test('modules tab is always shown', function () {
-    $tabs = (new EditTabs(deviceWithMethods()))->tabs;
+    $tabs = (new EditTabs(editTabsDeviceWithMethods()))->tabs;
 
     expect($tabs)->toHaveKey('modules');
     foreach (['ports', 'apps', 'storage', 'processors', 'mempools'] as $tab) {
@@ -54,7 +54,7 @@ test('legacy edit page uses tabs', function () {
     Role::findOrCreate('admin');
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
-    $device = deviceWithMethods(PollingMethodType::UnixAgent);
+    $device = editTabsDeviceWithMethods(PollingMethodType::UnixAgent);
     Mempool::factory()->for($device)->create();
 
     $response = $this->actingAs($admin)

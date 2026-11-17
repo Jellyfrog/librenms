@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\Feature\Http\Search\SearchTestCase::class);
 use App\Facades\LibrenmsConfig;
 use App\Http\Controllers\Search\Data\HostKey;
 use App\Http\Controllers\Search\Data\NeighborEntry;
@@ -18,8 +17,8 @@ use Illuminate\Support\Js;
 use LibreNMS\Util\Dns;
 use LibreNMS\Util\IP;
 use LibreNMS\Util\Url;
-use PHPUnit\Framework\Attributes\DataProvider;
 
+uses(LibreNMS\Tests\Feature\Http\Search\SearchTestCase::class);
 
 /**
  * @return array<string, array{string, string, string, string, int}>
@@ -31,7 +30,7 @@ dataset('multiAddressHosts', function () {
     ];
 });
 
-test('exact ip scopes subnet and dns to the searched address', function (string $searched, string $other, string $peer, string $otherPeer, int $prefix) {
+test('exact ip scopes subnet and dns to the searched address', function (string $searched, string $other, string $peer, string $otherPeer, int $prefix): void {
     foreach ([[$searched, $peer], [$other, $otherPeer]] as [$ip, $routerIp]) {
         [$router, $port] = $this->portOn();
         if (str_contains($ip, ':')) {
@@ -63,7 +62,7 @@ test('exact ip scopes subnet and dns to the searched address', function (string 
     $this->assertStringContainsString(urlencode($other), $macResponse->json('heading'));
 })->with('multiAddressHosts');
 
-test('exact ip shows the host', function () {
+test('exact ip shows the host', function (): void {
     [$router, $routerPort] = $this->portOn();
     [$switch, $access] = $this->portOn('access-port-7');
     [, $uplink] = $this->portOn('uplink-port');
@@ -84,7 +83,7 @@ test('exact ip shows the host', function () {
     }
 });
 
-test('ip owned by an interface shows the interface', function () {
+test('ip owned by an interface shows the interface', function (): void {
     [, $port] = $this->portOn('core-svi-120');
     Ipv4Address::factory()->create(['port_id' => $port->port_id, 'ipv4_address' => '198.51.100.7', 'ipv4_prefixlen' => 24]);
 
@@ -94,7 +93,7 @@ test('ip owned by an interface shows the interface', function () {
     $this->assertStringContainsString('core-svi-120', $html);
 });
 
-test('unknown address is not seen', function () {
+test('unknown address is not seen', function (): void {
     $html = $this->results(['q' => '203.0.113.200'])->assertJson(['mode' => 'not_found', 'total' => 0])->json('html');
 
     $this->assertStringContainsString('203.0.113.200', $html);
@@ -102,7 +101,7 @@ test('unknown address is not seen', function () {
     $this->assertStringContainsString(__('search.not_found.still_possible', [], 'en'), html_entity_decode($html, ENT_QUOTES));
 });
 
-test('partial ipv6 with double colon falls back to the list', function () {
+test('partial ipv6 with double colon falls back to the list', function (): void {
     [$device, $port] = $this->portOn();
     Ipv6Nd::factory()->create(['device_id' => $device->device_id, 'port_id' => $port->port_id, 'mac_address' => '021122334455', 'ipv6_address' => '2001:0db8:0000:0000:0011:22ff:fe33:4455']);
 
@@ -110,7 +109,7 @@ test('partial ipv6 with double colon falls back to the list', function () {
     $this->results(['q' => '2001:db8::11:22ff:fe33:4455'])->assertJsonPath('mode', 'host');
 });
 
-test('several macs for an address shows both', function () {
+test('several macs for an address shows both', function (): void {
     [$router, $port] = $this->portOn();
     [$other, $otherPort] = $this->portOn();
     Ipv4Mac::factory()->create(['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => '02c0ffee0001', 'ipv4_address' => '192.0.2.31']);
@@ -124,7 +123,7 @@ test('several macs for an address shows both', function () {
     $this->assertStringContainsString("highlightMac('02c0ffee0002')", $html);
 });
 
-test('several macs says which mac each location is for', function () {
+test('several macs says which mac each location is for', function (): void {
     [$router, $port] = $this->portOn();
     [$switch, $switchPort] = $this->portOn('access-port');
     Ipv4Mac::factory()->create(['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => '02c0ffee0031', 'ipv4_address' => '192.0.2.51']);
@@ -138,7 +137,7 @@ test('several macs says which mac each location is for', function () {
     $this->assertStringContainsString(__('search.host.no_forwarding_entry'), $html);
 });
 
-test('several macs dims mac not seen recently', function () {
+test('several macs dims mac not seen recently', function (): void {
     [$router, $port] = $this->portOn();
     Ipv4Mac::factory()->create(['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => '02c0ffee0011', 'ipv4_address' => '192.0.2.41']);
     Ipv4Mac::factory()->create(['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => '02c0ffee0012', 'ipv4_address' => '192.0.2.41']);
@@ -155,7 +154,7 @@ test('several macs dims mac not seen recently', function () {
     expect($host->bestLocation()?->mac)->toBe('02c0ffee0011');
 });
 
-test('different contexts and link local are not several macs', function () {
+test('different contexts and link local are not several macs', function (): void {
     [$router, $port] = $this->portOn();
     Ipv4Mac::factory()->create(['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => '02c0ffee0021', 'ipv4_address' => '192.0.2.51', 'context_name' => 'red']);
     Ipv4Mac::factory()->create(['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => '02c0ffee0022', 'ipv4_address' => '192.0.2.51', 'context_name' => 'blue']);
@@ -168,7 +167,7 @@ test('different contexts and link local are not several macs', function () {
     }
 });
 
-test('aggregate and uplink ports are listed as seen on', function () {
+test('aggregate and uplink ports are listed as seen on', function (): void {
     [$router, $routerPort] = $this->portOn();
     [, $lagOne] = $this->portOn('lag-one');
     [, $lagTwo] = $this->portOn('lag-two');
@@ -187,7 +186,7 @@ test('aggregate and uplink ports are listed as seen on', function () {
     $this->assertStringContainsString('lag-two', $html);
 });
 
-test('more locations link to table of every location', function () {
+test('more locations link to table of every location', function (): void {
     [$router, $routerPort] = $this->portOn();
     Ipv4Mac::factory()->create(['device_id' => $router->device_id, 'port_id' => $routerPort->port_id, 'mac_address' => '02d0d0d0d004', 'ipv4_address' => '192.0.2.104']);
     foreach (range(1, 7) as $number) {
@@ -209,7 +208,7 @@ test('more locations link to table of every location', function () {
     $this->assertStringContainsString(e(route('search', ['q' => '192.0.2.104', 'view' => 'host'])), $table);
 });
 
-test('more other locations link to table of every location', function () {
+test('more other locations link to table of every location', function (): void {
     [$router, $routerPort] = $this->portOn();
     [, $access] = $this->portOn('plain-port');
     Ipv4Mac::factory()->create(['device_id' => $router->device_id, 'port_id' => $routerPort->port_id, 'mac_address' => '02d0d0d0d005', 'ipv4_address' => '192.0.2.105']);
@@ -227,7 +226,7 @@ test('more other locations link to table of every location', function () {
     $this->assertStringContainsString(e(route('search', ['q' => '192.0.2.105', 'view' => 'locations'])), $html);
 });
 
-test('locations view without locations shows the summary', function () {
+test('locations view without locations shows the summary', function (): void {
     [$router, $routerPort] = $this->portOn();
     Ipv4Mac::factory()->create(['device_id' => $router->device_id, 'port_id' => $routerPort->port_id, 'mac_address' => '02d0d0d0d006', 'ipv4_address' => '192.0.2.106']);
 
@@ -236,7 +235,7 @@ test('locations view without locations shows the summary', function () {
     $this->assertStringContainsString(__('search.host.no_forwarding_entry'), $html);
 });
 
-test('more on the subnet link to its interfaces', function () {
+test('more on the subnet link to its interfaces', function (): void {
     foreach (range(1, 6) as $number) {
         [, $port] = $this->portOn("subnet-$number");
         Ipv4Address::factory()->create(['port_id' => $port->port_id, 'ipv4_address' => "10.85.1.$number", 'ipv4_prefixlen' => 24]);
@@ -254,7 +253,7 @@ test('more on the subnet link to its interfaces', function () {
     $this->assertStringNotContainsString('outside', $listed);
 });
 
-test('ordinary port beats aggregate with fewer macs', function () {
+test('ordinary port beats aggregate with fewer macs', function (): void {
     [$router, $routerPort] = $this->portOn();
     [, $lag] = $this->portOn('lag-port');
     [, $access] = $this->portOn('plain-port');
@@ -269,7 +268,7 @@ test('ordinary port beats aggregate with fewer macs', function () {
     expect($html)->toMatch('/' . __('search.host.switch_port') . '.*plain-port.*' . __('search.host.also_learned') . '.*lag-port/s');
 });
 
-test('same port in two vlans is listed once', function () {
+test('same port in two vlans is listed once', function (): void {
     [$router, $routerPort] = $this->portOn();
     [$switch, $port] = $this->portOn('twice-port');
     [, $other] = $this->portOn('other-port');
@@ -285,7 +284,7 @@ test('same port in two vlans is listed once', function () {
     expect(collect($host->currentLocations())->firstWhere('portId', $other->port_id)->vlan)->toBeNull();
 });
 
-test('neighbor interface with arp and nd is one row', function () {
+test('neighbor interface with arp and nd is one row', function (): void {
     [$router, $port] = $this->portOn('both-tables');
     Ipv4Mac::factory()->create(['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => '02e0e0e0e002', 'ipv4_address' => '192.0.2.104']);
     Ipv6Nd::factory()->create(['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => '02e0e0e0e002', 'ipv6_address' => '2001:0db8:0000:0000:0000:0000:0000:0104']);
@@ -296,7 +295,7 @@ test('neighbor interface with arp and nd is one row', function () {
     expect(array_column($host->neighborInterfaces()[0], 'source'))->toBe(['ARP', 'ND']);
 });
 
-test('not found offers useful searches', function () {
+test('not found offers useful searches', function (): void {
     LibrenmsConfig::set('mac_oui.enabled', true);
     DB::table('vendor_ouis')->insert(['oui' => 'f0f0f1', 'vendor' => 'Notfound Widgets Inc']);
     [, $port] = $this->portOn('peer-port');
@@ -315,7 +314,7 @@ test('not found offers useful searches', function () {
     $this->assertStringNotContainsString(__('search.not_found.without_filters'), $byText);
 });
 
-test('locations have their ports device', function () {
+test('locations have their ports device', function (): void {
     $this->hostBehindSwitch('192.0.2.105', '02e0e0e0e005');
 
     $host = new HostLookup($this->admin())->find([new HostKey([IP::parse('192.0.2.105')])])[0];
@@ -323,7 +322,7 @@ test('locations have their ports device', function () {
     expect($host->locations[0]->port?->relationLoaded('device'))->toBeTrue();
 });
 
-test('host with many addresses leaves entries for other hosts', function () {
+test('host with many addresses leaves entries for other hosts', function (): void {
     [$router, $port] = $this->portOn();
     foreach (array_chunk(range(1, 2000), 500) as $chunk) {
         Ipv4Mac::insert(array_map(fn (int $i): array => ['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => '02e1e1e1e001', 'ipv4_address' => '10.75.' . intdiv($i, 256) . '.' . ($i % 256), 'context_name' => ''], $chunk));
@@ -336,7 +335,7 @@ test('host with many addresses leaves entries for other hosts', function () {
     expect($hosts[1]->entries)->toHaveCount(1);
 });
 
-test('resolved hostname of aknown device is listed', function () {
+test('resolved hostname of aknown device is listed', function (): void {
     Device::factory()->create(['hostname' => 'dns-elsewhere.example.test', 'ip' => '198.51.100.21']);
     $this->mock(Dns::class, fn ($dns) => $dns->shouldReceive('getAddresses')->andReturn(['203.0.113.77']));
 
@@ -345,7 +344,7 @@ test('resolved hostname of aknown device is listed', function () {
         ->assertJsonPath('html', fn ($html) => str_contains($html, '198.51.100.21'));
 });
 
-test('resolved hostname nothing knows says what it resolved to', function () {
+test('resolved hostname nothing knows says what it resolved to', function (): void {
     $this->mock(Dns::class, fn ($dns) => $dns->shouldReceive('getAddresses')->andReturn(['203.0.113.78']));
 
     $html = $this->results(['q' => 'nothing-knows.example.test'])->assertJsonPath('mode', 'not_found')->json('html');
@@ -354,7 +353,7 @@ test('resolved hostname nothing knows says what it resolved to', function () {
     $this->assertStringContainsString('203.0.113.78', $html);
 });
 
-test('host summary does not wait for reverse dns', function () {
+test('host summary does not wait for reverse dns', function (): void {
     $this->hostBehindSwitch('198.51.100.30', '02f1f1f1f001');
     $this->mock(Dns::class, fn ($dns) => $dns->shouldNotReceive('reverseHostname'));
 
@@ -379,7 +378,7 @@ test('host summary does not wait for reverse dns', function () {
     expect($xpath->query('//span[@role="img"]//i')->length)->toBe(1);
 });
 
-test('add device link requires create permission', function () {
+test('add device link requires create permission', function (): void {
     [$router, $port] = $this->portOn();
     Ipv4Mac::factory()->create(['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => '02f1f1f1f003', 'ipv4_address' => '198.51.100.29']);
     $user = \App\Models\User::factory()->create(['enabled' => 1]);
@@ -391,7 +390,7 @@ test('add device link requires create permission', function () {
     $this->assertStringNotContainsString(route('device.add'), $heading);
 });
 
-test('resolved hostname also checks reverse dns', function () {
+test('resolved hostname also checks reverse dns', function (): void {
     $this->hostBehindSwitch('198.51.100.31', '02f1f1f1f002');
     $this->mock(Dns::class, fn ($dns) => $dns->shouldReceive('getAddresses')->andReturn(['198.51.100.31']));
 
@@ -402,7 +401,7 @@ test('resolved hostname also checks reverse dns', function () {
     $this->assertStringContainsString('nameUrl:', $heading);
 });
 
-test('monitored host is titled by its device and checks dns asynchronously', function () {
+test('monitored host is titled by its device and checks dns asynchronously', function (): void {
     [$device, $port] = $this->portOn('core-svi-121');
     Ipv4Address::factory()->create(['port_id' => $port->port_id, 'ipv4_address' => '198.51.100.40', 'ipv4_prefixlen' => 24]);
     $this->mock(Dns::class, function ($dns): void {
@@ -423,7 +422,7 @@ test('monitored host is titled by its device and checks dns asynchronously', fun
     $this->assertStringContainsString('nameUrl:', $heading);
 });
 
-test('interface panel only adds the port', function () {
+test('interface panel only adds the port', function (): void {
     [$device, $port] = $this->portOn('core-svi-123');
     Ipv4Address::factory()->create(['port_id' => $port->port_id, 'ipv4_address' => '198.51.100.43', 'ipv4_prefixlen' => 24]);
 
@@ -433,7 +432,7 @@ test('interface panel only adds the port', function () {
     $this->assertStringNotContainsString(Url::deviceUrl($device) . '"', $response->json('html'));
 });
 
-test('device found by its ip shows where it is plugged in', function () {
+test('device found by its ip shows where it is plugged in', function (): void {
     [, $switchPort] = $this->portOn('uplink-to-managed');
     $device = Device::factory()->create(['ip' => '198.51.100.44']);
     [$router, $routerPort] = $this->portOn();
@@ -447,7 +446,7 @@ test('device found by its ip shows where it is plugged in', function () {
     $this->assertStringContainsString('uplink-to-managed', $response->json('html'));
 });
 
-test('title is the device the interface is on', function () {
+test('title is the device the interface is on', function (): void {
     [$owner, $port] = $this->portOn('core-svi-122');
     Ipv4Address::factory()->create(['port_id' => $port->port_id, 'ipv4_address' => '198.51.100.42', 'ipv4_prefixlen' => 24]);
     $other = Device::factory()->create(['ip' => '198.51.100.42', 'display' => 'managed-by-this-ip']);
@@ -458,7 +457,7 @@ test('title is the device the interface is on', function () {
     $this->assertStringNotContainsString((string) $other->display, $heading);
 });
 
-test('loopback on adevice does not name the host', function () {
+test('loopback on adevice does not name the host', function (): void {
     [$device, $port] = $this->portOn('lo');
     Ipv4Address::factory()->create(['port_id' => $port->port_id, 'ipv4_address' => '127.0.0.53', 'ipv4_prefixlen' => 8]);
 
@@ -468,7 +467,7 @@ test('loopback on adevice does not name the host', function () {
     $this->assertStringContainsString(e((string) $device->display), $response->json('html'));
 });
 
-test('loopback and link local addresses are not looked up', function () {
+test('loopback and link local addresses are not looked up', function (): void {
     [$router, $port] = $this->portOn();
     Ipv4Mac::factory()->create(['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => '02f2f2f2f001', 'ipv4_address' => '169.254.10.5']);
     Ipv6Nd::factory()->create(['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => '02f2f2f2f002', 'ipv6_address' => 'fe80:0000:0000:0000:0000:0000:0000:0052']);
@@ -482,7 +481,7 @@ test('loopback and link local addresses are not looked up', function () {
     }
 });
 
-test('only addresses worth aname are looked up', function () {
+test('only addresses worth aname are looked up', function (): void {
     [$router, $port] = $this->portOn();
     foreach (['169.254.10.6', '198.51.100.41'] as $ip) {
         Ipv4Mac::factory()->create(['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => '02f2f2f2f004', 'ipv4_address' => $ip]);
@@ -495,7 +494,7 @@ test('only addresses worth aname are looked up', function () {
     $this->assertStringNotContainsString('ips[1]=169.254.10.6', $heading);
 });
 
-test('host name stops at the first name', function () {
+test('host name stops at the first name', function (): void {
     $this->mock(Dns::class, function ($dns): void {
         $dns->shouldReceive('reverseHostname')->once()->with('198.51.100.32')->andReturn(null);
         $dns->shouldReceive('reverseHostname')->once()->with('198.51.100.33')->andReturn('found.example.test');
@@ -508,7 +507,7 @@ test('host name stops at the first name', function () {
     $this->actingAs($this->admin())->getJson($url)->assertOk()->assertExactJson(['name' => 'found.example.test', 'ip' => '198.51.100.33', 'forward_match' => true]);
 });
 
-test('reverse dns mismatch is still shown', function () {
+test('reverse dns mismatch is still shown', function (): void {
     $this->mock(Dns::class, function ($dns): void {
         $dns->shouldReceive('reverseHostname')->once()->with('198.51.100.37')->andReturn('stale.example.test');
         $dns->shouldReceive('getAddresses')->once()->with('stale.example.test')->andReturn(['198.51.100.38']);
@@ -521,7 +520,7 @@ test('reverse dns mismatch is still shown', function () {
     ]);
 });
 
-test('reverse dns without forward addresses is amismatch', function () {
+test('reverse dns without forward addresses is amismatch', function (): void {
     $this->mock(Dns::class, function ($dns): void {
         $dns->shouldReceive('reverseHostname')->andReturn('missing.example.test');
         $dns->shouldReceive('getAddresses')->andReturn([]);
@@ -532,7 +531,7 @@ test('reverse dns without forward addresses is amismatch', function () {
     $this->actingAs($this->admin())->getJson($url)->assertOk()->assertJsonPath('forward_match', false);
 });
 
-test('reverse dns matches equivalent ipv6 addresses', function () {
+test('reverse dns matches equivalent ipv6 addresses', function (): void {
     $this->mock(Dns::class, function ($dns): void {
         $dns->shouldReceive('reverseHostname')->with('2001:db8::1')->andReturn('ipv6.example.test');
         $dns->shouldReceive('getAddresses')->with('ipv6.example.test')->andReturn(['2001:0db8:0:0:0:0:0:1']);
@@ -543,7 +542,7 @@ test('reverse dns matches equivalent ipv6 addresses', function () {
     $this->actingAs($this->admin())->getJson($url)->assertOk()->assertJsonPath('forward_match', true);
 });
 
-test('host name is null when nothing resolves', function () {
+test('host name is null when nothing resolves', function (): void {
     $this->mock(Dns::class, fn ($dns) => $dns->shouldReceive('reverseHostname')->andReturn(null));
 
     $url = LaravelUrl::signedRoute('search.name', ['ips' => ['198.51.100.35']]);
@@ -551,13 +550,13 @@ test('host name is null when nothing resolves', function () {
     $this->actingAs($this->admin())->getJson($url)->assertOk()->assertExactJson(['name' => null, 'ip' => null, 'forward_match' => null]);
 });
 
-test('host name only looks up addresses the search gave', function () {
+test('host name only looks up addresses the search gave', function (): void {
     $this->mock(Dns::class, fn ($dns) => $dns->shouldNotReceive('reverseHostname'));
 
     $this->actingAs($this->admin())->getJson(route('search.name', ['ips' => ['198.51.100.36']]))->assertForbidden();
 });
 
-test('bare hex serial finds the device', function () {
+test('bare hex serial finds the device', function (): void {
     Device::factory()->create(['serial' => '123456789012', 'ip' => '198.51.100.22']);
 
     $this->results(['q' => '123456789012'])->assertJson(['mode' => 'list', 'total' => 1]);
@@ -565,7 +564,7 @@ test('bare hex serial finds the device', function () {
     $this->results(['q' => 'aabbccddeeff'])->assertJsonPath('mode', 'not_found');
 });
 
-test('following amac with many addresses keeps the searched ip', function () {
+test('following amac with many addresses keeps the searched ip', function (): void {
     [$router, $port] = $this->portOn();
     foreach (array_chunk(range(1, 2000), 500) as $chunk) {
         Ipv4Mac::insert(array_map(fn (int $i): array => ['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => '02e6e6e6e001', 'ipv4_address' => '10.70.' . intdiv($i, 256) . '.' . ($i % 256), 'context_name' => ''], $chunk));

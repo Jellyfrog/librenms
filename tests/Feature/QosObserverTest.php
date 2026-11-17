@@ -25,7 +25,7 @@ function pollQos(int $packetsOut, int $packetsDropOut): Qos
     return $qos->fresh();
 }
 
-test('drop percentage calculated', function () {
+test('drop percentage calculated', function (): void {
     $qos = pollQos(3000, 300);
 
     expect($qos->packets_out_rate)->toEqual(10);
@@ -33,7 +33,7 @@ test('drop percentage calculated', function () {
     expect($qos->packets_drop_out_pct)->toEqual(0.1);
 });
 
-test('drops exceeding pre policy counters do not overflow', function () {
+test('drops exceeding pre policy counters do not overflow', function (): void {
     // Catalyst 3850 reports drops while pre-policy counters stay near zero
     $qos = pollQos(300, 300000000);
 
@@ -42,7 +42,7 @@ test('drops exceeding pre policy counters do not overflow', function () {
     expect($qos->packets_drop_out_pct)->toBeNull();
 });
 
-test('zero pre policy counters', function () {
+test('zero pre policy counters', function (): void {
     $qos = pollQos(0, 300000000);
 
     expect($qos->packets_drop_out_rate)->toEqual(1000000);

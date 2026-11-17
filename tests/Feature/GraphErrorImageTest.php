@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Data\Graphing\GraphPageContext;
 use App\Data\Graphing\GraphParameters;
 use App\Data\Graphing\Legacy\LegacyAuthResult;
@@ -11,8 +10,9 @@ use LibreNMS\Exceptions\GraphException;
 use LibreNMS\Exceptions\NoGraphData;
 use LibreNMS\Util\Graph;
 
+uses(LibreNMS\Tests\TestCase::class);
 
-test('dark graphs use white for the no data message and title', function () {
+test('dark graphs use white for the no data message and title', function (): void {
     $params = new GraphParameters(['graph_type' => 'svg', 'style' => 'dark', 'graph_title' => 'Traffic']);
 
     $image = Graph::errorImage($params, new NoGraphData);
@@ -20,7 +20,7 @@ test('dark graphs use white for the no data message and title', function () {
     expect(substr_count($image->data, 'color:rgb(255, 255, 255)'))->toBe(2);
 });
 
-test('error graphs follow the session theme unless a style is requested', function () {
+test('error graphs follow the session theme unless a style is requested', function (): void {
     session(['applied_site_style' => 'dark']);
 
     $dark = Graph::errorImage(new GraphParameters(['graph_type' => 'svg']), new NoGraphData);
@@ -30,7 +30,7 @@ test('error graphs follow the session theme unless a style is requested', functi
     $this->assertStringContainsString('color:rgb(0, 0, 0)', $light->data);
 });
 
-test('dark png error graphs use white text', function () {
+test('dark png error graphs use white text', function (): void {
     $params = new GraphParameters(['graph_type' => 'png', 'style' => 'dark', 'graph_title' => 'Traffic']);
 
     $image = imagecreatefromstring(Graph::errorImage($params, new NoGraphData)->data);
@@ -49,7 +49,7 @@ test('dark png error graphs use white text', function () {
     imagedestroy($image);
 });
 
-test('legacy script errors preserve the title set before failure', function () {
+test('legacy script errors preserve the title set before failure', function (): void {
     Rrd::partialMock()->shouldReceive('checkRrdExists')->once()->andReturn(false);
     $params = new GraphParameters(['type' => 'application_ntp-server_stats', 'title' => 'yes']);
     $auth = new LegacyAuthResult(true, new GraphPageContext, [
@@ -66,7 +66,7 @@ test('legacy script errors preserve the title set before failure', function () {
     }
 });
 
-test('svg error preserves the enabled graph title', function () {
+test('svg error preserves the enabled graph title', function (): void {
     $error = new NoGraphData('No Data files');
     $error->graphTitle = 'Router::Traffic';
     $params = new GraphParameters(['graph_type' => 'svg', 'title' => 'yes']);
@@ -79,7 +79,7 @@ test('svg error preserves the enabled graph title', function () {
     $this->assertStringContainsString('color:rgb(0, 0, 0)', $image->data);
 });
 
-test('error omits the disabled graph title', function () {
+test('error omits the disabled graph title', function (): void {
     $error = new NoGraphData;
     $error->graphTitle = 'Router::Traffic';
     $params = new GraphParameters(['graph_type' => 'svg', 'title' => 'no']);
@@ -91,7 +91,7 @@ test('error omits the disabled graph title', function () {
     $this->assertStringContainsString('No Data', $image->data);
 });
 
-test('custom error title overrides the original and is escaped', function () {
+test('custom error title overrides the original and is escaped', function (): void {
     $error = new NoGraphData;
     $error->graphTitle = 'Original title';
     $params = new GraphParameters(['graph_type' => 'svg', 'title' => 'no', 'graph_title' => '<script> & uplink']);
@@ -104,7 +104,7 @@ test('custom error title overrides the original and is escaped', function () {
     $this->assertStringNotContainsString('Original title', $image->data);
 });
 
-test('error without an available title still renders', function () {
+test('error without an available title still renders', function (): void {
     $params = new GraphParameters(['graph_type' => 'svg', 'title' => 'yes']);
 
     $image = Graph::errorImage($params, new NoGraphData);
@@ -113,7 +113,7 @@ test('error without an available title still renders', function () {
     $this->assertStringContainsString('No Data', $image->data);
 });
 
-test('png draws the title above the error message', function () {
+test('png draws the title above the error message', function (): void {
     $data = Graph::error('No Data', null, 400, 150, format: ImageFormat::Png, title: 'Router::Traffic');
 
     $image = imagecreatefromstring($data);

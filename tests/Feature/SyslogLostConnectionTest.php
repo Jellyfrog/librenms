@@ -31,7 +31,7 @@ use App\Models\Syslog;
 use Illuminate\Support\Facades\DB;
 use LibreNMS\Syslog\Processor;
 
-beforeEach(function () {
+beforeEach(function (): void {
     if (! in_array(DB::connection()->getDriverName(), ['mysql', 'mariadb'])) {
         $this->markTestSkipped('Killing a connection from a second session requires MySQL/MariaDB.');
     }
@@ -40,12 +40,12 @@ beforeEach(function () {
     DeviceCache::flush();
 });
 
-afterEach(function () {
+afterEach(function (): void {
     DeviceCache::flush();
 
 });
 
-test('device lookup survives lost connection', function () {
+test('device lookup survives lost connection', function (): void {
     /** @var Device $device */
     $device = Device::factory()->create(['os' => 'generic', 'version' => '1.2.3']);
 
@@ -61,7 +61,7 @@ test('device lookup survives lost connection', function () {
     }
 });
 
-test('message is stored after lost connection', function () {
+test('message is stored after lost connection', function (): void {
     /** @var Device $device */
     $device = Device::factory()->create(['os' => 'generic']);
 

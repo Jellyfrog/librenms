@@ -18,7 +18,7 @@ test('authorized user can render access points tab', function () {
     $device = Device::factory()->create();
     AccessPoint::factory()->for($device)->create();
 
-    $this->actingAs(admin())
+    $this->actingAs(accessPointsAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'accesspoints']))
         ->assertOk()
         ->assertSee('id="access-points"', false)
@@ -32,7 +32,7 @@ test('endpoint returns only requested device and excludes deleted radios', funct
     AccessPoint::factory()->for($device)->create(['name' => 'Deleted AP', 'deleted' => true]);
     AccessPoint::factory()->for($otherDevice)->create(['name' => 'Other Device AP']);
 
-    $response = $this->actingAs(admin())->postJson(route('table.access-points'), tableRequest($device));
+    $response = $this->actingAs(accessPointsAdmin())->postJson(route('table.access-points'), accessPointsTableRequest($device));
 
     $response->assertOk()
         ->assertJsonPath('total', 1)
@@ -50,7 +50,7 @@ test('endpoint forbids adevice the user cannot access', function () {
     $user->devicesOwned()->attach($allowedDevice);
 
     $this->actingAs($user)
-        ->postJson(route('table.access-points'), tableRequest($deniedDevice))
+        ->postJson(route('table.access-points'), accessPointsTableRequest($deniedDevice))
         ->assertForbidden();
 });
 
@@ -65,12 +65,12 @@ test('search matches name and mac address', function () {
         'mac_addr' => '44:55:66:77:88:99',
     ]);
 
-    $nameResponse = $this->actingAs(admin())->postJson(route('table.access-points'), [
-        ...tableRequest($device),
+    $nameResponse = $this->actingAs(accessPointsAdmin())->postJson(route('table.access-points'), [
+        ...accessPointsTableRequest($device),
         'searchPhrase' => 'ference-We',
     ]);
     $macResponse = $this->postJson(route('table.access-points'), [
-        ...tableRequest($device),
+        ...accessPointsTableRequest($device),
         'searchPhrase' => '55:66:77',
     ]);
 
@@ -86,8 +86,8 @@ test('client sorting is numeric', function () {
     AccessPoint::factory()->for($device)->create(['name' => 'Ten', 'numasoclients' => 10]);
     AccessPoint::factory()->for($device)->create(['name' => 'Hundred', 'numasoclients' => 100]);
 
-    $response = $this->actingAs(admin())->postJson(route('table.access-points'), [
-        ...tableRequest($device),
+    $response = $this->actingAs(accessPointsAdmin())->postJson(route('table.access-points'), [
+        ...accessPointsTableRequest($device),
         'sort' => ['numasoclients' => 'desc'],
     ]);
 
@@ -101,7 +101,7 @@ test('default ordering uses name then radio number', function () {
     $alphaTwo = AccessPoint::factory()->for($device)->create(['name' => 'Alpha', 'radio_number' => 2]);
     $alphaZero = AccessPoint::factory()->for($device)->create(['name' => 'Alpha', 'radio_number' => 0]);
 
-    $response = $this->actingAs(admin())->postJson(route('table.access-points'), tableRequest($device));
+    $response = $this->actingAs(accessPointsAdmin())->postJson(route('table.access-points'), accessPointsTableRequest($device));
 
     $response->assertOk();
     expect(array_column($response->json('rows'), 'accesspoint_id'))->toBe([$alphaZero->accesspoint_id, $alphaTwo->accesspoint_id, $bravo->accesspoint_id]);
@@ -113,8 +113,8 @@ test('endpoint paginates in the query', function () {
     AccessPoint::factory()->for($device)->create(['name' => 'Bravo']);
     $charlie = AccessPoint::factory()->for($device)->create(['name' => 'Charlie']);
 
-    $response = $this->actingAs(admin())->postJson(route('table.access-points'), [
-        ...tableRequest($device),
+    $response = $this->actingAs(accessPointsAdmin())->postJson(route('table.access-points'), [
+        ...accessPointsTableRequest($device),
         'current' => 2,
         'rowCount' => 2,
     ]);
@@ -136,7 +136,7 @@ test('snmp strings are escaped in list and detail views', function () {
         'radio_number' => 0,
     ]);
 
-    $listResponse = $this->actingAs(admin())->postJson(route('table.access-points'), tableRequest($device));
+    $listResponse = $this->actingAs(accessPointsAdmin())->postJson(route('table.access-points'), accessPointsTableRequest($device));
     $listResponse->assertOk();
     $this->assertStringContainsString('&lt;script&gt;alert(&quot;ap&quot;)&lt;/script&gt;', $listResponse->json('rows.0.name'));
     $this->assertStringNotContainsString('<script>', $listResponse->json('rows.0.name'));
@@ -164,7 +164,7 @@ test('modern route renders access point detail', function () {
     $device = Device::factory()->create();
     $accessPoint = AccessPoint::factory()->for($device)->create(['name' => 'Selected AP']);
 
-    $this->actingAs(admin())
+    $this->actingAs(accessPointsAdmin())
         ->get(route('device.accesspoints.show', [
             'device' => $device,
             'accessPoint' => $accessPoint,
@@ -181,7 +181,7 @@ test('detail selection cannot cross device boundary', function () {
     AccessPoint::factory()->for($device)->create(['name' => 'Local AP']);
     $foreignAccessPoint = AccessPoint::factory()->for($otherDevice)->create(['name' => 'Foreign Secret AP']);
 
-    $this->actingAs(admin())
+    $this->actingAs(accessPointsAdmin())
         ->get(route('device.accesspoints.show', [
             'device' => $device,
             'accessPoint' => $foreignAccessPoint,
@@ -193,7 +193,7 @@ test('deleted access point detail is not found', function () {
     $device = Device::factory()->create();
     $accessPoint = AccessPoint::factory()->for($device)->create(['deleted' => true]);
 
-    $this->actingAs(admin())
+    $this->actingAs(accessPointsAdmin())
         ->get(route('device.accesspoints.show', [
             'device' => $device,
             'accessPoint' => $accessPoint,
@@ -201,7 +201,7 @@ test('deleted access point detail is not found', function () {
         ->assertNotFound();
 });
 
-function admin(): User
+function accessPointsAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -210,7 +210,7 @@ function admin(): User
 }
 
 /** @return array<string, mixed> */
-function tableRequest(Device $device): array
+function accessPointsTableRequest(Device $device): array
 {
     return [
         'device_id' => $device->device_id,

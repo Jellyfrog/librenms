@@ -8,8 +8,6 @@ use App\Models\Port;
 use LibreNMS\Discovery\Neighbors\Neighbor;
 use LibreNMS\Discovery\Neighbors\NeighborFinder;
 use LibreNMS\Util\IP;
-use PHPUnit\Framework\Attributes\DataProvider;
-
 
 uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
@@ -29,7 +27,7 @@ dataset('addressNames', function () {
     return $cases;
 });
 
-test('ambiguous address name does not override mac', function (string $ip, string $name, string $identifier) {
+test('ambiguous address name does not override mac', function (string $ip, string $name, string $identifier): void {
     $remote = owner($ip, device: Device::factory()->create(['hostname' => '172.19.7.11', 'ip' => '172.19.7.11', 'sysName' => 'site1-access']));
     owner($ip, device: Device::factory()->create(['hostname' => $ip, 'ip' => $ip, 'sysName' => $name]));
     $finder = new NeighborFinder;
@@ -45,7 +43,7 @@ test('ambiguous address name does not override mac', function (string $ip, strin
     expect($finder->findDevice($neighbor)?->device_id)->toBe($remote->device_id);
 })->with('addressNames');
 
-test('ambiguous address name is not independent name evidence', function (string $ip) {
+test('ambiguous address name is not independent name evidence', function (string $ip): void {
     $remote = owner($ip);
     $direct = Device::factory()->create(['hostname' => $ip, 'ip' => $ip, 'sysName' => $ip]);
     owner($ip, device: $direct);
@@ -60,7 +58,7 @@ test('ambiguous address name is not independent name evidence', function (string
     expect($finder->findDevice($withMac)?->device_id)->toBe($remote->device_id);
 })->with('addresses');
 
-test('protocol compatibility and cache isolation', function (string $ip) {
+test('protocol compatibility and cache isolation', function (string $ip): void {
     $direct = Device::factory()->create(['hostname' => $ip, 'ip' => $ip]);
     owner($ip);
     $finder = new NeighborFinder;
@@ -74,7 +72,7 @@ test('protocol compatibility and cache isolation', function (string $ip) {
     expect($finder->findDevice(new Neighbor('cdp', null, managementIp: $ip, portMac: 'feedffffffff')))->toBeNull();
 })->with('addresses');
 
-test('deleted ports cannot create ambiguity or supply mac evidence', function (string $ip) {
+test('deleted ports cannot create ambiguity or supply mac evidence', function (string $ip): void {
     $direct = Device::factory()->create(['hostname' => $ip, 'ip' => $ip]);
     $stale = owner($ip, deleted: true);
     $finder = new NeighborFinder;
@@ -85,7 +83,7 @@ test('deleted ports cannot create ambiguity or supply mac evidence', function (s
     expect((new NeighborFinder)->findDevice(new Neighbor('lldp', null, managementIp: $ip)))->toBeNull();
 })->with('addresses');
 
-test('all candidates are considered and global matches are excluded', function (string $ip) {
+test('all candidates are considered and global matches are excluded', function (string $ip): void {
     Device::factory()->create(['hostname' => $ip, 'ip' => $ip]);
     owner($ip);
     $third = owner($ip);
@@ -103,7 +101,7 @@ test('all candidates are considered and global matches are excluded', function (
     expect($finder->findDevice(new Neighbor('lldp', null, sysName: 'candidate-serial', managementIp: $ip))?->device_id)->toBe($third->device_id);
 })->with('addresses');
 
-test('disabled and ignored devices still own their addresses', function (string $ip) {
+test('disabled and ignored devices still own their addresses', function (string $ip): void {
     foreach (['disabled', 'ignore'] as $flag) {
         $port = owner($ip);
         $port->device->update([$flag => true]);

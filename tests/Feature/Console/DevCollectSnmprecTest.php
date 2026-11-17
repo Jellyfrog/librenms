@@ -1,24 +1,23 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Console\Commands\DevCollectSnmprec;
 use App\Console\DynamicInputOption;
 use App\Models\Device;
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\TestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-test('help output', function () {
+test('help output', function (): void {
     $this->artisan('dev:collect-snmprec', ['--help' => true])
         ->assertExitCode(0);
 });
 
-test('device required without interaction', function () {
+test('device required without interaction', function (): void {
     $this->artisan('dev:collect-snmprec', ['--model' => 'test', '--no-interaction' => true])
         ->expectsOutput('Specify the device, for example lnms dev:collect-snmprec 42.')
         ->assertExitCode(1);
 });
 
-test('asks for device', function () {
+test('asks for device', function (): void {
     $device = Device::factory()->create(['os' => 'generic']);
 
     $this->artisan('dev:collect-snmprec', ['--model' => 'test'])
@@ -27,13 +26,13 @@ test('asks for device', function () {
         ->assertExitCode(1);
 });
 
-test('missing device', function () {
+test('missing device', function (): void {
     $this->artisan('dev:collect-snmprec', ['device' => 'non_existent_device_99999', '--model' => 'test'])
         ->expectsOutput("Device 'non_existent_device_99999' not found.")
         ->assertExitCode(1);
 });
 
-test('missing model option', function () {
+test('missing model option', function (): void {
     $device = Device::factory()->create();
 
     $this->artisan('dev:collect-snmprec', ['device' => (string) $device->device_id, '--no-interaction' => true])
@@ -41,7 +40,7 @@ test('missing model option', function () {
         ->assertExitCode(1);
 });
 
-test('invalid model with underscore', function () {
+test('invalid model with underscore', function (): void {
     $device = Device::factory()->create();
 
     $this->artisan('dev:collect-snmprec', ['device' => (string) $device->device_id, '--model' => 'invalid_model'])
@@ -49,19 +48,19 @@ test('invalid model with underscore', function () {
         ->assertExitCode(1);
 });
 
-test('invalid model characters', function () {
+test('invalid model characters', function (): void {
     $this->artisan('dev:collect-snmprec', ['device' => 'unused', '--model' => '../foo'])
         ->expectsOutput('Model name can only contain letters, numbers, dots (.), plus (+), and dashes (-).')
         ->assertExitCode(1);
 });
 
-test('invalid module', function () {
+test('invalid module', function (): void {
     $this->artisan('dev:collect-snmprec', ['device' => 'unused', '--model' => 'test', '--modules' => 'nope'])
         ->expectsOutput('Invalid module name: nope')
         ->assertExitCode(1);
 });
 
-test('generic device is rejected', function () {
+test('generic device is rejected', function (): void {
     $device = Device::factory()->create(['os' => 'generic']);
 
     $this->artisan('dev:collect-snmprec', ['device' => (string) $device->device_id, '--model' => 'wrt54g'])
@@ -69,13 +68,13 @@ test('generic device is rejected', function () {
         ->assertExitCode(1);
 });
 
-test('full walk requires output', function () {
+test('full walk requires output', function (): void {
     $this->artisan('dev:collect-snmprec', ['device' => 'unused', '--full' => true])
         ->expectsOutput('--full requires --output, because a full walk is not saved as a test fixture.')
         ->assertExitCode(1);
 });
 
-test('full walk rejects modules', function () {
+test('full walk rejects modules', function (): void {
     $this->artisan('dev:collect-snmprec', [
         'device' => 'unused',
         '--model' => 'test',
@@ -85,7 +84,7 @@ test('full walk rejects modules', function () {
         ->assertExitCode(1);
 });
 
-test('completion', function () {
+test('completion', function (): void {
     $device = Device::factory()->create([
         'hostname' => 'router.example.com',
     ]);

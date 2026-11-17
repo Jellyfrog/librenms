@@ -3,10 +3,8 @@
 uses(\LibreNMS\Tests\TestCase::class);
 use LibreNMS\Validations\Programs;
 use LibreNMS\Validator;
-use PHPUnit\Framework\Attributes\DataProvider;
 
-
-test('fping version', function (string $version, bool $warns) {
+test('fping version', function (string $version, bool $warns): void {
     $validator = Mockery::mock(Validator::class);
     if ($warns) {
         $validator->shouldReceive('warn')->once()->withArgs(fn (string $message, string $fix) => str_starts_with($message, "fping $version is older than 4.0 ")

@@ -1,6 +1,6 @@
 <?php
 
-uses(\LibreNMS\Tests\Feature\Http\Search\SearchTestCase::class);
+uses(LibreNMS\Tests\Feature\Http\Search\SearchTestCase::class);
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use App\Models\Ipv4Address;
@@ -8,10 +8,8 @@ use App\Models\Ipv4Mac;
 use App\Models\PortsFdb;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use PHPUnit\Framework\Attributes\DataProvider;
 
-
-test('partial matches are listed per host', function () {
+test('partial matches are listed per host', function (): void {
     [$device, $port] = $this->portOn();
     Ipv4Mac::factory()->create(['device_id' => $device->device_id, 'port_id' => $port->port_id, 'mac_address' => '02b0b0b0b001', 'ipv4_address' => '203.0.113.9']);
     Ipv4Mac::factory()->create(['device_id' => $device->device_id, 'port_id' => $port->port_id, 'mac_address' => '02b0b0b0b002', 'ipv4_address' => '203.0.113.99']);
@@ -28,7 +26,7 @@ test('partial matches are listed per host', function () {
     $this->results(['q' => '02:b0:b0'])->assertJson(['mode' => 'list', 'total' => 3]);
 });
 
-test('empty search lists everything and pages', function () {
+test('empty search lists everything and pages', function (): void {
     [$device, $port] = $this->portOn();
     foreach ([1, 2, 3] as $last) {
         Ipv4Mac::factory()->create(['device_id' => $device->device_id, 'port_id' => $port->port_id, 'mac_address' => "02b1b1b1b00$last", 'ipv4_address' => "192.0.2.$last"]);
@@ -39,7 +37,7 @@ test('empty search lists everything and pages', function () {
     expect($this->results([])->json('total'))->toBeGreaterThanOrEqual(3);
 });
 
-test('filters narrow the list', function () {
+test('filters narrow the list', function (): void {
     [$first, $firstPort] = $this->portOn('first-port');
     [$second, $secondPort] = $this->portOn('second-port');
     Ipv4Mac::factory()->create(['device_id' => $first->device_id, 'port_id' => $firstPort->port_id, 'mac_address' => '02b2b2b2b001', 'ipv4_address' => '192.0.2.61']);
@@ -58,7 +56,7 @@ test('filters narrow the list', function () {
     $this->results(['q' => $q, 'filter' => ['source' => ['neq' => 'neighbor']]])->assertJson(['total' => 2]);
 });
 
-test('filters turn an exact search into alist unless opening the host', function () {
+test('filters turn an exact search into a list unless opening the host', function (): void {
     [$device, $port] = $this->portOn();
     Ipv4Mac::factory()->create(['device_id' => $device->device_id, 'port_id' => $port->port_id, 'mac_address' => '02b3b3b3b001', 'ipv4_address' => '192.0.2.71']);
 
@@ -69,7 +67,7 @@ test('filters turn an exact search into alist unless opening the host', function
     $this->results(['q' => '192.0.2.71', 'view' => 'host', 'filter' => ['source' => ['eq' => 'fdb']]])->assertJsonPath('mode', 'host');
 });
 
-test('device and port filters find hosts in the forwarding table', function () {
+test('device and port filters find hosts in the forwarding table', function (): void {
     [$router, , $switch, $switchPort] = $this->hostBehindSwitch('10.90.1.5', '02d0d0d0d001');
     [, , $otherSwitch] = $this->hostBehindSwitch('10.90.1.6', '02d0d0d0d002');
 
@@ -82,7 +80,7 @@ test('device and port filters find hosts in the forwarding table', function () {
     $this->results(['q' => '', 'filter' => ['device_id' => ['eq' => $router->device_id]]])->assertJson(['total' => 1]);
 });
 
-test('fdb source includes macs with an ip', function () {
+test('fdb source includes macs with an ip', function (): void {
     $this->hostBehindSwitch('10.91.1.5', '02d1d1d1d001');
 
     $this->results(['q' => '02:d1:d1', 'filter' => ['source' => ['eq' => 'fdb']]])->assertJson(['total' => 1]);
@@ -92,7 +90,7 @@ test('fdb source includes macs with an ip', function () {
     $this->assertStringContainsString('10.91.1.5', $response->json('html'));
 });
 
-test('pasted list keeps its order and counts not seen', function () {
+test('pasted list keeps its order and counts not seen', function (): void {
     $this->hostBehindSwitch('10.92.1.5', '02d2d2d2d001');
     $this->hostBehindSwitch('10.92.1.6', '02d2d2d2d002');
 
@@ -106,13 +104,13 @@ test('pasted list keeps its order and counts not seen', function () {
     expect($this->listedIps($sorted->json('html')))->toBe(['10.92.1.5', '10.92.1.6', '10.92.1.99']);
 });
 
-test('pasted mac with an ip is listed once', function () {
+test('pasted mac with an ip is listed once', function (): void {
     $this->hostBehindSwitch('10.93.1.5', '02d3d3d3d001');
 
     $this->results(['q' => '02:d3:d3:d3:d0:01 10.93.1.5'])->assertJson(['total' => 1]);
 });
 
-test('long pasted list says what was not searched', function () {
+test('long pasted list says what was not searched', function (): void {
     $list = implode(' ', array_map(fn ($last) => "192.0.2.$last", range(1, 60)));
 
     $response = $this->results(['q' => $list])->assertJson(['total' => 50]);
@@ -120,13 +118,13 @@ test('long pasted list says what was not searched', function () {
     $this->assertStringContainsString(__('search.list.terms_ignored', ['count' => 50, 'total' => 60]), $response->json('summary'));
 });
 
-test('network search counts addresses seen', function () {
+test('network search counts addresses seen', function (): void {
     $this->hostBehindSwitch('10.94.1.5', '02d4d4d4d001');
 
     expect($this->results(['q' => '10.94.1.0/24'])->json('summary'))->toBe(__('search.list.network_seen', ['count' => 1, 'size' => '254']));
 });
 
-test('mac search has one row for each mac', function () {
+test('mac search has one row for each mac', function (): void {
     [$router, $port] = $this->portOn();
     foreach ([5, 6, 7] as $last) {
         Ipv4Mac::factory()->create(['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => '02d5d5d5d001', 'ipv4_address' => "10.95.1.$last"]);
@@ -137,7 +135,7 @@ test('mac search has one row for each mac', function () {
     $this->assertStringContainsString(__('search.host.more', ['count' => 2]), $response->json('html'));
 });
 
-test('list sorts by last seen with unknown last', function () {
+test('list sorts by last seen with unknown last', function (): void {
     [$router, $port] = $this->portOn();
     foreach (['old' => 5, 'new' => 6, 'unknown' => 7] as $age => $last) {
         $mac = "02d6d6d6d00$last";
@@ -154,7 +152,7 @@ test('list sorts by last seen with unknown last', function () {
     expect($this->listedIps($newest->json('html')))->toBe(['10.96.1.6', '10.96.1.5', '10.96.1.7']);
 });
 
-test('list uses standard page links to the search page', function () {
+test('list uses standard page links to the search page', function (): void {
     [$router, $port] = $this->portOn();
     foreach (range(1, 12) as $last) {
         Ipv4Mac::factory()->create(['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => sprintf('02d7d7d7d0%02d', $last), 'ipv4_address' => "10.97.1.$last"]);
@@ -166,7 +164,7 @@ test('list uses standard page links to the search page', function () {
     $this->assertStringContainsString(e(route('search', ['q' => '10.97.1.0/24', 'per_page' => 10, 'sort' => 'mac', 'dir' => 'desc', 'page' => 1])), $response->json('html'));
 });
 
-test('list shows the neighbor interface without aforwarding entry', function () {
+test('list shows the neighbor interface without a forwarding entry', function (): void {
     [$router, $port] = $this->portOn('edge-link');
     Ipv4Mac::factory()->create(['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => '02d8d8d8d001', 'ipv4_address' => '10.98.1.5']);
 
@@ -176,7 +174,7 @@ test('list shows the neighbor interface without aforwarding entry', function () 
     $this->assertStringContainsString('edge-link', $html);
 });
 
-test('list shows where amonitored host is plugged in', function () {
+test('list shows where a monitored host is plugged in', function (): void {
     [, , , $switchPort] = $this->hostBehindSwitch('10.99.1.5', '02d9d9d9d001');
     [, $own] = $this->portOn('own-interface');
     Ipv4Address::factory()->create(['port_id' => $own->port_id, 'ipv4_address' => '10.99.1.5', 'ipv4_prefixlen' => 24]);
@@ -187,7 +185,7 @@ test('list shows where amonitored host is plugged in', function () {
     $this->assertStringContainsString($switchPort->getLabel(), $html);
 });
 
-test('vendor search', function () {
+test('vendor search', function (): void {
     LibrenmsConfig::set('mac_oui.enabled', true);
     DB::table('vendor_ouis')->insert(['oui' => 'f0f0f0', 'vendor' => 'Searchtest Widgets Inc']);
     [$device, $port] = $this->portOn();
@@ -198,7 +196,7 @@ test('vendor search', function () {
         ->assertJsonPath('html', fn ($html) => str_contains($html, 'Searchtest Widgets Inc'));
 });
 
-test('devices are found by text', function () {
+test('devices are found by text', function (): void {
     $device = Device::factory()->create(['hostname' => 'search-core-sw1.example.com', 'ip' => '198.51.100.20']);
 
     $this->results(['q' => 'search-core'])
@@ -208,7 +206,7 @@ test('devices are found by text', function () {
     expect(Device::where('hostname', 'search-core-sw1.example.com')->value('device_id'))->toBe($device->device_id);
 });
 
-test('pasted addresses list each host including not seen', function () {
+test('pasted addresses list each host including not seen', function (): void {
     [$device, $port] = $this->portOn();
     Ipv4Mac::factory()->create(['device_id' => $device->device_id, 'port_id' => $port->port_id, 'mac_address' => '02b4b4b4b001', 'ipv4_address' => '192.0.2.81']);
 
@@ -217,14 +215,14 @@ test('pasted addresses list each host including not seen', function () {
     $this->assertStringContainsString(__('search.host.not_seen'), $response->json('html'));
 });
 
-test('long pasted list is accepted', function () {
+test('long pasted list is accepted', function (): void {
     $list = implode(' ', array_map(fn ($last) => "192.0.2.$last", range(1, 40)));
     expect(strlen($list))->toBeGreaterThan(255);
 
     $this->results(['q' => $list])->assertJson(['mode' => 'list', 'total' => 40]);
 });
 
-test('lists respect access', function () {
+test('lists respect access', function (): void {
     [$visible, $visiblePort] = $this->portOn();
     [$hidden, $hiddenPort] = $this->portOn();
     Ipv4Mac::factory()->create(['device_id' => $visible->device_id, 'port_id' => $visiblePort->port_id, 'mac_address' => '02b5b5b5b001', 'ipv4_address' => '192.0.2.91']);
@@ -238,7 +236,7 @@ test('lists respect access', function () {
     $this->results(['q' => '192.0.2.92'], $user)->assertJsonPath('mode', 'not_found');
 });
 
-test('vlan filter ignores fdb entries the user cannot access', function () {
+test('vlan filter ignores fdb entries the user cannot access', function (): void {
     [$visible, $visiblePort] = $this->portOn();
     [$hidden, $hiddenPort] = $this->portOn();
     Ipv4Mac::factory()->create(['device_id' => $visible->device_id, 'port_id' => $visiblePort->port_id, 'mac_address' => '02b6b6b6b001', 'ipv4_address' => '192.0.2.93']);
@@ -252,7 +250,7 @@ test('vlan filter ignores fdb entries the user cannot access', function () {
     $this->results(['q' => '192.0.2.', 'filter' => ['vlan' => ['eq' => 342]]], $user)->assertJsonMissing(['total' => 1]);
 });
 
-test('rows that tie have astable order', function () {
+test('rows that tie have a stable order', function (): void {
     [$device, $port] = $this->portOn();
     foreach (['02e2e2e20003', '02e2e2e20001', '02e2e2e20002'] as $mac) {
         $entry = PortsFdb::factory()->create(['device_id' => $device->device_id, 'port_id' => $port->port_id, 'mac_address' => $mac]);
@@ -265,7 +263,7 @@ test('rows that tie have astable order', function () {
     expect($macs[1])->toBe(['02e2e2e20001', '02e2e2e20002', '02e2e2e20003']);
 });
 
-test('pasted macs count those not seen', function () {
+test('pasted macs count those not seen', function (): void {
     [$router, $port] = $this->portOn();
     foreach ([5, 6] as $last) {
         Ipv4Mac::factory()->create(['device_id' => $router->device_id, 'port_id' => $port->port_id, 'mac_address' => '02e4e4e4e001', 'ipv4_address' => "10.73.1.$last"]);
@@ -276,7 +274,7 @@ test('pasted macs count those not seen', function () {
     $this->assertStringContainsString(__('search.list.not_seen', ['count' => 1]), $summary);
 });
 
-test('wildcards in asearch are literal', function () {
+test('wildcards in a search are literal', function (): void {
     Device::factory()->create(['hostname' => 'swx1-wildcard', 'ip' => '198.51.100.24']);
 
     $this->results(['q' => 'swx1-wildcard'])->assertJson(['total' => 1]);
@@ -284,7 +282,7 @@ test('wildcards in asearch are literal', function () {
     $this->results(['q' => '%'])->assertJsonPath('mode', 'not_found');
 });
 
-test('vlan filter supports the filter operators', function () {
+test('vlan filter supports the filter operators', function (): void {
     [$device, $port] = $this->portOn();
     PortsFdb::factory()->create(['device_id' => $device->device_id, 'port_id' => $port->port_id, 'mac_address' => '02e8e8e8e001', 'vlan' => 342]);
     PortsFdb::factory()->create(['device_id' => $device->device_id, 'port_id' => $port->port_id, 'mac_address' => '02e8e8e8e002', 'vlan' => 343]);
@@ -294,7 +292,7 @@ test('vlan filter supports the filter operators', function () {
     }
 });
 
-test('vlan filters exclude unknown vlans', function (string $operator, string $value, int $expected) {
+test('vlan filters exclude unknown vlans', function (string $operator, string $value, int $expected): void {
     [$device, $port] = $this->portOn();
     foreach (['02e8e8e8e003' => 342, '02e8e8e8e004' => null] as $mac => $vlan) {
         PortsFdb::factory()->create(['device_id' => $device->device_id, 'port_id' => $port->port_id, 'mac_address' => $mac, 'vlan' => $vlan]);
@@ -324,7 +322,7 @@ dataset('unknownVlanFilters', function () {
     ];
 });
 
-test('network search stays in its address family', function () {
+test('network search stays in its address family', function (): void {
     Device::factory()->create(['hostname' => 'v6-family.example.test', 'ip' => '2001:db8::99']);
     Device::factory()->create(['hostname' => 'v4-family.example.test', 'ip' => '32.1.13.184']);
 
@@ -336,7 +334,7 @@ test('network search stays in its address family', function () {
     $this->assertStringNotContainsString('32.1.13.184', $this->results(['q' => '2001::/16'])->json('html'));
 });
 
-test('not seen count handles arow without an address', function () {
+test('not seen count handles a row without an address', function (): void {
     $device = Device::factory()->create(['hostname' => '10.71.1.5']);
     Device::whereKey($device->device_id)->toBase()->update(['ip' => '']);
 
@@ -346,7 +344,7 @@ test('not seen count handles arow without an address', function () {
     $this->assertStringContainsString(__('search.list.not_seen', ['count' => 2]), $summary);
 });
 
-test('pasted macs and ips keep their order', function () {
+test('pasted macs and ips keep their order', function (): void {
     $this->hostBehindSwitch('10.68.1.5', '02e9e9e9e001');
     $this->hostBehindSwitch('10.68.1.6', '02e9e9e9e002');
 
@@ -355,7 +353,7 @@ test('pasted macs and ips keep their order', function () {
     expect($this->listedIps($response->json('html')))->toBe(['10.68.1.6', '10.68.1.5', '10.68.1.99']);
 });
 
-test('vendor search finds interface macs', function () {
+test('vendor search finds interface macs', function (): void {
     LibrenmsConfig::set('mac_oui.enabled', true);
     DB::table('vendor_ouis')->insert(['oui' => 'f0f0f2', 'vendor' => 'Interfacetest Widgets Inc']);
     [, $port] = $this->portOn();

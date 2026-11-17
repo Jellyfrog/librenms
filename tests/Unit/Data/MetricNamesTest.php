@@ -1,18 +1,17 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Data\TimeSeries\MetricIdentity;
 use App\Facades\LibrenmsConfig;
 use LibreNMS\Data\Store\MetricNames;
-use PHPUnit\Framework\Attributes\Group;
 
+uses(\LibreNMS\Tests\TestCase::class)->group('datastores');
 
 function processor(): MetricIdentity
 {
     return new MetricIdentity('processor', ['hostname' => 'localhost', 'type' => 'hr', 'index' => 1]);
 }
 
-test('acleaned up metric is stored under the names it had', function () {
+test('a cleaned up metric is stored under the names it had', function (): void {
     $legacy = new MetricNames()->storedAs(processor());
 
     expect($legacy)->not->toBeNull();
@@ -21,7 +20,7 @@ test('acleaned up metric is stored under the names it had', function () {
     expect($legacy->rrdNameOf(processor()))->toBe(['processor', 'hr', '1']);
 });
 
-test('canonical metrics are stored as identified', function () {
+test('canonical metrics are stored as identified', function (): void {
     LibrenmsConfig::set('datastore.canonical_metrics', true);
     $names = new MetricNames;
 
@@ -29,6 +28,6 @@ test('canonical metrics are stored as identified', function () {
     expect($names->legacyOf(processor()))->not->toBeNull();
 });
 
-test('ametric that was always clean has no other names', function () {
+test('a metric that was always clean has no other names', function (): void {
     expect(new MetricNames()->storedAs(new MetricIdentity('vm.cpu', ['cluster' => 'proxmox-abc', 'id' => 100])))->toBeNull();
 });

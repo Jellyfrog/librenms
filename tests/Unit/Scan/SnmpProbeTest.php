@@ -1,17 +1,13 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use LibreNMS\Polling\Method\Config\SnmpConfig;
 use LibreNMS\Polling\Method\Methods\SnmpPollingMethod;
 use LibreNMS\Polling\Secrets\Data\SnmpCommunitySecretData;
 use LibreNMS\Scan\SnmpProbe;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\TestDox;
 
+uses(LibreNMS\Tests\TestCase::class, LibreNMS\Tests\Traits\FakesNetworkTools::class);
 
-uses(\LibreNMS\Tests\Traits\FakesNetworkTools::class);
-
-test('preference', function (array $communities, ?int $expected) {
+test('Picks the most preferred credential that replies', function (array $communities, ?int $expected): void {
     $this->fakeSnmpget();
     $probe = new SnmpProbe('192.0.2.1', $this->fakeSnmpConfigs($communities));
 
@@ -34,7 +30,7 @@ dataset('credentialProvider', function () {
     ];
 });
 
-test('version', function () {
+test('A secret tried with several versions reports the version that replied', function (): void {
     $this->fakeSnmpget();
     $defaults = (new SnmpPollingMethod)->defaults();
     $probe = new SnmpProbe('192.0.2.1', [
@@ -50,7 +46,7 @@ test('version', function () {
     expect($probe->version())->toBe('v1');
 });
 
-test('no credentials', function () {
+test('Without credentials it is settled with no reply', function (): void {
     $probe = new SnmpProbe('192.0.2.1', []);
 
     expect($probe->settled())->toBeTrue();

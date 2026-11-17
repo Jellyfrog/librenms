@@ -1,19 +1,19 @@
 <?php
 
-uses(\App\Http\Controllers\Table\AlertLogController::class);
+use App\Http\Controllers\Table\AlertLogController;
 use App\Http\Parsers\AlertLogDetailParser;
-use \App\Http\Controllers\Table\AlertLogController;
-use \LibreNMS\Tests\Unit\Alert\TestableAlertLogController;
 use App\Models\AlertLog;
 use Illuminate\Http\Request;
 
-test('fixed range filters alert log time', function () {
+uses(LibreNMS\Tests\TestCase::class);
+
+test('fixed range filters alert log time', function (): void {
     $controller = new TestableAlertLogController(new AlertLogDetailParser);
-    expect(validationRules()['from'])->toBe('nullable|date_or_relative');
-    expect(validationRules()['to'])->toBe('nullable|date_or_relative');
+    expect($controller->validationRules()['from'])->toBe('nullable|date_or_relative');
+    expect($controller->validationRules()['to'])->toBe('nullable|date_or_relative');
 
     $query = AlertLog::query();
-    $filters = rangeFilters();
+    $filters = $controller->rangeFilters();
     $filters['from']($query, '2026-10-01T00:00:00Z');
     $filters['to']($query, '2026-10-02T00:00:00Z');
 
@@ -22,9 +22,9 @@ test('fixed range filters alert log time', function () {
     expect($query->getBindings())->toBe([1790812800, 1790899200]);
 });
 
-test('relative range remains rolling', function () {
+test('relative range remains rolling', function (): void {
     $query = AlertLog::query();
-    $filters = rangeFilters();
+    $filters = new TestableAlertLogController(new AlertLogDetailParser)->rangeFilters();
     $filters['from']($query, '-1d');
 
     expect($query->getBindings()[0])->toEqualWithDelta(time() - 86400, 2);
@@ -33,13 +33,13 @@ test('relative range remains rolling', function () {
 class TestableAlertLogController extends AlertLogController
 {
     /** @return array<string, string> */
-    function validationRules(): array
+    public function validationRules(): array
     {
         return $this->rules();
     }
 
     /** @return array<int|string, mixed> */
-    function rangeFilters(): array
+    public function rangeFilters(): array
     {
         return $this->filterFields(new Request);
     }

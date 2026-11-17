@@ -1,16 +1,14 @@
 <?php
 
-uses(\LibreNMS\Tests\Unit\DB\BulkSyncEntry::class);
-use Illuminate\Database\Connection;
-use \LibreNMS\Tests\Unit\DB\BulkSyncEntry;
-use \LibreNMS\Tests\Unit\DB\BulkSyncEntryWithoutTimestamps;
-use \Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use LibreNMS\DB\BulkTableSync;
 use LibreNMS\Interfaces\Models\Keyable;
 
-beforeEach(function () {
+uses(LibreNMS\Tests\TestCase::class);
+
+beforeEach(function (): void {
     config(['database.connections.bulk_sync' => ['driver' => 'sqlite', 'database' => ':memory:', 'prefix' => '']]);
     $this->db = DB::connection('bulk_sync');
     $this->db->getSchemaBuilder()->create('entries', function (Blueprint $table): void {
@@ -25,17 +23,26 @@ beforeEach(function () {
     });
 });
 
-afterEach(function () {
+afterEach(function (): void {
     DB::purge('bulk_sync');
 });
 
-test('history and other scopes are untouched and creation time is preserved', function () {
+function bulkSync(int $scope = 1, string $lookup = 'name'): BulkTableSync
+{
+    $parent = new class extends Model {};
+    $parent->setConnection('bulk_sync');
+    $parent->setRawAttributes(['id' => $scope]);
+
+    return new BulkTableSync($parent->hasMany(BulkSyncEntry::class, 'scope'), $lookup);
+}
+
+test('history and other scopes are untouched and creation time is preserved', function (): void {
     $rows = [['name' => 'a', 'group' => null, 'value' => 'old'], ['name' => 'b', 'group' => null, 'value' => 'history']];
-    sync($rows, '2026-01-01 00:00:00');
-    sync($rows, '2026-01-01 00:00:00');
+    bulkSync()->sync($rows, '2026-01-01 00:00:00');
+    bulkSync(2)->sync($rows, '2026-01-01 00:00:00');
     $before = $this->db->table('entries')->orderBy('id')->get();
 
-    $counts = sync([['name' => 'a', 'group' => null, 'value' => 'new', 'protected' => 'overwrite', 'scope' => 2]], '2026-01-02 00:00:00');
+    $counts = bulkSync()->sync([['name' => 'a', 'group' => null, 'value' => 'new', 'protected' => 'overwrite', 'scope' => 2]], '2026-01-02 00:00:00');
 
     $after = $this->db->table('entries')->orderBy('id')->get();
     expect($counts)->toBe(['inserted' => 0, 'updated' => 1, 'unchanged' => 0, 'deleted' => 0]);
@@ -50,15 +57,15 @@ test('history and other scopes are untouched and creation time is preserved', fu
     }
 });
 
-test('null keys are distinct from empty strings and zero and do not escape scope', function () {
+test('null keys are distinct from empty strings and zero and do not escape scope', function (): void {
     $rows = [];
     foreach ([null, '', '0'] as $group) {
         $rows[] = ['name' => 'a', 'group' => $group, 'value' => 'first'];
     }
-    sync($rows);
-    sync($rows);
+    bulkSync()->sync($rows);
+    bulkSync(2)->sync($rows);
     $rows = array_map(fn ($row) => array_replace($row, ['value' => 'second']), $rows);
-    $counts = sync($rows);
+    $counts = bulkSync()->sync($rows);
 
     expect($counts['updated'])->toBe(3);
     expect($this->db->table('entries')->count())->toBe(6);
@@ -66,12 +73,12 @@ test('null keys are distinct from empty strings and zero and do not escape scope
     expect($this->db->table('entries')->where('scope', 2)->where('value', 'first')->count())->toBe(3);
 });
 
-test('only observed duplicates are deleted and last input wins', function () {
+test('only observed duplicates are deleted and last input wins', function (): void {
     $row = ['scope' => 1, 'name' => 'a', 'group' => null, 'value' => 'old'];
     $id = $this->db->table('entries')->insertGetId($row);
     $this->db->table('entries')->insert([$row, $row, array_replace($row, ['group' => 'history']), array_replace($row, ['group' => 'history'])]);
 
-    $counts = sync([
+    $counts = bulkSync()->sync([
         ['name' => 'a', 'group' => null, 'value' => 'ignored'],
         ['name' => 'a', 'group' => null, 'value' => 'last'],
     ]);
@@ -82,14 +89,14 @@ test('only observed duplicates are deleted and last input wins', function () {
     expect($this->db->table('entries')->count())->toBe(3);
 });
 
-test('sparse updates and quoted values including null and zero', function () {
-    sync([
+test('sparse updates and quoted values including null and zero', function (): void {
+    bulkSync()->sync([
         ['name' => 'a', 'group' => 'g', 'value' => 'old', 'score' => 1],
         ['name' => 'b', 'group' => 'g', 'value' => 'keep', 'score' => 2],
         ['name' => 'c', 'group' => 'g', 'value' => 'old', 'score' => 3],
     ]);
     $quoted = "quote' ? \\ and unicode é";
-    $counts = sync([
+    $counts = bulkSync()->sync([
         ['name' => 'a', 'group' => 'g', 'value' => null, 'score' => '0'],
         ['name' => 'b', 'group' => 'g', 'score' => null],
         ['name' => 'c', 'group' => 'g', 'value' => $quoted],
@@ -105,10 +112,11 @@ test('sparse updates and quoted values including null and zero', function () {
     expect($rows['c']->score)->toBe(3);
 });
 
-test('merge only changes writable values and unchanged rows are touched', function () {
+test('merge only changes writable values and unchanged rows are touched', function (): void {
     $row = ['name' => 'a', 'group' => 'g', 'value' => 'known', 'score' => 42];
-    sync([$row], '2026-01-01 00:00:00');
-    $counts = sync([array_replace($row, ['value' => null])], '2026-01-02 00:00:00', fn ($new, $old) => array_replace($new, ['value' => $old['value'], 'scope' => 2]));
+    bulkSync()->sync([$row], '2026-01-01 00:00:00');
+    $counts = bulkSync()->sync([array_replace($row, ['value' => null])], '2026-01-02 00:00:00',
+        fn ($new, $old) => array_replace($new, ['value' => $old['value'], 'scope' => 2]));
 
     $entry = $this->db->table('entries')->sole();
     expect($counts['unchanged'])->toBe(1);
@@ -118,40 +126,39 @@ test('merge only changes writable values and unchanged rows are touched', functi
     expect($entry->updated_at)->toBe('2026-01-02 00:00:00');
 });
 
-test('batches large inputs and varied updates', function () {
+test('batches large inputs and varied updates', function (): void {
     $rows = [];
     for ($i = 1; $i <= 2005; $i++) {
         $rows[] = ['name' => "entry-$i", 'group' => 'g', 'value' => 'initial', 'score' => $i];
     }
     $this->db->enableQueryLog();
-    $counts = sync($rows);
+    $counts = bulkSync()->sync($rows);
     expect($counts['inserted'])->toBe(2005);
-    expect($this->db->getQueryLog())->toHaveCount(6);
-    // three matching reads and three inserts
+    expect($this->db->getQueryLog())->toHaveCount(6); // three matching reads and three inserts
     $this->db->flushQueryLog();
 
     $rows = array_map(fn ($row) => array_replace($row, ['value' => $row['name'], 'score' => $row['score'] + 1]), $rows);
-    $counts = sync($rows);
+    $counts = bulkSync()->sync($rows);
     expect($counts['updated'])->toBe(2005);
     expect($this->db->getQueryLog())->toHaveCount(6);
     expect($this->db->table('entries')->count())->toBe(2005);
     expect($this->db->table('entries')->where('name', 'entry-2005')->value('score'))->toBe(2006);
 });
 
-test('empty input does no queries', function () {
+test('empty input does no queries', function (): void {
     $this->db->enableQueryLog();
-    expect(sync([]))->toBe(['inserted' => 0, 'updated' => 0, 'unchanged' => 0, 'deleted' => 0]);
+    expect(bulkSync()->sync([]))->toBe(['inserted' => 0, 'updated' => 0, 'unchanged' => 0, 'deleted' => 0]);
     expect($this->db->getQueryLog())->toHaveCount(0);
 });
 
-test('unchanged rows only touch last seen', function () {
+test('unchanged rows only touch last seen', function (): void {
     $rows = [
         ['name' => 'a', 'group' => 'g', 'value' => 'keep', 'score' => 0],
         ['name' => 'b', 'group' => 'g', 'value' => 'keep', 'score' => 0],
     ];
-    sync($rows, '2026-01-01 00:00:00');
+    bulkSync()->sync($rows, '2026-01-01 00:00:00');
     $this->db->enableQueryLog();
-    $counts = sync($rows, '2026-01-02 00:00:00');
+    $counts = bulkSync()->sync($rows, '2026-01-02 00:00:00');
     $queries = $this->db->getQueryLog();
     $this->db->disableQueryLog();
 
@@ -163,26 +170,25 @@ test('unchanged rows only touch last seen', function () {
     expect($this->db->table('entries')->where('updated_at', '2026-01-02 00:00:00')->count())->toBe(2);
 });
 
-test('changed rows share one upsert and unchanged rows one update', function () {
+test('changed rows share one upsert and unchanged rows one update', function (): void {
     $rows = [];
     for ($i = 0; $i < 30; $i++) {
         $rows[] = ['name' => "entry-$i", 'group' => 'g', 'value' => 'keep', 'score' => 0];
     }
-    sync($rows, '2026-01-01 00:00:00');
+    bulkSync()->sync($rows, '2026-01-01 00:00:00');
     $ids = $this->db->table('entries')->pluck('id')->all();
     foreach ($rows as $i => &$row) {
         $row['score'] = $i < 2 ? 0 : ($i < 17 ? 100 : intdiv($i, 3));
     }
     unset($row);
     $this->db->enableQueryLog();
-    $counts = sync($rows, '2026-01-02 00:00:00');
+    $counts = bulkSync()->sync($rows, '2026-01-02 00:00:00');
     $queries = $this->db->getQueryLog();
     $this->db->disableQueryLog();
 
     expect($counts['updated'])->toBe(28);
     expect($counts['unchanged'])->toBe(2);
-    expect($queries)->toHaveCount(3);
-    // one read, one last-seen update, one upsert
+    expect($queries)->toHaveCount(3); // one read, one last-seen update, one upsert
     expect($queries[1]['query'])->toStartWith('update');
     expect($queries[2]['query'])->toStartWith('insert');
     expect($this->db->table('entries')->pluck('id')->all())->toBe($ids);
@@ -193,46 +199,42 @@ test('changed rows share one upsert and unchanged rows one update', function () 
     }
 });
 
-test('null lookup value is rejected', function () {
+test('null lookup value is rejected', function (): void {
     $this->expectException(InvalidArgumentException::class);
-    sync([['name' => null, 'group' => 'g']]);
+    bulkSync()->sync([['name' => null, 'group' => 'g']]);
 });
 
-test('lookup column must be writable', function () {
+test('lookup column must be writable', function (): void {
     $this->expectException(InvalidArgumentException::class);
-    sync(lookup: 'scope');
+    bulkSync(lookup: 'scope');
 });
 
-test('model without timestamps is rejected', function () {
+test('model without timestamps is rejected', function (): void {
     $parent = new class extends Model {};
     $this->expectException(InvalidArgumentException::class);
     new BulkTableSync($parent->hasMany(BulkSyncEntryWithoutTimestamps::class, 'scope'), 'name');
 });
 
-test('booleans compare as integers', function () {
-    sync([['name' => 'a', 'group' => 'g', 'score' => false]]);
-    $counts = sync([['name' => 'a', 'group' => 'g', 'score' => false]]);
+test('booleans compare as integers', function (): void {
+    bulkSync()->sync([['name' => 'a', 'group' => 'g', 'score' => false]]);
+    $counts = bulkSync()->sync([['name' => 'a', 'group' => 'g', 'score' => false]]);
 
     expect($counts['unchanged'])->toBe(1);
     expect($this->db->table('entries')->value('score'))->toBe(0);
 });
 
-function sync(int $scope = 1, string $lookup = 'name'): BulkTableSync
-{
-    $parent = new class extends Model {};
-    $parent->setConnection('bulk_sync');
-    $parent->setRawAttributes(['id' => $scope]);
-
-    return new BulkTableSync($parent->hasMany(BulkSyncEntry::class, 'scope'), $lookup);
-}
-
 class BulkSyncEntry extends Model implements Keyable
 {
-    function getCompositeKey(): string
+    protected $table = 'entries';
+    protected $fillable = ['name', 'group', 'value', 'score'];
+
+    public function getCompositeKey(): string
     {
         return json_encode([$this->getAttribute('group'), $this->getAttribute('name')], JSON_THROW_ON_ERROR);
     }
 }
+
 class BulkSyncEntryWithoutTimestamps extends BulkSyncEntry
 {
+    public $timestamps = false;
 }

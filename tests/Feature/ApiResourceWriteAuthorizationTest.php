@@ -24,7 +24,6 @@
  * @copyright  2026 LibreNMS
  */
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Facades\LibrenmsConfig;
 use App\Models\Alert;
 use App\Models\AlertFault;
@@ -39,10 +38,9 @@ use LibreNMS\Enum\AlertState;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-beforeEach(function () {
+beforeEach(function (): void {
     LibrenmsConfig::set('show_services', true);
     Role::findOrCreate('user');
     $this->accessible = Device::factory()->create();
@@ -55,7 +53,7 @@ beforeEach(function () {
  */
 function limitedUserHeaders(array $permissions): array
 {
-    $this->app['auth']->forgetGuards();
+    app('auth')->forgetGuards();
 
     // don't reuse the user resolved by a previous request
     /** @var User $user */
@@ -65,7 +63,7 @@ function limitedUserHeaders(array $permissions): array
         Permission::findOrCreate($permission);
     }
     $user->givePermissionTo($permissions);
-    $user->devicesOwned()->attach($this->accessible->device_id);
+    $user->devicesOwned()->attach(test()->accessible->device_id);
 
     return ['X-Auth-Token' => $user->createToken('test')->plainTextToken];
 }
@@ -86,7 +84,7 @@ function createFault(Device $device): AlertFault
     ]);
 }
 
-test('alert writes are scoped to accessible devices', function () {
+test('alert writes are scoped to accessible devices', function (): void {
     $headers = limitedUserHeaders(['alert.update']);
     $own = createFault($this->accessible);
     $foreign = createFault($this->other);
@@ -103,7 +101,7 @@ test('alert writes are scoped to accessible devices', function () {
     $this->json('PUT', "/api/v0/alerts/$own->id", ['note' => 'x'], limitedUserHeaders([]))->assertStatus(403);
 });
 
-test('service writes are scoped to accessible devices', function () {
+test('service writes are scoped to accessible devices', function (): void {
     $headers = limitedUserHeaders(['service.create', 'service.update', 'service.delete']);
     $own = Service::factory()->create(['device_id' => $this->accessible->device_id, 'service_desc' => 'original']);
     $foreign = Service::factory()->create(['device_id' => $this->other->device_id, 'service_desc' => 'original']);
@@ -128,7 +126,7 @@ test('service writes are scoped to accessible devices', function () {
     $this->json('DELETE', "/api/v0/services/$foreign->service_id", [], $readOnly)->assertStatus(403);
 });
 
-test('bgp description edit is scoped to accessible devices', function () {
+test('bgp description edit is scoped to accessible devices', function (): void {
     $headers = limitedUserHeaders(['routing.update']);
     $own = BgpPeer::factory()->create(['device_id' => $this->accessible->device_id, 'bgpPeerDescr' => 'original']);
     $foreign = BgpPeer::factory()->create(['device_id' => $this->other->device_id, 'bgpPeerDescr' => 'original']);
@@ -140,7 +138,7 @@ test('bgp description edit is scoped to accessible devices', function () {
     expect($own->refresh()->bgpPeerDescr)->toBe('changed');
 });
 
-test('bill create only attaches accessible ports', function () {
+test('bill create only attaches accessible ports', function (): void {
     $headers = limitedUserHeaders(['bill.create']);
     $ownPort = Port::factory()->for($this->accessible)->create();
     $foreignPort = Port::factory()->for($this->other)->create();

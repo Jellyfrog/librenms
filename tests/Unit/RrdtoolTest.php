@@ -31,7 +31,9 @@ use LibreNMS\RRD\RrdDefinition;
 use LibreNMS\RRD\RrdPath;
 use LibreNMS\RRD\RrdProcess;
 
-beforeEach(function () {
+beforeEach(function (): void {
+    $this->commands = [];
+
     LibrenmsConfig::set('rrdcached', '');
     LibrenmsConfig::set('rrd_dir', '/opt/librenms/rrd');
     LibrenmsConfig::set('rrd.heartbeat', 600);
@@ -46,25 +48,25 @@ beforeEach(function () {
     $this->process = $process;
 });
 
-test('create adds no overwrite', function () {
-    backend()->create(RrdPath::make('host', 'f.rrd'), definition()->setRras(['RRA:AVERAGE:0.5:1:10']));
+test('create adds no overwrite', function (): void {
+    rrdtoolBackend()->create(RrdPath::make('host', 'f.rrd'), rrdtoolDefinition()->setRras(['RRA:AVERAGE:0.5:1:10']));
 
     expect($this->commands)->toBe(['create host/f.rrd --step 300 DS:a:GAUGE:600:U:U RRA:AVERAGE:0.5:1:10 -O']);
 });
 
-test('create without no overwrite support', function () {
+test('create without no overwrite support', function (): void {
     $backend = new Rrdtool(null, $this->process, '1.4.2');
-    $backend->create(RrdPath::make('host', 'f.rrd'), definition());
+    $backend->create(RrdPath::make('host', 'f.rrd'), rrdtoolDefinition());
 
     expect($this->commands)->toBe(['create host/f.rrd --step 300 DS:a:GAUGE:600:U:U']);
 });
 
-test('update and tune', function () {
+test('update and tune', function (): void {
     $rrd = RrdPath::make('host', 'f.rrd');
 
-    backend()->update($rrd, [1, null, 'x', 2.5]);
-    backend()->update($rrd, [3], 1700000000);
-    backend()->tune($rrd, ['a' => ['max' => 100], 'b' => ['min' => 0, 'max' => null]]);
+    rrdtoolBackend()->update($rrd, [1, null, 'x', 2.5]);
+    rrdtoolBackend()->update($rrd, [3], 1700000000);
+    rrdtoolBackend()->tune($rrd, ['a' => ['max' => 100], 'b' => ['min' => 0, 'max' => null]]);
 
     expect($this->commands)->toBe([
         'update host/f.rrd N:1:U:U:2.5',
@@ -73,12 +75,12 @@ test('update and tune', function () {
     ]);
 });
 
-function backend(): Rrdtool
+function rrdtoolBackend(): Rrdtool
 {
-    return new Rrdtool(null, $this->process);
+    return new Rrdtool(null, test()->process);
 }
 
-function definition(): RrdDefinition
+function rrdtoolDefinition(): RrdDefinition
 {
     return RrdDefinition::make()->addDataset('a', 'GAUGE')->setStep(300)->setRras([]);
 }

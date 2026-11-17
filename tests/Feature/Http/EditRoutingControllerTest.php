@@ -10,12 +10,12 @@ use Spatie\Permission\Models\Role;
 
 uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     Role::findOrCreate('admin');
     Role::findOrCreate('user');
 });
 
-function admin(): User
+function routingAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -23,7 +23,7 @@ function admin(): User
     return $admin;
 }
 
-function user(): User
+function routingUser(): User
 {
     $user = User::factory()->create(['enabled' => 1]);
     $user->assignRole('user');
@@ -31,7 +31,7 @@ function user(): User
     return $user;
 }
 
-test('admin can view routing page', function () {
+test('admin can view routing page', function (): void {
     $device = Device::factory()->create();
     Vrf::factory()->for($device)->create(['vrf_oid' => 'vrf-red', 'vrf_name' => 'vrf-red', 'context_name' => 'vrf-red', 'context_manual' => true, 'vrf_manual' => true]);
     BgpPeer::factory()->for($device)->create([
@@ -41,7 +41,7 @@ test('admin can view routing page', function () {
         'context_name' => 'vrf-blue',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingAdmin())
         ->get(route('device.edit.routing', $device))
         ->assertOk()
         ->assertSee('vrf-red')
@@ -52,7 +52,7 @@ test('admin can view routing page', function () {
         ->assertDontSee('Upstream <b>Transit</b>', false);
 });
 
-test('routing page shows context status', function () {
+test('routing page shows context status', function (): void {
     $device = Device::factory()->create();
     Vrf::factory()->for($device)->create(['vrf_name' => 'red', 'context_name' => 'vrf-red', 'context_verified' => true]);
     Vrf::factory()->for($device)->create(['vrf_name' => 'blue', 'context_name' => 'vrf-blue', 'context_manual' => true, 'context_verified' => false, 'context_failures' => 1]);
@@ -60,7 +60,7 @@ test('routing page shows context status', function () {
     Vrf::factory()->for($device)->create(['vrf_name' => 'green', 'context_name' => 'vrf-green', 'context_verified' => true, 'context_enabled' => false]);
     Vrf::factory()->for($device)->create(['vrf_name' => 'mgmt', 'context_name' => null]);
 
-    $vrfs = $this->actingAs(admin())
+    $vrfs = $this->actingAs(routingAdmin())
         ->get(route('device.edit.routing', $device))
         ->assertOk()
         ->viewData('vrfs');
@@ -74,10 +74,10 @@ test('routing page shows context status', function () {
     ]);
 });
 
-test('bgp peers panel is only shown with peers', function () {
+test('bgp peers panel is only shown with peers', function (): void {
     $device = Device::factory()->create();
     Vrf::factory()->for($device)->create();
-    $admin = admin();
+    $admin = routingAdmin();
 
     $this->actingAs($admin)
         ->get(route('device.edit.routing', $device))
@@ -92,60 +92,60 @@ test('bgp peers panel is only shown with peers', function () {
         ->assertSee('BGP Peers');
 });
 
-test('routing tab is shown for devices with vrfs', function () {
+test('routing tab is shown for devices with vrfs', function (): void {
     $device = Device::factory()->create();
     Vrf::factory()->for($device)->create();
 
-    $this->actingAs(admin())
+    $this->actingAs(routingAdmin())
         ->get(route('device.edit', $device))
         ->assertOk()
         ->assertSee(route('device.edit.routing', $device->device_id));
 });
 
-test('user cannot view routing page', function () {
+test('user cannot view routing page', function (): void {
     $device = Device::factory()->create();
 
-    $this->actingAs(user())
+    $this->actingAs(routingUser())
         ->get(route('device.edit.routing', $device))
         ->assertForbidden();
 });
 
-test('update vrf enables and disables contexts', function () {
+test('update vrf enables and disables contexts', function (): void {
     $device = Device::factory()->create();
     $red = Vrf::factory()->for($device)->create(['context_name' => 'vrf-red', 'context_enabled' => true, 'context_verified' => true]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingAdmin())
         ->patchJson(route('device.edit.routing.vrf.update', [$device, $red]), ['context_enabled' => false])
         ->assertOk()
         ->assertJson(['enabled' => false, 'status' => 'disabled']);
     expect($red->fresh()->context_enabled)->toBeFalse();
 
-    $this->actingAs(admin())
+    $this->actingAs(routingAdmin())
         ->patchJson(route('device.edit.routing.vrf.update', [$device, $red]), ['context_enabled' => true])
         ->assertOk()
         ->assertJson(['enabled' => true, 'status' => 'answering']);
     expect($red->fresh()->context_enabled)->toBeTrue();
 });
 
-test('vrf must belong to device', function () {
+test('vrf must belong to device', function (): void {
     $device = Device::factory()->create();
     $other = Vrf::factory()->for(Device::factory())->create(['context_name' => 'vrf-other', 'context_enabled' => true, 'context_manual' => true, 'vrf_manual' => true]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingAdmin())
         ->patchJson(route('device.edit.routing.vrf.update', [$device, $other]), ['context_enabled' => false])
         ->assertNotFound();
-    $this->actingAs(admin())
+    $this->actingAs(routingAdmin())
         ->deleteJson(route('device.edit.routing.vrf.destroy', [$device, $other]))
         ->assertNotFound();
 
     expect($other->fresh()->context_enabled)->toBeTrue();
 });
 
-test('update vrf sets and clears contexts', function () {
+test('update vrf sets and clears contexts', function (): void {
     $device = Device::factory()->create();
     $blue = Vrf::factory()->for($device)->create(['vrf_name' => 'blue', 'context_name' => null]);
     Vrf::factory()->for($device)->create(['vrf_name' => 'green', 'context_name' => 'ctx-green']);
-    $admin = admin();
+    $admin = routingAdmin();
 
     $this->actingAs($admin)
         ->patchJson(route('device.edit.routing.vrf.update', [$device, $blue]), ['context_name' => ' ctx-blue '])
@@ -172,12 +172,12 @@ test('update vrf sets and clears contexts', function () {
     expect($blue->fresh()->context_name)->toBeNull();
 });
 
-test('update vrf only changes contexts users set', function () {
+test('update vrf only changes contexts users set', function (): void {
     $device = Device::factory()->create();
     $mapped = Vrf::factory()->for($device)->create(['vrf_name' => 'green', 'context_name' => 'ctx-green']);
     $contextOnly = Vrf::factory()->for($device)->create(['vrf_oid' => 'red', 'vrf_name' => 'red', 'context_name' => 'red', 'context_manual' => true, 'vrf_manual' => true]);
     $default = Vrf::factory()->for($device)->create(['vrf_name' => 'default', 'context_name' => null]);
-    $admin = admin();
+    $admin = routingAdmin();
 
     foreach ([$mapped, $contextOnly, $default] as $vrf) {
         foreach (['other', null] as $context) {
@@ -193,11 +193,11 @@ test('update vrf only changes contexts users set', function () {
     expect($default->fresh()->context_name)->toBeNull();
 });
 
-test('store context adds vrfs the device does not list', function () {
+test('store context adds vrfs the device does not list', function (): void {
     $device = Device::factory()->create();
     Vrf::factory()->for($device)->create(['vrf_name' => 'Blue', 'context_name' => null]);
     Vrf::factory()->for($device)->create(['vrf_name' => 'green', 'context_name' => 'ctx-green']);
-    $admin = admin();
+    $admin = routingAdmin();
 
     $this->actingAs($admin)
         ->postJson(route('device.edit.routing.vrf.store', $device), ['context' => ' vrf-new '])
@@ -227,12 +227,12 @@ test('store context adds vrfs the device does not list', function () {
     expect($device->vrfs()->count())->toBe(3);
 });
 
-test('destroy vrf removes vrfs only known through their context', function () {
+test('destroy vrf removes vrfs only known through their context', function (): void {
     $device = Device::factory()->create();
     $created = Vrf::factory()->for($device)->create(['vrf_oid' => 'vrf-red', 'vrf_name' => 'vrf-red', 'context_name' => 'vrf-red', 'context_manual' => true, 'vrf_manual' => true]);
     $attached = Vrf::factory()->for($device)->create(['vrf_name' => 'blue', 'context_name' => 'ctx-blue', 'context_manual' => true, 'context_verified' => true]);
     $mapped = Vrf::factory()->for($device)->create(['vrf_name' => 'green', 'context_name' => 'ctx-green']);
-    $admin = admin();
+    $admin = routingAdmin();
 
     $this->actingAs($admin)
         ->deleteJson(route('device.edit.routing.vrf.destroy', [$device, $created]))
@@ -250,10 +250,10 @@ test('destroy vrf removes vrfs only known through their context', function () {
     expect($mapped->fresh()->context_name)->toBe('ctx-green');
 });
 
-test('user cannot update contexts', function () {
+test('user cannot update contexts', function (): void {
     $device = Device::factory()->create();
     $vrf = Vrf::factory()->for($device)->create(['context_name' => 'vrf-red', 'context_manual' => true, 'vrf_manual' => true]);
-    $user = user();
+    $user = routingUser();
 
     $this->actingAs($user)
         ->postJson(route('device.edit.routing.vrf.store', $device), ['context' => 'vrf-blue'])
@@ -272,11 +272,11 @@ test('user cannot update contexts', function () {
     expect($vrf->fresh()->context_enabled)->toBeTrue();
 });
 
-test('admin can update peer description', function () {
+test('admin can update peer description', function (): void {
     $device = Device::factory()->create();
     $peer = BgpPeer::factory()->for($device)->create(['bgpPeerDescr' => 'old']);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingAdmin())
         ->postJson(route('device.edit.routing.peer.update', [$device, $peer]), ['descr' => 'new description'])
         ->assertOk()
         ->assertJson(['status' => 'ok']);
@@ -284,33 +284,33 @@ test('admin can update peer description', function () {
     expect($peer->fresh()->bgpPeerDescr)->toBe('new description');
 });
 
-test('clearing peer description stores empty string', function () {
+test('clearing peer description stores empty string', function (): void {
     $device = Device::factory()->create();
     $peer = BgpPeer::factory()->for($device)->create(['bgpPeerDescr' => 'old']);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingAdmin())
         ->postJson(route('device.edit.routing.peer.update', [$device, $peer]), ['descr' => ''])
         ->assertOk();
 
     expect($peer->fresh()->bgpPeerDescr)->toBe('');
 });
 
-test('peer must belong to device', function () {
+test('peer must belong to device', function (): void {
     $device = Device::factory()->create();
     $otherPeer = BgpPeer::factory()->for(Device::factory())->create(['bgpPeerDescr' => 'old']);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingAdmin())
         ->postJson(route('device.edit.routing.peer.update', [$device, $otherPeer]), ['descr' => 'hijack'])
         ->assertNotFound();
 
     expect($otherPeer->fresh()->bgpPeerDescr)->toBe('old');
 });
 
-test('user cannot update peer description', function () {
+test('user cannot update peer description', function (): void {
     $device = Device::factory()->create();
     $peer = BgpPeer::factory()->for($device)->create(['bgpPeerDescr' => 'old']);
 
-    $this->actingAs(user())
+    $this->actingAs(routingUser())
         ->postJson(route('device.edit.routing.peer.update', [$device, $peer]), ['descr' => 'new'])
         ->assertForbidden();
 

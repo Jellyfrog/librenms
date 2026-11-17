@@ -10,12 +10,12 @@ use Spatie\Permission\Models\Role;
 
 uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     Role::findOrCreate('admin');
     Role::findOrCreate('user');
 });
 
-function admin(): User
+function pseudowiresAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -23,7 +23,7 @@ function admin(): User
     return $admin;
 }
 
-test('authorized user can render pseudowires tab with unresolved peer', function () {
+test('authorized user can render pseudowires tab with unresolved peer', function (): void {
     $device = Device::factory()->create();
     $port = Port::factory()->for($device)->create(['ifDescr' => 'GigabitEthernet0/1', 'ifOperStatus' => 'up']);
     Pseudowire::factory()->create([
@@ -34,7 +34,7 @@ test('authorized user can render pseudowires tab with unresolved peer', function
         'pw_descr' => 'Test-PW-101',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(pseudowiresAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'pseudowires']))
         ->assertOk()
         ->assertSee('101')
@@ -44,7 +44,7 @@ test('authorized user can render pseudowires tab with unresolved peer', function
         ->assertDontSee('fa-question report-warning');
 });
 
-test('pseudowires tab with resolved peer endpoint', function () {
+test('pseudowires tab with resolved peer endpoint', function (): void {
     $deviceA = Device::factory()->create(['hostname' => 'router-a.example.com']);
     $portA = Port::factory()->for($deviceA)->create(['ifDescr' => 'GigabitEthernet0/1', 'ifOperStatus' => 'up']);
 
@@ -67,7 +67,7 @@ test('pseudowires tab with resolved peer endpoint', function () {
         'pw_descr' => 'Remote-PW-200',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(pseudowiresAdmin())
         ->get(route('device', ['device' => $deviceA, 'tab' => 'pseudowires']))
         ->assertOk()
         ->assertSee('200')
@@ -79,7 +79,7 @@ test('pseudowires tab with resolved peer endpoint', function () {
         ->assertDontSee('fa-question report-warning');
 });
 
-test('pseudowires tab mini graphs view', function () {
+test('pseudowires tab mini graphs view', function (): void {
     $device = Device::factory()->create();
     $port = Port::factory()->for($device)->create(['ifDescr' => 'GigabitEthernet0/1', 'ifOperStatus' => 'up']);
     Pseudowire::factory()->create([
@@ -90,13 +90,13 @@ test('pseudowires tab mini graphs view', function () {
         'pw_descr' => 'Test-PW-101',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(pseudowiresAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'pseudowires', 'vars' => 'view=minigraphs']))
         ->assertOk()
         ->assertSee('type=port_bits', false);
 });
 
-test('user without device access gets forbidden', function () {
+test('user without device access gets forbidden', function (): void {
     $device = Device::factory()->create();
     $port = Port::factory()->for($device)->create();
     Pseudowire::factory()->create([

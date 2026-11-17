@@ -13,7 +13,7 @@ use LibreNMS\Polling\Method\Methods\SnmpPollingMethod;
 use LibreNMS\Polling\Method\Methods\UnixAgentPollingMethod;
 use LibreNMS\Polling\Method\PollingMethodRegistry;
 
-test('every type has amethod', function () {
+test('every type has a method', function (): void {
     $registry = new PollingMethodRegistry;
 
     expect($registry->get(PollingMethodType::Icmp))->toBeInstanceOf(IcmpPollingMethod::class);
@@ -23,7 +23,7 @@ test('every type has amethod', function () {
     expect($registry->get(PollingMethodType::UnixAgent))->toBeInstanceOf(UnixAgentPollingMethod::class);
 });
 
-test('every setting has adefault and label', function () {
+test('every setting has a default and label', function (): void {
     foreach (PollingMethodType::cases() as $type) {
         $method = (new PollingMethodRegistry)->get($type);
         $fields = array_keys($method->definition()->fields());
@@ -36,7 +36,7 @@ test('every setting has adefault and label', function () {
     }
 });
 
-test('method secret types', function () {
+test('method secret types', function (): void {
     $registry = new PollingMethodRegistry;
 
     expect($registry->get(PollingMethodType::Icmp)->secretTypes())->toBe([]);
@@ -48,7 +48,7 @@ test('method secret types', function () {
     expect($snmp->secretTypes())->toBe([SecretType::SnmpCommunity, SecretType::SnmpV3]);
 });
 
-test('secret type from', function () {
+test('secret type from', function (): void {
     $registry = new PollingMethodRegistry;
     $snmp = $registry->get(PollingMethodType::Snmp);
     $ipmi = $registry->get(PollingMethodType::Ipmi);
@@ -64,7 +64,7 @@ test('secret type from', function () {
     expect($registry->get(PollingMethodType::Icmp)->secretTypeFrom(null))->toBeNull();
 });
 
-test('config rejects asecret of another type', function () {
+test('config rejects a secret of another type', function (): void {
     $deviceMethod = new DevicePollingMethod(['method_type' => PollingMethodType::Snmp]);
     $deviceMethod->setRelation('secret', new Secret(['secret_type' => SecretType::Ipmi, 'data' => ['username' => 'admin']]));
 
@@ -72,7 +72,7 @@ test('config rejects asecret of another type', function () {
     (new SnmpPollingMethod)->config(new Device, $deviceMethod);
 });
 
-test('only snmp and icmp affect availability by default', function () {
+test('only snmp and icmp affect availability by default', function (): void {
     $registry = new PollingMethodRegistry;
 
     expect($registry->get(PollingMethodType::Icmp)->defaultAffectsAvailability())->toBeTrue();

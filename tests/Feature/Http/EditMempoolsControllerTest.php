@@ -1,21 +1,18 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\Device;
 use App\Models\Mempool;
 use App\Models\User;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Spatie\Permission\Models\Role;
 
+uses(\LibreNMS\Tests\TestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-beforeEach(function () {
+beforeEach(function (): void {
     Role::findOrCreate('admin');
     Role::findOrCreate('user');
 });
 
-function admin(): User
+function mempoolsAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -23,7 +20,7 @@ function admin(): User
     return $admin;
 }
 
-function user(): User
+function mempoolsUser(): User
 {
     $user = User::factory()->create(['enabled' => 1]);
     $user->assignRole('user');
@@ -31,7 +28,7 @@ function user(): User
     return $user;
 }
 
-test('admin can view mempools page', function () {
+test('admin can view mempools page', function (): void {
     $device = Device::factory()->create();
     Mempool::factory()->for($device)->create([
         'mempool_descr' => 'Physical <b>Memory</b>',
@@ -39,7 +36,7 @@ test('admin can view mempools page', function () {
         'mempool_perc_warn' => 85,
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(mempoolsAdmin())
         ->get(route('device.edit.mempools', $device))
         ->assertOk()
         ->assertSee('Physical &lt;b&gt;Memory&lt;/b&gt;', false)
@@ -48,29 +45,29 @@ test('admin can view mempools page', function () {
         ->assertSee('value="85"', false);
 });
 
-test('null warn threshold renders empty', function () {
+test('null warn threshold renders empty', function (): void {
     $device = Device::factory()->create();
     Mempool::factory()->for($device)->create(['mempool_perc_warn' => null]);
 
-    $this->actingAs(admin())
+    $this->actingAs(mempoolsAdmin())
         ->get(route('device.edit.mempools', $device))
         ->assertOk()
         ->assertSee('value=""', false);
 });
 
-test('user cannot view mempools page', function () {
+test('user cannot view mempools page', function (): void {
     $device = Device::factory()->create();
 
-    $this->actingAs(user())
+    $this->actingAs(mempoolsUser())
         ->get(route('device.edit.mempools', $device))
         ->assertForbidden();
 });
 
-test('admin can update warn threshold', function () {
+test('admin can update warn threshold', function (): void {
     $device = Device::factory()->create();
     $mempool = Mempool::factory()->for($device)->create(['mempool_perc_warn' => 75]);
 
-    $this->actingAs(admin())
+    $this->actingAs(mempoolsAdmin())
         ->postJson(route('device.edit.mempools.update', [$device, $mempool]), ['mempool_perc_warn' => '90'])
         ->assertOk()
         ->assertJson(['status' => 'ok']);
@@ -78,11 +75,11 @@ test('admin can update warn threshold', function () {
     expect($mempool->fresh()->mempool_perc_warn)->toBe(90);
 });
 
-test('empty warn threshold clears it', function () {
+test('empty warn threshold clears it', function (): void {
     $device = Device::factory()->create();
     $mempool = Mempool::factory()->for($device)->create(['mempool_perc_warn' => 75]);
 
-    $this->actingAs(admin())
+    $this->actingAs(mempoolsAdmin())
         ->postJson(route('device.edit.mempools.update', [$device, $mempool]), ['mempool_perc_warn' => ''])
         ->assertOk();
 
@@ -92,7 +89,7 @@ test('empty warn threshold clears it', function () {
 /**
  * @return array<string, array{mixed}>
  */
-dataset('invalidThresholds', function () {
+dataset('invalidThresholds', function (): array {
     return [
         'non-numeric' => ['abc'],
         'negative' => [-1],
@@ -100,33 +97,33 @@ dataset('invalidThresholds', function () {
     ];
 });
 
-test('invalid warn threshold is rejected', function (mixed $value) {
+test('invalid warn threshold is rejected', function (mixed $value): void {
     $device = Device::factory()->create();
     $mempool = Mempool::factory()->for($device)->create(['mempool_perc_warn' => 75]);
 
-    $this->actingAs(admin())
+    $this->actingAs(mempoolsAdmin())
         ->postJson(route('device.edit.mempools.update', [$device, $mempool]), ['mempool_perc_warn' => $value])
         ->assertUnprocessable();
 
     expect($mempool->fresh()->mempool_perc_warn)->toBe(75);
 })->with('invalidThresholds');
 
-test('mempool must belong to device', function () {
+test('mempool must belong to device', function (): void {
     $device = Device::factory()->create();
     $otherMempool = Mempool::factory()->create(['mempool_perc_warn' => 75]);
 
-    $this->actingAs(admin())
+    $this->actingAs(mempoolsAdmin())
         ->postJson(route('device.edit.mempools.update', [$device, $otherMempool]), ['mempool_perc_warn' => 90])
         ->assertNotFound();
 
     expect($otherMempool->fresh()->mempool_perc_warn)->toBe(75);
 });
 
-test('user cannot update warn threshold', function () {
+test('user cannot update warn threshold', function (): void {
     $device = Device::factory()->create();
     $mempool = Mempool::factory()->for($device)->create(['mempool_perc_warn' => 75]);
 
-    $this->actingAs(user())
+    $this->actingAs(mempoolsUser())
         ->postJson(route('device.edit.mempools.update', [$device, $mempool]), ['mempool_perc_warn' => 90])
         ->assertForbidden();
 

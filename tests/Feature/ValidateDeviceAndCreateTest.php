@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Actions\Device\BuildDefaultPollingMethods;
 use App\Actions\Device\ValidateDeviceAndCreate;
 use App\Facades\LibrenmsConfig;
@@ -17,12 +16,10 @@ use LibreNMS\Enum\SecretType;
 use LibreNMS\Exceptions\HostSysnameExistsException;
 use LibreNMS\Exceptions\MissingSecretException;
 use LibreNMS\Polling\Method\Methods\SnmpPollingMethod;
-use PHPUnit\Framework\Attributes\DataProvider;
 
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-test('os without snmp is ping', function (array $methods, ?string $os, string $expected) {
+test('os without snmp is ping', function (array $methods, ?string $os, string $expected): void {
     $secret = Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity]);
     LibrenmsConfig::set('snmp.default_credentials', [$secret->id]);
 
@@ -34,7 +31,7 @@ test('os without snmp is ping', function (array $methods, ?string $os, string $e
     expect($device->fresh()->os)->toBe($expected);
 })->with('osProvider');
 
-test('default credentials are tried in order and the working one is kept', function () {
+test('default credentials are tried in order and the working one is kept', function (): void {
     $wrong = Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => 'wrong']]);
     $correct = Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => 'correct']]);
     LibrenmsConfig::set('snmp.default_credentials', [$wrong->id, $correct->id]);
@@ -65,7 +62,7 @@ test('default credentials are tried in order and the working one is kept', funct
     // a community is used as v2c
 });
 
-test('the first working default credential is preferred', function () {
+test('the first working default credential is preferred', function (): void {
     $v3 = Secret::factory()->create(['secret_type' => SecretType::SnmpV3, 'data' => ['authlevel' => 'authPriv', 'authname' => 'preferred', 'authpass' => 'authpass', 'cryptopass' => 'cryptopass']]);
     $v2c = Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => 'public']]);
     LibrenmsConfig::set('snmp.default_credentials', [$v3->id, $v2c->id]);
@@ -82,7 +79,7 @@ test('the first working default credential is preferred', function () {
     expect((new SnmpPollingMethod)->version($snmp))->toBe('v3');
 });
 
-test('forced snmp without credentials uses first default credential', function () {
+test('forced snmp without credentials uses first default credential', function (): void {
     $first = Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity]);
     $second = Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity]);
     LibrenmsConfig::set('snmp.default_credentials', [$second->id, $first->id]);
@@ -94,7 +91,7 @@ test('forced snmp without credentials uses first default credential', function (
     expect($device->pollingMethod(PollingMethodType::Snmp)?->secret_id)->toBe($second->id);
 });
 
-test('methods are validated before they are saved', function () {
+test('methods are validated before they are saved', function (): void {
     $ipmi = Secret::factory()->create(['secret_type' => SecretType::Ipmi]);
     $snmp = new DevicePollingMethod(['method_type' => PollingMethodType::Snmp]);
     $snmp->setRelation('secret', $ipmi);
@@ -110,7 +107,7 @@ test('methods are validated before they are saved', function () {
     expect($device->exists)->toBeFalse();
 });
 
-test('default methods follow icmp check', function () {
+test('default methods follow icmp check', function (): void {
     $device = new Device(['hostname' => 'defaults.example.com']);
 
     $types = app(BuildDefaultPollingMethods::class)->execute($device)->pluck('method_type')->all();
@@ -121,7 +118,7 @@ test('default methods follow icmp check', function () {
     expect($types)->toBe([PollingMethodType::Snmp]);
 });
 
-test('forced snmp without any credentials is rejected', function () {
+test('forced snmp without any credentials is rejected', function (): void {
     LibrenmsConfig::set('snmp.default_credentials', []);
 
     $device = new Device(['hostname' => 'no-credentials.example.com']);
@@ -131,7 +128,7 @@ test('forced snmp without any credentials is rejected', function () {
     app(ValidateDeviceAndCreate::class)->execute($device, $pollingMethods, force: true);
 });
 
-test('unchecked methods are not discovered', function () {
+test('unchecked methods are not discovered', function (): void {
     $default = Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity]);
     LibrenmsConfig::set('snmp.default_credentials', [$default->id]);
 
@@ -148,7 +145,7 @@ test('unchecked methods are not discovered', function () {
     expect($snmp?->secret_id)->toBe($default->id);
 });
 
-test('ping only device is not checked for duplicate sys name', function () {
+test('ping only device is not checked for duplicate sys name', function (): void {
     LibrenmsConfig::set('allow_duplicate_sysName', false);
     Device::factory()->create(['hostname' => '10.0.0.1', 'sysName' => 'router1']);
     mockFpingUp();
@@ -161,7 +158,7 @@ test('ping only device is not checked for duplicate sys name', function () {
     // defaults to the hostname
 });
 
-test('given sys name is checked for duplicates', function () {
+test('given sys name is checked for duplicates', function (): void {
     LibrenmsConfig::set('allow_duplicate_sysName', false);
     Device::factory()->create(['hostname' => '10.0.0.1', 'sysName' => 'router1']);
     mockFpingUp();
@@ -173,7 +170,7 @@ test('given sys name is checked for duplicates', function () {
     app(ValidateDeviceAndCreate::class)->execute($device, $pollingMethods);
 });
 
-test('empty snmp sys name is not checked for duplicates', function () {
+test('empty snmp sys name is not checked for duplicates', function (): void {
     LibrenmsConfig::set('allow_duplicate_sysName', false);
     Device::factory()->create(['hostname' => '10.0.0.1', 'sysName' => 'router1']);
     mockFpingUp();
@@ -189,7 +186,7 @@ test('empty snmp sys name is not checked for duplicates', function () {
     // defaults to the hostname
 });
 
-test('duplicate snmp sys name is rejected', function () {
+test('duplicate snmp sys name is rejected', function (): void {
     LibrenmsConfig::set('allow_duplicate_sysName', false);
     Device::factory()->create(['hostname' => '10.0.0.1', 'sysName' => 'router1']);
     mockFpingUp();
@@ -208,7 +205,7 @@ function mockFpingUp(): void
 {
     $fping = Mockery::mock(Fping::class);
     $fping->shouldReceive('ping')->andReturn(FpingResponse::artificialUp());
-    $this->app->instance(Fping::class, $fping);
+    app()->instance(Fping::class, $fping);
 }
 
 /**
@@ -221,7 +218,7 @@ function mockSnmpSysName(string $sysName): void
         ? new RawSnmpResponse("SNMPv2-MIB::sysName.0 = $sysName", '', 0)
         : new RawSnmpResponse('SNMPv2-MIB::sysObjectID.0 = .1.3.6.1.4.1.8072.3.2.10', '', 0));
     $backend->shouldIgnoreMissing(new RawSnmpResponse('', '', 0));
-    $this->app->instance(SnmpBackendInterface::class, $backend);
+    app()->instance(SnmpBackendInterface::class, $backend);
 }
 
 /**

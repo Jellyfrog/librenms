@@ -1,18 +1,15 @@
 <?php
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Jobs\DiscoverDevice;
 use App\Jobs\DispatchPollingWork;
 use App\Jobs\PollDevice;
 use App\Models\Device;
 use App\Queue\WorkedQueues;
 use Illuminate\Support\Facades\Queue;
-use PHPUnit\Framework\Attributes\DataProvider;
 
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-test('discovery dispatch', function (int $status, ?int $discovered, bool $polled, bool $expected) {
+test('discovery dispatch', function (int $status, ?int $discovered, bool $polled, bool $expected): void {
     Queue::fake();
     $device = Device::factory()->create([
         'status' => $status,
@@ -45,7 +42,7 @@ dataset('discoveryProvider', function () {
     ];
 });
 
-test('queued for the poller group', function () {
+test('queued for the poller group', function (): void {
     Queue::fake();
     $default = Device::factory()->create(['status' => 1, 'poller_group' => 0, 'last_discovered' => null, 'last_polled' => now()->subMinutes(10)]);
     $grouped = Device::factory()->create(['status' => 1, 'poller_group' => 3, 'last_discovered' => null, 'last_polled' => now()->subMinutes(10)]);
@@ -58,7 +55,7 @@ test('queued for the poller group', function () {
     Queue::assertPushedOn('discovery-3', DiscoverDevice::class, fn (DiscoverDevice $job) => $job->device_id == $grouped->device_id);
 });
 
-test('unworked poller group is not queued', function () {
+test('unworked poller group is not queued', function (): void {
     Queue::fake();
     workedQueues(['poll', 'discovery', 'poll-1']);
     $worked = Device::factory()->create(['status' => 1, 'poller_group' => 1, 'last_discovered' => now()->subMinute(), 'last_polled' => now()->subMinutes(10)]);
@@ -70,7 +67,7 @@ test('unworked poller group is not queued', function () {
     Queue::assertNotPushed(PollDevice::class, fn (PollDevice $job) => $job->device_id == $unworked->device_id);
 });
 
-test('everything is queued when no worker has reported', function () {
+test('everything is queued when no worker has reported', function (): void {
     Queue::fake();
     workedQueues([]);
     $device = Device::factory()->create(['status' => 1, 'poller_group' => 2, 'last_discovered' => now()->subMinute(), 'last_polled' => now()->subMinutes(10)]);
@@ -80,11 +77,11 @@ test('everything is queued when no worker has reported', function () {
     Queue::assertPushedOn('poll-2', PollDevice::class, fn (PollDevice $job) => $job->device_id == $device->device_id);
 });
 
-test('scheduled on scheduler queue', function () {
+test('scheduled on scheduler queue', function (): void {
     expect((new DispatchPollingWork)->queue)->toBe('scheduler');
 });
 
-test('discovery due before the next dispatch is delayed', function () {
+test('discovery due before the next dispatch is delayed', function (): void {
     Queue::fake();
     $device = Device::factory()->create([
         'status' => 1,
@@ -98,7 +95,7 @@ test('discovery due before the next dispatch is delayed', function () {
     Queue::assertPushed(DiscoverDevice::class, fn (DiscoverDevice $job) => $job->device_id == $device->device_id && $job->delay >= 4 && $job->delay <= 6);
 });
 
-test('poll dispatch', function (int $status, bool $discovered, ?int $polled, bool $expected) {
+test('poll dispatch', function (int $status, bool $discovered, ?int $polled, bool $expected): void {
     Queue::fake();
     $device = Device::factory()->create([
         'status' => $status,
@@ -132,7 +129,7 @@ dataset('pollProvider', function () {
     ];
 });
 
-test('poll due before the next dispatch is delayed', function () {
+test('poll due before the next dispatch is delayed', function (): void {
     Queue::fake();
     $device = Device::factory()->create([
         'status' => 1,
@@ -152,5 +149,5 @@ test('poll due before the next dispatch is delayed', function () {
  */
 function workedQueues(array $queues): void
 {
-    $this->mock(WorkedQueues::class, fn ($mock) => $mock->shouldReceive('worked')->andReturn($queues));
+    test()->mock(WorkedQueues::class, fn ($mock) => $mock->shouldReceive('worked')->andReturn($queues));
 }

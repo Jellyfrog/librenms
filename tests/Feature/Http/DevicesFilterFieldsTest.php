@@ -5,18 +5,17 @@ use App\Facades\LibrenmsConfig;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 
-
-test('filters follow permissions', function () {
+test('filters follow permissions', function (): void {
     LibrenmsConfig::set('distributed_poller', true);
     Role::findOrCreate('admin');
 
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
-    expect(array_values(array_intersect(filterKeys($admin), ['location_id', 'groups.id', 'poller_group'])))->toBe(['location_id', 'groups.id', 'poller_group']);
+    expect(array_values(array_intersect(deviceFilterKeys($admin), ['location_id', 'groups.id', 'poller_group'])))->toBe(['location_id', 'groups.id', 'poller_group']);
 
     // no permissions, only filters on the devices themselves
     $user = User::factory()->create(['enabled' => 1]);
-    $keys = filterKeys($user);
+    $keys = deviceFilterKeys($user);
     expect($keys)->not->toContain('groups.id');
     expect($keys)->not->toContain('poller_group');
     expect($keys)->toContain('type');
@@ -26,9 +25,9 @@ test('filters follow permissions', function () {
 /**
  * @return string[]
  */
-function filterKeys(User $user): array
+function deviceFilterKeys(User $user): array
 {
-    $response = $this->actingAs($user)->get(route('devices'));
+    $response = test()->actingAs($user)->get(route('devices'));
     $response->assertOk();
 
     return array_column($response->viewData('filterFields'), 'key');

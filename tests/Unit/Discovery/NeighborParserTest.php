@@ -22,16 +22,15 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-uses(\LibreNMS\Tests\TestCase::class);
 use LibreNMS\Discovery\Neighbors\NeighborParser;
 use LibreNMS\Enum\LldpPortIdSubtype;
-use PHPUnit\Framework\Attributes\DataProvider;
 
+uses(\LibreNMS\Tests\TestCase::class);
 
 /**
  * @return array<string, array{entry: array<string, mixed>, expected: array<string, mixed>, managementIp?: string}>
  */
-dataset('lldpEntryProvider', function () {
+dataset('lldpEntryProvider', function (): array {
     return [
         'interface name port id' => [
             'entry' => ['lldpRemPortIdSubtype' => 5, 'lldpRemPortId' => 'Gi1/0/1', 'lldpRemPortDesc' => 'uplink', 'lldpRemSysName' => 'core1', 'lldpRemSysDesc' => 'Cisco IOS'],
@@ -137,7 +136,7 @@ dataset('lldpEntryProvider', function () {
     ];
 });
 
-test('from lldp rem entry', function (array $entry, array $expected, ?string $managementIp = null) {
+test('from lldp rem entry', function (array $entry, array $expected, ?string $managementIp = null): void {
     $neighbor = NeighborParser::fromLldpRemEntry($entry, 42, $managementIp);
 
     expect($neighbor->protocol)->toBe('lldp');
@@ -151,7 +150,7 @@ test('from lldp rem entry', function (array $entry, array $expected, ?string $ma
 /**
  * @return array<string, array{0: string|null, 1: string|null}>
  */
-dataset('macProvider', function () {
+dataset('macProvider', function (): array {
     return [
         'valid mac' => ['AC A3 1E C3 4B E6', 'aca31ec34be6'],
         'all zero mac' => ['00 00 00 00 00 00', null],
@@ -161,6 +160,6 @@ dataset('macProvider', function () {
     ];
 });
 
-test('parse mac', function (?string $value, ?string $expected) {
+test('parse mac', function (?string $value, ?string $expected): void {
     expect(NeighborParser::parseMac($value))->toBe($expected);
 })->with('macProvider');

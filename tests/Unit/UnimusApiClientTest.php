@@ -21,7 +21,6 @@
  * @copyright  2026 LibreNMS
  */
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\ApiClients\Unimus;
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
@@ -29,14 +28,16 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-beforeEach(function () {
+uses(LibreNMS\Tests\TestCase::class);
+
+beforeEach(function (): void {
     LibrenmsConfig::set('unimus.enabled', true);
     LibrenmsConfig::set('unimus.url', 'http://unimus:8085');
     LibrenmsConfig::set('unimus.api_version', 'v2');
     LibrenmsConfig::set('unimus.token', 'test-token');
 });
 
-function makeDevice(): Device
+function unimusDevice(): Device
 {
     $device = new Device(['hostname' => 'router.example.com']);
     $device->device_id = 42;
@@ -44,38 +45,38 @@ function makeDevice(): Device
     return $device;
 }
 
-test('find device id returns id on first candidate', function () {
+test('find device id returns id on first candidate', function (): void {
     Http::fake([
         'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
     ]);
 
     $client = new Unimus();
-    expect($client->findDeviceId(makeDevice()))->toBe(7);
+    expect($client->findDeviceId(unimusDevice()))->toBe(7);
 
     Http::assertSentCount(1);
     Http::assertSent(fn ($request) => str_contains((string) $request->url(), 'findByAddress/router.example.com')
         && $request->hasHeader('Authorization', 'Bearer test-token'));
 });
 
-test('find device id falls through candidates on404', function () {
+test('find device id falls through candidates on404', function (): void {
     Http::fake([
         'unimus:8085/api/v2/devices/findByAddress/router.example.com' => Http::response(['code' => 404], 404),
         'unimus:8085/api/v2/devices/findByAddress/router' => Http::response(['data' => ['id' => 9]], 200),
     ]);
 
     $client = new Unimus();
-    expect($client->findDeviceId(makeDevice()))->toBe(9);
+    expect($client->findDeviceId(unimusDevice()))->toBe(9);
     Http::assertSentCount(2);
 });
 
-test('find device id returns null when all candidates404', function () {
+test('find device id returns null when all candidates404', function (): void {
     Http::fake(['*' => Http::response(['code' => 404], 404)]);
 
     $client = new Unimus();
-    expect($client->findDeviceId(makeDevice()))->toBeNull();
+    expect($client->findDeviceId(unimusDevice()))->toBeNull();
 });
 
-test('find device id returns null on connection exception', function () {
+test('find device id returns null on connection exception', function (): void {
     Http::fake(function (): void {
         throw new ConnectionException('cURL error 7: Failed to connect');
     });
@@ -85,25 +86,25 @@ test('find device id returns null on connection exception', function () {
         ->withArgs(fn ($msg) => str_contains((string) $msg, 'Unimus is not reachable'));
 
     $client = new Unimus();
-    expect($client->findDeviceId(makeDevice()))->toBeNull();
+    expect($client->findDeviceId(unimusDevice()))->toBeNull();
 });
 
-test('find device id stops on auth error', function () {
+test('find device id stops on auth error', function (): void {
     Http::fake(['*' => Http::response(['code' => 401], 401)]);
 
     $client = new Unimus();
-    expect($client->findDeviceId(makeDevice()))->toBeNull();
+    expect($client->findDeviceId(unimusDevice()))->toBeNull();
     expect($client->lastError())->toBe('error');
     Http::assertSentCount(1);
 });
 
-test('client sends nothing when disabled', function () {
+test('client sends nothing when disabled', function (): void {
     LibrenmsConfig::set('unimus.enabled', false);
 
     Http::fake(['*' => Http::response(['data' => ['id' => 7]], 200)]);
 
     $client = new Unimus();
-    expect($client->findDeviceId(makeDevice()))->toBeNull();
+    expect($client->findDeviceId(unimusDevice()))->toBeNull();
     expect($client->getLatestBackup(7))->toBeNull();
     expect($client->getBackups(7))->toBeNull();
     expect($client->getDiff(1, 2))->toBeNull();
@@ -111,7 +112,7 @@ test('client sends nothing when disabled', function () {
     Http::assertNothingSent();
 });
 
-test('get latest backup decodes content', function () {
+test('get latest backup decodes content', function (): void {
     Http::fake([
         'unimus:8085/api/v2/devices/7/backups/latest' => Http::response([
             'data' => [
@@ -133,7 +134,7 @@ test('get latest backup decodes content', function () {
     expect($backup['content'])->toBe("hostname router\ninterface eth0");
 });
 
-test('get latest backup returns null content for binary', function () {
+test('get latest backup returns null content for binary', function (): void {
     Http::fake([
         '*' => Http::response([
             'data' => [
@@ -152,7 +153,7 @@ test('get latest backup returns null content for binary', function () {
     expect($backup['content'])->toBeNull();
 });
 
-test('get backups strips content and returns paginator', function () {
+test('get backups strips content and returns paginator', function (): void {
     Http::fake([
         'unimus:8085/api/v2/devices/7/backups*' => Http::response([
             'data' => [
@@ -177,7 +178,7 @@ test('get backups strips content and returns paginator', function () {
     expect($client->getBackupContent(7, 999))->toBeNull('unknown backup id should return null');
 });
 
-test('get diff normalizes groups', function () {
+test('get diff normalizes groups', function (): void {
     // response shape verified against a live Unimus 2.x instance
     Http::fake([
         'unimus:8085/api/v2/backups/diff*' => Http::response([

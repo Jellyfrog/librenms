@@ -4,7 +4,7 @@ uses(\LibreNMS\Tests\InMemoryDbTestCase::class);
 use App\Models\User;
 use LibreNMS\Alert\Transport\Browserpush;
 
-test('config template lists users with duplicate realnames', function () {
+test('config template lists users with duplicate realnames', function (): void {
     $admin = User::factory()->create(['username' => 'richard', 'realname' => 'Richard Smith']);
     $readonly = User::factory()->create(['username' => 'richard-ro', 'realname' => 'Richard Smith']);
     $solo = User::factory()->create(['username' => 'solo', 'realname' => 'Solo User']);
@@ -23,7 +23,7 @@ test('config template lists users with duplicate realnames', function () {
     expect($options['plainname'])->toBe($noRealname->user_id);
 });
 
-test('config template keeps numeric username label', function () {
+test('config template keeps numeric username label', function (): void {
     $numeric = User::factory()->create(['username' => '1001', 'realname' => '']);
 
     $options = Browserpush::configTemplate()['config'][0]['options'];

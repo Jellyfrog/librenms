@@ -7,7 +7,7 @@ use LibreNMS\Authentication\LegacyAuth;
 
 uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-test('mysql authentication still displays account', function () {
+test('mysql authentication still displays account', function (): void {
     LibrenmsConfig::set('auth_mechanism', 'mysql');
     LegacyAuth::reset();
     $user = User::factory()->create(['username' => 'alice', 'auth_type' => 'mysql', 'enabled' => 1]);
@@ -21,7 +21,7 @@ test('mysql authentication still displays account', function () {
         ->assertExitCode(0);
 });
 
-test('mysql authentication failure returns failure exit code', function () {
+test('mysql authentication failure returns failure exit code', function (): void {
     LibrenmsConfig::set('auth_mechanism', 'mysql');
     LegacyAuth::reset();
     User::factory()->create(['username' => 'alice', 'auth_type' => 'mysql', 'enabled' => 1]);
@@ -34,14 +34,14 @@ test('mysql authentication failure returns failure exit code', function () {
         ->assertExitCode(1);
 });
 
-test('empty password fails without authenticating', function () {
+test('empty password fails without authenticating', function (): void {
     $this->artisan('auth:test', ['username' => 'alice'])
         ->expectsQuestion('Password', '')
         ->expectsOutput('A password is required.')
         ->assertExitCode(1);
 });
 
-test('noninteractive execution fails without prompting', function () {
+test('noninteractive execution fails without prompting', function (): void {
     $this->artisan('auth:test', ['username' => 'alice', '--no-interaction' => true])
         ->expectsOutput('An interactive terminal is required to enter the password.')
         ->assertExitCode(1);

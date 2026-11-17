@@ -21,11 +21,9 @@
  * @link       https://www.librenms.org
  */
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 use LibreNMS\Enum\Severity;
 
-
-test('ups trap alarm entry added untranslated', function () {
+test('ups trap alarm entry added untranslated', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[10.0.0.1]:162
@@ -43,7 +41,7 @@ TRAP,
     );
 });
 
-test('ups trap alarm entry added translated', function () {
+test('ups trap alarm entry added translated', function (): void {
     $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[10.0.0.1]:162

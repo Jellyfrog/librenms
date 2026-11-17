@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Console\Commands\DevSimulate;
 use App\Models\Device;
 use Illuminate\Console\OutputStyle;
@@ -8,10 +7,9 @@ use LibreNMS\Util\Snmpsim;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-test('added device can be polled with the current community and port', function () {
+test('added device can be polled with the current community and port', function (): void {
     addDevice('test-community', new Snmpsim(port: 1161));
     $config = Device::where('hostname', 'snmpsim-test-community')->firstOrFail()->polling()->snmp();
     expect($config->community)->toBe('test-community');
@@ -32,7 +30,7 @@ test('added device can be polled with the current community and port', function 
 function addDevice(string $community, Snmpsim $snmpsim): void
 {
     $command = new DevSimulate;
-    $command->setLaravel($this->app);
+    $command->setLaravel(app());
     $input = new ArrayInput([], $command->getDefinition());
     $command->setInput($input);
     $command->setOutput(new OutputStyle($input, new BufferedOutput));

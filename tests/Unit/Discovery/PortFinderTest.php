@@ -22,25 +22,21 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\Port;
 use Illuminate\Support\Collection;
 use LibreNMS\Discovery\Neighbors\PortFinder;
-use PHPUnit\Framework\Attributes\DataProvider;
 
+uses(LibreNMS\Tests\TestCase::class);
 
-/**
- * ifName => attributes, ifDescr defaults to the ifName
+/*
+ * Local port mapping for LLDP, resolved against the ports in portFinder().
+ *
+ * To add a case, add an entry to the lldpLocalPortProvider dataset:
+ *   'portNum' => lldpRemLocalPortNum
+ *   'entry'   => lldpLocPortTable row for that port number
+ *   'bridge'  => dot1dBasePortIfIndex (bridge port => ifIndex)
+ *   'port'    => expected ifName, or null if no port should be found
  */
-private const array PORTS = [
-    'Gi1/0/1' => ['ifIndex' => 10101, 'ifDescr' => 'GigabitEthernet1/0/1'],
-    'Gi1/0/2' => ['ifIndex' => 10102, 'ifDescr' => 'GigabitEthernet1/0/2', 'ifAlias' => 'uplink'],
-    'Gi1/0/3' => ['ifIndex' => 10103, 'ifDescr' => 'GigabitEthernet1/0/3'],
-    'port 1' => ['ifIndex' => 1, 'ifDescr' => 'Ethernet Interface'],
-    'port 2' => ['ifIndex' => 2, 'ifDescr' => 'Ethernet Interface'],
-    'dup-a' => ['ifIndex' => 50],
-    'dup-b' => ['ifIndex' => 50],
-];
 
 /**
  * @return array<string, array{portNum: int, entry: array<string, mixed>, bridge: array<int, int>, port: ?string}>
@@ -134,11 +130,11 @@ dataset('lldpLocalPortProvider', function () {
     ];
 });
 
-test('find lldp local port', function (int $portNum, array $entry, array $bridge, ?string $port) {
+test('find lldp local port', function (int $portNum, array $entry, array $bridge, ?string $port): void {
     expect(portFinder()->findLldpLocalPort($portNum, $entry, $bridge)?->ifName)->toBe($port);
 })->with('lldpLocalPortProvider');
 
-test('by if index', function () {
+test('by if index', function (): void {
     $finder = portFinder();
 
     expect($finder->byIfIndex(10101)?->ifName)->toBe('Gi1/0/1');
@@ -152,9 +148,20 @@ test('by if index', function () {
 
 function portFinder(): PortFinder
 {
+    // ifName => attributes, ifDescr defaults to the ifName
+    $portDefinitions = [
+        'Gi1/0/1' => ['ifIndex' => 10101, 'ifDescr' => 'GigabitEthernet1/0/1'],
+        'Gi1/0/2' => ['ifIndex' => 10102, 'ifDescr' => 'GigabitEthernet1/0/2', 'ifAlias' => 'uplink'],
+        'Gi1/0/3' => ['ifIndex' => 10103, 'ifDescr' => 'GigabitEthernet1/0/3'],
+        'port 1' => ['ifIndex' => 1, 'ifDescr' => 'Ethernet Interface'],
+        'port 2' => ['ifIndex' => 2, 'ifDescr' => 'Ethernet Interface'],
+        'dup-a' => ['ifIndex' => 50],
+        'dup-b' => ['ifIndex' => 50],
+    ];
+
     $ports = new Collection;
     $port_id = 1;
-    foreach (self::PORTS as $ifName => $attributes) {
+    foreach ($portDefinitions as $ifName => $attributes) {
         $ports->push((new Port)->forceFill([
             'port_id' => $port_id++,
             'device_id' => 1,

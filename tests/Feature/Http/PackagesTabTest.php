@@ -1,20 +1,18 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\Device;
 use App\Models\Package;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 
+uses(LibreNMS\Tests\TestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-beforeEach(function () {
+beforeEach(function (): void {
     Role::findOrCreate('admin');
     Role::findOrCreate('user');
 });
 
-function admin(): User
+function packagesTabAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -22,7 +20,7 @@ function admin(): User
     return $admin;
 }
 
-test('authorized user can render packages tab', function () {
+test('authorized user can render packages tab', function (): void {
     $device = Device::factory()->create();
     Package::factory()->for($device)->create([
         'name' => 'nginx-core',
@@ -33,7 +31,7 @@ test('authorized user can render packages tab', function () {
         'size' => 1048576,
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(packagesTabAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'packages']))
         ->assertOk()
         ->assertSee('nginx-core')
@@ -43,7 +41,7 @@ test('authorized user can render packages tab', function () {
         ->assertSee(\LibreNMS\Util\Number::formatSi(1048576, 2, 0, ''));
 });
 
-test('user without access gets forbidden', function () {
+test('user without access gets forbidden', function (): void {
     $device = Device::factory()->create();
     Package::factory()->for($device)->create();
 

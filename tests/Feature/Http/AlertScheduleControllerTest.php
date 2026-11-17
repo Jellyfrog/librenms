@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\AlertSchedule;
 use App\Models\Device;
 use App\Models\DeviceGroup;
@@ -12,20 +11,19 @@ use Illuminate\Support\Facades\DB;
 use LibreNMS\Enum\MaintenanceBehavior;
 use Spatie\Permission\Models\Role;
 
+uses(LibreNMS\Tests\TestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-beforeEach(function () {
+beforeEach(function (): void {
     Role::findOrCreate('admin');
     Role::findOrCreate('user');
 });
 
-afterEach(function () {
+afterEach(function (): void {
     Carbon::setTestNow();
 
 });
 
-function admin(): User
+function alertScheduleAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -33,7 +31,7 @@ function admin(): User
     return $admin;
 }
 
-function user(): User
+function alertScheduleUser(): User
 {
     $user = User::factory()->create(['enabled' => 1]);
     $user->assignRole('user');
@@ -41,11 +39,11 @@ function user(): User
     return $user;
 }
 
-test('admin can start device maintenance', function () {
+test('admin can start device maintenance', function (): void {
     Carbon::setTestNow('2026-10-02 12:00:00');
     $device = Device::factory()->create();
 
-    $response = $this->actingAs(admin())
+    $response = $this->actingAs(alertScheduleAdmin())
         ->postJson(route('alert-schedule.store'), [
             'title' => 'Device maintenance',
             'notes' => 'Swapping PSU',
@@ -69,12 +67,12 @@ test('admin can start device maintenance', function () {
     expect($device->alertSchedules()->isActive()->exists())->toBeTrue();
 });
 
-test('store maps devices groups and locations', function () {
+test('store maps devices groups and locations', function (): void {
     $device = Device::factory()->create();
     $group = DeviceGroup::factory()->create();
     $location = Location::factory()->create();
 
-    $response = $this->actingAs(admin())
+    $response = $this->actingAs(alertScheduleAdmin())
         ->postJson(route('alert-schedule.store'), [
             'title' => 'Mixed',
             'notes' => '',
@@ -91,10 +89,10 @@ test('store maps devices groups and locations', function () {
     expect($schedule->locations()->pluck('locations.id')->all())->toEqual([$location->id]);
 });
 
-test('store recurring schedule', function () {
+test('store recurring schedule', function (): void {
     $device = Device::factory()->create();
 
-    $response = $this->actingAs(admin())
+    $response = $this->actingAs(alertScheduleAdmin())
         ->postJson(route('alert-schedule.store'), [
             'title' => 'Nightly',
             'behavior' => MaintenanceBehavior::SkipAlerts->value,
@@ -116,9 +114,9 @@ test('store recurring schedule', function () {
     expect($schedule->recurring_day)->toBe(['Mo', 'We', 'Fr']);
 });
 
-test('store appends note to devices when preference enabled', function () {
+test('store appends note to devices when preference enabled', function (): void {
     Carbon::setTestNow('2026-10-02 12:00:00');
-    $admin = admin();
+    $admin = alertScheduleAdmin();
     UserPref::setPref($admin, 'add_schedule_note_to_device', 1);
     $device = Device::factory()->create(['notes' => 'existing']);
 
@@ -136,9 +134,9 @@ test('store appends note to devices when preference enabled', function () {
     expect($device->fresh()->notes)->toBe("existing\n2026-10-02 12:00 Alerts delayed: Upgrading firmware");
 });
 
-test('store validates input', function () {
+test('store validates input', function (): void {
     $schedule_count = AlertSchedule::count();
-    $this->actingAs(admin())
+    $this->actingAs(alertScheduleAdmin())
         ->postJson(route('alert-schedule.store'), [
             'behavior' => 9,
             'start' => 'not a date',
@@ -147,7 +145,7 @@ test('store validates input', function () {
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['title', 'behavior', 'start', 'end', 'maps.0']);
 
-    $this->actingAs(admin())
+    $this->actingAs(alertScheduleAdmin())
         ->postJson(route('alert-schedule.store'), [
             'title' => 'Recurring',
             'behavior' => MaintenanceBehavior::SkipAlerts->value,
@@ -161,11 +159,11 @@ test('store validates input', function () {
     expect(AlertSchedule::count())->toBe($schedule_count);
 });
 
-test('user cannot start maintenance', function () {
+test('user cannot start maintenance', function (): void {
     $schedule_count = AlertSchedule::count();
     $device = Device::factory()->create();
 
-    $this->actingAs(user())
+    $this->actingAs(alertScheduleUser())
         ->postJson(route('alert-schedule.store'), [
             'title' => 'Nope',
             'behavior' => MaintenanceBehavior::SkipAlerts->value,
@@ -178,7 +176,7 @@ test('user cannot start maintenance', function () {
     expect(AlertSchedule::count())->toBe($schedule_count);
 });
 
-test('admin can end maintenance', function () {
+test('admin can end maintenance', function (): void {
     Carbon::setTestNow('2026-10-02 12:00:00');
     $device = Device::factory()->create();
     $schedule = AlertSchedule::factory()->create([
@@ -188,7 +186,7 @@ test('admin can end maintenance', function () {
     $schedule->devices()->attach($device);
     expect($device->alertSchedules()->isActive()->exists())->toBeTrue();
 
-    $this->actingAs(admin())
+    $this->actingAs(alertScheduleAdmin())
         ->postJson(route('alert-schedule.end', $schedule))
         ->assertOk()
         ->assertJson(['message' => 'Maintenance has been ended']);
@@ -196,15 +194,15 @@ test('admin can end maintenance', function () {
     expect($schedule->fresh()->end->equalTo(Carbon::now()))->toBeTrue();
 });
 
-test('user cannot end maintenance', function () {
+test('user cannot end maintenance', function (): void {
     $schedule = AlertSchedule::factory()->create();
 
-    $this->actingAs(user())
+    $this->actingAs(alertScheduleUser())
         ->postJson(route('alert-schedule.end', $schedule))
         ->assertForbidden();
 });
 
-test('show returns schedule with targets', function () {
+test('show returns schedule with targets', function (): void {
     $device = Device::factory()->create();
     $group = DeviceGroup::factory()->create(['name' => 'Core']);
     $location = Location::factory()->create(['location' => 'Rack 1']);
@@ -219,7 +217,7 @@ test('show returns schedule with targets', function () {
     $schedule->deviceGroups()->attach($group);
     $schedule->locations()->attach($location);
 
-    $this->actingAs(admin())
+    $this->actingAs(alertScheduleAdmin())
         ->getJson(route('alert-schedule.show', $schedule))
         ->assertOk()
         ->assertJson([
@@ -236,15 +234,15 @@ test('show returns schedule with targets', function () {
         ]);
 });
 
-test('user cannot show schedule', function () {
+test('user cannot show schedule', function (): void {
     $schedule = AlertSchedule::factory()->create();
 
-    $this->actingAs(user())
+    $this->actingAs(alertScheduleUser())
         ->getJson(route('alert-schedule.show', $schedule))
         ->assertForbidden();
 });
 
-test('admin can update schedule', function () {
+test('admin can update schedule', function (): void {
     $schedule_count = AlertSchedule::count();
     $old_device = Device::factory()->create();
     $new_device = Device::factory()->create();
@@ -255,7 +253,7 @@ test('admin can update schedule', function () {
     ]);
     $schedule->devices()->attach($old_device);
 
-    $this->actingAs(admin())
+    $this->actingAs(alertScheduleAdmin())
         ->putJson(route('alert-schedule.update', $schedule), [
             'title' => 'New',
             'notes' => 'changed',
@@ -278,10 +276,10 @@ test('admin can update schedule', function () {
     // updated in place, not duplicated
 });
 
-test('user cannot update schedule', function () {
+test('user cannot update schedule', function (): void {
     $schedule = AlertSchedule::factory()->create(['title' => 'Old']);
 
-    $this->actingAs(user())
+    $this->actingAs(alertScheduleUser())
         ->putJson(route('alert-schedule.update', $schedule), [
             'title' => 'New',
             'behavior' => MaintenanceBehavior::SkipAlerts->value,
@@ -294,12 +292,12 @@ test('user cannot update schedule', function () {
     expect($schedule->fresh()->title)->toBe('Old');
 });
 
-test('admin can delete schedule', function () {
+test('admin can delete schedule', function (): void {
     $device = Device::factory()->create();
     $schedule = AlertSchedule::factory()->create();
     $schedule->devices()->attach($device);
 
-    $this->actingAs(admin())
+    $this->actingAs(alertScheduleAdmin())
         ->deleteJson(route('alert-schedule.destroy', $schedule))
         ->assertOk();
 
@@ -307,20 +305,20 @@ test('admin can delete schedule', function () {
     expect(DB::table('alert_schedulables')->where('schedule_id', $schedule->schedule_id)->count())->toBe(0);
 });
 
-test('user cannot delete schedule', function () {
+test('user cannot delete schedule', function (): void {
     $schedule = AlertSchedule::factory()->create();
 
-    $this->actingAs(user())
+    $this->actingAs(alertScheduleUser())
         ->deleteJson(route('alert-schedule.destroy', $schedule))
         ->assertForbidden();
 
     expect($schedule->fresh())->not->toBeNull();
 });
 
-test('device edit page renders maintenance button', function () {
+test('device edit page renders maintenance button', function (): void {
     $device = Device::factory()->create();
 
-    $this->actingAs(admin())
+    $this->actingAs(alertScheduleAdmin())
         ->get(route('device.edit', $device))
         ->assertOk()
         ->assertSee('id="maintenance"', false)
@@ -328,13 +326,13 @@ test('device edit page renders maintenance button', function () {
         ->assertDontSee('<maintenance-mode', false);
 });
 
-test('table shows behavior label', function () {
+test('table shows behavior label', function (): void {
     AlertSchedule::factory()->create([
         'title' => 'Muted window',
         'behavior' => MaintenanceBehavior::MuteAlerts,
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(alertScheduleAdmin())
         ->postJson('/ajax/table/alert-schedule', ['searchPhrase' => 'Muted window'])
         ->assertOk()
         ->assertJsonPath('rows.0.title', 'Muted window')

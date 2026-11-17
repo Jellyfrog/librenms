@@ -1,12 +1,15 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
+/*
+ * Draws images with rrdtool from real rrd files
+ */
+
 use App\Data\Graphing\DataSeries;
-use \App\Graphs\Device\DeviceGraph;
 use App\Data\Graphing\GraphParameters;
 use App\Data\Graphing\SeriesStyle;
 use App\Facades\LibrenmsConfig;
 use App\Facades\Rrd;
+use App\Graphs\Device\DeviceGraph;
 use App\Graphs\GraphFactory;
 use App\Models\Device;
 use App\Models\Processor;
@@ -17,10 +20,11 @@ use LibreNMS\RRD\Backend\RrdBackendInterface;
 use LibreNMS\RRD\RrdDefinition;
 use LibreNMS\RRD\RrdPath;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(LibreNMS\Tests\TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-private const string PNG_HEADER = "\x89PNG";
-beforeEach(function () {
+const RRD_GRAPH_PNG_HEADER = "\x89PNG";
+
+beforeEach(function (): void {
     if (! is_executable((string) LibrenmsConfig::get('rrdtool', '/usr/bin/rrdtool'))) {
         $this->markTestSkipped('rrdtool is not installed');
     }
@@ -36,32 +40,31 @@ beforeEach(function () {
     app()->forgetInstance(RrdBackendInterface::class);
 });
 
-afterEach(function () {
+afterEach(function (): void {
     if (isset($this->rrdDir)) {
         File::deleteDirectory($this->rrdDir);
     }
-
 });
 
-test('it draws a graph class', function () {
+test('it draws a graph class', function (): void {
     $device = Device::factory()->create();
     createRrd($device, 'netstats-ip.rrd', ['ipForwDatagrams', 'ipInDelivers', 'ipInReceives', 'ipOutRequests', 'ipInDiscards', 'ipOutDiscards', 'ipOutNoRoutes']);
 
-    $image = graph('device_netstat_ip', $device)->render();
+    $image = renderGraph('device_netstat_ip', $device)->render();
 
-    expect($image->data)->toStartWith(self::PNG_HEADER);
+    expect($image->data)->toStartWith(RRD_GRAPH_PNG_HEADER);
 });
 
-test('it draws a legacy graph', function () {
+test('it draws a legacy graph', function (): void {
     $device = Device::factory()->create();
     createRrd($device, 'ib_dns_performance.rrd', ['PerfAA', 'PerfnonAA']);
 
-    $image = graph('device_ib_dns_performance', $device)->render();
+    $image = renderGraph('device_ib_dns_performance', $device)->render();
 
-    expect($image->data)->toStartWith(self::PNG_HEADER);
+    expect($image->data)->toStartWith(RRD_GRAPH_PNG_HEADER);
 });
 
-test('it draws stacked series with the previous period', function () {
+test('it draws stacked series with the previous period', function (): void {
     $device = Device::factory()->create(['os' => 'linux']);
     LibrenmsConfig::set('os.linux.processor_stacked', true);
     foreach ([0, 1] as $index) {
@@ -71,51 +74,51 @@ test('it draws stacked series with the previous period', function () {
 
     $graph = (new GraphFactory)->graphFor(new GraphParameters(['type' => 'device_processor', 'device' => $device->device_id, 'graph_type' => 'png', 'previous' => 'yes']));
 
-    expect($graph->render()->data)->toStartWith(self::PNG_HEADER);
+    expect($graph->render()->data)->toStartWith(RRD_GRAPH_PNG_HEADER);
 });
 
-test('it draws lines with a scaled series', function () {
+test('it draws lines with a scaled series', function (): void {
     $device = Device::factory()->create();
     createRrd($device, 'traffic.rrd', ['bytes']);
 
     $graph = new class(new GraphParameters(['type' => 'device_traffic', 'device' => $device->device_id, 'graph_type' => 'png'])) extends DeviceGraph
     {
-        function getSeries(): array
+        public function getSeries(): array
         {
             return ['bits' => new DataSeries($this->metric('traffic'), 'bytes', 'Traffic', 'bps', 8, new SeriesStyle(fill: true, invert: true))];
         }
     };
 
-    expect($graph->render()->data)->toStartWith(self::PNG_HEADER);
+    expect($graph->render()->data)->toStartWith(RRD_GRAPH_PNG_HEADER);
 });
 
-test('successful legacy draws do not check for rrd files', function () {
+test('successful legacy draws do not check for rrd files', function (): void {
     $device = Device::factory()->create();
     createRrd($device, 'ib_dns_performance.rrd', ['PerfAA', 'PerfnonAA']);
     Rrd::partialMock()->shouldReceive('checkRrdExists')->never();
 
-    $image = graph('device_ib_dns_performance', $device)->render();
+    $image = renderGraph('device_ib_dns_performance', $device)->render();
 
-    expect($image->data)->toStartWith(self::PNG_HEADER);
+    expect($image->data)->toStartWith(RRD_GRAPH_PNG_HEADER);
 });
 
-test('series graphs without rrd files are reported as no data', function () {
+test('series graphs without rrd files are reported as no data', function (): void {
     $device = Device::factory()->create();
 
     $this->expectException(NoGraphData::class);
 
-    graph('device_netstat_ip', $device)->render();
+    renderGraph('device_netstat_ip', $device)->render();
 });
 
-test('missing rrd files are reported as no data', function () {
+test('missing rrd files are reported as no data', function (): void {
     $device = Device::factory()->create();
 
     $this->expectException(NoGraphData::class);
 
-    graph('device_ib_dns_performance', $device)->render();
+    renderGraph('device_ib_dns_performance', $device)->render();
 });
 
-function graph(string $type, Device $device): GraphInterface
+function renderGraph(string $type, Device $device): GraphInterface
 {
     return (new GraphFactory)->graphFor(new GraphParameters(['type' => $type, 'device' => $device->device_id, 'graph_type' => 'png']));
 }
@@ -130,6 +133,6 @@ function createRrd(Device $device, string $filename, array $datasets): void
         $definition->addDataset($dataset, 'GAUGE', 0);
     }
 
-    File::ensureDirectoryExists("$this->rrdDir/$device->hostname");
+    File::ensureDirectoryExists(test()->rrdDir . "/$device->hostname");
     app(RrdBackendInterface::class)->create(RrdPath::make($device->hostname, $filename), $definition);
 }

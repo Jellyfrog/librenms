@@ -35,7 +35,7 @@ use LibreNMS\Interfaces\Data\DataStorageInterface;
 use LibreNMS\Modules\Ipmi;
 use LibreNMS\OS;
 
-private const string SENSOR_OUTPUT = <<<'EOT'
+const IPMI_SENSOR_OUTPUT = <<<'EOT'
 FAN1             | 3600.000   | RPM        | ok    | 300.000   | 500.000   | 700.000   | 25300.000 | 25400.000 | 25500.000
 CPU Temp         | 45.000     | degrees C  | ok    | na        | na        | na        | 85.000    | 90.000    | 95.000
 Chassis Intru    | 0x0        | discrete   | 0x0080| na        | na        | na        | na        | na        | na
@@ -43,13 +43,13 @@ Chassis Intru    | 0x0        | discrete   | 0x0080| na        | na        | na 
 VCORE            | 1.310      | Volts      | ok    | na        | 0.680     | 0.700     | 1.450     | 1.520     | na
 EOT;
 
-private const string SDR_OUTPUT = <<<'EOT'
+const IPMI_SDR_OUTPUT = <<<'EOT'
 CPU Temp,47,degrees C,ok,
 FAN1,E1h,RPM,ok,
 PS Status,0x01,discrete,ok,
 EOT;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->device = Device::factory()->create(['os' => 'linux']);
     $this->ipmiMethod = DevicePollingMethod::factory()->create([
         'device_id' => $this->device->device_id,
@@ -61,13 +61,13 @@ beforeEach(function () {
     DeviceCache::setPrimary($this->device->device_id);
 
     Process::fake(fn (PendingProcess $process) => in_array('sdr', (array) $process->command)
-        ? self::SDR_OUTPUT
-        : self::SENSOR_OUTPUT);
+        ? IPMI_SDR_OUTPUT
+        : IPMI_SENSOR_OUTPUT);
 });
 
-test('discover and poll', function () {
+test('discover and poll', function (): void {
     $module = new Ipmi;
-    $module->discover(os());
+    $module->discover(ipmiOs());
 
     Process::assertRan(fn (PendingProcess $process) => ($process->environment['LC_ALL'] ?? null) === 'C');
 
@@ -92,18 +92,18 @@ test('discover and poll', function () {
     $datastore->shouldReceive('put')->once()->withArgs(fn ($device, $measurement, $tags, $fields) => $measurement == 'ipmi'
         && $tags['rrd_name'] == ['sensor', 'fanspeed', 'ipmi', 'FAN1'] && $fields == ['sensor' => 225]);
 
-    $module->poll(os(), $datastore);
+    $module->poll(ipmiOs(), $datastore);
 
     expect($this->device->sensors()->orderBy('sensor_index')->pluck('sensor_current')->all())->toEqual([47, 225, 1.31]);
 });
 
-test('port and timeout are left to ipmitool unless set', function () {
-    (new Ipmi)->discover(os());
+test('port and timeout are left to ipmitool unless set', function (): void {
+    (new Ipmi)->discover(ipmiOs());
 
     Process::assertRan(fn (PendingProcess $process) => ! in_array('-p', (array) $process->command) && ! in_array('-N', (array) $process->command));
 
     $this->ipmiMethod->update(['settings' => ['hostname' => 'bmc.example.com', 'type' => 'lanplus', 'port' => 6230, 'timeout' => 5]]);
-    (new Ipmi)->discover(os());
+    (new Ipmi)->discover(ipmiOs());
 
     Process::assertRan(function (PendingProcess $process): bool {
         $command = implode(' ', (array) $process->command);
@@ -112,9 +112,9 @@ test('port and timeout are left to ipmitool unless set', function () {
     });
 });
 
-test('rediscovery does not update unchanged sensors', function () {
+test('rediscovery does not update unchanged sensors', function (): void {
     $module = new Ipmi;
-    $module->discover(os());
+    $module->discover(ipmiOs());
     $sensor_ids = $this->device->sensors()->orderBy('sensor_index')->pluck('sensor_id')->all();
 
     $updated = [];
@@ -122,16 +122,16 @@ test('rediscovery does not update unchanged sensors', function () {
         $updated[] = $sensor->sensor_descr;
     });
 
-    $module->discover(os());
+    $module->discover(ipmiOs());
 
     expect($updated)->toBe([]);
     expect($this->device->sensors()->orderBy('sensor_index')->pluck('sensor_id')->all())->toBe($sensor_ids);
 });
 
-test('discover handles empty and short output', function () {
+test('discover handles empty and short output', function (): void {
     Process::fake(fn () => "\nCPU Temp | 45.000 | degrees C | ok\n\n");
 
-    (new Ipmi)->discover(os());
+    (new Ipmi)->discover(ipmiOs());
 
     $sensor = $this->device->sensors()->sole();
     expect($sensor->sensor_descr)->toBe('CPU Temp');
@@ -139,42 +139,42 @@ test('discover handles empty and short output', function () {
     expect($sensor->sensor_limit_warn)->toBeNull();
 
     Process::fake(fn () => '');
-    (new Ipmi)->discover(os());
+    (new Ipmi)->discover(ipmiOs());
 
     expect($this->device->sensors()->count())->toBe(0);
 });
 
-test('does not run without ipmi configured', function () {
+test('does not run without ipmi configured', function (): void {
     $module = new Ipmi;
 
-    expect($module->shouldDiscover(os()))->toBeTrue();
-    expect($module->shouldPoll(os()))->toBeFalse();
+    expect($module->shouldDiscover(ipmiOs()))->toBeTrue();
+    expect($module->shouldPoll(ipmiOs()))->toBeFalse();
 
     // no sensors discovered
-    $module->discover(os());
-    expect($module->shouldPoll(os()))->toBeTrue();
+    $module->discover(ipmiOs());
+    expect($module->shouldPoll(ipmiOs()))->toBeTrue();
 
     // a failure in an earlier poll is checked again
     $this->ipmiMethod->update(['last_check_successful' => false]);
-    expect($module->shouldPoll(os()))->toBeTrue();
+    expect($module->shouldPoll(ipmiOs()))->toBeTrue();
 
     // the IPMI check fails
     Process::fake(fn () => Process::result(exitCode: 1));
-    expect($module->shouldPoll(os()))->toBeFalse();
+    expect($module->shouldPoll(ipmiOs()))->toBeFalse();
 
     // no IPMI polling method
     $this->ipmiMethod->delete();
-    $os = os();
+    $os = ipmiOs();
 
     expect($module->shouldDiscover($os))->toBeFalse();
     expect($module->shouldPoll($os))->toBeFalse();
 });
 
-test('poll uses the sdr from the ipmi check', function () {
+test('poll uses the sdr from the ipmi check', function (): void {
     $module = new Ipmi;
-    $module->discover(os());
+    $module->discover(ipmiOs());
 
-    $os = os();
+    $os = ipmiOs();
     expect($module->shouldPoll($os))->toBeTrue();
     $module->poll($os, Mockery::mock(DataStorageInterface::class)->shouldIgnoreMissing());
 
@@ -183,10 +183,10 @@ test('poll uses the sdr from the ipmi check', function () {
     expect($this->device->sensors()->where('sensor_descr', 'CPU Temp')->value('sensor_current'))->toEqual(47);
 });
 
-function os(): OS
+function ipmiOs(): OS
 {
     // simulate a fresh discovery/poller run
-    $device = DeviceCache::refresh($this->device->device_id)->toArray();
+    $device = DeviceCache::refresh(test()->device->device_id)->toArray();
 
     return OS::make($device);
 }

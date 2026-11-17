@@ -1,28 +1,29 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Data\TimeSeries\MetricCollector;
-use \LibreNMS\OS\VmwareEsxi;
 use App\Models\Vminfo;
 use Illuminate\Support\Collection;
+use LibreNMS\OS\VmwareEsxi;
 
-test('afailed walk keeps the vms', function () {
+uses(\LibreNMS\Tests\TestCase::class);
+
+test('a failed walk keeps the vms', function (): void {
     $vms = new Collection([new Vminfo(['vm_type' => 'vmware', 'vmwVmVMID' => 1])]);
 
-    expect(os(new Collection)->pollVminfo($vms, new MetricCollector))->toBe($vms);
+    expect(esxiOs(new Collection)->pollVminfo($vms, new MetricCollector))->toBe($vms);
 });
 
-test('poll returns the walked vms', function () {
+test('poll returns the walked vms', function (): void {
     $walked = new Collection([new Vminfo(['vm_type' => 'vmware', 'vmwVmVMID' => 2])]);
     $vms = new Collection([new Vminfo(['vm_type' => 'vmware', 'vmwVmVMID' => 1])]);
 
-    expect(os($walked)->pollVminfo($vms, new MetricCollector))->toBe($walked);
+    expect(esxiOs($walked)->pollVminfo($vms, new MetricCollector))->toBe($walked);
 });
 
 /**
  * @param  Collection<int, Vminfo>  $walked
  */
-function os(Collection $walked): VmwareEsxi
+function esxiOs(Collection $walked): VmwareEsxi
 {
     $device = ['device_id' => 1, 'os' => 'vmware-esxi'];
 
@@ -32,15 +33,15 @@ function os(Collection $walked): VmwareEsxi
          * @param  array<mixed>  $device
          * @param  Collection<int, Vminfo>  $walked
          */
-        function __construct(array &$device, private readonly Collection $walked)
+        public function __construct(array &$device, private readonly Collection $walked)
         {
-            __construct($device);
+            parent::__construct($device);
         }
 
         /**
          * @return Collection<int, Vminfo>
          */
-        function discoverVmInfo(): Collection
+        public function discoverVmInfo(): Collection
         {
             return $this->walked;
         }

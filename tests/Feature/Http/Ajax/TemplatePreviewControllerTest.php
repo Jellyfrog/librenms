@@ -8,7 +8,7 @@ use Mockery\MockInterface;
 
 uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-test('unauthenticated user cannot preview template', function () {
+test('unauthenticated user cannot preview template', function (): void {
     $response = $this->postJson(route('ajax.template.preview'), [
         'template' => '{{ hostname }}',
     ]);
@@ -16,7 +16,7 @@ test('unauthenticated user cannot preview template', function () {
     $response->assertUnauthorized();
 });
 
-test('authenticated user can preview template', function () {
+test('authenticated user can preview template', function (): void {
     $user = User::factory()->create(['enabled' => 1]);
 
     $response = $this->actingAs($user)->postJson(route('ajax.template.preview'), [
@@ -33,7 +33,7 @@ test('authenticated user can preview template', function () {
     ]);
 });
 
-test('preview handles missing variables', function () {
+test('preview handles missing variables', function (): void {
     $user = User::factory()->create(['enabled' => 1]);
 
     $response = $this->actingAs($user)->postJson(route('ajax.template.preview'), [
@@ -49,7 +49,7 @@ test('preview handles missing variables', function () {
     ]);
 });
 
-test('resolves ip from hostname', function () {
+test('resolves ip from hostname', function (): void {
     $this->mock(Dns::class, function (MockInterface $mock): void {
         $mock->shouldReceive('getAddresses')->with('switch01.example.com')->once()->andReturn(['10.0.0.1']);
     });
@@ -67,7 +67,7 @@ test('resolves ip from hostname', function () {
     ]);
 });
 
-test('unresolvable hostname keeps ip variable', function () {
+test('unresolvable hostname keeps ip variable', function (): void {
     $this->mock(Dns::class, function (MockInterface $mock): void {
         $mock->shouldReceive('getAddresses')->once()->andReturn([]);
     });
@@ -82,7 +82,7 @@ test('unresolvable hostname keeps ip variable', function () {
     $response->assertExactJson(['preview' => 'unknown', 'resolved_ip' => null]);
 });
 
-test('user who cannot add devices does not resolve ip', function () {
+test('user who cannot add devices does not resolve ip', function (): void {
     $this->mock(Dns::class, function (MockInterface $mock): void {
         $mock->shouldNotReceive('getAddresses');
     });
@@ -97,7 +97,7 @@ test('user who cannot add devices does not resolve ip', function () {
     $response->assertExactJson(['preview' => 'unknown', 'resolved_ip' => null]);
 });
 
-test('failed lookup is cached', function () {
+test('failed lookup is cached', function (): void {
     $this->mock(Dns::class, function (MockInterface $mock): void {
         $mock->shouldReceive('getAddresses')->once()->andReturn([]);
     });

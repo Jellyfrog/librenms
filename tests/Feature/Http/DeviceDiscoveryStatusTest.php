@@ -8,12 +8,12 @@ use Spatie\Permission\Models\Role;
 
 uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     Role::findOrCreate('admin');
     Role::findOrCreate('user');
 });
 
-function admin(): User
+function discoveryStatusAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -21,25 +21,25 @@ function admin(): User
     return $admin;
 }
 
-test('undiscovered device reports not discovered', function () {
+test('undiscovered device reports not discovered', function (): void {
     $device = Device::factory()->create(['last_discovered' => null]);
 
-    $this->actingAs(admin())
+    $this->actingAs(discoveryStatusAdmin())
         ->getJson(route('device.discovery-status', $device))
         ->assertOk()
         ->assertExactJson(['discovered' => false]);
 });
 
-test('discovered device reports discovered', function () {
+test('discovered device reports discovered', function (): void {
     $device = Device::factory()->create(['last_discovered' => now()]);
 
-    $this->actingAs(admin())
+    $this->actingAs(discoveryStatusAdmin())
         ->getJson(route('device.discovery-status', $device))
         ->assertOk()
         ->assertExactJson(['discovered' => true]);
 });
 
-test('user without access gets forbidden', function () {
+test('user without access gets forbidden', function (): void {
     $device = Device::factory()->create();
 
     $user = User::factory()->create(['enabled' => 1]);
@@ -50,10 +50,10 @@ test('user without access gets forbidden', function () {
         ->assertForbidden();
 });
 
-test('device page shows awaiting discovery notice', function () {
+test('device page shows awaiting discovery notice', function (): void {
     $device = Device::factory()->create(['last_discovered' => null]);
 
-    $this->actingAs(admin())
+    $this->actingAs(discoveryStatusAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'notes']))
         ->assertOk()
         ->assertSee(__('device.awaiting_discovery'))
@@ -62,10 +62,10 @@ test('device page shows awaiting discovery notice', function () {
         ->assertDontSee(__('device.discovery_complete'));
 });
 
-test('device edit page shows click to refresh notice', function () {
+test('device edit page shows click to refresh notice', function (): void {
     $device = Device::factory()->create(['last_discovered' => null]);
 
-    $this->actingAs(admin())
+    $this->actingAs(discoveryStatusAdmin())
         ->get(route('device.edit.misc', $device))
         ->assertOk()
         ->assertSee(__('device.awaiting_discovery_edit'))
@@ -74,29 +74,29 @@ test('device edit page shows click to refresh notice', function () {
         ->assertSee(route('device.discovery-status', $device->device_id), false);
 });
 
-test('device page hides notice once discovered', function () {
+test('device page hides notice once discovered', function (): void {
     $device = Device::factory()->create(['last_discovered' => now()]);
 
-    $this->actingAs(admin())
+    $this->actingAs(discoveryStatusAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'notes']))
         ->assertOk()
         ->assertDontSee(__('device.awaiting_discovery'));
 });
 
-test('device edit page hides notice once discovered', function () {
+test('device edit page hides notice once discovered', function (): void {
     $device = Device::factory()->create(['last_discovered' => now()]);
 
-    $this->actingAs(admin())
+    $this->actingAs(discoveryStatusAdmin())
         ->get(route('device.edit.misc', $device))
         ->assertOk()
         ->assertSee('x-cloak', false)
         ->assertSee('x-on:device-discovery-pending.window', false);
 });
 
-test('rediscover reports discovery pending', function () {
+test('rediscover reports discovery pending', function (): void {
     $device = Device::factory()->create(['last_discovered' => now()]);
 
-    $this->actingAs(admin())
+    $this->actingAs(discoveryStatusAdmin())
         ->postJson(route('device.rediscover', $device))
         ->assertOk()
         ->assertJson(['status' => 'ok', 'discovery_pending' => true]);
@@ -104,19 +104,19 @@ test('rediscover reports discovery pending', function () {
     expect($device->fresh()->last_discovered)->toBeNull();
 });
 
-test('rediscover disabled device is not pending', function () {
+test('rediscover disabled device is not pending', function (): void {
     $device = Device::factory()->create(['last_discovered' => now(), 'disabled' => 1]);
 
-    $this->actingAs(admin())
+    $this->actingAs(discoveryStatusAdmin())
         ->postJson(route('device.rediscover', $device))
         ->assertOk()
         ->assertJson(['status' => 'ok', 'discovery_pending' => false]);
 });
 
-test('disabled device page hides notice', function () {
+test('disabled device page hides notice', function (): void {
     $device = Device::factory()->create(['last_discovered' => null, 'disabled' => 1]);
 
-    $this->actingAs(admin())
+    $this->actingAs(discoveryStatusAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'notes']))
         ->assertOk()
         ->assertDontSee(__('device.awaiting_discovery'));

@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Facades\LibrenmsConfig;
 use App\Jobs\DispatchPollingWork;
 use App\Jobs\PollDevice;
@@ -18,16 +17,14 @@ use Illuminate\Queue\RedisQueue;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Str;
 use LibreNMS\Util\ModuleList;
-use PHPUnit\Framework\Attributes\DataProvider;
 
+uses(LibreNMS\Tests\TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
-
-beforeEach(function () {
+beforeEach(function (): void {
     LibrenmsConfig::set('schedule_type.poller', WorkerNode::SCHEDULE_TYPE);
 });
 
-test('released jobs are recorded until they run again', function () {
+test('released jobs are recorded until they run again', function (): void {
     $this->freezeSecond();
     Device::factory()->create(['device_id' => 9, 'status' => 0]);
     $status = new RetryTracker;
@@ -53,7 +50,7 @@ test('released jobs are recorded until they run again', function () {
     expect($status->retrying())->toHaveCount(0);
 });
 
-test('stale retries are dropped', function () {
+test('stale retries are dropped', function (): void {
     $this->freezeSecond();
     Device::factory()->create(['device_id' => 9, 'status' => 0]);
     $status = new RetryTracker;
@@ -64,7 +61,7 @@ test('stale retries are dropped', function () {
     expect($status->retrying())->toHaveCount(0, 'its job was removed from the queue');
 });
 
-test('queue sizes', function () {
+test('queue sizes', function (): void {
     Device::factory()->create(['device_id' => 9, 'status' => 0, 'poller_group' => 0]);
     Device::factory()->create(['device_id' => 1, 'status' => 0, 'poller_group' => 0]);
     $queue = Mockery::mock(RedisQueue::class);
@@ -102,7 +99,7 @@ test('queue sizes', function () {
     expect($queues['scheduler']['age'])->toBe(0);
 });
 
-test('workers are shown with the node name', function () {
+test('workers are shown with the node name', function (): void {
     PollerCluster::factory()->worker()->create(['node_id' => 'node-a', 'poller_name' => 'poller1.example.com', 'last_report' => now()]);
     PollerCluster::factory()->worker()->create(['node_id' => 'node-b', 'poller_name' => '', 'last_report' => now()->subDay()]);
     PollerCluster::factory()->create(['poller_name' => 'dispatcher-service']);
@@ -114,7 +111,7 @@ test('workers are shown with the node name', function () {
     expect($workers[1]['queues'])->toBe(['poll', 'discovery'], 'from the node settings');
 });
 
-test('device lock held until released', function () {
+test('device lock held until released', function (): void {
     $device = Device::factory()->create(['poller_group' => 2]);
     $locks = app(DeviceLocks::class);
     expect($locks->held($device))->toBeFalse();
@@ -128,7 +125,7 @@ test('device lock held until released', function () {
     expect($locks->held($device))->toBeFalse();
 });
 
-test('overdue devices', function () {
+test('overdue devices', function (): void {
     $overdue = Device::factory()->create(['status' => 1, 'last_polled' => now()->subHour()]);
     Device::factory()->create(['status' => 1, 'last_polled' => now()->subMinute()]);
     Device::factory()->create(['status' => 0, 'last_polled' => now()->subHour()]);
@@ -137,7 +134,7 @@ test('overdue devices', function () {
     expect(app(QueueStatus::class)->overdueDevices()->pluck('device_id')->all())->toBe([$overdue->device_id]);
 });
 
-test('last dispatched', function () {
+test('last dispatched', function (): void {
     $this->freezeSecond();
     $status = app(QueueStatus::class);
     expect($status->lastDispatched())->toBeNull();
@@ -147,7 +144,7 @@ test('last dispatched', function () {
     expect($status->lastDispatched())->toEqual(now());
 });
 
-test('device jobs are queued with their device', function () {
+test('device jobs are queued with their device', function (): void {
     // every queue driver builds the payload the same way
     $created = null;
     Queue::createPayloadUsing(function ($connection, $queue, array $payload) use (&$created): array {
@@ -160,7 +157,7 @@ test('device jobs are queued with their device', function () {
     expect($created['device_id'] ?? null)->toBe(42);
 });
 
-test('failed jobs by device and class', function () {
+test('failed jobs by device and class', function (): void {
     failedJob(PollDevice::class, ['device_id' => 9], "RuntimeException: snmp crashed in /opt/librenms/app/Jobs/PollDevice.php:146\nStack trace:\n#0 {main}");
     failedJob(PollDevice::class, ['device_id' => 10]);
     $dispatch = failedJob(DispatchPollingWork::class);
@@ -178,7 +175,7 @@ test('failed jobs by device and class', function () {
     expect($failed->list(job: DispatchPollingWork::class)->pluck('id')->all())->toBe([$dispatch->uuid]);
 });
 
-test('forget failed job', function () {
+test('forget failed job', function (): void {
     $job = failedJob(PollDevice::class);
 
     (new FailedJobs)->forget($job->uuid);
@@ -186,7 +183,7 @@ test('forget failed job', function () {
     expect(FailedJob::count())->toBe(0);
 });
 
-test('exception summary omits location and trace', function (string $exception, string $expected) {
+test('exception summary omits location and trace', function (string $exception, string $expected): void {
     expect(FailedJobs::exceptionSummary($exception))->toBe($expected);
 })->with('exceptionProvider');
 

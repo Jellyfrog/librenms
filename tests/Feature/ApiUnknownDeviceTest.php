@@ -17,12 +17,10 @@
 uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Models\Device;
 use App\Models\User;
-use PHPUnit\Framework\Attributes\DataProvider;
-
 
 uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $token = $user->createToken('test');
@@ -31,14 +29,14 @@ beforeEach(function () {
     $this->device = Device::factory()->create(['hostname' => 'existing.example.test']);
 });
 
-test('list endpoint returns404 for unknown device id', function (string $uri) {
+test('list endpoint returns404 for unknown device id', function (string $uri): void {
     $this->json('GET', $uri . '?hostname=99999', [], $this->headers)
         ->assertStatus(404)
         ->assertJsonPath('status', 'error')
         ->assertJsonPath('message', 'Device 99999 not found');
 })->with('unknownDeviceListEndpoints');
 
-test('list endpoint returns404 for unknown hostname', function (string $uri) {
+test('list endpoint returns404 for unknown hostname', function (string $uri): void {
     $this->json('GET', $uri . '?hostname=unknown.example.test', [], $this->headers)
         ->assertStatus(404)
         ->assertJsonPath('status', 'error')
@@ -60,13 +58,13 @@ dataset('unknownDeviceListEndpoints', function () {
     ];
 });
 
-test('bgp without hostname still lists everything', function () {
+test('bgp without hostname still lists everything', function (): void {
     $this->json('GET', '/api/v0/bgp', [], $this->headers)
         ->assertStatus(200)
         ->assertJsonPath('status', 'ok');
 });
 
-test('eventlog returns404 for unknown device', function () {
+test('eventlog returns404 for unknown device', function (): void {
     $this->json('GET', '/api/v0/logs/eventlog/99999', [], $this->headers)
         ->assertStatus(404)
         ->assertJsonPath('message', 'Device 99999 not found');
@@ -76,7 +74,7 @@ test('eventlog returns404 for unknown device', function () {
         ->assertJsonPath('status', 'ok');
 });
 
-test('services returns404 for unknown device', function () {
+test('services returns404 for unknown device', function (): void {
     $this->json('GET', '/api/v0/services/99999', [], $this->headers)
         ->assertStatus(404)
         ->assertJsonPath('message', 'Device 99999 not found');
@@ -86,31 +84,31 @@ test('services returns404 for unknown device', function () {
         ->assertJsonPath('status', 'ok');
 });
 
-test('links returns404 for unknown device', function () {
+test('links returns404 for unknown device', function (): void {
     $this->json('GET', '/api/v0/devices/99999/links', [], $this->headers)
         ->assertStatus(404)
         ->assertJsonPath('message', 'Device 99999 not found');
 });
 
-test('ipsec returns400 for unknown device', function () {
+test('ipsec returns400 for unknown device', function (): void {
     $this->json('GET', '/api/v0/routing/ipsec/data/99999', [], $this->headers)
         ->assertStatus(400)
         ->assertJsonPath('message', 'No valid hostname or device ID provided');
 });
 
-test('maintenance returns404 for unknown device', function () {
+test('maintenance returns404 for unknown device', function (): void {
     $this->json('GET', '/api/v0/devices/99999/maintenance', [], $this->headers)
         ->assertStatus(404)
         ->assertJsonPath('message', 'Device 99999 not found');
 });
 
-test('inventory returns400 for unknown device', function () {
+test('inventory returns400 for unknown device', function (): void {
     $this->json('GET', '/api/v0/inventory/99999', [], $this->headers)
         ->assertStatus(400)
         ->assertJsonPath('message', 'Invalid device provided');
 });
 
-test('parents returns400 for unknown device', function () {
+test('parents returns400 for unknown device', function (): void {
     $this->json('POST', '/api/v0/devices/99999/parents', ['parent_ids' => ''], $this->headers)
         ->assertStatus(400)
         ->assertJsonPath('message', 'Check your parent and device IDs');
@@ -120,7 +118,7 @@ test('parents returns400 for unknown device', function () {
         ->assertJsonPath('message', 'Check your device ID!');
 });
 
-test('add parents still works for existing device', function () {
+test('add parents still works for existing device', function (): void {
     $parent = Device::factory()->create(['hostname' => 'parent.example.test']);
 
     $this->json('POST', "/api/v0/devices/{$this->device->device_id}/parents", ['parent_ids' => $parent->hostname], $this->headers)
@@ -136,30 +134,30 @@ test('add parents still works for existing device', function () {
     expect($this->device->fresh()->parents()->whereKey($parent->device_id)->exists())->toBeFalse();
 });
 
-test('add rule returns400 for unknown device', function () {
+test('add rule returns400 for unknown device', function (): void {
     foreach (['99999', 'unknown.example.test'] as $bad_device) {
         $this->json('POST', '/api/v0/rules', [
             'devices' => [$bad_device],
             'name' => 'unknown device rule',
             'severity' => 'critical',
-            'builder' => alertRuleBuilder(),
+            'builder' => unknownDeviceAlertRuleBuilder(),
         ], $this->headers)->assertStatus(400)->assertJsonPath('message', "Device $bad_device does not exist");
     }
 });
 
-test('add rule still works for existing device', function () {
+test('add rule still works for existing device', function (): void {
     $this->json('POST', '/api/v0/rules', [
         'devices' => [$this->device->device_id],
         'name' => 'existing device rule',
         'severity' => 'critical',
-        'builder' => alertRuleBuilder(),
+        'builder' => unknownDeviceAlertRuleBuilder(),
     ], $this->headers)->assertStatus(200);
 });
 
 /**
  * @return array<string, mixed>
  */
-function alertRuleBuilder(): array
+function unknownDeviceAlertRuleBuilder(): array
 {
     return [
         'condition' => 'AND',

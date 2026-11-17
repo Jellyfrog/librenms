@@ -1,20 +1,18 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\Device;
 use App\Models\Storage;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 
+uses(LibreNMS\Tests\TestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-beforeEach(function () {
+beforeEach(function (): void {
     Role::findOrCreate('admin');
     Role::findOrCreate('user');
 });
 
-function admin(): User
+function editStorageAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -22,7 +20,7 @@ function admin(): User
     return $admin;
 }
 
-function user(): User
+function editStorageUser(): User
 {
     $user = User::factory()->create(['enabled' => 1]);
     $user->assignRole('user');
@@ -30,7 +28,7 @@ function user(): User
     return $user;
 }
 
-test('admin can view storage page', function () {
+test('admin can view storage page', function (): void {
     $device = Device::factory()->create();
     Storage::factory()->for($device)->create([
         'storage_descr' => '/data <b>disk</b>',
@@ -39,7 +37,7 @@ test('admin can view storage page', function () {
         'storage_perc_warn' => 75,
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(editStorageAdmin())
         ->get(route('device.edit.storage', $device))
         ->assertOk()
         ->assertSee('/data &lt;b&gt;disk&lt;/b&gt;', false)
@@ -49,30 +47,30 @@ test('admin can view storage page', function () {
         ->assertSee('value="75"', false);
 });
 
-test('null warn threshold renders empty', function () {
+test('null warn threshold renders empty', function (): void {
     $device = Device::factory()->create();
     $storage = Storage::factory()->for($device)->create();
     Storage::whereKey($storage->storage_id)->update(['storage_perc_warn' => null]);
 
-    $this->actingAs(admin())
+    $this->actingAs(editStorageAdmin())
         ->get(route('device.edit.storage', $device))
         ->assertOk()
         ->assertSee('value=""', false);
 });
 
-test('user cannot view storage page', function () {
+test('user cannot view storage page', function (): void {
     $device = Device::factory()->create();
 
-    $this->actingAs(user())
+    $this->actingAs(editStorageUser())
         ->get(route('device.edit.storage', $device))
         ->assertForbidden();
 });
 
-test('admin can update warn threshold', function () {
+test('admin can update warn threshold', function (): void {
     $device = Device::factory()->create();
     $storage = Storage::factory()->for($device)->create(['storage_perc_warn' => 60]);
 
-    $this->actingAs(admin())
+    $this->actingAs(editStorageAdmin())
         ->postJson(route('device.edit.storage.update', [$device, $storage]), ['storage_perc_warn' => '90'])
         ->assertOk()
         ->assertJson(['status' => 'ok']);
@@ -80,11 +78,11 @@ test('admin can update warn threshold', function () {
     expect($storage->fresh()->storage_perc_warn)->toBe(90);
 });
 
-test('empty warn threshold clears value', function () {
+test('empty warn threshold clears value', function (): void {
     $device = Device::factory()->create();
     $storage = Storage::factory()->for($device)->create(['storage_perc_warn' => 60]);
 
-    $this->actingAs(admin())
+    $this->actingAs(editStorageAdmin())
         ->postJson(route('device.edit.storage.update', [$device, $storage]), ['storage_perc_warn' => ''])
         ->assertOk()
         ->assertJson(['status' => 'ok']);
@@ -103,33 +101,33 @@ dataset('invalidThresholds', function () {
     ];
 });
 
-test('invalid warn threshold is rejected', function (mixed $value) {
+test('invalid warn threshold is rejected', function (mixed $value): void {
     $device = Device::factory()->create();
     $storage = Storage::factory()->for($device)->create(['storage_perc_warn' => 60]);
 
-    $this->actingAs(admin())
+    $this->actingAs(editStorageAdmin())
         ->postJson(route('device.edit.storage.update', [$device, $storage]), ['storage_perc_warn' => $value])
         ->assertUnprocessable();
 
     expect($storage->fresh()->storage_perc_warn)->toBe(60);
-});
+})->with('invalidThresholds');
 
-test('storage must belong to device', function () {
+test('storage must belong to device', function (): void {
     $device = Device::factory()->create();
     $otherStorage = Storage::factory()->create(['storage_perc_warn' => 60]);
 
-    $this->actingAs(admin())
+    $this->actingAs(editStorageAdmin())
         ->postJson(route('device.edit.storage.update', [$device, $otherStorage]), ['storage_perc_warn' => 90])
         ->assertNotFound();
 
     expect($otherStorage->fresh()->storage_perc_warn)->toBe(60);
 });
 
-test('user cannot update warn threshold', function () {
+test('user cannot update warn threshold', function (): void {
     $device = Device::factory()->create();
     $storage = Storage::factory()->for($device)->create(['storage_perc_warn' => 60]);
 
-    $this->actingAs(user())
+    $this->actingAs(editStorageUser())
         ->postJson(route('device.edit.storage.update', [$device, $storage]), ['storage_perc_warn' => 90])
         ->assertForbidden();
 

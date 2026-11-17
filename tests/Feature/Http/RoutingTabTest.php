@@ -1,21 +1,19 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\CefSwitching;
 use App\Models\Device;
 use App\Models\EntPhysical;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 
+uses(LibreNMS\Tests\TestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-beforeEach(function () {
+beforeEach(function (): void {
     Role::findOrCreate('admin');
     Role::findOrCreate('user');
 });
 
-function admin(): User
+function routingTabAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -23,7 +21,7 @@ function admin(): User
     return $admin;
 }
 
-test('authorized user can render routing cef tab', function () {
+test('authorized user can render routing cef tab', function (): void {
     $device = Device::factory()->create();
     EntPhysical::factory()->for($device)->create([
         'entPhysicalIndex' => 10,
@@ -45,7 +43,7 @@ test('authorized user can render routing cef tab', function () {
         'updated_prev' => 950,
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.cef', ['device' => $device]))
         ->assertOk()
         ->assertSee('RP0 (ASR1000-RP2)')
@@ -54,7 +52,7 @@ test('authorized user can render routing cef tab', function () {
         ->assertSee('(1/sec)');
 });
 
-test('routing cef tab graphs view', function () {
+test('routing cef tab graphs view', function (): void {
     $device = Device::factory()->create();
     CefSwitching::factory()->for($device)->create([
         'entPhysicalIndex' => 10,
@@ -63,13 +61,13 @@ test('routing cef tab graphs view', function () {
         'cef_path' => 'RP LES',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.cef', ['device' => $device, 'view' => 'graphs']))
         ->assertOk()
         ->assertSee('cefswitching_graph');
 });
 
-test('authorized user can render routing ipsec tunnels tab', function () {
+test('authorized user can render routing ipsec tunnels tab', function (): void {
     $device = Device::factory()->create();
     \App\Models\IpsecTunnel::factory()->create([
         'device_id' => $device->device_id,
@@ -79,7 +77,7 @@ test('authorized user can render routing ipsec tunnels tab', function () {
         'tunnel_status' => 'active',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.ipsec-tunnels', ['device' => $device]))
         ->assertOk()
         ->assertSee('SiteA-to-SiteB')
@@ -87,13 +85,13 @@ test('authorized user can render routing ipsec tunnels tab', function () {
         ->assertSee('10.0.0.1')
         ->assertSee('active');
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.ipsec-tunnels', ['device' => $device, 'view' => 'graphs', 'graph' => 'bits']))
         ->assertOk()
         ->assertSee('ipsectunnel_bits');
 });
 
-test('authorized user can render routing vrf tab', function () {
+test('authorized user can render routing vrf tab', function (): void {
     $device = Device::factory()->create();
     $port = \App\Models\Port::factory()->for($device)->create(['ifDescr' => 'GigabitEthernet0/1']);
     $vrf = \App\Models\Vrf::factory()->for($device)->create([
@@ -103,7 +101,7 @@ test('authorized user can render routing vrf tab', function () {
     ]);
     $port->update(['ifVrf' => $vrf->vrf_id]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.vrf', ['device' => $device]))
         ->assertOk()
         ->assertSee('MGMT_VRF')
@@ -111,13 +109,13 @@ test('authorized user can render routing vrf tab', function () {
         ->assertSee('65000:100')
         ->assertSee('Gi0/1');
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.vrf', ['device' => $device, 'view' => 'graphs', 'graph' => 'bits']))
         ->assertOk()
         ->assertSee('type=port_bits', false);
 });
 
-test('authorized user can render routing cisco otv tab', function () {
+test('authorized user can render routing cisco otv tab', function (): void {
     $device = Device::factory()->create();
     $component = new \LibreNMS\Component();
     $created = $component->createComponent($device->device_id, 'Cisco-OTV');
@@ -134,7 +132,7 @@ test('authorized user can render routing cisco otv tab', function () {
         ],
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.cisco-otv', ['device' => $device]))
         ->assertOk()
         ->assertSee('Overlay1')
@@ -143,7 +141,7 @@ test('authorized user can render routing cisco otv tab', function () {
         ->assertSee('device_cisco-otv-mac');
 });
 
-test('authorized user can render routing ospf tab', function () {
+test('authorized user can render routing ospf tab', function (): void {
     $device = Device::factory()->create();
     \App\Models\OspfInstance::factory()->for($device)->create([
         'ospfRouterId' => '10.255.255.1',
@@ -160,7 +158,7 @@ test('authorized user can render routing ospf tab', function () {
         'ospfNbrState' => 'full',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.ospf', ['device' => $device]))
         ->assertOk()
         ->assertSee('10.255.255.1')
@@ -170,7 +168,7 @@ test('authorized user can render routing ospf tab', function () {
         ->assertSee('full');
 });
 
-test('authorized user can render routing ospfv3 tab', function () {
+test('authorized user can render routing ospfv3 tab', function (): void {
     $device = Device::factory()->create();
     $instance = \App\Models\Ospfv3Instance::factory()->for($device)->create([
         'router_id' => '10.0.0.1',
@@ -191,7 +189,7 @@ test('authorized user can render routing ospfv3 tab', function () {
         'ospfv3NbrState' => 'full',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.ospfv3', ['device' => $device]))
         ->assertOk()
         ->assertSee('10.0.0.1')
@@ -201,7 +199,7 @@ test('authorized user can render routing ospfv3 tab', function () {
         ->assertSee('full');
 });
 
-test('authorized user can render routing isis tab', function () {
+test('authorized user can render routing isis tab', function (): void {
     $device = Device::factory()->create();
     \App\Models\IsisAdjacency::factory()->for($device)->create([
         'isisISAdjIPAddrAddress' => '10.10.10.1',
@@ -210,7 +208,7 @@ test('authorized user can render routing isis tab', function () {
         'isisISAdjState' => 'up',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.isis', ['device' => $device]))
         ->assertOk()
         ->assertSee('10.10.10.1')
@@ -219,10 +217,10 @@ test('authorized user can render routing isis tab', function () {
         ->assertSee('up');
 });
 
-test('authorized user can render routing routes tab', function () {
+test('authorized user can render routing routes tab', function (): void {
     $device = Device::factory()->create();
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.routes', ['device' => $device]))
         ->assertOk()
         ->assertSee('routes')
@@ -230,7 +228,7 @@ test('authorized user can render routing routes tab', function () {
         ->assertSee('Destination');
 });
 
-test('authorized user can render routing bgp tab', function () {
+test('authorized user can render routing bgp tab', function (): void {
     $device = Device::factory()->create(['bgpLocalAs' => 65000]);
     \App\Models\BgpPeer::factory()->for($device)->create([
         'bgpPeerIdentifier' => '192.0.2.1',
@@ -240,7 +238,7 @@ test('authorized user can render routing bgp tab', function () {
         'bgpPeerDescr' => 'Core-Peer-1',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.bgp', ['device' => $device]))
         ->assertOk()
         ->assertSee('Local AS: 65000 :: BGP')
@@ -254,7 +252,7 @@ test('authorized user can render routing bgp tab', function () {
         ->assertSee('established');
 });
 
-test('authorized user can see bgp afi prefixes menu when available', function () {
+test('authorized user can see bgp afi prefixes menu when available', function (): void {
     $device = Device::factory()->create(['bgpLocalAs' => 65000]);
     $peer = \App\Models\BgpPeer::factory()->for($device)->create([
         'bgpPeerIdentifier' => '192.0.2.1',
@@ -312,7 +310,7 @@ test('authorized user can see bgp afi prefixes menu when available', function ()
         ],
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.bgp', ['device' => $device]))
         ->assertOk()
         ->assertSee('Prefixes:')
@@ -322,7 +320,7 @@ test('authorized user can see bgp afi prefixes menu when available', function ()
         ->assertDontSee('VPNv6 Ucast');
 });
 
-test('authorized user can see bgp mac accounting traffic menu when available', function () {
+test('authorized user can see bgp mac accounting traffic menu when available', function (): void {
     $device = Device::factory()->create(['bgpLocalAs' => 65000]);
     $peer = \App\Models\BgpPeer::factory()->for($device)->create([
         'bgpPeerIdentifier' => '192.0.2.1',
@@ -347,7 +345,7 @@ test('authorized user can see bgp mac accounting traffic menu when available', f
         'device_id' => $device->device_id,
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.bgp', ['device' => $device]))
         ->assertOk()
         ->assertSee('Traffic:')
@@ -355,7 +353,7 @@ test('authorized user can see bgp mac accounting traffic menu when available', f
         ->assertSee('Packets');
 });
 
-test('authorized user can render routing mpls tab', function () {
+test('authorized user can render routing mpls tab', function (): void {
     $device = Device::factory()->create();
     $vrf = \App\Models\Vrf::factory()->for($device)->create([
         'vrf_name' => 'VRF_MPLS_TEST',
@@ -421,7 +419,7 @@ test('authorized user can render routing mpls tab', function () {
     ]);
 
     // Test LSP view
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.mpls', ['device' => $device, 'view' => 'lsp']))
         ->assertOk()
         ->assertSee('LSP-To-Router-2')
@@ -429,40 +427,40 @@ test('authorized user can render routing mpls tab', function () {
         ->assertSee('VRF_MPLS_TEST');
 
     // Test Paths view
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.mpls', ['device' => $device, 'view' => 'paths']))
         ->assertOk()
         ->assertSee('LSP-To-Router-2')
         ->assertSee('remote-r2.local');
 
     // Test SDPs view
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.mpls', ['device' => $device, 'view' => 'sdps']))
         ->assertOk()
         ->assertSee('SDP-to-R2')
         ->assertSee('remote-r2.local');
 
     // Test SDP Binds view
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.mpls', ['device' => $device, 'view' => 'sdpbinds']))
         ->assertOk()
         ->assertSee('10:200');
 
     // Test Services view
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.mpls', ['device' => $device, 'view' => 'services']))
         ->assertOk()
         ->assertSee('VPLS Service 200')
         ->assertSee('VRF_MPLS_TEST');
 
     // Test SAPs view
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.mpls', ['device' => $device, 'view' => 'saps']))
         ->assertOk()
         ->assertSee('ge-0/0/1');
 });
 
-test('authorized user can render routing bgp with linked port and cbgp', function () {
+test('authorized user can render routing bgp with linked port and cbgp', function (): void {
     $device = Device::factory()->create(['bgpLocalAs' => 65000]);
     $peerDevice = Device::factory()->create(['hostname' => 'peer-device.local']);
     $peerPort = \App\Models\Port::factory()->for($peerDevice)->create();
@@ -506,7 +504,7 @@ test('authorized user can render routing bgp with linked port and cbgp', functio
     ]);
     \App\Models\BgpPeerCbgp::reguard();
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.bgp', ['device' => $device]))
         ->assertOk()
         ->assertSee('192.0.2.10')
@@ -514,7 +512,7 @@ test('authorized user can render routing bgp with linked port and cbgp', functio
         ->assertSee('ipv4.unicast');
 });
 
-test('authorized user can render routing bgp with interface identified peer', function () {
+test('authorized user can render routing bgp with interface identified peer', function (): void {
     // Cumulus unnumbered peers are identified by their local interface and carry the
     // learned link-local address in bgpPeerRemoteAddr, which links the neighbour
     $device = Device::factory()->create(['bgpLocalAs' => 65000]);
@@ -536,7 +534,7 @@ test('authorized user can render routing bgp with interface identified peer', fu
         'bgpPeerDescr' => 'Unnumbered-Peer',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.bgp', ['device' => $device]))
         ->assertOk()
         ->assertSee('swp25')
@@ -544,7 +542,7 @@ test('authorized user can render routing bgp with interface identified peer', fu
         ->assertSee('unnumbered-peer.local');
 });
 
-test('authorized user can render routing bgp with ambiguous peer address', function () {
+test('authorized user can render routing bgp with ambiguous peer address', function (): void {
     // link-local addresses are only unique per link, so when more than one port carries
     // the learned address the neighbour cannot be identified and no link is made
     $device = Device::factory()->create(['bgpLocalAs' => 65000]);
@@ -568,7 +566,7 @@ test('authorized user can render routing bgp with ambiguous peer address', funct
         'bgpPeerDescr' => 'Ambiguous-Peer',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.bgp', ['device' => $device]))
         ->assertOk()
         ->assertSee('swp26')
@@ -577,7 +575,7 @@ test('authorized user can render routing bgp with ambiguous peer address', funct
         ->assertDontSee('ambiguous-b.local');
 });
 
-test('authorized user can render routing bgp with mac accounting', function () {
+test('authorized user can render routing bgp with mac accounting', function (): void {
     $device = Device::factory()->create(['bgpLocalAs' => 65000]);
     \App\Models\BgpPeer::factory()->for($device)->create([
         'bgpPeerIdentifier' => '192.0.2.10',
@@ -600,7 +598,7 @@ test('authorized user can render routing bgp with mac accounting', function () {
         'bps_out' => 200,
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.bgp', ['device' => $device, 'view' => 'macaccounting_bits']))
         ->assertOk()
         ->assertSee('Traffic:')
@@ -608,7 +606,7 @@ test('authorized user can render routing bgp with mac accounting', function () {
         ->assertSee('Packets')
         ->assertSee('macaccounting_bits');
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.bgp', ['device' => $device, 'view' => 'macaccounting_pkts']))
         ->assertOk()
         ->assertSee('Traffic:')
@@ -617,7 +615,7 @@ test('authorized user can render routing bgp with mac accounting', function () {
         ->assertSee('macaccounting_pkts');
 });
 
-test('authorized user can render routing ospf area port counts and neighbors', function () {
+test('authorized user can render routing ospf area port counts and neighbors', function (): void {
     $device = Device::factory()->create();
     $remoteDevice = Device::factory()->create(['hostname' => 'ospf-neighbor.local']);
     $remotePort = \App\Models\Port::factory()->for($remoteDevice)->create();
@@ -653,7 +651,7 @@ test('authorized user can render routing ospf area port counts and neighbors', f
         'ospfNbrState' => 'full',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device.routing.ospf', ['device' => $device]))
         ->assertOk()
         ->assertSee('10.255.255.10')
@@ -663,7 +661,7 @@ test('authorized user can render routing ospf area port counts and neighbors', f
     // 2 ports total, 1 enabled
 });
 
-test('authorized user can query routes table ajax', function () {
+test('authorized user can query routes table ajax', function (): void {
     $device = Device::factory()->create();
     $port = \App\Models\Port::factory()->for($device)->create(['ifDescr' => 'eth0']);
     \App\Models\Route::factory()->for($device)->create([
@@ -680,7 +678,7 @@ test('authorized user can query routes table ajax', function () {
         'inetCidrRouteMetric1' => 1,
     ]);
 
-    $response = $this->actingAs(admin())
+    $response = $this->actingAs(routingTabAdmin())
         ->postJson(url('ajax/table/routes'), [
             'device_id' => $device->device_id,
             'showAllRoutes' => 'true',
@@ -694,52 +692,52 @@ test('authorized user can query routes table ajax', function () {
         ->assertJsonFragment(['inetCidrRouteDest' => '192.168.50.0']);
 });
 
-test('routing tab redirects to default protocol', function () {
+test('routing tab redirects to default protocol', function (): void {
     $device = Device::factory()->create();
     \App\Models\BgpPeer::factory()->for($device)->create();
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get(route('device', ['device' => $device, 'tab' => 'routing']))
         ->assertRedirect(route('device.routing.bgp', ['device' => $device]));
 });
 
-test('routing tab redirects with legacy proto path', function () {
+test('routing tab redirects with legacy proto path', function (): void {
     $device = Device::factory()->create();
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get('/device/' . $device->device_id . '/routing/proto=ospf/')
         ->assertRedirect(route('device.routing.ospf', ['device' => $device]));
 });
 
-test('routing tab redirects with legacy path and query vars', function () {
+test('routing tab redirects with legacy path and query vars', function (): void {
     $device = Device::factory()->create();
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get('/device/' . $device->device_id . '/routing/proto=mpls/view=paths/')
         ->assertRedirect(route('device.routing.mpls', ['device' => $device, 'view' => 'paths']));
 });
 
-test('routing tab redirects with underscored proto', function () {
+test('routing tab redirects with underscored proto', function (): void {
     $device = Device::factory()->create();
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get('/device/' . $device->device_id . '/routing/proto=ipsec_tunnels/')
         ->assertRedirect(route('device.routing.ipsec-tunnels', ['device' => $device]));
 });
 
-test('routing tab redirects with legacy device and tab url', function () {
+test('routing tab redirects with legacy device and tab url', function (): void {
     $device = Device::factory()->create();
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get('/device/device=' . $device->device_id . '/tab=routing/proto=cisco-otv/')
         ->assertRedirect(route('device.routing.cisco-otv', ['device' => $device]));
 
-    $this->actingAs(admin())
+    $this->actingAs(routingTabAdmin())
         ->get('/device/' . $device->device_id . '/tab=routing/section=vrf/')
         ->assertRedirect(route('device.routing.vrf', ['device' => $device]));
 });
 
-test('user without routing permission gets forbidden', function () {
+test('user without routing permission gets forbidden', function (): void {
     $device = Device::factory()->create();
     CefSwitching::factory()->for($device)->create();
 

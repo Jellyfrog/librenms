@@ -14,13 +14,11 @@ use LibreNMS\Enum\DeviceAddOutcome;
 use LibreNMS\Enum\PollingMethodType;
 use LibreNMS\Enum\SecretType;
 use LibreNMS\Util\Dns;
-use PHPUnit\Framework\Attributes\TestDox;
-
 
 uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-test('no dns', function () {
-    mockDns(null);
+test('Skips a host without reverse DNS when DNS is required', function (): void {
+    mockScannedHostDns(null);
 
     $result = Bus::dispatchNow(new AddScannedHost('192.0.2.10', snmpSecretId: null, pingable: true, dnsOnly: true));
 
@@ -28,8 +26,8 @@ test('no dns', function () {
     expect(Device::where('hostname', '192.0.2.10')->exists())->toBeFalse();
 });
 
-test('added ping only', function () {
-    mockDns('scanned.example.com');
+test('Adds a host that replied to ping as ping only without pinging it again', function (): void {
+    mockScannedHostDns('scanned.example.com');
     $this->app->instance(Fping::class, Mockery::mock(Fping::class)->shouldNotReceive('ping')->getMock());
 
     $result = Bus::dispatchNow(new AddScannedHost('192.0.2.11', snmpSecretId: null, pingable: true));
@@ -41,20 +39,20 @@ test('added ping only', function () {
     expect($device->polling()->isEnabled(PollingMethodType::Snmp))->toBeFalse();
 });
 
-test('unpingable', function () {
-    mockDns(null);
-    mockFping(FpingResponse::artificialDown());
+test('A host that was not pinged is pinged before it is added', function (): void {
+    mockScannedHostDns(null);
+    mockScannedHostFping(FpingResponse::artificialDown());
 
     $result = Bus::dispatchNow(new AddScannedHost('192.0.2.12', snmpSecretId: null, pingable: false));
 
     expect($result->outcome)->toBe(DeviceAddOutcome::Unpingable);
 });
 
-test('added with secret', function () {
+test('Adds a host with the secret it replied to, the other default secrets are not tried', function (): void {
     $other = Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => 'other']]);
     $replied = Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => 'replied']]);
     LibrenmsConfig::set('snmp.default_credentials', [$other->id, $replied->id]);
-    mockDns('snmp.example.com');
+    mockScannedHostDns('snmp.example.com');
 
     $communities = [];
     $backend = Mockery::mock(SnmpBackendInterface::class);
@@ -74,10 +72,10 @@ test('added with secret', function () {
     expect(array_values(array_unique($communities)))->toBe(['replied']);
 });
 
-test('added with the version it replied to', function () {
+test('A host that replied to v1 is added as v1, v2c is not tried again', function (): void {
     $secret = Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => 'replied']]);
     LibrenmsConfig::set('snmp.default_credentials', [$secret->id]);
-    mockDns('v1.example.com');
+    mockScannedHostDns('v1.example.com');
 
     $versions = [];
     $backend = Mockery::mock(SnmpBackendInterface::class);
@@ -97,10 +95,10 @@ test('added with the version it replied to', function () {
     expect(array_values(array_unique($versions)))->toBe(['v1']);
 });
 
-test('added without icmp', function () {
+test('A host that replied to SNMP but not ping is added without ICMP and not pinged again', function (): void {
     $secret = Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => 'replied']]);
     LibrenmsConfig::set('snmp.default_credentials', [$secret->id]);
-    mockDns('noping.example.com');
+    mockScannedHostDns('noping.example.com');
     $this->app->instance(Fping::class, Mockery::mock(Fping::class)->shouldNotReceive('ping')->getMock());
 
     $backend = Mockery::mock(SnmpBackendInterface::class);
@@ -116,25 +114,25 @@ test('added without icmp', function () {
     expect($device->polling()->isEnabled(PollingMethodType::Snmp))->toBeTrue();
 });
 
-test('known', function () {
+test('An existing device is reported as known', function (): void {
     $device = Device::factory()->create();
-    mockDns($device->hostname);
+    mockScannedHostDns($device->hostname);
 
     $result = Bus::dispatchNow(new AddScannedHost('192.0.2.13', snmpSecretId: null, pingable: true));
 
     expect($result->outcome)->toBe(DeviceAddOutcome::Known);
 });
 
-function mockDns(?string $hostname): void
+function mockScannedHostDns(?string $hostname): void
 {
     $dns = Mockery::mock(Dns::class);
     $dns->shouldReceive('resolveHostname')->andReturn($hostname);
-    $this->app->instance(Dns::class, $dns);
+    app()->instance(Dns::class, $dns);
 }
 
-function mockFping(FpingResponse $response): void
+function mockScannedHostFping(FpingResponse $response): void
 {
     $fping = Mockery::mock(Fping::class);
     $fping->shouldReceive('ping')->andReturn($response);
-    $this->app->instance(Fping::class, $fping);
+    app()->instance(Fping::class, $fping);
 }

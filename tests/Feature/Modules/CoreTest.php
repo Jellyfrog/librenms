@@ -22,7 +22,6 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-uses(\LibreNMS\Tests\InMemoryDbTestCase::class);
 use App\Facades\DeviceCache;
 use App\Models\Device;
 use App\Models\DevicePollingMethod;
@@ -35,7 +34,9 @@ use LibreNMS\Interfaces\Data\DataStorageInterface;
 use LibreNMS\Modules\Core;
 use LibreNMS\OS;
 
-test('ping only device stores the icmp response', function () {
+uses(LibreNMS\Tests\InMemoryDbTestCase::class);
+
+test('ping only device stores the icmp response', function (): void {
     $device = Device::factory()->create(['os' => 'ping']);
     DevicePollingMethod::factory()->create([
         'device_id' => $device->device_id,
@@ -51,7 +52,7 @@ test('ping only device stores the icmp response', function () {
     $datastore->shouldReceive('put')->once()->withArgs(fn ($device, $measurement, $tags, $fields) => $measurement == 'icmp-perf' && $fields['avg'] == 2.5);
     $this->app->instance('Datastore', $datastore);
 
-    $os = os($device);
+    $os = coreOs($device);
     $module = new Core;
     expect($module->shouldPoll($os))->toBeTrue();
     $module->poll($os, $datastore);
@@ -60,14 +61,14 @@ test('ping only device stores the icmp response', function () {
     expect(Eventlog::where('device_id', $device->device_id)->where('message', 'like', 'Duplicate ICMP response%')->exists())->toBeTrue();
 });
 
-test('does not poll without snmp or icmp', function () {
+test('does not poll without snmp or icmp', function (): void {
     $device = Device::factory()->create(['os' => 'ping']);
-    $os = os($device);
+    $os = coreOs($device);
 
     expect((new Core)->shouldPoll($os))->toBeFalse();
 });
 
-function os(Device $device): OS
+function coreOs(Device $device): OS
 {
     DeviceCache::setPrimary($device->device_id);
     $deviceArray = DeviceCache::refresh($device->device_id)->toArray();

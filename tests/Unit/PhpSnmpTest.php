@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use LibreNMS\Data\Source\Snmp\NetSnmpOptions;
 use LibreNMS\Data\Source\Snmp\PhpSnmp;
 use LibreNMS\Data\Source\Snmp\SnmpQueryOptions;
@@ -8,6 +7,8 @@ use LibreNMS\Polling\Method\Config\SnmpConfig;
 use LibreNMS\Polling\Method\Methods\SnmpPollingMethod;
 use LibreNMS\Polling\Secrets\Data\SnmpCommunitySecretData;
 use LibreNMS\Polling\Secrets\Data\SnmpV3SecretData;
+
+uses(LibreNMS\Tests\TestCase::class);
 
 /**
  * @return array{version: string, transport: string, port: int, timeout: int|float, retries: int, max_repeaters: int, max_oid: int, bulk: bool, context: ?string, port_association_mode: string}
@@ -24,7 +25,7 @@ function assertBackendUnavailable(): void
     expect((new PhpSnmp)->buildSnmp('127.0.0.1', $config, new SnmpQueryOptions))->toBeNull();
 }
 
-test('build snmp applies max oids', function () {
+test('build snmp applies max oids', function (): void {
     if (! class_exists(\SNMP::class) || ! function_exists('snmp_init_mib')) {
         assertBackendUnavailable();
 
@@ -48,7 +49,7 @@ test('build snmp applies max oids', function () {
     }
 });
 
-test('backend eligibility', function () {
+test('backend eligibility', function (): void {
     if (! class_exists(\SNMP::class) || ! function_exists('snmp_init_mib')) {
         assertBackendUnavailable();
 
@@ -69,7 +70,7 @@ test('backend eligibility', function () {
     expect($method->invoke($backend, $config, new SnmpQueryOptions(applyDisplayHints: false)))->toBeFalse();
 });
 
-test('community and username', function () {
+test('community and username', function (): void {
     $method = new \ReflectionMethod(PhpSnmp::class, 'communityOrUsername');
     $backend = new PhpSnmp;
     $defaults = backendDefaults();
@@ -89,7 +90,7 @@ test('community and username', function () {
     expect($method->invoke($backend, $v2Default, ''))->toBe('public');
 });
 
-test('v3 security levels and context', function () {
+test('v3 security levels and context', function (): void {
     if (! class_exists(\SNMP::class)) {
         assertBackendUnavailable();
 
@@ -130,7 +131,7 @@ test('v3 security levels and context', function () {
     }
 });
 
-test('extended privacy algorithms use supported backend', function () {
+test('extended privacy algorithms use supported backend', function (): void {
     if (! class_exists(\SNMP::class) || ! function_exists('snmp_init_mib')) {
         assertBackendUnavailable();
 
@@ -171,7 +172,7 @@ test('extended privacy algorithms use supported backend', function () {
     }
 });
 
-test('unsupported v3 algorithms fall back', function () {
+test('unsupported v3 algorithms fall back', function (): void {
     if (! class_exists(\SNMP::class) || ! function_exists('snmp_init_mib')) {
         assertBackendUnavailable();
 
@@ -193,7 +194,7 @@ test('unsupported v3 algorithms fall back', function () {
     }
 });
 
-test('failed security setup falls back', function () {
+test('failed security setup falls back', function (): void {
     if (! class_exists(\SNMP::class) || ! function_exists('snmp_init_mib')) {
         assertBackendUnavailable();
 

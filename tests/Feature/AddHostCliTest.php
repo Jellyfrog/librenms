@@ -24,18 +24,19 @@
  * @author     Lars Elgtvedt Susaas
  */
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use App\Models\Secret;
 use LibreNMS\Enum\PollingMethodType;
 use LibreNMS\Enum\SecretType;
-use PHPUnit\Framework\Attributes\TestDox;
 
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
+beforeEach(function (): void {
+    $this->hostName = 'testHost';
+});
 
-test('clisnmp v1', function () {
+test('CLI SNMP v1', function (): void {
     $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-c' => 'community', '--v1' => true])
         ->assertExitCode(0)
         ->execute();
@@ -55,7 +56,7 @@ test('clisnmp v1', function () {
     expect($icmpMethod->enabled)->toBeTrue();
 });
 
-test('clisnmp v2', function () {
+test('CLI SNMP v2', function (): void {
     $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-c' => 'community', '--v2c' => true])
         ->assertExitCode(0)
         ->execute();
@@ -72,7 +73,7 @@ test('clisnmp v2', function () {
     // a given version is not tried as v1
 });
 
-test('clisnmp v3 user and pw', function () {
+test('CLI SNMP v3 user and password', function (): void {
     $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-u' => 'SecName', '-A' => 'AuthPW', '-X' => 'PrivPW', '--v3' => true])
     ->assertExitCode(0)
     ->execute();
@@ -90,7 +91,7 @@ test('clisnmp v3 user and pw', function () {
     expect($secret->data['cryptopass'])->toEqual('PrivPW');
 });
 
-test('port association mode', function () {
+test('port association mode', function (): void {
     setDefaultCredentials('v1');
 
     $modes = ['ifIndex', 'ifName', 'ifDescr', 'ifAlias'];
@@ -110,7 +111,7 @@ test('port association mode', function () {
     }
 });
 
-test('snmp transport', function () {
+test('SNMP transport', function (): void {
     setDefaultCredentials('v1');
 
     $modes = ['udp', 'udp6', 'tcp', 'tcp6'];
@@ -134,7 +135,7 @@ test('snmp transport', function () {
     $this->assertArrayNotHasKey('transport', $snmpMethod->settings ?? []);
 });
 
-test('snmp v3 auth protocol', function () {
+test('SNMP v3 auth protocol', function (): void {
     $modes = \LibreNMS\SNMPCapabilities::supportedAuthAlgorithms();
     foreach ($modes as $mode) {
         $host = 'hostName' . $mode;
@@ -148,7 +149,7 @@ test('snmp v3 auth protocol', function () {
     }
 });
 
-test('snmp v3 privacy protocol', function () {
+test('SNMP v3 privacy protocol', function (): void {
     $modes = \LibreNMS\SNMPCapabilities::supportedCryptoAlgorithms();
     foreach ($modes as $mode) {
         $host = 'hostName' . $mode;
@@ -162,7 +163,7 @@ test('snmp v3 privacy protocol', function () {
     }
 });
 
-test('cliping', function () {
+test('CLI ping', function (): void {
     $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-P' => true, '-o' => 'nameOfOS', '-w' => 'hardware', '-s' => 'System', '--v1' => true])
         ->assertExitCode(0)
         ->execute();
@@ -178,7 +179,7 @@ test('cliping', function () {
     expect($device->pollingMethod(PollingMethodType::Icmp))->not->toBeNull();
 });
 
-test('existing device', function () {
+test('existing device', function (): void {
     // without credentials, a forced add uses the default credentials
     $secret = Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => 'public']]);
     LibrenmsConfig::set('snmp.default_credentials', [$secret->id]);
@@ -191,7 +192,7 @@ test('existing device', function () {
         ->execute();
 });
 
-test('explicit v3 credentials matching the defaults are kept', function () {
+test('Explicit v3 credentials that match the defaults are kept', function (): void {
     setDefaultCredentials('v3');
 
     $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '--v3' => true, '-u' => 'root'])
@@ -205,7 +206,7 @@ test('explicit v3 credentials matching the defaults are kept', function () {
     expect($data['authlevel'])->toBe('noAuthNoPriv');
 });
 
-test('v3 credentials without version', function () {
+test('v3 credentials without a version are v3', function (): void {
     $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-u' => 'SecName', '-A' => 'AuthPW', '-a' => 'SHA'])
         ->assertExitCode(0)
         ->execute();
@@ -220,7 +221,7 @@ test('v3 credentials without version', function () {
     // default
 });
 
-test('version only uses default credentials for that version', function () {
+test('Only a version uses the default credentials for that version', function (): void {
     $secrets = setDefaultCredentials('v3', 'v2c');
 
     $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '--v1' => true])
@@ -233,7 +234,7 @@ test('version only uses default credentials for that version', function () {
     expect($snmpMethod->settings['version'])->toBe('v1');
 });
 
-test('version only without default credentials', function () {
+test('Only a version without default credentials for that version', function (): void {
     setDefaultCredentials('v2c');
 
     $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '--v3' => true])

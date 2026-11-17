@@ -1,15 +1,15 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use LibreNMS\Util\Url;
 
+uses(LibreNMS\Tests\TestCase::class);
 
-test('generate', function () {
+test('generate', function (): void {
     expect(Url::generate(['page' => 'device', 'device' => 1], ['tab' => 'loadbalancer']))->toBe(url('device') . '/device=1/tab=loadbalancer/');
     expect(Url::generate(['page' => 'plugin/v1', 'opt' => 'x']))->toBe(url('plugin/v1') . '/');
 });
 
-test('generate encodes page', function () {
+test('generate encodes page', function (): void {
     $url = Url::generate(['page' => "x';alert(1);//\"><img>", 'device' => 1]);
 
     $this->assertStringNotContainsString("'", $url);

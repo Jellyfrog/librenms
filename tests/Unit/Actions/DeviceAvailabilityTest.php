@@ -1,9 +1,6 @@
 <?php
 
-uses(\LibreNMS\Polling\Method\Methods\PollingMethod::class);
 use App\Actions\Device\CheckDeviceAvailability;
-use \LibreNMS\Polling\Method\Methods\PollingMethod;
-use \LibreNMS\Tests\Unit\Actions\FakePollingMethod;
 use App\Actions\Device\SetDeviceAvailability;
 use App\Models\Device;
 use App\Models\DevicePollingMethod;
@@ -17,23 +14,25 @@ use LibreNMS\Exceptions\SecretDecryptionException;
 use LibreNMS\Polling\Method\Config\PollingMethodConfig;
 use LibreNMS\Polling\Method\Config\UnixAgentConfig;
 use LibreNMS\Polling\Method\Definitions\UnixAgentDefinition;
+use LibreNMS\Polling\Method\Methods\PollingMethod;
 use LibreNMS\Polling\Method\Methods\UnixAgentPollingMethod;
 use LibreNMS\Polling\Method\ProbeResult;
 use LibreNMS\Polling\PerDeviceMethodResults;
 
-test('status reason lists failed methods that affect availability', function () {
-    $snmp = method(PollingMethodType::Snmp, lastCheck: false);
-    $icmp = method(PollingMethodType::Icmp, lastCheck: false);
-    $ipmi = method(PollingMethodType::Ipmi, lastCheck: false, affectsAvailability: false);
-    $device = device([$snmp, $icmp, $ipmi]);
+uses(LibreNMS\Tests\TestCase::class);
+
+test('status reason lists failed methods that affect availability', function (): void {
+    $snmp = availabilityMethod(PollingMethodType::Snmp, lastCheck: false);
+    $icmp = availabilityMethod(PollingMethodType::Icmp, lastCheck: false);
+    $ipmi = availabilityMethod(PollingMethodType::Ipmi, lastCheck: false, affectsAvailability: false);
+    $device = availabilityDevice([$snmp, $icmp, $ipmi]);
     $setAvailability = new SetDeviceAvailability;
 
     expect($setAvailability->execute($device, commit: false))->toBeTrue();
     expect($device->status)->toBeFalse();
     expect($device->status_reason)->toBe('snmp,icmp');
-    $device->syncOriginal();
+    $device->syncOriginal(); // saved
 
-    // saved
     // disabled methods don't count
     $snmp->enabled = false;
     expect($setAvailability->execute($device, commit: false))->toBeFalse();
@@ -45,8 +44,8 @@ test('status reason lists failed methods that affect availability', function () 
     expect($device->status_reason)->toBe('');
 });
 
-test('unchecked method is not failed', function () {
-    $device = device([method(PollingMethodType::Snmp, lastCheck: null)]);
+test('unchecked method is not failed', function (): void {
+    $device = availabilityDevice([availabilityMethod(PollingMethodType::Snmp, lastCheck: null)]);
 
     expect($device->polling()->failedAvailabilityChecks()->isEmpty())->toBeTrue();
 
@@ -55,12 +54,12 @@ test('unchecked method is not failed', function () {
     expect($device->status_reason)->toBe('');
 });
 
-test('method that can not be checked is failed and others are still checked', function () {
-    $snmp = method(PollingMethodType::Snmp);
+test('method that can not be checked is failed and others are still checked', function (): void {
+    $snmp = availabilityMethod(PollingMethodType::Snmp);
     $snmp->setRelation('secret', undecryptableSecret());
-    $icmp = method(PollingMethodType::Icmp);
-    $device = device([$snmp, $icmp]);
-    mockFping(FpingResponse::artificialUp('192.0.2.1'));
+    $icmp = availabilityMethod(PollingMethodType::Icmp);
+    $device = availabilityDevice([$snmp, $icmp]);
+    availabilityMockFping(FpingResponse::artificialUp('192.0.2.1'));
 
     $status = app(CheckDeviceAvailability::class)->execute(new PerDeviceMethodResults($device));
 
@@ -71,17 +70,16 @@ test('method that can not be checked is failed and others are still checked', fu
     expect($device->status_reason)->toBe('snmp');
 });
 
-test('failed method that does not affect availability keeps device up', function () {
-    $snmp = method(PollingMethodType::Snmp, affectsAvailability: false);
+test('failed method that does not affect availability keeps device up', function (): void {
+    $snmp = availabilityMethod(PollingMethodType::Snmp, affectsAvailability: false);
     $snmp->setRelation('secret', undecryptableSecret());
-    $icmp = method(PollingMethodType::Icmp);
-    $device = device([$snmp, $icmp]);
-    mockFping(FpingResponse::artificialUp('192.0.2.1'));
+    $icmp = availabilityMethod(PollingMethodType::Icmp);
+    $device = availabilityDevice([$snmp, $icmp]);
+    availabilityMockFping(FpingResponse::artificialUp('192.0.2.1'));
 
     $methodResults = new PerDeviceMethodResults($device);
     expect(app(CheckDeviceAvailability::class)->execute($methodResults))->toBeTrue();
-    expect($snmp->last_check_successful)->toBeTrue();
-    // not checked yet, the first module that needs it checks it
+    expect($snmp->last_check_successful)->toBeTrue(); // not checked yet, the first module that needs it checks it
     expect($device->status_reason)->toBe('');
 
     expect($methodResults->isAvailable(PollingMethodType::Snmp))->toBeFalse();
@@ -90,17 +88,16 @@ test('failed method that does not affect availability keeps device up', function
     expect($device->status)->toBeTrue();
 });
 
-test('method is checked once for all modules', function () {
+test('method is checked once for all modules', function (): void {
     $agent = new FakePollingMethod([true, false]);
     $this->app->instance(UnixAgentPollingMethod::class, $agent);
-    $method = method(PollingMethodType::UnixAgent, lastCheck: null, affectsAvailability: false);
-    $device = device([$method]);
+    $method = availabilityMethod(PollingMethodType::UnixAgent, lastCheck: null, affectsAvailability: false);
+    $device = availabilityDevice([$method]);
     $methodResults = new PerDeviceMethodResults($device);
 
     app(CheckDeviceAvailability::class)->execute($methodResults);
-    expect($agent->probes)->toBe(0);
+    expect($agent->probes)->toBe(0); // does not affect availability
 
-    // does not affect availability
     expect($methodResults->isAvailable(PollingMethodType::UnixAgent))->toBeTrue();
     expect($methodResults->result(PollingMethodType::UnixAgent)?->stat('output'))->toBe('output');
     expect($agent->probes)->toBe(1);
@@ -111,12 +108,12 @@ test('method is checked once for all modules', function () {
     expect($agent->probes)->toBe(2);
 });
 
-test('disabled method is not checked', function () {
+test('disabled method is not checked', function (): void {
     $agent = new FakePollingMethod([true]);
     $this->app->instance(UnixAgentPollingMethod::class, $agent);
-    $method = method(PollingMethodType::UnixAgent);
+    $method = availabilityMethod(PollingMethodType::UnixAgent);
     $method->enabled = false;
-    $methodResults = new PerDeviceMethodResults(device([$method]));
+    $methodResults = new PerDeviceMethodResults(availabilityDevice([$method]));
 
     app(CheckDeviceAvailability::class)->execute($methodResults);
 
@@ -125,9 +122,9 @@ test('disabled method is not checked', function () {
     expect($agent->probes)->toBe(0);
 });
 
-test('probe exception marks method failed', function () {
-    $icmp = method(PollingMethodType::Icmp);
-    $device = device([$icmp]);
+test('probe exception marks method failed', function (): void {
+    $icmp = availabilityMethod(PollingMethodType::Icmp);
+    $device = availabilityDevice([$icmp]);
 
     $fping = Mockery::mock(Fping::class);
     $fping->shouldReceive('ping')->andThrow(new \RuntimeException('fping exploded'));
@@ -138,8 +135,8 @@ test('probe exception marks method failed', function () {
     expect($device->status_reason)->toBe('icmp');
 });
 
-test('device without polling methods keeps its status', function () {
-    $device = device([]);
+test('device without polling methods keeps its status', function (): void {
+    $device = availabilityDevice([]);
     $device->status = false;
     $device->status_reason = 'icmp';
     $device->syncOriginal();
@@ -150,16 +147,16 @@ test('device without polling methods keeps its status', function () {
     expect($device->isDirty())->toBeFalse();
 });
 
-test('unknown method is not checked and does not affect availability', function () {
+test('unknown method is not checked and does not affect availability', function (): void {
     $unknown = new DevicePollingMethod([
         'method_type' => 'future-method',
         'enabled' => true,
         'affects_availability' => true,
         'last_check_successful' => false,
     ]);
-    $icmp = method(PollingMethodType::Icmp);
-    $device = device([$unknown, $icmp]);
-    mockFping(FpingResponse::artificialUp('192.0.2.1'));
+    $icmp = availabilityMethod(PollingMethodType::Icmp);
+    $device = availabilityDevice([$unknown, $icmp]);
+    availabilityMockFping(FpingResponse::artificialUp('192.0.2.1'));
     $methodResults = new PerDeviceMethodResults($device);
 
     expect(app(CheckDeviceAvailability::class)->execute($methodResults))->toBeTrue();
@@ -168,8 +165,8 @@ test('unknown method is not checked and does not affect availability', function 
     expect($unknown->last_check_successful)->toBeFalse();
 });
 
-test('device with only unknown methods keeps its status', function () {
-    $device = device([new DevicePollingMethod([
+test('device with only unknown methods keeps its status', function (): void {
+    $device = availabilityDevice([new DevicePollingMethod([
         'method_type' => 'future-method',
         'enabled' => true,
         'affects_availability' => true,
@@ -183,10 +180,10 @@ test('device with only unknown methods keeps its status', function () {
     expect($device->isDirty())->toBeFalse();
 });
 
-test('secret of unknown type fails the method without reporting it', function () {
-    $snmp = method(PollingMethodType::Snmp);
+test('secret of unknown type fails the method without reporting it', function (): void {
+    $snmp = availabilityMethod(PollingMethodType::Snmp);
     $snmp->setRelation('secret', new Secret(['secret_type' => 'future-secret', 'data' => []]));
-    $device = device([$snmp]);
+    $device = availabilityDevice([$snmp]);
     $this->app->instance(\Illuminate\Contracts\Debug\ExceptionHandler::class, Mockery::mock(\Illuminate\Contracts\Debug\ExceptionHandler::class)->shouldNotReceive('report')->getMock());
 
     expect(app(CheckDeviceAvailability::class)->execute(new PerDeviceMethodResults($device)))->toBeFalse();
@@ -197,11 +194,10 @@ test('secret of unknown type fails the method without reporting it', function ()
 /**
  * @param  DevicePollingMethod[]  $methods
  */
-function device(array $methods): Device
+function availabilityDevice(array $methods): Device
 {
     $device = new Device(['hostname' => '192.0.2.1', 'status' => true]);
-    $device->syncOriginal();
-    // as if loaded, so status changes are detected
+    $device->syncOriginal(); // as if loaded, so status changes are detected
     foreach ($methods as $method) {
         $method->setRelation('device', $device);
     }
@@ -210,7 +206,7 @@ function device(array $methods): Device
     return $device;
 }
 
-function method(PollingMethodType $type, ?bool $lastCheck = true, bool $affectsAvailability = true): DevicePollingMethod
+function availabilityMethod(PollingMethodType $type, ?bool $lastCheck = true, bool $affectsAvailability = true): DevicePollingMethod
 {
     return new DevicePollingMethod([
         'method_type' => $type,
@@ -229,11 +225,11 @@ function undecryptableSecret(): Secret
     return $secret;
 }
 
-function mockFping(FpingResponse $response): void
+function availabilityMockFping(FpingResponse $response): void
 {
     $fping = Mockery::mock(Fping::class);
     $fping->shouldReceive('ping')->andReturn($response);
-    $this->app->instance(Fping::class, $fping);
+    app()->instance(Fping::class, $fping);
 }
 
 /**
@@ -241,36 +237,38 @@ function mockFping(FpingResponse $response): void
  */
 final class FakePollingMethod extends PollingMethod
 {
+    public int $probes = 0;
+
     /**
      * @param  bool[]  $results
      */
-    function __construct(private array $results)
+    public function __construct(private array $results)
     {
     }
 
-    function probe(Device $device, PollingMethodConfig $config): ProbeResult
+    public function probe(Device $device, PollingMethodConfig $config): ProbeResult
     {
         $this->probes++;
 
         return array_shift($this->results) ? ProbeResult::success(['output' => 'output']) : ProbeResult::failure(errorMessage: 'refused');
     }
 
-    function definition(): UnixAgentDefinition
+    public function definition(): UnixAgentDefinition
     {
         return new UnixAgentDefinition;
     }
 
-    function defaultAffectsAvailability(): bool
+    public function defaultAffectsAvailability(): bool
     {
         return false;
     }
 
-    function defaults(?Device $device = null): array
+    public function defaults(?Device $device = null): array
     {
         return [];
     }
 
-    function config(Device $device, ?DevicePollingMethod $deviceMethod = null): UnixAgentConfig
+    public function config(Device $device, ?DevicePollingMethod $deviceMethod = null): UnixAgentConfig
     {
         return new UnixAgentConfig(port: 6556, timeout: 1);
     }

@@ -22,17 +22,18 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\Device;
 use App\Models\Vrf;
 use Illuminate\Database\Eloquent\Collection;
 
-test('default context only without vrfs', function () {
-    expect(device([])->getVrfContexts())->toBe(['']);
+uses(LibreNMS\Tests\TestCase::class);
+
+test('default context only without vrfs', function (): void {
+    expect(vrfDevice([])->getVrfContexts())->toBe(['']);
 });
 
-test('vrf contexts', function () {
-    $device = device([
+test('vrf contexts', function (): void {
+    $device = vrfDevice([
         [1, 'red', 'ctx-red'],
         [2, 'blue', null],
         [3, 'Default', 'default'],
@@ -46,8 +47,8 @@ test('vrf contexts', function () {
     expect($device->getSkippedVrfContexts())->toBe(['ctx-purple', 'ctx-orange'], 'Contexts that did not answer and disabled contexts are kept separately');
 });
 
-test('vrf id for context', function () {
-    $device = device([
+test('vrf id for context', function (): void {
+    $device = vrfDevice([
         [1, 'red', 'ctx-red'],
         [2, 'blue', null],
         [3, 'ctx-red', null],
@@ -63,7 +64,7 @@ test('vrf id for context', function () {
 /**
  * @param  array<int, array{0: int, 1: string, 2: string|null, 3?: bool, 4?: bool}>  $vrfs  id, name, context, verified, enabled
  */
-function device(array $vrfs): Device
+function vrfDevice(array $vrfs): Device
 {
     $device = new Device;
     $device->setRelation('vrfs', new Collection(array_map(fn (array $vrf) => (new Vrf)->forceFill([

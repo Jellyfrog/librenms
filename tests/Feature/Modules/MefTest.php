@@ -22,7 +22,6 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Facades\DeviceCache;
 use App\Models\Device;
 use App\Models\Eventlog;
@@ -33,10 +32,10 @@ use LibreNMS\Interfaces\Data\DataStorageInterface;
 use LibreNMS\Modules\Mef;
 use LibreNMS\OS;
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(\LibreNMS\Tests\DBTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-test('discovery syncs evcs', function () {
-    $os = os('generic');
+test('discovery syncs evcs', function (): void {
+    $os = mefOs('generic');
     MefInfo::factory()->for($os->getDevice())->create(['mefID' => 9]);
 
     mockWalk(new SnmpResponse([
@@ -51,8 +50,8 @@ test('discovery syncs evcs', function () {
     expect($mefs->pluck('mefMTU')->all())->toBe([1522, 0], 'Only Coriant corrects a zero MTU');
 });
 
-test('discovery keeps evcs when the device does not answer', function () {
-    $os = os('generic');
+test('discovery keeps evcs when the device does not answer', function (): void {
+    $os = mefOs('generic');
     MefInfo::factory()->for($os->getDevice())->create(['mefID' => 1]);
 
     mockWalk(new SnmpResponse([], 'Timeout: No Response from udp:192.0.2.1:161', 1));
@@ -61,8 +60,8 @@ test('discovery keeps evcs when the device does not answer', function () {
     expect($os->getDevice()->mefInfo()->pluck('mefID')->all())->toBe([1]);
 });
 
-test('polling updates evcs and logs changes', function () {
-    $os = os('generic');
+test('polling updates evcs and logs changes', function (): void {
+    $os = mefOs('generic');
     $mef = MefInfo::factory()->for($os->getDevice())->create(['mefID' => 1, 'mefIdent' => 'EVC-A', 'mefMTU' => 1522, 'mefAdmState' => 'unlocked']);
     $gone = MefInfo::factory()->for($os->getDevice())->create(['mefID' => 2, 'mefMTU' => 9000]);
 
@@ -75,8 +74,8 @@ test('polling updates evcs and logs changes', function () {
     expect(Eventlog::where('device_id', $os->getDevice()->device_id)->where('message', 'like', 'MEF Link : %')->pluck('message')->all())->toEqualCanonicalizing(['MEF Link : EVC-A (1522) -> 9100', 'MEF Link : EVC-A (unlocked) -> locked']);
 });
 
-test('coriant corrects zero mtu', function () {
-    $os = os('coriant');
+test('coriant corrects zero mtu', function (): void {
+    $os = mefOs('coriant');
 
     mockWalk(new SnmpResponse([
         ...evc(1, 'EVC-A', 0),
@@ -96,7 +95,7 @@ test('coriant corrects zero mtu', function () {
     expect($os->getDevice()->mefInfo()->orderBy('mefID')->pluck('mefMTU')->all())->toBe([1600, 1600]);
 });
 
-function os(string $os): OS
+function mefOs(string $os): OS
 {
     $device = Device::factory()->create(['os' => $os]);
     DeviceCache::setPrimary($device->device_id);
@@ -110,7 +109,7 @@ function mockWalk(SnmpResponse $response): void
     $query = Mockery::mock(SnmpQueryBuilder::class);
     $query->shouldReceive('mibs', 'cache', 'enumStrings', 'abortOnFailure')->andReturnSelf();
     $query->shouldReceive('walk')->andReturn($response);
-    $this->app->instance(SnmpQueryBuilder::class, $query);
+    app()->instance(SnmpQueryBuilder::class, $query);
 }
 
 /**

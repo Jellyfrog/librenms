@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use App\Models\Secret;
@@ -17,15 +16,14 @@ use LibreNMS\Enum\SecretType;
 use Mockery\MockInterface;
 use Spatie\Permission\Models\Permission;
 
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-beforeEach(function () {
+beforeEach(function (): void {
     Permission::findOrCreate('device.create');
     $this->admin = User::factory()->admin()->create(['enabled' => 1]);
 });
 
-test('new secret data is ajson object without defaults', function () {
+test('new secret data is a json object without defaults', function (): void {
     // Alpine sets the fields by name, those are lost when a JSON array is posted
     $this->actingAs($this->admin)->get(route('device.add'))
         ->assertOk()
@@ -34,7 +32,7 @@ test('new secret data is ajson object without defaults', function () {
             && json_encode($config['methods']['snmp']['formData']) !== '{}');
 });
 
-test('proxmox token secret must be auuid', function () {
+test('proxmox token secret must be a uuid', function (): void {
     $this->actingAs($this->admin)->postJson(route('device.add.store'), [
         'hostname' => 'pve.example.com',
         'polling_methods' => ['proxmox-api' => [
@@ -50,7 +48,7 @@ test('proxmox token secret must be auuid', function () {
     )->passes())->toBeTrue();
 });
 
-test('index provides default display template', function () {
+test('index provides default display template', function (): void {
     LibrenmsConfig::set('device_display_default', '{{ $hostname }} - {{ $sysName }}');
 
     $this->actingAs($this->admin)->get(route('device.add'))
@@ -64,7 +62,7 @@ test('index provides default display template', function () {
     // add anyway dialog
 });
 
-test('index prefills hostname from search', function () {
+test('index prefills hostname from search', function (): void {
     $this->actingAs($this->admin)->get(route('device.add', ['hostname' => '198.51.100.30']))
         ->assertOk()
         ->assertViewHas('add_device_config', fn (array $config): bool => $config['hostname'] === '198.51.100.30');
@@ -74,7 +72,7 @@ test('index prefills hostname from search', function () {
         ->assertViewHas('add_device_config', fn (array $config): bool => $config['hostname'] === 'corrected.example.test');
 });
 
-test('index default methods follow icmp check', function () {
+test('index default methods follow icmp check', function (): void {
     $this->actingAs($this->admin)->get(route('device.add'))
         ->assertViewHas('oldActiveMethods', [PollingMethodType::Icmp->value, PollingMethodType::Snmp->value]);
 
@@ -83,7 +81,7 @@ test('index default methods follow icmp check', function () {
         ->assertViewHas('oldActiveMethods', [PollingMethodType::Snmp->value]);
 });
 
-test('store without checking saves device and settings', function () {
+test('store without checking saves device and settings', function (): void {
     [$default] = defaultSecrets('public');
     snmpBackend()->shouldNotReceive('get');
 
@@ -106,7 +104,7 @@ test('store without checking saves device and settings', function () {
     expect($snmp->last_check_successful)->toBeNull();
 });
 
-test('store without checking or credentials is rejected', function () {
+test('store without checking or credentials is rejected', function (): void {
     LibrenmsConfig::set('snmp.default_credentials', []);
 
     store('no-credentials.example.com', ['snmp' => ['validate' => '0']])
@@ -116,7 +114,7 @@ test('store without checking or credentials is rejected', function () {
     $this->assertDatabaseMissing('devices', ['hostname' => 'no-credentials.example.com']);
 });
 
-test('store unreachable returns each credential tried', function () {
+test('store unreachable returns each credential tried', function (): void {
     defaultSecrets('public', 'private');
     snmpBackend()->shouldReceive('get')->andReturn(new RawSnmpResponse('', 'Timeout', 1));
 
@@ -137,7 +135,7 @@ test('store unreachable returns each credential tried', function () {
     $this->assertDatabaseMissing('devices', ['hostname' => 'unreachable.example.com']);
 });
 
-test('store with existing secret only tries that secret', function () {
+test('store with existing secret only tries that secret', function (): void {
     defaultSecrets('global-community');
     $secret = Secret::factory()->create([
         'secret_type' => SecretType::SnmpCommunity,
@@ -159,7 +157,7 @@ test('store with existing secret only tries that secret', function () {
     // without a version a community is tried as v1 too
 });
 
-test('store without checking still rejects duplicate ip', function () {
+test('store without checking still rejects duplicate ip', function (): void {
     [$default] = defaultSecrets('public');
     Device::factory()->create(['hostname' => 'existing.example.com', 'ip' => '192.0.2.10']);
     snmpBackend()->shouldNotReceive('get');
@@ -184,7 +182,7 @@ test('store without checking still rejects duplicate ip', function () {
     expect($snmp->last_check_successful)->toBeNull();
 });
 
-test('duplicate can be added anyway', function () {
+test('duplicate can be added anyway', function (): void {
     LibrenmsConfig::set('allow_duplicate_sysName', false);
     Device::factory()->create(['hostname' => 'existing.example.com', 'sysName' => 'router1']);
     fping()->shouldReceive('ping')->andReturn(FpingResponse::artificialUp());
@@ -199,7 +197,7 @@ test('duplicate can be added anyway', function () {
     $this->assertDatabaseHas('devices', ['hostname' => 'ping.example.com', 'sysName' => 'router1']);
 });
 
-test('duplicate hostname can not be added anyway', function () {
+test('duplicate hostname can not be added anyway', function (): void {
     Device::factory()->create(['hostname' => 'existing.example.com']);
 
     $response = store('existing.example.com', ['icmp' => ['validate' => '0']], ['force_add' => 1])
@@ -207,7 +205,7 @@ test('duplicate hostname can not be added anyway', function () {
     expect($response->json('status'))->toBeNull();
 });
 
-test('force add skips all checks', function () {
+test('force add skips all checks', function (): void {
     defaultSecrets('public');
     snmpBackend()->shouldNotReceive('get');
     fping()->shouldNotReceive('ping');
@@ -220,7 +218,7 @@ test('force add skips all checks', function () {
     $this->assertDatabaseHas('devices', ['hostname' => 'forced.example.com']);
 });
 
-test('only methods with validate checked are checked', function () {
+test('only methods with validate checked are checked', function (): void {
     defaultSecrets('public');
     snmpBackend()->shouldNotReceive('get');
     fping()->shouldReceive('ping')->once()->andReturn(FpingResponse::artificialUp('192.0.2.1'));
@@ -235,7 +233,7 @@ test('only methods with validate checked are checked', function () {
     expect($device->pollingMethod(PollingMethodType::Snmp)?->last_check_successful)->toBeNull();
 });
 
-test('new secret requires secret create permission', function () {
+test('new secret requires secret create permission', function (): void {
     $user = User::factory()->create(['enabled' => 1]);
     $user->givePermissionTo('device.create');
 
@@ -254,7 +252,7 @@ test('new secret requires secret create permission', function () {
     $this->assertDatabaseMissing('devices', ['hostname' => 'no-secret-create.example.com']);
 });
 
-test('new secret gets unique default description', function () {
+test('new secret gets unique default description', function (): void {
     Secret::factory()->create(['description' => 'SNMP 127.0.0.10', 'secret_type' => SecretType::SnmpCommunity]);
 
     store('127.0.0.10', ['snmp' => [
@@ -267,7 +265,7 @@ test('new secret gets unique default description', function () {
     $this->assertDatabaseHas('secrets', ['description' => 'SNMP 127.0.0.10 (2)']);
 });
 
-test('secret of another type is an error of the method', function () {
+test('secret of another type is an error of the method', function (): void {
     $ipmi = Secret::factory()->create(['description' => 'add ipmi', 'secret_type' => SecretType::Ipmi, 'data' => ['username' => 'admin']]);
 
     // the error is for the method, so the form shows it on its tab
@@ -280,7 +278,7 @@ test('secret of another type is an error of the method', function () {
     $this->assertDatabaseMissing('devices', ['hostname' => 'wrong-type.example.com']);
 });
 
-test('index shows the community version for communities only', function () {
+test('index shows the community version for communities only', function (): void {
     $community = Secret::factory()->create(['description' => 'add community', 'secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => 'public']]);
     $response = $this->actingAs($this->admin)->get(route('device.add'))->assertOk();
     $snmp = collect($response->viewData('availableMethods'))->firstWhere('type', 'snmp');
@@ -291,7 +289,7 @@ test('index shows the community version for communities only', function () {
     expect($response->viewData('add_device_config')['secret_type_by_id']['snmp']->{$community->id})->toBe('snmp-community');
 });
 
-test('store requires apolling method', function () {
+test('store requires a polling method', function (): void {
     $this->actingAs($this->admin)->postJson(route('device.add.store'), [
         'hostname' => 'no-methods.example.com',
         'polling_methods' => [],
@@ -305,13 +303,13 @@ test('store requires apolling method', function () {
     $this->assertDatabaseMissing('devices', ['hostname' => 'inactive-methods.example.com']);
 });
 
-test('store rejects long display template', function () {
+test('store rejects long display template', function (): void {
     store('display-test.example.com', ['snmp' => ['validate' => '0']], ['display_template' => str_repeat('a', 129)])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['display_template']);
 });
 
-test('store does not leak unexpected exception messages', function () {
+test('store does not leak unexpected exception messages', function (): void {
     fping()->shouldReceive('ping')->andThrow(new \RuntimeException('SQLSTATE[23000] secret details'));
 
     $response = store('127.0.0.12', ['icmp' => ['validate' => '1']]);
@@ -327,7 +325,7 @@ test('store does not leak unexpected exception messages', function () {
  */
 function store(string $hostname, array $methods, array $extra = []): TestResponse
 {
-    return $this->actingAs($this->admin)->postJson(route('device.add.store'), [
+    return test()->actingAs(test()->admin)->postJson(route('device.add.store'), [
         'hostname' => $hostname,
         'poller_group' => 0,
         'polling_methods' => array_map(fn (array $data) => ['active' => '1', 'secret_mode' => 'default', ...$data], $methods),
@@ -355,7 +353,7 @@ function defaultSecrets(string ...$communities): array
 function snmpBackend(): MockInterface
 {
     $backend = Mockery::mock(SnmpBackendInterface::class);
-    $this->app->instance(SnmpBackendInterface::class, $backend);
+    app()->instance(SnmpBackendInterface::class, $backend);
 
     return $backend;
 }
@@ -363,7 +361,7 @@ function snmpBackend(): MockInterface
 function fping(): MockInterface
 {
     $fping = Mockery::mock(Fping::class);
-    $this->app->instance(Fping::class, $fping);
+    app()->instance(Fping::class, $fping);
 
     return $fping;
 }

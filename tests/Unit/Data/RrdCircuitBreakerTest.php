@@ -9,7 +9,11 @@ use LibreNMS\Data\Store\Rrd;
 use LibreNMS\Exceptions\RrdCachedConnectionException;
 use LibreNMS\RRD\RrdProcess;
 
-beforeEach(function () {
+beforeEach(function (): void {
+    $this->runs = 0;
+    $this->failing = true;
+    $this->events = [];
+
     Carbon::setTestNow('2026-01-01 00:00:00');
     LibrenmsConfig::set('rrdtool_version', '1.6');
     LibrenmsConfig::set('rrd_dir', '/tmp');
@@ -33,11 +37,11 @@ beforeEach(function () {
     $this->app->instance(Eventlog::class, $eventlog);
 });
 
-afterEach(function () {
+afterEach(function (): void {
     Carbon::setTestNow();
 });
 
-test('backs off and recovers', function () {
+test('backs off and recovers', function (): void {
     $rrd = new Rrd();
 
     // trips after threshold
@@ -75,7 +79,7 @@ test('backs off and recovers', function () {
     $this->assertStringContainsString('suspended for 30s', $this->events[3]);
 });
 
-test('backoff is capped', function () {
+test('backoff is capped', function (): void {
     $rrd = new Rrd();
     writeTimes($rrd, 3);
 

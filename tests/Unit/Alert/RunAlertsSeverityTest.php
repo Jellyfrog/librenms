@@ -1,12 +1,13 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\Eventlog;
 use LibreNMS\Alert\RunAlerts;
 use LibreNMS\Enum\AlertState;
 use LibreNMS\Enum\Severity;
 
-test('active alert event uses rule severity', function () {
+uses(LibreNMS\Tests\TestCase::class);
+
+test('active alert event uses rule severity', function (): void {
     $eventlog = Mockery::mock(Eventlog::class);
     $this->app->instance(Eventlog::class, $eventlog);
 

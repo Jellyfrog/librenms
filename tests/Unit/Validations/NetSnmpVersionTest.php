@@ -1,12 +1,11 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use LibreNMS\Validations\Snmp;
 use LibreNMS\Validator;
-use PHPUnit\Framework\Attributes\DataProvider;
 
+uses(LibreNMS\Tests\TestCase::class);
 
-test('net snmp version', function (string $version, bool $warns) {
+test('net snmp version', function (string $version, bool $warns): void {
     $validator = Mockery::mock(Validator::class);
     if ($warns) {
         $validator->shouldReceive('warn')->once()->withArgs(fn (string $message, string $fix) => str_starts_with($message, "net-snmp $version is older than 5.8.")

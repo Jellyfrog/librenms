@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use LibreNMS\Enum\SecretType;
 use LibreNMS\Polling\Secrets\Data\IpmiSecretData;
 use LibreNMS\Polling\Secrets\Data\SnmpCommunitySecretData;
@@ -9,36 +8,38 @@ use LibreNMS\Polling\Secrets\Definitions\SecretDefinition;
 use LibreNMS\Polling\Secrets\Definitions\SnmpCommunitySecretDefinition;
 use LibreNMS\Polling\Secrets\Definitions\SnmpV3SecretDefinition;
 
-test('mask hides only sensitive values', function () {
+uses(LibreNMS\Tests\TestCase::class);
+
+test('mask hides only sensitive values', function (): void {
     $masked = (new SnmpV3SecretDefinition)->mask(['authname' => 'user', 'authpass' => 'secret', 'cryptopass' => '']);
 
     expect($masked)->toBe(['authname' => 'user', 'authpass' => SecretDefinition::MASK, 'cryptopass' => '']);
     expect((new SnmpCommunitySecretDefinition)->mask(['community' => 'public']))->toBe(['community' => SecretDefinition::MASK]);
 });
 
-test('unmask restores unchanged values', function () {
+test('unmask restores unchanged values', function (): void {
     $original = ['authname' => 'user', 'authpass' => 'secret', 'cryptopass' => 'crypt'];
     $submitted = ['authname' => 'user', 'authpass' => SecretDefinition::MASK, 'cryptopass' => 'changed'];
 
     expect((new SnmpV3SecretDefinition)->unmask($submitted, $original))->toBe(['authname' => 'user', 'authpass' => 'secret', 'cryptopass' => 'changed']);
 });
 
-test('schema defaults', function () {
+test('schema defaults', function (): void {
     expect(SecretType::SnmpCommunity->definition()->schemaDefaults())->toBe([]);
     expect(SecretType::SnmpV3->definition()->schemaDefaults())->toBe(['authlevel' => 'noAuthNoPriv', 'authalgo' => 'MD5', 'cryptoalgo' => 'AES']);
 });
 
-test('snmp v3 secret data defaults match the form', function () {
+test('snmp v3 secret data defaults match the form', function (): void {
     expect(SnmpV3SecretData::fromArray([])->toArray())->toEqual(SecretType::SnmpV3->definition()->schemaDefaults());
 });
 
-test('no snmp field has aversion', function () {
+test('no snmp field has aversion', function (): void {
     foreach ([SecretType::SnmpCommunity, SecretType::SnmpV3] as $type) {
         $this->assertArrayNotHasKey('version', $type->definition()->fields(), "$type->value secrets must not hold the version, it is a polling method setting");
     }
 });
 
-test('data fills defaults', function () {
+test('data fills defaults', function (): void {
     $community = SecretType::SnmpCommunity->data(['community' => 'public']);
     expect($community)->toBeInstanceOf(SnmpCommunitySecretData::class);
     expect($community->community)->toBe('public');

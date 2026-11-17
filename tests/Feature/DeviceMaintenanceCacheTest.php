@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Models\AlertSchedule;
 use App\Models\Device;
 use App\Models\DeviceGroup;
@@ -10,9 +9,9 @@ use LibreNMS\Cache\DeviceMaintenanceCache;
 use LibreNMS\Enum\MaintenanceBehavior;
 use LibreNMS\Enum\MaintenanceStatus;
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-test('returns none when no schedules active', function () {
+test('returns none when no schedules active', function (): void {
     $device = Device::factory()->create();
 
     $cache = new DeviceMaintenanceCache();
@@ -20,7 +19,7 @@ test('returns none when no schedules active', function () {
     expect($device->getMaintenanceStatus())->toEqual(MaintenanceStatus::None);
 });
 
-test('direct device maintenance schedule', function () {
+test('direct device maintenance schedule', function (): void {
     $device = Device::factory()->create();
     $schedule = AlertSchedule::factory()->create([
         'start' => Carbon::now()->subHour(),
@@ -34,7 +33,7 @@ test('direct device maintenance schedule', function () {
     expect($device->getMaintenanceStatus())->toEqual(MaintenanceStatus::MuteAlerts);
 });
 
-test('location maintenance schedule', function () {
+test('location maintenance schedule', function (): void {
     $location = Location::factory()->create();
     $device = Device::factory()->create(['location_id' => $location->id]);
     $schedule = AlertSchedule::factory()->create([
@@ -49,7 +48,7 @@ test('location maintenance schedule', function () {
     expect($device->getMaintenanceStatus())->toEqual(MaintenanceStatus::SkipAlerts);
 });
 
-test('device group maintenance schedule', function () {
+test('device group maintenance schedule', function (): void {
     $group = DeviceGroup::factory()->create();
     $device = Device::factory()->create();
     $group->devices()->attach($device);

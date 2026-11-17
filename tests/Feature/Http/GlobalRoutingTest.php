@@ -29,7 +29,7 @@ beforeEach(function () {
     Role::findOrCreate('user');
 });
 
-function admin(): User
+function globalRoutingAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -40,13 +40,13 @@ function admin(): User
 test('index redirects to first available protocol', function () {
     Vrf::factory()->for(Device::factory())->create();
 
-    $this->actingAs(admin())
+    $this->actingAs(globalRoutingAdmin())
         ->get('routing')
         ->assertRedirect(route('routing.vrf'));
 });
 
 test('legacy urls redirect', function () {
-    $admin = admin();
+    $admin = globalRoutingAdmin();
 
     $this->actingAs($admin)
         ->get('routing/protocol=bgp/type=external/graph=NULL')
@@ -94,7 +94,7 @@ test('bgp page filters', function () {
         'bgpPeerAdminStatus' => 'start',
         'bgpPeerDescr' => 'External-Peer',
     ]);
-    $admin = admin();
+    $admin = globalRoutingAdmin();
 
     $this->actingAs($admin)
         ->get(route('routing.bgp'))
@@ -163,14 +163,14 @@ test('cef page', function () {
         'cef_path' => 'RP RIB',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(globalRoutingAdmin())
         ->get(route('routing.cef'))
         ->assertOk()
         ->assertSee('cef-router.local')
         ->assertSee('RP0 (ASR1000-RP2)')
         ->assertSee('RP RIB');
 
-    $this->actingAs(admin())
+    $this->actingAs(globalRoutingAdmin())
         ->get(route('routing.cef', ['view' => 'graphs']))
         ->assertOk()
         ->assertSee('cefswitching_graph');
@@ -186,7 +186,7 @@ test('isis page state filter', function () {
         'isisISAdjState' => 'down',
         'isisISAdjNeighSysID' => '0000.0000.0002',
     ]);
-    $admin = admin();
+    $admin = globalRoutingAdmin();
 
     $this->actingAs($admin)
         ->get(route('routing.isis'))
@@ -237,7 +237,7 @@ test('mpls page views', function () {
         'sapEncapValue' => '*',
         'sapDescription' => 'Customer-SAP',
     ]);
-    $admin = admin();
+    $admin = globalRoutingAdmin();
 
     $this->actingAs($admin)
         ->get(route('routing.mpls'))
@@ -293,14 +293,14 @@ test('ospf pages', function () {
         'router_id' => '10.255.255.6',
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(globalRoutingAdmin())
         ->get(route('routing.ospf'))
         ->assertOk()
         ->assertSee('ospf-router.local')
         ->assertSee('10.255.255.1')
         ->assertSee('2 (1)');
 
-    $this->actingAs(admin())
+    $this->actingAs(globalRoutingAdmin())
         ->get(route('routing.ospfv3'))
         ->assertOk()
         ->assertSee('ospf-router.local')
@@ -316,7 +316,7 @@ test('vrf page', function () {
     ]);
     Vrf::factory()->for($device)->create(['vrf_name' => 'OTHER_VRF']);
     Port::factory()->for($device)->create(['ifDescr' => 'GigabitEthernet0/1', 'ifVrf' => $vrf->vrf_id]);
-    $admin = admin();
+    $admin = globalRoutingAdmin();
 
     $this->actingAs($admin)
         ->get(route('routing.vrf'))
@@ -372,7 +372,7 @@ test('cisco otv page', function () {
         ],
     ]);
 
-    $this->actingAs(admin())
+    $this->actingAs(globalRoutingAdmin())
         ->get(route('routing.cisco-otv'))
         ->assertOk()
         ->assertSee('otv-router.local')

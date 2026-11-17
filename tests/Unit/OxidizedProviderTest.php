@@ -32,17 +32,17 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use LibreNMS\Interfaces\ConfigBackupProvider;
 
-beforeEach(function () {
+beforeEach(function (): void {
     LibrenmsConfig::set('oxidized.enabled', true);
     LibrenmsConfig::set('oxidized.url', 'http://oxidized:8888');
 });
 
-function makeProvider(): OxidizedProvider
+function makeOxidizedProvider(): OxidizedProvider
 {
     return new OxidizedProvider(new Oxidized());
 }
 
-function makeDevice(): Device
+function makeOxidizedDevice(): Device
 {
     $device = new Device(['hostname' => 'router.example.com']);
     $device->device_id = 42;
@@ -69,33 +69,33 @@ function fakeNode(array $extra = []): array
     ], $extra);
 }
 
-test('is configured delegates to client', function () {
+test('is configured delegates to client', function (): void {
     expect(OxidizedProvider::isConfigured())->toBeTrue();
 
     LibrenmsConfig::set('oxidized.enabled', false);
     expect(OxidizedProvider::isConfigured())->toBeFalse();
 });
 
-test('supports device honours ignore lists', function () {
-    $device = makeDevice();
+test('supports device honours ignore lists', function (): void {
+    $device = makeOxidizedDevice();
     $device->os = 'ios';
 
-    expect(makeProvider()->supportsDevice($device))->toBeTrue();
+    expect(makeOxidizedProvider()->supportsDevice($device))->toBeTrue();
 
     LibrenmsConfig::set('oxidized.ignore_os', ['ios']);
-    expect(makeProvider()->supportsDevice($device))->toBeFalse();
+    expect(makeOxidizedProvider()->supportsDevice($device))->toBeFalse();
 });
 
-test('supports device honours disable attrib', function () {
-    $device = makeDevice();
+test('supports device honours disable attrib', function (): void {
+    $device = makeOxidizedDevice();
     $device->setRelation('attribs', collect([
         new DeviceAttrib(['attrib_type' => 'override_Oxidized_disable', 'attrib_value' => 'true']),
     ]));
 
-    expect(makeProvider()->supportsDevice($device))->toBeFalse();
+    expect(makeOxidizedProvider()->supportsDevice($device))->toBeFalse();
 });
 
-test('backups maps versions', function () {
+test('backups maps versions', function (): void {
     Http::fake([
         'oxidized:8888/node/show/*' => Http::response(fakeNode(), 200),
         'oxidized:8888/node/version?*' => Http::response([
@@ -104,7 +104,7 @@ test('backups maps versions', function () {
         ], 200),
     ]);
 
-    $list = makeProvider()->backups(makeDevice());
+    $list = makeOxidizedProvider()->backups(makeOxidizedDevice());
 
     expect($list['backups'][0]['id'])->toBe('aaaa1111');
     expect($list['backups'][0]['date'])->toBe(strtotime('2026-07-14 00:24:24 +0000'));
@@ -116,7 +116,7 @@ test('backups maps versions', function () {
     expect($list['totalPages'])->toBe(1);
 });
 
-test('backups maps versions with time field when date is missing', function () {
+test('backups maps versions with time field when date is missing', function (): void {
     Http::fake([
         'oxidized:8888/node/show/*' => Http::response(fakeNode(), 200),
         'oxidized:8888/node/version?*' => Http::response([
@@ -126,7 +126,7 @@ test('backups maps versions with time field when date is missing', function () {
         ], 200),
     ]);
 
-    $list = makeProvider()->backups(makeDevice());
+    $list = makeOxidizedProvider()->backups(makeOxidizedDevice());
 
     expect($list['backups'][0]['date'])->toBe(strtotime('2026-07-29 23:36:42 +0000'));
     expect($list['backups'][1]['date'])->toBe(strtotime('2026-07-28 23:36:42 +0000'));
@@ -134,7 +134,7 @@ test('backups maps versions with time field when date is missing', function () {
     expect($list['total'])->toBe(3);
 });
 
-test('backups maps versions prefers date over time', function () {
+test('backups maps versions prefers date over time', function (): void {
     Http::fake([
         'oxidized:8888/node/show/*' => Http::response(fakeNode(), 200),
         'oxidized:8888/node/version?*' => Http::response([
@@ -143,19 +143,19 @@ test('backups maps versions prefers date over time', function () {
         ], 200),
     ]);
 
-    $list = makeProvider()->backups(makeDevice());
+    $list = makeOxidizedProvider()->backups(makeOxidizedDevice());
 
     expect($list['backups'][0]['date'])->toBe(strtotime('2026-07-14 00:24:24 +0000'));
     expect($list['backups'][1]['date'])->toBe(strtotime('2026-07-28 23:36:42 +0000'));
 });
 
-test('latest fetches current config without version list', function () {
+test('latest fetches current config without version list', function (): void {
     Http::fake([
         'oxidized:8888/node/show/*' => Http::response(fakeNode(['group' => 'core', 'mtime' => '2026-07-14 00:24:24 +0000']), 200),
         'oxidized:8888/node/fetch/*' => Http::response('hostname router', 200),
     ]);
 
-    $latest = makeProvider()->latest(makeDevice());
+    $latest = makeOxidizedProvider()->latest(makeOxidizedDevice());
 
     expect($latest['id'])->toBe('current');
     expect($latest['content'])->toBe('hostname router');
@@ -164,68 +164,68 @@ test('latest fetches current config without version list', function () {
     Http::assertNotSent(fn ($request) => str_contains((string) $request->url(), '/node/version'));
 });
 
-test('latest ignores unknown mtime', function () {
+test('latest ignores unknown mtime', function (): void {
     Http::fake([
         'oxidized:8888/node/show/*' => Http::response(fakeNode(['mtime' => 'unknown']), 200),
         'oxidized:8888/node/fetch/*' => Http::response('hostname router', 200),
     ]);
 
-    expect(makeProvider()->latest(makeDevice())['date'])->toBeNull();
+    expect(makeOxidizedProvider()->latest(makeOxidizedDevice())['date'])->toBeNull();
 });
 
-test('latest fetch failure is an error', function () {
+test('latest fetch failure is an error', function (): void {
     Http::fake([
         'oxidized:8888/node/show/*' => Http::response(fakeNode(), 200),
         'oxidized:8888/node/fetch/*' => Http::response('node not found', 500),
     ]);
 
-    $provider = makeProvider();
+    $provider = makeOxidizedProvider();
 
-    expect($provider->latest(makeDevice()))->toBeNull();
+    expect($provider->latest(makeOxidizedDevice()))->toBeNull();
     expect($provider->lastError())->toBe(ConfigBackupProvider::ERROR_NO_BACKUPS);
 });
 
-test('content fetches version', function () {
+test('content fetches version', function (): void {
     Http::fake([
         'oxidized:8888/node/show/*' => Http::response(fakeNode(), 200),
         'oxidized:8888/node/version/view*' => Http::response('interface eth0', 200),
     ]);
 
-    $content = makeProvider()->content(makeDevice(), 'aaaa1111');
+    $content = makeOxidizedProvider()->content(makeOxidizedDevice(), 'aaaa1111');
 
     expect($content)->toBe('interface eth0');
 });
 
-test('refresh queues node in oxidized', function () {
+test('refresh queues node in oxidized', function (): void {
     Http::fake([
         'oxidized:8888/node/show/*' => Http::response(fakeNode(['name' => 'router.example.com']), 200),
         'oxidized:8888/node/next/*' => Http::response('true', 200),
     ]);
 
-    expect(makeProvider()->refresh(makeDevice(), 'admin'))->toBeTrue();
+    expect(makeOxidizedProvider()->refresh(makeOxidizedDevice(), 'admin'))->toBeTrue();
 
     Http::assertSent(fn ($request) => str_contains((string) $request->url(), '/node/next/router.example.com')
         && $request->method() === 'PUT');
 });
 
-test('refresh returns false when oxidized rejects', function () {
+test('refresh returns false when oxidized rejects', function (): void {
     Http::fake([
         'oxidized:8888/node/show/*' => Http::response(fakeNode(), 200),
         'oxidized:8888/node/next/*' => Http::response('nope', 500),
     ]);
 
-    expect(makeProvider()->refresh(makeDevice(), 'admin'))->toBeFalse();
+    expect(makeOxidizedProvider()->refresh(makeOxidizedDevice(), 'admin'))->toBeFalse();
 });
 
-test('group is included in version and diff requests', function () {
+test('group is included in version and diff requests', function (): void {
     Http::fake([
         'oxidized:8888/node/show/*' => Http::response(fakeNode(['group' => 'core']), 200),
         'oxidized:8888/node/version/view*' => Http::response('interface eth0', 200),
         'oxidized:8888/node/version/diffs*' => Http::response("@@ -1 +1 @@\n-a\n+b\n", 200),
     ]);
 
-    $provider = makeProvider();
-    $device = makeDevice();
+    $provider = makeOxidizedProvider();
+    $device = makeOxidizedDevice();
 
     $provider->content($device, 'aaaa1111');
     Http::assertSent(fn ($request) => str_contains((string) $request->url(), '/node/version/view')
@@ -236,27 +236,27 @@ test('group is included in version and diff requests', function () {
         && str_contains((string) $request->url(), 'group=core'));
 });
 
-test('content rejects non hex id', function () {
+test('content rejects non hex id', function (): void {
     Http::fake(['*' => Http::response('nope', 200)]);
 
-    $provider = makeProvider();
+    $provider = makeOxidizedProvider();
 
-    expect($provider->content(makeDevice(), 'not-an-oid'))->toBeNull();
+    expect($provider->content(makeOxidizedDevice(), 'not-an-oid'))->toBeNull();
     expect($provider->lastError())->toBe(ConfigBackupProvider::ERROR_BACKUP_NOT_FOUND);
     Http::assertNothingSent();
 });
 
-test('diff rejects non hex ids', function () {
+test('diff rejects non hex ids', function (): void {
     Http::fake(['*' => Http::response('nope', 200)]);
 
-    $provider = makeProvider();
+    $provider = makeOxidizedProvider();
 
-    expect($provider->diff(makeDevice(), 'zzz', 'aaaa1111'))->toBeNull();
+    expect($provider->diff(makeOxidizedDevice(), 'zzz', 'aaaa1111'))->toBeNull();
     expect($provider->lastError())->toBe(ConfigBackupProvider::ERROR_BACKUP_NOT_FOUND);
     Http::assertNothingSent();
 });
 
-test('diff parses unified diff into groups', function () {
+test('diff parses unified diff into groups', function (): void {
     $diff = <<<'DIFF'
         diff --git a/router b/router
         index abc1234..def5678 100644
@@ -274,7 +274,7 @@ test('diff parses unified diff into groups', function () {
         'oxidized:8888/node/version/diffs*' => Http::response($diff, 200),
     ]);
 
-    $groups = makeProvider()->diff(makeDevice(), 'bbbb2222', 'aaaa1111');
+    $groups = makeOxidizedProvider()->diff(makeOxidizedDevice(), 'bbbb2222', 'aaaa1111');
 
     expect($groups[0]['type'])->toBe('COMMON');
     expect($groups[0]['original'][0]['text'])->toBe('hostname router');
@@ -292,28 +292,28 @@ test('diff parses unified diff into groups', function () {
     expect($groups[3]['original'][0]['text'])->toBe('end');
 });
 
-test('diff requests newer as oid older as oid2', function () {
+test('diff requests newer as oid older as oid2', function (): void {
     Http::fake([
         'oxidized:8888/node/show/*' => Http::response(fakeNode(), 200),
         'oxidized:8888/node/version/diffs*' => Http::response("@@ -1 +1 @@\n-old\n+new\n", 200),
     ]);
 
     // orig (older) = bbbb2222, rev (newer) = aaaa1111
-    makeProvider()->diff(makeDevice(), 'bbbb2222', 'aaaa1111');
+    makeOxidizedProvider()->diff(makeOxidizedDevice(), 'bbbb2222', 'aaaa1111');
 
     Http::assertSent(fn ($request) => str_contains((string) $request->url(), 'oid=aaaa1111')
         && str_contains((string) $request->url(), 'oid2=bbbb2222'));
 });
 
-test('no versioning falls back to current config', function () {
+test('no versioning falls back to current config', function (): void {
     Http::fake([
         'oxidized:8888/node/show/*' => Http::response(fakeNode(), 200),
         'oxidized:8888/node/version?*' => Http::response('not found', 404),
         'oxidized:8888/node/fetch/*' => Http::response('current config', 200),
     ]);
 
-    $provider = makeProvider();
-    $device = makeDevice();
+    $provider = makeOxidizedProvider();
+    $device = makeOxidizedDevice();
 
     $list = $provider->backups($device);
     expect($list['total'])->toBe(1);
@@ -322,24 +322,24 @@ test('no versioning falls back to current config', function () {
     expect($provider->content($device, 'current'))->toBe('current config');
 });
 
-test('device not found error', function () {
+test('device not found error', function (): void {
     Http::fake(['oxidized:8888/node/show/*' => Http::response('not found', 404)]);
 
-    $provider = makeProvider();
+    $provider = makeOxidizedProvider();
 
-    expect($provider->backups(makeDevice()))->toBeNull();
+    expect($provider->backups(makeOxidizedDevice()))->toBeNull();
     expect($provider->lastError())->toBe(ConfigBackupProvider::ERROR_DEVICE_NOT_FOUND);
 });
 
-test('unreachable error', function () {
+test('unreachable error', function (): void {
     Http::fake(function (): void {
         throw new ConnectionException('cURL error 7: Failed to connect');
     });
 
     Log::shouldReceive('warning')->atLeast()->once();
 
-    $provider = makeProvider();
+    $provider = makeOxidizedProvider();
 
-    expect($provider->backups(makeDevice()))->toBeNull();
+    expect($provider->backups(makeOxidizedDevice()))->toBeNull();
     expect($provider->lastError())->toBe(ConfigBackupProvider::ERROR_UNREACHABLE);
 });

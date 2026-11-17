@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use LibreNMS\Exceptions\RrdCachedConnectionException;
 use LibreNMS\Exceptions\RrdCorruptionException;
 use LibreNMS\Exceptions\RrdDsMismatchException;
@@ -16,8 +15,9 @@ use Mockery\MockInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\Process;
 
+uses(LibreNMS\Tests\TestCase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->logger = Mockery::mock(LoggerInterface::class);
     $this->logger->shouldReceive('debug')->byDefault();
 
@@ -31,11 +31,11 @@ beforeEach(function () {
     $this->process->shouldReceive('stop')->byDefault();
 });
 
-afterEach(function () {
+afterEach(function (): void {
     Mockery::close();
 });
 
-test('run command successfully', function () {
+test('run command successfully', function (): void {
     $this->process->shouldReceive('getOutput')->andReturn("some output\nOK u:0.01 s:0.02 r:0.03\n");
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(Process::OUT, "OK u:0.01 s:0.02 r:0.03\n"));
 
@@ -45,7 +45,7 @@ test('run command successfully', function () {
     expect($output)->toEqual('some output');
 });
 
-test('restarts process that sat idle', function () {
+test('restarts process that sat idle', function (): void {
     $this->process->shouldReceive('getOutput')->andReturn("OK u:0.01 s:0.02 r:0.03\n");
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(Process::OUT, "OK u:0.01 s:0.02 r:0.03\n"));
     $this->process->shouldReceive('isRunning')->andReturn(true);
@@ -62,7 +62,7 @@ test('restarts process that sat idle', function () {
     expect($started)->toBe(2);
 });
 
-test('throws not found exception when file is missing', function () {
+test('throws not found exception when file is missing', function (): void {
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(Process::OUT, "ERROR: No such file test.rrd\n"));
 
     $rrdProcess = new RrdProcess($this->logger, new Binaries, 300, fn () => $this->process);
@@ -73,7 +73,7 @@ test('throws not found exception when file is missing', function () {
     $rrdProcess->run('info test.rrd');
 });
 
-test('throws update too frequent exception', function () {
+test('throws update too frequent exception', function (): void {
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(Process::OUT, "ERROR: illegal attempt to update using time 123456789\n"));
 
     $rrdProcess = new RrdProcess($this->logger, new Binaries, 300, fn () => $this->process);
@@ -84,7 +84,7 @@ test('throws update too frequent exception', function () {
     $rrdProcess->run('update test.rrd N:1');
 });
 
-test('throws cached connection exception', function () {
+test('throws cached connection exception', function (): void {
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(Process::OUT, "ERROR: Unable to connect to rrdcached\n"));
 
     $rrdProcess = new RrdProcess($this->logger, new Binaries, 300, fn () => $this->process);
@@ -95,7 +95,7 @@ test('throws cached connection exception', function () {
     $rrdProcess->run('update test.rrd N:1');
 });
 
-test('throws cached connection exception when socket missing', function () {
+test('throws cached connection exception when socket missing', function (): void {
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(Process::OUT, "ERROR: Unable to connect to rrdcached: No such file or directory.\n"));
 
     $rrdProcess = new RrdProcess($this->logger, new Binaries, 300, fn () => $this->process);
@@ -106,7 +106,7 @@ test('throws cached connection exception when socket missing', function () {
     $rrdProcess->run('update test.rrd N:1');
 });
 
-test('throws generic rrd exception', function () {
+test('throws generic rrd exception', function (): void {
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(Process::OUT, "ERROR: something went wrong\n"));
 
     $rrdProcess = new RrdProcess($this->logger, new Binaries, 300, fn () => $this->process);
@@ -117,7 +117,7 @@ test('throws generic rrd exception', function () {
     $rrdProcess->run('update test.rrd N:1');
 });
 
-test('throws exception on datasource count mismatch', function () {
+test('throws exception on datasource count mismatch', function (): void {
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(Process::OUT, "ERROR: test.rrd: expected 2 data source readings (got 1) from N\n"));
 
     $rrdProcess = new RrdProcess($this->logger, new Binaries, 300, fn () => $this->process);
@@ -128,7 +128,7 @@ test('throws exception on datasource count mismatch', function () {
     $rrdProcess->run('update test.rrd N:1');
 });
 
-test('throws exception on unknown datasource name', function () {
+test('throws exception on unknown datasource name', function (): void {
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(Process::OUT, "ERROR: unknown DS name 'nonexistent'\n"));
 
     $rrdProcess = new RrdProcess($this->logger, new Binaries, 300, fn () => $this->process);
@@ -139,7 +139,7 @@ test('throws exception on unknown datasource name', function () {
     $rrdProcess->run('update test.rrd -t nonexistent N:1');
 });
 
-test('throws exception on extra data in update argument', function () {
+test('throws exception on extra data in update argument', function (): void {
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(Process::OUT, "ERROR: test.rrd: found extra data on update argument: 2:3\n"));
 
     $rrdProcess = new RrdProcess($this->logger, new Binaries, 300, fn () => $this->process);
@@ -150,7 +150,7 @@ test('throws exception on extra data in update argument', function () {
     $rrdProcess->run('update test.rrd N:1:2:3');
 });
 
-test('throws exception on expected timestamp not found in data source', function () {
+test('throws exception on expected timestamp not found in data source', function (): void {
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(
         Process::OUT,
         "ERROR: test.rrd: expected timestamp not found in data source from foo=2\n"
@@ -166,7 +166,7 @@ test('throws exception on expected timestamp not found in data source', function
     $rrdProcess->run('update test.rrd foo=2');
 });
 
-test('throws exception on permission denied', function () {
+test('throws exception on permission denied', function (): void {
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(Process::OUT, "ERROR: opening 'test.rrd': Permission denied\n"));
 
     $rrdProcess = new RrdProcess($this->logger, new Binaries, 300, fn () => $this->process);
@@ -177,7 +177,7 @@ test('throws exception on permission denied', function () {
     $rrdProcess->run('update test.rrd N:1');
 });
 
-test('throws exception on cannot create temporary file', function () {
+test('throws exception on cannot create temporary file', function (): void {
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(Process::OUT, "ERROR: Cannot create temporary file\n"));
 
     $rrdProcess = new RrdProcess($this->logger, new Binaries, 300, fn () => $this->process);
@@ -188,7 +188,7 @@ test('throws exception on cannot create temporary file', function () {
     $rrdProcess->run('update test.rrd N:1');
 });
 
-test('throws exception on corrupt rrd file', function () {
+test('throws exception on corrupt rrd file', function (): void {
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(Process::OUT, "ERROR: reached EOF while loading header rrd->stat_head\n"));
 
     $rrdProcess = new RrdProcess($this->logger, new Binaries, 300, fn () => $this->process);
@@ -199,7 +199,7 @@ test('throws exception on corrupt rrd file', function () {
     $rrdProcess->run('info test.rrd');
 });
 
-test('throws exception on error output on stderr', function () {
+test('throws exception on error output on stderr', function (): void {
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(Process::ERR, "ERROR: some error occurred\n"));
 
     $rrdProcess = new RrdProcess($this->logger, new Binaries, 300, fn () => $this->process);
@@ -210,7 +210,7 @@ test('throws exception on error output on stderr', function () {
     $rrdProcess->run('update test.rrd N:1');
 });
 
-test('logs warning on generic stderr output', function () {
+test('logs warning on generic stderr output', function (): void {
     $this->logger->shouldReceive('warning')->with('RRDtool stderr: Fontconfig warning: something')->once();
 
     $this->process->shouldReceive('waitUntil')->andReturnUsing(function ($callback) {
@@ -226,7 +226,7 @@ test('logs warning on generic stderr output', function () {
     expect($output)->toEqual('');
 });
 
-test('ignores empty stderr output', function () {
+test('ignores empty stderr output', function (): void {
     $this->logger->shouldNotReceive('warning');
 
     $this->process->shouldReceive('waitUntil')->andReturnUsing(function ($callback) {
@@ -242,7 +242,7 @@ test('ignores empty stderr output', function () {
     expect($output)->toEqual('');
 });
 
-test('throws exception when rrdtool not found', function () {
+test('throws exception when rrdtool not found', function (): void {
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(Process::ERR, "sh: line 1: exec: rrdtool: not found\n"));
 
     $rrdProcess = new RrdProcess($this->logger, new Binaries, 300, fn () => $this->process);
@@ -253,7 +253,7 @@ test('throws exception when rrdtool not found', function () {
     $rrdProcess->run('info test.rrd');
 });
 
-test('throws unknown exception for unclassified errors', function () {
+test('throws unknown exception for unclassified errors', function (): void {
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(Process::OUT, "ERROR: something completely unexpected\n"));
 
     $rrdProcess = new RrdProcess($this->logger, new Binaries, 300, fn () => $this->process);
@@ -264,7 +264,7 @@ test('throws unknown exception for unclassified errors', function () {
     $rrdProcess->run('update test.rrd N:1');
 });
 
-test('can wait for custom string', function () {
+test('can wait for custom string', function (): void {
     $this->process->shouldReceive('getOutput')->andReturn("some output\nDONE\n");
     $this->process->shouldReceive('waitUntil')->andReturnUsing(fn ($callback) => $callback(Process::OUT, "DONE\n"));
 
@@ -274,7 +274,7 @@ test('can wait for custom string', function () {
     expect($output)->toEqual("some output\nDONE");
 });
 
-test('start process only if not running', function () {
+test('start process only if not running', function (): void {
     $process = Mockery::mock(Process::class);
     $process->shouldReceive('setInput');
     $process->shouldReceive('setTimeout');
@@ -292,7 +292,7 @@ test('start process only if not running', function () {
     $this->expectNotToPerformAssertions();
 });
 
-test('stop process', function () {
+test('stop process', function (): void {
     $this->process->shouldReceive('stop')->once();
 
     $rrdProcess = new RrdProcess($this->logger, new Binaries, 300, fn () => $this->process);
@@ -302,7 +302,7 @@ test('stop process', function () {
     $this->expectNotToPerformAssertions();
 });
 
-test('destructor stops process', function () {
+test('destructor stops process', function (): void {
     $this->process->shouldReceive('stop')->once();
 
     $rrdProcess = new RrdProcess($this->logger, new Binaries, 300, fn () => $this->process);

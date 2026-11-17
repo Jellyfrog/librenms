@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\AlertOperationSegment;
 use App\Models\Device;
 use App\Models\Ipv4Address;
@@ -12,14 +11,12 @@ use App\Models\Sla;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
+uses(LibreNMS\Tests\TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
-
-beforeEach(function () {
+beforeEach(function (): void {
     Role::findOrCreate('admin');
     Role::findOrCreate('global-read');
     Role::findOrCreate('user');
@@ -81,18 +78,18 @@ dataset('policyModels', function () {
     ];
 });
 
-test('view any by role and permission', function (string $model, string $prefix) {
+test('view any by role and permission', function (string $model, string $prefix): void {
     expect(Gate::getPolicyFor($model))->not->toBeNull();
 
-    expect(Gate::forUser(user('user'))->allows('viewAny', $model))->toBeTrue('user role');
-    expect(Gate::forUser(user('global-read'))->allows('viewAny', $model))->toBeTrue('global-read role');
-    expect(Gate::forUser(user())->allows('viewAny', $model))->toBeFalse('no role');
-    expect(Gate::forUser(user(null, "$prefix.view"))->allows('viewAny', $model))->toBeTrue("$prefix.view");
-    expect(Gate::forUser(user(null, "$prefix.viewAll"))->allows('viewAll', $model))->toBeTrue("$prefix.viewAll");
+    expect(Gate::forUser(policyUser('user'))->allows('viewAny', $model))->toBeTrue('user role');
+    expect(Gate::forUser(policyUser('global-read'))->allows('viewAny', $model))->toBeTrue('global-read role');
+    expect(Gate::forUser(policyUser())->allows('viewAny', $model))->toBeFalse('no role');
+    expect(Gate::forUser(policyUser(null, "$prefix.view"))->allows('viewAny', $model))->toBeTrue("$prefix.view");
+    expect(Gate::forUser(policyUser(null, "$prefix.viewAll"))->allows('viewAll', $model))->toBeTrue("$prefix.viewAll");
 })->with('policyModels');
 
-test('device scoped view requires device access', function () {
-    $user = user('user');
+test('device scoped view requires device access', function (): void {
+    $user = policyUser('user');
     $user->devicesOwned()->attach($this->accessible->device_id);
 
     expect(Gate::forUser($user)->allows('view', onDevice(Sla::class, $this->accessible)))->toBeTrue();
@@ -101,18 +98,18 @@ test('device scoped view requires device access', function () {
     expect(Gate::forUser($user)->allows('view', onDevice(OspfArea::class, $this->other)))->toBeFalse();
 });
 
-test('view all sees every device', function () {
-    $user = user(null, 'device.viewAll');
+test('view all sees every device', function (): void {
+    $user = policyUser(null, 'device.viewAll');
 
     expect(Gate::forUser($user)->allows('view', onDevice(Sla::class, $this->other)))->toBeTrue();
 });
 
-test('port scoped view by device or port access', function () {
+test('port scoped view by device or port access', function (): void {
     $accessiblePort = Port::factory()->create(['device_id' => $this->accessible->device_id]);
     $otherPort = Port::factory()->create(['device_id' => $this->other->device_id]);
     $ownedPort = Port::factory()->create(['device_id' => $this->other->device_id]);
 
-    $user = user('user');
+    $user = policyUser('user');
     $user->devicesOwned()->attach($this->accessible->device_id);
     $user->portsOwned()->attach($ownedPort->port_id);
     $gate = Gate::forUser($user);
@@ -128,7 +125,7 @@ test('port scoped view by device or port access', function () {
     expect($gate->allows('view', $vlan($otherPort)))->toBeFalse();
 });
 
-test('network view requires access to aconnected port', function () {
+test('network view requires access to aconnected port', function (): void {
     $accessiblePort = Port::factory()->create(['device_id' => $this->accessible->device_id]);
     $otherPort = Port::factory()->create(['device_id' => $this->other->device_id]);
     $visible = Ipv4Network::factory()->create();
@@ -136,24 +133,24 @@ test('network view requires access to aconnected port', function () {
     Ipv4Address::factory()->create(['port_id' => $accessiblePort->port_id, 'ipv4_network_id' => $visible->ipv4_network_id]);
     Ipv4Address::factory()->create(['port_id' => $otherPort->port_id, 'ipv4_network_id' => $hidden->ipv4_network_id]);
 
-    $user = user('user');
+    $user = policyUser('user');
     $user->devicesOwned()->attach($this->accessible->device_id);
 
     expect(Gate::forUser($user)->allows('view', $visible))->toBeTrue();
     expect(Gate::forUser($user)->allows('view', $hidden))->toBeFalse();
 });
 
-test('alert operation segment matches alert operation', function () {
+test('alert operation segment matches alert operation', function (): void {
     Permission::findOrCreate('alert-rule.view');
-    $user = user('user');
+    $user = policyUser('user');
 
     expect(Gate::forUser($user)->allows('viewAny', AlertOperationSegment::class))->toBe(Gate::forUser($user)->allows('viewAny', \App\Models\AlertOperation::class));
     expect(Gate::forUser($user)->allows('viewAny', AlertOperationSegment::class))->toBeTrue();
     expect(Gate::forUser($user)->allows('view', new AlertOperationSegment))->toBeFalse();
-    expect(Gate::forUser(user(null, 'alert-rule.view'))->allows('view', new AlertOperationSegment))->toBeTrue();
+    expect(Gate::forUser(policyUser(null, 'alert-rule.view'))->allows('view', new AlertOperationSegment))->toBeTrue();
 });
 
-function user(?string $role = null, ?string $permission = null): User
+function policyUser(?string $role = null, ?string $permission = null): User
 {
     $user = User::factory()->create(['enabled' => 1]);
     if ($role) {

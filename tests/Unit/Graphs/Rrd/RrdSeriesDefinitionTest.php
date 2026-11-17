@@ -11,7 +11,7 @@ use App\Graphs\Rrd\RrdFileResolver;
 use App\Graphs\Rrd\RrdSeriesDefinition;
 use LibreNMS\Exceptions\NoGraphData;
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->metric = new MetricIdentity('test-metric', ['hostname' => 'localhost']);
     $this->rrdFiles = Mockery::mock(RrdFileResolver::class);
     $this->rrdFiles->shouldReceive('pathFor')->with($this->metric)->andReturn('host/test.rrd')->byDefault();
@@ -20,8 +20,8 @@ beforeEach(function () {
     LibrenmsConfig::shouldReceive('get')->with(Mockery::pattern('/^graph_colours\./'))->byDefault()->andReturn('FF0000');
 });
 
-test('it draws lines with fill and invert', function () {
-    expect(build([
+test('it draws lines with fill and invert', function (): void {
+    expect(buildRrdSeries([
         'in' => new DataSeries($this->metric, 'in', 'In', 'bps', style: new SeriesStyle(fill: true)),
         'out' => new DataSeries($this->metric, 'out', 'Out', 'bps', style: new SeriesStyle(color: 'AA0000', fill: true, fillColor: 'BB0000', invert: true)),
     ], new GraphOptions(legendTitle: 'Traffic')))->toBe([
@@ -49,8 +49,8 @@ test('it draws lines with fill and invert', function () {
     ]);
 });
 
-test('max fills are drawn behind the fills', function () {
-    $definition = build([
+test('max fills are drawn behind the fills', function (): void {
+    $definition = buildRrdSeries([
         'in' => new DataSeries($this->metric, 'in', 'In', scale: 8, style: new SeriesStyle(color: '608720', fill: true, fillColor: '90B040', maxFillColor: 'D7FFC7')),
         'out' => new DataSeries($this->metric, 'out', 'Out', style: new SeriesStyle(color: '606090', maxFillColor: 'E0E0FF', invert: true)),
     ]);
@@ -66,8 +66,8 @@ test('max fills are drawn behind the fills', function () {
     ]);
 });
 
-test('draw scale only changes the drawing', function () {
-    expect(build([
+test('draw scale only changes the drawing', function (): void {
+    expect(buildRrdSeries([
         'a' => new DataSeries($this->metric, 'usage', 'A', style: new SeriesStyle(stacked: true, drawScale: 0.5)),
         'b' => new DataSeries($this->metric, 'usage', 'B', style: new SeriesStyle(stacked: true, drawScale: 0.5)),
     ], new GraphOptions(legendTitle: 'Load %')))->toBe([
@@ -93,8 +93,8 @@ test('draw scale only changes the drawing', function () {
     ]);
 });
 
-test('series scale changes the value everywhere', function () {
-    expect(build(['a' => new DataSeries($this->metric, 'bytes', 'Bits', scale: 8)]))->toBe([
+test('series scale changes the value everywhere', function (): void {
+    expect(buildRrdSeries(['a' => new DataSeries($this->metric, 'bytes', 'Bits', scale: 8)]))->toBe([
         "COMMENT:                        Now     Min     Max     Avg\l",
         'DEF:ds0raw=host/test.rrd:bytes:AVERAGE',
         'CDEF:ds0=ds0raw,8,*',
@@ -110,8 +110,8 @@ test('series scale changes the value everywhere', function () {
     ]);
 });
 
-test('it adds the previous period of stacked series', function () {
-    $definition = build([
+test('it adds the previous period of stacked series', function (): void {
+    $definition = buildRrdSeries([
         'a' => new DataSeries($this->metric, 'a', 'A', style: new SeriesStyle(stacked: true)),
         'b' => new DataSeries($this->metric, 'b', 'B', scale: 8, style: new SeriesStyle(stacked: true, drawScale: 0.5)),
     ], params: ['from' => 100, 'to' => 200, 'previous' => 'yes']);
@@ -122,32 +122,32 @@ test('it adds the previous period of stacked series', function () {
     expect($definition)->toContain('AREA:previous#99999999:');
 });
 
-test('lines do not draw the previous period', function () {
-    $definition = build(['a' => new DataSeries($this->metric, 'a', 'A')], params: ['from' => 100, 'to' => 200, 'previous' => 'yes']);
+test('lines do not draw the previous period', function (): void {
+    $definition = buildRrdSeries(['a' => new DataSeries($this->metric, 'a', 'A')], params: ['from' => 100, 'to' => 200, 'previous' => 'yes']);
 
     expect(preg_grep('/previous|prev/', $definition))->toBeEmpty();
 });
 
-test('it uses the palette of the options', function () {
+test('it uses the palette of the options', function (): void {
     LibrenmsConfig::shouldReceive('get')->with('graph_colours.oranges.0')->andReturn('EE7700');
 
-    $definition = build(['a' => new DataSeries($this->metric, 'a', 'A')], new GraphOptions(palette: 'oranges'));
+    $definition = buildRrdSeries(['a' => new DataSeries($this->metric, 'a', 'A')], new GraphOptions(palette: 'oranges'));
 
     expect($definition)->toContain('LINE1.25:ds0#EE7700:A                ');
 });
 
-test('it escapes units in value formats and widens the columns', function () {
-    $definition = build(['a' => new DataSeries($this->metric, 'a', 'A', 'a%:b')]);
+test('it escapes units in value formats and widens the columns', function (): void {
+    $definition = buildRrdSeries(['a' => new DataSeries($this->metric, 'a', 'A', 'a%:b')]);
 
     expect($definition)->toContain('GPRINT:ds0:LAST:%5.2lf%sa%%\:b');
     expect($definition[0])->toBe("COMMENT:                            Now         Min         Max         Avg\l");
 });
 
-test('it skips series without an rrd file', function () {
+test('it skips series without an rrd file', function (): void {
     $missing = new MetricIdentity('missing', ['hostname' => 'localhost']);
     $this->rrdFiles->shouldReceive('pathFor')->with($missing)->andReturn(null);
 
-    $definition = build([
+    $definition = buildRrdSeries([
         'gone' => new DataSeries($missing, 'a', 'Gone'),
         'here' => new DataSeries($this->metric, 'b', 'Here'),
     ]);
@@ -156,12 +156,12 @@ test('it skips series without an rrd file', function () {
     expect(preg_grep('/Gone/', $definition))->toBeEmpty();
 });
 
-test('stack average divides by the series with rrd files', function () {
+test('stack average divides by the series with rrd files', function (): void {
     $missing = new MetricIdentity('test-metric', ['hostname' => 'localhost', 'index' => 3]);
     $this->rrdFiles->shouldReceive('pathFor')->with($missing)->andReturn(null);
     $style = new SeriesStyle(stacked: true, stackAverage: true);
 
-    $definition = build([
+    $definition = buildRrdSeries([
         'a' => new DataSeries($this->metric, 'usage', 'A', style: $style),
         'b' => new DataSeries($this->metric, 'usage', 'B', style: $style),
         'c' => new DataSeries($missing, 'usage', 'C', style: $style),
@@ -172,13 +172,13 @@ test('stack average divides by the series with rrd files', function () {
     expect(preg_grep('/^DEF:ds2/', $definition))->toBeEmpty();
 });
 
-test('it reports no data when no series has an rrd file', function () {
+test('it reports no data when no series has an rrd file', function (): void {
     $this->rrdFiles->shouldReceive('pathFor')->with($this->metric)->andReturn(null);
 
     $this->expectException(NoGraphData::class);
     $this->expectExceptionMessage('No Data files');
 
-    build(['a' => new DataSeries($this->metric, 'a', 'A')]);
+    buildRrdSeries(['a' => new DataSeries($this->metric, 'a', 'A')]);
 });
 
 /**
@@ -186,7 +186,7 @@ test('it reports no data when no series has an rrd file', function () {
  * @param  array<string, mixed>  $params
  * @return array<int, string>
  */
-function build(array $series, GraphOptions $options = new GraphOptions, array $params = ['from' => 100, 'to' => 200]): array
+function buildRrdSeries(array $series, GraphOptions $options = new GraphOptions, array $params = ['from' => 100, 'to' => 200]): array
 {
-    return build(new GraphParameters($params));
+    return new RrdSeriesDefinition($series, $options, test()->rrdFiles)->build(new GraphParameters($params));
 }

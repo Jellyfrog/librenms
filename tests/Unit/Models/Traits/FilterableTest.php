@@ -1,15 +1,14 @@
 <?php
 
-uses(\Illuminate\Database\Eloquent\Model::class);
+use App\Models\Traits\Filterable;
 use Illuminate\Database\Eloquent\Builder;
-use \Illuminate\Database\Eloquent\Model;
-use \LibreNMS\Tests\Unit\Models\Traits\FilterableDevice;
-use \LibreNMS\Tests\Unit\Models\Traits\FilterableLocation;
-use \LibreNMS\Tests\Unit\Models\Traits\FilterableRegion;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Schema;
 
-beforeEach(function () {
+uses(LibreNMS\Tests\TestCase::class);
+
+beforeEach(function (): void {
     Schema::connection('testing_memory')->create('filterable_regions', function ($table): void {
         $table->id();
         $table->string('name')->nullable();
@@ -39,7 +38,7 @@ beforeEach(function () {
  * @param  string|null  $region
  * @return void
  */
-function device(array $deviceAttrs, ?string $location = null, ?string $region = null): void
+function createFilterableDevice(array $deviceAttrs, ?string $location = null, ?string $region = null): void
 {
     if ($location) {
         $locationAttrs = ['location' => $location];
@@ -56,7 +55,11 @@ function device(array $deviceAttrs, ?string $location = null, ?string $region = 
     FilterableDevice::create($deviceAttrs);
 }
 
-test('filter validation rules contains all operator map keys', function () {
+// -------------------------------------------------------------------------
+// filterValidationRules
+// -------------------------------------------------------------------------
+
+test('filter validation rules contains all operator map keys', function (): void {
     $rules = FilterableDevice::filterValidationRules();
 
     expect($rules)->toHaveKey('filter');
@@ -64,7 +67,7 @@ test('filter validation rules contains all operator map keys', function () {
     expect($rules)->toHaveKey('filter.*.*');
 });
 
-test('filter validation rules rejects unknown operator', function () {
+test('filter validation rules rejects unknown operator', function (): void {
     $rules = FilterableDevice::filterValidationRules();
     $closure = collect($rules['filter.*'])->first(fn ($r) => $r instanceof \Closure);
 
@@ -76,7 +79,7 @@ test('filter validation rules rejects unknown operator', function () {
     expect($failed)->toBeTrue();
 });
 
-test('filter validation rules accepts known operator', function () {
+test('filter validation rules accepts known operator', function (): void {
     $rules = FilterableDevice::filterValidationRules();
     $closure = collect($rules['filter.*'])->first(fn ($r) => $r instanceof \Closure);
 
@@ -88,9 +91,13 @@ test('filter validation rules accepts known operator', function () {
     expect($failed)->toBeFalse();
 });
 
-test('eq', function () {
-    device(['hostname' => 'router1', 'os' => 'ios']);
-    device(['hostname' => 'router2', 'os' => 'eos']);
+// -------------------------------------------------------------------------
+// Equality operators
+// -------------------------------------------------------------------------
+
+test('eq', function (): void {
+    createFilterableDevice(['hostname' => 'router1', 'os' => 'ios']);
+    createFilterableDevice(['hostname' => 'router2', 'os' => 'eos']);
 
     $results = FilterableDevice::applyFilters(['hostname' => ['eq' => 'router1']])->get();
 
@@ -98,9 +105,9 @@ test('eq', function () {
     expect($results->first()->hostname)->toEqual('router1');
 });
 
-test('neq', function () {
-    device(['hostname' => 'router1']);
-    device(['hostname' => 'router2']);
+test('neq', function (): void {
+    createFilterableDevice(['hostname' => 'router1']);
+    createFilterableDevice(['hostname' => 'router2']);
 
     $results = FilterableDevice::applyFilters(['hostname' => ['neq' => 'router1']])->get();
 
@@ -108,10 +115,14 @@ test('neq', function () {
     expect($results->first()->hostname)->toEqual('router2');
 });
 
-test('gt', function () {
-    device(['hostname' => 'a', 'uptime' => 100]);
-    device(['hostname' => 'b', 'uptime' => 200]);
-    device(['hostname' => 'c', 'uptime' => 300]);
+// -------------------------------------------------------------------------
+// Comparison operators
+// -------------------------------------------------------------------------
+
+test('gt', function (): void {
+    createFilterableDevice(['hostname' => 'a', 'uptime' => 100]);
+    createFilterableDevice(['hostname' => 'b', 'uptime' => 200]);
+    createFilterableDevice(['hostname' => 'c', 'uptime' => 300]);
 
     $results = FilterableDevice::applyFilters(['uptime' => ['gt' => 200]])->get();
 
@@ -119,9 +130,9 @@ test('gt', function () {
     expect($results->first()->hostname)->toEqual('c');
 });
 
-test('gte', function () {
-    device(['hostname' => 'a', 'uptime' => 100]);
-    device(['hostname' => 'b', 'uptime' => 200]);
+test('gte', function (): void {
+    createFilterableDevice(['hostname' => 'a', 'uptime' => 100]);
+    createFilterableDevice(['hostname' => 'b', 'uptime' => 200]);
 
     $results = FilterableDevice::applyFilters(['uptime' => ['gte' => 200]])->get();
 
@@ -129,9 +140,9 @@ test('gte', function () {
     expect($results->first()->hostname)->toEqual('b');
 });
 
-test('lt', function () {
-    device(['hostname' => 'a', 'uptime' => 100]);
-    device(['hostname' => 'b', 'uptime' => 200]);
+test('lt', function (): void {
+    createFilterableDevice(['hostname' => 'a', 'uptime' => 100]);
+    createFilterableDevice(['hostname' => 'b', 'uptime' => 200]);
 
     $results = FilterableDevice::applyFilters(['uptime' => ['lt' => 200]])->get();
 
@@ -139,9 +150,9 @@ test('lt', function () {
     expect($results->first()->hostname)->toEqual('a');
 });
 
-test('lte', function () {
-    device(['hostname' => 'a', 'uptime' => 100]);
-    device(['hostname' => 'b', 'uptime' => 200]);
+test('lte', function (): void {
+    createFilterableDevice(['hostname' => 'a', 'uptime' => 100]);
+    createFilterableDevice(['hostname' => 'b', 'uptime' => 200]);
 
     $results = FilterableDevice::applyFilters(['uptime' => ['lte' => 100]])->get();
 
@@ -149,9 +160,13 @@ test('lte', function () {
     expect($results->first()->hostname)->toEqual('a');
 });
 
-test('contains', function () {
-    device(['hostname' => 'core-router-01']);
-    device(['hostname' => 'edge-switch-01']);
+// -------------------------------------------------------------------------
+// String pattern operators
+// -------------------------------------------------------------------------
+
+test('contains', function (): void {
+    createFilterableDevice(['hostname' => 'core-router-01']);
+    createFilterableDevice(['hostname' => 'edge-switch-01']);
 
     $results = FilterableDevice::applyFilters(['hostname' => ['contains' => 'router']])->get();
 
@@ -159,9 +174,9 @@ test('contains', function () {
     expect($results->first()->hostname)->toEqual('core-router-01');
 });
 
-test('not contains', function () {
-    device(['hostname' => 'core-router-01']);
-    device(['hostname' => 'edge-switch-01']);
+test('not contains', function (): void {
+    createFilterableDevice(['hostname' => 'core-router-01']);
+    createFilterableDevice(['hostname' => 'edge-switch-01']);
 
     $results = FilterableDevice::applyFilters(['hostname' => ['not_contains' => 'router']])->get();
 
@@ -169,9 +184,9 @@ test('not contains', function () {
     expect($results->first()->hostname)->toEqual('edge-switch-01');
 });
 
-test('starts with', function () {
-    device(['hostname' => 'core-router-01']);
-    device(['hostname' => 'edge-switch-01']);
+test('starts with', function (): void {
+    createFilterableDevice(['hostname' => 'core-router-01']);
+    createFilterableDevice(['hostname' => 'edge-switch-01']);
 
     $results = FilterableDevice::applyFilters(['hostname' => ['starts_with' => 'core']])->get();
 
@@ -179,9 +194,9 @@ test('starts with', function () {
     expect($results->first()->hostname)->toEqual('core-router-01');
 });
 
-test('ends with', function () {
-    device(['hostname' => 'core-router-01']);
-    device(['hostname' => 'edge-switch-02']);
+test('ends with', function (): void {
+    createFilterableDevice(['hostname' => 'core-router-01']);
+    createFilterableDevice(['hostname' => 'edge-switch-02']);
 
     $results = FilterableDevice::applyFilters(['hostname' => ['ends_with' => '01']])->get();
 
@@ -189,9 +204,13 @@ test('ends with', function () {
     expect($results->first()->hostname)->toEqual('core-router-01');
 });
 
-test('is empty matches null', function () {
-    device(['hostname' => 'router1', 'os' => null]);
-    device(['hostname' => 'router2', 'os' => 'ios']);
+// -------------------------------------------------------------------------
+// Null / empty operators
+// -------------------------------------------------------------------------
+
+test('is empty matches null', function (): void {
+    createFilterableDevice(['hostname' => 'router1', 'os' => null]);
+    createFilterableDevice(['hostname' => 'router2', 'os' => 'ios']);
 
     $results = FilterableDevice::applyFilters(['os' => ['is_empty' => null]])->get();
 
@@ -199,9 +218,9 @@ test('is empty matches null', function () {
     expect($results->first()->hostname)->toEqual('router1');
 });
 
-test('is empty matches empty string', function () {
-    device(['hostname' => 'router1', 'os' => '']);
-    device(['hostname' => 'router2', 'os' => 'ios']);
+test('is empty matches empty string', function (): void {
+    createFilterableDevice(['hostname' => 'router1', 'os' => '']);
+    createFilterableDevice(['hostname' => 'router2', 'os' => 'ios']);
 
     $results = FilterableDevice::applyFilters(['os' => ['is_empty' => null]])->get();
 
@@ -209,10 +228,10 @@ test('is empty matches empty string', function () {
     expect($results->first()->hostname)->toEqual('router1');
 });
 
-test('is not empty', function () {
-    device(['hostname' => 'router1', 'os' => null]);
-    device(['hostname' => 'router2', 'os' => '']);
-    device(['hostname' => 'router3', 'os' => 'ios']);
+test('is not empty', function (): void {
+    createFilterableDevice(['hostname' => 'router1', 'os' => null]);
+    createFilterableDevice(['hostname' => 'router2', 'os' => '']);
+    createFilterableDevice(['hostname' => 'router3', 'os' => 'ios']);
 
     $results = FilterableDevice::applyFilters(['os' => ['is_not_empty' => null]])->get();
 
@@ -220,10 +239,14 @@ test('is not empty', function () {
     expect($results->first()->hostname)->toEqual('router3');
 });
 
-test('in', function () {
-    device(['hostname' => 'router1', 'os' => 'ios']);
-    device(['hostname' => 'router2', 'os' => 'eos']);
-    device(['hostname' => 'router3', 'os' => 'junos']);
+// -------------------------------------------------------------------------
+// Set operators
+// -------------------------------------------------------------------------
+
+test('in', function (): void {
+    createFilterableDevice(['hostname' => 'router1', 'os' => 'ios']);
+    createFilterableDevice(['hostname' => 'router2', 'os' => 'eos']);
+    createFilterableDevice(['hostname' => 'router3', 'os' => 'junos']);
 
     $results = FilterableDevice::applyFilters(['os' => ['in' => ['ios', 'eos']]])->get();
 
@@ -231,10 +254,10 @@ test('in', function () {
     expect($results->pluck('os')->all())->toEqualCanonicalizing(['ios', 'eos']);
 });
 
-test('not in', function () {
-    device(['hostname' => 'router1', 'os' => 'ios']);
-    device(['hostname' => 'router2', 'os' => 'eos']);
-    device(['hostname' => 'router3', 'os' => 'junos']);
+test('not in', function (): void {
+    createFilterableDevice(['hostname' => 'router1', 'os' => 'ios']);
+    createFilterableDevice(['hostname' => 'router2', 'os' => 'eos']);
+    createFilterableDevice(['hostname' => 'router3', 'os' => 'junos']);
 
     $results = FilterableDevice::applyFilters(['os' => ['not_in' => ['ios', 'eos']]])->get();
 
@@ -242,18 +265,18 @@ test('not in', function () {
     expect($results->first()->os)->toEqual('junos');
 });
 
-test('in with comma separated string', function () {
-    device(['hostname' => 'router1', 'os' => 'ios']);
-    device(['hostname' => 'router2', 'os' => 'eos']);
-    device(['hostname' => 'router3', 'os' => 'junos']);
+test('in with comma separated string', function (): void {
+    createFilterableDevice(['hostname' => 'router1', 'os' => 'ios']);
+    createFilterableDevice(['hostname' => 'router2', 'os' => 'eos']);
+    createFilterableDevice(['hostname' => 'router3', 'os' => 'junos']);
 
     $results = FilterableDevice::applyFilters(['os' => ['in' => 'ios,eos']])->get();
 
     expect($results)->toHaveCount(2);
 });
 
-test('in operator with empty values', function () {
-    device(['hostname' => 'router1', 'os' => 'ios']);
+test('in operator with empty values', function (): void {
+    createFilterableDevice(['hostname' => 'router1', 'os' => 'ios']);
 
     $results = FilterableDevice::applyFilters(['os' => ['in' => []]])->get();
     expect($results)->toHaveCount(0);
@@ -262,10 +285,10 @@ test('in operator with empty values', function () {
     expect($results)->toHaveCount(0);
 });
 
-test('multiple fields apply and logic', function () {
-    device(['hostname' => 'core-rt-01', 'os' => 'ios']);
-    device(['hostname' => 'edge-rt-01', 'os' => 'ios']);
-    device(['hostname' => 'core-rt-01', 'os' => 'junos']);
+test('multiple fields apply and logic', function (): void {
+    createFilterableDevice(['hostname' => 'core-rt-01', 'os' => 'ios']);
+    createFilterableDevice(['hostname' => 'edge-rt-01', 'os' => 'ios']);
+    createFilterableDevice(['hostname' => 'core-rt-01', 'os' => 'junos']);
 
     $results = FilterableDevice::applyFilters([
         'hostname' => ['contains' => 'core'],
@@ -277,9 +300,13 @@ test('multiple fields apply and logic', function () {
     expect($results->first()->os)->toEqual('ios');
 });
 
-test('relation eq', function () {
-    device(['hostname' => 'router1'], 'London');
-    device(['hostname' => 'router2'], 'Paris');
+// -------------------------------------------------------------------------
+// Relation filtering
+// -------------------------------------------------------------------------
+
+test('relation eq', function (): void {
+    createFilterableDevice(['hostname' => 'router1'], 'London');
+    createFilterableDevice(['hostname' => 'router2'], 'Paris');
 
     $results = FilterableDevice::applyFilters(['location.location' => ['eq' => 'London']])->get();
 
@@ -287,9 +314,9 @@ test('relation eq', function () {
     expect($results->first()->hostname)->toEqual('router1');
 });
 
-test('relation contains', function () {
-    device(['hostname' => 'router1'], 'London DC');
-    device(['hostname' => 'router2'], 'Paris DC');
+test('relation contains', function (): void {
+    createFilterableDevice(['hostname' => 'router1'], 'London DC');
+    createFilterableDevice(['hostname' => 'router2'], 'Paris DC');
 
     $results = FilterableDevice::applyFilters(['location.location' => ['contains' => 'London']])->get();
 
@@ -297,9 +324,9 @@ test('relation contains', function () {
     expect($results->first()->hostname)->toEqual('router1');
 });
 
-test('relation neq', function () {
-    device(['hostname' => 'router1'], 'London');
-    device(['hostname' => 'router2'], 'Paris');
+test('relation neq', function (): void {
+    createFilterableDevice(['hostname' => 'router1'], 'London');
+    createFilterableDevice(['hostname' => 'router2'], 'Paris');
 
     $results = FilterableDevice::applyFilters(['location.location' => ['neq' => 'London']])->get();
 
@@ -307,9 +334,9 @@ test('relation neq', function () {
     expect($results->first()->hostname)->toEqual('router2');
 });
 
-test('deeply nested relation filtering', function () {
-    device(['hostname' => 'uk-router'], 'London', 'Europe');
-    device(['hostname' => 'us-router']);
+test('deeply nested relation filtering', function (): void {
+    createFilterableDevice(['hostname' => 'uk-router'], 'London', 'Europe');
+    createFilterableDevice(['hostname' => 'us-router']);
 
     $results = FilterableDevice::applyFilters([
         'location.region.name' => ['eq' => 'Europe'],
@@ -319,10 +346,10 @@ test('deeply nested relation filtering', function () {
     expect($results->first()->hostname)->toEqual('uk-router');
 });
 
-test('relation neq includes records with no relation', function () {
-    device(['hostname' => 'lon-gw'], 'London');
-    device(['hostname' => 'par-gw'], 'Paris');
-    device(['hostname' => 'orphan-gw', 'location_id' => null]);
+test('relation neq includes records with no relation', function (): void {
+    createFilterableDevice(['hostname' => 'lon-gw'], 'London');
+    createFilterableDevice(['hostname' => 'par-gw'], 'Paris');
+    createFilterableDevice(['hostname' => 'orphan-gw', 'location_id' => null]);
 
     $results = FilterableDevice::applyFilters([
         'location.location' => ['neq' => 'London'],
@@ -334,9 +361,9 @@ test('relation neq includes records with no relation', function () {
     expect($hostnames)->toContain('orphan-gw');
 });
 
-test('relation is empty finds records without relationship', function () {
-    device(['hostname' => 'connected-gw'], 'London');
-    device(['hostname' => 'unassigned-gw', 'location_id' => null]);
+test('relation is empty finds records without relationship', function (): void {
+    createFilterableDevice(['hostname' => 'connected-gw'], 'London');
+    createFilterableDevice(['hostname' => 'unassigned-gw', 'location_id' => null]);
 
     $results = FilterableDevice::applyFilters([
         'location.location' => ['is_empty' => '1'],
@@ -346,9 +373,9 @@ test('relation is empty finds records without relationship', function () {
     expect($results->first()->hostname)->toEqual('unassigned-gw');
 });
 
-test('relation is not empty finds records with relationship', function () {
-    device(['hostname' => 'connected-gw'], 'Paris');
-    device(['hostname' => 'unassigned-gw', 'location_id' => null]);
+test('relation is not empty finds records with relationship', function (): void {
+    createFilterableDevice(['hostname' => 'connected-gw'], 'Paris');
+    createFilterableDevice(['hostname' => 'unassigned-gw', 'location_id' => null]);
 
     $results = FilterableDevice::applyFilters([
         'location.location' => ['is_not_empty' => '1'],
@@ -358,10 +385,14 @@ test('relation is not empty finds records with relationship', function () {
     expect($results->first()->hostname)->toEqual('connected-gw');
 });
 
-test('apply filter search or logic', function () {
-    device(['hostname' => 'core-router', 'os' => 'ios']);
-    device(['hostname' => 'edge-switch', 'os' => 'eos']);
-    device(['hostname' => 'spine-leaf',  'os' => 'junos']);
+// -------------------------------------------------------------------------
+// applyFilterSearch helper
+// -------------------------------------------------------------------------
+
+test('apply filter search or logic', function (): void {
+    createFilterableDevice(['hostname' => 'core-router', 'os' => 'ios']);
+    createFilterableDevice(['hostname' => 'edge-switch', 'os' => 'eos']);
+    createFilterableDevice(['hostname' => 'spine-leaf',  'os' => 'junos']);
 
     // filterSearch on Device searches both hostname and os
     $results = FilterableDevice::applyFilters(['search' => ['contains' => 'ios']])->get();
@@ -370,9 +401,9 @@ test('apply filter search or logic', function () {
     expect($results->first()->hostname)->toEqual('core-router');
 });
 
-test('apply filter search not contains and logic', function () {
-    device(['hostname' => 'core-router', 'os' => 'ios']);
-    device(['hostname' => 'edge-switch', 'os' => 'eos']);
+test('apply filter search not contains and logic', function (): void {
+    createFilterableDevice(['hostname' => 'core-router', 'os' => 'ios']);
+    createFilterableDevice(['hostname' => 'edge-switch', 'os' => 'eos']);
 
     $results = FilterableDevice::applyFilters(['search' => ['not_contains' => 'ios']])->get();
 
@@ -381,24 +412,28 @@ test('apply filter search not contains and logic', function () {
     expect($results->first()->hostname)->toEqual('edge-switch');
 });
 
-test('non filterable field is ignored', function () {
-    device(['hostname' => 'router1']);
+// -------------------------------------------------------------------------
+// Ignored / invalid input
+// -------------------------------------------------------------------------
+
+test('non filterable field is ignored', function (): void {
+    createFilterableDevice(['hostname' => 'router1']);
 
     $results = FilterableDevice::applyFilters(['secret' => ['eq' => 'value']])->get();
 
     expect($results)->toHaveCount(1);
 });
 
-test('unknown operator is ignored', function () {
-    device(['hostname' => 'router1']);
+test('unknown operator is ignored', function (): void {
+    createFilterableDevice(['hostname' => 'router1']);
 
     $results = FilterableDevice::applyFilters(['hostname' => ['bogus' => 'value']])->get();
 
     expect($results)->toHaveCount(1);
 });
 
-test('non array operators are ignored', function () {
-    device(['hostname' => 'router1']);
+test('non array operators are ignored', function (): void {
+    createFilterableDevice(['hostname' => 'router1']);
 
     /** @phpstan-ignore-next-line */
     $results = FilterableDevice::applyFilters(['hostname' => 'not-an-array'])->get();
@@ -409,12 +444,17 @@ test('non array operators are ignored', function () {
 // ---------------------------------------------------------------------------
 // Inline test doubles
 // ---------------------------------------------------------------------------
+
 /**
  * @property int $id
  * @property string|null $region
  */
 class FilterableRegion extends Model
 {
+    protected $connection = 'testing_memory';
+    protected $table = 'filterable_regions';
+    protected $guarded = [];
+    public $timestamps = false;
 }
 
 /**
@@ -424,14 +464,20 @@ class FilterableRegion extends Model
  */
 class FilterableLocation extends Model
 {
+    protected $connection = 'testing_memory';
+    protected $table = 'filterable_locations';
+    protected $guarded = [];
+    public $timestamps = false;
+
     /**
      * @return BelongsTo<FilterableRegion, $this>
      */
-    function region(): BelongsTo
+    public function region(): BelongsTo
     {
         return $this->belongsTo(FilterableRegion::class, 'region_id');
     }
 }
+
 /**
  * @property int $id
  * @property string|null $hostname
@@ -441,12 +487,20 @@ class FilterableLocation extends Model
  */
 class FilterableDevice extends Model
 {
-    uses(\App\Models\Traits\Filterable::class);
-    
+    use Filterable;
+
+    protected $connection = 'testing_memory';
+    protected $table = 'filterable_devices';
+    protected $guarded = [];
+    public $timestamps = false;
+
+    /** @var list<string> */
+    protected array $filterable = ['hostname', 'os', 'uptime', 'location.location', 'search', 'location.region.name'];
+
     /**
      * @return BelongsTo<FilterableLocation, $this>
      */
-    function location(): BelongsTo
+    public function location(): BelongsTo
     {
         return $this->belongsTo(FilterableLocation::class, 'location_id');
     }
@@ -457,7 +511,7 @@ class FilterableDevice extends Model
      * @param  array{operator?: string, wildcard?: string, not?: bool, null?: bool, set?: bool}  $config
      * @return void
      */
-    function filterSearch(Builder $query, mixed $value, array $config): void
+    public function filterSearch(Builder $query, mixed $value, array $config): void
     {
         $this->applyFilterSearch(['hostname', 'os'], $query, $value, $config);
     }

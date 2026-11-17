@@ -1,14 +1,14 @@
 <?php
 
-uses(\LibreNMS\Tests\InMemoryDbTestCase::class);
 use App\Models\Alert;
 use App\Models\AlertRule;
 use App\Models\Device;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 
+uses(LibreNMS\Tests\InMemoryDbTestCase::class);
 
-test('pages require permission', function () {
+test('pages require permission', function (): void {
     $user = User::factory()->create(['enabled' => 1]);
 
     $this->actingAs($user)->get(route('faults'))->assertForbidden();
@@ -16,15 +16,15 @@ test('pages require permission', function () {
     $this->actingAs($user)->get(route('ajax.select.alert-rule'))->assertForbidden();
 });
 
-test('filter fields follow permissions', function () {
-    $admin = user('admin');
+test('filter fields follow permissions', function (): void {
+    $admin = alertFilterUser('admin');
     foreach (['faults', 'alert-log'] as $page) {
         $keys = filterKeys($admin, $page);
         expect($keys)->toContain('device.location_id');
         expect($keys)->toContain('device.groups.id');
     }
 
-    $user = user('user');
+    $user = alertFilterUser('user');
     foreach (['faults', 'alert-log'] as $page) {
         $keys = filterKeys($user, $page);
         expect($keys)->toContain('search');
@@ -33,9 +33,9 @@ test('filter fields follow permissions', function () {
     $this->actingAs($user)->get(route('ajax.select.alert-rule'))->assertOk();
 });
 
-test('device fault pages', function () {
+test('device fault pages', function (): void {
     $device = Device::factory()->create();
-    $admin = user('admin');
+    $admin = alertFilterUser('admin');
 
     $this->actingAs($admin)->get(route('device.faults', $device->device_id))
         ->assertOk()
@@ -51,19 +51,19 @@ test('device fault pages', function () {
         ->assertSee("'device.alert-log'", false)
         ->assertSee("device_id: $device->device_id", false);
 
-    $this->actingAs(user('user'))->get(route('device.faults', $device->device_id))->assertForbidden();
+    $this->actingAs(alertFilterUser('user'))->get(route('device.faults', $device->device_id))->assertForbidden();
 });
 
-test('legacy device alert urls redirect', function () {
+test('legacy device alert urls redirect', function (): void {
     $id = Device::factory()->create()->device_id;
-    $admin = user('admin');
+    $admin = alertFilterUser('admin');
 
     $this->actingAs($admin)->get("/device/$id/alerts")->assertRedirect(route('device.faults', $id));
     $this->actingAs($admin)->get("/device/$id/alerts/section=alert-log?filter[state][eq]=ok")
         ->assertRedirect(route('device.faults.history', ['device' => $id, 'filter' => ['state' => ['eq' => 'ok']]]));
 });
 
-test('rule picker only lists rules on accessible devices', function () {
+test('rule picker only lists rules on accessible devices', function (): void {
     $device = Device::factory()->create();
     $visible = AlertRule::factory()->create();
     $hidden = AlertRule::factory()->create();
@@ -71,16 +71,16 @@ test('rule picker only lists rules on accessible devices', function () {
     Alert::factory()->create(['rule_id' => $hidden->id]);
 
     // on another device
-    $user = user('user');
+    $user = alertFilterUser('user');
     $user->devicesOwned()->attach($device->device_id);
 
     expect(ruleIds($user))->toBe([$visible->id]);
     expect(ruleIds($user, ['id' => $hidden->id]))->toBe([]);
-    expect(ruleIds(user('admin')))->toEqualCanonicalizing([$visible->id, $hidden->id]);
+    expect(ruleIds(alertFilterUser('admin')))->toEqualCanonicalizing([$visible->id, $hidden->id]);
 });
 
-test('legacy fault urls redirect to filters', function () {
-    $admin = user('admin');
+test('legacy fault urls redirect to filters', function (): void {
+    $admin = alertFilterUser('admin');
 
     $this->actingAs($admin)->get('/alerts/rule_id=3/acknowledged=0')
         ->assertRedirect(route('faults', ['filter' => ['rule_id' => ['eq' => 3], 'state' => ['neq' => 'acknowledged']]]));
@@ -98,8 +98,8 @@ test('legacy fault urls redirect to filters', function () {
     $this->actingAs($admin)->get('/alerts')->assertOk();
 });
 
-test('legacy alert log urls redirect to filters', function () {
-    $admin = user('admin');
+test('legacy alert log urls redirect to filters', function (): void {
+    $admin = alertFilterUser('admin');
 
     $this->actingAs($admin)->get('/alert-log?device_id=5&state=0&severity[]=3&severity[]=9')
         ->assertRedirect(route('alert-log', ['filter' => [
@@ -113,8 +113,8 @@ test('legacy alert log urls redirect to filters', function () {
         ->assertViewHas('filter', ['state' => ['in' => 'ok,alerted']]);
 });
 
-test('invalid filters are rejected', function () {
-    $admin = user('admin');
+test('invalid filters are rejected', function (): void {
+    $admin = alertFilterUser('admin');
 
     $this->actingAs($admin)->postJson(route('table.alerts'), ['filter' => ['search' => ['contains' => ['a']]]])
         ->assertUnprocessable();
@@ -122,7 +122,7 @@ test('invalid filters are rejected', function () {
         ->assertUnprocessable();
 });
 
-function user(string $role): User
+function alertFilterUser(string $role): User
 {
     Role::findOrCreate($role);
     $user = User::factory()->create(['enabled' => 1]);
@@ -137,7 +137,7 @@ function user(string $role): User
  */
 function ruleIds(User $user, array $params = []): array
 {
-    return array_column($this->actingAs($user)->getJson(route('ajax.select.alert-rule', $params))->assertOk()->json('results'), 'id');
+    return array_column(test()->actingAs($user)->getJson(route('ajax.select.alert-rule', $params))->assertOk()->json('results'), 'id');
 }
 
 /**
@@ -145,7 +145,7 @@ function ruleIds(User $user, array $params = []): array
  */
 function filterKeys(User $user, string $route): array
 {
-    $response = $this->actingAs($user)->get(route($route));
+    $response = test()->actingAs($user)->get(route($route));
     $response->assertOk();
 
     return array_column($response->viewData('filterFields'), 'key');

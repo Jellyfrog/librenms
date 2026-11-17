@@ -1,16 +1,15 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Facades\LibrenmsConfig;
 use LibreNMS\Util\Mail;
-use PHPUnit\Framework\Attributes\DataProvider;
 
+uses(LibreNMS\Tests\TestCase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     LibrenmsConfig::set('email_user', 'LibreNMS');
 });
 
-test('parse emails', function (string $input, array $expected) {
+test('parse emails', function (string $input, array $expected): void {
     expect(Mail::parseEmails($input))->toBe($expected);
 })->with('emailProvider');
 

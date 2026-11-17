@@ -24,7 +24,6 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Facades\LibrenmsConfig;
 use App\Models\AlertRule;
 use App\Models\Device;
@@ -39,9 +38,9 @@ use Illuminate\Support\Facades\File;
 use LibreNMS\Enum\PollingMethodType;
 use LibreNMS\Enum\SecretType;
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-test('list devices', function () {
+test('list devices', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $token = $user->createToken('test');
@@ -60,7 +59,7 @@ test('list devices', function () {
     expect($deviceData['status'])->toBeInt();
 });
 
-test('device dates include timezone', function () {
+test('device dates include timezone', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $token = $user->createToken('test');
@@ -79,7 +78,7 @@ test('device dates include timezone', function () {
     expect($res->json('devices.0.last_polled'))->toEndWith('Z');
 });
 
-test('list devices with parents shape', function () {
+test('list devices with parents shape', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $token = $user->createToken('test');
@@ -103,7 +102,7 @@ test('list devices with parents shape', function () {
     $this->assertStringContainsString('parent2.example.com', (string) $childData['dependency_parent_hostname']);
 });
 
-test('disabled user token cannot access api', function () {
+test('disabled user token cannot access api', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create(['enabled' => false]);
     $token = $user->createToken('test');
@@ -112,7 +111,7 @@ test('disabled user token cannot access api', function () {
         ->assertStatus(401);
 });
 
-test('disabled token cannot access api', function () {
+test('disabled token cannot access api', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $token = $user->createToken('test');
@@ -123,7 +122,7 @@ test('disabled token cannot access api', function () {
         ->assertStatus(401);
 });
 
-test('prefixed and unprefixed tokens both authenticate', function () {
+test('prefixed and unprefixed tokens both authenticate', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $token = $user->createToken('test');
@@ -178,7 +177,7 @@ test('prefixed and unprefixed tokens both authenticate', function () {
         ->assertStatus(401);
 });
 
-test('migrated legacy tokens authenticate', function () {
+test('migrated legacy tokens authenticate', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $legacyRawToken = bin2hex(random_bytes(16));
@@ -201,7 +200,7 @@ test('migrated legacy tokens authenticate', function () {
         ->assertJsonPath('status', 'ok');
 });
 
-test('rotate token invalidates old token and generates new prefixed token', function () {
+test('rotate token invalidates old token and generates new prefixed token', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $token = $user->createToken('test');
@@ -224,7 +223,7 @@ test('rotate token invalidates old token and generates new prefixed token', func
         ->assertJsonPath('status', 'ok');
 });
 
-test('get device wireless sensors', function () {
+test('get device wireless sensors', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $token = $user->createToken('test');
@@ -262,7 +261,7 @@ test('get device wireless sensors', function () {
     expect($response->json('wireless_sensors.1.sensor_class'))->toBe('snr');
 });
 
-test('get device wireless sensors supports filtering and columns', function () {
+test('get device wireless sensors supports filtering and columns', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $token = $user->createToken('test');
@@ -303,7 +302,7 @@ test('get device wireless sensors supports filtering and columns', function () {
     $this->assertArrayNotHasKey('sensor_type', $row);
 });
 
-test('get device wireless sensors rejects invalid class', function () {
+test('get device wireless sensors rejects invalid class', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $token = $user->createToken('test');
@@ -321,7 +320,7 @@ test('get device wireless sensors rejects invalid class', function () {
         ]);
 });
 
-test('v1 only accepts bearer token', function () {
+test('v1 only accepts bearer token', function (): void {
     \App\Facades\LibrenmsConfig::set('api.v1.enabled', true);
 
     /** @var User $user */
@@ -351,7 +350,7 @@ test('v1 only accepts bearer token', function () {
         ->assertStatus(401);
 });
 
-test('add rule stores procedure url', function () {
+test('add rule stores procedure url', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $token = $user->createToken('test');
@@ -367,7 +366,7 @@ test('add rule stores procedure url', function () {
     expect(AlertRule::query()->where('name', 'proc rule')->value('proc'))->toBe('https://example.org/runbook');
 });
 
-test('edit rule updates procedure url', function () {
+test('edit rule updates procedure url', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $token = $user->createToken('test');
@@ -385,7 +384,7 @@ test('edit rule updates procedure url', function () {
     expect($rule->fresh()->proc)->toBe('https://example.org/new');
 });
 
-test('edit rule leaves procedure url alone when omitted', function () {
+test('edit rule leaves procedure url alone when omitted', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $token = $user->createToken('test');
@@ -402,7 +401,7 @@ test('edit rule leaves procedure url alone when omitted', function () {
     expect($rule->fresh()->proc)->toBe('https://example.org/keep');
 });
 
-test('get device', function () {
+test('get device', function (): void {
     /** @var User $admin */
     $admin = User::factory()->admin()->create();
     $token = $admin->createToken('test');
@@ -444,7 +443,7 @@ test('get device', function () {
         ->assertStatus(404);
 });
 
-test('get device unauthorized', function () {
+test('get device unauthorized', function (): void {
     $device = Device::factory()->create(['hostname' => 'unauthorized-device.domain.local']);
 
     /** @var User $normalUser */
@@ -455,7 +454,7 @@ test('get device unauthorized', function () {
         ->assertStatus(403);
 });
 
-test('list devices filters', function () {
+test('list devices filters', function (): void {
     /** @var User $admin */
     $admin = User::factory()->admin()->create();
     $token = $admin->createToken('test');
@@ -494,7 +493,7 @@ test('list devices filters', function () {
         ->assertJsonPath('devices.0.hostname', 'alpha.domain.local');
 });
 
-test('list devices normal user permissions', function () {
+test('list devices normal user permissions', function (): void {
     $device1 = Device::factory()->create(['hostname' => 'alpha.domain.local']);
     Device::factory()->create(['hostname' => 'beta.domain.local']);
 
@@ -511,7 +510,7 @@ test('list devices normal user permissions', function () {
         ->assertJsonPath('devices.0.hostname', 'alpha.domain.local');
 });
 
-test('device response does not leak secrets', function () {
+test('device response does not leak secrets', function (): void {
     $device = Device::factory()->create(['hostname' => 'secret-device.domain.local']);
     $secret = Secret::create([
         'description' => 'API test secret',
@@ -537,7 +536,7 @@ test('device response does not leak secrets', function () {
         ->assertDontSee('crypto-secret');
 });
 
-test('add device validation and creation', function () {
+test('add device validation and creation', function (): void {
     /** @var User $admin */
     $admin = User::factory()->admin()->create();
     $token = $admin->createToken('test');
@@ -588,7 +587,7 @@ test('add device validation and creation', function () {
     $this->assertDatabaseMissing('devices', ['hostname' => 'snmp-host.test.local']);
 });
 
-test('add device validates snmp settings', function () {
+test('add device validates snmp settings', function (): void {
     /** @var User $admin */
     $admin = User::factory()->admin()->create();
     $token = $admin->createToken('test');
@@ -620,7 +619,7 @@ test('add device validates snmp settings', function () {
     expect($settings['transport'])->toBe('tcp');
 });
 
-test('device without polling methods reports snmp disabled', function () {
+test('device without polling methods reports snmp disabled', function (): void {
     /** @var User $admin */
     $admin = User::factory()->admin()->create();
     $token = $admin->createToken('test');
@@ -635,7 +634,7 @@ test('device without polling methods reports snmp disabled', function () {
         ->assertJsonPath('devices.0.snmp_disable', 1);
 });
 
-test('list devices with an undecryptable secret', function () {
+test('list devices with an undecryptable secret', function (): void {
     /** @var User $admin */
     $admin = User::factory()->admin()->create();
     $token = $admin->createToken('test');
@@ -667,7 +666,7 @@ test('list devices with an undecryptable secret', function () {
     expect($devices['b-working.domain.local']['authalgo'])->toBeNull();
 });
 
-test('del device', function () {
+test('del device', function (): void {
     /** @var User $admin */
     $admin = User::factory()->admin()->create();
     $token = $admin->createToken('test');
@@ -691,7 +690,7 @@ test('del device', function () {
     $this->assertDatabaseMissing('devices', ['device_id' => $device->device_id]);
 });
 
-test('update device', function () {
+test('update device', function (): void {
     /** @var User $admin */
     $admin = User::factory()->admin()->create();
     $token = $admin->createToken('test');
@@ -736,7 +735,7 @@ test('update device', function () {
     expect($device->fresh()->purpose)->toBe('Production Core');
 });
 
-test('get devices by group', function () {
+test('get devices by group', function (): void {
     /** @var User $admin */
     $admin = User::factory()->admin()->create();
     $token = $admin->createToken('test');
@@ -770,7 +769,7 @@ test('get devices by group', function () {
     $this->assertArrayNotHasKey('parents', $resFull->json('devices.0'));
 });
 
-test('rename device reports success', function () {
+test('rename device reports success', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $token = $user->createToken('test');
@@ -793,7 +792,7 @@ test('rename device reports success', function () {
     }
 });
 
-test('rename device without rrd directory reports success', function () {
+test('rename device without rrd directory reports success', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $token = $user->createToken('test');
@@ -817,7 +816,7 @@ test('rename device without rrd directory reports success', function () {
     }
 });
 
-test('rename device reports duplicate hostname', function () {
+test('rename device reports duplicate hostname', function (): void {
     /** @var User $user */
     $user = User::factory()->admin()->create();
     $token = $user->createToken('test');

@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Actions\Device\BuildPollingMethodCandidates;
 use App\Actions\Device\DiscoverPollingMethod;
 use App\Facades\LibrenmsConfig;
@@ -12,14 +11,16 @@ use LibreNMS\Data\Source\Snmp\SnmpBackendInterface;
 use LibreNMS\Enum\PollingMethodType;
 use LibreNMS\Enum\SecretType;
 use LibreNMS\Polling\Method\Config\SnmpConfig;
-use PHPUnit\Framework\Attributes\DataProvider;
 
+uses(\LibreNMS\Tests\DBTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-test('anew device tries acommunity as v1', function (SecretType $secretType, array $settings, bool $exists, array $expected) {
+/**
+ * @param  array<string, mixed>  $settings
+ * @param  string[]  $expected  the versions tried
+ */
+test('a new device tries a community as v1', function (SecretType $secretType, array $settings, bool $exists, array $expected): void {
     $probed = [];
-    fakeSnmp($probed, fn (SnmpConfig $config): bool => $config->version === 'v1');
+    discoverFakeSnmp($probed, fn (SnmpConfig $config): bool => $config->version === 'v1');
 
     $device = new Device(['hostname' => '192.0.2.1']);
     $device->exists = $exists;
@@ -42,7 +43,7 @@ test('anew device tries acommunity as v1', function (SecretType $secretType, arr
 /**
  * @return array<string, array{SecretType, array<string, mixed>, bool, string[]}>
  */
-dataset('givenSecretProvider', function () {
+dataset('givenSecretProvider', function (): array {
     return [
         'new device, community' => [SecretType::SnmpCommunity, ['port' => 1161], false, ['v2c', 'v1']],
         'new device, community, given version' => [SecretType::SnmpCommunity, ['version' => 'v2c'], false, ['v2c']],
@@ -51,14 +52,14 @@ dataset('givenSecretProvider', function () {
     ];
 });
 
-test('default credentials try communities as v1 last', function () {
+test('default credentials try communities as v1 last', function (): void {
     $public = Secret::create(['description' => 'public', 'secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => 'public']]);
     $v3 = Secret::create(['description' => 'v3', 'secret_type' => SecretType::SnmpV3, 'data' => ['authlevel' => 'noAuthNoPriv', 'authname' => 'user']]);
     $private = Secret::create(['description' => 'private', 'secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => 'private']]);
     LibrenmsConfig::set('snmp.default_credentials', [$public->id, $v3->id, $private->id]);
 
     $probed = [];
-    fakeSnmp($probed, fn (SnmpConfig $config): bool => $config->version === 'v1' && $config->community === 'private');
+    discoverFakeSnmp($probed, fn (SnmpConfig $config): bool => $config->version === 'v1' && $config->community === 'private');
 
     $deviceMethod = new DevicePollingMethod(['method_type' => PollingMethodType::Snmp]);
     $result = app(DiscoverPollingMethod::class)->execute(new Device(['hostname' => '192.0.2.1']), $deviceMethod);
@@ -70,11 +71,11 @@ test('default credentials try communities as v1 last', function () {
     expect($deviceMethod->settings)->toBe(['version' => 'v1']);
 });
 
-test('failure lists every candidate', function () {
+test('failure lists every candidate', function (): void {
     $public = Secret::create(['description' => 'Default public', 'secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => 'public']]);
     LibrenmsConfig::set('snmp.default_credentials', [$public->id]);
     $probed = [];
-    fakeSnmp($probed, fn (): bool => false);
+    discoverFakeSnmp($probed, fn (): bool => false);
 
     $deviceMethod = new DevicePollingMethod(['method_type' => PollingMethodType::Snmp]);
     $result = app(DiscoverPollingMethod::class)->execute(new Device(['hostname' => '192.0.2.1']), $deviceMethod);
@@ -88,7 +89,7 @@ test('failure lists every candidate', function () {
     expect($deviceMethod->settings)->toBeNull();
 });
 
-test('other methods are tried as they are', function () {
+test('other methods are tried as they are', function (): void {
     $deviceMethod = new DevicePollingMethod(['method_type' => PollingMethodType::Ipmi, 'settings' => ['port' => 623]]);
 
     $candidates = app(BuildPollingMethodCandidates::class)->execute(new Device, $deviceMethod);
@@ -102,7 +103,7 @@ test('other methods are tried as they are', function () {
  * @param  list<array{string, ?string}>  $probed  filled with the version and community of each probe
  * @param  callable(SnmpConfig): bool  $replies
  */
-function fakeSnmp(array &$probed, callable $replies): void
+function discoverFakeSnmp(array &$probed, callable $replies): void
 {
     $backend = Mockery::mock(SnmpBackendInterface::class);
     $backend->shouldReceive('get')->andReturnUsing(function ($target, $oids, SnmpConfig $config) use (&$probed, $replies) {
@@ -112,5 +113,5 @@ function fakeSnmp(array &$probed, callable $replies): void
             ? new RawSnmpResponse('SNMPv2-MIB::sysObjectID.0 = .1.3.6.1.4.1.8072.3.2.10', '', 0)
             : new RawSnmpResponse('', 'Timeout: No Response from udp:192.0.2.1:161.', 1);
     });
-    $this->app->instance(SnmpBackendInterface::class, $backend);
+    app()->instance(SnmpBackendInterface::class, $backend);
 }

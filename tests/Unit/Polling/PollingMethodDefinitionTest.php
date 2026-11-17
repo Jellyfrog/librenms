@@ -70,7 +70,7 @@ test('bulk field shows no for v1', function () {
 test('every setting is optional', function () {
     foreach (PollingMethodType::cases() as $type) {
         foreach ((new PollingMethodRegistry)->get($type)->definition()->rules() as $field => $rules) {
-            expect((array) $rules)->toContain('nullable', "{$type->value} setting $field should be nullable");
+            $this->assertContains('nullable', (array) $rules, "{$type->value} setting $field should be nullable");
         }
     }
 });

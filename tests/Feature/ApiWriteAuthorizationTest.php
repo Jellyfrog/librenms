@@ -24,7 +24,6 @@
  * @copyright  2026 LibreNMS
  */
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Models\Bill;
 use App\Models\Component;
 use App\Models\Device;
@@ -33,10 +32,9 @@ use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-beforeEach(function () {
+beforeEach(function (): void {
     Role::findOrCreate('user');
     $this->accessible = Device::factory()->create();
     $this->other = Device::factory()->create();
@@ -45,7 +43,7 @@ beforeEach(function () {
 /**
  * @param  string[]  $permissions
  */
-function limitedUser(array $permissions): User
+function apiWriteLimitedUser(array $permissions): User
 {
     /** @var User $user */
     $user = User::factory()->create(['enabled' => 1]);
@@ -54,7 +52,7 @@ function limitedUser(array $permissions): User
         Permission::findOrCreate($permission);
     }
     $user->givePermissionTo($permissions);
-    $user->devicesOwned()->attach($this->accessible->device_id);
+    $user->devicesOwned()->attach(test()->accessible->device_id);
 
     return $user;
 }
@@ -62,13 +60,13 @@ function limitedUser(array $permissions): User
 /**
  * @return array{X-Auth-Token: string}
  */
-function headers(User $user): array
+function apiWriteHeaders(User $user): array
 {
     return ['X-Auth-Token' => $user->createToken('test')->plainTextToken];
 }
 
-test('device policy update and delete are scoped to accessible devices', function () {
-    $user = limitedUser(['device.update', 'device.delete']);
+test('device policy update and delete are scoped to accessible devices', function (): void {
+    $user = apiWriteLimitedUser(['device.update', 'device.delete']);
 
     expect(Gate::forUser($user)->allows('update', Device::class))->toBeTrue();
     expect(Gate::forUser($user)->allows('update', $this->accessible))->toBeTrue();
@@ -77,9 +75,9 @@ test('device policy update and delete are scoped to accessible devices', functio
     expect(Gate::forUser($user)->allows('delete', $this->other))->toBeFalse();
 });
 
-test('api device writes deny inaccessible device', function () {
-    $user = limitedUser(['device.update', 'device.delete']);
-    $headers = headers($user);
+test('api device writes deny inaccessible device', function (): void {
+    $user = apiWriteLimitedUser(['device.update', 'device.delete']);
+    $headers = apiWriteHeaders($user);
     $other = $this->other->hostname;
 
     $this->json('PATCH', "/api/v0/devices/$other", ['field' => 'purpose', 'data' => 'changed'], $headers)->assertStatus(403);
@@ -98,9 +96,9 @@ test('api device writes deny inaccessible device', function () {
     expect($this->accessible->refresh()->purpose)->toBe('changed');
 });
 
-test('component writes are scoped to accessible devices', function () {
-    $user = limitedUser(['component.update', 'component.delete']);
-    $headers = headers($user);
+test('component writes are scoped to accessible devices', function (): void {
+    $user = apiWriteLimitedUser(['component.update', 'component.delete']);
+    $headers = apiWriteHeaders($user);
     $own = Component::factory()->create(['device_id' => $this->accessible->device_id, 'label' => 'original']);
     $foreign = Component::factory()->create(['device_id' => $this->other->device_id, 'label' => 'original']);
 
@@ -129,9 +127,9 @@ test('component writes are scoped to accessible devices', function () {
     expect(Component::whereKey($own->id)->exists())->toBeFalse();
 });
 
-test('bill writes are scoped to accessible bills', function () {
-    $user = limitedUser(['bill.create', 'bill.update', 'bill.delete']);
-    $headers = headers($user);
+test('bill writes are scoped to accessible bills', function (): void {
+    $user = apiWriteLimitedUser(['bill.create', 'bill.update', 'bill.delete']);
+    $headers = apiWriteHeaders($user);
     $own = Bill::factory()->create(['bill_notes' => 'original']);
     $foreign = Bill::factory()->create(['bill_notes' => 'original']);
     $user->bills()->attach($own->bill_id);

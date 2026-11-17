@@ -69,7 +69,7 @@ test('sender is found by any identifier it might use', function () {
     ];
 
     foreach ($senders as $identifier => $sender) {
-        expect(resolve($sender))->toEqual($device->device_id, "A sender identifying itself by $identifier should be matched to the device.");
+        expect(resolveSyslogSender($sender))->toEqual($device->device_id, "A sender identifying itself by $identifier should be matched to the device.");
     }
 });
 
@@ -95,8 +95,8 @@ test('device address takes precedence over another devices port address', functi
     /** @var Device $sender6 */
     $sender6 = Device::factory()->create(['ip' => '2001:db8::30']);
 
-    expect(resolve('192.0.2.30'))->toEqual($sender->device_id);
-    expect(resolve('2001:db8::30'))->toEqual($sender6->device_id);
+    expect(resolveSyslogSender('192.0.2.30'))->toEqual($sender->device_id);
+    expect(resolveSyslogSender('2001:db8::30'))->toEqual($sender6->device_id);
     expect(Device::findByIp('192.0.2.30')?->device_id)->toEqual($sender->device_id);
     expect(Device::findByIp('2001:db8::30')?->device_id)->toEqual($sender6->device_id);
 });
@@ -123,30 +123,30 @@ test('sender name takes precedence over another devices port address', function 
     /** @var Device $byHostname */
     $byHostname = Device::factory()->create(['hostname' => $ipv6->compressed()]);
 
-    expect(resolve('192.0.2.40'))->toEqual($bySysName->device_id);
-    expect(resolve($ipv6->compressed()))->toEqual($byHostname->device_id);
+    expect(resolveSyslogSender('192.0.2.40'))->toEqual($bySysName->device_id);
+    expect(resolveSyslogSender($ipv6->compressed()))->toEqual($byHostname->device_id);
 });
 
 test('device added later is picked up once the miss expires', function () {
     $processor = new Processor;
 
-    expect(resolve('192.0.2.99', $processor))->toBeNull();
+    expect(resolveSyslogSender('192.0.2.99', $processor))->toBeNull();
 
     $device = Device::factory()->create(['hostname' => '192.0.2.99']);
 
     // the miss is held briefly, so the receiver does not query on every message
-    expect(resolve('192.0.2.99', $processor))->toBeNull();
+    expect(resolveSyslogSender('192.0.2.99', $processor))->toBeNull();
 
     $this->travel(61)->seconds();
 
-    expect(resolve('192.0.2.99', $processor))->toEqual($device->device_id);
+    expect(resolveSyslogSender('192.0.2.99', $processor))->toEqual($device->device_id);
 });
 
 /**
  * Run a message through the processor without storing it, and report which device it
  * was attributed to.
  */
-function resolve(string $host, ?Processor $processor = null): ?int
+function resolveSyslogSender(string $host, ?Processor $processor = null): ?int
 {
     $entry = ($processor ?? new Processor)->parse(new Entry(
         host: $host,

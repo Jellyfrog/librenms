@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\Device;
 use App\Models\DevicePollingMethod;
 use Illuminate\Support\Collection;
@@ -22,10 +21,10 @@ use LibreNMS\Polling\Method\Methods\ProxmoxApiPollingMethod;
 use LibreNMS\Polling\Method\Methods\SnmpPollingMethod;
 use LibreNMS\Polling\Method\Methods\UnixAgentPollingMethod;
 use LibreNMS\Polling\Secrets\Data\SnmpCommunitySecretData;
-use PHPUnit\Framework\Attributes\DataProvider;
 
+uses(\LibreNMS\Tests\TestCase::class);
 
-test('icmp pings with configured address family', function (string $ipVersion, string $snmpTransport, ?AddressFamily $expected) {
+test('icmp pings with configured address family', function (string $ipVersion, string $snmpTransport, ?AddressFamily $expected): void {
     $device = new Device(['hostname' => '192.0.2.1']);
     $device->setRelation('pollingMethods', new Collection([
         new DevicePollingMethod(['method_type' => PollingMethodType::Snmp, 'settings' => ['transport' => $snmpTransport]]),
@@ -43,7 +42,7 @@ test('icmp pings with configured address family', function (string $ipVersion, s
 /**
  * @return array<string, array{string, string, ?AddressFamily}>
  */
-dataset('icmpAddressFamilyProvider', function () {
+dataset('icmpAddressFamilyProvider', function (): array {
     return [
         'auto' => ['default', 'udp6', null],
         'ipv4' => ['ipv4', 'udp6', AddressFamily::IPv4],
@@ -53,7 +52,7 @@ dataset('icmpAddressFamilyProvider', function () {
     ];
 });
 
-test('icmp discover reports unreachable', function () {
+test('icmp discover reports unreachable', function (): void {
     $device = new Device(['hostname' => '192.0.2.1']);
     $device->setRelation('pollingMethods', new Collection);
 
@@ -67,7 +66,7 @@ test('icmp discover reports unreachable', function () {
     expect($result->errorMessage())->not->toBeNull();
 });
 
-test('snmp probes the device with the given config', function () {
+test('snmp probes the device with the given config', function (): void {
     $device = new Device(['hostname' => 'snmp.test.local']);
     $config = SnmpConfig::make(['port' => 1161] + (new SnmpPollingMethod)->defaults(), new SnmpCommunitySecretData(community: 'custom-community'));
 
@@ -83,7 +82,7 @@ test('snmp probes the device with the given config', function () {
     expect($result->errorMessage())->toBeNull();
 });
 
-test('snmp probe failure has error message', function () {
+test('snmp probe failure has error message', function (): void {
     $backend = Mockery::mock(SnmpBackendInterface::class);
     $backend->shouldReceive('get')->once()->andReturn(new RawSnmpResponse('', 'Timeout: No Response from snmp.test.local', 1));
 
@@ -93,7 +92,7 @@ test('snmp probe failure has error message', function () {
     expect($result->errorMessage())->not->toBeEmpty();
 });
 
-test('unix agent probe uses configured port and timeout', function () {
+test('unix agent probe uses configured port and timeout', function (): void {
     $config = new UnixAgentConfig(port: 1, timeout: 1);
 
     // nothing listens on port 1
@@ -104,7 +103,7 @@ test('unix agent probe uses configured port and timeout', function () {
     expect($result->stat('timeout'))->toBe(1);
 });
 
-test('proxmox probe reads version with token', function () {
+test('proxmox probe reads version with token', function (): void {
     Http::fake([
         'https://pve.example.com:8006/api2/json/version' => Http::response(['data' => ['version' => '8.2.4', 'release' => '8.2']]),
         'https://pve.example.com:8006/api2/json/nodes/localhost/certificates/info' => Http::response(['data' => [['filename' => 'pve-root-ca.pem', 'fingerprint' => 'AB:CD:EF']]]),
@@ -118,7 +117,7 @@ test('proxmox probe reads version with token', function () {
     Http::assertSent(fn ($request) => $request->hasHeader('Authorization', 'PVEAPIToken=librenms@pve!monitoring=abc123'));
 });
 
-test('proxmox probe fails without aroot ca', function () {
+test('proxmox probe fails without a root ca', function (): void {
     Http::fake(['*/version' => Http::response(['data' => ['version' => '8.2.4']]), '*/certificates/info' => Http::response(['data' => []])]);
 
     $result = (new ProxmoxApiPollingMethod)->probe(new Device(['hostname' => 'pve.example.com']), proxmoxConfig());
@@ -126,7 +125,7 @@ test('proxmox probe fails without aroot ca', function () {
     expect($result->isSuccess())->toBeFalse();
 });
 
-test('proxmox probe fails with bad token', function () {
+test('proxmox probe fails with bad token', function (): void {
     Http::fake(['*' => Http::response(null, 401)]);
 
     $result = (new ProxmoxApiPollingMethod)->probe(new Device(['hostname' => 'pve.example.com']), proxmoxConfig());
@@ -135,7 +134,7 @@ test('proxmox probe fails with bad token', function () {
     expect($result->errorMessage())->not->toBeNull();
 });
 
-test('proxmox probe fails without token', function () {
+test('proxmox probe fails without token', function (): void {
     Http::fake();
 
     $result = (new ProxmoxApiPollingMethod)->probe(new Device(['hostname' => 'pve.example.com']), proxmoxConfig(tokenSecret: ''));

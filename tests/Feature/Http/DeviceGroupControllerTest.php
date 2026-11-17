@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\Device;
 use App\Models\DeviceGroup;
 use App\Models\ServiceTemplate;
@@ -8,15 +7,14 @@ use App\Models\User;
 use Illuminate\Support\Js;
 use Spatie\Permission\Models\Role;
 
+uses(LibreNMS\Tests\TestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-beforeEach(function () {
+beforeEach(function (): void {
     Role::findOrCreate('admin');
     Role::findOrCreate('user');
 });
 
-function admin(): User
+function deviceGroupAdmin(): User
 {
     $admin = User::factory()->create(['enabled' => 1]);
     $admin->assignRole('admin');
@@ -24,7 +22,7 @@ function admin(): User
     return $admin;
 }
 
-function user(): User
+function deviceGroupUser(): User
 {
     $user = User::factory()->create(['enabled' => 1]);
     $user->assignRole('user');
@@ -32,10 +30,10 @@ function user(): User
     return $user;
 }
 
-test('index renders alpine actions', function () {
+test('index renders alpine actions', function (): void {
     $group = DeviceGroup::factory()->create();
 
-    $this->actingAs(admin())
+    $this->actingAs(deviceGroupAdmin())
         ->get(route('device-groups.index'))
         ->assertOk()
         ->assertSee('rediscover(', false)
@@ -44,13 +42,13 @@ test('index renders alpine actions', function () {
         ->assertDontSee('ajax_form.php', false);
 });
 
-test('admin can rediscover group', function () {
+test('admin can rediscover group', function (): void {
     $group = DeviceGroup::factory()->create(['name' => 'Core <b>']);
     $members = Device::factory()->count(2)->create(['last_discovered' => '2026-01-01 00:00:00']);
     $other = Device::factory()->create(['last_discovered' => '2026-01-01 00:00:00']);
     $group->devices()->attach($members->pluck('device_id'));
 
-    $this->actingAs(admin())
+    $this->actingAs(deviceGroupAdmin())
         ->postJson(route('device-groups.rediscover', $group))
         ->assertOk()
         ->assertJson(['message' => 'Devices of group Core &lt;b&gt; will be rediscovered']);
@@ -61,22 +59,22 @@ test('admin can rediscover group', function () {
     expect($other->fresh()->last_discovered)->not->toBeNull();
 });
 
-test('user cannot rediscover group', function () {
+test('user cannot rediscover group', function (): void {
     $group = DeviceGroup::factory()->create();
     $device = Device::factory()->create(['last_discovered' => '2026-01-01 00:00:00']);
     $group->devices()->attach($device);
 
-    $this->actingAs(user())
+    $this->actingAs(deviceGroupUser())
         ->postJson(route('device-groups.rediscover', $group))
         ->assertForbidden();
 
     expect($device->fresh()->last_discovered)->not->toBeNull();
 });
 
-test('admin can delete group', function () {
+test('admin can delete group', function (): void {
     $group = DeviceGroup::factory()->create(['name' => 'Edge']);
 
-    $this->actingAs(admin())
+    $this->actingAs(deviceGroupAdmin())
         ->deleteJson(route('device-groups.destroy', $group))
         ->assertOk()
         ->assertJson(['message' => 'Device Group Edge deleted']);
@@ -84,12 +82,12 @@ test('admin can delete group', function () {
     expect(DeviceGroup::find($group->id))->toBeNull();
 });
 
-test('delete is rejected while service templates use group', function () {
+test('delete is rejected while service templates use group', function (): void {
     $group = DeviceGroup::factory()->create();
     $template = ServiceTemplate::factory()->create();
     $group->serviceTemplates()->attach($template);
 
-    $this->actingAs(admin())
+    $this->actingAs(deviceGroupAdmin())
         ->deleteJson(route('device-groups.destroy', $group))
         ->assertUnprocessable()
         ->assertJsonStructure(['message']);
@@ -97,10 +95,10 @@ test('delete is rejected while service templates use group', function () {
     expect(DeviceGroup::find($group->id))->not->toBeNull();
 });
 
-test('user cannot delete group', function () {
+test('user cannot delete group', function (): void {
     $group = DeviceGroup::factory()->create();
 
-    $this->actingAs(user())
+    $this->actingAs(deviceGroupUser())
         ->deleteJson(route('device-groups.destroy', $group))
         ->assertForbidden();
 

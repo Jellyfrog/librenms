@@ -22,15 +22,14 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-uses(\LibreNMS\Tests\TestCase::class);
 use LibreNMS\Util\Bgp;
-use PHPUnit\Framework\Attributes\DataProvider;
 
+uses(\LibreNMS\Tests\TestCase::class);
 
 /**
  * @return array<string, array{index: string, trailing: int, address: string|null, zone: int|null, rest: string[]}>
  */
-dataset('inetAddressProvider', function () {
+dataset('inetAddressProvider', function (): array {
     return [
         'with length' => ['index' => '1.4.192.0.2.1', 'trailing' => 0, 'address' => '192.0.2.1', 'zone' => null, 'rest' => []],
         'without length (FRR)' => ['index' => '1.192.0.2.1', 'trailing' => 0, 'address' => '192.0.2.1', 'zone' => null, 'rest' => []],
@@ -45,7 +44,7 @@ dataset('inetAddressProvider', function () {
     ];
 });
 
-test('shift inet address', function (string $index, int $trailing, ?string $address, ?int $zone, array $rest) {
+test('shift inet address', function (string $index, int $trailing, ?string $address, ?int $zone, array $rest): void {
     $parts = explode('.', $index);
     $found = Bgp::shiftInetAddress($parts, $trailing, $foundZone);
 
@@ -56,7 +55,7 @@ test('shift inet address', function (string $index, int $trailing, ?string $addr
     }
 })->with('inetAddressProvider');
 
-test('shift ip', function () {
+test('shift ip', function (): void {
     $parts = ['4', '0', '2', '1'];
     expect(Bgp::shiftIp($parts)?->compressed())->toBe('4.0.2.1');
 
@@ -68,7 +67,7 @@ test('shift ip', function () {
     expect(Bgp::shiftIp($parts))->toBeNull();
 });
 
-test('values are decoded', function () {
+test('values are decoded', function (): void {
     expect(Bgp::state('openSent'))->toBe('opensent');
     expect(Bgp::state('closed'))->toBe('idle', 'Unknown states are idle');
     expect(Bgp::state(null))->toBe('idle');
@@ -88,7 +87,7 @@ test('values are decoded', function () {
 /**
  * @return array<string, array{0: string, 1: int}>
  */
-dataset('counterProvider', function () {
+dataset('counterProvider', function (): array {
     return [
         '32 bit' => ['4294967295', 4294967295],
         'wrapped 32 bit' => ['4294967301', 5],
@@ -100,11 +99,11 @@ dataset('counterProvider', function () {
     ];
 });
 
-test('counters keep the low32 bits', function (string $value, int $expected) {
+test('counters keep the low32 bits', function (string $value, int $expected): void {
     expect(Bgp::counter($value))->toBe($expected);
 })->with('counterProvider');
 
-test('local as', function () {
+test('local as', function (): void {
     expect(Bgp::localAs([null, '0', '65001', '65002']))->toBe(65001);
     expect(Bgp::localAs(['23456', '65001']))->toBe(65001, 'AS_TRANS is only used when nothing else is known');
     expect(Bgp::localAs(['23456', '']))->toBe(23456);

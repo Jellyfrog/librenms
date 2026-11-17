@@ -15,21 +15,20 @@ use Carbon\Carbon;
 use Mockery\MockInterface;
 use Spatie\Permission\Models\Permission;
 
-
 uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     config(['queue.default' => 'redis']);
     LibrenmsConfig::set('schedule_type.poller', WorkerNode::SCHEDULE_TYPE);
 });
 
-test('queues tab shows queues workers and failed jobs', function () {
+test('queues tab shows queues workers and failed jobs', function (): void {
     $device = Device::factory()->create();
     $this->mock(RetryTracker::class, fn (MockInterface $mock) => $mock->shouldReceive('retrying')->andReturn(collect([
         ['device_id' => $device->device_id, 'name' => 'PollDevice', 'queue' => 'poll-7', 'attempt' => 2, 'tries' => 4, 'retry_at' => Carbon::now()->addMinute()],
     ])));
     $this->mock(FailedJobs::class, function (MockInterface $mock) use ($device): void {
-        $mock->shouldReceive('list')->andReturn(collect([job(['device_id' => $device->device_id])]));
+        $mock->shouldReceive('list')->andReturn(collect([failedQueueJob(['device_id' => $device->device_id])]));
         $mock->shouldReceive('count')->andReturn(1);
     });
     $overdue = Device::factory()->create(['hostname' => 'overdue.example.com', 'last_polled' => now()->subHour()]);
@@ -63,7 +62,7 @@ test('queues tab shows queues workers and failed jobs', function () {
         ->assertSee(route('poller.queues.release-lock', $overdue->device_id));
 });
 
-test('release device lock', function () {
+test('release device lock', function (): void {
     $device = Device::factory()->create();
     $this->mock(DeviceLocks::class, fn (MockInterface $mock) => $mock->shouldReceive('release')->once()->withArgs(fn (Device $released): bool => $released->is($device)));
 
@@ -75,7 +74,7 @@ test('release device lock', function () {
         ->assertRedirect();
 });
 
-test('queues require permission', function () {
+test('queues require permission', function (): void {
     $user = User::factory()->create(['enabled' => true]);
 
     $this->actingAs($user)->get(route('poller.queues'))->assertForbidden();
@@ -83,7 +82,7 @@ test('queues require permission', function () {
     $this->actingAs($user)->delete(route('poller.queues.forget', 'job-uuid'))->assertForbidden();
 });
 
-test('view permission cannot manage failed jobs', function () {
+test('view permission cannot manage failed jobs', function (): void {
     mockQueuePage();
     $user = User::factory()->read()->create(['enabled' => true]);
 
@@ -94,20 +93,20 @@ test('view permission cannot manage failed jobs', function () {
     $this->actingAs($user)->delete(route('poller.queues.forget', 'job-uuid'))->assertForbidden();
 });
 
-test('horizon permission does not grant queue pages', function () {
+test('horizon permission does not grant queue pages', function (): void {
     $user = userWithPermissions('worker.horizon');
 
     $this->actingAs($user)->get(route('poller.queues'))->assertForbidden();
     $this->actingAs($user)->post(route('poller.queues.retry', 'job-uuid'))->assertForbidden();
 });
 
-test('queues require a queue', function () {
+test('queues require a queue', function (): void {
     config(['queue.default' => 'sync']);
 
     $this->actingAs(User::factory()->admin()->create(['enabled' => true]))->get(route('poller.queues'))->assertNotFound();
 });
 
-test('queues without horizon', function () {
+test('queues without horizon', function (): void {
     config(['queue.default' => 'database']);
     mockQueuePage();
 
@@ -118,7 +117,7 @@ test('queues without horizon', function () {
         ->assertDontSee(url(config('horizon.path')));
 });
 
-test('queues hidden when queue workers are not used', function () {
+test('queues hidden when queue workers are not used', function (): void {
     LibrenmsConfig::set('schedule_type.poller', 'dispatcher');
     LibrenmsConfig::set('schedule_type.discovery', 'dispatcher');
     $user = User::factory()->admin()->create(['enabled' => true]);
@@ -130,7 +129,7 @@ test('queues hidden when queue workers are not used', function () {
         ->assertDontSee(url(config('horizon.path')));
 });
 
-test('pollers page lists worker nodes without stats', function () {
+test('pollers page lists worker nodes without stats', function (): void {
     PollerCluster::factory()->worker()->create(['poller_name' => 'worker-node.example.com', 'last_report' => now()]);
 
     $this->actingAs(User::factory()->admin()->create(['enabled' => true]))
@@ -140,7 +139,7 @@ test('pollers page lists worker nodes without stats', function () {
         ->assertSee(route('poller.queues'));
 });
 
-test('retry and forget failed job', function () {
+test('retry and forget failed job', function (): void {
     $this->mock(FailedJobs::class, function (MockInterface $mock): void {
         $mock->shouldReceive('retry')->once()->with('job-uuid');
         $mock->shouldReceive('forget')->once()->with('job-uuid');
@@ -151,7 +150,7 @@ test('retry and forget failed job', function () {
     $this->actingAs($user)->delete(route('poller.queues.forget', 'job-uuid'))->assertRedirect();
 });
 
-test('capture jobs offers recording when not monitoring', function () {
+test('capture jobs offers recording when not monitoring', function (): void {
     $device = Device::factory()->create();
     $this->mock(JobMonitor::class, function (MockInterface $mock) use ($device): void {
         $mock->shouldReceive('horizonRunning')->andReturn(true);
@@ -168,13 +167,13 @@ test('capture jobs offers recording when not monitoring', function () {
         ->assertSee('No failed jobs');
 });
 
-test('capture jobs shows recorded jobs', function () {
+test('capture jobs shows recorded jobs', function (): void {
     $device = Device::factory()->create();
     $this->mock(JobMonitor::class, function (MockInterface $mock) use ($device): void {
         $mock->shouldReceive('horizonRunning')->andReturn(true);
         $mock->shouldReceive('isMonitoring')->andReturn(true);
         $mock->shouldReceive('monitoredJobs')->with("device:$device->device_id")->andReturn(collect([
-            job(['id' => 'completed-uuid', 'name' => 'DiscoverDevice:' . $device->device_id, 'status' => 'completed', 'error' => '', 'exception' => '']),
+            failedQueueJob(['id' => 'completed-uuid', 'name' => 'DiscoverDevice:' . $device->device_id, 'status' => 'completed', 'error' => '', 'exception' => '']),
         ]));
     });
     $this->mock(FailedJobs::class, fn (MockInterface $mock) => $mock->shouldReceive('list')->andReturn(collect()));
@@ -186,10 +185,10 @@ test('capture jobs shows recorded jobs', function () {
         ->assertSee(route('device.jobs.stop-monitoring', $device));
 });
 
-test('capture shows failed jobs without horizon', function () {
+test('capture shows failed jobs without horizon', function (): void {
     config(['queue.default' => 'database']);
     $device = Device::factory()->create();
-    $this->mock(FailedJobs::class, fn (MockInterface $mock) => $mock->shouldReceive('list')->andReturn(collect([job(['device_id' => $device->device_id])])));
+    $this->mock(FailedJobs::class, fn (MockInterface $mock) => $mock->shouldReceive('list')->andReturn(collect([failedQueueJob(['device_id' => $device->device_id])])));
 
     $this->actingAs(User::factory()->admin()->create(['enabled' => true]))
         ->get(route('device', ['device' => $device->device_id, 'tab' => 'capture', 'section' => 'jobs']))
@@ -201,7 +200,7 @@ test('capture shows failed jobs without horizon', function () {
         ->assertNotFound();
 });
 
-test('capture jobs hidden without a queue', function () {
+test('capture jobs hidden without a queue', function (): void {
     config(['queue.default' => 'sync']);
     $device = Device::factory()->create();
     $this->mock(FailedJobs::class, fn (MockInterface $mock) => $mock->shouldNotReceive('list'));
@@ -212,7 +211,7 @@ test('capture jobs hidden without a queue', function () {
         ->assertDontSee(route('device.jobs.monitor', $device));
 });
 
-test('recording requires update permission', function () {
+test('recording requires update permission', function (): void {
     $device = Device::factory()->create();
 
     $this->actingAs(User::factory()->read()->create(['enabled' => true]))
@@ -223,7 +222,7 @@ test('recording requires update permission', function () {
         ->assertForbidden();
 });
 
-test('recording requires access to the device', function () {
+test('recording requires access to the device', function (): void {
     $device = Device::factory()->create();
     $this->mock(JobMonitor::class, function (MockInterface $mock): void {
         $mock->shouldNotReceive('monitor');
@@ -235,7 +234,7 @@ test('recording requires access to the device', function () {
     $this->actingAs($user)->delete(route('device.jobs.stop-monitoring', $device))->assertForbidden();
 });
 
-test('start and stop recording device jobs', function () {
+test('start and stop recording device jobs', function (): void {
     $device = Device::factory()->create();
     $this->mock(JobMonitor::class, function (MockInterface $mock) use ($device): void {
         $mock->shouldReceive('horizonRunning')->andReturn(true);
@@ -262,14 +261,14 @@ function userWithPermissions(string ...$permissions): User
 
 function mockQueuePage(): void
 {
-    $this->mock(RetryTracker::class, fn (MockInterface $mock) => $mock->shouldReceive('retrying')->andReturn(collect()));
-    $this->mock(QueueStatus::class, function (MockInterface $mock): void {
+    test()->mock(RetryTracker::class, fn (MockInterface $mock) => $mock->shouldReceive('retrying')->andReturn(collect()));
+    test()->mock(QueueStatus::class, function (MockInterface $mock): void {
         $mock->shouldReceive('queues')->andReturn(collect());
         $mock->shouldReceive('workers')->andReturn(collect());
         $mock->shouldReceive('overdueDevices')->andReturn(new \Illuminate\Database\Eloquent\Collection);
     });
-    $this->mock(FailedJobs::class, function (MockInterface $mock): void {
-        $mock->shouldReceive('list')->andReturn(collect([job()]));
+    test()->mock(FailedJobs::class, function (MockInterface $mock): void {
+        $mock->shouldReceive('list')->andReturn(collect([failedQueueJob()]));
         $mock->shouldReceive('count')->andReturn(1);
     });
 }
@@ -278,7 +277,7 @@ function mockQueuePage(): void
  * @param  array<string, mixed>  $overrides
  * @return array<string, mixed>
  */
-function job(array $overrides = []): array
+function failedQueueJob(array $overrides = []): array
 {
     $device_id = $overrides['device_id'] ?? 1;
 

@@ -1,6 +1,5 @@
 <?php
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Models\Device;
 use App\Models\Route;
 use Carbon\Carbon;
@@ -13,9 +12,9 @@ use LibreNMS\Interfaces\Discovery\RouteDiscovery;
 use LibreNMS\Modules\Routes;
 use LibreNMS\OS;
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     $this->device = Device::factory()->create(['os' => 'generic']);
     $this->app->bind(SnmpQueryBuilder::class, function () {
         $query = Mockery::mock(SnmpQueryBuilder::class);
@@ -26,15 +25,15 @@ beforeEach(function () {
     });
 });
 
-test('observed routes update in place while history keeps its last seen time', function () {
+test('observed routes update in place while history keeps its last seen time', function (): void {
     $this->travelTo(Carbon::parse('2026-01-01 00:00:00'));
-    discover([route(), route(['inetCidrRouteDest' => '10.1.0.0'])]);
+    discoverRoutes([makeRoute(), makeRoute(['inetCidrRouteDest' => '10.1.0.0'])]);
     $entries = $this->device->routes()->get()->keyBy('inetCidrRouteDest');
     $original = $entries['10.0.0.0'];
     $historical = $entries['10.1.0.0'];
 
     $this->travelTo(Carbon::parse('2026-01-02 00:00:00'));
-    discover([route(['inetCidrRouteMetric1' => 123, 'port_id' => 42])]);
+    discoverRoutes([makeRoute(['inetCidrRouteMetric1' => 123, 'port_id' => 42])]);
 
     $entries = $this->device->routes()->get()->keyBy('inetCidrRouteDest');
     expect($entries)->toHaveCount(2);
@@ -46,21 +45,21 @@ test('observed routes update in place while history keeps its last seen time', f
     expect($entries['10.1.0.0']->getAttributes())->toBe($historical->getAttributes());
 
     $this->travelTo(Carbon::parse('2026-01-03 00:00:00'));
-    discover([route(['inetCidrRouteMetric1' => 123, 'port_id' => 42])]);
+    discoverRoutes([makeRoute(['inetCidrRouteMetric1' => 123, 'port_id' => 42])]);
     expect($original->fresh()->updated_at->toDateTimeString())->toBe('2026-01-03 00:00:00');
 });
 
-test('composite keys distinguish contexts interfaces hops and prefixes', function () {
-    discover([
-        route(),
-        route(['context_name' => 'vrf-blue']),
-        route(['inetCidrRouteIfIndex' => 11]),
-        route(['inetCidrRouteNextHop' => '192.0.2.2']),
-        route(['inetCidrRoutePfxLen' => 25]),
+test('composite keys distinguish contexts interfaces hops and prefixes', function (): void {
+    discoverRoutes([
+        makeRoute(),
+        makeRoute(['context_name' => 'vrf-blue']),
+        makeRoute(['inetCidrRouteIfIndex' => 11]),
+        makeRoute(['inetCidrRouteNextHop' => '192.0.2.2']),
+        makeRoute(['inetCidrRoutePfxLen' => 25]),
     ]);
     $ids = $this->device->routes()->orderBy('route_id')->pluck('route_id')->all();
 
-    discover([route(['context_name' => 'vrf-blue', 'inetCidrRouteMetric1' => 222])]);
+    discoverRoutes([makeRoute(['context_name' => 'vrf-blue', 'inetCidrRouteMetric1' => 222])]);
 
     expect($ids)->toHaveCount(5);
     expect($this->device->routes()->orderBy('route_id')->pluck('route_id')->all())->toBe($ids);
@@ -68,46 +67,46 @@ test('composite keys distinguish contexts interfaces hops and prefixes', functio
     expect($this->device->routes()->where('inetCidrRouteMetric1', 1)->count())->toBe(4);
 });
 
-test('empty or invalid discovery does not touch history', function () {
+test('empty or invalid discovery does not touch history', function (): void {
     $this->travelTo(Carbon::parse('2026-01-01 00:00:00'));
-    discover([route()]);
+    discoverRoutes([makeRoute()]);
     $original = $this->device->routes()->sole()->getAttributes();
     $this->travelTo(Carbon::parse('2026-01-02 00:00:00'));
-    discover([]);
-    discover([route(['inetCidrRouteDest' => '']), route(['inetCidrRouteDest' => 'invalid'])]);
+    discoverRoutes([]);
+    discoverRoutes([makeRoute(['inetCidrRouteDest' => '']), makeRoute(['inetCidrRouteDest' => 'invalid'])]);
 
     expect($this->device->routes()->sole()->getAttributes())->toBe($original);
 });
 
-test('duplicates are collapsed and the last discovered route wins', function () {
-    discover([route()]);
+test('duplicates are collapsed and the last discovered route wins', function (): void {
+    discoverRoutes([makeRoute()]);
     $original = $this->device->routes()->sole();
     $original->replicate()->save();
 
-    discover([route(['inetCidrRouteMetric1' => 20]), route(['inetCidrRouteMetric1' => 30])]);
+    discoverRoutes([makeRoute(['inetCidrRouteMetric1' => 20]), makeRoute(['inetCidrRouteMetric1' => 30])]);
 
     $entry = $this->device->routes()->sole();
     expect($entry->route_id)->toBe($original->route_id);
     expect($entry->inetCidrRouteMetric1)->toBe(30);
 });
 
-test('legacy null context matches the default context', function () {
-    $route = route(['device_id' => $this->device->device_id, 'port_id' => 0, 'context_name' => null]);
+test('legacy null context matches the default context', function (): void {
+    $route = makeRoute(['device_id' => $this->device->device_id, 'port_id' => 0, 'context_name' => null]);
     $route->save();
 
-    discover([route()]);
+    discoverRoutes([makeRoute()]);
 
     $entry = $this->device->routes()->sole();
     expect($entry->route_id)->toBe($route->route_id);
     expect($entry->context_name)->toBe('');
 });
 
-test('normalization scope and explicit writable columns', function () {
+test('normalization scope and explicit writable columns', function (): void {
     $other = Device::factory()->create();
-    $foreign = route(['device_id' => $other->device_id, 'port_id' => 0]);
+    $foreign = makeRoute(['device_id' => $other->device_id, 'port_id' => 0]);
     $foreign->save();
     $this->travelTo(Carbon::parse('2026-01-02 00:00:00'));
-    discover([route([
+    discoverRoutes([makeRoute([
         'device_id' => $other->device_id,
         'route_id' => $foreign->route_id,
         'created_at' => '2020-01-01 00:00:00',
@@ -126,12 +125,12 @@ test('normalization scope and explicit writable columns', function () {
     expect($foreign->fresh()->getAttributes())->toEqual($foreign->getAttributes());
 });
 
-test('persistence does not dispatch eloquent events', function () {
+test('persistence does not dispatch eloquent events', function (): void {
     $events = array_map(fn ($event) => "eloquent.$event: " . Route::class, ['saving', 'saved', 'creating', 'created', 'updating', 'updated', 'deleting', 'deleted']);
     Event::fake($events);
 
-    discover([route()]);
-    discover([route(['inetCidrRouteMetric1' => 2])]);
+    discoverRoutes([makeRoute()]);
+    discoverRoutes([makeRoute(['inetCidrRouteMetric1' => 2])]);
 
     foreach ($events as $event) {
         Event::assertNotDispatched($event);
@@ -139,12 +138,12 @@ test('persistence does not dispatch eloquent events', function () {
     expect($this->device->routes()->sole()->inetCidrRouteMetric1)->toBe(2);
 });
 
-test('varied updates use batches and preserve row ids', function () {
+test('varied updates use batches and preserve row ids', function (): void {
     $routes = [];
     for ($i = 1; $i <= 1005; $i++) {
-        $routes[] = route(['inetCidrRouteDest' => long2ip(ip2long('10.0.0.0') + $i), 'inetCidrRouteMetric1' => $i]);
+        $routes[] = makeRoute(['inetCidrRouteDest' => long2ip(ip2long('10.0.0.0') + $i), 'inetCidrRouteMetric1' => $i]);
     }
-    discover($routes);
+    discoverRoutes($routes);
     $ids = $this->device->routes()->orderBy('route_id')->pluck('route_id')->all();
     foreach ($routes as $route) {
         $route->inetCidrRouteMetric1++;
@@ -155,7 +154,7 @@ test('varied updates use batches and preserve row ids', function () {
     $db->enableQueryLog();
     $db->flushQueryLog();
     try {
-        discover($routes);
+        discoverRoutes($routes);
         expect($db->getQueryLog())->toHaveCount(4); // two reads and two updates
     } finally {
         $db->disableQueryLog();
@@ -168,7 +167,7 @@ test('varied updates use batches and preserve row ids', function () {
 });
 
 /** @param array<string, int|string|null> $attributes */
-function route(array $attributes = []): Route
+function makeRoute(array $attributes = []): Route
 {
     return Route::factory()->make(array_replace([
         'context_name' => '',
@@ -184,11 +183,11 @@ function route(array $attributes = []): Route
 }
 
 /** @param list<Route> $routes */
-function discover(array $routes): void
+function discoverRoutes(array $routes): void
 {
     $os = Mockery::mock(OS::class, RouteDiscovery::class);
-    $os->shouldReceive('getDevice')->andReturn($this->device);
+    $os->shouldReceive('getDevice')->andReturn(test()->device);
     $os->shouldReceive('discoverRoutes')->andReturn(new Collection($routes));
 
-    discover($os);
+    (new Routes)->discover($os);
 }

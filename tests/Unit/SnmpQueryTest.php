@@ -17,11 +17,11 @@ use LibreNMS\Enum\SnmpOidOutput;
 use LibreNMS\Enum\SnmpQuickPrint;
 use LibreNMS\Polling\Method\Config\SnmpConfig;
 
-beforeEach(function () {
-    $this->device = makeDeviceWithSnmpConfig();
+beforeEach(function (): void {
+    $this->device = makeSnmpQueryDevice();
 });
 
-function makeDeviceWithSnmpConfig(array $secretData = [], array $settings = [], array $deviceAttrs = [], \LibreNMS\Enum\SecretType $secretType = \LibreNMS\Enum\SecretType::SnmpCommunity): Device
+function makeSnmpQueryDevice(array $secretData = [], array $settings = [], array $deviceAttrs = [], \LibreNMS\Enum\SecretType $secretType = \LibreNMS\Enum\SecretType::SnmpCommunity): Device
 {
     $device = new Device(array_merge(['hostname' => '10.1.2.3'], $deviceAttrs));
     $device->device_id = 1;
@@ -49,7 +49,7 @@ function mockBackend(): Mockery\MockInterface&SnmpBackendInterface
     return Mockery::mock(SnmpBackendInterface::class);
 }
 
-test('get delegates to backend', function () {
+test('get delegates to backend', function (): void {
     $mockBackend = mockBackend();
     $mockBackend->shouldReceive('get')
         ->once()
@@ -69,7 +69,7 @@ test('get delegates to backend', function () {
     expect($response->values())->toBe(['sysDescr.0' => 'Linux 6.0']);
 });
 
-test('walk delegates for each oid', function () {
+test('walk delegates for each oid', function (): void {
     $mockBackend = mockBackend();
     $mockBackend->shouldReceive('walk')
         ->once()
@@ -87,7 +87,7 @@ test('walk delegates for each oid', function () {
     expect($response->values())->toBe(['ifDescr.1' => 'eth0', 'ifType.1' => 'ethernetCsmacd']);
 });
 
-test('next delegates to backend', function () {
+test('next delegates to backend', function (): void {
     $mockBackend = mockBackend();
     $mockBackend->shouldReceive('next')
         ->once()
@@ -100,8 +100,8 @@ test('next delegates to backend', function () {
     expect($response->values())->toBe(['sysObjectID.0' => '.1.3.6.1.4.1']);
 });
 
-test('limit oids chunks requests', function () {
-    $device = makeDeviceWithSnmpConfig(settings: ['max_oid' => 2]);
+test('limit oids chunks requests', function (): void {
+    $device = makeSnmpQueryDevice(settings: ['max_oid' => 2]);
 
     $mockBackend = mockBackend();
     $mockBackend->shouldReceive('get')
@@ -120,7 +120,7 @@ test('limit oids chunks requests', function () {
     expect($response->values())->toBe(['oid1' => '1', 'oid2' => '2', 'oid3' => '3']);
 });
 
-test('abort on failure', function () {
+test('abort on failure', function (): void {
     $mockBackend = mockBackend();
 
     // First OID fails (exitCode 1)
@@ -142,7 +142,7 @@ test('abort on failure', function () {
     expect($response->isValid())->toBeFalse();
 });
 
-test('cache prevents duplicate backend call', function () {
+test('cache prevents duplicate backend call', function (): void {
     Cache::flush();
 
     $mockBackend = mockBackend();
@@ -162,7 +162,7 @@ test('cache prevents duplicate backend call', function () {
     expect($second->values())->toBe(['sysDescr.0' => 'CachedLinux']);
 });
 
-test('translate delegates to translate backend', function () {
+test('translate delegates to translate backend', function (): void {
     $mockBackend = mockBackend();
     $mockTranslate = Mockery::mock(SnmpTranslatorInterface::class);
     $mockTranslate->shouldReceive('translate')
@@ -178,8 +178,8 @@ test('translate delegates to translate backend', function () {
     expect($result)->toBe('.1.3.6.1.2.1.2.2');
 });
 
-test('context v3 prefix', function () {
-    $v3Device = makeDeviceWithSnmpConfig(secretData: [
+test('context v3 prefix', function (): void {
+    $v3Device = makeSnmpQueryDevice(secretData: [
         'authlevel' => 'noAuthNoPriv',
         'authname' => null,
     ], secretType: \LibreNMS\Enum\SecretType::SnmpV3, deviceAttrs: ['device_id' => 2]);
@@ -197,7 +197,7 @@ test('context v3 prefix', function () {
     $query->get('val');
 });
 
-test('options converts net snmp flags to query options', function () {
+test('options converts net snmp flags to query options', function (): void {
     $mockBackend = mockBackend();
     $mockBackend->shouldReceive('walk')
         ->once()
@@ -215,7 +215,7 @@ test('options converts net snmp flags to query options', function () {
     expect($response->values())->toBe(['test' => '1']);
 });
 
-test('display hints can be disabled', function () {
+test('display hints can be disabled', function (): void {
     $mockBackend = mockBackend();
     $mockBackend->shouldReceive('walk')
         ->once()
@@ -230,7 +230,7 @@ test('display hints can be disabled', function () {
     expect($query->walk('test')->values())->toBe(['test' => '793']);
 });
 
-test('snmp query dispatches snmp query executed event', function () {
+test('snmp query dispatches snmp query executed event', function (): void {
     \Illuminate\Support\Facades\Event::fake([\App\Events\SnmpQueryExecuted::class]);
 
     $mockBackend = Mockery::mock(SnmpBackendInterface::class);
@@ -250,7 +250,7 @@ test('snmp query dispatches snmp query executed event', function () {
         && $event->response->values() === ['sysDescr.0' => 'Linux 6.0']);
 });
 
-test('snmp query defaults to quick print options', function () {
+test('snmp query defaults to quick print options', function (): void {
     $mockBackend = mockBackend();
     $mockBackend->shouldReceive('get')
         ->once()
@@ -265,7 +265,7 @@ test('snmp query defaults to quick print options', function () {
     $query->get('sysDescr.0');
 });
 
-test('hide mib sets suffix oid format', function () {
+test('hide mib sets suffix oid format', function (): void {
     $mockBackend = mockBackend();
     $mockBackend->shouldReceive('get')
         ->once()
@@ -276,7 +276,7 @@ test('hide mib sets suffix oid format', function () {
     $query->get('sysDescr.0');
 });
 
-test('prepare options disables bulk for no bulk oids', function () {
+test('prepare options disables bulk for no bulk oids', function (): void {
     $this->device->os = 'generic';
     \App\Facades\LibrenmsConfig::set('os.generic.oids.no_bulk', ['UCD-SNMP-MIB::laLoadInt']);
 

@@ -3,7 +3,7 @@
 uses(\LibreNMS\Tests\TestCase::class);
 use LibreNMS\RRD\PortRrd;
 
-test('tune limits', function () {
+test('tune limits', function (): void {
     expect(PortRrd::tuneLimits(9999999))->toBe([]);
 
     $limits = PortRrd::tuneLimits(1000000000);

@@ -1,11 +1,12 @@
 <?php
 
-uses(\LibreNMS\Tests\TestCase::class);
 use App\Facades\LibrenmsConfig;
 use App\Models\SslCertificate;
 use Illuminate\Support\Carbon;
 
-beforeEach(function () {
+uses(LibreNMS\Tests\TestCase::class);
+
+beforeEach(function (): void {
     LibrenmsConfig::set('ssl_certificates.days_until_expiry_warning', 15);
     LibrenmsConfig::set('ssl_certificates.days_until_expiry_danger', 0);
 });
@@ -27,7 +28,7 @@ function makeCertificate(Carbon $originalValidTo, Carbon $newValidTo, int $origi
     return $certificate;
 }
 
-test('daily decrement is not tracked', function () {
+test('daily decrement is not tracked', function (): void {
     $cases = [
         [112, 111],
         [31, 30],
@@ -42,28 +43,28 @@ test('daily decrement is not tracked', function () {
     }
 });
 
-test('change within warning window is not tracked', function () {
+test('change within warning window is not tracked', function (): void {
     $validTo = Carbon::now()->addDays(14);
     $certificate = makeCertificate($validTo, $validTo, 15, 14);
 
     expect($certificate->getTrackedChanges())->toBe('');
 });
 
-test('entering warning window is tracked', function () {
+test('entering warning window is tracked', function (): void {
     $validTo = Carbon::now()->addDays(15);
     $certificate = makeCertificate($validTo, $validTo, 16, 15);
 
     expect($certificate->getTrackedChanges())->toBe('days_until_expiry (16 → 15)');
 });
 
-test('stored crossing before live warning boundary is not tracked', function () {
+test('stored crossing before live warning boundary is not tracked', function (): void {
     $validTo = Carbon::now()->addDays(15)->addMinutes(30);
     $certificate = makeCertificate($validTo, $validTo, 16, 15);
 
     expect($certificate->getTrackedChanges())->toBe('');
 });
 
-test('expiry is tracked', function () {
+test('expiry is tracked', function (): void {
     $validTo = Carbon::now();
     $certificate = makeCertificate($validTo, $validTo, 1, 0);
 
@@ -74,7 +75,7 @@ test('expiry is tracked', function () {
     expect($certificate->getTrackedChanges())->toBe('');
 });
 
-test('renewal tracks valid to but not days', function () {
+test('renewal tracks valid to but not days', function (): void {
     $originalValidTo = Carbon::now()->subDays(3);
     $newValidTo = Carbon::now()->addDays(360);
 
@@ -86,7 +87,7 @@ test('renewal tracks valid to but not days', function () {
     $this->assertStringNotContainsString('days_until_expiry', $changes);
 });
 
-test('is within warning window', function () {
+test('is within warning window', function (): void {
     $daysUntilExpiryToExpectations = [
         [16, false],
         [15, true],

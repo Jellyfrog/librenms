@@ -1,8 +1,28 @@
 <?php
 
-uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
-use LibreNMS\Enum\Severity;
+/*
+ * FgTrapDhcpTest.php
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Unit tests for Fortigate DHCP SNMP trap handler (FgTrapDhcp)
+ *
+ * @package    LibreNMS
+ * @link       https://www.librenms.org
+ */
 
+use LibreNMS\Enum\Severity;
 
 function dhcpTrap(string $type, string $message): string
 {
@@ -19,7 +39,7 @@ FORTINET-FORTIGATE-MIB::fgDhcpTrapType.0 $type
 FORTINET-FORTIGATE-MIB::fgDhcpTrapMessage.0 \"$message\"";
 }
 
-test('conflict ip', function () {
+test('conflict ip', function (): void {
     $this->assertTrapLogsMessage(
         dhcpTrap('conflictIP', 'IP address 10.0.0.121 is abandoned due to conflict.'),
         'DHCP IP conflict on internal5: IP address 10.0.0.121 is abandoned due to conflict.',
@@ -28,7 +48,7 @@ test('conflict ip', function () {
     );
 });
 
-test('run out of ip pool numeric', function () {
+test('run out of ip pool numeric', function (): void {
     $this->assertTrapLogsMessage(
         dhcpTrap('1', 'DHCP server has run out of IP addresses.'),
         'DHCP pool exhausted on internal5: DHCP server has run out of IP addresses.',
@@ -37,7 +57,7 @@ test('run out of ip pool numeric', function () {
     );
 });
 
-test('received nak with index', function () {
+test('received nak with index', function (): void {
     $this->assertTrapLogsMessage(
         dhcpTrap('receivedNAK(3)', 'DHCP client received NAK.'),
         'DHCP NAK received on internal5: DHCP client received NAK.',

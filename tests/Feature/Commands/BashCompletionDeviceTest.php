@@ -1,28 +1,26 @@
 <?php
 
-uses(\LibreNMS\Tests\InMemoryDbTestCase::class);
 use App\Models\Device;
 use Illuminate\Support\Facades\Artisan;
-use PHPUnit\Framework\Attributes\DataProvider;
 
+uses(\LibreNMS\Tests\InMemoryDbTestCase::class);
 
-beforeEach(function () {
+beforeEach(function (): void {
     Device::factory()->create(['hostname' => 'amber.example.com']);
     Device::factory()->create(['hostname' => 'amethyst.example.com']);
     Device::factory()->create(['hostname' => 'bronze.example.com']);
 });
 
-afterEach(function () {
+afterEach(function (): void {
     putenv('COMP_LINE');
     putenv('COMP_CURRENT');
     putenv('COMP_PREVIOUS');
-
 });
 
 /**
  * @return array<int, array{string}>
  */
-dataset('deviceCommands', function () {
+dataset('deviceCommands', function (): array {
     return [
         ['device:poll'],
         ['device:discover'],
@@ -35,22 +33,22 @@ dataset('deviceCommands', function () {
     ];
 });
 
-test('completes device hostname prefix', function (string $command) {
+test('completes device hostname prefix', function (string $command): void {
     expect(complete("lnms $command am", 'am', $command))->toBe(['amber.example.com', 'amethyst.example.com']);
 })->with('deviceCommands');
 
-test('completes all devices when empty', function () {
+test('completes all devices when empty', function (): void {
     expect(complete('lnms device:poll ', '', 'device:poll'))->toBe(['amber.example.com', 'amethyst.example.com', 'bronze.example.com']);
 });
 
-test('does not complete device for option value', function () {
+test('does not complete device for option value', function (): void {
     expect(complete('lnms device:poll amber.example.com -m am', 'am', '-m'))->not->toContain('amber.example.com');
 });
 
 /**
  * @return array<int, array{string, string, string[]|null}>
  */
-dataset('optionValueCommands', function () {
+dataset('optionValueCommands', function (): array {
     return [
         ['lnms report:devices -o ', '-o', ['table', 'csv', 'json', 'none']],
         ['lnms device:poll -m ', '-m', null],
@@ -60,7 +58,7 @@ dataset('optionValueCommands', function () {
     ];
 });
 
-test('does not complete device for empty option value before device spec', function (string $line, string $previous, ?array $expected) {
+test('does not complete device for empty option value before device spec', function (string $line, string $previous, ?array $expected): void {
     $completions = complete($line, '', $previous);
 
     expect($completions)->not->toContain('amber.example.com');
@@ -69,7 +67,7 @@ test('does not complete device for empty option value before device spec', funct
     }
 })->with('optionValueCommands');
 
-test('does not complete device rename new hostname', function () {
+test('does not complete device rename new hostname', function (): void {
     expect(complete('lnms device:rename bronze.example.com am', 'am', 'bronze.example.com'))->not->toContain('amber.example.com');
 });
 

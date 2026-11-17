@@ -23,13 +23,10 @@
  * @copyright  2026 LibreNMS
  */
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Models\Device;
 use App\Models\User;
-use PHPUnit\Framework\Attributes\DataProvider;
 
-
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
+uses(\LibreNMS\Tests\DBTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
 /**
  * @return array{X-Auth-Token: string}
@@ -45,7 +42,7 @@ function adminHeaders(): array
 /**
  * @return array<string, array{string}>
  */
-dataset('invalidHostnames', function () {
+dataset('invalidHostnames', function (): array {
     return [
         'parent directory' => ['..'],
         'backslash traversal' => ['..\\..\\etc\\shadow'],
@@ -56,7 +53,7 @@ dataset('invalidHostnames', function () {
     ];
 });
 
-test('rename rejects invalid hostname', function (string $newHostname) {
+test('rename rejects invalid hostname', function (string $newHostname): void {
     $device = Device::factory()->create();
     $hostname = $device->hostname;
 
@@ -67,7 +64,7 @@ test('rename rejects invalid hostname', function (string $newHostname) {
     expect($device->refresh()->hostname)->toBe($hostname);
 })->with('invalidHostnames');
 
-test('rename accepts hostname and ip', function () {
+test('rename accepts hostname and ip', function (): void {
     $device = Device::factory()->create();
     $headers = adminHeaders();
 
@@ -78,7 +75,7 @@ test('rename accepts hostname and ip', function () {
     expect($device->refresh()->hostname)->toBe('2001:db8::1');
 });
 
-test('rename with slash never reaches the device', function () {
+test('rename with slash never reaches the device', function (): void {
     $device = Device::factory()->create();
     $hostname = $device->hostname;
     $headers = adminHeaders();
@@ -91,7 +88,7 @@ test('rename with slash never reaches the device', function () {
     expect($device->refresh()->hostname)->toBe($hostname);
 });
 
-test('update rejects hostname field', function () {
+test('update rejects hostname field', function (): void {
     $device = Device::factory()->create();
     $hostname = $device->hostname;
     $headers = adminHeaders();

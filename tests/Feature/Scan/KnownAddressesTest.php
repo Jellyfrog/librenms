@@ -1,17 +1,14 @@
 <?php
 
-uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Models\Device;
 use App\Models\Ipv4Address;
 use App\Models\Ipv6Address;
 use App\Models\Port;
 use LibreNMS\Scan\KnownAddresses;
-use PHPUnit\Framework\Attributes\TestDox;
 
+uses(\LibreNMS\Tests\DBTestCase::class, \Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
-
-test('find', function () {
+test('Finds addresses that are a device hostname, a device IP or a port address', function (): void {
     Device::factory()->create(['hostname' => '192.0.2.1']);
     Device::factory()->create(['hostname' => 'by-ip.example.com', 'ip' => '192.0.2.2']);
     $portDevice = Device::factory()->create(['hostname' => 'by-port.example.com']);

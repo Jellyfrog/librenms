@@ -1,6 +1,6 @@
 <?php
 
-uses(\LibreNMS\Tests\Feature\Http\Search\SearchTestCase::class);
+uses(LibreNMS\Tests\Feature\Http\Search\SearchTestCase::class);
 use App\Http\Controllers\Search\Data\Gateway;
 use App\Http\Controllers\Search\Data\HostKey;
 use App\Http\Controllers\Search\Data\HostSubnet;
@@ -16,12 +16,10 @@ use App\Models\Port;
 use App\Models\Route;
 use Illuminate\Support\Collection;
 use LibreNMS\Util\IP;
-use PHPUnit\Framework\Attributes\DataProvider;
-
 
 function subnetOf(string $ip): HostSubnet
 {
-    $admin = $this->admin();
+    $admin = test()->admin();
     $host = new HostLookup($admin)->find([new HostKey([IP::parse($ip)])])[0];
 
     return new SubnetLookup($admin)->find($host);
@@ -36,7 +34,7 @@ function ips(Collection $found): array
     return $found->map(fn (Gateway|SubnetAddress $item): string => $item->ip->compressed())->values()->all();
 }
 
-test('hidden on network counts only interfaces the network search lists', function () {
+test('hidden on network counts only interfaces the network search lists', function (): void {
     [, $port] = $this->portOn();
     $address = fn (string $ip): SubnetAddress => new SubnetAddress(IP::parse($ip), 24, $port->port_id, $port);
     $subnet = new HostSubnet(
@@ -61,7 +59,7 @@ dataset('offSubnetNeighborInterfaces', function () {
     ];
 });
 
-test('same subnet rejects neighbor interfaces outside the network', function (string $hostIp, string $offSubnetIp, int $offSubnetPrefix, string $onSubnetIp, int $onSubnetPrefix) {
+test('same subnet rejects neighbor interfaces outside the network', function (string $hostIp, string $offSubnetIp, int $offSubnetPrefix, string $onSubnetIp, int $onSubnetPrefix): void {
     [$reporter, $reporterPort] = $this->portOn();
     if (str_contains($hostIp, ':')) {
         Ipv6Nd::factory()->create(['device_id' => $reporter->device_id, 'port_id' => $reporterPort->port_id, 'mac_address' => '02e8e8e8e001', 'ipv6_address' => IP::parse($hostIp)->uncompressed()]);
@@ -85,7 +83,7 @@ test('same subnet rejects neighbor interfaces outside the network', function (st
     expect($subnet->count())->toBe(1);
 })->with('offSubnetNeighborInterfaces');
 
-test('same subnet is the neighbor interface despite wrong prefix lengths', function () {
+test('same subnet is the neighbor interface despite wrong prefix lengths', function (): void {
     [$router, $vlan411] = $this->portOn('vlan-411');
     [, $vlan603] = $this->portOn('vlan-603');
     Ipv6Nd::factory()->create(['device_id' => $router->device_id, 'port_id' => $vlan411->port_id, 'mac_address' => '02e0e0e0e001', 'ipv6_address' => '2001:0db8:0001:0002:0000:0000:0000:0070']);
@@ -103,7 +101,7 @@ test('same subnet is the neighbor interface despite wrong prefix lengths', funct
     expect($addresses[0]->ip->compressed())->toBe('2001:db8:1:2::f');
 });
 
-test('same subnet falls back to the most specific subnet', function () {
+test('same subnet falls back to the most specific subnet', function (): void {
     [, $wide] = $this->portOn();
     [, $narrow] = $this->portOn();
     [, $bogus] = $this->portOn();
@@ -131,7 +129,7 @@ function defaultRoute(Port $port, string $nextHop, string $dest = '0.0.0.0'): vo
     ]);
 }
 
-test('gateway is the next hop of default routes on the subnet', function () {
+test('gateway is the next hop of default routes on the subnet', function (): void {
     [, $first] = $this->portOn();
     [, $second] = $this->portOn();
     Ipv4Address::factory()->create(['port_id' => $first->port_id, 'ipv4_address' => '10.79.1.2', 'ipv4_prefixlen' => 24]);
@@ -156,7 +154,7 @@ test('gateway is the next hop of default routes on the subnet', function () {
     $this->assertStringContainsString('10.79.1.1', $html);
 });
 
-test('monitored gateway shows its interface once', function () {
+test('monitored gateway shows its interface once', function (): void {
     [, $switch] = $this->portOn('switch-vlan');
     [, $router] = $this->portOn('router-vlan');
     Ipv4Address::factory()->create(['port_id' => $switch->port_id, 'ipv4_address' => '10.80.1.2', 'ipv4_prefixlen' => 24]);
@@ -174,7 +172,7 @@ test('monitored gateway shows its interface once', function () {
     expect(ips($subnet->peers))->toBe(['10.80.1.2']);
 });
 
-test('ipv6 gateway accepts alink local next hop on the same port', function () {
+test('ipv6 gateway accepts a link local next hop on the same port', function (): void {
     [, $onLink] = $this->portOn();
     [, $otherLink] = $this->portOn();
     Ipv6Address::factory()->create(['port_id' => $onLink->port_id, 'ipv6_address' => '2001:0db8:0081:0001:0000:0000:0000:0002', 'ipv6_compressed' => '2001:db8:81:1::2', 'ipv6_prefixlen' => 64]);
@@ -193,7 +191,7 @@ test('ipv6 gateway accepts alink local next hop on the same port', function () {
     expect($gateways[0]->port)->toBeNull();
 });
 
-test('gateway comes from any device on the subnet not just those that saw the host', function () {
+test('gateway comes from any device on the subnet not just those that saw the host', function (): void {
     [$neighbor, $neighborPort] = $this->portOn();
     [, $bystander] = $this->portOn();
     Ipv4Address::factory()->create(['port_id' => $neighborPort->port_id, 'ipv4_address' => '10.83.1.2', 'ipv4_prefixlen' => 24]);
@@ -207,7 +205,7 @@ test('gateway comes from any device on the subnet not just those that saw the ho
     $this->assertStringContainsString('10.83.1.1', $html);
 });
 
-function route(Port $port, string $dest, int $prefix, string $nextHop): void
+function addRoute(Port $port, string $dest, int $prefix, string $nextHop): void
 {
     Route::factory()->create([
         'device_id' => $port->device_id,
@@ -224,15 +222,15 @@ function route(Port $port, string $dest, int $prefix, string $nextHop): void
  */
 function portBeside(string $deviceType): Port
 {
-    [, $port] = $this->portOn(device: ['type' => $deviceType]);
+    [, $port] = test()->portOn(device: ['type' => $deviceType]);
     Ipv4Address::factory()->create(['port_id' => $port->port_id, 'ipv4_address' => '10.84.1.254', 'ipv4_prefixlen' => 24]);
 
     return $port;
 }
 
-test('router with the subnet connected is the gateway', function () {
+test('router with the subnet connected is the gateway', function (): void {
     $port = portBeside('network');
-    route($port, '10.84.1.0', 24, '0.0.0.0');
+    addRoute($port, '10.84.1.0', 24, '0.0.0.0');
     defaultRoute($port, '192.0.2.1');
 
     $gateways = subnetOf('10.84.1.50')->gateways;
@@ -246,49 +244,49 @@ test('router with the subnet connected is the gateway', function () {
     $this->assertStringContainsString(e(__('search.host.gateway_router_help')), $html);
 });
 
-test('router connected route can use its own address as the next hop', function () {
+test('router connected route can use its own address as the next hop', function (): void {
     $port = portBeside('firewall');
-    route($port, '10.84.1.0', 24, '10.84.1.254');
-    route($port, '10.99.0.0', 16, '192.0.2.1');
+    addRoute($port, '10.84.1.0', 24, '10.84.1.254');
+    addRoute($port, '10.99.0.0', 16, '192.0.2.1');
 
     expect(subnetOf('10.84.1.50')->gateways)->toHaveCount(1);
 });
 
-test('connected route alone is not arouter', function () {
+test('connected route alone is not a router', function (): void {
     $port = portBeside('network');
-    route($port, '10.84.1.0', 24, '0.0.0.0');
+    addRoute($port, '10.84.1.0', 24, '0.0.0.0');
 
     expect(subnetOf('10.84.1.50')->gateways)->toHaveCount(0);
 });
 
-test('server with the subnet connected is not agateway', function () {
+test('server with the subnet connected is not a gateway', function (): void {
     $port = portBeside('server');
-    route($port, '10.84.1.0', 24, '0.0.0.0');
+    addRoute($port, '10.84.1.0', 24, '0.0.0.0');
     defaultRoute($port, '192.0.2.1');
 
     expect(subnetOf('10.84.1.50')->gateways)->toHaveCount(0);
 });
 
-test('routes off the subnet without it connected is not agateway', function () {
+test('routes off the subnet without it connected is not a gateway', function (): void {
     $port = portBeside('network');
-    route($port, '10.84.0.0', 16, '192.0.2.1');
+    addRoute($port, '10.84.0.0', 16, '192.0.2.1');
     defaultRoute($port, '192.0.2.1');
 
     expect(subnetOf('10.84.1.50')->gateways)->toHaveCount(0);
 });
 
-test('default route next hop wins over connected routers', function () {
+test('default route next hop wins over connected routers', function (): void {
     $port = portBeside('network');
-    route($port, '10.84.1.0', 24, '0.0.0.0');
+    addRoute($port, '10.84.1.0', 24, '0.0.0.0');
     defaultRoute($port, '10.84.1.1');
 
     expect(ips(subnetOf('10.84.1.50')->gateways))->toBe(['10.84.1.1']);
 });
 
-test('monitored host shows its gateway', function () {
+test('monitored host shows its gateway', function (): void {
     [$router, $routerPort] = $this->portOn('router-link', ['type' => 'network']);
     Ipv4Address::factory()->create(['port_id' => $routerPort->port_id, 'ipv4_address' => '10.82.5.254', 'ipv4_prefixlen' => 24]);
-    route($routerPort, '10.82.5.0', 24, '0.0.0.0');
+    addRoute($routerPort, '10.82.5.0', 24, '0.0.0.0');
     defaultRoute($routerPort, '192.0.2.1');
 
     // only known by its management IP and the MAC of one of its ports, like a newly added device
@@ -302,7 +300,7 @@ test('monitored host shows its gateway', function () {
     $this->assertStringContainsString('10.82.5.254', $html);
 });
 
-test('monitored hosts own default route names its gateway', function () {
+test('monitored hosts own default route names its gateway', function (): void {
     [, $port] = $this->portOn();
     Ipv4Address::factory()->create(['port_id' => $port->port_id, 'ipv4_address' => '10.81.5.7', 'ipv4_prefixlen' => 24]);
     defaultRoute($port, '10.81.5.1');
@@ -312,10 +310,10 @@ test('monitored hosts own default route names its gateway', function () {
     expect(ips($subnet->gateways))->toBe(['10.81.5.1']);
 });
 
-test('routers own upstream is not the gateway of its other subnets', function () {
+test('routers own upstream is not the gateway of its other subnets', function (): void {
     [, $lan] = $this->portOn();
     Ipv4Address::factory()->create(['port_id' => $lan->port_id, 'ipv4_address' => '10.80.5.254', 'ipv4_prefixlen' => 24]);
-    route($lan, '10.80.5.0', 24, '0.0.0.0');
+    addRoute($lan, '10.80.5.0', 24, '0.0.0.0');
     defaultRoute($lan, '192.0.2.1');
 
     $subnet = subnetOf('10.80.5.254');
@@ -323,7 +321,7 @@ test('routers own upstream is not the gateway of its other subnets', function ()
     expect($subnet->gateways)->toHaveCount(0);
 });
 
-test('host is not its own gateway', function () {
+test('host is not its own gateway', function (): void {
     [, $port] = $this->portOn();
     Ipv4Address::factory()->create(['port_id' => $port->port_id, 'ipv4_address' => '10.82.1.2', 'ipv4_prefixlen' => 24]);
     defaultRoute($port, '10.82.1.1');
@@ -333,7 +331,7 @@ test('host is not its own gateway', function () {
     expect($subnet->gateways)->toHaveCount(0);
 });
 
-test('same subnet lists network devices first without calling them agateway', function () {
+test('same subnet lists network devices first without calling them a gateway', function (): void {
     $server = Device::factory()->create(['type' => 'server']);
     $serverPort = Port::factory()->for($server)->create();
     $switch = Device::factory()->create(['type' => 'network']);

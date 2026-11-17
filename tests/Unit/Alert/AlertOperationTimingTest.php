@@ -47,7 +47,7 @@ function simulate(array $segments, int $pollInterval, int $duration, int $tolera
     return $fired;
 }
 
-test('single segment', function () {
+test('single segment', function (): void {
     $segments = [
         ['id' => 1, 'escalation_step_from' => 1, 'escalation_step_to' => null, 'start_in_seconds' => 300, 'step_duration_seconds' => 600],
     ];
@@ -57,7 +57,7 @@ test('single segment', function () {
     expect($fired[1] ?? [])->toBe([300, 900, 1500]);
 });
 
-test('two segments independent different times', function () {
+test('two segments independent different times', function (): void {
     $segments = [
         ['id' => 1, 'escalation_step_from' => 1, 'escalation_step_to' => null, 'start_in_seconds' => 180, 'step_duration_seconds' => 900],
         ['id' => 2, 'escalation_step_from' => 2, 'escalation_step_to' => null, 'start_in_seconds' => 900, 'step_duration_seconds' => 1800],
@@ -70,7 +70,7 @@ test('two segments independent different times', function () {
     expect($fired[2] ?? [])->toBe([900, 2700]);
 });
 
-test('two segments different steps same timing', function () {
+test('two segments different steps same timing', function (): void {
     $segments = [
         ['id' => 1, 'escalation_step_from' => 1, 'escalation_step_to' => null, 'start_in_seconds' => 300, 'step_duration_seconds' => 600],
         ['id' => 2, 'escalation_step_from' => 2, 'escalation_step_to' => null, 'start_in_seconds' => 300, 'step_duration_seconds' => 600],
@@ -82,7 +82,7 @@ test('two segments different steps same timing', function () {
     expect($fired[2])->toBe($fired[1], 'Segments with identical timing should fire at the same times');
 });
 
-test('escalation step to caps fire count', function () {
+test('escalation step to caps fire count', function (): void {
     $segments = [
         ['id' => 1, 'escalation_step_from' => 1, 'escalation_step_to' => 3, 'start_in_seconds' => 0, 'step_duration_seconds' => 600],
     ];
