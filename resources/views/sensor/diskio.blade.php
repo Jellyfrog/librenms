@@ -3,43 +3,14 @@
 @section('title', $title)
 
 @section('content')
-    <div class="panel panel-default panel-condensed">
-        <div class="panel-heading">
-            <div class="row" style="padding:0px 10px 0px 10px;">
-                <div class="pull-left">
-                    <x-option-bar border="none" name="{{ __('Health') }}" :options="$metrics" :selected="$metric"></x-option-bar>
-                </div>
-
-                <div class="pull-right">
-                    <x-option-bar border="none" :options="$views" :selected="$view"></x-option-bar>
-                </div>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table id="storage" class="table table-hover table-condensed diskio">
-                <thead>
-                <tr>
-                    <th data-column-id="device_hostname">{{ __('Device') }}</th>
-                    <th data-column-id="diskio_descr">{{ __('Storage') }}</th>
-                    <th data-column-id="bits_graph" data-sortable="false" data-searchable="false">{{ __('Bits') }}</th>
-                    <th data-column-id="ops_graph" data-sortable="false" data-searchable="false">{{ __('Ops') }}</th>
-                </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-    <script>
-        var grid = $("#storage").bootgrid({
-            ajax: true,
-            rowCount: [50, 100, 250, -1],
-            post: function ()
-            {
-                return {
-                    view: '{{ $view }}'
-                };
-            },
-            url: "<?php echo route('table.diskio') ?>"
-        });
-    </script>
-
+    <x-data-table :name="'diskio'" :url="route('table.diskio')" :params="['view' => $view]" :per-page-options="[50, 100, 250, -1]">
+        <x-slot name="heading">
+            <x-option-bar border="none" name="{{ __('Health') }}" :options="$metrics" :selected="$metric"></x-option-bar>
+            <x-option-bar border="none" :options="$views" :selected="$view"></x-option-bar>
+        </x-slot>
+        <x-data-table.column field="device_hostname" :label="__('Device')" x-html="row.device_hostname" />
+        <x-data-table.column field="diskio_descr" :label="__('Storage')" x-html="row.diskio_descr" />
+        <x-data-table.column field="bits_graph" :label="__('Bits')" :sortable="false" x-html="row.bits_graph" />
+        <x-data-table.column field="ops_graph" :label="__('Ops')" :sortable="false" x-html="row.ops_graph" />
+    </x-data-table>
 @endsection

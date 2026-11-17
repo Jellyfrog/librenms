@@ -3,50 +3,18 @@
 @section('title', $title)
 
 @section('content')
-    <div class="panel panel-default panel-condensed">
-        <div class="panel-heading">
-            <div class="row" style="padding:0px 10px 0px 10px;">
-                <div class="pull-left">
-                    <x-option-bar border="none" name="{{ __('Health') }}" :options="$metrics" :selected="$metric"></x-option-bar>
-                </div>
-
-                <div class="pull-left">
-                    <x-option-bar border="none" name="{{ __('Status') }}" :options="$status_bar" :selected="$status"></x-option-bar>
-                </div>
-
-                <div class="pull-right">
-                    <x-option-bar border="none" :options="$views" :selected="$view"></x-option-bar>
-                </div>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table id="sensors" class="table table-hover table-condensed"
-                   data-url="{{ route('table.sensors') }}" data-export-url="{{ route('table.sensors.export') }}">
-                <thead>
-                <tr>
-                    <th data-column-id="device_hostname">{{ __('Device') }}</th>
-                    <th data-column-id="sensor_descr">{{ __('Sensor') }}</th>
-                    <th data-column-id="graph" data-sortable="false" data-searchable="false"></th>
-                    <th data-column-id="alert" data-sortable="false" data-searchable="false"></th>
-                    <th data-column-id="sensor_current">{{ __('Current') }}</th>
-                    <th data-column-id="sensor_limit_low" data-searchable="false">{{ __('Low Limit') }}</th>
-                    <th data-column-id="sensor_limit" data-searchable="false">{{ __('High Limit') }}</th>
-                </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-    <script>
-        var grid = bootgridWithExport($("#sensors"), {
-            ajax: true,
-            rowCount: [50, 100, 250, -1],
-            post: function () {
-                return {
-                    view: '{{ $view }}',
-                    class: '{{ $metric }}',
-                    status: '{{ $status }}',
-                };
-            }
-        });
-    </script>
+    <x-data-table :name="'sensors-' . $metric" :url="route('table.sensors')" :params="['view' => $view, 'class' => $metric, 'status' => $status]" :per-page-options="[50, 100, 250, -1]">
+        <x-slot name="heading">
+            <x-option-bar border="none" name="{{ __('Health') }}" :options="$metrics" :selected="$metric"></x-option-bar>
+            <x-option-bar border="none" name="{{ __('Status') }}" :options="$status_bar" :selected="$status"></x-option-bar>
+            <x-option-bar border="none" :options="$views" :selected="$view"></x-option-bar>
+        </x-slot>
+        <x-data-table.column field="device_hostname" :label="__('Device')" x-html="row.device_hostname" />
+        <x-data-table.column field="sensor_descr" :label="__('Sensor')" x-html="row.sensor_descr" />
+        <x-data-table.column field="graph" :label="''" :sortable="false" x-html="row.graph" />
+        <x-data-table.column field="alert" :label="''" :sortable="false" x-html="row.alert" />
+        <x-data-table.column field="sensor_current" :label="__('Current')" x-html="row.sensor_current" />
+        <x-data-table.column field="sensor_limit_low" :label="__('Low Limit')" x-html="row.sensor_limit_low" />
+        <x-data-table.column field="sensor_limit" :label="__('High Limit')" x-html="row.sensor_limit" />
+    </x-data-table>
 @endsection

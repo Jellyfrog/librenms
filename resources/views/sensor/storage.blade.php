@@ -3,49 +3,16 @@
 @section('title', $title)
 
 @section('content')
-    <div class="panel panel-default panel-condensed">
-        <div class="panel-heading">
-            <div class="row" style="padding:0px 10px 0px 10px;">
-                <div class="pull-left">
-                    <x-option-bar border="none" name="{{ __('Health') }}" :options="$metrics" :selected="$metric"></x-option-bar>
-                </div>
-
-                <div class="pull-left">
-                    <x-option-bar border="none" name="{{ __('Status') }}" :options="$status_bar" :selected="$status"></x-option-bar>
-                </div>
-
-                <div class="pull-right">
-                    <x-option-bar border="none" :options="$views" :selected="$view"></x-option-bar>
-                </div>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table id="storage" class="table table-hover table-condensed"
-                   data-url="{{ route('table.storages') }}" data-export-url="{{ route('table.storages.export') }}">
-                <thead>
-                <tr>
-                    <th data-column-id="device_hostname">{{ __('Device') }}</th>
-                    <th data-column-id="storage_descr">{{ __('Storage') }}</th>
-                    <th data-column-id="graph" data-sortable="false" data-searchable="false"></th>
-                    <th data-column-id="storage_used" data-searchable="false">{{ __('Used') }}</th>
-                    <th data-column-id="storage_perc" data-searchable="false">{{ __('Usage') }}</th>
-                </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-    <script>
-        var grid = bootgridWithExport($("#storage"), {
-            ajax: true,
-            rowCount: [50, 100, 250, -1],
-            post: function ()
-            {
-                return {
-                    view: '{{ $view }}',
-                    status: '{{ $status }}',
-                };
-            }
-        });
-    </script>
-
+    <x-data-table :name="'storages'" :url="route('table.storages')" :params="['view' => $view, 'status' => $status]" :per-page-options="[50, 100, 250, -1]">
+        <x-slot name="heading">
+            <x-option-bar border="none" name="{{ __('Health') }}" :options="$metrics" :selected="$metric"></x-option-bar>
+            <x-option-bar border="none" name="{{ __('Status') }}" :options="$status_bar" :selected="$status"></x-option-bar>
+            <x-option-bar border="none" :options="$views" :selected="$view"></x-option-bar>
+        </x-slot>
+        <x-data-table.column field="device_hostname" :label="__('Device')" x-html="row.device_hostname" />
+        <x-data-table.column field="storage_descr" :label="__('Storage')" x-html="row.storage_descr" />
+        <x-data-table.column field="graph" :label="''" :sortable="false" x-html="row.graph" />
+        <x-data-table.column field="storage_used" :label="__('Used')" x-html="row.storage_used" />
+        <x-data-table.column field="storage_perc" :label="__('Usage')" x-html="row.storage_perc" />
+    </x-data-table>
 @endsection
