@@ -1,109 +1,97 @@
 <?php
 
-namespace LibreNMS\Tests\Unit\Graphs;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\Data\Graphing\GraphImage;
+use \App\Graphs\AbstractGraph;
 use App\Data\Graphing\GraphParameters;
-use App\Graphs\AbstractGraph;
 use LibreNMS\Enum\ImageFormat;
 use LibreNMS\Exceptions\GraphException;
 use LibreNMS\Exceptions\NoGraphData;
-use LibreNMS\Tests\TestCase;
-use RuntimeException;
 
-class AbstractGraphTest extends TestCase
-{
-    public function test_errors_from_drawing_become_graph_errors(): void
-    {
-        $graph = $this->graph(fn () => throw new RuntimeException('jpgraph failed'));
+test('errors from drawing become graph errors', function () {
+    $graph = graph(fn () => throw new RuntimeException('jpgraph failed'));
 
-        try {
-            $graph->render();
-            $this->fail('Expected a graph exception');
-        } catch (GraphException $e) {
-            $this->assertSame('Graph Error', $e->getMessage());
-            $this->assertInstanceOf(RuntimeException::class, $e->getPrevious());
-        }
-    }
-
-    public function test_graph_errors_are_kept(): void
-    {
-        $this->expectException(NoGraphData::class);
-
-        $this->graph(fn () => throw new NoGraphData)->render();
-    }
-
-    public function test_image_is_named_after_the_user_title(): void
-    {
-        $this->assertSame('Core uplink', $this->graph(params: ['graph_title' => 'Core uplink'])->render()->title);
-        $this->assertSame('Drawn', $this->graph()->render()->title);
-    }
-
-    public function test_drawing_errors_preserve_the_enabled_title(): void
-    {
-        $error = new NoGraphData;
-        $graph = $this->graph(fn () => throw $error, ['title' => 'yes']);
-
-        try {
-            $graph->render();
-            $this->fail('Expected a graph exception');
-        } catch (NoGraphData $e) {
-            $this->assertSame($error, $e);
-            $this->assertSame('Device::Test', $e->graphTitle);
-        }
-    }
-
-    public function test_unauthorized_graphs_do_not_resolve_the_title(): void
-    {
-        $graph = $this->graph(params: ['title' => 'yes'], isAuthorized: fn () => false);
-
-        try {
-            $graph->render();
-            $this->fail('Expected a graph exception');
-        } catch (GraphException $e) {
-            $this->assertNull($e->graphTitle);
-        }
-    }
-
-    public function test_authorization_is_checked_once(): void
-    {
-        $checks = 0;
-        $graph = $this->graph(isAuthorized: function () use (&$checks) {
-            $checks++;
-
-            return true;
-        });
-
-        $graph->authorize();
+    try {
         $graph->render();
-
-        $this->assertSame(1, $checks);
+        $this->fail('Expected a graph exception');
+    } catch (GraphException $e) {
+        expect($e->getMessage())->toBe('Graph Error');
+        expect($e->getPrevious())->toBeInstanceOf(RuntimeException::class);
     }
+});
 
-    /**
-     * @param  array<string, mixed>  $params
-     */
-    private function graph(?\Closure $draw = null, array $params = [], ?\Closure $isAuthorized = null): AbstractGraph
+test('graph errors are kept', function () {
+    $this->expectException(NoGraphData::class);
+
+    graph(fn () => throw new NoGraphData)->render();
+});
+
+test('image is named after the user title', function () {
+    expect(graph(params: ['graph_title' => 'Core uplink'])->render()->title)->toBe('Core uplink');
+    expect(graph()->render()->title)->toBe('Drawn');
+});
+
+test('drawing errors preserve the enabled title', function () {
+    $error = new NoGraphData;
+    $graph = graph(fn () => throw $error, ['title' => 'yes']);
+
+    try {
+        $graph->render();
+        $this->fail('Expected a graph exception');
+    } catch (NoGraphData $e) {
+        expect($e)->toBe($error);
+        expect($e->graphTitle)->toBe('Device::Test');
+    }
+});
+
+test('unauthorized graphs do not resolve the title', function () {
+    $graph = graph(params: ['title' => 'yes'], isAuthorized: fn () => false);
+
+    try {
+        $graph->render();
+        $this->fail('Expected a graph exception');
+    } catch (GraphException $e) {
+        expect($e->graphTitle)->toBeNull();
+    }
+});
+
+test('authorization is checked once', function () {
+    $checks = 0;
+    $graph = graph(isAuthorized: function () use (&$checks) {
+        $checks++;
+
+        return true;
+    });
+
+    $graph->authorize();
+    $graph->render();
+
+    expect($checks)->toBe(1);
+});
+
+/**
+ * @param  array<string, mixed>  $params
+ */
+function graph(?\Closure $draw = null, array $params = [], ?\Closure $isAuthorized = null): AbstractGraph
+{
+    $draw ??= fn () => new GraphImage(ImageFormat::Png, 'Drawn', 'image-data');
+    $isAuthorized ??= fn () => true;
+
+    return new class(new GraphParameters(['type' => 'device_test', ...$params]), $draw, $isAuthorized) extends AbstractGraph
     {
-        $draw ??= fn () => new GraphImage(ImageFormat::Png, 'Drawn', 'image-data');
-        $isAuthorized ??= fn () => true;
-
-        return new class(new GraphParameters(['type' => 'device_test', ...$params]), $draw, $isAuthorized) extends AbstractGraph
+        function __construct(GraphParameters $params, private readonly \Closure $drawer, private readonly \Closure $authorizer)
         {
-            public function __construct(GraphParameters $params, private readonly \Closure $drawer, private readonly \Closure $authorizer)
-            {
-                parent::__construct($params);
-            }
+            __construct($params);
+        }
 
-            protected function isAuthorized(): bool
-            {
-                return ($this->authorizer)();
-            }
+        function isAuthorized(): bool
+        {
+            return ($this->authorizer)();
+        }
 
-            protected function draw(): GraphImage
-            {
-                return ($this->drawer)();
-            }
-        };
-    }
+        function draw(): GraphImage
+        {
+            return ($this->drawer)();
+        }
+    };
 }

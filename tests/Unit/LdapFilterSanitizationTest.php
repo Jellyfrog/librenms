@@ -1,43 +1,33 @@
 <?php
 
-namespace LibreNMS\Tests\Unit;
+uses(\LibreNMS\Tests\TestCase::class);
+uses(\LibreNMS\Authentication\ActiveDirectoryCommon::class);
+use \LibreNMS\Tests\Unit\DummyAdAuthorizer;
+use \LibreNMS\Tests\TestCase;
 
-use LibreNMS\Authentication\ActiveDirectoryCommon;
-use LibreNMS\Tests\TestCase;
 
-class DummyAdAuthorizer
+test('user filter', function (string $username) {
+    return $this->userFilter($username);
+});
+
+test('group filter', function (string $groupname) {
+    return $this->groupFilter($groupname);
+});
+
+function getConnection(): ?\LDAP\Connection
 {
-    use ActiveDirectoryCommon;
-
-    public function testUserFilter(string $username): string
-    {
-        return $this->userFilter($username);
-    }
-
-    public function testGroupFilter(string $groupname): string
-    {
-        return $this->groupFilter($groupname);
-    }
-
-    protected function getConnection(): ?\LDAP\Connection
-    {
-        return null;
-    }
+    return null;
 }
 
 class LdapFilterSanitizationTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
+    beforeEach(function () {
         if (! function_exists('ldap_escape')) {
             $this->markTestSkipped('LDAP extension is not available.');
         }
-    }
+    });
 
-    public function testUserFilterEscapesWildcardsAndParentheses(): void
-    {
+    test('user filter escapes wildcards and parentheses', function () {
         $dummy = new DummyAdAuthorizer();
 
         $wildcardFilter = $dummy->testUserFilter('*');
@@ -48,13 +38,12 @@ class LdapFilterSanitizationTest extends TestCase
         $this->assertStringNotContainsString('admin)(|(uid=*', $injectedFilter);
         $this->assertStringContainsString('\28', $injectedFilter);
         $this->assertStringContainsString('\29', $injectedFilter);
-    }
+    });
 
-    public function testGroupFilterEscapesSpecialChars(): void
-    {
+    test('group filter escapes special chars', function () {
         $dummy = new DummyAdAuthorizer();
 
         $filter = $dummy->testGroupFilter('Domain Admins)(member=*');
         $this->assertStringNotContainsString('(samaccountname=Domain Admins)(member=*)', $filter);
-    }
+    });
 }

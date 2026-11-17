@@ -1,257 +1,237 @@
 <?php
 
-namespace LibreNMS\Tests\Unit;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use LibreNMS\Data\Source\Snmp\NetSnmpOptions;
 use LibreNMS\Data\Source\Snmp\SnmpQueryOptions;
 use LibreNMS\Enum\SnmpOidOutput;
 use LibreNMS\Enum\SnmpQuickPrint;
 use LibreNMS\Enum\SnmpStringOutput;
-use LibreNMS\Tests\TestCase;
 
-class SnmpQueryOptionsTest extends TestCase
-{
-    public function testDefaultOptions(): void
-    {
-        $options = new SnmpQueryOptions();
+test('default options', function () {
+    $options = new SnmpQueryOptions();
 
-        $this->assertSame('', $options->context);
-        $this->assertContains('SNMPv2-MIB', $options->mibs);
-        $this->assertSame([], $options->mibDirs);
-        $this->assertTrue($options->allowBulk);
-        $this->assertFalse($options->tolerateUnorderedIndexes);
+    expect($options->context)->toBe('');
+    expect($options->mibs)->toContain('SNMPv2-MIB');
+    expect($options->mibDirs)->toBe([]);
+    expect($options->allowBulk)->toBeTrue();
+    expect($options->tolerateUnorderedIndexes)->toBeFalse();
 
-        $this->assertSame(SnmpOidOutput::Module, $options->oidFormat);
-        $this->assertFalse($options->numericIndexes);
+    expect($options->oidFormat)->toBe(SnmpOidOutput::Module);
+    expect($options->numericIndexes)->toBeFalse();
 
-        $this->assertSame(SnmpStringOutput::Guess, $options->stringFormat);
-        $this->assertFalse($options->numericEnums);
-        $this->assertFalse($options->numericTimeticks);
-        $this->assertTrue($options->printUnits);
-        $this->assertTrue($options->applyDisplayHints);
+    expect($options->stringFormat)->toBe(SnmpStringOutput::Guess);
+    expect($options->numericEnums)->toBeFalse();
+    expect($options->numericTimeticks)->toBeFalse();
+    expect($options->printUnits)->toBeTrue();
+    expect($options->applyDisplayHints)->toBeTrue();
 
-        $this->assertSame(SnmpQuickPrint::None, $options->quickPrint);
-        $this->assertFalse($options->valueOnly);
-        $this->assertFalse($options->extendedIndex);
-        $this->assertFalse($options->allowUnderscores);
-    }
+    expect($options->quickPrint)->toBe(SnmpQuickPrint::None);
+    expect($options->valueOnly)->toBeFalse();
+    expect($options->extendedIndex)->toBeFalse();
+    expect($options->allowUnderscores)->toBeFalse();
+});
 
-    public function testQuickPrintDefaults(): void
-    {
-        $options = SnmpQueryOptions::quickPrint();
+test('quick print defaults', function () {
+    $options = SnmpQueryOptions::quickPrint();
 
-        $this->assertSame('', $options->context);
-        $this->assertContains('SNMPv2-MIB', $options->mibs);
-        $this->assertSame([], $options->mibDirs);
-        $this->assertTrue($options->allowBulk);
-        $this->assertFalse($options->tolerateUnorderedIndexes);
+    expect($options->context)->toBe('');
+    expect($options->mibs)->toContain('SNMPv2-MIB');
+    expect($options->mibDirs)->toBe([]);
+    expect($options->allowBulk)->toBeTrue();
+    expect($options->tolerateUnorderedIndexes)->toBeFalse();
 
-        $this->assertSame(SnmpOidOutput::Module, $options->oidFormat);
-        $this->assertFalse($options->numericIndexes);
+    expect($options->oidFormat)->toBe(SnmpOidOutput::Module);
+    expect($options->numericIndexes)->toBeFalse();
 
-        $this->assertSame(SnmpStringOutput::Guess, $options->stringFormat);
-        $this->assertTrue($options->numericEnums);
-        $this->assertTrue($options->numericTimeticks);
-        $this->assertFalse($options->printUnits);
-        $this->assertTrue($options->applyDisplayHints);
+    expect($options->stringFormat)->toBe(SnmpStringOutput::Guess);
+    expect($options->numericEnums)->toBeTrue();
+    expect($options->numericTimeticks)->toBeTrue();
+    expect($options->printUnits)->toBeFalse();
+    expect($options->applyDisplayHints)->toBeTrue();
 
-        $this->assertSame(SnmpQuickPrint::Equals, $options->quickPrint);
-        $this->assertFalse($options->valueOnly);
-        $this->assertTrue($options->extendedIndex);
-        $this->assertFalse($options->allowUnderscores);
-    }
+    expect($options->quickPrint)->toBe(SnmpQuickPrint::Equals);
+    expect($options->valueOnly)->toBeFalse();
+    expect($options->extendedIndex)->toBeTrue();
+    expect($options->allowUnderscores)->toBeFalse();
+});
 
-    public function testParseCliNullSetsDefaults(): void
-    {
-        $options = (new NetSnmpOptions)->parseCli(null);
+test('parse cli null sets defaults', function () {
+    $options = (new NetSnmpOptions)->parseCli(null);
 
-        $this->assertSame('', $options->context);
-        $this->assertTrue($options->allowBulk);
-        $this->assertFalse($options->tolerateUnorderedIndexes);
-        $this->assertSame(SnmpOidOutput::Module, $options->oidFormat);
-        $this->assertFalse($options->numericIndexes);
-        $this->assertTrue($options->numericEnums);
-        $this->assertTrue($options->numericTimeticks);
-        $this->assertSame(SnmpStringOutput::Guess, $options->stringFormat);
-        $this->assertFalse($options->printUnits);
-        $this->assertTrue($options->applyDisplayHints);
-        $this->assertSame(SnmpQuickPrint::Equals, $options->quickPrint);
-        $this->assertTrue($options->extendedIndex);
-        $this->assertFalse($options->allowUnderscores);
-    }
+    expect($options->context)->toBe('');
+    expect($options->allowBulk)->toBeTrue();
+    expect($options->tolerateUnorderedIndexes)->toBeFalse();
+    expect($options->oidFormat)->toBe(SnmpOidOutput::Module);
+    expect($options->numericIndexes)->toBeFalse();
+    expect($options->numericEnums)->toBeTrue();
+    expect($options->numericTimeticks)->toBeTrue();
+    expect($options->stringFormat)->toBe(SnmpStringOutput::Guess);
+    expect($options->printUnits)->toBeFalse();
+    expect($options->applyDisplayHints)->toBeTrue();
+    expect($options->quickPrint)->toBe(SnmpQuickPrint::Equals);
+    expect($options->extendedIndex)->toBeTrue();
+    expect($options->allowUnderscores)->toBeFalse();
+});
 
-    public function testParseCliOUneb(): void
-    {
-        $options = (new NetSnmpOptions)->parseCli(['-OUneb']);
+test('parse cli ouneb', function () {
+    $options = (new NetSnmpOptions)->parseCli(['-OUneb']);
 
-        $this->assertSame(SnmpOidOutput::Numeric, $options->oidFormat);
-        $this->assertTrue($options->numericIndexes);
-        $this->assertTrue($options->numericEnums);
-        $this->assertSame(SnmpStringOutput::Guess, $options->stringFormat);
-        $this->assertFalse($options->printUnits);
-        $this->assertSame(SnmpQuickPrint::None, $options->quickPrint);
-        $this->assertFalse($options->extendedIndex);
-        $this->assertFalse($options->numericTimeticks);
-        $this->assertFalse($options->allowUnderscores);
-    }
+    expect($options->oidFormat)->toBe(SnmpOidOutput::Numeric);
+    expect($options->numericIndexes)->toBeTrue();
+    expect($options->numericEnums)->toBeTrue();
+    expect($options->stringFormat)->toBe(SnmpStringOutput::Guess);
+    expect($options->printUnits)->toBeFalse();
+    expect($options->quickPrint)->toBe(SnmpQuickPrint::None);
+    expect($options->extendedIndex)->toBeFalse();
+    expect($options->numericTimeticks)->toBeFalse();
+    expect($options->allowUnderscores)->toBeFalse();
+});
 
-    public function testParseCliWithPuPreservesDisallowUnderscores(): void
-    {
-        $options = (new NetSnmpOptions)->parseCli(['-OteQUsab', '-Pu']);
+test('parse cli with pu preserves disallow underscores', function () {
+    $options = (new NetSnmpOptions)->parseCli(['-OteQUsab', '-Pu']);
 
-        $this->assertTrue($options->allowUnderscores);
-        $this->assertTrue($options->numericTimeticks);
-        $this->assertTrue($options->numericEnums);
-        $this->assertSame(SnmpQuickPrint::Equals, $options->quickPrint);
-        $this->assertFalse($options->printUnits);
-        $this->assertTrue($options->numericIndexes);
-        $this->assertSame(SnmpStringOutput::Ascii, $options->stringFormat);
-    }
+    expect($options->allowUnderscores)->toBeTrue();
+    expect($options->numericTimeticks)->toBeTrue();
+    expect($options->numericEnums)->toBeTrue();
+    expect($options->quickPrint)->toBe(SnmpQuickPrint::Equals);
+    expect($options->printUnits)->toBeFalse();
+    expect($options->numericIndexes)->toBeTrue();
+    expect($options->stringFormat)->toBe(SnmpStringOutput::Ascii);
+});
 
-    public function testParseCliHexStringsPrecedence(): void
-    {
-        // When 'x' comes after 'a', hexStrings wins
-        $optionsX = (new NetSnmpOptions)->parseCli(['-OteQUax']);
-        $this->assertSame(SnmpStringOutput::Hex, $optionsX->stringFormat);
+test('parse cli hex strings precedence', function () {
+    // When 'x' comes after 'a', hexStrings wins
+    $optionsX = (new NetSnmpOptions)->parseCli(['-OteQUax']);
+    expect($optionsX->stringFormat)->toBe(SnmpStringOutput::Hex);
 
-        // When 'a' comes after 'x', asciiStrings wins
-        $optionsA = (new NetSnmpOptions)->parseCli(['-OteQUxa']);
-        $this->assertSame(SnmpStringOutput::Ascii, $optionsA->stringFormat);
+    // When 'a' comes after 'x', asciiStrings wins
+    $optionsA = (new NetSnmpOptions)->parseCli(['-OteQUxa']);
+    expect($optionsA->stringFormat)->toBe(SnmpStringOutput::Ascii);
 
-        // Standard -OQUsx
-        $optionsOnlyX = (new NetSnmpOptions)->parseCli(['-OQUsx']);
-        $this->assertSame(SnmpStringOutput::Hex, $optionsOnlyX->stringFormat);
-    }
+    // Standard -OQUsx
+    $optionsOnlyX = (new NetSnmpOptions)->parseCli(['-OQUsx']);
+    expect($optionsOnlyX->stringFormat)->toBe(SnmpStringOutput::Hex);
+});
 
-    public function testParseCliNumericAndSymbolicPrecedence(): void
-    {
-        // When 's' comes after 'n', symbolic without MIB wins
-        $optionsS = (new NetSnmpOptions)->parseCli(['-Ons']);
-        $this->assertSame(SnmpOidOutput::Suffix, $optionsS->oidFormat);
+test('parse cli numeric and symbolic precedence', function () {
+    // When 's' comes after 'n', symbolic without MIB wins
+    $optionsS = (new NetSnmpOptions)->parseCli(['-Ons']);
+    expect($optionsS->oidFormat)->toBe(SnmpOidOutput::Suffix);
 
-        // When 'n' comes after 's', numeric wins
-        $optionsN = (new NetSnmpOptions)->parseCli(['-Osn']);
-        $this->assertSame(SnmpOidOutput::Numeric, $optionsN->oidFormat);
+    // When 'n' comes after 's', numeric wins
+    $optionsN = (new NetSnmpOptions)->parseCli(['-Osn']);
+    expect($optionsN->oidFormat)->toBe(SnmpOidOutput::Numeric);
 
-        // When 'S' comes after 'n', symbolic with MIB wins
-        $optionsUpperS = (new NetSnmpOptions)->parseCli(['-OnS']);
-        $this->assertSame(SnmpOidOutput::Module, $optionsUpperS->oidFormat);
-    }
+    // When 'S' comes after 'n', symbolic with MIB wins
+    $optionsUpperS = (new NetSnmpOptions)->parseCli(['-OnS']);
+    expect($optionsUpperS->oidFormat)->toBe(SnmpOidOutput::Module);
+});
 
-    public function testParseCliDisplayHints(): void
-    {
-        $options = (new NetSnmpOptions)->parseCli(['-OUneb', '-Ih']);
-        $this->assertFalse($options->applyDisplayHints);
+test('parse cli display hints', function () {
+    $options = (new NetSnmpOptions)->parseCli(['-OUneb', '-Ih']);
+    expect($options->applyDisplayHints)->toBeFalse();
 
-        $optionsNormal = (new NetSnmpOptions)->parseCli(['-OUneb']);
-        $this->assertTrue($optionsNormal->applyDisplayHints);
-    }
+    $optionsNormal = (new NetSnmpOptions)->parseCli(['-OUneb']);
+    expect($optionsNormal->applyDisplayHints)->toBeTrue();
+});
 
-    public function testParseCliUnorderedIndexes(): void
-    {
-        $optionsC = (new NetSnmpOptions)->parseCli(['-Cc']);
-        $this->assertTrue($optionsC->tolerateUnorderedIndexes);
-    }
+test('parse cli unordered indexes', function () {
+    $optionsC = (new NetSnmpOptions)->parseCli(['-Cc']);
+    expect($optionsC->tolerateUnorderedIndexes)->toBeTrue();
+});
 
-    public function testParseCliMibVisibility(): void
-    {
-        $hideMib = (new NetSnmpOptions)->parseCli('-OQUs');
-        $this->assertSame(SnmpOidOutput::Suffix, $hideMib->oidFormat);
-        $this->assertFalse($hideMib->numericEnums);
+test('parse cli mib visibility', function () {
+    $hideMib = (new NetSnmpOptions)->parseCli('-OQUs');
+    expect($hideMib->oidFormat)->toBe(SnmpOidOutput::Suffix);
+    expect($hideMib->numericEnums)->toBeFalse();
 
-        $showMib = (new NetSnmpOptions)->parseCli(['-OQUS']);
-        $this->assertSame(SnmpOidOutput::Module, $showMib->oidFormat);
-    }
+    $showMib = (new NetSnmpOptions)->parseCli(['-OQUS']);
+    expect($showMib->oidFormat)->toBe(SnmpOidOutput::Module);
+});
 
-    public function testParseCliMibsAppend(): void
-    {
-        $optionsSeparate = (new NetSnmpOptions)->parseCli(['-m', '+EXTRA-MIB']);
-        $this->assertContains('EXTRA-MIB', $optionsSeparate->mibs);
-        $this->assertContains('SNMPv2-MIB', $optionsSeparate->mibs);
+test('parse cli mibs append', function () {
+    $optionsSeparate = (new NetSnmpOptions)->parseCli(['-m', '+EXTRA-MIB']);
+    expect($optionsSeparate->mibs)->toContain('EXTRA-MIB');
+    expect($optionsSeparate->mibs)->toContain('SNMPv2-MIB');
 
-        $optionsCombined = (new NetSnmpOptions)->parseCli(['-m+ANOTHER-MIB']);
-        $this->assertContains('ANOTHER-MIB', $optionsCombined->mibs);
-    }
+    $optionsCombined = (new NetSnmpOptions)->parseCli(['-m+ANOTHER-MIB']);
+    expect($optionsCombined->mibs)->toContain('ANOTHER-MIB');
+});
 
-    public function testParseCliMibsReplace(): void
-    {
-        $optionsSeparate = (new NetSnmpOptions)->parseCli(['-m', 'MY-MIB:YOUR-MIB']);
-        $this->assertSame(['MY-MIB', 'YOUR-MIB'], $optionsSeparate->mibs);
+test('parse cli mibs replace', function () {
+    $optionsSeparate = (new NetSnmpOptions)->parseCli(['-m', 'MY-MIB:YOUR-MIB']);
+    expect($optionsSeparate->mibs)->toBe(['MY-MIB', 'YOUR-MIB']);
 
-        $optionsCombined = (new NetSnmpOptions)->parseCli(['-mFIRST-MIB:SECOND-MIB']);
-        $this->assertSame(['FIRST-MIB', 'SECOND-MIB'], $optionsCombined->mibs);
-    }
+    $optionsCombined = (new NetSnmpOptions)->parseCli(['-mFIRST-MIB:SECOND-MIB']);
+    expect($optionsCombined->mibs)->toBe(['FIRST-MIB', 'SECOND-MIB']);
+});
 
-    public function testParseCliMibDirs(): void
-    {
-        $optionsSeparate = (new NetSnmpOptions)->parseCli(['-M', '/opt/mibs:/extra/mibs']);
-        $this->assertSame(['/opt/mibs', '/extra/mibs'], $optionsSeparate->mibDirs);
+test('parse cli mib dirs', function () {
+    $optionsSeparate = (new NetSnmpOptions)->parseCli(['-M', '/opt/mibs:/extra/mibs']);
+    expect($optionsSeparate->mibDirs)->toBe(['/opt/mibs', '/extra/mibs']);
 
-        $optionsCombined = (new NetSnmpOptions)->parseCli(['-M/single/dir']);
-        $this->assertSame(['/single/dir'], $optionsCombined->mibDirs);
-    }
+    $optionsCombined = (new NetSnmpOptions)->parseCli(['-M/single/dir']);
+    expect($optionsCombined->mibDirs)->toBe(['/single/dir']);
+});
 
-    public function testParseCliAcceptsSingleString(): void
-    {
-        $options = (new NetSnmpOptions)->parseCli('-OUneb');
-        $this->assertSame(SnmpOidOutput::Numeric, $options->oidFormat);
-        $this->assertTrue($options->numericIndexes);
-        $this->assertTrue($options->numericEnums);
-    }
+test('parse cli accepts single string', function () {
+    $options = (new NetSnmpOptions)->parseCli('-OUneb');
+    expect($options->oidFormat)->toBe(SnmpOidOutput::Numeric);
+    expect($options->numericIndexes)->toBeTrue();
+    expect($options->numericEnums)->toBeTrue();
+});
 
-    public function testParseCliSupportsQandVOptions(): void
-    {
-        $parser = new NetSnmpOptions();
+test('parse cli supports qand voptions', function () {
+    $parser = new NetSnmpOptions();
 
-        $optionsUpperQ = $parser->parseCli(['-OQ']);
-        $this->assertSame(SnmpQuickPrint::Equals, $optionsUpperQ->quickPrint);
-        $this->assertFalse($optionsUpperQ->valueOnly);
-        $this->assertContains('-OQ', $parser->buildOutputFlags($optionsUpperQ));
+    $optionsUpperQ = $parser->parseCli(['-OQ']);
+    expect($optionsUpperQ->quickPrint)->toBe(SnmpQuickPrint::Equals);
+    expect($optionsUpperQ->valueOnly)->toBeFalse();
+    expect($parser->buildOutputFlags($optionsUpperQ))->toContain('-OQ');
 
-        $optionsLowerQ = $parser->parseCli(['-Oq']);
-        $this->assertSame(SnmpQuickPrint::NoEquals, $optionsLowerQ->quickPrint);
-        $this->assertFalse($optionsLowerQ->valueOnly);
-        $this->assertContains('-Oq', $parser->buildOutputFlags($optionsLowerQ));
+    $optionsLowerQ = $parser->parseCli(['-Oq']);
+    expect($optionsLowerQ->quickPrint)->toBe(SnmpQuickPrint::NoEquals);
+    expect($optionsLowerQ->valueOnly)->toBeFalse();
+    expect($parser->buildOutputFlags($optionsLowerQ))->toContain('-Oq');
 
-        $optionsV = $parser->parseCli(['-Ov']);
-        $this->assertTrue($optionsV->valueOnly);
-        $this->assertSame(SnmpOidOutput::Module, $optionsV->oidFormat);
-        $this->assertContains('-Ov', $parser->buildOutputFlags($optionsV));
+    $optionsV = $parser->parseCli(['-Ov']);
+    expect($optionsV->valueOnly)->toBeTrue();
+    expect($optionsV->oidFormat)->toBe(SnmpOidOutput::Module);
+    expect($parser->buildOutputFlags($optionsV))->toContain('-Ov');
 
-        $optionsQv = $parser->parseCli(['-Oqv']);
-        $this->assertSame(SnmpQuickPrint::NoEquals, $optionsQv->quickPrint);
-        $this->assertTrue($optionsQv->valueOnly);
-        $this->assertSame(SnmpOidOutput::Module, $optionsQv->oidFormat);
-        $this->assertContains('-Oqv', $parser->buildOutputFlags($optionsQv));
+    $optionsQv = $parser->parseCli(['-Oqv']);
+    expect($optionsQv->quickPrint)->toBe(SnmpQuickPrint::NoEquals);
+    expect($optionsQv->valueOnly)->toBeTrue();
+    expect($optionsQv->oidFormat)->toBe(SnmpOidOutput::Module);
+    expect($parser->buildOutputFlags($optionsQv))->toContain('-Oqv');
 
-        $optionsUpperQv = $parser->parseCli(['-OQv']);
-        $this->assertSame(SnmpQuickPrint::Equals, $optionsUpperQv->quickPrint);
-        $this->assertTrue($optionsUpperQv->valueOnly);
-        $this->assertSame(SnmpOidOutput::Module, $optionsUpperQv->oidFormat);
-        $this->assertContains('-OQv', $parser->buildOutputFlags($optionsUpperQv));
+    $optionsUpperQv = $parser->parseCli(['-OQv']);
+    expect($optionsUpperQv->quickPrint)->toBe(SnmpQuickPrint::Equals);
+    expect($optionsUpperQv->valueOnly)->toBeTrue();
+    expect($optionsUpperQv->oidFormat)->toBe(SnmpOidOutput::Module);
+    expect($parser->buildOutputFlags($optionsUpperQv))->toContain('-OQv');
 
-        $optionsVqn = $parser->parseCli(['-Ovqn']);
-        $this->assertSame(SnmpQuickPrint::NoEquals, $optionsVqn->quickPrint);
-        $this->assertTrue($optionsVqn->valueOnly);
-        $this->assertSame(SnmpOidOutput::Numeric, $optionsVqn->oidFormat);
-        $this->assertContains('-Oqvn', $parser->buildOutputFlags($optionsVqn));
+    $optionsVqn = $parser->parseCli(['-Ovqn']);
+    expect($optionsVqn->quickPrint)->toBe(SnmpQuickPrint::NoEquals);
+    expect($optionsVqn->valueOnly)->toBeTrue();
+    expect($optionsVqn->oidFormat)->toBe(SnmpOidOutput::Numeric);
+    expect($parser->buildOutputFlags($optionsVqn))->toContain('-Oqvn');
 
-        $optionsQvn = $parser->parseCli(['-Oqvn']);
-        $this->assertSame(SnmpQuickPrint::NoEquals, $optionsQvn->quickPrint);
-        $this->assertTrue($optionsQvn->valueOnly);
-        $this->assertSame(SnmpOidOutput::Numeric, $optionsQvn->oidFormat);
-        $this->assertContains('-Oqvn', $parser->buildOutputFlags($optionsQvn));
+    $optionsQvn = $parser->parseCli(['-Oqvn']);
+    expect($optionsQvn->quickPrint)->toBe(SnmpQuickPrint::NoEquals);
+    expect($optionsQvn->valueOnly)->toBeTrue();
+    expect($optionsQvn->oidFormat)->toBe(SnmpOidOutput::Numeric);
+    expect($parser->buildOutputFlags($optionsQvn))->toContain('-Oqvn');
 
-        $optionsNvq = $parser->parseCli(['-Onvq']);
-        $this->assertSame(SnmpQuickPrint::NoEquals, $optionsNvq->quickPrint);
-        $this->assertTrue($optionsNvq->valueOnly);
-        $this->assertSame(SnmpOidOutput::Numeric, $optionsNvq->oidFormat);
-        $this->assertContains('-Oqvn', $parser->buildOutputFlags($optionsNvq));
+    $optionsNvq = $parser->parseCli(['-Onvq']);
+    expect($optionsNvq->quickPrint)->toBe(SnmpQuickPrint::NoEquals);
+    expect($optionsNvq->valueOnly)->toBeTrue();
+    expect($optionsNvq->oidFormat)->toBe(SnmpOidOutput::Numeric);
+    expect($parser->buildOutputFlags($optionsNvq))->toContain('-Oqvn');
 
-        $optionsVqs = $parser->parseCli(['-Ovqs']);
-        $this->assertSame(SnmpQuickPrint::NoEquals, $optionsVqs->quickPrint);
-        $this->assertTrue($optionsVqs->valueOnly);
-        $this->assertSame(SnmpOidOutput::Suffix, $optionsVqs->oidFormat);
-        $this->assertContains('-Oqvs', $parser->buildOutputFlags($optionsVqs));
-    }
-}
+    $optionsVqs = $parser->parseCli(['-Ovqs']);
+    expect($optionsVqs->quickPrint)->toBe(SnmpQuickPrint::NoEquals);
+    expect($optionsVqs->valueOnly)->toBeTrue();
+    expect($optionsVqs->oidFormat)->toBe(SnmpOidOutput::Suffix);
+    expect($parser->buildOutputFlags($optionsVqs))->toContain('-Oqvs');
+});

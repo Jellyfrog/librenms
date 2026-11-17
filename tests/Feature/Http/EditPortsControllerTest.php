@@ -1,652 +1,621 @@
 <?php
 
-namespace LibreNMS\Tests\Feature\Http;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use App\Models\Port;
 use App\Models\PortGroup;
 use App\Models\User;
 use App\Models\UserPref;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use LibreNMS\Tests\TestCase;
 use Spatie\Permission\Models\Role;
 
-final class EditPortsControllerTest extends TestCase
+
+uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
+
+beforeEach(function () {
+    Role::findOrCreate('admin');
+    Role::findOrCreate('user');
+    LibrenmsConfig::set('polling.selected_ports', false);
+});
+
+function admin(): User
 {
-    use DatabaseTransactions;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Role::findOrCreate('admin');
-        Role::findOrCreate('user');
-        LibrenmsConfig::set('polling.selected_ports', false);
-    }
-
-    private function admin(): User
-    {
-        $admin = User::factory()->create(['enabled' => 1]);
-        $admin->assignRole('admin');
-
-        return $admin;
-    }
-
-    private function user(): User
-    {
-        $user = User::factory()->create(['enabled' => 1]);
-        $user->assignRole('user');
-
-        return $user;
-    }
-
-    /**
-     * @param  array<string, mixed>  $attributes
-     */
-    private function port(Device $device, array $attributes = []): Port
-    {
-        return Port::factory()->for($device)->create(array_merge([
-            'ifName' => 'eth' . fake()->unique()->numberBetween(0, 10000),
-            'ifDescr' => 'Ethernet',
-            'ifAlias' => 'Uplink',
-            'ifSpeed' => 1000000000,
-            'ifAdminStatus' => 'up',
-            'ifOperStatus' => 'up',
-            'disabled' => 0,
-            'ignore' => 0,
-            'deleted' => 0,
-        ], $attributes));
-    }
-
-    /**
-     * @return array{up: Port, down: Port, admin_down: Port, lower_layer_down: Port, disabled: Port, deleted: Port}
-     */
-    private function portSet(Device $device): array
-    {
-        return [
-            'up' => $this->port($device, ['ifIndex' => 1]),
-            'down' => $this->port($device, ['ifIndex' => 2, 'ifOperStatus' => 'down']),
-            'admin_down' => $this->port($device, ['ifIndex' => 3, 'ifAdminStatus' => 'down', 'ifOperStatus' => 'down']),
-            'lower_layer_down' => $this->port($device, ['ifIndex' => 4, 'ifOperStatus' => 'lowerLayerDown']),
-            'disabled' => $this->port($device, ['ifIndex' => 5, 'disabled' => 1]),
-            'deleted' => $this->port($device, ['ifIndex' => 6, 'deleted' => 1]),
-        ];
-    }
-
-    /**
-     * @param  array<string, mixed>  $query
-     * @return array<int, string>
-     */
-    private function pollingStates(Device $device, array $query = []): array
-    {
-        $response = $this->actingAs($this->admin())
-            ->getJson(route('device.edit.ports.list', $device) . '?' . http_build_query($query))
-            ->assertOk();
-
-        return array_column($response->json('data'), 'polling', 'ifIndex');
-    }
-
-    public function testAdminCanViewPortsPage(): void
-    {
-        $device = Device::factory()->create();
-
-        $this->actingAs($this->admin())
-            ->get(route('device.edit.ports', $device))
-            ->assertOk()
-            ->assertSee('Selected port polling')
-            ->assertSee('devicePorts', false)
-            ->assertSee('window.LibreNMS.selectableTable =', false);
-    }
-
-    public function testUserCannotViewPortsPage(): void
-    {
-        $device = Device::factory()->create();
-        $port = $this->port($device);
-
-        $this->actingAs($this->user())
-            ->get(route('device.edit.ports', $device))
-            ->assertForbidden();
-
-        $this->actingAs($this->user())
-            ->getJson(route('device.edit.ports.list', $device))
-            ->assertForbidden();
-
-        $this->actingAs($this->user())
-            ->patchJson(route('device.edit.ports.update', [$device, $port]), ['disabled' => true])
-            ->assertForbidden();
-
-        $this->assertSame(0, $port->fresh()->disabled);
-    }
-
-    public function testListReturnsStructuredData(): void
-    {
-        $device = Device::factory()->create();
-        $port = $this->port($device, ['ifName' => 'Gi0/1', 'ifAlias' => '<b>uplink</b>']);
-        $device->setAttrib('ifName:Gi0/1', 1);
-
-        $response = $this->actingAs($this->admin())
-            ->getJson(route('device.edit.ports.list', $device))
-            ->assertOk()
-            ->assertJsonPath('total', 1)
-            ->assertJsonPath('data.0.port_id', $port->port_id)
-            ->assertJsonPath('data.0.ifAlias', '<b>uplink</b>')
-            ->assertJsonPath('data.0.ifAlias_override', true)
-            ->assertJsonPath('data.0.ifSpeed_override', false)
-            ->assertJsonPath('data.0.polling', 'polled');
-
-        $this->assertArrayHasKey('summary', $response->json());
-        $this->assertSame('interface-upup', $response->json('data.0.link_class'));
-    }
-
-    public function testFullPollingPollsDownPorts(): void
-    {
-        $device = Device::factory()->create();
-        $this->portSet($device);
-
-        $this->assertSame([
-            1 => 'polled',
-            2 => 'polled',
-            3 => 'polled',
-            4 => 'polled',
-            5 => 'disabled',
-            6 => 'deleted',
-        ], $this->pollingStates($device));
-    }
-
-    public function testSelectedPortPollingSkipsDownPorts(): void
-    {
-        $device = Device::factory()->create();
-        $this->portSet($device);
-        $device->setAttrib('selected_ports', 'true');
-
-        $this->assertSame([
-            1 => 'polled',
-            2 => 'down',
-            3 => 'admin_down',
-            4 => 'down',
-            5 => 'disabled',
-            6 => 'deleted',
-        ], $this->pollingStates($device));
-
-        $this->assertSame([1 => 'polled'], $this->pollingStates($device, ['filter' => ['polling' => ['eq' => 'polled']]]));
-        $this->assertSame([2, 3, 4], array_keys($this->pollingStates($device, ['filter' => ['polling' => ['eq' => 'skipped']]])));
-        $this->assertSame([2, 3, 4, 5, 6], array_keys($this->pollingStates($device, ['filter' => ['polling' => ['eq' => 'not_polled']]])));
-        $this->assertSame([2, 3, 4, 5, 6], array_keys($this->pollingStates($device, ['filter' => ['polling' => ['neq' => 'polled']]])));
-        $this->assertSame([1, 5, 6], array_keys($this->pollingStates($device, ['filter' => ['polling' => ['not_in' => 'skipped']]])));
-        $this->assertSame([2, 4], array_keys($this->pollingStates($device, ['filter' => ['polling' => ['eq' => 'skipped'], 'state' => ['eq' => 'down']]])));
-
-        $this->actingAs($this->admin())
-            ->getJson(route('device.edit.ports.list', $device))
-            ->assertJsonPath('summary', [
-                'polled' => 1,
-                'skipped' => 3,
-                'disabled' => 1,
-                'ignored' => 0,
-                'deleted' => 1,
-            ]);
-    }
-
-    public function testSummaryExcludesDeletedPorts(): void
-    {
-        $device = Device::factory()->create();
-        $this->port($device, ['ifIndex' => 1, 'disabled' => 1, 'ignore' => 1]);
-        $this->port($device, ['ifIndex' => 2, 'disabled' => 1, 'ignore' => 1, 'deleted' => 1]);
-
-        $this->actingAs($this->admin())
-            ->getJson(route('device.edit.ports.list', $device))
-            ->assertJsonPath('summary', [
-                'polled' => 0,
-                'skipped' => 0,
-                'disabled' => 1,
-                'ignored' => 1,
-                'deleted' => 1,
-            ]);
-
-        // the summary links use these filters, they must match the counts
-        $this->assertSame([1], array_keys($this->pollingStates($device, ['filter' => ['disabled' => ['eq' => '1'], 'deleted' => ['eq' => '0']]])));
-        $this->assertSame([1], array_keys($this->pollingStates($device, ['filter' => ['ignore' => ['eq' => '1'], 'deleted' => ['eq' => '0']]])));
-    }
-
-    public function testSelectedPortPollingFallsBackToOsThenGlobal(): void
-    {
-        $device = Device::factory()->create(['os' => 'linux']);
-        $this->port($device, ['ifIndex' => 1, 'ifOperStatus' => 'down']);
-
-        LibrenmsConfig::set('polling.selected_ports', true);
-        $this->assertSame([1 => 'down'], $this->pollingStates($device));
-
-        LibrenmsConfig::set('os.linux.polling.selected_ports', false);
-        $this->assertSame([1 => 'polled'], $this->pollingStates($device));
-
-        $device->setAttrib('selected_ports', 'true');
-        $this->assertSame([1 => 'down'], $this->pollingStates($device));
-
-        LibrenmsConfig::forget('os.linux.polling.selected_ports');
-    }
-
-    public function testSearchAndFilters(): void
-    {
-        $device = Device::factory()->create();
-        $this->port($device, ['ifIndex' => 10, 'ifName' => 'Gi0/10', 'ifAlias' => 'core uplink']);
-        $this->port($device, ['ifIndex' => 11, 'ifName' => 'Gi0/11', 'ifAlias' => 'access', 'ifOperStatus' => 'down']);
-        $this->port($device, ['ifIndex' => 12, 'ifName' => 'Gi0/12', 'ifAlias' => 'access', 'ignore' => 1]);
-        $this->port(Device::factory()->create(), ['ifIndex' => 13, 'ifName' => 'Gi0/13', 'ifAlias' => 'core uplink']);
-
-        $this->assertSame([10], array_keys($this->pollingStates($device, ['filter' => ['search' => ['contains' => 'core']]])));
-        $this->assertSame([11], array_keys($this->pollingStates($device, ['filter' => ['ifIndex' => ['eq' => '11']]])));
-        $this->assertSame([11], array_keys($this->pollingStates($device, ['filter' => ['state' => ['eq' => 'down']]])));
-        $this->assertSame([12], array_keys($this->pollingStates($device, ['filter' => ['ignore' => ['eq' => '1']]])));
-        $this->assertSame([12, 11, 10], array_keys($this->pollingStates($device, ['sort' => 'ifIndex', 'order' => 'desc'])));
-
-        // a filter can not escape the device
-        $this->assertSame([], $this->pollingStates($device, ['filter' => ['device_id' => ['neq' => $device->device_id]]]));
-
-        $this->actingAs($this->admin())
-            ->getJson(route('device.edit.ports.list', $device) . '?' . http_build_query(['filter' => ['search' => ['bogus' => 'x']]]))
-            ->assertUnprocessable();
-    }
-
-    public function testPagination(): void
-    {
-        $device = Device::factory()->create();
-        foreach (range(1, 5) as $ifIndex) {
-            $this->port($device, ['ifIndex' => $ifIndex]);
-        }
-
-        $this->actingAs($this->admin())
-            ->getJson(route('device.edit.ports.list', $device) . '?per_page=2&page=3')
-            ->assertOk()
-            ->assertJsonPath('total', 5)
-            ->assertJsonPath('current_page', 3)
-            ->assertJsonPath('last_page', 3)
-            ->assertJsonCount(1, 'data')
-            ->assertJsonPath('data.0.ifIndex', 5);
-
-        // a page past the end shows the last page
-        $this->actingAs($this->admin())
-            ->getJson(route('device.edit.ports.list', $device) . '?per_page=2&page=9')
-            ->assertOk()
-            ->assertJsonPath('current_page', 3)
-            ->assertJsonPath('data.0.ifIndex', 5);
-    }
-
-    public function testUpdateToggles(): void
-    {
-        $device = Device::factory()->create();
-        $port = $this->port($device, ['ifName' => 'eth0']);
-
-        $this->actingAs($this->admin())
-            ->patchJson(route('device.edit.ports.update', [$device, $port]), ['disabled' => true, 'ignore' => true])
-            ->assertOk()
-            ->assertJsonPath('port.disabled', true)
-            ->assertJsonPath('port.ignore', true)
-            ->assertJsonPath('port.polling', 'disabled')
-            ->assertJsonPath('summary.disabled', 1);
-
-        $port->refresh();
-        $this->assertSame(1, $port->disabled);
-        $this->assertSame(1, $port->ignore);
-
-        $this->actingAs($this->admin())
-            ->patchJson(route('device.edit.ports.update', [$device, $port]), ['rrd_tune' => true])
-            ->assertOk()
-            ->assertJsonPath('port.rrd_tune', true)
-            ->assertJsonPath('port.rrd_tune_override', true);
-        $this->assertSame('true', $device->getAttrib('ifName_tune:eth0'));
-
-        $this->actingAs($this->admin())
-            ->patchJson(route('device.edit.ports.update', [$device, $port]), ['rrd_tune' => false])
-            ->assertOk()
-            ->assertJsonPath('port.rrd_tune', false)
-            ->assertJsonPath('port.rrd_tune_override', false);
-        // matches the device setting, so no override is stored
-        $this->assertNull($device->fresh()->getAttrib('ifName_tune:eth0'));
-    }
-
-    public function testUpdateAlias(): void
-    {
-        $device = Device::factory()->create();
-        $port = $this->port($device, ['ifName' => 'eth0']);
-
-        $this->actingAs($this->admin())
-            ->patchJson(route('device.edit.ports.update', [$device, $port]), ['ifAlias' => 'To core'])
-            ->assertOk()
-            ->assertJsonPath('port.ifAlias', 'To core')
-            ->assertJsonPath('port.ifAlias_override', true);
-
-        $this->assertSame('To core', $port->fresh()->ifAlias);
-        $this->assertNotNull($device->fresh()->getAttrib('ifName:eth0'));
-
-        $this->actingAs($this->admin())
-            ->patchJson(route('device.edit.ports.update', [$device, $port]), ['ifAlias' => ''])
-            ->assertOk()
-            ->assertJsonPath('port.ifAlias', '')
-            ->assertJsonPath('port.ifAlias_override', false);
-
-        $this->assertSame('repoll', $port->fresh()->ifAlias);
-        $this->assertNull($device->fresh()->getAttrib('ifName:eth0'));
-    }
-
-    public function testUpdateSpeed(): void
-    {
-        $device = Device::factory()->create();
-        $port = $this->port($device, ['ifName' => 'eth0']);
-
-        $this->actingAs($this->admin())
-            ->patchJson(route('device.edit.ports.update', [$device, $port]), ['ifSpeed' => 10000000])
-            ->assertOk()
-            ->assertJsonPath('port.ifSpeed', 10000000)
-            ->assertJsonPath('port.ifSpeed_override', true);
-
-        $this->assertSame(10000000, $port->fresh()->ifSpeed);
-        $this->assertEquals(10000000, $device->fresh()->getAttrib('ifSpeed:eth0'));
-
-        $this->actingAs($this->admin())
-            ->patchJson(route('device.edit.ports.update', [$device, $port]), ['ifSpeed' => null])
-            ->assertOk()
-            ->assertJsonPath('port.ifSpeed', 10000000)
-            ->assertJsonPath('port.ifSpeed_override', false);
-
-        // only the override is removed, polling updates the speed
-        $this->assertNull($device->fresh()->getAttrib('ifSpeed:eth0'));
-        $this->assertSame(10000000, $port->fresh()->ifSpeed);
-
-        $this->actingAs($this->admin())
-            ->patchJson(route('device.edit.ports.update', [$device, $port]), ['ifSpeed' => 'fast'])
-            ->assertUnprocessable();
-    }
-
-    public function testResetCustomSpeed(): void
-    {
-        $device = Device::factory()->create();
-        $port = $this->port($device, ['ifName' => 'eth0', 'ifSpeed' => 1000000000]);
-        $device->setAttrib('ifSpeed:eth0', 1000000000);
-
-        // the device speed is unknown while a custom speed is set
-        $this->actingAs($this->admin())
-            ->getJson(route('device.edit.ports.list', $device))
-            ->assertJsonPath('data.0.ifSpeed', 1000000000)
-            ->assertJsonPath('data.0.ifSpeed_device', null);
-
-        $this->actingAs($this->admin())
-            ->patchJson(route('device.edit.ports.update', [$device, $port]), ['ifSpeed' => null])
-            ->assertOk()
-            ->assertJsonPath('port.ifSpeed', 1000000000)
-            ->assertJsonPath('port.ifSpeed_override', false);
-
-        $this->assertNull($device->fresh()->getAttrib('ifSpeed:eth0'));
-    }
-
-    public function testUpdateCircuitSpeed(): void
-    {
-        $device = Device::factory()->create();
-        $port = $this->port($device, ['ifName' => 'eth0']);
-
-        $this->actingAs($this->admin())
-            ->patchJson(route('device.edit.ports.update', [$device, $port]), ['port_descr_speed' => ['out' => 100000000, 'in' => 20000000]])
-            ->assertOk()
-            ->assertJsonPath('port.circuit_speed', [100000000, 20000000])
-            ->assertJsonPath('port.circuit_speed_override', true);
-
-        $this->assertSame('100M/20M', $port->fresh()->port_descr_speed);
-        $this->assertSame('100M/20M', $device->fresh()->getAttrib('port_descr_speed:eth0'));
-        $this->assertSame([100000000, 20000000], $port->fresh()->getSpeeds());
-
-        $this->actingAs($this->admin())
-            ->patchJson(route('device.edit.ports.update', [$device, $port]), ['port_descr_speed' => ['out' => 1544000, 'in' => 1544000]])
-            ->assertOk()
-            ->assertJsonPath('port.circuit_speed', [1544000, 1544000]);
-        $this->assertSame('1.544M', $port->fresh()->port_descr_speed);
-
-        $this->actingAs($this->admin())
-            ->patchJson(route('device.edit.ports.update', [$device, $port]), ['port_descr_speed' => null])
-            ->assertOk()
-            ->assertJsonPath('port.circuit_speed', null)
-            ->assertJsonPath('port.circuit_speed_override', false);
-
-        // polling sets it from the port description again
-        $this->assertNull($port->fresh()->port_descr_speed);
-        $this->assertNull($device->fresh()->getAttrib('port_descr_speed:eth0'));
-
-        $this->actingAs($this->admin())
-            ->patchJson(route('device.edit.ports.update', [$device, $port]), ['port_descr_speed' => ['out' => 0, 'in' => 100]])
-            ->assertUnprocessable();
-    }
-
-    public function testInvalidUpdatesAreRejected(): void
-    {
-        $device = Device::factory()->create();
-        $port = $this->port($device);
-        $otherPort = $this->port(Device::factory()->create());
-
-        $this->actingAs($this->admin())
-            ->patchJson(route('device.edit.ports.update', [$device, $port]), [])
-            ->assertUnprocessable();
-
-        $this->actingAs($this->admin())
-            ->patchJson(route('device.edit.ports.update', [$device, $otherPort]), ['disabled' => true])
-            ->assertNotFound();
-
-        $this->assertSame(0, $otherPort->fresh()->disabled);
-    }
-
-    public function testBulkActionOnAllMatchingPorts(): void
-    {
-        $device = Device::factory()->create();
-        $up = $this->port($device, ['ifIndex' => 1]);
-        $down = $this->port($device, ['ifIndex' => 2, 'ifOperStatus' => 'down']);
-        $otherDevicePort = $this->port(Device::factory()->create(), ['ifIndex' => 3, 'ifOperStatus' => 'down']);
-
-        $this->actingAs($this->admin())
-            ->postJson(route('device.edit.ports.bulk', $device), ['action' => 'ignore', 'all' => true, 'group_id' => null, 'filter' => ['state' => ['eq' => 'down']]])
-            ->assertOk()
-            ->assertJsonPath('updated', 1)
-            ->assertJsonPath('summary.ignored', 1);
-
-        $this->assertSame(0, $up->fresh()->ignore);
-        $this->assertSame(1, $down->fresh()->ignore);
-        $this->assertSame(0, $otherDevicePort->fresh()->ignore);
-
-        $this->actingAs($this->admin())
-            ->postJson(route('device.edit.ports.bulk', $device), ['action' => 'disable', 'all' => true])
-            ->assertOk()
-            ->assertJsonPath('updated', 2);
-
-        $this->assertSame(1, $up->fresh()->disabled);
-        $this->assertSame(1, $down->fresh()->disabled);
-        $this->assertSame(0, $otherDevicePort->fresh()->disabled);
-
-        $this->actingAs($this->admin())
-            ->postJson(route('device.edit.ports.bulk', $device), ['action' => 'explode', 'all' => true])
-            ->assertUnprocessable();
-
-        $this->actingAs($this->admin())
-            ->postJson(route('device.edit.ports.bulk', $device), ['action' => 'enable'])
-            ->assertUnprocessable();
-
-        $this->actingAs($this->user())
-            ->postJson(route('device.edit.ports.bulk', $device), ['action' => 'enable', 'all' => true])
-            ->assertForbidden();
-    }
-
-    public function testBulkActionOnSelectedPorts(): void
-    {
-        $device = Device::factory()->create();
-        $first = $this->port($device, ['ifIndex' => 1]);
-        $second = $this->port($device, ['ifIndex' => 2]);
-        $third = $this->port($device, ['ifIndex' => 3]);
-        $otherDevicePort = $this->port(Device::factory()->create(), ['ifIndex' => 4]);
-
-        $this->actingAs($this->admin())
-            ->postJson(route('device.edit.ports.bulk', $device), [
-                'action' => 'disable',
-                'ids' => [$first->port_id, $third->port_id, $otherDevicePort->port_id],
-            ])
-            ->assertOk()
-            ->assertJsonPath('updated', 2);
-
-        $this->assertSame(1, $first->fresh()->disabled);
-        $this->assertSame(0, $second->fresh()->disabled);
-        $this->assertSame(1, $third->fresh()->disabled);
-        $this->assertSame(0, $otherDevicePort->fresh()->disabled);
-
-        // neither every port nor a selection
-        $this->actingAs($this->admin())
-            ->postJson(route('device.edit.ports.bulk', $device), ['action' => 'disable', 'all' => false])
-            ->assertUnprocessable();
-    }
-
-    public function testBulkPortGroups(): void
-    {
-        $device = Device::factory()->create();
-        $first = $this->port($device, ['ifIndex' => 1]);
-        $second = $this->port($device, ['ifIndex' => 2]);
-        $otherDevicePort = $this->port(Device::factory()->create(), ['ifIndex' => 3]);
-        $group = PortGroup::factory()->create();
-        $group->ports()->attach($first);
-
-        $this->actingAs($this->admin())
-            ->postJson(route('device.edit.ports.bulk', $device), [
-                'action' => 'add_group',
-                'group_id' => $group->id,
-                'ids' => [$first->port_id, $second->port_id, $otherDevicePort->port_id],
-            ])
-            ->assertOk()
-            ->assertJsonPath('updated', 1);
-
-        $this->assertEqualsCanonicalizing([$first->port_id, $second->port_id], $group->ports()->pluck('ports.port_id')->all());
-
-        $this->actingAs($this->admin())
-            ->postJson(route('device.edit.ports.bulk', $device), ['action' => 'remove_group', 'group_id' => $group->id, 'all' => true])
-            ->assertOk()
-            ->assertJsonPath('updated', 2);
-
-        $this->assertSame(0, $group->ports()->count());
-
-        $this->actingAs($this->admin())
-            ->postJson(route('device.edit.ports.bulk', $device), ['action' => 'add_group', 'all' => true])
-            ->assertUnprocessable();
-    }
-
-    public function testCreatePortGroupWithJson(): void
-    {
-        $this->actingAs($this->admin())
-            ->postJson(route('port-groups.store'), ['name' => 'Uplinks'])
-            ->assertCreated()
-            ->assertJsonPath('text', 'Uplinks');
-
-        $this->assertTrue(PortGroup::where('name', 'Uplinks')->exists());
-
-        $this->actingAs($this->admin())
-            ->postJson(route('port-groups.store'), ['name' => 'Uplinks'])
-            ->assertUnprocessable();
-    }
-
-    public function testSavedFilterIsUsedOnPageLoad(): void
-    {
-        $device = Device::factory()->create();
-        $admin = $this->admin();
-        UserPref::setPref($admin, 'filters.device.edit-ports', ['polling' => ['eq' => 'skipped']]);
-
-        $this->actingAs($admin)
-            ->get(route('device.edit.ports', $device))
-            ->assertOk()
-            ->assertViewHas('filter', ['polling' => ['eq' => 'skipped']]);
-    }
-
-    public function testSelectedPortsSetting(): void
-    {
-        $device = Device::factory()->create();
-
-        $this->actingAs($this->admin())
-            ->putJson(route('device.edit.ports.settings', $device), ['selected_ports' => 'true'])
-            ->assertOk()
-            ->assertJsonPath('settings.selected_ports.device', true);
-        $this->assertSame('true', $device->fresh()->getAttrib('selected_ports'));
-
-        $this->actingAs($this->admin())
-            ->putJson(route('device.edit.ports.settings', $device), ['selected_ports' => 'false'])
-            ->assertOk()
-            ->assertJsonPath('settings.selected_ports.device', false);
-        $this->assertSame('false', $device->fresh()->getAttrib('selected_ports'));
-
-        $this->actingAs($this->admin())
-            ->putJson(route('device.edit.ports.settings', $device), ['selected_ports' => 'clear'])
-            ->assertOk()
-            ->assertJsonPath('settings.selected_ports.device', null);
-        $this->assertNull($device->fresh()->getAttrib('selected_ports'));
-
-        $this->actingAs($this->admin())
-            ->putJson(route('device.edit.ports.settings', $device), ['selected_ports' => 'maybe'])
-            ->assertUnprocessable();
-
-        $this->actingAs($this->user())
-            ->putJson(route('device.edit.ports.settings', $device), ['selected_ports' => 'true'])
-            ->assertForbidden();
-    }
-
-    public function testResetPortState(): void
-    {
-        $device = Device::factory()->create();
-        $port = $this->port($device, [
-            'ifSpeed_prev' => 100,
-            'ifOperStatus_prev' => 'down',
-            'ifAdminStatus_prev' => 'down',
+    $admin = User::factory()->create(['enabled' => 1]);
+    $admin->assignRole('admin');
+
+    return $admin;
+}
+
+function user(): User
+{
+    $user = User::factory()->create(['enabled' => 1]);
+    $user->assignRole('user');
+
+    return $user;
+}
+
+/**
+ * @param  array<string, mixed>  $attributes
+ */
+function port(Device $device, array $attributes = []): Port
+{
+    return Port::factory()->for($device)->create(array_merge([
+        'ifName' => 'eth' . fake()->unique()->numberBetween(0, 10000),
+        'ifDescr' => 'Ethernet',
+        'ifAlias' => 'Uplink',
+        'ifSpeed' => 1000000000,
+        'ifAdminStatus' => 'up',
+        'ifOperStatus' => 'up',
+        'disabled' => 0,
+        'ignore' => 0,
+        'deleted' => 0,
+    ], $attributes));
+}
+
+/**
+ * @return array{up: Port, down: Port, admin_down: Port, lower_layer_down: Port, disabled: Port, deleted: Port}
+ */
+function portSet(Device $device): array
+{
+    return [
+        'up' => port($device, ['ifIndex' => 1]),
+        'down' => port($device, ['ifIndex' => 2, 'ifOperStatus' => 'down']),
+        'admin_down' => port($device, ['ifIndex' => 3, 'ifAdminStatus' => 'down', 'ifOperStatus' => 'down']),
+        'lower_layer_down' => port($device, ['ifIndex' => 4, 'ifOperStatus' => 'lowerLayerDown']),
+        'disabled' => port($device, ['ifIndex' => 5, 'disabled' => 1]),
+        'deleted' => port($device, ['ifIndex' => 6, 'deleted' => 1]),
+    ];
+}
+
+/**
+ * @param  array<string, mixed>  $query
+ * @return array<int, string>
+ */
+function pollingStates(Device $device, array $query = []): array
+{
+    $response = $this->actingAs(admin())
+        ->getJson(route('device.edit.ports.list', $device) . '?' . http_build_query($query))
+        ->assertOk();
+
+    return array_column($response->json('data'), 'polling', 'ifIndex');
+}
+
+test('admin can view ports page', function () {
+    $device = Device::factory()->create();
+
+    $this->actingAs(admin())
+        ->get(route('device.edit.ports', $device))
+        ->assertOk()
+        ->assertSee('Selected port polling')
+        ->assertSee('devicePorts', false)
+        ->assertSee('window.LibreNMS.selectableTable =', false);
+});
+
+test('user cannot view ports page', function () {
+    $device = Device::factory()->create();
+    $port = port($device);
+
+    $this->actingAs(user())
+        ->get(route('device.edit.ports', $device))
+        ->assertForbidden();
+
+    $this->actingAs(user())
+        ->getJson(route('device.edit.ports.list', $device))
+        ->assertForbidden();
+
+    $this->actingAs(user())
+        ->patchJson(route('device.edit.ports.update', [$device, $port]), ['disabled' => true])
+        ->assertForbidden();
+
+    expect($port->fresh()->disabled)->toBe(0);
+});
+
+test('list returns structured data', function () {
+    $device = Device::factory()->create();
+    $port = port($device, ['ifName' => 'Gi0/1', 'ifAlias' => '<b>uplink</b>']);
+    $device->setAttrib('ifName:Gi0/1', 1);
+
+    $response = $this->actingAs(admin())
+        ->getJson(route('device.edit.ports.list', $device))
+        ->assertOk()
+        ->assertJsonPath('total', 1)
+        ->assertJsonPath('data.0.port_id', $port->port_id)
+        ->assertJsonPath('data.0.ifAlias', '<b>uplink</b>')
+        ->assertJsonPath('data.0.ifAlias_override', true)
+        ->assertJsonPath('data.0.ifSpeed_override', false)
+        ->assertJsonPath('data.0.polling', 'polled');
+
+    expect($response->json())->toHaveKey('summary');
+    expect($response->json('data.0.link_class'))->toBe('interface-upup');
+});
+
+test('full polling polls down ports', function () {
+    $device = Device::factory()->create();
+    portSet($device);
+
+    expect(pollingStates($device))->toBe([
+        1 => 'polled',
+        2 => 'polled',
+        3 => 'polled',
+        4 => 'polled',
+        5 => 'disabled',
+        6 => 'deleted',
+    ]);
+});
+
+test('selected port polling skips down ports', function () {
+    $device = Device::factory()->create();
+    portSet($device);
+    $device->setAttrib('selected_ports', 'true');
+
+    expect(pollingStates($device))->toBe([
+        1 => 'polled',
+        2 => 'down',
+        3 => 'admin_down',
+        4 => 'down',
+        5 => 'disabled',
+        6 => 'deleted',
+    ]);
+
+    expect(pollingStates($device, ['filter' => ['polling' => ['eq' => 'polled']]]))->toBe([1 => 'polled']);
+    expect(array_keys(pollingStates($device, ['filter' => ['polling' => ['eq' => 'skipped']]])))->toBe([2, 3, 4]);
+    expect(array_keys(pollingStates($device, ['filter' => ['polling' => ['eq' => 'not_polled']]])))->toBe([2, 3, 4, 5, 6]);
+    expect(array_keys(pollingStates($device, ['filter' => ['polling' => ['neq' => 'polled']]])))->toBe([2, 3, 4, 5, 6]);
+    expect(array_keys(pollingStates($device, ['filter' => ['polling' => ['not_in' => 'skipped']]])))->toBe([1, 5, 6]);
+    expect(array_keys(pollingStates($device, ['filter' => ['polling' => ['eq' => 'skipped'], 'state' => ['eq' => 'down']]])))->toBe([2, 4]);
+
+    $this->actingAs(admin())
+        ->getJson(route('device.edit.ports.list', $device))
+        ->assertJsonPath('summary', [
+            'polled' => 1,
+            'skipped' => 3,
+            'disabled' => 1,
+            'ignored' => 0,
+            'deleted' => 1,
+        ]);
+});
+
+test('summary excludes deleted ports', function () {
+    $device = Device::factory()->create();
+    port($device, ['ifIndex' => 1, 'disabled' => 1, 'ignore' => 1]);
+    port($device, ['ifIndex' => 2, 'disabled' => 1, 'ignore' => 1, 'deleted' => 1]);
+
+    $this->actingAs(admin())
+        ->getJson(route('device.edit.ports.list', $device))
+        ->assertJsonPath('summary', [
+            'polled' => 0,
+            'skipped' => 0,
+            'disabled' => 1,
+            'ignored' => 1,
+            'deleted' => 1,
         ]);
 
-        $this->actingAs($this->admin())
-            ->postJson(route('device.edit.ports.reset-state', $device))
-            ->assertOk();
+    // the summary links use these filters, they must match the counts
+    expect(array_keys(pollingStates($device, ['filter' => ['disabled' => ['eq' => '1'], 'deleted' => ['eq' => '0']]])))->toBe([1]);
+    expect(array_keys(pollingStates($device, ['filter' => ['ignore' => ['eq' => '1'], 'deleted' => ['eq' => '0']]])))->toBe([1]);
+});
 
-        $port->refresh();
-        $this->assertNull($port->ifSpeed_prev);
-        $this->assertNull($port->ifOperStatus_prev);
-        $this->assertNull($port->ifAdminStatus_prev);
+test('selected port polling falls back to os then global', function () {
+    $device = Device::factory()->create(['os' => 'linux']);
+    port($device, ['ifIndex' => 1, 'ifOperStatus' => 'down']);
+
+    LibrenmsConfig::set('polling.selected_ports', true);
+    expect(pollingStates($device))->toBe([1 => 'down']);
+
+    LibrenmsConfig::set('os.linux.polling.selected_ports', false);
+    expect(pollingStates($device))->toBe([1 => 'polled']);
+
+    $device->setAttrib('selected_ports', 'true');
+    expect(pollingStates($device))->toBe([1 => 'down']);
+
+    LibrenmsConfig::forget('os.linux.polling.selected_ports');
+});
+
+test('search and filters', function () {
+    $device = Device::factory()->create();
+    port($device, ['ifIndex' => 10, 'ifName' => 'Gi0/10', 'ifAlias' => 'core uplink']);
+    port($device, ['ifIndex' => 11, 'ifName' => 'Gi0/11', 'ifAlias' => 'access', 'ifOperStatus' => 'down']);
+    port($device, ['ifIndex' => 12, 'ifName' => 'Gi0/12', 'ifAlias' => 'access', 'ignore' => 1]);
+    port(Device::factory()->create(), ['ifIndex' => 13, 'ifName' => 'Gi0/13', 'ifAlias' => 'core uplink']);
+
+    expect(array_keys(pollingStates($device, ['filter' => ['search' => ['contains' => 'core']]])))->toBe([10]);
+    expect(array_keys(pollingStates($device, ['filter' => ['ifIndex' => ['eq' => '11']]])))->toBe([11]);
+    expect(array_keys(pollingStates($device, ['filter' => ['state' => ['eq' => 'down']]])))->toBe([11]);
+    expect(array_keys(pollingStates($device, ['filter' => ['ignore' => ['eq' => '1']]])))->toBe([12]);
+    expect(array_keys(pollingStates($device, ['sort' => 'ifIndex', 'order' => 'desc'])))->toBe([12, 11, 10]);
+
+    // a filter can not escape the device
+    expect(pollingStates($device, ['filter' => ['device_id' => ['neq' => $device->device_id]]]))->toBe([]);
+
+    $this->actingAs(admin())
+        ->getJson(route('device.edit.ports.list', $device) . '?' . http_build_query(['filter' => ['search' => ['bogus' => 'x']]]))
+        ->assertUnprocessable();
+});
+
+test('pagination', function () {
+    $device = Device::factory()->create();
+    foreach (range(1, 5) as $ifIndex) {
+        port($device, ['ifIndex' => $ifIndex]);
     }
 
-    public function testRrdTuneSetting(): void
-    {
-        LibrenmsConfig::set('rrdtool_tune', false);
-        $device = Device::factory()->create();
-        $this->port($device, ['ifIndex' => 1, 'ifName' => 'eth0']);
-        $this->port($device, ['ifIndex' => 2, 'ifName' => 'eth1']);
-        $device->setAttrib('ifName_tune:eth1', 'false');
+    $this->actingAs(admin())
+        ->getJson(route('device.edit.ports.list', $device) . '?per_page=2&page=3')
+        ->assertOk()
+        ->assertJsonPath('total', 5)
+        ->assertJsonPath('current_page', 3)
+        ->assertJsonPath('last_page', 3)
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.ifIndex', 5);
 
-        $this->actingAs($this->admin())
-            ->putJson(route('device.edit.ports.settings', $device), ['rrd_tune' => 'true'])
-            ->assertOk()
-            ->assertJsonPath('settings.rrd_tune.device', true)
-            ->assertJsonPath('settings.rrd_tune.global', false);
-        $this->assertSame('true', $device->fresh()->getAttrib('override_rrdtool_tune'));
+    // a page past the end shows the last page
+    $this->actingAs(admin())
+        ->getJson(route('device.edit.ports.list', $device) . '?per_page=2&page=9')
+        ->assertOk()
+        ->assertJsonPath('current_page', 3)
+        ->assertJsonPath('data.0.ifIndex', 5);
+});
 
-        // ports follow the device setting unless overridden
-        $this->actingAs($this->admin())
-            ->getJson(route('device.edit.ports.list', $device))
-            ->assertJsonPath('data.0.rrd_tune', true)
-            ->assertJsonPath('data.0.rrd_tune_override', false)
-            ->assertJsonPath('data.1.rrd_tune', false)
-            ->assertJsonPath('data.1.rrd_tune_override', true);
+test('update toggles', function () {
+    $device = Device::factory()->create();
+    $port = port($device, ['ifName' => 'eth0']);
 
-        $this->actingAs($this->admin())
-            ->putJson(route('device.edit.ports.settings', $device), ['rrd_tune' => 'clear'])
-            ->assertOk()
-            ->assertJsonPath('settings.rrd_tune.device', null);
-        $this->assertNull($device->fresh()->getAttrib('override_rrdtool_tune'));
+    $this->actingAs(admin())
+        ->patchJson(route('device.edit.ports.update', [$device, $port]), ['disabled' => true, 'ignore' => true])
+        ->assertOk()
+        ->assertJsonPath('port.disabled', true)
+        ->assertJsonPath('port.ignore', true)
+        ->assertJsonPath('port.polling', 'disabled')
+        ->assertJsonPath('summary.disabled', 1);
 
-        $this->actingAs($this->admin())
-            ->putJson(route('device.edit.ports.settings', $device), [])
-            ->assertUnprocessable();
-    }
+    $port->refresh();
+    expect($port->disabled)->toBe(1);
+    expect($port->ignore)->toBe(1);
 
-    public function testMiscPageNoLongerHasPortSettings(): void
-    {
-        $device = Device::factory()->create();
+    $this->actingAs(admin())
+        ->patchJson(route('device.edit.ports.update', [$device, $port]), ['rrd_tune' => true])
+        ->assertOk()
+        ->assertJsonPath('port.rrd_tune', true)
+        ->assertJsonPath('port.rrd_tune_override', true);
+    expect($device->getAttrib('ifName_tune:eth0'))->toBe('true');
 
-        $this->actingAs($this->admin())
-            ->get(route('device.edit.misc', $device))
-            ->assertOk()
-            ->assertDontSee('selected_ports')
-            ->assertDontSee('override_rrdtool_tune');
-    }
-}
+    $this->actingAs(admin())
+        ->patchJson(route('device.edit.ports.update', [$device, $port]), ['rrd_tune' => false])
+        ->assertOk()
+        ->assertJsonPath('port.rrd_tune', false)
+        ->assertJsonPath('port.rrd_tune_override', false);
+
+    // matches the device setting, so no override is stored
+    expect($device->fresh()->getAttrib('ifName_tune:eth0'))->toBeNull();
+});
+
+test('update alias', function () {
+    $device = Device::factory()->create();
+    $port = port($device, ['ifName' => 'eth0']);
+
+    $this->actingAs(admin())
+        ->patchJson(route('device.edit.ports.update', [$device, $port]), ['ifAlias' => 'To core'])
+        ->assertOk()
+        ->assertJsonPath('port.ifAlias', 'To core')
+        ->assertJsonPath('port.ifAlias_override', true);
+
+    expect($port->fresh()->ifAlias)->toBe('To core');
+    expect($device->fresh()->getAttrib('ifName:eth0'))->not->toBeNull();
+
+    $this->actingAs(admin())
+        ->patchJson(route('device.edit.ports.update', [$device, $port]), ['ifAlias' => ''])
+        ->assertOk()
+        ->assertJsonPath('port.ifAlias', '')
+        ->assertJsonPath('port.ifAlias_override', false);
+
+    expect($port->fresh()->ifAlias)->toBe('repoll');
+    expect($device->fresh()->getAttrib('ifName:eth0'))->toBeNull();
+});
+
+test('update speed', function () {
+    $device = Device::factory()->create();
+    $port = port($device, ['ifName' => 'eth0']);
+
+    $this->actingAs(admin())
+        ->patchJson(route('device.edit.ports.update', [$device, $port]), ['ifSpeed' => 10000000])
+        ->assertOk()
+        ->assertJsonPath('port.ifSpeed', 10000000)
+        ->assertJsonPath('port.ifSpeed_override', true);
+
+    expect($port->fresh()->ifSpeed)->toBe(10000000);
+    expect($device->fresh()->getAttrib('ifSpeed:eth0'))->toEqual(10000000);
+
+    $this->actingAs(admin())
+        ->patchJson(route('device.edit.ports.update', [$device, $port]), ['ifSpeed' => null])
+        ->assertOk()
+        ->assertJsonPath('port.ifSpeed', 10000000)
+        ->assertJsonPath('port.ifSpeed_override', false);
+
+    // only the override is removed, polling updates the speed
+    expect($device->fresh()->getAttrib('ifSpeed:eth0'))->toBeNull();
+    expect($port->fresh()->ifSpeed)->toBe(10000000);
+
+    $this->actingAs(admin())
+        ->patchJson(route('device.edit.ports.update', [$device, $port]), ['ifSpeed' => 'fast'])
+        ->assertUnprocessable();
+});
+
+test('reset custom speed', function () {
+    $device = Device::factory()->create();
+    $port = port($device, ['ifName' => 'eth0', 'ifSpeed' => 1000000000]);
+    $device->setAttrib('ifSpeed:eth0', 1000000000);
+
+    // the device speed is unknown while a custom speed is set
+    $this->actingAs(admin())
+        ->getJson(route('device.edit.ports.list', $device))
+        ->assertJsonPath('data.0.ifSpeed', 1000000000)
+        ->assertJsonPath('data.0.ifSpeed_device', null);
+
+    $this->actingAs(admin())
+        ->patchJson(route('device.edit.ports.update', [$device, $port]), ['ifSpeed' => null])
+        ->assertOk()
+        ->assertJsonPath('port.ifSpeed', 1000000000)
+        ->assertJsonPath('port.ifSpeed_override', false);
+
+    expect($device->fresh()->getAttrib('ifSpeed:eth0'))->toBeNull();
+});
+
+test('update circuit speed', function () {
+    $device = Device::factory()->create();
+    $port = port($device, ['ifName' => 'eth0']);
+
+    $this->actingAs(admin())
+        ->patchJson(route('device.edit.ports.update', [$device, $port]), ['port_descr_speed' => ['out' => 100000000, 'in' => 20000000]])
+        ->assertOk()
+        ->assertJsonPath('port.circuit_speed', [100000000, 20000000])
+        ->assertJsonPath('port.circuit_speed_override', true);
+
+    expect($port->fresh()->port_descr_speed)->toBe('100M/20M');
+    expect($device->fresh()->getAttrib('port_descr_speed:eth0'))->toBe('100M/20M');
+    expect($port->fresh()->getSpeeds())->toBe([100000000, 20000000]);
+
+    $this->actingAs(admin())
+        ->patchJson(route('device.edit.ports.update', [$device, $port]), ['port_descr_speed' => ['out' => 1544000, 'in' => 1544000]])
+        ->assertOk()
+        ->assertJsonPath('port.circuit_speed', [1544000, 1544000]);
+    expect($port->fresh()->port_descr_speed)->toBe('1.544M');
+
+    $this->actingAs(admin())
+        ->patchJson(route('device.edit.ports.update', [$device, $port]), ['port_descr_speed' => null])
+        ->assertOk()
+        ->assertJsonPath('port.circuit_speed', null)
+        ->assertJsonPath('port.circuit_speed_override', false);
+
+    // polling sets it from the port description again
+    expect($port->fresh()->port_descr_speed)->toBeNull();
+    expect($device->fresh()->getAttrib('port_descr_speed:eth0'))->toBeNull();
+
+    $this->actingAs(admin())
+        ->patchJson(route('device.edit.ports.update', [$device, $port]), ['port_descr_speed' => ['out' => 0, 'in' => 100]])
+        ->assertUnprocessable();
+});
+
+test('invalid updates are rejected', function () {
+    $device = Device::factory()->create();
+    $port = port($device);
+    $otherPort = port(Device::factory()->create());
+
+    $this->actingAs(admin())
+        ->patchJson(route('device.edit.ports.update', [$device, $port]), [])
+        ->assertUnprocessable();
+
+    $this->actingAs(admin())
+        ->patchJson(route('device.edit.ports.update', [$device, $otherPort]), ['disabled' => true])
+        ->assertNotFound();
+
+    expect($otherPort->fresh()->disabled)->toBe(0);
+});
+
+test('bulk action on all matching ports', function () {
+    $device = Device::factory()->create();
+    $up = port($device, ['ifIndex' => 1]);
+    $down = port($device, ['ifIndex' => 2, 'ifOperStatus' => 'down']);
+    $otherDevicePort = port(Device::factory()->create(), ['ifIndex' => 3, 'ifOperStatus' => 'down']);
+
+    $this->actingAs(admin())
+        ->postJson(route('device.edit.ports.bulk', $device), ['action' => 'ignore', 'all' => true, 'group_id' => null, 'filter' => ['state' => ['eq' => 'down']]])
+        ->assertOk()
+        ->assertJsonPath('updated', 1)
+        ->assertJsonPath('summary.ignored', 1);
+
+    expect($up->fresh()->ignore)->toBe(0);
+    expect($down->fresh()->ignore)->toBe(1);
+    expect($otherDevicePort->fresh()->ignore)->toBe(0);
+
+    $this->actingAs(admin())
+        ->postJson(route('device.edit.ports.bulk', $device), ['action' => 'disable', 'all' => true])
+        ->assertOk()
+        ->assertJsonPath('updated', 2);
+
+    expect($up->fresh()->disabled)->toBe(1);
+    expect($down->fresh()->disabled)->toBe(1);
+    expect($otherDevicePort->fresh()->disabled)->toBe(0);
+
+    $this->actingAs(admin())
+        ->postJson(route('device.edit.ports.bulk', $device), ['action' => 'explode', 'all' => true])
+        ->assertUnprocessable();
+
+    $this->actingAs(admin())
+        ->postJson(route('device.edit.ports.bulk', $device), ['action' => 'enable'])
+        ->assertUnprocessable();
+
+    $this->actingAs(user())
+        ->postJson(route('device.edit.ports.bulk', $device), ['action' => 'enable', 'all' => true])
+        ->assertForbidden();
+});
+
+test('bulk action on selected ports', function () {
+    $device = Device::factory()->create();
+    $first = port($device, ['ifIndex' => 1]);
+    $second = port($device, ['ifIndex' => 2]);
+    $third = port($device, ['ifIndex' => 3]);
+    $otherDevicePort = port(Device::factory()->create(), ['ifIndex' => 4]);
+
+    $this->actingAs(admin())
+        ->postJson(route('device.edit.ports.bulk', $device), [
+            'action' => 'disable',
+            'ids' => [$first->port_id, $third->port_id, $otherDevicePort->port_id],
+        ])
+        ->assertOk()
+        ->assertJsonPath('updated', 2);
+
+    expect($first->fresh()->disabled)->toBe(1);
+    expect($second->fresh()->disabled)->toBe(0);
+    expect($third->fresh()->disabled)->toBe(1);
+    expect($otherDevicePort->fresh()->disabled)->toBe(0);
+
+    // neither every port nor a selection
+    $this->actingAs(admin())
+        ->postJson(route('device.edit.ports.bulk', $device), ['action' => 'disable', 'all' => false])
+        ->assertUnprocessable();
+});
+
+test('bulk port groups', function () {
+    $device = Device::factory()->create();
+    $first = port($device, ['ifIndex' => 1]);
+    $second = port($device, ['ifIndex' => 2]);
+    $otherDevicePort = port(Device::factory()->create(), ['ifIndex' => 3]);
+    $group = PortGroup::factory()->create();
+    $group->ports()->attach($first);
+
+    $this->actingAs(admin())
+        ->postJson(route('device.edit.ports.bulk', $device), [
+            'action' => 'add_group',
+            'group_id' => $group->id,
+            'ids' => [$first->port_id, $second->port_id, $otherDevicePort->port_id],
+        ])
+        ->assertOk()
+        ->assertJsonPath('updated', 1);
+
+    expect($group->ports()->pluck('ports.port_id')->all())->toEqualCanonicalizing([$first->port_id, $second->port_id]);
+
+    $this->actingAs(admin())
+        ->postJson(route('device.edit.ports.bulk', $device), ['action' => 'remove_group', 'group_id' => $group->id, 'all' => true])
+        ->assertOk()
+        ->assertJsonPath('updated', 2);
+
+    expect($group->ports()->count())->toBe(0);
+
+    $this->actingAs(admin())
+        ->postJson(route('device.edit.ports.bulk', $device), ['action' => 'add_group', 'all' => true])
+        ->assertUnprocessable();
+});
+
+test('create port group with json', function () {
+    $this->actingAs(admin())
+        ->postJson(route('port-groups.store'), ['name' => 'Uplinks'])
+        ->assertCreated()
+        ->assertJsonPath('text', 'Uplinks');
+
+    expect(PortGroup::where('name', 'Uplinks')->exists())->toBeTrue();
+
+    $this->actingAs(admin())
+        ->postJson(route('port-groups.store'), ['name' => 'Uplinks'])
+        ->assertUnprocessable();
+});
+
+test('saved filter is used on page load', function () {
+    $device = Device::factory()->create();
+    $admin = admin();
+    UserPref::setPref($admin, 'filters.device.edit-ports', ['polling' => ['eq' => 'skipped']]);
+
+    $this->actingAs($admin)
+        ->get(route('device.edit.ports', $device))
+        ->assertOk()
+        ->assertViewHas('filter', ['polling' => ['eq' => 'skipped']]);
+});
+
+test('selected ports setting', function () {
+    $device = Device::factory()->create();
+
+    $this->actingAs(admin())
+        ->putJson(route('device.edit.ports.settings', $device), ['selected_ports' => 'true'])
+        ->assertOk()
+        ->assertJsonPath('settings.selected_ports.device', true);
+    expect($device->fresh()->getAttrib('selected_ports'))->toBe('true');
+
+    $this->actingAs(admin())
+        ->putJson(route('device.edit.ports.settings', $device), ['selected_ports' => 'false'])
+        ->assertOk()
+        ->assertJsonPath('settings.selected_ports.device', false);
+    expect($device->fresh()->getAttrib('selected_ports'))->toBe('false');
+
+    $this->actingAs(admin())
+        ->putJson(route('device.edit.ports.settings', $device), ['selected_ports' => 'clear'])
+        ->assertOk()
+        ->assertJsonPath('settings.selected_ports.device', null);
+    expect($device->fresh()->getAttrib('selected_ports'))->toBeNull();
+
+    $this->actingAs(admin())
+        ->putJson(route('device.edit.ports.settings', $device), ['selected_ports' => 'maybe'])
+        ->assertUnprocessable();
+
+    $this->actingAs(user())
+        ->putJson(route('device.edit.ports.settings', $device), ['selected_ports' => 'true'])
+        ->assertForbidden();
+});
+
+test('reset port state', function () {
+    $device = Device::factory()->create();
+    $port = port($device, [
+        'ifSpeed_prev' => 100,
+        'ifOperStatus_prev' => 'down',
+        'ifAdminStatus_prev' => 'down',
+    ]);
+
+    $this->actingAs(admin())
+        ->postJson(route('device.edit.ports.reset-state', $device))
+        ->assertOk();
+
+    $port->refresh();
+    expect($port->ifSpeed_prev)->toBeNull();
+    expect($port->ifOperStatus_prev)->toBeNull();
+    expect($port->ifAdminStatus_prev)->toBeNull();
+});
+
+test('rrd tune setting', function () {
+    LibrenmsConfig::set('rrdtool_tune', false);
+    $device = Device::factory()->create();
+    port($device, ['ifIndex' => 1, 'ifName' => 'eth0']);
+    port($device, ['ifIndex' => 2, 'ifName' => 'eth1']);
+    $device->setAttrib('ifName_tune:eth1', 'false');
+
+    $this->actingAs(admin())
+        ->putJson(route('device.edit.ports.settings', $device), ['rrd_tune' => 'true'])
+        ->assertOk()
+        ->assertJsonPath('settings.rrd_tune.device', true)
+        ->assertJsonPath('settings.rrd_tune.global', false);
+    expect($device->fresh()->getAttrib('override_rrdtool_tune'))->toBe('true');
+
+    // ports follow the device setting unless overridden
+    $this->actingAs(admin())
+        ->getJson(route('device.edit.ports.list', $device))
+        ->assertJsonPath('data.0.rrd_tune', true)
+        ->assertJsonPath('data.0.rrd_tune_override', false)
+        ->assertJsonPath('data.1.rrd_tune', false)
+        ->assertJsonPath('data.1.rrd_tune_override', true);
+
+    $this->actingAs(admin())
+        ->putJson(route('device.edit.ports.settings', $device), ['rrd_tune' => 'clear'])
+        ->assertOk()
+        ->assertJsonPath('settings.rrd_tune.device', null);
+    expect($device->fresh()->getAttrib('override_rrdtool_tune'))->toBeNull();
+
+    $this->actingAs(admin())
+        ->putJson(route('device.edit.ports.settings', $device), [])
+        ->assertUnprocessable();
+});
+
+test('misc page no longer has port settings', function () {
+    $device = Device::factory()->create();
+
+    $this->actingAs(admin())
+        ->get(route('device.edit.misc', $device))
+        ->assertOk()
+        ->assertDontSee('selected_ports')
+        ->assertDontSee('override_rrdtool_tune');
+});

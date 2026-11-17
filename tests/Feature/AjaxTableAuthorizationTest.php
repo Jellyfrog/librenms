@@ -23,143 +23,128 @@
  * @copyright  2026 LibreNMS
  */
 
-namespace LibreNMS\Tests\Feature;
-
+uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Facades\LibrenmsConfig;
 use App\Models\Component;
 use App\Models\ComponentPref;
 use App\Models\Device;
 use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use LibreNMS\Tests\DBTestCase;
 use Spatie\Permission\Models\Role;
 
-final class AjaxTableAuthorizationTest extends DBTestCase
+
+uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
+
+beforeEach(function () {
+    Role::findOrCreate('user');
+    $this->accessible = Device::factory()->create(['bgpLocalAs' => 64496]);
+    $this->other = Device::factory()->create(['bgpLocalAs' => 64497]);
+    LibrenmsConfig::set('astext.64496', 'AS-ACCESSIBLE');
+    LibrenmsConfig::set('astext.64497', 'AS-OTHER');
+});
+
+function limitedUser(): User
 {
-    use DatabaseTransactions;
+    /** @var User $user */
+    $user = User::factory()->create(['enabled' => 1]);
+    $user->assignRole('user');
+    $user->devicesOwned()->attach($this->accessible->device_id);
 
-    private Device $accessible;
-    private Device $other;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Role::findOrCreate('user');
-        $this->accessible = Device::factory()->create(['bgpLocalAs' => 64496]);
-        $this->other = Device::factory()->create(['bgpLocalAs' => 64497]);
-        LibrenmsConfig::set('astext.64496', 'AS-ACCESSIBLE');
-        LibrenmsConfig::set('astext.64497', 'AS-OTHER');
-    }
-
-    private function limitedUser(): User
-    {
-        /** @var User $user */
-        $user = User::factory()->create(['enabled' => 1]);
-        $user->assignRole('user');
-        $user->devicesOwned()->attach($this->accessible->device_id);
-
-        return $user;
-    }
-
-    private function adminUser(): User
-    {
-        /** @var User $user */
-        $user = User::factory()->admin()->create(['enabled' => 1]);
-
-        return $user;
-    }
-
-    private function ntpComponent(Device $device, string $peer): Component
-    {
-        /** @var Component $component */
-        $component = Component::factory()->create(['device_id' => $device->device_id, 'type' => 'ntp', 'label' => $peer]);
-        foreach (['peer' => $peer, 'stratum' => '2', 'error' => ''] as $attribute => $value) {
-            ComponentPref::create(['component' => $component->id, 'attribute' => $attribute, 'value' => $value]);
-        }
-
-        return $component;
-    }
-
-    /**
-     * Run a legacy ajax table include the way html/ajax_table.php does and return the decoded output.
-     *
-     * @param  array<string, mixed>  $vars
-     * @return array{current: int, rowCount: int, rows: list<array<string, mixed>>, total: int}
-     */
-    private function runTable(string $id, array $vars = []): array
-    {
-        $current = 1;
-        $rowCount = 50;
-        $sort = '';
-        $searchPhrase = '';
-        $response = [];
-        $vars += ['current' => $current, 'rowCount' => $rowCount, 'searchPhrase' => $searchPhrase];
-
-        ob_start();
-        try {
-            include base_path("includes/html/table/$id.inc.php");
-        } finally {
-            $output = (string) ob_get_clean();
-        }
-
-        return json_decode($output, true, flags: JSON_THROW_ON_ERROR);
-    }
-
-    public function testComponentTableRequiresDeviceAccess(): void
-    {
-        $mine = Component::factory()->create(['device_id' => $this->accessible->device_id, 'label' => 'mine']);
-        Component::factory()->create(['device_id' => $this->other->device_id, 'label' => 'secret']);
-        $this->actingAs($this->limitedUser());
-
-        $denied = $this->runTable('component', ['device_id' => $this->other->device_id]);
-        $this->assertSame([], $denied['rows']);
-        $this->assertSame(0, $denied['total']);
-
-        $this->assertSame(0, $this->runTable('component', ['device_id' => 'invalid'])['total']);
-        $this->assertSame(0, $this->runTable('component')['total']);
-
-        $allowed = $this->runTable('component', ['device_id' => (string) $this->accessible->device_id]);
-        $this->assertSame(1, $allowed['total']);
-        $this->assertContains($mine->id, array_column($allowed['rows'], 'id'));
-    }
-
-    public function testComponentTableAllowsAdmin(): void
-    {
-        $component = Component::factory()->create(['device_id' => $this->other->device_id]);
-        $this->actingAs($this->adminUser());
-
-        $result = $this->runTable('component', ['device_id' => $this->other->device_id]);
-        $this->assertSame(1, $result['total']);
-        $this->assertContains($component->id, array_column($result['rows'], 'id'));
-    }
-
-    public function testNtpTableOnlyListsAccessibleDevices(): void
-    {
-        $this->ntpComponent($this->accessible, '192.0.2.1');
-        $this->ntpComponent($this->other, '192.0.2.2');
-        $vars = ['view' => 'all', 'graph' => 'none'];
-
-        $this->actingAs($this->limitedUser());
-        $limited = $this->runTable('app_ntp', $vars);
-        $this->assertSame(['192.0.2.1'], array_column($limited['rows'], 'peer'));
-        $this->assertSame(1, $limited['total']);
-
-        $this->actingAs($this->adminUser());
-        $all = $this->runTable('app_ntp', $vars);
-        $this->assertEqualsCanonicalizing(['192.0.2.1', '192.0.2.2'], array_column($all['rows'], 'peer'));
-    }
-
-    public function testAsSelectionOnlyListsAccessibleDevices(): void
-    {
-        $this->actingAs($this->limitedUser());
-        $limited = $this->runTable('as-selection');
-        $this->assertEquals([64496], array_column($limited['rows'], 'bgpLocalAs'));
-        $this->assertEquals(1, $limited['total']);
-
-        $this->actingAs($this->adminUser());
-        $all = array_column($this->runTable('as-selection')['rows'], 'bgpLocalAs');
-        $this->assertContains(64496, $all);
-        $this->assertContains(64497, $all);
-    }
+    return $user;
 }
+
+function adminUser(): User
+{
+    /** @var User $user */
+    $user = User::factory()->admin()->create(['enabled' => 1]);
+
+    return $user;
+}
+
+function ntpComponent(Device $device, string $peer): Component
+{
+    /** @var Component $component */
+    $component = Component::factory()->create(['device_id' => $device->device_id, 'type' => 'ntp', 'label' => $peer]);
+    foreach (['peer' => $peer, 'stratum' => '2', 'error' => ''] as $attribute => $value) {
+        ComponentPref::create(['component' => $component->id, 'attribute' => $attribute, 'value' => $value]);
+    }
+
+    return $component;
+}
+
+/**
+ * Run a legacy ajax table include the way html/ajax_table.php does and return the decoded output.
+ *
+ * @param  array<string, mixed>  $vars
+ * @return array{current: int, rowCount: int, rows: list<array<string, mixed>>, total: int}
+ */
+function runTable(string $id, array $vars = []): array
+{
+    $current = 1;
+    $rowCount = 50;
+    $sort = '';
+    $searchPhrase = '';
+    $response = [];
+    $vars += ['current' => $current, 'rowCount' => $rowCount, 'searchPhrase' => $searchPhrase];
+
+    ob_start();
+    try {
+        include base_path("includes/html/table/$id.inc.php");
+    } finally {
+        $output = (string) ob_get_clean();
+    }
+
+    return json_decode($output, true, flags: JSON_THROW_ON_ERROR);
+}
+
+test('component table requires device access', function () {
+    $mine = Component::factory()->create(['device_id' => $this->accessible->device_id, 'label' => 'mine']);
+    Component::factory()->create(['device_id' => $this->other->device_id, 'label' => 'secret']);
+    $this->actingAs(limitedUser());
+
+    $denied = runTable('component', ['device_id' => $this->other->device_id]);
+    expect($denied['rows'])->toBe([]);
+    expect($denied['total'])->toBe(0);
+
+    expect(runTable('component', ['device_id' => 'invalid'])['total'])->toBe(0);
+    expect(runTable('component')['total'])->toBe(0);
+
+    $allowed = runTable('component', ['device_id' => (string) $this->accessible->device_id]);
+    expect($allowed['total'])->toBe(1);
+    expect(array_column($allowed['rows'], 'id'))->toContain($mine->id);
+});
+
+test('component table allows admin', function () {
+    $component = Component::factory()->create(['device_id' => $this->other->device_id]);
+    $this->actingAs(adminUser());
+
+    $result = runTable('component', ['device_id' => $this->other->device_id]);
+    expect($result['total'])->toBe(1);
+    expect(array_column($result['rows'], 'id'))->toContain($component->id);
+});
+
+test('ntp table only lists accessible devices', function () {
+    ntpComponent($this->accessible, '192.0.2.1');
+    ntpComponent($this->other, '192.0.2.2');
+    $vars = ['view' => 'all', 'graph' => 'none'];
+
+    $this->actingAs(limitedUser());
+    $limited = runTable('app_ntp', $vars);
+    expect(array_column($limited['rows'], 'peer'))->toBe(['192.0.2.1']);
+    expect($limited['total'])->toBe(1);
+
+    $this->actingAs(adminUser());
+    $all = runTable('app_ntp', $vars);
+    expect(array_column($all['rows'], 'peer'))->toEqualCanonicalizing(['192.0.2.1', '192.0.2.2']);
+});
+
+test('as selection only lists accessible devices', function () {
+    $this->actingAs(limitedUser());
+    $limited = runTable('as-selection');
+    expect(array_column($limited['rows'], 'bgpLocalAs'))->toEqual([64496]);
+    expect($limited['total'])->toEqual(1);
+
+    $this->actingAs(adminUser());
+    $all = array_column(runTable('as-selection')['rows'], 'bgpLocalAs');
+    expect($all)->toContain(64496);
+    expect($all)->toContain(64497);
+});

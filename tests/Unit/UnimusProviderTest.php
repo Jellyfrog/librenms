@@ -21,8 +21,7 @@
  * @copyright  2026 LibreNMS
  */
 
-namespace LibreNMS\Tests\Unit;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\ApiClients\Unimus;
 use App\ConfigBackup\Providers\UnimusProvider;
 use App\Facades\LibrenmsConfig;
@@ -31,172 +30,154 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use LibreNMS\Interfaces\ConfigBackupProvider;
-use LibreNMS\Tests\TestCase;
 
-final class UnimusProviderTest extends TestCase
+beforeEach(function () {
+    LibrenmsConfig::set('unimus.enabled', true);
+    LibrenmsConfig::set('unimus.url', 'http://unimus:8085');
+    LibrenmsConfig::set('unimus.api_version', 'v2');
+    LibrenmsConfig::set('unimus.token', 'test-token');
+});
+
+function makeProvider(): UnimusProvider
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-        LibrenmsConfig::set('unimus.enabled', true);
-        LibrenmsConfig::set('unimus.url', 'http://unimus:8085');
-        LibrenmsConfig::set('unimus.api_version', 'v2');
-        LibrenmsConfig::set('unimus.token', 'test-token');
-    }
-
-    private function makeProvider(): UnimusProvider
-    {
-        return new UnimusProvider(new Unimus());
-    }
-
-    private function makeDevice(): Device
-    {
-        $device = new Device(['hostname' => 'router.example.com']);
-        $device->device_id = 42;
-
-        return $device;
-    }
-
-    public function testIsConfiguredDelegatesToClient(): void
-    {
-        $this->assertTrue(UnimusProvider::isConfigured());
-
-        LibrenmsConfig::set('unimus.enabled', false);
-        $this->assertFalse(UnimusProvider::isConfigured());
-    }
-
-    public function testSupportsAnyDevice(): void
-    {
-        $this->assertTrue($this->makeProvider()->supportsDevice($this->makeDevice()));
-    }
-
-    public function testBackupsStringifiesIds(): void
-    {
-        Http::fake([
-            'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
-            'unimus:8085/api/v2/devices/7/backups*' => Http::response([
-                'data' => [
-                    ['id' => 2, 'validSince' => 200, 'validUntil' => null, 'type' => 'TEXT', 'bytes' => base64_encode('config')],
-                    ['id' => 0, 'validSince' => 100, 'validUntil' => 200, 'type' => 'TEXT', 'bytes' => base64_encode('older')],
-                ],
-                'paginator' => ['totalCount' => 2, 'totalPages' => 1, 'page' => 0, 'size' => 50],
-            ], 200),
-        ]);
-
-        $list = $this->makeProvider()->backups($this->makeDevice());
-
-        $this->assertSame('2', $list['backups'][0]['id']);
-        $this->assertSame('0', $list['backups'][1]['id'], 'zero-based ids survive stringification');
-        $this->assertSame(2, $list['total']);
-    }
-
-    public function testLatestStringifiesIdAndIncludesContent(): void
-    {
-        Http::fake([
-            'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
-            'unimus:8085/api/v2/devices/7/backups/latest' => Http::response([
-                'data' => ['id' => 3, 'validSince' => 300, 'validUntil' => null, 'type' => 'TEXT', 'bytes' => base64_encode('latest config')],
-            ], 200),
-        ]);
-
-        $latest = $this->makeProvider()->latest($this->makeDevice());
-
-        $this->assertSame('3', $latest['id']);
-        $this->assertSame('latest config', $latest['content']);
-    }
-
-    public function testRefreshTriggersBackupJob(): void
-    {
-        Http::fake([
-            'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
-            'unimus:8085/api/v2/jobs/backup*' => Http::response(['data' => ['accepted' => 1, 'refused' => 0]], 202),
-        ]);
-
-        $this->assertTrue($this->makeProvider()->refresh($this->makeDevice(), 'admin'));
-
-        Http::assertSent(fn ($request) => str_contains((string) $request->url(), '/jobs/backup?id=7')
-            && $request->method() === 'PATCH');
-    }
-
-    public function testRefreshReturnsFalseWhenBackupRefused(): void
-    {
-        Http::fake([
-            'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
-            'unimus:8085/api/v2/jobs/backup*' => Http::response(['data' => ['accepted' => 0, 'refused' => 1]], 202),
-        ]);
-
-        $this->assertFalse($this->makeProvider()->refresh($this->makeDevice(), 'admin'));
-    }
-
-    public function testRefreshReturnsFalseWhenDeviceNotFound(): void
-    {
-        Http::fake(['unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['code' => 404], 404)]);
-
-        $this->assertFalse($this->makeProvider()->refresh($this->makeDevice(), 'admin'));
-    }
-
-    public function testContentRejectsNonNumericId(): void
-    {
-        Http::fake(['*' => Http::response(['data' => []], 200)]);
-
-        $provider = $this->makeProvider();
-
-        $this->assertNull($provider->content($this->makeDevice(), 'a1b2c3d'));
-        $this->assertSame(ConfigBackupProvider::ERROR_BACKUP_NOT_FOUND, $provider->lastError());
-        Http::assertNothingSent();
-    }
-
-    public function testDiffRejectsNonNumericIds(): void
-    {
-        Http::fake(['*' => Http::response(['data' => []], 200)]);
-
-        $provider = $this->makeProvider();
-
-        $this->assertNull($provider->diff($this->makeDevice(), 'abc', '2'));
-        $this->assertSame(ConfigBackupProvider::ERROR_BACKUP_NOT_FOUND, $provider->lastError());
-        Http::assertNothingSent();
-    }
-
-    public function testDeviceNotFoundErrorPassthrough(): void
-    {
-        Http::fake(['*' => Http::response(['code' => 404], 404)]);
-
-        $provider = $this->makeProvider();
-
-        $this->assertNull($provider->backups($this->makeDevice()));
-        $this->assertSame(ConfigBackupProvider::ERROR_DEVICE_NOT_FOUND, $provider->lastError());
-    }
-
-    public function testUnreachableErrorPassthrough(): void
-    {
-        Http::fake(function (): void {
-            throw new ConnectionException('cURL error 7: Failed to connect');
-        });
-
-        Log::shouldReceive('warning')->atLeast()->once();
-
-        $provider = $this->makeProvider();
-
-        $this->assertNull($provider->backups($this->makeDevice()));
-        $this->assertSame(ConfigBackupProvider::ERROR_UNREACHABLE, $provider->lastError());
-    }
-
-    public function testLastErrorResetsBetweenCalls(): void
-    {
-        Http::fake([
-            'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
-            'unimus:8085/api/v2/devices/7/backups*' => Http::response([
-                'data' => [['id' => 1, 'validSince' => 100, 'validUntil' => null, 'type' => 'TEXT', 'bytes' => base64_encode('config')]],
-                'paginator' => ['totalCount' => 1, 'totalPages' => 1, 'page' => 0, 'size' => 50],
-            ], 200),
-        ]);
-
-        $provider = $this->makeProvider();
-
-        $this->assertNull($provider->content($this->makeDevice(), 'bogus'));
-        $this->assertNotNull($provider->lastError());
-
-        $this->assertNotNull($provider->backups($this->makeDevice()));
-        $this->assertNull($provider->lastError());
-    }
+    return new UnimusProvider(new Unimus());
 }
+
+function makeDevice(): Device
+{
+    $device = new Device(['hostname' => 'router.example.com']);
+    $device->device_id = 42;
+
+    return $device;
+}
+
+test('is configured delegates to client', function () {
+    expect(UnimusProvider::isConfigured())->toBeTrue();
+
+    LibrenmsConfig::set('unimus.enabled', false);
+    expect(UnimusProvider::isConfigured())->toBeFalse();
+});
+
+test('supports any device', function () {
+    expect(makeProvider()->supportsDevice(makeDevice()))->toBeTrue();
+});
+
+test('backups stringifies ids', function () {
+    Http::fake([
+        'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
+        'unimus:8085/api/v2/devices/7/backups*' => Http::response([
+            'data' => [
+                ['id' => 2, 'validSince' => 200, 'validUntil' => null, 'type' => 'TEXT', 'bytes' => base64_encode('config')],
+                ['id' => 0, 'validSince' => 100, 'validUntil' => 200, 'type' => 'TEXT', 'bytes' => base64_encode('older')],
+            ],
+            'paginator' => ['totalCount' => 2, 'totalPages' => 1, 'page' => 0, 'size' => 50],
+        ], 200),
+    ]);
+
+    $list = makeProvider()->backups(makeDevice());
+
+    expect($list['backups'][0]['id'])->toBe('2');
+    expect($list['backups'][1]['id'])->toBe('0', 'zero-based ids survive stringification');
+    expect($list['total'])->toBe(2);
+});
+
+test('latest stringifies id and includes content', function () {
+    Http::fake([
+        'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
+        'unimus:8085/api/v2/devices/7/backups/latest' => Http::response([
+            'data' => ['id' => 3, 'validSince' => 300, 'validUntil' => null, 'type' => 'TEXT', 'bytes' => base64_encode('latest config')],
+        ], 200),
+    ]);
+
+    $latest = makeProvider()->latest(makeDevice());
+
+    expect($latest['id'])->toBe('3');
+    expect($latest['content'])->toBe('latest config');
+});
+
+test('refresh triggers backup job', function () {
+    Http::fake([
+        'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
+        'unimus:8085/api/v2/jobs/backup*' => Http::response(['data' => ['accepted' => 1, 'refused' => 0]], 202),
+    ]);
+
+    expect(makeProvider()->refresh(makeDevice(), 'admin'))->toBeTrue();
+
+    Http::assertSent(fn ($request) => str_contains((string) $request->url(), '/jobs/backup?id=7')
+        && $request->method() === 'PATCH');
+});
+
+test('refresh returns false when backup refused', function () {
+    Http::fake([
+        'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
+        'unimus:8085/api/v2/jobs/backup*' => Http::response(['data' => ['accepted' => 0, 'refused' => 1]], 202),
+    ]);
+
+    expect(makeProvider()->refresh(makeDevice(), 'admin'))->toBeFalse();
+});
+
+test('refresh returns false when device not found', function () {
+    Http::fake(['unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['code' => 404], 404)]);
+
+    expect(makeProvider()->refresh(makeDevice(), 'admin'))->toBeFalse();
+});
+
+test('content rejects non numeric id', function () {
+    Http::fake(['*' => Http::response(['data' => []], 200)]);
+
+    $provider = makeProvider();
+
+    expect($provider->content(makeDevice(), 'a1b2c3d'))->toBeNull();
+    expect($provider->lastError())->toBe(ConfigBackupProvider::ERROR_BACKUP_NOT_FOUND);
+    Http::assertNothingSent();
+});
+
+test('diff rejects non numeric ids', function () {
+    Http::fake(['*' => Http::response(['data' => []], 200)]);
+
+    $provider = makeProvider();
+
+    expect($provider->diff(makeDevice(), 'abc', '2'))->toBeNull();
+    expect($provider->lastError())->toBe(ConfigBackupProvider::ERROR_BACKUP_NOT_FOUND);
+    Http::assertNothingSent();
+});
+
+test('device not found error passthrough', function () {
+    Http::fake(['*' => Http::response(['code' => 404], 404)]);
+
+    $provider = makeProvider();
+
+    expect($provider->backups(makeDevice()))->toBeNull();
+    expect($provider->lastError())->toBe(ConfigBackupProvider::ERROR_DEVICE_NOT_FOUND);
+});
+
+test('unreachable error passthrough', function () {
+    Http::fake(function (): void {
+        throw new ConnectionException('cURL error 7: Failed to connect');
+    });
+
+    Log::shouldReceive('warning')->atLeast()->once();
+
+    $provider = makeProvider();
+
+    expect($provider->backups(makeDevice()))->toBeNull();
+    expect($provider->lastError())->toBe(ConfigBackupProvider::ERROR_UNREACHABLE);
+});
+
+test('last error resets between calls', function () {
+    Http::fake([
+        'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
+        'unimus:8085/api/v2/devices/7/backups*' => Http::response([
+            'data' => [['id' => 1, 'validSince' => 100, 'validUntil' => null, 'type' => 'TEXT', 'bytes' => base64_encode('config')]],
+            'paginator' => ['totalCount' => 1, 'totalPages' => 1, 'page' => 0, 'size' => 50],
+        ], 200),
+    ]);
+
+    $provider = makeProvider();
+
+    expect($provider->content(makeDevice(), 'bogus'))->toBeNull();
+    expect($provider->lastError())->not->toBeNull();
+
+    expect($provider->backups(makeDevice()))->not->toBeNull();
+    expect($provider->lastError())->toBeNull();
+});

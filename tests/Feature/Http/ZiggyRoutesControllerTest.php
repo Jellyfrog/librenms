@@ -1,72 +1,61 @@
 <?php
 
-namespace LibreNMS\Tests\Feature\Http;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\Facades\LibrenmsConfig;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use LibreNMS\Tests\TestCase;
 
-class ZiggyRoutesControllerTest extends TestCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    public function testServesRoutesAndRouteFunctionAsJavascript(): void
-    {
-        $response = $this->actingAs(User::factory()->create(['enabled' => 1]))->get(route('js.routes'));
+test('serves routes and route function as javascript', function () {
+    $response = $this->actingAs(User::factory()->create(['enabled' => 1]))->get(route('js.routes'));
 
-        $response->assertOk()
-            ->assertHeader('Content-Type', 'application/javascript; charset=utf-8')
-            ->assertHeader('ETag');
-        $this->assertStringStartsWith('globalThis.Ziggy={', $response->getContent());
-        $this->assertStringContainsString('"dashboard.widget.add":', $response->getContent());
-        $this->assertStringContainsString('.route=', $response->getContent());
+    $response->assertOk()
+        ->assertHeader('Content-Type', 'application/javascript; charset=utf-8')
+        ->assertHeader('ETag');
+    expect($response->getContent())->toStartWith('globalThis.Ziggy={');
+    $this->assertStringContainsString('"dashboard.widget.add":', $response->getContent());
+    $this->assertStringContainsString('.route=', $response->getContent());
 
-        $cacheControl = $response->headers->get('Cache-Control');
-        $this->assertStringContainsString('private', $cacheControl);
-        $this->assertStringContainsString('must-revalidate', $cacheControl);
-        $this->assertStringContainsString('max-age=0', $cacheControl);
-    }
+    $cacheControl = $response->headers->get('Cache-Control');
+    $this->assertStringContainsString('private', $cacheControl);
+    $this->assertStringContainsString('must-revalidate', $cacheControl);
+    $this->assertStringContainsString('max-age=0', $cacheControl);
+});
 
-    public function testReturnsNotModifiedWhenEtagMatches(): void
-    {
-        $this->actingAs(User::factory()->create(['enabled' => 1]));
-        $etag = $this->get(route('js.routes'))->headers->get('ETag');
+test('returns not modified when etag matches', function () {
+    $this->actingAs(User::factory()->create(['enabled' => 1]));
+    $etag = $this->get(route('js.routes'))->headers->get('ETag');
 
-        $this->get(route('js.routes'), ['If-None-Match' => $etag])
-            ->assertStatus(304)
-            ->assertContent('');
-    }
+    $this->get(route('js.routes'), ['If-None-Match' => $etag])
+        ->assertStatus(304)
+        ->assertContent('');
+});
 
-    public function testRequiresAuthentication(): void
-    {
-        $this->get(route('js.routes'))
-            ->assertRedirect(route('login'));
-    }
+test('requires authentication', function () {
+    $this->get(route('js.routes'))
+        ->assertRedirect(route('login'));
+});
 
-    public function testGuestLayoutDoesNotLoadRoutesScript(): void
-    {
-        $this->get(route('login'))
-            ->assertOk()
-            ->assertDontSee(route('js.routes'), false);
-    }
+test('guest layout does not load routes script', function () {
+    $this->get(route('login'))
+        ->assertOk()
+        ->assertDontSee(route('js.routes'), false);
+});
 
-    public function testPendingTwoFactorUserCanLoadRoutesScript(): void
-    {
-        LibrenmsConfig::set('twofactor', true);
-        $twoFactorPending = ['twofactoradd' => ['key' => 'AAAAAAAAAAAAAAAA', 'counter' => false, 'fails' => 0]];
+test('pending two factor user can load routes script', function () {
+    LibrenmsConfig::set('twofactor', true);
+    $twoFactorPending = ['twofactoradd' => ['key' => 'AAAAAAAAAAAAAAAA', 'counter' => false, 'fails' => 0]];
 
-        $this->actingAs(User::factory()->create(['enabled' => 1]))
-            ->withSession($twoFactorPending)
-            ->get(route('2fa.form'))
-            ->assertOk()
-            ->assertSee('<script src="' . route('js.routes') . '"></script>', false);
+    $this->actingAs(User::factory()->create(['enabled' => 1]))
+        ->withSession($twoFactorPending)
+        ->get(route('2fa.form'))
+        ->assertOk()
+        ->assertSee('<script src="' . route('js.routes') . '"></script>', false);
 
-        $this->get(route('js.routes'))
-            ->assertOk()
-            ->assertHeader('Content-Type', 'application/javascript; charset=utf-8');
+    $this->get(route('js.routes'))
+        ->assertOk()
+        ->assertHeader('Content-Type', 'application/javascript; charset=utf-8');
 
-        $this->get(route('about'))
-            ->assertRedirect('/2fa');
-    }
-}
+    $this->get(route('about'))
+        ->assertRedirect('/2fa');
+});

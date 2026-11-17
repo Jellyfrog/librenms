@@ -22,8 +22,7 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Feature\Modules;
-
+uses(\LibreNMS\Tests\InMemoryDbTestCase::class);
 use App\Facades\DeviceCache;
 use App\Models\Device;
 use App\Models\DevicePollingMethod;
@@ -35,50 +34,43 @@ use LibreNMS\Enum\PollingMethodType;
 use LibreNMS\Interfaces\Data\DataStorageInterface;
 use LibreNMS\Modules\Core;
 use LibreNMS\OS;
-use LibreNMS\Tests\InMemoryDbTestCase;
-use Mockery;
 
-final class CoreTest extends InMemoryDbTestCase
+test('ping only device stores the icmp response', function () {
+    $device = Device::factory()->create(['os' => 'ping']);
+    DevicePollingMethod::factory()->create([
+        'device_id' => $device->device_id,
+        'method_type' => PollingMethodType::Icmp,
+        'affects_availability' => false, // checked by the first module that needs it
+    ]);
+
+    $fping = Mockery::mock(Fping::class);
+    $fping->shouldReceive('ping')->once()->andReturn(new FpingResponse(3, 3, 0, 1.5, 3.5, 2.5, 1, FpingExitCode::Success));
+    $this->app->instance(Fping::class, $fping);
+
+    $datastore = Mockery::mock(DataStorageInterface::class);
+    $datastore->shouldReceive('put')->once()->withArgs(fn ($device, $measurement, $tags, $fields) => $measurement == 'icmp-perf' && $fields['avg'] == 2.5);
+    $this->app->instance('Datastore', $datastore);
+
+    $os = os($device);
+    $module = new Core;
+    expect($module->shouldPoll($os))->toBeTrue();
+    $module->poll($os, $datastore);
+
+    expect($device->stats()->value('ping_rtt_last'))->toEqual(2.5);
+    expect(Eventlog::where('device_id', $device->device_id)->where('message', 'like', 'Duplicate ICMP response%')->exists())->toBeTrue();
+});
+
+test('does not poll without snmp or icmp', function () {
+    $device = Device::factory()->create(['os' => 'ping']);
+    $os = os($device);
+
+    expect((new Core)->shouldPoll($os))->toBeFalse();
+});
+
+function os(Device $device): OS
 {
-    public function testPingOnlyDeviceStoresTheIcmpResponse(): void
-    {
-        $device = Device::factory()->create(['os' => 'ping']);
-        DevicePollingMethod::factory()->create([
-            'device_id' => $device->device_id,
-            'method_type' => PollingMethodType::Icmp,
-            'affects_availability' => false, // checked by the first module that needs it
-        ]);
+    DeviceCache::setPrimary($device->device_id);
+    $deviceArray = DeviceCache::refresh($device->device_id)->toArray();
 
-        $fping = Mockery::mock(Fping::class);
-        $fping->shouldReceive('ping')->once()->andReturn(new FpingResponse(3, 3, 0, 1.5, 3.5, 2.5, 1, FpingExitCode::Success));
-        $this->app->instance(Fping::class, $fping);
-
-        $datastore = Mockery::mock(DataStorageInterface::class);
-        $datastore->shouldReceive('put')->once()->withArgs(fn ($device, $measurement, $tags, $fields) => $measurement == 'icmp-perf' && $fields['avg'] == 2.5);
-        $this->app->instance('Datastore', $datastore);
-
-        $os = $this->os($device);
-        $module = new Core;
-        $this->assertTrue($module->shouldPoll($os));
-        $module->poll($os, $datastore);
-
-        $this->assertEquals(2.5, $device->stats()->value('ping_rtt_last'));
-        $this->assertTrue(Eventlog::where('device_id', $device->device_id)->where('message', 'like', 'Duplicate ICMP response%')->exists());
-    }
-
-    public function testDoesNotPollWithoutSnmpOrIcmp(): void
-    {
-        $device = Device::factory()->create(['os' => 'ping']);
-        $os = $this->os($device);
-
-        $this->assertFalse((new Core)->shouldPoll($os));
-    }
-
-    private function os(Device $device): OS
-    {
-        DeviceCache::setPrimary($device->device_id);
-        $deviceArray = DeviceCache::refresh($device->device_id)->toArray();
-
-        return OS::make($deviceArray);
-    }
+    return OS::make($deviceArray);
 }

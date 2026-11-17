@@ -1,49 +1,39 @@
 <?php
 
-namespace LibreNMS\Tests\Unit\Http\Search;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\Http\Controllers\Search\Data\HostLocation;
 use App\Http\Controllers\Search\Data\LocationState;
 use App\Models\Port;
-use LibreNMS\Tests\TestCase;
 
-class HostLocationTest extends TestCase
-{
-    public function testOnlyMacOnThePortIsDirect(): void
-    {
-        $location = new HostLocation('02aaaaaaaa01', 1, new Port, null, 1, null);
+test('only mac on the port is direct', function () {
+    $location = new HostLocation('02aaaaaaaa01', 1, new Port, null, 1, null);
 
-        $this->assertSame(LocationState::Direct, $location->state());
-        $this->assertSame('label-success', $location->state()->labelClass());
-    }
+    expect($location->state())->toBe(LocationState::Direct);
+    expect($location->state()->labelClass())->toBe('label-success');
+});
 
-    public function testSeveralMacsOnThePortIsShared(): void
-    {
-        $location = new HostLocation('02aaaaaaaa01', 1, new Port, null, 3, null);
+test('several macs on the port is shared', function () {
+    $location = new HostLocation('02aaaaaaaa01', 1, new Port, null, 3, null);
 
-        $this->assertSame(LocationState::Shared, $location->state());
-        $this->assertSame('label-default', $location->state()->labelClass());
-    }
+    expect($location->state())->toBe(LocationState::Shared);
+    expect($location->state()->labelClass())->toBe('label-default');
+});
 
-    public function testAggregateIsTrunkEvenWithOneMac(): void
-    {
-        $location = new HostLocation('02aaaaaaaa01', 1, new Port(['ifType' => 'ieee8023adLag']), null, 1, null);
+test('aggregate is trunk even with one mac', function () {
+    $location = new HostLocation('02aaaaaaaa01', 1, new Port(['ifType' => 'ieee8023adLag']), null, 1, null);
 
-        $this->assertSame(LocationState::Trunk, $location->state());
-        $this->assertSame('label-warning', $location->state()->labelClass());
-    }
+    expect($location->state())->toBe(LocationState::Trunk);
+    expect($location->state()->labelClass())->toBe('label-warning');
+});
 
-    public function testUplinkIsTrunk(): void
-    {
-        $port = (new Port)->setAttribute('links_count', 1);
-        $location = new HostLocation('02aaaaaaaa01', 1, $port, null, 1, null);
+test('uplink is trunk', function () {
+    $port = (new Port)->setAttribute('links_count', 1);
+    $location = new HostLocation('02aaaaaaaa01', 1, $port, null, 1, null);
 
-        $this->assertTrue($location->isUplink());
-        $this->assertSame(LocationState::Trunk, $location->state());
-    }
+    expect($location->isUplink())->toBeTrue();
+    expect($location->state())->toBe(LocationState::Trunk);
+});
 
-    public function testUnknownLocationIsAWarning(): void
-    {
-        $this->assertSame('label-warning', LocationState::Unknown->labelClass());
-    }
-}
+test('unknown location is awarning', function () {
+    expect(LocationState::Unknown->labelClass())->toBe('label-warning');
+});

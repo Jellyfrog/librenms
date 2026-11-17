@@ -24,271 +24,240 @@
  * @author     Lars Elgtvedt Susaas
  */
 
-namespace LibreNMS\Tests\Feature;
-
+uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use App\Models\Secret;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Enum\PollingMethodType;
 use LibreNMS\Enum\SecretType;
-use LibreNMS\Tests\DBTestCase;
 use PHPUnit\Framework\Attributes\TestDox;
 
-#[TestDox('Add Host CLI')]
-final class AddHostCliTest extends DBTestCase
-{
-    use DatabaseTransactions;
 
-    /** @var string */
-    private $hostName = 'testHost';
+uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-    #[TestDox('CLI SNMP v1')]
-    public function testCLIsnmpV1(): void
-    {
-        $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-c' => 'community', '--v1' => true])
-            ->assertExitCode(0)
-            ->execute();
-
-        $device = Device::findByHostname($this->hostName);
-        $this->assertNotNull($device);
-
-        $snmpMethod = $device->pollingMethod(PollingMethodType::Snmp);
-        $this->assertNotNull($snmpMethod);
-        $secret = $snmpMethod->secret;
-        $this->assertNotNull($secret);
-        $this->assertSame(['community' => 'community'], $secret->data);
-        $this->assertEquals('v1', $snmpMethod->settings['version']);
-
-        $icmpMethod = $device->pollingMethod(PollingMethodType::Icmp);
-        $this->assertNotNull($icmpMethod);
-        $this->assertTrue($icmpMethod->enabled);
-    }
-
-    #[TestDox('CLI SNMP v2')]
-    public function testCLIsnmpV2(): void
-    {
-        $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-c' => 'community', '--v2c' => true])
-            ->assertExitCode(0)
-            ->execute();
-
-        $device = Device::findByHostname($this->hostName);
-        $this->assertNotNull($device);
-
-        $snmpMethod = $device->pollingMethod(PollingMethodType::Snmp);
-        $this->assertNotNull($snmpMethod);
-        $secret = $snmpMethod->secret;
-        $this->assertNotNull($secret);
-        $this->assertSame(['community' => 'community'], $secret->data);
-        $this->assertSame('v2c', $snmpMethod->settings['version']); // a given version is not tried as v1
-    }
-
-    #[TestDox('CLI SNMP v3 user and password')]
-    public function testCLIsnmpV3UserAndPW(): void
-    {
-        $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-u' => 'SecName', '-A' => 'AuthPW', '-X' => 'PrivPW', '--v3' => true])
+test('clisnmp v1', function () {
+    $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-c' => 'community', '--v1' => true])
         ->assertExitCode(0)
         ->execute();
 
-        $device = Device::findByHostname($this->hostName);
-        $this->assertNotNull($device);
+    $device = Device::findByHostname($this->hostName);
+    expect($device)->not->toBeNull();
 
+    $snmpMethod = $device->pollingMethod(PollingMethodType::Snmp);
+    expect($snmpMethod)->not->toBeNull();
+    $secret = $snmpMethod->secret;
+    expect($secret)->not->toBeNull();
+    expect($secret->data)->toBe(['community' => 'community']);
+    expect($snmpMethod->settings['version'])->toEqual('v1');
+
+    $icmpMethod = $device->pollingMethod(PollingMethodType::Icmp);
+    expect($icmpMethod)->not->toBeNull();
+    expect($icmpMethod->enabled)->toBeTrue();
+});
+
+test('clisnmp v2', function () {
+    $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-c' => 'community', '--v2c' => true])
+        ->assertExitCode(0)
+        ->execute();
+
+    $device = Device::findByHostname($this->hostName);
+    expect($device)->not->toBeNull();
+
+    $snmpMethod = $device->pollingMethod(PollingMethodType::Snmp);
+    expect($snmpMethod)->not->toBeNull();
+    $secret = $snmpMethod->secret;
+    expect($secret)->not->toBeNull();
+    expect($secret->data)->toBe(['community' => 'community']);
+    expect($snmpMethod->settings['version'])->toBe('v2c');
+    // a given version is not tried as v1
+});
+
+test('clisnmp v3 user and pw', function () {
+    $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-u' => 'SecName', '-A' => 'AuthPW', '-X' => 'PrivPW', '--v3' => true])
+    ->assertExitCode(0)
+    ->execute();
+
+    $device = Device::findByHostname($this->hostName);
+    expect($device)->not->toBeNull();
+
+    $snmpMethod = $device->pollingMethod(PollingMethodType::Snmp);
+    expect($snmpMethod)->not->toBeNull();
+    $secret = $snmpMethod->secret;
+    expect($secret)->not->toBeNull();
+    expect($secret->secret_type)->toBe(SecretType::SnmpV3);
+    expect($secret->data['authname'])->toEqual('SecName');
+    expect($secret->data['authpass'])->toEqual('AuthPW');
+    expect($secret->data['cryptopass'])->toEqual('PrivPW');
+});
+
+test('port association mode', function () {
+    setDefaultCredentials('v1');
+
+    $modes = ['ifIndex', 'ifName', 'ifDescr', 'ifAlias'];
+    foreach ($modes as $mode) {
+        $host = 'hostName' . $mode;
+        $this->artisan('device:add', ['device spec' => $host, '--force' => true, '-p' => $mode, '--v1' => true])
+            ->assertExitCode(0)
+            ->execute();
+
+        $device = Device::findByHostname($host);
+        expect($device)->not->toBeNull();
         $snmpMethod = $device->pollingMethod(PollingMethodType::Snmp);
-        $this->assertNotNull($snmpMethod);
-        $secret = $snmpMethod->secret;
-        $this->assertNotNull($secret);
-        $this->assertSame(SecretType::SnmpV3, $secret->secret_type);
-        $this->assertEquals('SecName', $secret->data['authname']);
-        $this->assertEquals('AuthPW', $secret->data['authpass']);
-        $this->assertEquals('PrivPW', $secret->data['cryptopass']);
+        expect($snmpMethod)->not->toBeNull();
+
+        // explicitly set values are stored, even when they match the default
+        expect($snmpMethod->settings['port_association_mode'] ?? null)->toEqual($mode, 'Wrong port association mode ' . $mode);
     }
+});
 
-    public function testPortAssociationMode(): void
-    {
-        $this->setDefaultCredentials('v1');
+test('snmp transport', function () {
+    setDefaultCredentials('v1');
 
-        $modes = ['ifIndex', 'ifName', 'ifDescr', 'ifAlias'];
-        foreach ($modes as $mode) {
-            $host = 'hostName' . $mode;
-            $this->artisan('device:add', ['device spec' => $host, '--force' => true, '-p' => $mode, '--v1' => true])
-                ->assertExitCode(0)
-                ->execute();
-
-            $device = Device::findByHostname($host);
-            $this->assertNotNull($device);
-            $snmpMethod = $device->pollingMethod(PollingMethodType::Snmp);
-            $this->assertNotNull($snmpMethod);
-
-            // explicitly set values are stored, even when they match the default
-            $this->assertEquals($mode, $snmpMethod->settings['port_association_mode'] ?? null, 'Wrong port association mode ' . $mode);
-        }
-    }
-
-    #[TestDox('SNMP transport')]
-    public function testSnmpTransport(): void
-    {
-        $this->setDefaultCredentials('v1');
-
-        $modes = ['udp', 'udp6', 'tcp', 'tcp6'];
-        foreach ($modes as $mode) {
-            $host = 'hostName' . $mode;
-            $this->artisan('device:add', ['device spec' => $host, '--force' => true, '-t' => $mode, '--v1' => true])
-                ->assertExitCode(0)
-                ->execute();
-
-            $device = Device::findByHostname($host);
-            $snmpMethod = $device->pollingMethod(PollingMethodType::Snmp);
-
-            $this->assertEquals($mode, $snmpMethod->settings['transport'], 'Wrong snmp transport (udp/tcp) ipv4/ipv6');
-        }
-
-        // not given, so left to the default
-        $this->artisan('device:add', ['device spec' => 'hostNameDefault', '--force' => true, '--v1' => true])
-            ->assertExitCode(0)
-            ->execute();
-        $snmpMethod = Device::findByHostname('hostNameDefault')->pollingMethod(PollingMethodType::Snmp);
-        $this->assertArrayNotHasKey('transport', $snmpMethod->settings ?? []);
-    }
-
-    #[TestDox('SNMP v3 auth protocol')]
-    public function testSnmpV3AuthProtocol(): void
-    {
-        $modes = \LibreNMS\SNMPCapabilities::supportedAuthAlgorithms();
-        foreach ($modes as $mode) {
-            $host = 'hostName' . $mode;
-            $this->artisan('device:add', ['device spec' => $host, '--force' => true, '-u' => 'SecName', '-a' => $mode, '--v3' => true])
-                ->assertExitCode(0)
-                ->execute();
-
-            $device = Device::findByHostname($host);
-            $snmpMethod = $device->pollingMethod(PollingMethodType::Snmp);
-            $this->assertEquals(strtoupper((string) $mode), $snmpMethod->secret->data['authalgo'], 'Wrong snmp v3 password algorithm');
-        }
-    }
-
-    #[TestDox('SNMP v3 privacy protocol')]
-    public function testSnmpV3PrivacyProtocol(): void
-    {
-        $modes = \LibreNMS\SNMPCapabilities::supportedCryptoAlgorithms();
-        foreach ($modes as $mode) {
-            $host = 'hostName' . $mode;
-            $this->artisan('device:add', ['device spec' => $host, '--force' => true, '-u' => 'SecName', '-x' => $mode, '--v3' => true])
-                ->assertExitCode(0)
-                ->execute();
-
-            $device = Device::findByHostname($host);
-            $snmpMethod = $device->pollingMethod(PollingMethodType::Snmp);
-            $this->assertEquals(strtoupper((string) $mode), $snmpMethod->secret->data['cryptoalgo'], 'Wrong snmp v3 crypt algorithm');
-        }
-    }
-
-    #[TestDox('CLI ping')]
-    public function testCLIping(): void
-    {
-        $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-P' => true, '-o' => 'nameOfOS', '-w' => 'hardware', '-s' => 'System', '--v1' => true])
+    $modes = ['udp', 'udp6', 'tcp', 'tcp6'];
+    foreach ($modes as $mode) {
+        $host = 'hostName' . $mode;
+        $this->artisan('device:add', ['device spec' => $host, '--force' => true, '-t' => $mode, '--v1' => true])
             ->assertExitCode(0)
             ->execute();
 
-        $device = Device::findByHostname($this->hostName);
-        $this->assertNotNull($device);
+        $device = Device::findByHostname($host);
+        $snmpMethod = $device->pollingMethod(PollingMethodType::Snmp);
 
-        $this->assertEquals('hardware', $device->hardware, 'Wrong hardware name');
-        $this->assertEquals('nameOfOS', $device->os, 'Wrong os name');
-        $this->assertEquals('system', $device->sysName, 'Wrong system name');
-
-        $this->assertNull($device->pollingMethod(PollingMethodType::Snmp));
-        $this->assertNotNull($device->pollingMethod(PollingMethodType::Icmp));
+        expect($snmpMethod->settings['transport'])->toEqual($mode, 'Wrong snmp transport (udp/tcp) ipv4/ipv6');
     }
 
-    public function testExistingDevice(): void
-    {
-        // without credentials, a forced add uses the default credentials
-        $secret = Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => 'public']]);
-        LibrenmsConfig::set('snmp.default_credentials', [$secret->id]);
+    // not given, so left to the default
+    $this->artisan('device:add', ['device spec' => 'hostNameDefault', '--force' => true, '--v1' => true])
+        ->assertExitCode(0)
+        ->execute();
+    $snmpMethod = Device::findByHostname('hostNameDefault')->pollingMethod(PollingMethodType::Snmp);
+    $this->assertArrayNotHasKey('transport', $snmpMethod->settings ?? []);
+});
 
-        $this->artisan('device:add', ['device spec' => 'existing', '--force' => true])
-            ->assertExitCode(0)
-            ->execute();
-        $this->artisan('device:add', ['device spec' => 'existing'])
-            ->assertExitCode(3)
-            ->execute();
-    }
-
-    #[TestDox('Explicit v3 credentials that match the defaults are kept')]
-    public function testExplicitV3CredentialsMatchingTheDefaultsAreKept(): void
-    {
-        $this->setDefaultCredentials('v3');
-
-        $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '--v3' => true, '-u' => 'root'])
+test('snmp v3 auth protocol', function () {
+    $modes = \LibreNMS\SNMPCapabilities::supportedAuthAlgorithms();
+    foreach ($modes as $mode) {
+        $host = 'hostName' . $mode;
+        $this->artisan('device:add', ['device spec' => $host, '--force' => true, '-u' => 'SecName', '-a' => $mode, '--v3' => true])
             ->assertExitCode(0)
             ->execute();
 
-        $snmpMethod = Device::findByHostname($this->hostName)->pollingMethod(PollingMethodType::Snmp);
-        $data = $snmpMethod->secret->data;
-        $this->assertSame(SecretType::SnmpV3, $snmpMethod->secret->secret_type);
-        $this->assertSame('root', $data['authname']);
-        $this->assertSame('noAuthNoPriv', $data['authlevel']);
+        $device = Device::findByHostname($host);
+        $snmpMethod = $device->pollingMethod(PollingMethodType::Snmp);
+        expect($snmpMethod->secret->data['authalgo'])->toEqual(strtoupper((string) $mode), 'Wrong snmp v3 password algorithm');
     }
+});
 
-    #[TestDox('v3 credentials without a version are v3')]
-    public function testV3CredentialsWithoutVersion(): void
-    {
-        $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-u' => 'SecName', '-A' => 'AuthPW', '-a' => 'SHA'])
+test('snmp v3 privacy protocol', function () {
+    $modes = \LibreNMS\SNMPCapabilities::supportedCryptoAlgorithms();
+    foreach ($modes as $mode) {
+        $host = 'hostName' . $mode;
+        $this->artisan('device:add', ['device spec' => $host, '--force' => true, '-u' => 'SecName', '-x' => $mode, '--v3' => true])
             ->assertExitCode(0)
             ->execute();
 
-        $snmpMethod = Device::findByHostname($this->hostName)->pollingMethod(PollingMethodType::Snmp);
-        $data = $snmpMethod->secret->data;
-        $this->assertSame(SecretType::SnmpV3, $snmpMethod->secret->secret_type);
-        $this->assertSame('SecName', $data['authname']);
-        $this->assertSame('authNoPriv', $data['authlevel']);
-        $this->assertSame('SHA', $data['authalgo']);
-        $this->assertSame('AES', $data['cryptoalgo']); // default
+        $device = Device::findByHostname($host);
+        $snmpMethod = $device->pollingMethod(PollingMethodType::Snmp);
+        expect($snmpMethod->secret->data['cryptoalgo'])->toEqual(strtoupper((string) $mode), 'Wrong snmp v3 crypt algorithm');
     }
+});
 
-    #[TestDox('Only a version uses the default credentials for that version')]
-    public function testVersionOnlyUsesDefaultCredentialsForThatVersion(): void
-    {
-        $secrets = $this->setDefaultCredentials('v3', 'v2c');
+test('cliping', function () {
+    $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-P' => true, '-o' => 'nameOfOS', '-w' => 'hardware', '-s' => 'System', '--v1' => true])
+        ->assertExitCode(0)
+        ->execute();
 
-        $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '--v1' => true])
-            ->assertExitCode(0)
-            ->execute();
+    $device = Device::findByHostname($this->hostName);
+    expect($device)->not->toBeNull();
 
-        // a community is a v1 credential too
-        $snmpMethod = Device::findByHostname($this->hostName)->pollingMethod(PollingMethodType::Snmp);
-        $this->assertSame($secrets['v2c']->id, $snmpMethod->secret_id);
-        $this->assertSame('v1', $snmpMethod->settings['version']);
+    expect($device->hardware)->toEqual('hardware', 'Wrong hardware name');
+    expect($device->os)->toEqual('nameOfOS', 'Wrong os name');
+    expect($device->sysName)->toEqual('system', 'Wrong system name');
+
+    expect($device->pollingMethod(PollingMethodType::Snmp))->toBeNull();
+    expect($device->pollingMethod(PollingMethodType::Icmp))->not->toBeNull();
+});
+
+test('existing device', function () {
+    // without credentials, a forced add uses the default credentials
+    $secret = Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => 'public']]);
+    LibrenmsConfig::set('snmp.default_credentials', [$secret->id]);
+
+    $this->artisan('device:add', ['device spec' => 'existing', '--force' => true])
+        ->assertExitCode(0)
+        ->execute();
+    $this->artisan('device:add', ['device spec' => 'existing'])
+        ->assertExitCode(3)
+        ->execute();
+});
+
+test('explicit v3 credentials matching the defaults are kept', function () {
+    setDefaultCredentials('v3');
+
+    $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '--v3' => true, '-u' => 'root'])
+        ->assertExitCode(0)
+        ->execute();
+
+    $snmpMethod = Device::findByHostname($this->hostName)->pollingMethod(PollingMethodType::Snmp);
+    $data = $snmpMethod->secret->data;
+    expect($snmpMethod->secret->secret_type)->toBe(SecretType::SnmpV3);
+    expect($data['authname'])->toBe('root');
+    expect($data['authlevel'])->toBe('noAuthNoPriv');
+});
+
+test('v3 credentials without version', function () {
+    $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '-u' => 'SecName', '-A' => 'AuthPW', '-a' => 'SHA'])
+        ->assertExitCode(0)
+        ->execute();
+
+    $snmpMethod = Device::findByHostname($this->hostName)->pollingMethod(PollingMethodType::Snmp);
+    $data = $snmpMethod->secret->data;
+    expect($snmpMethod->secret->secret_type)->toBe(SecretType::SnmpV3);
+    expect($data['authname'])->toBe('SecName');
+    expect($data['authlevel'])->toBe('authNoPriv');
+    expect($data['authalgo'])->toBe('SHA');
+    expect($data['cryptoalgo'])->toBe('AES');
+    // default
+});
+
+test('version only uses default credentials for that version', function () {
+    $secrets = setDefaultCredentials('v3', 'v2c');
+
+    $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '--v1' => true])
+        ->assertExitCode(0)
+        ->execute();
+
+    // a community is a v1 credential too
+    $snmpMethod = Device::findByHostname($this->hostName)->pollingMethod(PollingMethodType::Snmp);
+    expect($snmpMethod->secret_id)->toBe($secrets['v2c']->id);
+    expect($snmpMethod->settings['version'])->toBe('v1');
+});
+
+test('version only without default credentials', function () {
+    setDefaultCredentials('v2c');
+
+    $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '--v3' => true])
+        ->expectsOutput(trans('exceptions.missing_secret', ['method' => PollingMethodType::Snmp->label()]))
+        ->assertExitCode(1)
+        ->execute();
+
+    expect(Device::findByHostname($this->hostName))->toBeNull();
+});
+
+/**
+ * Replace the default credentials with one for each SNMP version, in order. v1 and v2c are both communities.
+ *
+ * @return array<string, Secret>
+ */
+function setDefaultCredentials(string ...$versions): array
+{
+    $secrets = [];
+    foreach ($versions as $version) {
+        $secrets[$version] = $version === 'v3'
+            ? Secret::factory()->create(['secret_type' => SecretType::SnmpV3, 'data' => ['authlevel' => 'noAuthNoPriv', 'authname' => 'public-v3']])
+            : Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => "public-$version"]]);
     }
+    LibrenmsConfig::set('snmp.default_credentials', array_values(array_map(fn (Secret $secret) => $secret->id, $secrets)));
 
-    #[TestDox('Only a version without default credentials for that version')]
-    public function testVersionOnlyWithoutDefaultCredentials(): void
-    {
-        $this->setDefaultCredentials('v2c');
-
-        $this->artisan('device:add', ['device spec' => $this->hostName, '--force' => true, '--v3' => true])
-            ->expectsOutput(trans('exceptions.missing_secret', ['method' => PollingMethodType::Snmp->label()]))
-            ->assertExitCode(1)
-            ->execute();
-
-        $this->assertNull(Device::findByHostname($this->hostName));
-    }
-
-    /**
-     * Replace the default credentials with one for each SNMP version, in order. v1 and v2c are both communities.
-     *
-     * @return array<string, Secret>
-     */
-    private function setDefaultCredentials(string ...$versions): array
-    {
-        $secrets = [];
-        foreach ($versions as $version) {
-            $secrets[$version] = $version === 'v3'
-                ? Secret::factory()->create(['secret_type' => SecretType::SnmpV3, 'data' => ['authlevel' => 'noAuthNoPriv', 'authname' => 'public-v3']])
-                : Secret::factory()->create(['secret_type' => SecretType::SnmpCommunity, 'data' => ['community' => "public-$version"]]);
-        }
-        LibrenmsConfig::set('snmp.default_credentials', array_values(array_map(fn (Secret $secret) => $secret->id, $secrets)));
-
-        return $secrets;
-    }
+    return $secrets;
 }

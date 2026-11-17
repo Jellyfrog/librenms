@@ -25,286 +25,231 @@
  * @copyright  2026 LibreNMS
  */
 
-namespace LibreNMS\Tests\Feature\Http;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\ConfigBackup\ConfigBackupManager;
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
-use LibreNMS\Tests\TestCase;
 use Spatie\Permission\Models\Role;
 
-class ConfigBackupDesignContractTest extends TestCase
+
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+
+beforeEach(function () {
+    $this->originalProviders = ConfigBackupManager::$providers;
+    ConfigBackupManager::$providers = [
+        \App\ConfigBackup\Providers\UnimusProvider::class,
+        \App\ConfigBackup\Providers\OxidizedProvider::class,
+    ];
+
+    Role::findOrCreate('admin');
+    Role::findOrCreate('user');
+
+    LibrenmsConfig::set('unimus.enabled', true);
+    LibrenmsConfig::set('unimus.url', 'http://unimus:8085');
+    LibrenmsConfig::set('unimus.api_version', 'v2');
+    LibrenmsConfig::set('unimus.token', 'test-token');
+});
+
+afterEach(function () {
+    ConfigBackupManager::$providers = $this->originalProviders;
+});
+
+function admin(): User
 {
-    use RefreshDatabase;
+    $admin = User::factory()->create(['enabled' => 1]);
+    $admin->assignRole('admin');
 
-    /**
-     * @var list<class-string<\LibreNMS\Interfaces\ConfigBackupProvider>>
-     */
-    private array $originalProviders;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->originalProviders = ConfigBackupManager::$providers;
-        ConfigBackupManager::$providers = [
-            \App\ConfigBackup\Providers\UnimusProvider::class,
-            \App\ConfigBackup\Providers\OxidizedProvider::class,
-        ];
-
-        Role::findOrCreate('admin');
-        Role::findOrCreate('user');
-
-        LibrenmsConfig::set('unimus.enabled', true);
-        LibrenmsConfig::set('unimus.url', 'http://unimus:8085');
-        LibrenmsConfig::set('unimus.api_version', 'v2');
-        LibrenmsConfig::set('unimus.token', 'test-token');
-    }
-
-    protected function tearDown(): void
-    {
-        ConfigBackupManager::$providers = $this->originalProviders;
-        parent::tearDown();
-    }
-
-    private function admin(): User
-    {
-        $admin = User::factory()->create(['enabled' => 1]);
-        $admin->assignRole('admin');
-
-        return $admin;
-    }
-
-    /**
-     * Invariant 1 (Chronological Ordering):
-     * Backups must be listed in reverse chronological order (newest first).
-     */
-    public function testInvariant1ChronologicalOrdering(): void
-    {
-        $device = Device::factory()->create();
-
-        Http::fake([
-            'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
-            'unimus:8085/api/v2/devices/7/backups*' => Http::response([
-                'data' => [
-                    ['id' => 20, 'validSince' => 500, 'validUntil' => null, 'type' => 'TEXT'],
-                    ['id' => 19, 'validSince' => 400, 'validUntil' => 500, 'type' => 'TEXT'],
-                    ['id' => 18, 'validSince' => 300, 'validUntil' => 400, 'type' => 'TEXT'],
-                ],
-                'paginator' => ['totalCount' => 3, 'totalPages' => 1, 'page' => 0, 'size' => 50],
-            ], 200),
-        ]);
-
-        $response = $this->actingAs($this->admin())
-            ->getJson(route('device.config.backups', ['device' => $device->device_id, 'page' => 0]))
-            ->assertOk();
-
-        $backups = $response->json('backups');
-        $this->assertCount(3, $backups);
-        $this->assertSame('20', $backups[0]['id']);
-        $this->assertSame('19', $backups[1]['id']);
-        $this->assertSame('18', $backups[2]['id']);
-        $this->assertGreaterThan($backups[1]['date'], $backups[0]['date']);
-        $this->assertGreaterThan($backups[2]['date'], $backups[1]['date']);
-    }
-
-    /**
-     * Invariant 5 (No Self-Diff):
-     * A revision cannot be diffed against itself. The API must reject orig == rev.
-     */
-    public function testInvariant5DiffRejectsIdenticalRevisions(): void
-    {
-        $device = Device::factory()->create();
-
-        $this->actingAs($this->admin())
-            ->getJson(route('device.config.diff', ['device' => $device->device_id, 'orig' => 10, 'rev' => 10]))
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors(['rev']);
-    }
-
-    /**
-     * Invariant 9 (Lazy Payload Loading):
-     * The backup listing must omit full text content to preserve performance.
-     */
-    public function testInvariant9BackupListOmitsFullContent(): void
-    {
-        $device = Device::factory()->create();
-
-        Http::fake([
-            'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
-            'unimus:8085/api/v2/devices/7/backups*' => Http::response([
-                'data' => [
-                    ['id' => 1, 'validSince' => 100, 'validUntil' => null, 'type' => 'TEXT', 'bytes' => base64_encode('large config')],
-                ],
-                'paginator' => ['totalCount' => 1, 'totalPages' => 1, 'page' => 0, 'size' => 50],
-            ], 200),
-        ]);
-
-        $this->actingAs($this->admin())
-            ->getJson(route('device.config.backups', ['device' => $device->device_id, 'page' => 0]))
-            ->assertOk()
-            ->assertJsonPath('backups.0.content', null);
-    }
-
-    /**
-     * Invariant 14 (Vendor-Neutral Diff Normalization):
-     * Diff outputs must be normalized to standard change group structures with line numbers.
-     */
-    public function testInvariant14DiffNormalizesToStandardGroups(): void
-    {
-        $device = Device::factory()->create();
-
-        Http::fake([
-            'unimus:8085/api/v2/backups/diff*' => Http::response([
-                'data' => [
-                    'origDeviceInfo' => ['id' => 0, 'address' => '10.0.0.1', 'type' => 'IOS'],
-                    'revDeviceInfo' => ['id' => 0, 'address' => '10.0.0.1', 'type' => 'IOS'],
-                    'lineGroups' => [
-                        [
-                            'type' => 'COMMON',
-                            'originalLines' => [['number' => 1, 'text' => 'hostname router']],
-                            'revisedLines' => [['number' => 1, 'text' => 'hostname router']],
-                        ],
-                        [
-                            'type' => 'INSERTED',
-                            'originalLines' => [],
-                            'revisedLines' => [['number' => 2, 'text' => 'interface GigabitEthernet0/1']],
-                        ],
-                        [
-                            'type' => 'DELETED',
-                            'originalLines' => [['number' => 2, 'text' => 'interface FastEthernet0/1']],
-                            'revisedLines' => [],
-                        ],
-                    ],
-                ],
-            ], 200),
-        ]);
-
-        $response = $this->actingAs($this->admin())
-            ->getJson(route('device.config.diff', ['device' => $device->device_id, 'orig' => 1, 'rev' => 2]))
-            ->assertOk();
-
-        $groups = $response->json('groups');
-        $this->assertCount(3, $groups);
-        $this->assertSame('COMMON', $groups[0]['type']);
-        $this->assertSame('INSERTED', $groups[1]['type']);
-        $this->assertSame('DELETED', $groups[2]['type']);
-        $this->assertSame(1, $groups[0]['original'][0]['line']);
-        $this->assertSame('hostname router', $groups[0]['original'][0]['text']);
-        $this->assertSame(2, $groups[1]['revised'][0]['line']);
-        $this->assertSame('interface GigabitEthernet0/1', $groups[1]['revised'][0]['text']);
-    }
-
-    /**
-     * Invariant 13 (Identical Configurations Diff State):
-     * When diffing revisions with no differences, the API returns COMMON-only groups.
-     */
-    public function testInvariant13IdenticalDiffContract(): void
-    {
-        $device = Device::factory()->create();
-
-        Http::fake([
-            'unimus:8085/api/v2/backups/diff*' => Http::response([
-                'data' => [
-                    'origDeviceInfo' => ['id' => 0, 'address' => '10.0.0.1', 'type' => 'IOS'],
-                    'revDeviceInfo' => ['id' => 0, 'address' => '10.0.0.1', 'type' => 'IOS'],
-                    'lineGroups' => [
-                        [
-                            'type' => 'COMMON',
-                            'originalLines' => [['number' => 1, 'text' => 'hostname switch']],
-                            'revisedLines' => [['number' => 1, 'text' => 'hostname switch']],
-                        ],
-                    ],
-                ],
-            ], 200),
-        ]);
-
-        $response = $this->actingAs($this->admin())
-            ->getJson(route('device.config.diff', ['device' => $device->device_id, 'orig' => 1, 'rev' => 2]))
-            ->assertOk();
-
-        $groups = $response->json('groups');
-        $this->assertCount(1, $groups);
-        $this->assertSame('COMMON', $groups[0]['type']);
-        $this->assertEmpty(array_filter($groups, fn ($g) => in_array($g['type'], ['INSERTED', 'DELETED', 'CHANGED'])));
-    }
-
-    /**
-     * Invariant 4 (Binary Configurations Flagged):
-     * Backups marked as BINARY are accurately identified in the payload.
-     */
-    public function testInvariant4BinaryBackupsFlagged(): void
-    {
-        $device = Device::factory()->create();
-
-        Http::fake([
-            'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
-            'unimus:8085/api/v2/devices/7/backups*' => Http::response([
-                'data' => [
-                    ['id' => 5, 'validSince' => 100, 'validUntil' => null, 'type' => 'BINARY'],
-                ],
-                'paginator' => ['totalCount' => 1, 'totalPages' => 1, 'page' => 0, 'size' => 50],
-            ], 200),
-        ]);
-
-        $this->actingAs($this->admin())
-            ->getJson(route('device.config.backups', ['device' => $device->device_id, 'page' => 0]))
-            ->assertOk()
-            ->assertJsonPath('backups.0.type', 'BINARY');
-    }
-
-    /**
-     * Invariant 10 (History Boundaries & Pagination Contract):
-     * Out-of-bounds page requests or negative pages are rejected via validation.
-     */
-    public function testInvariant10HistoryBoundaries(): void
-    {
-        $device = Device::factory()->create();
-
-        $this->actingAs($this->admin())
-            ->getJson(route('device.config.backups', ['device' => $device->device_id, 'page' => -1]))
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors(['page']);
-    }
-
-    /**
-     * UI Design Contract (Section 4 & 8: Keyboard Shortcuts & Help Modal):
-     * The Blade view contract must render all documented interaction bindings and help sections.
-     */
-    public function testViewEnshrinesKeyboardShortcutsAndInteractionContract(): void
-    {
-        $device = Device::factory()->create();
-
-        Http::fake([
-            'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
-        ]);
-
-        $view = $this->actingAs($this->admin())
-            ->get(route('device', ['device' => $device, 'tab' => 'config']))
-            ->assertOk();
-
-        // Alpine & Viewer Components
-        $view->assertSee('data-config-backups', false);
-        $view->assertSee('x-config-highlight="selected.content"', false);
-        $view->assertSee('class="config-highlight ', false);
-        $view->assertSee('x-ignore', false);
-
-        // Diff Table Header Contract (Concept B)
-        $view->assertSee('diffRangeSummaryText', false);
-
-        // Keyboard Shortcut Localization Strings & Modifiers
-        $view->assertSee('x-text="modifierKey"', false);
-        $view->assertSee(__('config_backups.navigate_history'));
-        $view->assertSee(__('config_backups.compare_revisions'));
-        $view->assertSee(__('config_backups.shortcut_older'));
-        $view->assertSee(__('config_backups.shortcut_newer'));
-        $view->assertSee(__('config_backups.shortcut_toggle_diff'));
-        $view->assertSee(__('config_backups.shortcut_shift_click'));
-        $view->assertSee(__('config_backups.shortcut_reverse_diff'));
-        $view->assertSee(__('config_backups.shortcut_expand_older'));
-        $view->assertSee(__('config_backups.shortcut_expand_newer'));
-    }
+    return $admin;
 }
+
+test('invariant1 chronological ordering', function () {
+    $device = Device::factory()->create();
+
+    Http::fake([
+        'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
+        'unimus:8085/api/v2/devices/7/backups*' => Http::response([
+            'data' => [
+                ['id' => 20, 'validSince' => 500, 'validUntil' => null, 'type' => 'TEXT'],
+                ['id' => 19, 'validSince' => 400, 'validUntil' => 500, 'type' => 'TEXT'],
+                ['id' => 18, 'validSince' => 300, 'validUntil' => 400, 'type' => 'TEXT'],
+            ],
+            'paginator' => ['totalCount' => 3, 'totalPages' => 1, 'page' => 0, 'size' => 50],
+        ], 200),
+    ]);
+
+    $response = $this->actingAs(admin())
+        ->getJson(route('device.config.backups', ['device' => $device->device_id, 'page' => 0]))
+        ->assertOk();
+
+    $backups = $response->json('backups');
+    expect($backups)->toHaveCount(3);
+    expect($backups[0]['id'])->toBe('20');
+    expect($backups[1]['id'])->toBe('19');
+    expect($backups[2]['id'])->toBe('18');
+    expect($backups[0]['date'])->toBeGreaterThan($backups[1]['date']);
+    expect($backups[1]['date'])->toBeGreaterThan($backups[2]['date']);
+});
+
+test('invariant5 diff rejects identical revisions', function () {
+    $device = Device::factory()->create();
+
+    $this->actingAs(admin())
+        ->getJson(route('device.config.diff', ['device' => $device->device_id, 'orig' => 10, 'rev' => 10]))
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['rev']);
+});
+
+test('invariant9 backup list omits full content', function () {
+    $device = Device::factory()->create();
+
+    Http::fake([
+        'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
+        'unimus:8085/api/v2/devices/7/backups*' => Http::response([
+            'data' => [
+                ['id' => 1, 'validSince' => 100, 'validUntil' => null, 'type' => 'TEXT', 'bytes' => base64_encode('large config')],
+            ],
+            'paginator' => ['totalCount' => 1, 'totalPages' => 1, 'page' => 0, 'size' => 50],
+        ], 200),
+    ]);
+
+    $this->actingAs(admin())
+        ->getJson(route('device.config.backups', ['device' => $device->device_id, 'page' => 0]))
+        ->assertOk()
+        ->assertJsonPath('backups.0.content', null);
+});
+
+test('invariant14 diff normalizes to standard groups', function () {
+    $device = Device::factory()->create();
+
+    Http::fake([
+        'unimus:8085/api/v2/backups/diff*' => Http::response([
+            'data' => [
+                'origDeviceInfo' => ['id' => 0, 'address' => '10.0.0.1', 'type' => 'IOS'],
+                'revDeviceInfo' => ['id' => 0, 'address' => '10.0.0.1', 'type' => 'IOS'],
+                'lineGroups' => [
+                    [
+                        'type' => 'COMMON',
+                        'originalLines' => [['number' => 1, 'text' => 'hostname router']],
+                        'revisedLines' => [['number' => 1, 'text' => 'hostname router']],
+                    ],
+                    [
+                        'type' => 'INSERTED',
+                        'originalLines' => [],
+                        'revisedLines' => [['number' => 2, 'text' => 'interface GigabitEthernet0/1']],
+                    ],
+                    [
+                        'type' => 'DELETED',
+                        'originalLines' => [['number' => 2, 'text' => 'interface FastEthernet0/1']],
+                        'revisedLines' => [],
+                    ],
+                ],
+            ],
+        ], 200),
+    ]);
+
+    $response = $this->actingAs(admin())
+        ->getJson(route('device.config.diff', ['device' => $device->device_id, 'orig' => 1, 'rev' => 2]))
+        ->assertOk();
+
+    $groups = $response->json('groups');
+    expect($groups)->toHaveCount(3);
+    expect($groups[0]['type'])->toBe('COMMON');
+    expect($groups[1]['type'])->toBe('INSERTED');
+    expect($groups[2]['type'])->toBe('DELETED');
+    expect($groups[0]['original'][0]['line'])->toBe(1);
+    expect($groups[0]['original'][0]['text'])->toBe('hostname router');
+    expect($groups[1]['revised'][0]['line'])->toBe(2);
+    expect($groups[1]['revised'][0]['text'])->toBe('interface GigabitEthernet0/1');
+});
+
+test('invariant13 identical diff contract', function () {
+    $device = Device::factory()->create();
+
+    Http::fake([
+        'unimus:8085/api/v2/backups/diff*' => Http::response([
+            'data' => [
+                'origDeviceInfo' => ['id' => 0, 'address' => '10.0.0.1', 'type' => 'IOS'],
+                'revDeviceInfo' => ['id' => 0, 'address' => '10.0.0.1', 'type' => 'IOS'],
+                'lineGroups' => [
+                    [
+                        'type' => 'COMMON',
+                        'originalLines' => [['number' => 1, 'text' => 'hostname switch']],
+                        'revisedLines' => [['number' => 1, 'text' => 'hostname switch']],
+                    ],
+                ],
+            ],
+        ], 200),
+    ]);
+
+    $response = $this->actingAs(admin())
+        ->getJson(route('device.config.diff', ['device' => $device->device_id, 'orig' => 1, 'rev' => 2]))
+        ->assertOk();
+
+    $groups = $response->json('groups');
+    expect($groups)->toHaveCount(1);
+    expect($groups[0]['type'])->toBe('COMMON');
+    expect(array_filter($groups, fn ($g) => in_array($g['type'], ['INSERTED', 'DELETED', 'CHANGED'])))->toBeEmpty();
+});
+
+test('invariant4 binary backups flagged', function () {
+    $device = Device::factory()->create();
+
+    Http::fake([
+        'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
+        'unimus:8085/api/v2/devices/7/backups*' => Http::response([
+            'data' => [
+                ['id' => 5, 'validSince' => 100, 'validUntil' => null, 'type' => 'BINARY'],
+            ],
+            'paginator' => ['totalCount' => 1, 'totalPages' => 1, 'page' => 0, 'size' => 50],
+        ], 200),
+    ]);
+
+    $this->actingAs(admin())
+        ->getJson(route('device.config.backups', ['device' => $device->device_id, 'page' => 0]))
+        ->assertOk()
+        ->assertJsonPath('backups.0.type', 'BINARY');
+});
+
+test('invariant10 history boundaries', function () {
+    $device = Device::factory()->create();
+
+    $this->actingAs(admin())
+        ->getJson(route('device.config.backups', ['device' => $device->device_id, 'page' => -1]))
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['page']);
+});
+
+test('view enshrines keyboard shortcuts and interaction contract', function () {
+    $device = Device::factory()->create();
+
+    Http::fake([
+        'unimus:8085/api/v2/devices/findByAddress/*' => Http::response(['data' => ['id' => 7]], 200),
+    ]);
+
+    $view = $this->actingAs(admin())
+        ->get(route('device', ['device' => $device, 'tab' => 'config']))
+        ->assertOk();
+
+    // Alpine & Viewer Components
+    $view->assertSee('data-config-backups', false);
+    $view->assertSee('x-config-highlight="selected.content"', false);
+    $view->assertSee('class="config-highlight ', false);
+    $view->assertSee('x-ignore', false);
+
+    // Diff Table Header Contract (Concept B)
+    $view->assertSee('diffRangeSummaryText', false);
+
+    // Keyboard Shortcut Localization Strings & Modifiers
+    $view->assertSee('x-text="modifierKey"', false);
+    $view->assertSee(__('config_backups.navigate_history'));
+    $view->assertSee(__('config_backups.compare_revisions'));
+    $view->assertSee(__('config_backups.shortcut_older'));
+    $view->assertSee(__('config_backups.shortcut_newer'));
+    $view->assertSee(__('config_backups.shortcut_toggle_diff'));
+    $view->assertSee(__('config_backups.shortcut_shift_click'));
+    $view->assertSee(__('config_backups.shortcut_reverse_diff'));
+    $view->assertSee(__('config_backups.shortcut_expand_older'));
+    $view->assertSee(__('config_backups.shortcut_expand_newer'));
+});

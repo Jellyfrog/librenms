@@ -1,7 +1,6 @@
 <?php
 
-namespace LibreNMS\Tests\Unit\Polling;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\Device;
 use App\Models\DevicePollingMethod;
 use App\Models\Secret;
@@ -13,86 +12,72 @@ use LibreNMS\Polling\Method\Methods\ProxmoxApiPollingMethod;
 use LibreNMS\Polling\Method\Methods\SnmpPollingMethod;
 use LibreNMS\Polling\Method\Methods\UnixAgentPollingMethod;
 use LibreNMS\Polling\Method\PollingMethodRegistry;
-use LibreNMS\Tests\TestCase;
-use UnexpectedValueException;
 
-final class PollingMethodRegistryTest extends TestCase
-{
-    public function testEveryTypeHasAMethod(): void
-    {
-        $registry = new PollingMethodRegistry;
+test('every type has amethod', function () {
+    $registry = new PollingMethodRegistry;
 
-        $this->assertInstanceOf(IcmpPollingMethod::class, $registry->get(PollingMethodType::Icmp));
-        $this->assertInstanceOf(IpmiPollingMethod::class, $registry->get(PollingMethodType::Ipmi));
-        $this->assertInstanceOf(ProxmoxApiPollingMethod::class, $registry->get(PollingMethodType::ProxmoxApi));
-        $this->assertInstanceOf(SnmpPollingMethod::class, $registry->get(PollingMethodType::Snmp));
-        $this->assertInstanceOf(UnixAgentPollingMethod::class, $registry->get(PollingMethodType::UnixAgent));
-    }
+    expect($registry->get(PollingMethodType::Icmp))->toBeInstanceOf(IcmpPollingMethod::class);
+    expect($registry->get(PollingMethodType::Ipmi))->toBeInstanceOf(IpmiPollingMethod::class);
+    expect($registry->get(PollingMethodType::ProxmoxApi))->toBeInstanceOf(ProxmoxApiPollingMethod::class);
+    expect($registry->get(PollingMethodType::Snmp))->toBeInstanceOf(SnmpPollingMethod::class);
+    expect($registry->get(PollingMethodType::UnixAgent))->toBeInstanceOf(UnixAgentPollingMethod::class);
+});
 
-    /**
-     * Configs fall back to the default settings, so every field needs a default and a label.
-     */
-    public function testEverySettingHasADefaultAndLabel(): void
-    {
-        foreach (PollingMethodType::cases() as $type) {
-            $method = (new PollingMethodRegistry)->get($type);
-            $fields = array_keys($method->definition()->fields());
+test('every setting has adefault and label', function () {
+    foreach (PollingMethodType::cases() as $type) {
+        $method = (new PollingMethodRegistry)->get($type);
+        $fields = array_keys($method->definition()->fields());
 
-            $this->assertEqualsCanonicalizing($fields, array_keys($method->defaults()), "{$type->value} default settings do not match its fields");
+        expect(array_keys($method->defaults()))->toEqualCanonicalizing($fields, "{$type->value} default settings do not match its fields");
 
-            foreach ($fields as $key) {
-                $this->assertTrue(trans()->has("poller.method_settings.{$type->value}.$key"), "{$type->value} setting $key has no label");
-            }
+        foreach ($fields as $key) {
+            expect(trans()->has("poller.method_settings.{$type->value}.$key"))->toBeTrue("{$type->value} setting $key has no label");
         }
     }
+});
 
-    public function testMethodSecretTypes(): void
-    {
-        $registry = new PollingMethodRegistry;
+test('method secret types', function () {
+    $registry = new PollingMethodRegistry;
 
-        $this->assertSame([], $registry->get(PollingMethodType::Icmp)->secretTypes());
-        $this->assertSame([SecretType::Ipmi], $registry->get(PollingMethodType::Ipmi)->secretTypes());
-        $this->assertSame([SecretType::ProxmoxApi], $registry->get(PollingMethodType::ProxmoxApi)->secretTypes());
-        $this->assertSame([], $registry->get(PollingMethodType::UnixAgent)->secretTypes());
+    expect($registry->get(PollingMethodType::Icmp)->secretTypes())->toBe([]);
+    expect($registry->get(PollingMethodType::Ipmi)->secretTypes())->toBe([SecretType::Ipmi]);
+    expect($registry->get(PollingMethodType::ProxmoxApi)->secretTypes())->toBe([SecretType::ProxmoxApi]);
+    expect($registry->get(PollingMethodType::UnixAgent)->secretTypes())->toBe([]);
 
-        $snmp = $registry->get(PollingMethodType::Snmp);
-        $this->assertSame([SecretType::SnmpCommunity, SecretType::SnmpV3], $snmp->secretTypes());
-    }
+    $snmp = $registry->get(PollingMethodType::Snmp);
+    expect($snmp->secretTypes())->toBe([SecretType::SnmpCommunity, SecretType::SnmpV3]);
+});
 
-    public function testSecretTypeFrom(): void
-    {
-        $registry = new PollingMethodRegistry;
-        $snmp = $registry->get(PollingMethodType::Snmp);
-        $ipmi = $registry->get(PollingMethodType::Ipmi);
+test('secret type from', function () {
+    $registry = new PollingMethodRegistry;
+    $snmp = $registry->get(PollingMethodType::Snmp);
+    $ipmi = $registry->get(PollingMethodType::Ipmi);
 
-        $this->assertSame(SecretType::SnmpV3, $snmp->secretTypeFrom('snmp-v3'));
-        $this->assertSame(SecretType::SnmpCommunity, $snmp->secretTypeFrom(SecretType::SnmpCommunity));
-        $this->assertNull($snmp->secretTypeFrom(null), 'a type must be chosen from several');
-        $this->assertNull($snmp->secretTypeFrom('ipmi'), 'snmp does not use ipmi secrets');
-        $this->assertNull($snmp->secretTypeFrom('snmp'), 'the old type is gone');
+    expect($snmp->secretTypeFrom('snmp-v3'))->toBe(SecretType::SnmpV3);
+    expect($snmp->secretTypeFrom(SecretType::SnmpCommunity))->toBe(SecretType::SnmpCommunity);
+    expect($snmp->secretTypeFrom(null))->toBeNull('a type must be chosen from several');
+    expect($snmp->secretTypeFrom('ipmi'))->toBeNull('snmp does not use ipmi secrets');
+    expect($snmp->secretTypeFrom('snmp'))->toBeNull('the old type is gone');
 
-        $this->assertSame(SecretType::Ipmi, $ipmi->secretTypeFrom(null), 'the only type is chosen');
-        $this->assertNull($ipmi->secretTypeFrom('snmp-v3'));
-        $this->assertNull($registry->get(PollingMethodType::Icmp)->secretTypeFrom(null));
-    }
+    expect($ipmi->secretTypeFrom(null))->toBe(SecretType::Ipmi, 'the only type is chosen');
+    expect($ipmi->secretTypeFrom('snmp-v3'))->toBeNull();
+    expect($registry->get(PollingMethodType::Icmp)->secretTypeFrom(null))->toBeNull();
+});
 
-    public function testConfigRejectsASecretOfAnotherType(): void
-    {
-        $deviceMethod = new DevicePollingMethod(['method_type' => PollingMethodType::Snmp]);
-        $deviceMethod->setRelation('secret', new Secret(['secret_type' => SecretType::Ipmi, 'data' => ['username' => 'admin']]));
+test('config rejects asecret of another type', function () {
+    $deviceMethod = new DevicePollingMethod(['method_type' => PollingMethodType::Snmp]);
+    $deviceMethod->setRelation('secret', new Secret(['secret_type' => SecretType::Ipmi, 'data' => ['username' => 'admin']]));
 
-        $this->expectException(UnexpectedValueException::class);
-        (new SnmpPollingMethod)->config(new Device, $deviceMethod);
-    }
+    $this->expectException(UnexpectedValueException::class);
+    (new SnmpPollingMethod)->config(new Device, $deviceMethod);
+});
 
-    public function testOnlySnmpAndIcmpAffectAvailabilityByDefault(): void
-    {
-        $registry = new PollingMethodRegistry;
+test('only snmp and icmp affect availability by default', function () {
+    $registry = new PollingMethodRegistry;
 
-        $this->assertTrue($registry->get(PollingMethodType::Icmp)->defaultAffectsAvailability());
-        $this->assertFalse($registry->get(PollingMethodType::Ipmi)->defaultAffectsAvailability());
-        $this->assertFalse($registry->get(PollingMethodType::ProxmoxApi)->defaultAffectsAvailability());
-        $this->assertTrue($registry->get(PollingMethodType::Snmp)->defaultAffectsAvailability());
-        $this->assertFalse($registry->get(PollingMethodType::UnixAgent)->defaultAffectsAvailability());
-    }
-}
+    expect($registry->get(PollingMethodType::Icmp)->defaultAffectsAvailability())->toBeTrue();
+    expect($registry->get(PollingMethodType::Ipmi)->defaultAffectsAvailability())->toBeFalse();
+    expect($registry->get(PollingMethodType::ProxmoxApi)->defaultAffectsAvailability())->toBeFalse();
+    expect($registry->get(PollingMethodType::Snmp)->defaultAffectsAvailability())->toBeTrue();
+    expect($registry->get(PollingMethodType::UnixAgent)->defaultAffectsAvailability())->toBeFalse();
+});

@@ -24,82 +24,67 @@
  * @copyright  2026 LibreNMS
  */
 
-namespace LibreNMS\Tests\Feature;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\Device;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
-use LibreNMS\Tests\TestCase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-final class UpdateNotesAuthorizationTest extends TestCase
+
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+
+beforeEach(function () {
+    Role::findOrCreate('admin');
+    Role::findOrCreate('global-read');
+    Role::findOrCreate('user');
+    Permission::findOrCreate('device.updateNotes');
+    Permission::findOrCreate('device.view');
+
+    $this->accessible = Device::factory()->create();
+    $this->other = Device::factory()->create();
+});
+
+function can(User $user, Device $device): bool
 {
-    use RefreshDatabase;
-
-    private Device $accessible;
-    private Device $other;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Role::findOrCreate('admin');
-        Role::findOrCreate('global-read');
-        Role::findOrCreate('user');
-        Permission::findOrCreate('device.updateNotes');
-        Permission::findOrCreate('device.view');
-
-        $this->accessible = Device::factory()->create();
-        $this->other = Device::factory()->create();
-    }
-
-    private function can(User $user, Device $device): bool
-    {
-        return Gate::forUser($user)->allows('updateNotes', $device);
-    }
-
-    public function testGlobalReadNeedsExplicitUpdateNotesPermission(): void
-    {
-        $user = User::factory()->create(['enabled' => 1]);
-        $user->assignRole('global-read');
-
-        $this->assertFalse($this->can($user, $this->accessible));
-        $this->assertFalse($this->can($user, $this->other));
-    }
-
-    public function testGlobalReadWithExplicitUpdateNotesPermissionCanUpdateNotesOnAnyDevice(): void
-    {
-        $user = User::factory()->create(['enabled' => 1]);
-        $user->assignRole('global-read');
-        $user->givePermissionTo('device.updateNotes');
-
-        // global-read's view access covers any device, including ones the user does not own
-        $this->assertTrue($this->can($user, $this->accessible));
-        $this->assertTrue($this->can($user, $this->other));
-    }
-
-    public function testUserIsRestrictedToAccessibleDevices(): void
-    {
-        $user = User::factory()->create(['enabled' => 1]);
-        $user->assignRole('user');
-        $user->givePermissionTo('device.updateNotes');
-        $user->devicesOwned()->attach($this->accessible->device_id);
-
-        // device the user can access
-        $this->assertTrue($this->can($user, $this->accessible));
-
-        // device the user cannot access — must be denied
-        $this->assertFalse($this->can($user, $this->other));
-    }
-
-    public function testUserWithoutUpdateNotesPermissionCannotUpdateNotes(): void
-    {
-        $user = User::factory()->create(['enabled' => 1]);
-        $user->assignRole('user');
-        $user->devicesOwned()->attach($this->accessible->device_id);
-
-        $this->assertFalse($this->can($user, $this->accessible));
-    }
+    return Gate::forUser($user)->allows('updateNotes', $device);
 }
+
+test('global read needs explicit update notes permission', function () {
+    $user = User::factory()->create(['enabled' => 1]);
+    $user->assignRole('global-read');
+
+    expect(can($user, $this->accessible))->toBeFalse();
+    expect(can($user, $this->other))->toBeFalse();
+});
+
+test('global read with explicit update notes permission can update notes on any device', function () {
+    $user = User::factory()->create(['enabled' => 1]);
+    $user->assignRole('global-read');
+    $user->givePermissionTo('device.updateNotes');
+
+    // global-read's view access covers any device, including ones the user does not own
+    expect(can($user, $this->accessible))->toBeTrue();
+    expect(can($user, $this->other))->toBeTrue();
+});
+
+test('user is restricted to accessible devices', function () {
+    $user = User::factory()->create(['enabled' => 1]);
+    $user->assignRole('user');
+    $user->givePermissionTo('device.updateNotes');
+    $user->devicesOwned()->attach($this->accessible->device_id);
+
+    // device the user can access
+    expect(can($user, $this->accessible))->toBeTrue();
+
+    // device the user cannot access — must be denied
+    expect(can($user, $this->other))->toBeFalse();
+});
+
+test('user without update notes permission cannot update notes', function () {
+    $user = User::factory()->create(['enabled' => 1]);
+    $user->assignRole('user');
+    $user->devicesOwned()->attach($this->accessible->device_id);
+
+    expect(can($user, $this->accessible))->toBeFalse();
+});

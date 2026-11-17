@@ -1,134 +1,121 @@
 <?php
 
-namespace LibreNMS\Tests\Feature\Http;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\AlertFault;
 use App\Models\AlertLog;
 use App\Models\AlertRule;
 use App\Models\Device;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use LibreNMS\Enum\AlertState;
-use LibreNMS\Tests\TestCase;
 use Spatie\Permission\Models\Role;
 
-class AlertsTableWidgetIdTest extends TestCase
-{
-    use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-        Role::findOrCreate('admin');
-    }
+beforeEach(function () {
+    Role::findOrCreate('admin');
+});
 
-    public function testAlertsTableNamespacesIncidentIdsByWidgetId(): void
-    {
-        $fault = $this->makeFault();
+test('alerts table namespaces incident ids by widget id', function () {
+    $fault = makeFault();
 
-        $rows = $this->actingAs($this->admin())
-            ->postJson(route('table.alerts'), ['widget_id' => 47])
-            ->assertOk()
-            ->json('rows');
+    $rows = $this->actingAs(admin())
+        ->postJson(route('table.alerts'), ['widget_id' => 47])
+        ->assertOk()
+        ->json('rows');
 
-        $this->assertRowHasIncidentId($rows[0], 47, $fault->id);
-    }
+    assertRowHasIncidentId($rows[0], 47, $fault->id);
+});
 
-    public function testAlertsTableKeepsIncidentIdsWithoutWidgetId(): void
-    {
-        $fault = $this->makeFault();
+test('alerts table keeps incident ids without widget id', function () {
+    $fault = makeFault();
 
-        $rows = $this->actingAs($this->admin())
-            ->postJson(route('table.alerts'))
-            ->assertOk()
-            ->json('rows');
+    $rows = $this->actingAs(admin())
+        ->postJson(route('table.alerts'))
+        ->assertOk()
+        ->json('rows');
 
-        $this->assertRowHasIncidentId($rows[0], null, $fault->id);
-    }
+    assertRowHasIncidentId($rows[0], null, $fault->id);
+});
 
-    public function testAlertlogTableNamespacesIncidentIdsByWidgetId(): void
-    {
-        $log = $this->makeAlertLog();
+test('alertlog table namespaces incident ids by widget id', function () {
+    $log = makeAlertLog();
 
-        $rows = $this->actingAs($this->admin())
-            ->postJson(route('table.alertlog'), ['widget_id' => 47])
-            ->assertOk()
-            ->json('rows');
+    $rows = $this->actingAs(admin())
+        ->postJson(route('table.alertlog'), ['widget_id' => 47])
+        ->assertOk()
+        ->json('rows');
 
-        $this->assertRowHasIncidentId($rows[0], 47, $log->id);
-    }
+    assertRowHasIncidentId($rows[0], 47, $log->id);
+});
 
-    public function testAlertlogTableKeepsIncidentIdsWithoutWidgetId(): void
-    {
-        $log = $this->makeAlertLog();
+test('alertlog table keeps incident ids without widget id', function () {
+    $log = makeAlertLog();
 
-        $rows = $this->actingAs($this->admin())
-            ->postJson(route('table.alertlog'))
-            ->assertOk()
-            ->json('rows');
+    $rows = $this->actingAs(admin())
+        ->postJson(route('table.alertlog'))
+        ->assertOk()
+        ->json('rows');
 
-        $this->assertRowHasIncidentId($rows[0], null, $log->id);
-    }
+    assertRowHasIncidentId($rows[0], null, $log->id);
+});
 
-    public function testTablesRejectInvalidWidgetId(): void
-    {
-        $admin = $this->admin();
+test('tables reject invalid widget id', function () {
+    $admin = admin();
 
-        foreach (['table.alerts', 'table.alertlog'] as $route) {
-            foreach (['abc', '47abc', 0, -1] as $widgetId) {
-                $this->actingAs($admin)
-                    ->postJson(route($route), ['widget_id' => $widgetId])
-                    ->assertUnprocessable()
-                    ->assertJsonValidationErrors('widget_id');
-            }
+    foreach (['table.alerts', 'table.alertlog'] as $route) {
+        foreach (['abc', '47abc', 0, -1] as $widgetId) {
+            $this->actingAs($admin)
+                ->postJson(route($route), ['widget_id' => $widgetId])
+                ->assertUnprocessable()
+                ->assertJsonValidationErrors('widget_id');
         }
     }
+});
 
-    private function makeFault(): AlertFault
-    {
-        $device = Device::factory()->create();
-        $rule = AlertRule::factory()->create();
+function makeFault(): AlertFault
+{
+    $device = Device::factory()->create();
+    $rule = AlertRule::factory()->create();
 
-        return AlertFault::create([
-            'rule_id' => $rule->id,
-            'device_id' => $device->device_id,
-            'entity_key' => (string) $device->device_id,
-            'state' => AlertState::ACTIVE,
-            'open' => 1,
-            'alerted' => 1,
-            'details' => ['rule' => [['name' => 'test']]],
-        ]);
-    }
+    return AlertFault::create([
+        'rule_id' => $rule->id,
+        'device_id' => $device->device_id,
+        'entity_key' => (string) $device->device_id,
+        'state' => AlertState::ACTIVE,
+        'open' => 1,
+        'alerted' => 1,
+        'details' => ['rule' => [['name' => 'test']]],
+    ]);
+}
 
-    private function makeAlertLog(): AlertLog
-    {
-        $device = Device::factory()->create();
-        $rule = AlertRule::factory()->create();
+function makeAlertLog(): AlertLog
+{
+    $device = Device::factory()->create();
+    $rule = AlertRule::factory()->create();
 
-        return AlertLog::factory()->create([
-            'device_id' => $device->device_id,
-            'rule_id' => $rule->id,
-            'details' => ['rule' => [['name' => 'test']]],
-        ]);
-    }
+    return AlertLog::factory()->create([
+        'device_id' => $device->device_id,
+        'rule_id' => $rule->id,
+        'details' => ['rule' => [['name' => 'test']]],
+    ]);
+}
 
-    /**
-     * @param  array<string, mixed>  $row
-     */
-    private function assertRowHasIncidentId(array $row, ?int $widgetId, int $entityId): void
-    {
-        $incidentId = $widgetId !== null ? "incident{$widgetId}-{$entityId}" : "incident{$entityId}";
+/**
+ * @param  array<string, mixed>  $row
+ */
+function assertRowHasIncidentId(array $row, ?int $widgetId, int $entityId): void
+{
+    $incidentId = $widgetId !== null ? "incident{$widgetId}-{$entityId}" : "incident{$entityId}";
 
-        $this->assertStringContainsString("data-target=\"#{$incidentId}\"", $row['details']);
-        $this->assertStringContainsString("id=\"{$incidentId}\"", $row['hostname']);
-    }
+    $this->assertStringContainsString("data-target=\"#{$incidentId}\"", $row['details']);
+    $this->assertStringContainsString("id=\"{$incidentId}\"", $row['hostname']);
+}
 
-    private function admin(): User
-    {
-        $admin = User::factory()->create(['enabled' => 1]);
-        $admin->assignRole('admin');
+function admin(): User
+{
+    $admin = User::factory()->create(['enabled' => 1]);
+    $admin->assignRole('admin');
 
-        return $admin;
-    }
+    return $admin;
 }

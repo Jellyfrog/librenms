@@ -22,65 +22,57 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Unit;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\Device;
 use App\Models\Vrf;
 use Illuminate\Database\Eloquent\Collection;
-use LibreNMS\Tests\TestCase;
 
-final class DeviceVrfContextsTest extends TestCase
+test('default context only without vrfs', function () {
+    expect(device([])->getVrfContexts())->toBe(['']);
+});
+
+test('vrf contexts', function () {
+    $device = device([
+        [1, 'red', 'ctx-red'],
+        [2, 'blue', null],
+        [3, 'Default', 'default'],
+        [4, 'green', 'ctx-red'],
+        [5, 'yellow', 'ctx-yellow'],
+        [6, 'purple', 'ctx-purple', false],
+        [7, 'orange', 'ctx-orange', true, false],
+    ]);
+
+    expect($device->getVrfContexts())->toBe(['', 'ctx-red', 'ctx-yellow'], 'The default VRF context, duplicates, contexts that did not answer and disabled contexts are skipped');
+    expect($device->getSkippedVrfContexts())->toBe(['ctx-purple', 'ctx-orange'], 'Contexts that did not answer and disabled contexts are kept separately');
+});
+
+test('vrf id for context', function () {
+    $device = device([
+        [1, 'red', 'ctx-red'],
+        [2, 'blue', null],
+        [3, 'ctx-red', null],
+    ]);
+
+    expect($device->vrfIdForContext(''))->toBeNull();
+    expect($device->vrfIdForContext(null))->toBeNull();
+    expect($device->vrfIdForContext('ctx-red'))->toBe(1, 'Contexts are matched before names');
+    expect($device->vrfIdForContext('blue'))->toBe(2);
+    expect($device->vrfIdForContext('green'))->toBeNull();
+});
+
+/**
+ * @param  array<int, array{0: int, 1: string, 2: string|null, 3?: bool, 4?: bool}>  $vrfs  id, name, context, verified, enabled
+ */
+function device(array $vrfs): Device
 {
-    public function testDefaultContextOnlyWithoutVrfs(): void
-    {
-        $this->assertSame([''], $this->device([])->getVrfContexts());
-    }
+    $device = new Device;
+    $device->setRelation('vrfs', new Collection(array_map(fn (array $vrf) => (new Vrf)->forceFill([
+        'vrf_id' => $vrf[0],
+        'vrf_name' => $vrf[1],
+        'context_name' => $vrf[2],
+        'context_verified' => $vrf[3] ?? true,
+        'context_enabled' => $vrf[4] ?? true,
+    ]), $vrfs)));
 
-    public function testVrfContexts(): void
-    {
-        $device = $this->device([
-            [1, 'red', 'ctx-red'],
-            [2, 'blue', null],
-            [3, 'Default', 'default'],
-            [4, 'green', 'ctx-red'],
-            [5, 'yellow', 'ctx-yellow'],
-            [6, 'purple', 'ctx-purple', false],
-            [7, 'orange', 'ctx-orange', true, false],
-        ]);
-
-        $this->assertSame(['', 'ctx-red', 'ctx-yellow'], $device->getVrfContexts(), 'The default VRF context, duplicates, contexts that did not answer and disabled contexts are skipped');
-        $this->assertSame(['ctx-purple', 'ctx-orange'], $device->getSkippedVrfContexts(), 'Contexts that did not answer and disabled contexts are kept separately');
-    }
-
-    public function testVrfIdForContext(): void
-    {
-        $device = $this->device([
-            [1, 'red', 'ctx-red'],
-            [2, 'blue', null],
-            [3, 'ctx-red', null],
-        ]);
-
-        $this->assertNull($device->vrfIdForContext(''));
-        $this->assertNull($device->vrfIdForContext(null));
-        $this->assertSame(1, $device->vrfIdForContext('ctx-red'), 'Contexts are matched before names');
-        $this->assertSame(2, $device->vrfIdForContext('blue'));
-        $this->assertNull($device->vrfIdForContext('green'));
-    }
-
-    /**
-     * @param  array<int, array{0: int, 1: string, 2: string|null, 3?: bool, 4?: bool}>  $vrfs  id, name, context, verified, enabled
-     */
-    private function device(array $vrfs): Device
-    {
-        $device = new Device;
-        $device->setRelation('vrfs', new Collection(array_map(fn (array $vrf) => (new Vrf)->forceFill([
-            'vrf_id' => $vrf[0],
-            'vrf_name' => $vrf[1],
-            'context_name' => $vrf[2],
-            'context_verified' => $vrf[3] ?? true,
-            'context_enabled' => $vrf[4] ?? true,
-        ]), $vrfs)));
-
-        return $device;
-    }
+    return $device;
 }

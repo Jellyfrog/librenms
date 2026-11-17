@@ -1,59 +1,49 @@
 <?php
 
-namespace LibreNMS\Tests\Feature\Http;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\Device;
 use App\Models\TnmsneInfo;
 use App\Models\User;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use LibreNMS\Tests\TestCase;
 use Spatie\Permission\Models\Role;
 
-class TnmsneTabTest extends TestCase
+
+uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
+
+beforeEach(function () {
+    Role::findOrCreate('admin');
+    Role::findOrCreate('user');
+});
+
+function admin(): User
 {
-    use DatabaseTransactions;
+    $admin = User::factory()->create(['enabled' => 1]);
+    $admin->assignRole('admin');
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Role::findOrCreate('admin');
-        Role::findOrCreate('user');
-    }
-
-    private function admin(): User
-    {
-        $admin = User::factory()->create(['enabled' => 1]);
-        $admin->assignRole('admin');
-
-        return $admin;
-    }
-
-    public function testAuthorizedUserCanRenderTnmsneTab(): void
-    {
-        $device = Device::factory()->create(['os' => 'coriant']);
-        TnmsneInfo::factory()->for($device)->create([
-            'neName' => 'Coriant-Node-Alpha',
-        ]);
-
-        $this->actingAs($this->admin())
-            ->get(route('device', ['device' => $device, 'tab' => 'tnmsne']))
-            ->assertOk()
-            ->assertSee('Coriant NE Hardware')
-            ->assertSee('tnmsne')
-            ->assertSee(route('table.tnmsne'));
-    }
-
-    public function testUserWithoutAccessGetsForbidden(): void
-    {
-        $device = Device::factory()->create(['os' => 'coriant']);
-        TnmsneInfo::factory()->for($device)->create();
-
-        $user = User::factory()->create(['enabled' => 1]);
-        $user->assignRole('user');
-
-        $this->actingAs($user)
-            ->get(route('device', ['device' => $device, 'tab' => 'tnmsne']))
-            ->assertForbidden();
-    }
+    return $admin;
 }
+
+test('authorized user can render tnmsne tab', function () {
+    $device = Device::factory()->create(['os' => 'coriant']);
+    TnmsneInfo::factory()->for($device)->create([
+        'neName' => 'Coriant-Node-Alpha',
+    ]);
+
+    $this->actingAs(admin())
+        ->get(route('device', ['device' => $device, 'tab' => 'tnmsne']))
+        ->assertOk()
+        ->assertSee('Coriant NE Hardware')
+        ->assertSee('tnmsne')
+        ->assertSee(route('table.tnmsne'));
+});
+
+test('user without access gets forbidden', function () {
+    $device = Device::factory()->create(['os' => 'coriant']);
+    TnmsneInfo::factory()->for($device)->create();
+
+    $user = User::factory()->create(['enabled' => 1]);
+    $user->assignRole('user');
+
+    $this->actingAs($user)
+        ->get(route('device', ['device' => $device, 'tab' => 'tnmsne']))
+        ->assertForbidden();
+});

@@ -1,28 +1,17 @@
 <?php
 
-namespace LibreNMS\Tests\Unit;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use Illuminate\Support\Facades\Lang;
 use LibreNMS\Enum\DeviceType;
-use LibreNMS\Tests\TestCase;
 
-final class DeviceTypeTest extends TestCase
-{
-    public function testEnumMatchesOsSchema(): void
-    {
-        $schema = json_decode(file_get_contents(resource_path('definitions/schema/os_schema.json')), true);
+test('enum matches os schema', function () {
+    $schema = json_decode(file_get_contents(resource_path('definitions/schema/os_schema.json')), true);
 
-        $this->assertEqualsCanonicalizing(
-            array_column(DeviceType::cases(), 'value'),
-            $schema['properties']['type']['enum'],
-            'DeviceType enum and os_schema.json type enum differ'
-        );
+    expect($schema['properties']['type']['enum'])->toEqualCanonicalizing(array_column(DeviceType::cases(), 'value'), 'DeviceType enum and os_schema.json type enum differ');
+});
+
+test('every type has translation', function () {
+    foreach (DeviceType::cases() as $type) {
+        expect(Lang::has('device.types.' . $type->value, 'en', false))->toBeTrue("Missing translation device.types.$type->value");
     }
-
-    public function testEveryTypeHasTranslation(): void
-    {
-        foreach (DeviceType::cases() as $type) {
-            $this->assertTrue(Lang::has('device.types.' . $type->value, 'en', false), "Missing translation device.types.$type->value");
-        }
-    }
-}
+});

@@ -1,57 +1,47 @@
 <?php
 
-namespace LibreNMS\Tests\Feature\Console;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\Console\Commands\DevGenerateTestData;
-use LibreNMS\Tests\TestCase;
 
-final class DevGenerateTestDataTest extends TestCase
-{
-    public function testRequiresExplicitScope(): void
-    {
-        $this->artisan('dev:generate-test-data')
-            ->expectsOutput('Specify an OS (or all).')
-            ->assertExitCode(1);
+test('requires explicit scope', function () {
+    $this->artisan('dev:generate-test-data')
+        ->expectsOutput('Specify an OS (or all).')
+        ->assertExitCode(1);
+});
+
+test('accepts os as argument', function () {
+    $this->artisan('dev:generate-test-data', ['prefix' => 'nonexistent-os-xyz'])
+        ->expectsOutput('No matching JSON test fixtures found for prefix "nonexistent-os-xyz".')
+        ->assertExitCode(1);
+});
+
+test('os argument completion includes all and os list', function () {
+    $command = new DevGenerateTestData;
+
+    $completions = $command->completeArgument('prefix', 'al');
+    expect($completions)->toBeArray();
+    expect($completions)->toContain('all');
+
+    $completions = $command->completeArgument('prefix', 'io');
+    expect($completions)->toBeArray();
+    expect($completions)->toContain('ios');
+    expect($completions)->not->toContain('all');
+});
+
+test('prefix matches fixture names', function () {
+    $command = new DevGenerateTestData;
+    $completions = $command->completeArgument('prefix', 'ios_');
+    expect($completions)->toBeArray();
+    expect($completions)->not->toContain('ios');
+    foreach ($completions as $completion) {
+        expect($completion)->toStartWith('ios_');
     }
+});
 
-    public function testAcceptsOsAsArgument(): void
-    {
-        $this->artisan('dev:generate-test-data', ['prefix' => 'nonexistent-os-xyz'])
-            ->expectsOutput('No matching JSON test fixtures found for prefix "nonexistent-os-xyz".')
-            ->assertExitCode(1);
-    }
+test('prefix completion includes snmprec without json', function () {
+    $command = new DevGenerateTestData;
+    $completions = $command->completeArgument('prefix', '3com_');
 
-    public function testOsArgumentCompletionIncludesAllAndOsList(): void
-    {
-        $command = new DevGenerateTestData;
-
-        $completions = $command->completeArgument('prefix', 'al');
-        $this->assertIsArray($completions);
-        $this->assertContains('all', $completions);
-
-        $completions = $command->completeArgument('prefix', 'io');
-        $this->assertIsArray($completions);
-        $this->assertContains('ios', $completions);
-        $this->assertNotContains('all', $completions);
-    }
-
-    public function testPrefixMatchesFixtureNames(): void
-    {
-        $command = new DevGenerateTestData;
-        $completions = $command->completeArgument('prefix', 'ios_');
-        $this->assertIsArray($completions);
-        $this->assertNotContains('ios', $completions);
-        foreach ($completions as $completion) {
-            $this->assertStringStartsWith('ios_', $completion);
-        }
-    }
-
-    public function testPrefixCompletionIncludesSnmprecWithoutJson(): void
-    {
-        $command = new DevGenerateTestData;
-        $completions = $command->completeArgument('prefix', '3com_');
-
-        $this->assertIsArray($completions);
-        $this->assertContains('3com_1', $completions);
-    }
-}
+    expect($completions)->toBeArray();
+    expect($completions)->toContain('3com_1');
+});

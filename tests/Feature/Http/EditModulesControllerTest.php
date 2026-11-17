@@ -1,340 +1,313 @@
 <?php
 
-namespace LibreNMS\Tests\Feature\Http;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use App\Models\DevicePollingMethod;
 use App\Models\Mempool;
 use App\Models\User;
 use App\View\Components\Device\EditTabs;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Testing\TestResponse;
 use LibreNMS\Enum\PollingMethodType;
 use LibreNMS\Enum\ProcessType;
-use LibreNMS\Tests\TestCase;
 use LibreNMS\Util\ModuleList;
 use Spatie\Permission\Models\Role;
 
-final class EditModulesControllerTest extends TestCase
+
+uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
+
+beforeEach(function () {
+    Role::findOrCreate('admin');
+    Role::findOrCreate('user');
+});
+
+function admin(): User
 {
-    use DatabaseTransactions;
+    $admin = User::factory()->create(['enabled' => 1]);
+    $admin->assignRole('admin');
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Role::findOrCreate('admin');
-        Role::findOrCreate('user');
-    }
-
-    private function admin(): User
-    {
-        $admin = User::factory()->create(['enabled' => 1]);
-        $admin->assignRole('admin');
-
-        return $admin;
-    }
-
-    private function user(): User
-    {
-        $user = User::factory()->create(['enabled' => 1]);
-        $user->assignRole('user');
-
-        return $user;
-    }
-
-    /**
-     * @param  array<string, mixed>  $attributes
-     */
-    private function deviceWithMethods(array $attributes = [], PollingMethodType ...$types): Device
-    {
-        $device = Device::factory()->create($attributes);
-        foreach ($types as $type) {
-            DevicePollingMethod::factory()->for($device)->create(['method_type' => $type]);
-        }
-
-        return $device;
-    }
-
-    /**
-     * Module rows passed to the view, keyed by module name
-     *
-     * @param  TestResponse<\Illuminate\Http\Response>  $response
-     * @return array<string, array<string, mixed>>
-     */
-    private function modulesFrom(TestResponse $response): array
-    {
-        $modules = $response->viewData('modules');
-        $this->assertIsArray($modules);
-
-        return array_column($modules, null, 'module');
-    }
-
-    public function testAdminCanViewModulesPage(): void
-    {
-        $device = $this->deviceWithMethods([], PollingMethodType::Snmp);
-
-        $response = $this->actingAs($this->admin())
-            ->get(route('device.edit.modules', $device))
-            ->assertOk()
-            ->assertSee('Discovery &amp; Polling Modules', false);
-
-        $modules = $this->modulesFrom($response);
-        $this->assertArrayHasKey('mempools', $modules);
-        $this->assertArrayNotHasKey('core', $modules);
-        $this->assertSame('Mempools', $modules['mempools']['name']);
-    }
-
-    public function testShowsModulesEnabledByPollingMethods(): void
-    {
-        $device = Device::factory()->create();
-        DevicePollingMethod::factory()->create([
-            'device_id' => $device->device_id,
-            'method_type' => PollingMethodType::ProxmoxApi,
-            'settings' => [],
-        ]);
-
-        // the modules tab shows without snmp
-        $this->assertFalse($device->polling()->isEnabled(PollingMethodType::Snmp));
-        $this->actingAs($this->admin())->get(route('device.edit.polling', $device))
-            ->assertSee(route('device.edit.modules', $device), false);
-
-        $modules = $this->modulesFrom($this->get(route('device.edit.modules', $device)));
-        $this->assertTrue($modules['vminfo']['discovery']['method']);
-        $this->assertTrue($modules['vminfo']['polling']['method']);
-        $this->assertArrayNotHasKey('mempools', $modules, 'mempools does not use the proxmox-api method');
-    }
-
-    public function testUnixAgentMethodEnablesTheUnixAgentModule(): void
-    {
-        LibrenmsConfig::set('poller_modules.unix-agent', false);
-        $device = $this->deviceWithMethods([], PollingMethodType::Snmp, PollingMethodType::UnixAgent);
-
-        $modules = $this->modulesFrom($this->actingAs($this->admin())->get(route('device.edit.modules', $device)));
-        $this->assertTrue($modules['unix-agent']['polling']['method']);
-        $this->assertTrue($modules['mempools']['polling']['method']);
-        $this->assertNull($modules['storage']['polling']['method'], 'snmp does not enable modules');
-
-        $this->assertTrue((new ModuleList)->moduleStatus(ProcessType::Poller, 'unix-agent', $device)->isEnabled());
-    }
-
-    public function testIpmiMethodEnablesTheIpmiModule(): void
-    {
-        $snmpOnly = $this->deviceWithMethods([], PollingMethodType::Snmp);
-        $ipmi = $this->deviceWithMethods([], PollingMethodType::Snmp, PollingMethodType::Ipmi);
-        $moduleList = new ModuleList;
-
-        foreach ([ProcessType::Discovery, ProcessType::Poller] as $type) {
-            $this->assertFalse($moduleList->moduleStatus($type, 'ipmi', $snmpOnly)->isEnabled(), 'ipmi is off by default');
-            $this->assertTrue($moduleList->moduleStatus($type, 'ipmi', $ipmi)->isEnabled());
-        }
-    }
-
-    public function testAllModulesHaveFriendlyNames(): void
-    {
-        foreach (['poller_modules', 'discovery_modules'] as $configKey) {
-            foreach (array_keys(LibrenmsConfig::get($configKey)) as $module) {
-                if ($module === 'core') {
-                    continue;
-                }
-
-                $this->assertTrue(Lang::has("settings.settings.$configKey.$module.description", 'en'), "Missing lang/en/settings.php description for $configKey.$module");
-            }
-        }
-    }
-
-    public function testModuleSettingsReflectGlobalOsAndDevice(): void
-    {
-        $device = $this->deviceWithMethods(['os' => 'linux'], PollingMethodType::Snmp);
-        LibrenmsConfig::set('poller_modules.mempools', true);
-        LibrenmsConfig::set('os.linux.poller_modules.mempools', false);
-        LibrenmsConfig::set('discovery_modules.mempools', false);
-        $device->setAttrib('poll_mempools', 1);
-
-        $response = $this->actingAs($this->admin())->get(route('device.edit.modules', $device))->assertOk();
-
-        $mempools = $this->modulesFrom($response)['mempools'];
-        $this->assertSame(['global' => true, 'os' => false, 'method' => null, 'device' => true], $mempools['polling']);
-        $this->assertSame(['global' => false, 'os' => null, 'method' => null, 'device' => null], $mempools['discovery']);
-    }
-
-    public function testModuleOnlyInOneListIsNotApplicableInTheOther(): void
-    {
-        $device = $this->deviceWithMethods([], PollingMethodType::Snmp);
-        LibrenmsConfig::set('poller_modules', ['core' => true, 'only-polled' => true]);
-        LibrenmsConfig::set('discovery_modules', ['core' => true, 'only-discovered' => false]);
-
-        $response = $this->actingAs($this->admin())->get(route('device.edit.modules', $device))->assertOk();
-
-        $modules = $this->modulesFrom($response);
-        $this->assertSame(['only-discovered', 'only-polled'], array_keys($modules));
-        $this->assertNull($modules['only-polled']['discovery']);
-        $this->assertNull($modules['only-discovered']['polling']);
-    }
-
-    public function testHasDataReflectsModuleData(): void
-    {
-        $device = $this->deviceWithMethods([], PollingMethodType::Snmp);
-
-        $response = $this->actingAs($this->admin())->get(route('device.edit.modules', $device));
-        $this->assertFalse($this->modulesFrom($response)['mempools']['has_data']);
-
-        Mempool::factory()->for($device)->create();
-
-        $response = $this->actingAs($this->admin())->get(route('device.edit.modules', $device));
-        $this->assertTrue($this->modulesFrom($response)['mempools']['has_data']);
-    }
-
-    public function testOnlyModulesForEnabledMethodsAreShown(): void
-    {
-        $device = $this->deviceWithMethods();
-        DevicePollingMethod::factory()->for($device)->create(['method_type' => PollingMethodType::UnixAgent, 'affects_availability' => false]);
-        DevicePollingMethod::factory()->for($device)->create(['method_type' => PollingMethodType::Snmp, 'enabled' => false]);
-
-        $response = $this->actingAs($this->admin())->get(route('device.edit.modules', $device))->assertOk();
-
-        $modules = $this->modulesFrom($response);
-        $this->assertArrayHasKey('unix-agent', $modules);
-        $this->assertArrayHasKey('mempools', $modules);
-        $this->assertArrayNotHasKey('availability', $modules); // the agent is not checked for availability
-        $this->assertArrayNotHasKey('storage', $modules);
-        $this->assertArrayNotHasKey('ports', $modules);
-        $this->assertArrayNotHasKey('ipmi', $modules);
-    }
-
-    public function testAvailabilityIsShownForMethodsThatAffectAvailability(): void
-    {
-        $device = $this->deviceWithMethods([], PollingMethodType::UnixAgent);
-
-        $response = $this->actingAs($this->admin())->get(route('device.edit.modules', $device))->assertOk();
-
-        $this->assertArrayHasKey('availability', $this->modulesFrom($response));
-    }
-
-    public function testModulesWithDataAreShownWithoutTheirMethod(): void
-    {
-        $device = $this->deviceWithMethods([], PollingMethodType::Icmp);
-        Mempool::factory()->for($device)->create();
-
-        $response = $this->actingAs($this->admin())->get(route('device.edit.modules', $device))->assertOk();
-
-        $modules = $this->modulesFrom($response);
-        $this->assertSame(['availability', 'mempools'], array_keys($modules));
-        $this->assertTrue($modules['mempools']['has_data']);
-    }
-
-    public function testIcmpOnlyDeviceShowsAvailabilityModule(): void
-    {
-        $device = $this->deviceWithMethods([], PollingMethodType::Icmp);
-
-        $response = $this->actingAs($this->admin())->get(route('device.edit.modules', $device))->assertOk();
-
-        $this->assertSame(['availability'], array_keys($this->modulesFrom($response)));
-    }
-
-    public function testModulesPageExplainsWhenNoModulesCanRun(): void
-    {
-        $device = $this->deviceWithMethods();
-        DevicePollingMethod::factory()->for($device)->create(['method_type' => PollingMethodType::Snmp, 'enabled' => false]);
-
-        $response = $this->actingAs($this->admin())->get(route('device.edit.modules', $device))
-            ->assertOk()
-            ->assertSee('No modules can run with the polling methods enabled on this device.');
-
-        $this->assertSame([], $this->modulesFrom($response));
-        $this->assertArrayHasKey('modules', (new EditTabs($device))->tabs);
-    }
-
-    public function testUserCannotViewModulesPage(): void
-    {
-        $device = Device::factory()->create();
-
-        $this->actingAs($this->user())
-            ->get(route('device.edit.modules', $device))
-            ->assertForbidden();
-    }
-
-    public function testAdminCanOverrideAndClearModule(): void
-    {
-        $device = Device::factory()->create();
-        LibrenmsConfig::set('discovery_modules.mempools', true);
-
-        $this->actingAs($this->admin())
-            ->putJson(route('device.edit.modules.update', [$device, 'mempools']), ['discovery' => 'false'])
-            ->assertOk()
-            ->assertJson(['discovery' => false]);
-        $this->assertSame('0', $device->fresh()->getAttrib('discover_mempools'));
-
-        $this->actingAs($this->admin())
-            ->putJson(route('device.edit.modules.update', [$device, 'mempools']), ['discovery' => 'clear'])
-            ->assertOk()
-            ->assertJson(['discovery' => true]);
-        $this->assertNull($device->fresh()->getAttrib('discover_mempools'));
-    }
-
-    public function testInvalidUpdatesAreRejected(): void
-    {
-        $device = Device::factory()->create();
-
-        $this->actingAs($this->admin())
-            ->putJson(route('device.edit.modules.update', [$device, 'mempools']), ['polling' => 'maybe'])
-            ->assertUnprocessable();
-
-        $this->actingAs($this->admin())
-            ->putJson(route('device.edit.modules.update', [$device, 'not-a-module']), ['polling' => 'true'])
-            ->assertNotFound();
-
-        $this->actingAs($this->admin())
-            ->putJson(route('device.edit.modules.update', [$device, 'core']), ['polling' => 'false'])
-            ->assertNotFound();
-
-        $this->assertEmpty($device->fresh()->getAttribs());
-    }
-
-    public function testUserCannotUpdateModule(): void
-    {
-        $device = Device::factory()->create();
-
-        $this->actingAs($this->user())
-            ->putJson(route('device.edit.modules.update', [$device, 'mempools']), ['polling' => 'false'])
-            ->assertForbidden();
-
-        $this->assertNull($device->fresh()->getAttrib('poll_mempools'));
-    }
-
-    public function testAdminCanDeleteModuleData(): void
-    {
-        $device = Device::factory()->create();
-        Mempool::factory()->for($device)->count(2)->create();
-
-        $this->actingAs($this->admin())
-            ->deleteJson(route('device.edit.modules.delete', [$device, 'mempools']))
-            ->assertOk()
-            ->assertJson(['deleted' => 2]);
-
-        $this->assertSame(0, $device->mempools()->count());
-    }
-
-    public function testDeleteRejectsUnknownModule(): void
-    {
-        $device = Device::factory()->create();
-
-        $this->actingAs($this->admin())
-            ->deleteJson(route('device.edit.modules.delete', [$device, 'not-a-module']))
-            ->assertNotFound();
-    }
-
-    public function testUserCannotDeleteModuleData(): void
-    {
-        $device = Device::factory()->create();
-        Mempool::factory()->for($device)->create();
-
-        $this->actingAs($this->user())
-            ->deleteJson(route('device.edit.modules.delete', [$device, 'mempools']))
-            ->assertForbidden();
-
-        $this->assertSame(1, $device->mempools()->count());
-    }
+    return $admin;
 }
+
+function user(): User
+{
+    $user = User::factory()->create(['enabled' => 1]);
+    $user->assignRole('user');
+
+    return $user;
+}
+
+/**
+ * @param  array<string, mixed>  $attributes
+ */
+function deviceWithMethods(array $attributes = [], PollingMethodType ...$types): Device
+{
+    $device = Device::factory()->create($attributes);
+    foreach ($types as $type) {
+        DevicePollingMethod::factory()->for($device)->create(['method_type' => $type]);
+    }
+
+    return $device;
+}
+
+/**
+ * Module rows passed to the view, keyed by module name
+ *
+ * @param  TestResponse<\Illuminate\Http\Response>  $response
+ * @return array<string, array<string, mixed>>
+ */
+function modulesFrom(TestResponse $response): array
+{
+    $modules = $response->viewData('modules');
+    expect($modules)->toBeArray();
+
+    return array_column($modules, null, 'module');
+}
+
+test('admin can view modules page', function () {
+    $device = deviceWithMethods([], PollingMethodType::Snmp);
+
+    $response = $this->actingAs(admin())
+        ->get(route('device.edit.modules', $device))
+        ->assertOk()
+        ->assertSee('Discovery &amp; Polling Modules', false);
+
+    $modules = modulesFrom($response);
+    expect($modules)->toHaveKey('mempools');
+    $this->assertArrayNotHasKey('core', $modules);
+    expect($modules['mempools']['name'])->toBe('Mempools');
+});
+
+test('shows modules enabled by polling methods', function () {
+    $device = Device::factory()->create();
+    DevicePollingMethod::factory()->create([
+        'device_id' => $device->device_id,
+        'method_type' => PollingMethodType::ProxmoxApi,
+        'settings' => [],
+    ]);
+
+    // the modules tab shows without snmp
+    expect($device->polling()->isEnabled(PollingMethodType::Snmp))->toBeFalse();
+    $this->actingAs(admin())->get(route('device.edit.polling', $device))
+        ->assertSee(route('device.edit.modules', $device), false);
+
+    $modules = modulesFrom($this->get(route('device.edit.modules', $device)));
+    expect($modules['vminfo']['discovery']['method'])->toBeTrue();
+    expect($modules['vminfo']['polling']['method'])->toBeTrue();
+    $this->assertArrayNotHasKey('mempools', $modules, 'mempools does not use the proxmox-api method');
+});
+
+test('unix agent method enables the unix agent module', function () {
+    LibrenmsConfig::set('poller_modules.unix-agent', false);
+    $device = deviceWithMethods([], PollingMethodType::Snmp, PollingMethodType::UnixAgent);
+
+    $modules = modulesFrom($this->actingAs(admin())->get(route('device.edit.modules', $device)));
+    expect($modules['unix-agent']['polling']['method'])->toBeTrue();
+    expect($modules['mempools']['polling']['method'])->toBeTrue();
+    expect($modules['storage']['polling']['method'])->toBeNull('snmp does not enable modules');
+
+    expect((new ModuleList)->moduleStatus(ProcessType::Poller, 'unix-agent', $device)->isEnabled())->toBeTrue();
+});
+
+test('ipmi method enables the ipmi module', function () {
+    $snmpOnly = deviceWithMethods([], PollingMethodType::Snmp);
+    $ipmi = deviceWithMethods([], PollingMethodType::Snmp, PollingMethodType::Ipmi);
+    $moduleList = new ModuleList;
+
+    foreach ([ProcessType::Discovery, ProcessType::Poller] as $type) {
+        expect($moduleList->moduleStatus($type, 'ipmi', $snmpOnly)->isEnabled())->toBeFalse('ipmi is off by default');
+        expect($moduleList->moduleStatus($type, 'ipmi', $ipmi)->isEnabled())->toBeTrue();
+    }
+});
+
+test('all modules have friendly names', function () {
+    foreach (['poller_modules', 'discovery_modules'] as $configKey) {
+        foreach (array_keys(LibrenmsConfig::get($configKey)) as $module) {
+            if ($module === 'core') {
+                continue;
+            }
+
+            expect(Lang::has("settings.settings.$configKey.$module.description", 'en'))->toBeTrue("Missing lang/en/settings.php description for $configKey.$module");
+        }
+    }
+});
+
+test('module settings reflect global os and device', function () {
+    $device = deviceWithMethods(['os' => 'linux'], PollingMethodType::Snmp);
+    LibrenmsConfig::set('poller_modules.mempools', true);
+    LibrenmsConfig::set('os.linux.poller_modules.mempools', false);
+    LibrenmsConfig::set('discovery_modules.mempools', false);
+    $device->setAttrib('poll_mempools', 1);
+
+    $response = $this->actingAs(admin())->get(route('device.edit.modules', $device))->assertOk();
+
+    $mempools = modulesFrom($response)['mempools'];
+    expect($mempools['polling'])->toBe(['global' => true, 'os' => false, 'method' => null, 'device' => true]);
+    expect($mempools['discovery'])->toBe(['global' => false, 'os' => null, 'method' => null, 'device' => null]);
+});
+
+test('module only in one list is not applicable in the other', function () {
+    $device = deviceWithMethods([], PollingMethodType::Snmp);
+    LibrenmsConfig::set('poller_modules', ['core' => true, 'only-polled' => true]);
+    LibrenmsConfig::set('discovery_modules', ['core' => true, 'only-discovered' => false]);
+
+    $response = $this->actingAs(admin())->get(route('device.edit.modules', $device))->assertOk();
+
+    $modules = modulesFrom($response);
+    expect(array_keys($modules))->toBe(['only-discovered', 'only-polled']);
+    expect($modules['only-polled']['discovery'])->toBeNull();
+    expect($modules['only-discovered']['polling'])->toBeNull();
+});
+
+test('has data reflects module data', function () {
+    $device = deviceWithMethods([], PollingMethodType::Snmp);
+
+    $response = $this->actingAs(admin())->get(route('device.edit.modules', $device));
+    expect(modulesFrom($response)['mempools']['has_data'])->toBeFalse();
+
+    Mempool::factory()->for($device)->create();
+
+    $response = $this->actingAs(admin())->get(route('device.edit.modules', $device));
+    expect(modulesFrom($response)['mempools']['has_data'])->toBeTrue();
+});
+
+test('only modules for enabled methods are shown', function () {
+    $device = deviceWithMethods();
+    DevicePollingMethod::factory()->for($device)->create(['method_type' => PollingMethodType::UnixAgent, 'affects_availability' => false]);
+    DevicePollingMethod::factory()->for($device)->create(['method_type' => PollingMethodType::Snmp, 'enabled' => false]);
+
+    $response = $this->actingAs(admin())->get(route('device.edit.modules', $device))->assertOk();
+
+    $modules = modulesFrom($response);
+    expect($modules)->toHaveKey('unix-agent');
+    expect($modules)->toHaveKey('mempools');
+    $this->assertArrayNotHasKey('availability', $modules);
+    // the agent is not checked for availability
+    $this->assertArrayNotHasKey('storage', $modules);
+    $this->assertArrayNotHasKey('ports', $modules);
+    $this->assertArrayNotHasKey('ipmi', $modules);
+});
+
+test('availability is shown for methods that affect availability', function () {
+    $device = deviceWithMethods([], PollingMethodType::UnixAgent);
+
+    $response = $this->actingAs(admin())->get(route('device.edit.modules', $device))->assertOk();
+
+    expect(modulesFrom($response))->toHaveKey('availability');
+});
+
+test('modules with data are shown without their method', function () {
+    $device = deviceWithMethods([], PollingMethodType::Icmp);
+    Mempool::factory()->for($device)->create();
+
+    $response = $this->actingAs(admin())->get(route('device.edit.modules', $device))->assertOk();
+
+    $modules = modulesFrom($response);
+    expect(array_keys($modules))->toBe(['availability', 'mempools']);
+    expect($modules['mempools']['has_data'])->toBeTrue();
+});
+
+test('icmp only device shows availability module', function () {
+    $device = deviceWithMethods([], PollingMethodType::Icmp);
+
+    $response = $this->actingAs(admin())->get(route('device.edit.modules', $device))->assertOk();
+
+    expect(array_keys(modulesFrom($response)))->toBe(['availability']);
+});
+
+test('modules page explains when no modules can run', function () {
+    $device = deviceWithMethods();
+    DevicePollingMethod::factory()->for($device)->create(['method_type' => PollingMethodType::Snmp, 'enabled' => false]);
+
+    $response = $this->actingAs(admin())->get(route('device.edit.modules', $device))
+        ->assertOk()
+        ->assertSee('No modules can run with the polling methods enabled on this device.');
+
+    expect(modulesFrom($response))->toBe([]);
+    expect((new EditTabs($device))->tabs)->toHaveKey('modules');
+});
+
+test('user cannot view modules page', function () {
+    $device = Device::factory()->create();
+
+    $this->actingAs(user())
+        ->get(route('device.edit.modules', $device))
+        ->assertForbidden();
+});
+
+test('admin can override and clear module', function () {
+    $device = Device::factory()->create();
+    LibrenmsConfig::set('discovery_modules.mempools', true);
+
+    $this->actingAs(admin())
+        ->putJson(route('device.edit.modules.update', [$device, 'mempools']), ['discovery' => 'false'])
+        ->assertOk()
+        ->assertJson(['discovery' => false]);
+    expect($device->fresh()->getAttrib('discover_mempools'))->toBe('0');
+
+    $this->actingAs(admin())
+        ->putJson(route('device.edit.modules.update', [$device, 'mempools']), ['discovery' => 'clear'])
+        ->assertOk()
+        ->assertJson(['discovery' => true]);
+    expect($device->fresh()->getAttrib('discover_mempools'))->toBeNull();
+});
+
+test('invalid updates are rejected', function () {
+    $device = Device::factory()->create();
+
+    $this->actingAs(admin())
+        ->putJson(route('device.edit.modules.update', [$device, 'mempools']), ['polling' => 'maybe'])
+        ->assertUnprocessable();
+
+    $this->actingAs(admin())
+        ->putJson(route('device.edit.modules.update', [$device, 'not-a-module']), ['polling' => 'true'])
+        ->assertNotFound();
+
+    $this->actingAs(admin())
+        ->putJson(route('device.edit.modules.update', [$device, 'core']), ['polling' => 'false'])
+        ->assertNotFound();
+
+    expect($device->fresh()->getAttribs())->toBeEmpty();
+});
+
+test('user cannot update module', function () {
+    $device = Device::factory()->create();
+
+    $this->actingAs(user())
+        ->putJson(route('device.edit.modules.update', [$device, 'mempools']), ['polling' => 'false'])
+        ->assertForbidden();
+
+    expect($device->fresh()->getAttrib('poll_mempools'))->toBeNull();
+});
+
+test('admin can delete module data', function () {
+    $device = Device::factory()->create();
+    Mempool::factory()->for($device)->count(2)->create();
+
+    $this->actingAs(admin())
+        ->deleteJson(route('device.edit.modules.delete', [$device, 'mempools']))
+        ->assertOk()
+        ->assertJson(['deleted' => 2]);
+
+    expect($device->mempools()->count())->toBe(0);
+});
+
+test('delete rejects unknown module', function () {
+    $device = Device::factory()->create();
+
+    $this->actingAs(admin())
+        ->deleteJson(route('device.edit.modules.delete', [$device, 'not-a-module']))
+        ->assertNotFound();
+});
+
+test('user cannot delete module data', function () {
+    $device = Device::factory()->create();
+    Mempool::factory()->for($device)->create();
+
+    $this->actingAs(user())
+        ->deleteJson(route('device.edit.modules.delete', [$device, 'mempools']))
+        ->assertForbidden();
+
+    expect($device->mempools()->count())->toBe(1);
+});

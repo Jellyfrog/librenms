@@ -1,158 +1,135 @@
 <?php
 
-namespace LibreNMS\Tests\Unit\Util;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\Facades\LibrenmsConfig;
-use LibreNMS\Tests\TestCase;
 use LibreNMS\Util\Binaries;
 
-final class BinariesTest extends TestCase
-{
-    private const string BINARY = 'librenms-binaries-test';
 
-    private string $dir;
-    private string|false $path;
+private const string BINARY = 'librenms-binaries-test';
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+beforeEach(function () {
+    $this->path = getenv('PATH');
+    $this->dir = sys_get_temp_dir() . '/librenms-binaries-' . bin2hex(random_bytes(4));
+    mkdir($this->dir);
+    putenv('PATH=' . $this->dir);
+});
 
-        $this->path = getenv('PATH');
-        $this->dir = sys_get_temp_dir() . '/librenms-binaries-' . bin2hex(random_bytes(4));
-        mkdir($this->dir);
-        putenv('PATH=' . $this->dir);
+afterEach(function () {
+    putenv($this->path === false ? 'PATH' : "PATH=$this->path");
+    array_map(unlink(...), glob("$this->dir/*") ?: []);
+    rmdir($this->dir);
+
+});
+
+test('finds binary in path', function () {
+    $file = makeBinary(self::BINARY);
+
+    expect((new Binaries)->find(self::BINARY))->toBe($file);
+    expect((new Binaries)->path(self::BINARY))->toBe($file);
+});
+
+test('missing binary', function () {
+    expect((new Binaries)->find(self::BINARY))->toBeNull();
+    expect((new Binaries)->path(self::BINARY))->toBe(self::BINARY);
+});
+
+test('not executable', function () {
+    $file = makeBinary(self::BINARY);
+    chmod($file, 0644);
+
+    expect((new Binaries)->find(self::BINARY))->toBeNull();
+});
+
+test('relative path entries are skipped', function () {
+    makeBinary(self::BINARY);
+    putenv('PATH=:.:relative:/opt/test/bin/');
+    $cwd = getcwd();
+    chdir($this->dir);
+
+    try {
+        expect((new Binaries)->find(self::BINARY))->toBeNull();
+        expect((new Binaries)->searchDirs())->toBe(['/opt/test/bin/', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin']);
+    } finally {
+        chdir((string) $cwd);
     }
+});
 
-    protected function tearDown(): void
-    {
-        putenv($this->path === false ? 'PATH' : "PATH=$this->path");
-        array_map(unlink(...), glob("$this->dir/*") ?: []);
-        rmdir($this->dir);
+test('configured path is used', function () {
+    makeBinary(self::BINARY);
+    $configured = makeBinary('custom');
+    config(['librenms.binaries.' . self::BINARY => $configured]);
 
-        parent::tearDown();
-    }
+    expect((new Binaries)->find(self::BINARY))->toBe($configured);
+});
 
-    public function testFindsBinaryInPath(): void
-    {
-        $file = $this->makeBinary(self::BINARY);
+test('invalid configured path is not searched', function () {
+    makeBinary(self::BINARY);
+    makeBinary('custom');
+    $cwd = getcwd();
+    chdir($this->dir);
 
-        $this->assertSame($file, (new Binaries)->find(self::BINARY));
-        $this->assertSame($file, (new Binaries)->path(self::BINARY));
-    }
-
-    public function testMissingBinary(): void
-    {
-        $this->assertNull((new Binaries)->find(self::BINARY));
-        $this->assertSame(self::BINARY, (new Binaries)->path(self::BINARY));
-    }
-
-    public function testNotExecutable(): void
-    {
-        $file = $this->makeBinary(self::BINARY);
-        chmod($file, 0644);
-
-        $this->assertNull((new Binaries)->find(self::BINARY));
-    }
-
-    public function testRelativePathEntriesAreSkipped(): void
-    {
-        $this->makeBinary(self::BINARY);
-        putenv('PATH=:.:relative:/opt/test/bin/');
-        $cwd = getcwd();
-        chdir($this->dir);
-
-        try {
-            $this->assertNull((new Binaries)->find(self::BINARY));
-            $this->assertSame(['/opt/test/bin/', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin'], (new Binaries)->searchDirs());
-        } finally {
-            chdir((string) $cwd);
+    try {
+        foreach (['/nonexistent/' . self::BINARY, 'custom', $this->dir] as $configured) {
+            config(['librenms.binaries.' . self::BINARY => $configured]);
+            expect((new Binaries)->find(self::BINARY))->toBeNull($configured);
         }
+    } finally {
+        chdir((string) $cwd);
     }
+});
 
-    public function testConfiguredPathIsUsed(): void
-    {
-        $this->makeBinary(self::BINARY);
-        $configured = $this->makeBinary('custom');
-        config(['librenms.binaries.' . self::BINARY => $configured]);
+test('legacy setting is used', function () {
+    makeBinary('snmpwalk');
+    $setting = makeBinary('snmpwalk-custom');
+    LibrenmsConfig::set('snmpwalk', $setting);
 
-        $this->assertSame($configured, (new Binaries)->find(self::BINARY));
-    }
+    expect((new Binaries)->find('snmpwalk'))->toBe($setting);
+    expect((new Binaries)->legacySetting('snmpwalk'))->toBe($setting);
+});
 
-    public function testInvalidConfiguredPathIsNotSearched(): void
-    {
-        $this->makeBinary(self::BINARY);
-        $this->makeBinary('custom');
-        $cwd = getcwd();
-        chdir($this->dir);
+test('configured path overrides legacy setting', function () {
+    LibrenmsConfig::set('snmpwalk', makeBinary('snmpwalk-custom'));
+    $configured = makeBinary('snmpwalk-env');
+    config(['librenms.binaries.snmpwalk' => $configured]);
 
-        try {
-            foreach (['/nonexistent/' . self::BINARY, 'custom', $this->dir] as $configured) {
-                config(['librenms.binaries.' . self::BINARY => $configured]);
-                $this->assertNull((new Binaries)->find(self::BINARY), $configured);
-            }
-        } finally {
-            chdir((string) $cwd);
-        }
-    }
+    expect((new Binaries)->find('snmpwalk'))->toBe($configured);
+});
 
-    public function testLegacySettingIsUsed(): void
-    {
-        $this->makeBinary('snmpwalk');
-        $setting = $this->makeBinary('snmpwalk-custom');
+test('invalid legacy setting is skipped', function () {
+    $file = makeBinary('snmpwalk');
+
+    foreach (['/nonexistent/snmpwalk', 'snmpwalk', $this->dir] as $setting) {
         LibrenmsConfig::set('snmpwalk', $setting);
-
-        $this->assertSame($setting, (new Binaries)->find('snmpwalk'));
-        $this->assertSame($setting, (new Binaries)->legacySetting('snmpwalk'));
+        expect((new Binaries)->legacySetting('snmpwalk'))->toBeNull($setting);
+        expect((new Binaries)->find('snmpwalk'))->toBe($file, $setting);
     }
+});
 
-    public function testConfiguredPathOverridesLegacySetting(): void
-    {
-        LibrenmsConfig::set('snmpwalk', $this->makeBinary('snmpwalk-custom'));
-        $configured = $this->makeBinary('snmpwalk-env');
-        config(['librenms.binaries.snmpwalk' => $configured]);
+test('only binary settings are legacy', function () {
+    $file = makeBinary(self::BINARY);
+    LibrenmsConfig::set(self::BINARY, makeBinary('custom'));
 
-        $this->assertSame($configured, (new Binaries)->find('snmpwalk'));
-    }
+    expect((new Binaries)->legacySetting(self::BINARY))->toBeNull();
+    expect((new Binaries)->find(self::BINARY))->toBe($file);
+});
 
-    public function testInvalidLegacySettingIsSkipped(): void
-    {
-        $file = $this->makeBinary('snmpwalk');
+test('found once per scope', function () {
+    $file = makeBinary(self::BINARY);
+    expect(resolve(Binaries::class)->find(self::BINARY))->toBe($file);
 
-        foreach (['/nonexistent/snmpwalk', 'snmpwalk', $this->dir] as $setting) {
-            LibrenmsConfig::set('snmpwalk', $setting);
-            $this->assertNull((new Binaries)->legacySetting('snmpwalk'), $setting);
-            $this->assertSame($file, (new Binaries)->find('snmpwalk'), $setting);
-        }
-    }
+    unlink($file);
+    expect(resolve(Binaries::class)->find(self::BINARY))->toBe($file);
 
-    public function testOnlyBinarySettingsAreLegacy(): void
-    {
-        $file = $this->makeBinary(self::BINARY);
-        LibrenmsConfig::set(self::BINARY, $this->makeBinary('custom'));
+    // a new job or request
+    $this->app->forgetScopedInstances();
+    expect(resolve(Binaries::class)->find(self::BINARY))->toBeNull();
+});
 
-        $this->assertNull((new Binaries)->legacySetting(self::BINARY));
-        $this->assertSame($file, (new Binaries)->find(self::BINARY));
-    }
+function makeBinary(string $name): string
+{
+    $file = "$this->dir/$name";
+    file_put_contents($file, "#!/bin/sh\nexit 0\n");
+    chmod($file, 0755);
 
-    public function testFoundOncePerScope(): void
-    {
-        $file = $this->makeBinary(self::BINARY);
-        $this->assertSame($file, resolve(Binaries::class)->find(self::BINARY));
-
-        unlink($file);
-        $this->assertSame($file, resolve(Binaries::class)->find(self::BINARY));
-
-        // a new job or request
-        $this->app->forgetScopedInstances();
-        $this->assertNull(resolve(Binaries::class)->find(self::BINARY));
-    }
-
-    private function makeBinary(string $name): string
-    {
-        $file = "$this->dir/$name";
-        file_put_contents($file, "#!/bin/sh\nexit 0\n");
-        chmod($file, 0755);
-
-        return $file;
-    }
+    return $file;
 }

@@ -1,7 +1,6 @@
 <?php
 
-namespace LibreNMS\Tests\Feature\Modules;
-
+uses(\LibreNMS\Tests\InMemoryDbTestCase::class);
 use App\Facades\DeviceCache;
 use App\Facades\LibrenmsConfig;
 use App\Facades\Rrd;
@@ -20,718 +19,683 @@ use LibreNMS\Enum\SecretType;
 use LibreNMS\Interfaces\Data\WriteInterface;
 use LibreNMS\Modules\Vminfo;
 use LibreNMS\OS;
-use LibreNMS\Tests\InMemoryDbTestCase;
 use LibreNMS\Util\ModuleList;
-use Mockery;
 
-final class VminfoProxmoxTest extends InMemoryDbTestCase
+private const string API = 'https://pve.example.com:8006/api2/json/';
+
+private const string CLUSTER = 'proxmox-abababababababababababababababab';
+
+beforeEach(function () {
+    config(['app.key' => 'base64:' . base64_encode(random_bytes(32))]);
+
+    // secret data is encrypted
+    $this->device = Device::factory()->create(['os' => 'generic', 'hostname' => 'pve.example.com']);
+    $secret = Secret::factory()->create([
+        'secret_type' => SecretType::ProxmoxApi,
+        'data' => ['token_id' => 'librenms@pve!monitoring', 'token_secret' => 'abc123'],
+    ]);
+    $this->proxmoxMethod = DevicePollingMethod::factory()->create([
+        'device_id' => $this->device->device_id,
+        'method_type' => PollingMethodType::ProxmoxApi,
+        'secret_id' => $secret->id,
+        'affects_availability' => false,
+        'settings' => [],
+    ]);
+    DeviceCache::setPrimary($this->device->device_id);
+});
+
+function fakeApi(): void
 {
-    private const string API = 'https://pve.example.com:8006/api2/json/';
-    private const string CLUSTER = 'proxmox-abababababababababababababababab';
-
-    private Device $device;
-    private DevicePollingMethod $proxmoxMethod;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        config(['app.key' => 'base64:' . base64_encode(random_bytes(32))]); // secret data is encrypted
-
-        $this->device = Device::factory()->create(['os' => 'generic', 'hostname' => 'pve.example.com']);
-        $secret = Secret::factory()->create([
-            'secret_type' => SecretType::ProxmoxApi,
-            'data' => ['token_id' => 'librenms@pve!monitoring', 'token_secret' => 'abc123'],
-        ]);
-        $this->proxmoxMethod = DevicePollingMethod::factory()->create([
-            'device_id' => $this->device->device_id,
-            'method_type' => PollingMethodType::ProxmoxApi,
-            'secret_id' => $secret->id,
-            'affects_availability' => false,
-            'settings' => [],
-        ]);
-        DeviceCache::setPrimary($this->device->device_id);
-    }
-
-    private function fakeApi(): void
-    {
-        Http::fake([
-            self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
-            self::API . 'nodes/localhost/certificates/info' => self::rootCa(),
-            self::API . 'cluster/resources?type=vm' => self::clusterGuests([['vmid' => 100, 'name' => 'web', 'status' => 'running'], ['vmid' => 101, 'name' => 'db', 'status' => 'stopped'], ['vmid' => 200, 'status' => 'unknown']]),
-            self::API . 'nodes/localhost/lxc' => Http::response(['data' => []]),
-            self::API . 'nodes/localhost/qemu/100/agent/get-osinfo' => Http::response(['data' => ['result' => ['pretty-name' => 'Debian GNU/Linux 12 (bookworm)']]]),
-            self::API . 'nodes/localhost/qemu?full=1' => Http::response(['data' => [
-                [
-                    'vmid' => 100, 'name' => 'web', 'cpus' => 2, 'status' => 'running', 'cpu' => 0.25, 'mem' => 1073741824, 'maxmem' => 4294967296,
-                    'disk' => 0, 'maxdisk' => 34359738368, 'netin' => 1000, 'netout' => 2000,
-                    'blockstat' => [
-                        'scsi0' => ['rd_bytes' => 100, 'wr_bytes' => 200, 'rd_operations' => 1, 'wr_operations' => 2],
-                        'scsi1' => ['rd_bytes' => 10, 'wr_bytes' => 20, 'rd_operations' => 3, 'wr_operations' => 4],
-                    ],
-                ],
-                ['vmid' => 101, 'name' => 'db', 'maxmem' => 2147483648, 'cpus' => 1, 'status' => 'stopped'],
-            ]]),
-            self::API . 'nodes/localhost/qemu/100/agent/get-fsinfo' => Http::response(['data' => ['result' => [
-                ['type' => 'ext4', 'used-bytes' => 500, 'total-bytes' => 1000],
-                ['type' => 'tmpfs', 'used-bytes' => 5, 'total-bytes' => 10],
-            ]]]),
-        ]);
-    }
-
-    public function testDiscoverAndPoll(): void
-    {
-        $this->fakeApi();
-        $module = new Vminfo;
-        $module->discover($this->os());
-
-        $vms = $this->device->vminfo()->orderBy('vmwVmVMID')->get();
-        $this->assertSame(['web', 'db'], $vms->pluck('vmwVmDisplayName')->all());
-        $this->assertSame('Debian GNU/Linux 12 (bookworm)', $vms[0]->vmwVmGuestOS);
-        $this->assertNull($vms[1]->vmwVmGuestOS);
-        $this->assertEquals(4096, $vms[0]->vmwVmMemSize);
-        $this->assertSame(PowerState::ON, $vms[0]->vmwVmState);
-        $this->assertSame(PowerState::OFF, $vms[1]->vmwVmState);
-        Http::assertSent(fn (Request $request) => $request->hasHeader('Authorization', 'PVEAPIToken=librenms@pve!monitoring=abc123'));
-
-        $written = [];
-        $datastore = Mockery::mock(WriteInterface::class);
-        $datastore->shouldReceive('write')->andReturnUsing(function (string $measurement, array $fields, array $tags) use (&$written): void {
-            $written[$measurement][$tags['id']] = $fields;
-        });
-
-        $module->poll($this->os(), $datastore);
-
-        // stopped VMs are not polled
-        $this->assertSame(['100'], array_map(strval(...), array_keys($written['vm.cpu'])));
-        $this->assertEquals(['usage' => 25], $written['vm.cpu'][100]);
-        $this->assertEquals(['used' => 1073741824, 'total' => 4294967296], $written['vm.memory'][100]);
-        $this->assertEquals(['used' => 500, 'total' => 1000], $written['vm.disk'][100]); // guest agent, pseudo filesystems skipped
-        $this->assertEquals(['in' => 1000, 'out' => 2000], $written['vm.net'][100]);
-        $this->assertSame(110, $written['vm.diskio'][100]['read_bytes']);
-        $this->assertEquals(['read_bytes' => 110, 'write_bytes' => 220], $written['vm.diskio'][100]);
-        $this->assertSame(6, $written['vm.diskops'][100]['write_ops']);
-    }
-
-    public function testUsesTheProxmoxPollingMethod(): void
-    {
-        $this->fakeApi();
-        $module = new Vminfo;
-
-        $this->assertTrue($module->shouldDiscover($this->os()));
-        $this->assertTrue($module->shouldPoll($this->os())); // a VM may migrate here
-
-        $module->discover($this->os());
-        $this->assertTrue($module->shouldPoll($this->os()));
-
-        // no Proxmox polling method
-        $this->proxmoxMethod->delete();
-        $this->assertFalse($module->shouldDiscover($this->os()));
-        $this->assertFalse($module->shouldPoll($this->os()));
-    }
-
-    public function testOnlySyncsTheVmsOfItsType(): void
-    {
-        $this->fakeApi();
-        $this->createVm('vmware', 5, 'esx-guest'); // from another source
-        $this->createVm('proxmox', 999, 'removed');
-
-        (new Vminfo)->discover($this->os());
-
-        $this->assertEqualsCanonicalizing(
-            ['-vmware-5', self::CLUSTER . '-proxmox-100', self::CLUSTER . '-proxmox-101'],
-            $this->device->vminfo()->get()->map->getCompositeKey()->all()
-        );
-    }
-
-    public function testProxmoxEnablesTheVminfoModule(): void
-    {
-        LibrenmsConfig::set('discovery_modules.vminfo', false);
-        LibrenmsConfig::set('poller_modules.vminfo', false);
-        $modules = new ModuleList;
-
-        $status = $modules->moduleStatus(ProcessType::Discovery, 'vminfo', $this->device);
-        $this->assertTrue($status->isEnabled());
-        $this->assertSame('by polling method', $status->reason());
-        $this->assertTrue($modules->moduleStatus(ProcessType::Poller, 'vminfo', $this->device)->isEnabled());
-
-        // the device setting overrides the polling method
-        $this->device->setAttrib('discover_vminfo', false);
-        $this->assertFalse($modules->moduleStatus(ProcessType::Discovery, 'vminfo', $this->device)->isEnabled());
-
-        // a disabled method does not enable modules
-        $this->proxmoxMethod->update(['enabled' => false]);
-        $device = Device::find($this->device->device_id);
-        $this->assertFalse($modules->moduleStatus(ProcessType::Poller, 'vminfo', $device)->isEnabled());
-    }
-
-    public function testDoesNotRunWhenTheApiCheckFails(): void
-    {
-        Http::fake(['*' => Http::response(null, 401)]);
-        $this->createVm('proxmox', 100, 'web');
-
-        $module = new Vminfo;
-
-        $this->assertFalse($module->shouldDiscover($this->os()));
-        $this->assertFalse($module->shouldPoll($this->os()));
-    }
-
-    public function testKeepsVmsWhenTheVmListFails(): void
-    {
-        Http::fake([
-            self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
-            self::API . 'nodes/localhost/certificates/info' => self::rootCa(),
-            self::API . 'cluster/resources?type=vm' => Http::response(null, 403),
-        ]);
-        $this->createVm('proxmox', 100, 'web');
-
-        (new Vminfo)->discover($this->os());
-
-        $this->assertSame(['web'], $this->device->vminfo()->pluck('vmwVmDisplayName')->all());
-        $this->assertSame(1, $this->device->eventlogs()->where('type', 'vminfo')->count());
-    }
-
-    public function testSkipsVmsRemovedSinceDiscovery(): void
-    {
-        Http::fake([
-            self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
-            self::API . 'nodes/localhost/certificates/info' => self::rootCa(),
-            self::API . 'nodes/localhost/qemu?full=1' => Http::response(['data' => [['vmid' => 101, 'status' => 'running', 'cpu' => 0.5]]]),
-            self::API . 'nodes/localhost/lxc' => Http::response(['data' => []]),
-            self::API . 'nodes/localhost/qemu/101/agent/get-fsinfo' => Http::response(null, 500),
-        ]);
-        $this->createVm('proxmox', 100, 'web');
-        $this->createVm('proxmox', 101, 'db');
-
-        $written = [];
-        $datastore = Mockery::mock(WriteInterface::class);
-        $datastore->shouldReceive('write')->andReturnUsing(function (string $measurement, array $fields, array $tags) use (&$written): void {
-            $written[$measurement][$tags['id']] = $fields;
-        });
-
-        (new Vminfo)->poll($this->os(), $datastore);
-
-        $this->assertSame([101], array_keys($written['vm.cpu']));
-    }
-
-    public function testPollOnlyMakesOneStatusRequestAndAsksRunningVmAgents(): void
-    {
-        $this->fakeApi();
-        $this->createVm('proxmox', 100, 'web');
-        $this->createVm('proxmox', 101, 'db');
-        $datastore = Mockery::mock(WriteInterface::class)->shouldIgnoreMissing();
-
-        (new Vminfo)->poll($this->os(), $datastore);
-
-        Http::assertSentCount(5); // the check and cluster, the VM and container lists and the agent of the running VM
-        Http::assertNotSent(fn (Request $request) => str_contains($request->url(), '/status/current'));
-        Http::assertNotSent(fn (Request $request) => str_contains($request->url(), 'qemu/101/agent'));
-    }
-
-    public function testAgentRequestsUseTheClientOptions(): void
-    {
-        $sent = [];
-        Http::fake(function (Request $request, array $options) use (&$sent) {
-            if (str_contains($request->url(), '/agent/')) {
-                $sent[] = ['auth' => $request->header('Authorization')[0] ?? null, 'verify' => $options['verify'] ?? null, 'timeout' => $options['timeout'] ?? null, 'hasProxy' => isset($options['proxy'])];
-            }
-
-            if (str_ends_with($request->url(), '/version')) {
-                return Http::response(['data' => ['version' => '8.2.4']]);
-            }
-
-            return str_ends_with($request->url(), '/certificates/info')
-                ? self::rootCa()
-                : Http::response(['data' => [['vmid' => 100, 'type' => 'qemu', 'name' => 'web', 'maxmem' => 1048576, 'cpus' => 1, 'status' => 'running']]]);
-        });
-
-        (new Vminfo)->discover($this->os());
-
-        $this->assertSame([['auth' => 'PVEAPIToken=librenms@pve!monitoring=abc123', 'verify' => true, 'timeout' => 10, 'hasProxy' => true]], $sent);
-    }
-
-    public function testWritesToTheFileTheGraphsRead(): void
-    {
-        $this->fakeApi();
-        $this->createVm('proxmox', 100, 'web');
-        $vm = $this->device->vminfo()->first();
-
-        $files = [];
-        $datastore = Mockery::mock(WriteInterface::class);
-        $datastore->shouldReceive('write')->andReturnUsing(function (string $measurement, array $fields, array $tags, array $meta) use (&$files): void {
-            $files[$measurement] = Rrd::metricName($meta['metric'])->relativePath();
-        });
-
-        (new Vminfo)->poll($this->os(), $datastore);
-
-        $this->assertCount(6, $files);
-        foreach ($files as $measurement => $file) {
-            $this->assertSame(Rrd::name(self::CLUSTER, "$measurement-proxmox-100")->relativePath(), $file);
-            $this->assertSame($file, Rrd::metricName($vm->metricIdentity($measurement))->relativePath());
-        }
-    }
-
-    private function fakeContainers(): void
-    {
-        $containers = [
+    Http::fake([
+        self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
+        self::API . 'nodes/localhost/certificates/info' => rootCa(),
+        self::API . 'cluster/resources?type=vm' => clusterGuests([['vmid' => 100, 'name' => 'web', 'status' => 'running'], ['vmid' => 101, 'name' => 'db', 'status' => 'stopped'], ['vmid' => 200, 'status' => 'unknown']]),
+        self::API . 'nodes/localhost/lxc' => Http::response(['data' => []]),
+        self::API . 'nodes/localhost/qemu/100/agent/get-osinfo' => Http::response(['data' => ['result' => ['pretty-name' => 'Debian GNU/Linux 12 (bookworm)']]]),
+        self::API . 'nodes/localhost/qemu?full=1' => Http::response(['data' => [
             [
-                'vmid' => 126, 'name' => 'test', 'type' => 'lxc', 'status' => 'running', 'cpus' => 1, 'cpu' => 0.5,
-                'mem' => 2310144, 'maxmem' => 536870912, 'disk' => 13864960, 'maxdisk' => 8350298112,
-                'netin' => 218508, 'netout' => 866, 'diskread' => 5128192, 'diskwrite' => 16384,
+                'vmid' => 100, 'name' => 'web', 'cpus' => 2, 'status' => 'running', 'cpu' => 0.25, 'mem' => 1073741824, 'maxmem' => 4294967296,
+                'disk' => 0, 'maxdisk' => 34359738368, 'netin' => 1000, 'netout' => 2000,
+                'blockstat' => [
+                    'scsi0' => ['rd_bytes' => 100, 'wr_bytes' => 200, 'rd_operations' => 1, 'wr_operations' => 2],
+                    'scsi1' => ['rd_bytes' => 10, 'wr_bytes' => 20, 'rd_operations' => 3, 'wr_operations' => 4],
+                ],
             ],
-            ['vmid' => 127, 'name' => 'off', 'type' => 'lxc', 'status' => 'stopped', 'cpus' => 2, 'maxmem' => 1073741824],
-        ];
+            ['vmid' => 101, 'name' => 'db', 'maxmem' => 2147483648, 'cpus' => 1, 'status' => 'stopped'],
+        ]]),
+        self::API . 'nodes/localhost/qemu/100/agent/get-fsinfo' => Http::response(['data' => ['result' => [
+            ['type' => 'ext4', 'used-bytes' => 500, 'total-bytes' => 1000],
+            ['type' => 'tmpfs', 'used-bytes' => 5, 'total-bytes' => 10],
+        ]]]),
+    ]);
+}
 
-        Http::fake([
-            self::API . 'version' => Http::response(['data' => ['version' => '9.2.24']]),
-            self::API . 'nodes/localhost/certificates/info' => self::rootCa(),
-            self::API . 'nodes/localhost/qemu?full=1' => Http::response(['data' => [
-                ['vmid' => 100, 'name' => 'web', 'maxmem' => 4294967296, 'cpus' => 2, 'status' => 'stopped'],
-            ]]),
-            self::API . 'cluster/resources?type=vm' => self::clusterGuests([['vmid' => 100, 'name' => 'web', 'maxmem' => 4294967296, 'cpus' => 2, 'status' => 'stopped']], $containers),
-            self::API . 'nodes/localhost/lxc' => Http::response(['data' => $containers]),
-            self::API . 'nodes/localhost/lxc/126/config' => Http::response(['data' => ['ostype' => 'alpine']]),
-            self::API . 'nodes/localhost/lxc/127/config' => Http::response(null, 500),
-        ]);
-    }
+test('discover and poll', function () {
+    fakeApi();
+    $module = new Vminfo;
+    $module->discover(os());
 
-    public function testDiscoversContainers(): void
-    {
-        $this->fakeContainers();
+    $vms = $this->device->vminfo()->orderBy('vmwVmVMID')->get();
+    expect($vms->pluck('vmwVmDisplayName')->all())->toBe(['web', 'db']);
+    expect($vms[0]->vmwVmGuestOS)->toBe('Debian GNU/Linux 12 (bookworm)');
+    expect($vms[1]->vmwVmGuestOS)->toBeNull();
+    expect($vms[0]->vmwVmMemSize)->toEqual(4096);
+    expect($vms[0]->vmwVmState)->toBe(PowerState::ON);
+    expect($vms[1]->vmwVmState)->toBe(PowerState::OFF);
+    Http::assertSent(fn (Request $request) => $request->hasHeader('Authorization', 'PVEAPIToken=librenms@pve!monitoring=abc123'));
 
-        (new Vminfo)->discover($this->os());
+    $written = [];
+    $datastore = Mockery::mock(WriteInterface::class);
+    $datastore->shouldReceive('write')->andReturnUsing(function (string $measurement, array $fields, array $tags) use (&$written): void {
+        $written[$measurement][$tags['id']] = $fields;
+    });
 
-        $containers = $this->device->vminfo()->where('vm_type', 'proxmox-lxc')->orderBy('vmwVmVMID')->get();
-        $this->assertSame(['test', 'off'], $containers->pluck('vmwVmDisplayName')->all());
-        $this->assertSame(['alpine', null], $containers->pluck('vmwVmGuestOS')->all());
-        $this->assertEquals(512, $containers[0]->vmwVmMemSize);
-        $this->assertSame(PowerState::ON, $containers[0]->vmwVmState);
-        $this->assertSame(PowerState::OFF, $containers[1]->vmwVmState);
-        $this->assertSame(1, $this->device->vminfo()->where('vm_type', 'proxmox')->count());
-    }
+    $module->poll(os(), $datastore);
 
-    public function testPollsContainersWithoutTheAgent(): void
-    {
-        $this->fakeContainers();
-        $this->createVm('proxmox-lxc', 126, 'test');
-        $this->createVm('proxmox-lxc', 127, 'off');
+    // stopped VMs are not polled
+    expect(array_map(strval(...), array_keys($written['vm.cpu'])))->toBe(['100']);
+    expect($written['vm.cpu'][100])->toEqual(['usage' => 25]);
+    expect($written['vm.memory'][100])->toEqual(['used' => 1073741824, 'total' => 4294967296]);
+    expect($written['vm.disk'][100])->toEqual(['used' => 500, 'total' => 1000]);
+    // guest agent, pseudo filesystems skipped
+    expect($written['vm.net'][100])->toEqual(['in' => 1000, 'out' => 2000]);
+    expect($written['vm.diskio'][100]['read_bytes'])->toBe(110);
+    expect($written['vm.diskio'][100])->toEqual(['read_bytes' => 110, 'write_bytes' => 220]);
+    expect($written['vm.diskops'][100]['write_ops'])->toBe(6);
+});
 
-        $written = [];
-        $datastore = Mockery::mock(WriteInterface::class);
-        $datastore->shouldReceive('write')->andReturnUsing(function (string $measurement, array $fields, array $tags) use (&$written): void {
-            $written[$measurement][$tags['id']] = $fields;
-        });
+test('uses the proxmox polling method', function () {
+    fakeApi();
+    $module = new Vminfo;
 
-        (new Vminfo)->poll($this->os(), $datastore);
+    expect($module->shouldDiscover(os()))->toBeTrue();
+    expect($module->shouldPoll(os()))->toBeTrue();
 
-        $this->assertSame([126], array_keys($written['vm.cpu']));
-        $this->assertEquals(['usage' => 50], $written['vm.cpu'][126]);
-        $this->assertEquals(['used' => 2310144, 'total' => 536870912], $written['vm.memory'][126]);
-        $this->assertEquals(['used' => 13864960, 'total' => 8350298112], $written['vm.disk'][126]);
-        $this->assertEquals(['read_bytes' => 5128192, 'write_bytes' => 16384], $written['vm.diskio'][126]);
-        $this->assertEquals(['in' => 218508, 'out' => 866], $written['vm.net'][126]);
-        $this->assertArrayNotHasKey('vm.diskops', $written);
-        $this->assertSame(PowerState::OFF, $this->device->vminfo()->where('vmwVmVMID', 127)->first()->vmwVmState);
-        Http::assertNotSent(fn (Request $request) => str_contains($request->url(), '/agent/'));
-    }
+    // a VM may migrate here
+    $module->discover(os());
+    expect($module->shouldPoll(os()))->toBeTrue();
 
-    public function testKeepsTheGuestOsWhenItCanNotBeRead(): void
-    {
-        $this->fakeApi();
-        $this->createVm('proxmox', 101, 'db');
-        $this->device->vminfo()->where('vmwVmVMID', 101)->update(['vmwVmGuestOS' => 'Arch Linux']);
+    // no Proxmox polling method
+    $this->proxmoxMethod->delete();
+    expect($module->shouldDiscover(os()))->toBeFalse();
+    expect($module->shouldPoll(os()))->toBeFalse();
+});
 
-        (new Vminfo)->discover($this->os());
+test('only syncs the vms of its type', function () {
+    fakeApi();
+    createVm('vmware', 5, 'esx-guest');
+    // from another source
+    createVm('proxmox', 999, 'removed');
 
-        $this->assertSame('Arch Linux', $this->device->vminfo()->where('vmwVmVMID', 101)->first()->vmwVmGuestOS);
-    }
+    (new Vminfo)->discover(os());
 
-    public function testPausedVmIsSuspendedAndHasNoMetricsOrAgentCalls(): void
-    {
-        Http::fake([
-            self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
-            self::API . 'nodes/localhost/certificates/info' => self::rootCa(),
-            self::API . 'nodes/localhost/qemu?full=1' => Http::response(['data' => [
-                ['vmid' => 100, 'name' => 'web', 'maxmem' => 1048576, 'cpus' => 1, 'status' => 'running', 'qmpstatus' => 'paused', 'cpu' => 0.5],
-            ]]),
-            self::API . 'cluster/resources?type=vm' => self::clusterGuests([['vmid' => 100, 'name' => 'web', 'status' => 'running']]),
-            self::API . 'nodes/localhost/lxc' => Http::response(['data' => []]),
-        ]);
-        $module = new Vminfo;
+    expect($this->device->vminfo()->get()->map->getCompositeKey()->all())->toEqualCanonicalizing(['-vmware-5', self::CLUSTER . '-proxmox-100', self::CLUSTER . '-proxmox-101']);
+});
 
-        $module->discover($this->os());
-        $this->assertSame(PowerState::SUSPENDED, $this->device->vminfo()->first()->vmwVmState);
+test('proxmox enables the vminfo module', function () {
+    LibrenmsConfig::set('discovery_modules.vminfo', false);
+    LibrenmsConfig::set('poller_modules.vminfo', false);
+    $modules = new ModuleList;
 
-        $datastore = Mockery::mock(WriteInterface::class);
-        $datastore->shouldNotReceive('write');
-        $module->poll($this->os(), $datastore);
+    $status = $modules->moduleStatus(ProcessType::Discovery, 'vminfo', $this->device);
+    expect($status->isEnabled())->toBeTrue();
+    expect($status->reason())->toBe('by polling method');
+    expect($modules->moduleStatus(ProcessType::Poller, 'vminfo', $this->device)->isEnabled())->toBeTrue();
 
-        $this->assertSame(PowerState::SUSPENDED, $this->device->vminfo()->first()->vmwVmState);
-        Http::assertNotSent(fn (Request $request) => str_contains($request->url(), '/agent/'));
-    }
+    // the device setting overrides the polling method
+    $this->device->setAttrib('discover_vminfo', false);
+    expect($modules->moduleStatus(ProcessType::Discovery, 'vminfo', $this->device)->isEnabled())->toBeFalse();
 
-    public function testTemplatesAreNotDiscovered(): void
-    {
-        Http::fake([
-            self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
-            self::API . 'nodes/localhost/certificates/info' => self::rootCa(),
-            self::API . 'nodes/localhost/qemu?full=1' => Http::response(['data' => [
-                ['vmid' => 100, 'name' => 'web', 'maxmem' => 1048576, 'cpus' => 1, 'status' => 'stopped'],
-                ['vmid' => 900, 'name' => 'vm-template', 'maxmem' => 1048576, 'cpus' => 1, 'status' => 'stopped', 'template' => 1],
-            ]]),
-            self::API . 'cluster/resources?type=vm' => self::clusterGuests(
-                [['vmid' => 100, 'name' => 'web', 'status' => 'stopped'], ['vmid' => 900, 'name' => 'vm-template', 'status' => 'stopped', 'template' => 1]],
-                [['vmid' => 901, 'name' => 'ct-template', 'status' => 'stopped', 'template' => 1]],
-            ),
-            self::API . 'nodes/localhost/lxc' => Http::response(['data' => [
-                ['vmid' => 901, 'name' => 'ct-template', 'maxmem' => 1048576, 'cpus' => 1, 'status' => 'stopped', 'template' => 1],
-            ]]),
-        ]);
+    // a disabled method does not enable modules
+    $this->proxmoxMethod->update(['enabled' => false]);
+    $device = Device::find($this->device->device_id);
+    expect($modules->moduleStatus(ProcessType::Poller, 'vminfo', $device)->isEnabled())->toBeFalse();
+});
 
-        (new Vminfo)->discover($this->os());
+test('does not run when the api check fails', function () {
+    Http::fake(['*' => Http::response(null, 401)]);
+    createVm('proxmox', 100, 'web');
 
-        $this->assertSame(['web'], $this->device->vminfo()->pluck('vmwVmDisplayName')->all());
-    }
+    $module = new Vminfo;
 
-    /**
-     * @param  list<array<string, mixed>>  $filesystems
-     * @return array<string, mixed>
-     */
-    private function pollVmDisk(array $filesystems): array
-    {
-        Http::fake([
-            self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
-            self::API . 'nodes/localhost/certificates/info' => self::rootCa(),
-            self::API . 'nodes/localhost/qemu?full=1' => Http::response(['data' => [['vmid' => 100, 'status' => 'running', 'disk' => 5, 'maxdisk' => 10]]]),
-            self::API . 'nodes/localhost/lxc' => Http::response(['data' => []]),
-            self::API . 'nodes/localhost/qemu/100/agent/get-fsinfo' => Http::response(['data' => ['result' => $filesystems]]),
-        ]);
-        $this->createVm('proxmox', 100, 'web');
+    expect($module->shouldDiscover(os()))->toBeFalse();
+    expect($module->shouldPoll(os()))->toBeFalse();
+});
 
-        $disk = [];
-        $datastore = Mockery::mock(WriteInterface::class);
-        $datastore->shouldReceive('write')->andReturnUsing(function (string $measurement, array $fields) use (&$disk): void {
-            if ($measurement === 'vm.disk') {
-                $disk = $fields;
-            }
-        });
+test('keeps vms when the vm list fails', function () {
+    Http::fake([
+        self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
+        self::API . 'nodes/localhost/certificates/info' => rootCa(),
+        self::API . 'cluster/resources?type=vm' => Http::response(null, 403),
+    ]);
+    createVm('proxmox', 100, 'web');
 
-        (new Vminfo)->poll($this->os(), $datastore);
+    (new Vminfo)->discover(os());
 
-        return $disk;
-    }
+    expect($this->device->vminfo()->pluck('vmwVmDisplayName')->all())->toBe(['web']);
+    expect($this->device->eventlogs()->where('type', 'vminfo')->count())->toBe(1);
+});
 
-    public function testFilesystemsWithoutSizesFallBackToTheHost(): void
-    {
-        $disk = $this->pollVmDisk([
-            ['name' => 'vol1', 'mountpoint' => 'System Reserved', 'type' => 'NTFS'],
-            ['name' => 'loop0', 'mountpoint' => '/snap/core', 'type' => 'squashfs', 'used-bytes' => 5, 'total-bytes' => 5],
-        ]);
+test('skips vms removed since discovery', function () {
+    Http::fake([
+        self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
+        self::API . 'nodes/localhost/certificates/info' => rootCa(),
+        self::API . 'nodes/localhost/qemu?full=1' => Http::response(['data' => [['vmid' => 101, 'status' => 'running', 'cpu' => 0.5]]]),
+        self::API . 'nodes/localhost/lxc' => Http::response(['data' => []]),
+        self::API . 'nodes/localhost/qemu/101/agent/get-fsinfo' => Http::response(null, 500),
+    ]);
+    createVm('proxmox', 100, 'web');
+    createVm('proxmox', 101, 'db');
 
-        $this->assertEquals(['used' => 5, 'total' => 10], $disk);
-    }
+    $written = [];
+    $datastore = Mockery::mock(WriteInterface::class);
+    $datastore->shouldReceive('write')->andReturnUsing(function (string $measurement, array $fields, array $tags) use (&$written): void {
+        $written[$measurement][$tags['id']] = $fields;
+    });
 
-    public function testMountsOfOneDeviceAreCountedOnce(): void
-    {
-        $disk = $this->pollVmDisk([
-            ['name' => 'sda1', 'mountpoint' => '/', 'type' => 'btrfs', 'used-bytes' => 100, 'total-bytes' => 1000],
-            ['name' => 'sda1', 'mountpoint' => '/home', 'type' => 'btrfs', 'used-bytes' => 100, 'total-bytes' => 1000],
-            ['name' => 'sdb1', 'mountpoint' => '/data', 'type' => 'ext4', 'used-bytes' => 20, 'total-bytes' => 200],
-        ]);
+    (new Vminfo)->poll(os(), $datastore);
 
-        $this->assertEquals(['used' => 120, 'total' => 1200], $disk);
-    }
+    expect(array_keys($written['vm.cpu']))->toBe([101]);
+});
 
-    public function testPollUpdatesThePowerState(): void
-    {
-        Http::fake([
-            self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
-            self::API . 'nodes/localhost/certificates/info' => self::rootCa(),
-            self::API . 'nodes/localhost/qemu?full=1' => Http::response(['data' => [['vmid' => 100, 'status' => 'stopped']]]),
-            self::API . 'nodes/localhost/lxc' => Http::response(['data' => []]),
-        ]);
-        $this->createVm('proxmox', 100, 'web');
+test('poll only makes one status request and asks running vm agents', function () {
+    fakeApi();
+    createVm('proxmox', 100, 'web');
+    createVm('proxmox', 101, 'db');
+    $datastore = Mockery::mock(WriteInterface::class)->shouldIgnoreMissing();
 
-        (new Vminfo)->poll($this->os(), Mockery::mock(WriteInterface::class));
+    (new Vminfo)->poll(os(), $datastore);
 
-        $this->assertSame(PowerState::OFF, $this->device->vminfo()->first()->vmwVmState);
-    }
+    Http::assertSentCount(5);
+    // the check and cluster, the VM and container lists and the agent of the running VM
+    Http::assertNotSent(fn (Request $request) => str_contains($request->url(), '/status/current'));
+    Http::assertNotSent(fn (Request $request) => str_contains($request->url(), 'qemu/101/agent'));
+});
 
-    public function testStuckGuestAgentDoesNotFailTheOtherVms(): void
-    {
-        Http::fake([
-            self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
-            self::API . 'nodes/localhost/certificates/info' => self::rootCa(),
-            self::API . 'nodes/localhost/qemu?full=1' => Http::response(['data' => [
-                ['vmid' => 100, 'name' => 'web', 'maxmem' => 4294967296, 'cpus' => 2, 'status' => 'running', 'disk' => 5, 'maxdisk' => 10],
-            ]]),
-            self::API . 'cluster/resources?type=vm' => self::clusterGuests([['vmid' => 100, 'name' => 'web', 'status' => 'running']]),
-            self::API . 'nodes/localhost/lxc' => Http::response(['data' => []]),
-            self::API . 'nodes/localhost/qemu/100/agent/*' => Http::failedConnection(),
-        ]);
-        $module = new Vminfo;
-
-        $module->discover($this->os());
-        $this->assertNull($this->device->vminfo()->first()->vmwVmGuestOS);
-
-        $written = [];
-        $datastore = Mockery::mock(WriteInterface::class);
-        $datastore->shouldReceive('write')->andReturnUsing(function (string $measurement, array $fields, array $tags) use (&$written): void {
-            $written[$measurement][$tags['id']] = $fields;
-        });
-
-        $module->poll($this->os(), $datastore);
-
-        $this->assertEquals(['used' => 5, 'total' => 10], $written['vm.disk'][100]); // hypervisor fallback
-    }
-
-    public function testCountersDiscardResetsWhenAVmRestarts(): void
-    {
-        $this->fakeApi();
-        $this->createVm('proxmox', 100, 'web');
-
-        $definitions = [];
-        $datastore = Mockery::mock(WriteInterface::class);
-        $datastore->shouldReceive('write')->andReturnUsing(function (string $measurement, array $fields, array $tags, array $meta) use (&$definitions): void {
-            $definitions[$measurement] = (string) $meta['rrd_def'];
-        });
-
-        (new Vminfo)->poll($this->os(), $datastore);
-
-        foreach (['vm.net', 'vm.diskio', 'vm.diskops'] as $metric) {
-            $this->assertStringContainsString(':DERIVE:', $definitions[$metric]);
-            $this->assertStringNotContainsString(':COUNTER:', $definitions[$metric]);
+test('agent requests use the client options', function () {
+    $sent = [];
+    Http::fake(function (Request $request, array $options) use (&$sent) {
+        if (str_contains($request->url(), '/agent/')) {
+            $sent[] = ['auth' => $request->header('Authorization')[0] ?? null, 'verify' => $options['verify'] ?? null, 'timeout' => $options['timeout'] ?? null, 'hasProxy' => isset($options['proxy'])];
         }
+
+        if (str_ends_with($request->url(), '/version')) {
+            return Http::response(['data' => ['version' => '8.2.4']]);
+        }
+
+        return str_ends_with($request->url(), '/certificates/info')
+            ? rootCa()
+            : Http::response(['data' => [['vmid' => 100, 'type' => 'qemu', 'name' => 'web', 'maxmem' => 1048576, 'cpus' => 1, 'status' => 'running']]]);
+    });
+
+    (new Vminfo)->discover(os());
+
+    expect($sent)->toBe([['auth' => 'PVEAPIToken=librenms@pve!monitoring=abc123', 'verify' => true, 'timeout' => 10, 'hasProxy' => true]]);
+});
+
+test('writes to the file the graphs read', function () {
+    fakeApi();
+    createVm('proxmox', 100, 'web');
+    $vm = $this->device->vminfo()->first();
+
+    $files = [];
+    $datastore = Mockery::mock(WriteInterface::class);
+    $datastore->shouldReceive('write')->andReturnUsing(function (string $measurement, array $fields, array $tags, array $meta) use (&$files): void {
+        $files[$measurement] = Rrd::metricName($meta['metric'])->relativePath();
+    });
+
+    (new Vminfo)->poll(os(), $datastore);
+
+    expect($files)->toHaveCount(6);
+    foreach ($files as $measurement => $file) {
+        expect($file)->toBe(Rrd::name(self::CLUSTER, "$measurement-proxmox-100")->relativePath());
+        expect(Rrd::metricName($vm->metricIdentity($measurement))->relativePath())->toBe($file);
     }
+});
 
-    public function testPollClaimsAVmThatMigratedHere(): void
-    {
-        $this->fakeApi();
-        $other = Device::factory()->create(['hostname' => 'pve2.example.com']);
-        $vm = $this->createVmOn($other, self::CLUSTER, 100);
-        $metrics = [];
-        $datastore = Mockery::mock(WriteInterface::class);
-        $datastore->shouldReceive('write')->andReturnUsing(function (string $measurement, array $fields, array $tags, array $meta) use (&$metrics): void {
-            $metrics[$measurement] = $meta['metric']->group();
-        });
+function fakeContainers(): void
+{
+    $containers = [
+        [
+            'vmid' => 126, 'name' => 'test', 'type' => 'lxc', 'status' => 'running', 'cpus' => 1, 'cpu' => 0.5,
+            'mem' => 2310144, 'maxmem' => 536870912, 'disk' => 13864960, 'maxdisk' => 8350298112,
+            'netin' => 218508, 'netout' => 866, 'diskread' => 5128192, 'diskwrite' => 16384,
+        ],
+        ['vmid' => 127, 'name' => 'off', 'type' => 'lxc', 'status' => 'stopped', 'cpus' => 2, 'maxmem' => 1073741824],
+    ];
 
-        (new Vminfo)->poll($this->os(), $datastore);
+    Http::fake([
+        self::API . 'version' => Http::response(['data' => ['version' => '9.2.24']]),
+        self::API . 'nodes/localhost/certificates/info' => rootCa(),
+        self::API . 'nodes/localhost/qemu?full=1' => Http::response(['data' => [
+            ['vmid' => 100, 'name' => 'web', 'maxmem' => 4294967296, 'cpus' => 2, 'status' => 'stopped'],
+        ]]),
+        self::API . 'cluster/resources?type=vm' => clusterGuests([['vmid' => 100, 'name' => 'web', 'maxmem' => 4294967296, 'cpus' => 2, 'status' => 'stopped']], $containers),
+        self::API . 'nodes/localhost/lxc' => Http::response(['data' => $containers]),
+        self::API . 'nodes/localhost/lxc/126/config' => Http::response(['data' => ['ostype' => 'alpine']]),
+        self::API . 'nodes/localhost/lxc/127/config' => Http::response(null, 500),
+    ]);
+}
 
-        $this->assertSame($this->device->device_id, $vm->refresh()->device_id); // the same row
-        $this->assertSame(self::CLUSTER, $metrics['vm.cpu']); // the same files
-        $this->assertSame(1, $this->device->eventlogs()->where('message', 'Virtual Machine migrated: migrated from pve2.example.com')->count());
+test('discovers containers', function () {
+    fakeContainers();
+
+    (new Vminfo)->discover(os());
+
+    $containers = $this->device->vminfo()->where('vm_type', 'proxmox-lxc')->orderBy('vmwVmVMID')->get();
+    expect($containers->pluck('vmwVmDisplayName')->all())->toBe(['test', 'off']);
+    expect($containers->pluck('vmwVmGuestOS')->all())->toBe(['alpine', null]);
+    expect($containers[0]->vmwVmMemSize)->toEqual(512);
+    expect($containers[0]->vmwVmState)->toBe(PowerState::ON);
+    expect($containers[1]->vmwVmState)->toBe(PowerState::OFF);
+    expect($this->device->vminfo()->where('vm_type', 'proxmox')->count())->toBe(1);
+});
+
+test('polls containers without the agent', function () {
+    fakeContainers();
+    createVm('proxmox-lxc', 126, 'test');
+    createVm('proxmox-lxc', 127, 'off');
+
+    $written = [];
+    $datastore = Mockery::mock(WriteInterface::class);
+    $datastore->shouldReceive('write')->andReturnUsing(function (string $measurement, array $fields, array $tags) use (&$written): void {
+        $written[$measurement][$tags['id']] = $fields;
+    });
+
+    (new Vminfo)->poll(os(), $datastore);
+
+    expect(array_keys($written['vm.cpu']))->toBe([126]);
+    expect($written['vm.cpu'][126])->toEqual(['usage' => 50]);
+    expect($written['vm.memory'][126])->toEqual(['used' => 2310144, 'total' => 536870912]);
+    expect($written['vm.disk'][126])->toEqual(['used' => 13864960, 'total' => 8350298112]);
+    expect($written['vm.diskio'][126])->toEqual(['read_bytes' => 5128192, 'write_bytes' => 16384]);
+    expect($written['vm.net'][126])->toEqual(['in' => 218508, 'out' => 866]);
+    $this->assertArrayNotHasKey('vm.diskops', $written);
+    expect($this->device->vminfo()->where('vmwVmVMID', 127)->first()->vmwVmState)->toBe(PowerState::OFF);
+    Http::assertNotSent(fn (Request $request) => str_contains($request->url(), '/agent/'));
+});
+
+test('keeps the guest os when it can not be read', function () {
+    fakeApi();
+    createVm('proxmox', 101, 'db');
+    $this->device->vminfo()->where('vmwVmVMID', 101)->update(['vmwVmGuestOS' => 'Arch Linux']);
+
+    (new Vminfo)->discover(os());
+
+    expect($this->device->vminfo()->where('vmwVmVMID', 101)->first()->vmwVmGuestOS)->toBe('Arch Linux');
+});
+
+test('paused vm is suspended and has no metrics or agent calls', function () {
+    Http::fake([
+        self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
+        self::API . 'nodes/localhost/certificates/info' => rootCa(),
+        self::API . 'nodes/localhost/qemu?full=1' => Http::response(['data' => [
+            ['vmid' => 100, 'name' => 'web', 'maxmem' => 1048576, 'cpus' => 1, 'status' => 'running', 'qmpstatus' => 'paused', 'cpu' => 0.5],
+        ]]),
+        self::API . 'cluster/resources?type=vm' => clusterGuests([['vmid' => 100, 'name' => 'web', 'status' => 'running']]),
+        self::API . 'nodes/localhost/lxc' => Http::response(['data' => []]),
+    ]);
+    $module = new Vminfo;
+
+    $module->discover(os());
+    expect($this->device->vminfo()->first()->vmwVmState)->toBe(PowerState::SUSPENDED);
+
+    $datastore = Mockery::mock(WriteInterface::class);
+    $datastore->shouldNotReceive('write');
+    $module->poll(os(), $datastore);
+
+    expect($this->device->vminfo()->first()->vmwVmState)->toBe(PowerState::SUSPENDED);
+    Http::assertNotSent(fn (Request $request) => str_contains($request->url(), '/agent/'));
+});
+
+test('templates are not discovered', function () {
+    Http::fake([
+        self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
+        self::API . 'nodes/localhost/certificates/info' => rootCa(),
+        self::API . 'nodes/localhost/qemu?full=1' => Http::response(['data' => [
+            ['vmid' => 100, 'name' => 'web', 'maxmem' => 1048576, 'cpus' => 1, 'status' => 'stopped'],
+            ['vmid' => 900, 'name' => 'vm-template', 'maxmem' => 1048576, 'cpus' => 1, 'status' => 'stopped', 'template' => 1],
+        ]]),
+        self::API . 'cluster/resources?type=vm' => clusterGuests([['vmid' => 100, 'name' => 'web', 'status' => 'stopped'], ['vmid' => 900, 'name' => 'vm-template', 'status' => 'stopped', 'template' => 1]], [['vmid' => 901, 'name' => 'ct-template', 'status' => 'stopped', 'template' => 1]]),
+        self::API . 'nodes/localhost/lxc' => Http::response(['data' => [
+            ['vmid' => 901, 'name' => 'ct-template', 'maxmem' => 1048576, 'cpus' => 1, 'status' => 'stopped', 'template' => 1],
+        ]]),
+    ]);
+
+    (new Vminfo)->discover(os());
+
+    expect($this->device->vminfo()->pluck('vmwVmDisplayName')->all())->toBe(['web']);
+});
+
+/**
+ * @param  list<array<string, mixed>>  $filesystems
+ * @return array<string, mixed>
+ */
+function pollVmDisk(array $filesystems): array
+{
+    Http::fake([
+        self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
+        self::API . 'nodes/localhost/certificates/info' => rootCa(),
+        self::API . 'nodes/localhost/qemu?full=1' => Http::response(['data' => [['vmid' => 100, 'status' => 'running', 'disk' => 5, 'maxdisk' => 10]]]),
+        self::API . 'nodes/localhost/lxc' => Http::response(['data' => []]),
+        self::API . 'nodes/localhost/qemu/100/agent/get-fsinfo' => Http::response(['data' => ['result' => $filesystems]]),
+    ]);
+    createVm('proxmox', 100, 'web');
+
+    $disk = [];
+    $datastore = Mockery::mock(WriteInterface::class);
+    $datastore->shouldReceive('write')->andReturnUsing(function (string $measurement, array $fields) use (&$disk): void {
+        if ($measurement === 'vm.disk') {
+            $disk = $fields;
+        }
+    });
+
+    (new Vminfo)->poll(os(), $datastore);
+
+    return $disk;
+}
+
+test('filesystems without sizes fall back to the host', function () {
+    $disk = pollVmDisk([
+        ['name' => 'vol1', 'mountpoint' => 'System Reserved', 'type' => 'NTFS'],
+        ['name' => 'loop0', 'mountpoint' => '/snap/core', 'type' => 'squashfs', 'used-bytes' => 5, 'total-bytes' => 5],
+    ]);
+
+    expect($disk)->toEqual(['used' => 5, 'total' => 10]);
+});
+
+test('mounts of one device are counted once', function () {
+    $disk = pollVmDisk([
+        ['name' => 'sda1', 'mountpoint' => '/', 'type' => 'btrfs', 'used-bytes' => 100, 'total-bytes' => 1000],
+        ['name' => 'sda1', 'mountpoint' => '/home', 'type' => 'btrfs', 'used-bytes' => 100, 'total-bytes' => 1000],
+        ['name' => 'sdb1', 'mountpoint' => '/data', 'type' => 'ext4', 'used-bytes' => 20, 'total-bytes' => 200],
+    ]);
+
+    expect($disk)->toEqual(['used' => 120, 'total' => 1200]);
+});
+
+test('poll updates the power state', function () {
+    Http::fake([
+        self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
+        self::API . 'nodes/localhost/certificates/info' => rootCa(),
+        self::API . 'nodes/localhost/qemu?full=1' => Http::response(['data' => [['vmid' => 100, 'status' => 'stopped']]]),
+        self::API . 'nodes/localhost/lxc' => Http::response(['data' => []]),
+    ]);
+    createVm('proxmox', 100, 'web');
+
+    (new Vminfo)->poll(os(), Mockery::mock(WriteInterface::class));
+
+    expect($this->device->vminfo()->first()->vmwVmState)->toBe(PowerState::OFF);
+});
+
+test('stuck guest agent does not fail the other vms', function () {
+    Http::fake([
+        self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
+        self::API . 'nodes/localhost/certificates/info' => rootCa(),
+        self::API . 'nodes/localhost/qemu?full=1' => Http::response(['data' => [
+            ['vmid' => 100, 'name' => 'web', 'maxmem' => 4294967296, 'cpus' => 2, 'status' => 'running', 'disk' => 5, 'maxdisk' => 10],
+        ]]),
+        self::API . 'cluster/resources?type=vm' => clusterGuests([['vmid' => 100, 'name' => 'web', 'status' => 'running']]),
+        self::API . 'nodes/localhost/lxc' => Http::response(['data' => []]),
+        self::API . 'nodes/localhost/qemu/100/agent/*' => Http::failedConnection(),
+    ]);
+    $module = new Vminfo;
+
+    $module->discover(os());
+    expect($this->device->vminfo()->first()->vmwVmGuestOS)->toBeNull();
+
+    $written = [];
+    $datastore = Mockery::mock(WriteInterface::class);
+    $datastore->shouldReceive('write')->andReturnUsing(function (string $measurement, array $fields, array $tags) use (&$written): void {
+        $written[$measurement][$tags['id']] = $fields;
+    });
+
+    $module->poll(os(), $datastore);
+
+    expect($written['vm.disk'][100])->toEqual(['used' => 5, 'total' => 10]);
+    // hypervisor fallback
+});
+
+test('counters discard resets when avm restarts', function () {
+    fakeApi();
+    createVm('proxmox', 100, 'web');
+
+    $definitions = [];
+    $datastore = Mockery::mock(WriteInterface::class);
+    $datastore->shouldReceive('write')->andReturnUsing(function (string $measurement, array $fields, array $tags, array $meta) use (&$definitions): void {
+        $definitions[$measurement] = (string) $meta['rrd_def'];
+    });
+
+    (new Vminfo)->poll(os(), $datastore);
+
+    foreach (['vm.net', 'vm.diskio', 'vm.diskops'] as $metric) {
+        $this->assertStringContainsString(':DERIVE:', $definitions[$metric]);
+        $this->assertStringNotContainsString(':COUNTER:', $definitions[$metric]);
     }
+});
 
-    public function testDiscoveryClaimsAVmThatMigratedHere(): void
-    {
-        $this->fakeApi();
-        $vm = $this->createVmOn(Device::factory()->create(), self::CLUSTER, 100);
+test('poll claims avm that migrated here', function () {
+    fakeApi();
+    $other = Device::factory()->create(['hostname' => 'pve2.example.com']);
+    $vm = createVmOn($other, self::CLUSTER, 100);
+    $metrics = [];
+    $datastore = Mockery::mock(WriteInterface::class);
+    $datastore->shouldReceive('write')->andReturnUsing(function (string $measurement, array $fields, array $tags, array $meta) use (&$metrics): void {
+        $metrics[$measurement] = $meta['metric']->group();
+    });
 
-        (new Vminfo)->discover($this->os());
+    (new Vminfo)->poll(os(), $datastore);
 
-        $this->assertSame($this->device->device_id, $vm->refresh()->device_id);
-        $this->assertSame('web', $vm->vmwVmDisplayName);
-        $this->assertSame(1, VminfoModel::where('vmwVmVMID', 100)->count());
-    }
+    expect($vm->refresh()->device_id)->toBe($this->device->device_id);
+    // the same row
+    expect($metrics['vm.cpu'])->toBe(self::CLUSTER);
+    // the same files
+    expect($this->device->eventlogs()->where('message', 'Virtual Machine migrated: migrated from pve2.example.com')->count())->toBe(1);
+});
 
-    public function testDoesNotClaimTheVmOfAnotherCluster(): void
-    {
-        $this->fakeApi();
-        $other = Device::factory()->create();
-        $vm = $this->createVmOn($other, 'proxmox-another', 100);
+test('discovery claims avm that migrated here', function () {
+    fakeApi();
+    $vm = createVmOn(Device::factory()->create(), self::CLUSTER, 100);
 
-        (new Vminfo)->discover($this->os());
+    (new Vminfo)->discover(os());
 
-        $this->assertSame($other->device_id, $vm->refresh()->device_id);
-        $this->assertSame(2, VminfoModel::where('vmwVmVMID', 100)->count());
-    }
+    expect($vm->refresh()->device_id)->toBe($this->device->device_id);
+    expect($vm->vmwVmDisplayName)->toBe('web');
+    expect(VminfoModel::where('vmwVmVMID', 100)->count())->toBe(1);
+});
 
-    public function testAVmOnAnotherNodeIsKeptUntilThatNodeClaimsIt(): void
-    {
-        $this->fakeApi(); // the cluster also has VM 200, it is not on this node
-        $this->createVm('proxmox', 200, 'moved');
+test('does not claim the vm of another cluster', function () {
+    fakeApi();
+    $other = Device::factory()->create();
+    $vm = createVmOn($other, 'proxmox-another', 100);
 
-        (new Vminfo)->discover($this->os());
+    (new Vminfo)->discover(os());
 
-        $vm = $this->device->vminfo()->where('vmwVmVMID', 200)->first();
-        $this->assertSame('moved', $vm->vmwVmDisplayName);
-        $this->assertSame(PowerState::UNKNOWN, $vm->vmwVmState);
-    }
+    expect($vm->refresh()->device_id)->toBe($other->device_id);
+    expect(VminfoModel::where('vmwVmVMID', 100)->count())->toBe(2);
+});
 
-    public function testAVmRemovedFromTheClusterIsDeletedFromItsNode(): void
-    {
-        $this->fakeApi();
-        $this->createVm('proxmox', 999, 'removed');
+test('avm on another node is kept until that node claims it', function () {
+    fakeApi();
+    // the cluster also has VM 200, it is not on this node
+    createVm('proxmox', 200, 'moved');
 
-        (new Vminfo)->discover($this->os());
+    (new Vminfo)->discover(os());
 
-        $this->assertSame(0, VminfoModel::where('vmwVmVMID', 999)->count());
-    }
+    $vm = $this->device->vminfo()->where('vmwVmVMID', 200)->first();
+    expect($vm->vmwVmDisplayName)->toBe('moved');
+    expect($vm->vmwVmState)->toBe(PowerState::UNKNOWN);
+});
 
-    public function testOnlyDeletesTheVmsOfThisDevice(): void
-    {
-        $this->fakeApi(); // a token may not see all VMs of the cluster
-        $this->createVmOn(Device::factory()->create(), self::CLUSTER, 999);
+test('avm removed from the cluster is deleted from its node', function () {
+    fakeApi();
+    createVm('proxmox', 999, 'removed');
 
-        (new Vminfo)->discover($this->os());
+    (new Vminfo)->discover(os());
 
-        $this->assertSame(1, VminfoModel::where('vmwVmVMID', 999)->count());
-    }
+    expect(VminfoModel::where('vmwVmVMID', 999)->count())->toBe(0);
+});
 
-    public function testAFailingSourceDoesNotStopTheOthers(): void
-    {
-        Http::fake([
-            self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
-            self::API . 'cluster/resources?type=vm' => Http::response(null, 500),
-        ]);
-        $this->device->update(['os' => 'linux']);
-        LibrenmsConfig::set('enable_libvirt', true);
-        LibrenmsConfig::set('libvirt_protocols', []); // finds no VMs
-        $this->createVm('proxmox', 100, 'web');
-        $this->createVm('libvirt', 5, 'removed');
+test('only deletes the vms of this device', function () {
+    fakeApi();
+    // a token may not see all VMs of the cluster
+    createVmOn(Device::factory()->create(), self::CLUSTER, 999);
 
-        (new Vminfo)->discover($this->os());
+    (new Vminfo)->discover(os());
 
-        $this->assertSame([self::CLUSTER . '-proxmox-100'], $this->device->vminfo()->get()->map->getCompositeKey()->all());
-    }
+    expect(VminfoModel::where('vmwVmVMID', 999)->count())->toBe(1);
+});
 
-    public function testAFailedPollIsLoggedInsteadOfThrown(): void
-    {
-        Http::fake([
-            self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
-            self::API . 'nodes/localhost/certificates/info' => self::rootCa(),
-            self::API . 'nodes/localhost/qemu?full=1' => Http::response(null, 500),
-        ]);
-        $this->createVm('proxmox', 100, 'web');
-        $datastore = Mockery::mock(WriteInterface::class);
-        $datastore->shouldNotReceive('write');
+test('afailing source does not stop the others', function () {
+    Http::fake([
+        self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
+        self::API . 'cluster/resources?type=vm' => Http::response(null, 500),
+    ]);
+    $this->device->update(['os' => 'linux']);
+    LibrenmsConfig::set('enable_libvirt', true);
+    LibrenmsConfig::set('libvirt_protocols', []);
+    // finds no VMs
+    createVm('proxmox', 100, 'web');
+    createVm('libvirt', 5, 'removed');
 
-        (new Vminfo)->poll($this->os(), $datastore);
+    (new Vminfo)->discover(os());
 
-        $this->assertSame(1, $this->device->eventlogs()->where('type', 'vminfo')->count());
-    }
+    expect($this->device->vminfo()->get()->map->getCompositeKey()->all())->toBe([self::CLUSTER . '-proxmox-100']);
+});
 
-    public function testVmsOfSnmpSourcesAreKeptWhenSnmpIsDownAndLibvirtIsEnabled(): void
-    {
-        $this->proxmoxMethod->delete();
-        $this->device->update(['os' => 'linux']);
-        LibrenmsConfig::set('enable_libvirt', true);
-        LibrenmsConfig::set('libvirt_protocols', []); // finds no VMs
-        $this->createVm('vmware', 5, 'esx-guest');
-        $this->createVm('xcp-ng', 6, 'xcp-guest');
-        $this->createVm('libvirt', 7, 'removed');
+test('afailed poll is logged instead of thrown', function () {
+    Http::fake([
+        self::API . 'version' => Http::response(['data' => ['version' => '8.2.4']]),
+        self::API . 'nodes/localhost/certificates/info' => rootCa(),
+        self::API . 'nodes/localhost/qemu?full=1' => Http::response(null, 500),
+    ]);
+    createVm('proxmox', 100, 'web');
+    $datastore = Mockery::mock(WriteInterface::class);
+    $datastore->shouldNotReceive('write');
 
-        (new Vminfo)->discover($this->os());
+    (new Vminfo)->poll(os(), $datastore);
 
-        $this->assertEqualsCanonicalizing(['-vmware-5', '-xcp-ng-6'], $this->device->vminfo()->get()->map->getCompositeKey()->all());
-    }
+    expect($this->device->eventlogs()->where('type', 'vminfo')->count())->toBe(1);
+});
 
-    public function testRemovingTheMethodDeletesItsVms(): void
-    {
-        $this->createVm('proxmox', 100, 'web');
-        $this->createVm('proxmox-lxc', 101, 'ct');
-        $this->createVm('vmware', 5, 'esx-guest'); // from another source
+test('vms of snmp sources are kept when snmp is down and libvirt is enabled', function () {
+    $this->proxmoxMethod->delete();
+    $this->device->update(['os' => 'linux']);
+    LibrenmsConfig::set('enable_libvirt', true);
+    LibrenmsConfig::set('libvirt_protocols', []);
+    // finds no VMs
+    createVm('vmware', 5, 'esx-guest');
+    createVm('xcp-ng', 6, 'xcp-guest');
+    createVm('libvirt', 7, 'removed');
 
-        $this->actingAs(User::factory()->admin()->create(['enabled' => 1]))
-            ->deleteJson(route('device.edit.polling.destroy', ['device' => $this->device, 'methodType' => 'proxmox-api']))
-            ->assertOk();
+    (new Vminfo)->discover(os());
 
-        $this->assertSame(['-vmware-5'], $this->device->vminfo()->get()->map->getCompositeKey()->all());
-    }
+    expect($this->device->vminfo()->get()->map->getCompositeKey()->all())->toEqualCanonicalizing(['-vmware-5', '-xcp-ng-6']);
+});
 
-    public function testDisablingTheMethodKeepsItsVms(): void
-    {
-        $this->proxmoxMethod->update(['enabled' => false]);
-        $this->createVm('proxmox', 100, 'web');
+test('removing the method deletes its vms', function () {
+    createVm('proxmox', 100, 'web');
+    createVm('proxmox-lxc', 101, 'ct');
+    createVm('vmware', 5, 'esx-guest');
 
-        $module = new Vminfo;
-        $this->assertFalse($module->shouldDiscover($this->os()));
+    // from another source
+    $this->actingAs(User::factory()->admin()->create(['enabled' => 1]))
+        ->deleteJson(route('device.edit.polling.destroy', ['device' => $this->device, 'methodType' => 'proxmox-api']))
+        ->assertOk();
 
-        $this->assertSame(1, $this->device->vminfo()->count());
-    }
+    expect($this->device->vminfo()->get()->map->getCompositeKey()->all())->toBe(['-vmware-5']);
+});
 
-    public function testDisablingLibvirtRemovesItsVms(): void
-    {
-        $this->proxmoxMethod->delete();
-        $this->device->update(['os' => 'linux']);
-        LibrenmsConfig::set('enable_libvirt', false);
-        $this->createVm('libvirt', 5, 'removed');
-        $module = new Vminfo;
+test('disabling the method keeps its vms', function () {
+    $this->proxmoxMethod->update(['enabled' => false]);
+    createVm('proxmox', 100, 'web');
 
-        $this->assertTrue($module->shouldDiscover($this->os()));
-        $module->discover($this->os());
+    $module = new Vminfo;
+    expect($module->shouldDiscover(os()))->toBeFalse();
 
-        $this->assertSame(0, $this->device->vminfo()->count());
-        $this->assertFalse($module->shouldDiscover($this->os()));
-    }
+    expect($this->device->vminfo()->count())->toBe(1);
+});
 
-    public function testLibvirtDoesNotNeedSnmp(): void
-    {
-        $this->proxmoxMethod->delete();
-        $this->device->update(['os' => 'linux']);
-        $module = new Vminfo;
+test('disabling libvirt removes its vms', function () {
+    $this->proxmoxMethod->delete();
+    $this->device->update(['os' => 'linux']);
+    LibrenmsConfig::set('enable_libvirt', false);
+    createVm('libvirt', 5, 'removed');
+    $module = new Vminfo;
 
-        LibrenmsConfig::set('enable_libvirt', false);
-        $this->assertFalse($module->shouldDiscover($this->os()));
+    expect($module->shouldDiscover(os()))->toBeTrue();
+    $module->discover(os());
 
-        LibrenmsConfig::set('enable_libvirt', true);
-        $this->assertTrue($module->shouldDiscover($this->os()));
-    }
+    expect($this->device->vminfo()->count())->toBe(0);
+    expect($module->shouldDiscover(os()))->toBeFalse();
+});
 
-    private static function rootCa(): PromiseInterface
-    {
-        return Http::response(['data' => [
-            ['filename' => 'pve-ssl.pem', 'fingerprint' => 'CD:CD'],
-            ['filename' => 'pve-root-ca.pem', 'fingerprint' => implode(':', array_fill(0, 32, 'AB'))],
-        ]]);
-    }
+test('libvirt does not need snmp', function () {
+    $this->proxmoxMethod->delete();
+    $this->device->update(['os' => 'linux']);
+    $module = new Vminfo;
 
-    /**
-     * The guest list of the cluster.
-     *
-     * @param  list<array<string, mixed>>  $vms
-     * @param  list<array<string, mixed>>  $containers
-     */
-    private static function clusterGuests(array $vms, array $containers = []): PromiseInterface
-    {
-        return Http::response(['data' => [
-            ...array_map(fn (array $vm): array => ['type' => 'qemu'] + $vm, $vms),
-            ...array_map(fn (array $container): array => ['type' => 'lxc'] + $container, $containers),
-        ]]);
-    }
+    LibrenmsConfig::set('enable_libvirt', false);
+    expect($module->shouldDiscover(os()))->toBeFalse();
 
-    private function createVmOn(Device $device, string $cluster, int $vmId): VminfoModel
-    {
-        return $device->vminfo()->create([
-            'cluster_id' => $cluster,
-            'vm_type' => 'proxmox',
-            'vmwVmVMID' => $vmId,
-            'vmwVmDisplayName' => 'migrated',
-            'vmwVmGuestOS' => '',
-            'vmwVmMemSize' => 1024,
-            'vmwVmCpus' => 1,
-            'vmwVmState' => PowerState::ON,
-        ]);
-    }
+    LibrenmsConfig::set('enable_libvirt', true);
+    expect($module->shouldDiscover(os()))->toBeTrue();
+});
 
-    private function createVm(string $type, int $vmId, string $name): void
-    {
-        $this->device->vminfo()->create([
-            'cluster_id' => str_starts_with($type, 'proxmox') ? self::CLUSTER : null,
-            'vm_type' => $type,
-            'vmwVmVMID' => $vmId,
-            'vmwVmDisplayName' => $name,
-            'vmwVmGuestOS' => '',
-            'vmwVmMemSize' => 1024,
-            'vmwVmCpus' => 1,
-            'vmwVmState' => PowerState::ON,
-        ]);
-    }
+function rootCa(): PromiseInterface
+{
+    return Http::response(['data' => [
+        ['filename' => 'pve-ssl.pem', 'fingerprint' => 'CD:CD'],
+        ['filename' => 'pve-root-ca.pem', 'fingerprint' => implode(':', array_fill(0, 32, 'AB'))],
+    ]]);
+}
 
-    private function os(): OS
-    {
-        // simulate a fresh discovery/poller run
-        $device = DeviceCache::refresh($this->device->device_id)->toArray();
+/**
+ * The guest list of the cluster.
+ *
+ * @param  list<array<string, mixed>>  $vms
+ * @param  list<array<string, mixed>>  $containers
+ */
+function clusterGuests(array $vms, array $containers = []): PromiseInterface
+{
+    return Http::response(['data' => [
+        ...array_map(fn (array $vm): array => ['type' => 'qemu'] + $vm, $vms),
+        ...array_map(fn (array $container): array => ['type' => 'lxc'] + $container, $containers),
+    ]]);
+}
 
-        return OS::make($device);
-    }
+function createVmOn(Device $device, string $cluster, int $vmId): VminfoModel
+{
+    return $device->vminfo()->create([
+        'cluster_id' => $cluster,
+        'vm_type' => 'proxmox',
+        'vmwVmVMID' => $vmId,
+        'vmwVmDisplayName' => 'migrated',
+        'vmwVmGuestOS' => '',
+        'vmwVmMemSize' => 1024,
+        'vmwVmCpus' => 1,
+        'vmwVmState' => PowerState::ON,
+    ]);
+}
+
+function createVm(string $type, int $vmId, string $name): void
+{
+    $this->device->vminfo()->create([
+        'cluster_id' => str_starts_with($type, 'proxmox') ? self::CLUSTER : null,
+        'vm_type' => $type,
+        'vmwVmVMID' => $vmId,
+        'vmwVmDisplayName' => $name,
+        'vmwVmGuestOS' => '',
+        'vmwVmMemSize' => 1024,
+        'vmwVmCpus' => 1,
+        'vmwVmState' => PowerState::ON,
+    ]);
+}
+
+function os(): OS
+{
+    // simulate a fresh discovery/poller run
+    $device = DeviceCache::refresh($this->device->device_id)->toArray();
+
+    return OS::make($device);
 }

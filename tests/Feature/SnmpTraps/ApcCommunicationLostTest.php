@@ -21,20 +21,12 @@
  * @link       https://www.librenms.org
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 use LibreNMS\Enum\Severity;
 
-final class ApcCommunicationLostTest extends SnmpTrapTestCase
-{
-    /**
-     * Test ApcCommunicationLost handle
-     *
-     * @return void
-     */
-    public function testApcCommunicationLost(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+
+test('apc communication lost', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[10.0.0.1]:162
 SNMPv2-MIB::sysUpTime.0 47:22:17:01.20
@@ -44,9 +36,8 @@ SNMPv2-SMI::snmpModules.18.1.3.0 10.0.0.1
 SNMPv2-SMI::snmpModules.18.1.4.0 public
 SNMPv2-MIB::snmpTrapEnterprise.0 PowerNet-MIB::apc
 TRAP,
-            'UPS: Lost the local network management interface-to-UPS communication.',
-            'Could not handle testApcCommunicationLost trap',
-            [Severity::Error],
-        );
-    }
-}
+        'UPS: Lost the local network management interface-to-UPS communication.',
+        'Could not handle testApcCommunicationLost trap',
+        [Severity::Error],
+    );
+});

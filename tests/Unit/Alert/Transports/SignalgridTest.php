@@ -21,9 +21,9 @@
  * @copyright  2026 Signalgrid
  */
 
-namespace LibreNMS\Tests\Unit\Alert\Transports;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\AlertTransport;
+use \LibreNMS\Alert\Transport\Signalgrid;
 use App\Models\Device;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
@@ -31,116 +31,108 @@ use LibreNMS\Alert\AlertData;
 use LibreNMS\Alert\Transport;
 use LibreNMS\Enum\AlertState;
 use LibreNMS\Exceptions\AlertTransportDeliveryException;
-use LibreNMS\Tests\TestCase;
 
-final class SignalgridTest extends TestCase
+test('critical delivery', function () {
+    Http::fake([
+        'api.signalgrid.co/*' => Http::response([
+            'code' => '200',
+        ]),
+    ]);
+
+    $transport = transport();
+
+    /** @var Device $mock_device */
+    $mock_device = Device::factory()->make();
+
+    $transport->deliverAlert(AlertData::testData($mock_device));
+
+    Http::assertSent(fn (Request $request) => $request->url() === 'https://api.signalgrid.co/v1/push'
+        && $request->method() === 'POST'
+        && $request->data() === [
+            'client_key' => 'test-client-key',
+            'channel' => 'test-channel',
+            'title' => 'Testing transport from LibreNMS',
+            'body' => 'This is a test alert',
+            'type' => 'CRIT',
+        ]);
+});
+
+test('warning delivery', function () {
+    Http::fake([
+        'api.signalgrid.co/*' => Http::response([
+            'code' => '200',
+        ]),
+    ]);
+
+    $transport = transport();
+
+    /** @var Device $mock_device */
+    $mock_device = Device::factory()->make();
+
+    $alert_data = AlertData::testData($mock_device);
+    $alert_data['severity'] = 'warning';
+
+    $transport->deliverAlert($alert_data);
+
+    Http::assertSent(fn (Request $request) => $request->data() === [
+        'client_key' => 'test-client-key',
+        'channel' => 'test-channel',
+        'title' => 'Testing transport from LibreNMS',
+        'body' => 'This is a test alert',
+        'type' => 'WARN',
+    ]);
+});
+
+test('recovered delivery', function () {
+    Http::fake([
+        'api.signalgrid.co/*' => Http::response([
+            'code' => '200',
+        ]),
+    ]);
+
+    $transport = transport();
+
+    /** @var Device $mock_device */
+    $mock_device = Device::factory()->make();
+
+    $alert_data = AlertData::testData($mock_device);
+    $alert_data['state'] = AlertState::RECOVERED;
+
+    $transport->deliverAlert($alert_data);
+
+    Http::assertSent(fn (Request $request) => $request->data() === [
+        'client_key' => 'test-client-key',
+        'channel' => 'test-channel',
+        'title' => 'Testing transport from LibreNMS',
+        'body' => 'This is a test alert',
+        'type' => 'SUCCESS',
+    ]);
+});
+
+test('api error delivery', function () {
+    Http::fake([
+        'api.signalgrid.co/*' => Http::response([
+            'text' => 'Parameter error: client_key is invalid',
+            'code' => '400',
+        ], 200),
+    ]);
+
+    $this->expectException(AlertTransportDeliveryException::class);
+
+    $transport = transport();
+
+    /** @var Device $mock_device */
+    $mock_device = Device::factory()->make();
+
+    $transport->deliverAlert(AlertData::testData($mock_device));
+});
+
+function transport(): Transport\Signalgrid
 {
-    public function testCriticalDelivery(): void
-    {
-        Http::fake([
-            'api.signalgrid.co/*' => Http::response([
-                'code' => '200',
-            ]),
-        ]);
-
-        $transport = $this->transport();
-
-        /** @var Device $mock_device */
-        $mock_device = Device::factory()->make();
-
-        $transport->deliverAlert(AlertData::testData($mock_device));
-
-        Http::assertSent(fn (Request $request) => $request->url() === 'https://api.signalgrid.co/v1/push'
-            && $request->method() === 'POST'
-            && $request->data() === [
-                'client_key' => 'test-client-key',
-                'channel' => 'test-channel',
-                'title' => 'Testing transport from LibreNMS',
-                'body' => 'This is a test alert',
-                'type' => 'CRIT',
-            ]);
-    }
-
-    public function testWarningDelivery(): void
-    {
-        Http::fake([
-            'api.signalgrid.co/*' => Http::response([
-                'code' => '200',
-            ]),
-        ]);
-
-        $transport = $this->transport();
-
-        /** @var Device $mock_device */
-        $mock_device = Device::factory()->make();
-
-        $alert_data = AlertData::testData($mock_device);
-        $alert_data['severity'] = 'warning';
-
-        $transport->deliverAlert($alert_data);
-
-        Http::assertSent(fn (Request $request) => $request->data() === [
-            'client_key' => 'test-client-key',
-            'channel' => 'test-channel',
-            'title' => 'Testing transport from LibreNMS',
-            'body' => 'This is a test alert',
-            'type' => 'WARN',
-        ]);
-    }
-
-    public function testRecoveredDelivery(): void
-    {
-        Http::fake([
-            'api.signalgrid.co/*' => Http::response([
-                'code' => '200',
-            ]),
-        ]);
-
-        $transport = $this->transport();
-
-        /** @var Device $mock_device */
-        $mock_device = Device::factory()->make();
-
-        $alert_data = AlertData::testData($mock_device);
-        $alert_data['state'] = AlertState::RECOVERED;
-
-        $transport->deliverAlert($alert_data);
-
-        Http::assertSent(fn (Request $request) => $request->data() === [
-            'client_key' => 'test-client-key',
-            'channel' => 'test-channel',
-            'title' => 'Testing transport from LibreNMS',
-            'body' => 'This is a test alert',
-            'type' => 'SUCCESS',
-        ]);
-    }
-
-    public function testApiErrorDelivery(): void
-    {
-        Http::fake([
-            'api.signalgrid.co/*' => Http::response([
-                'text' => 'Parameter error: client_key is invalid',
-                'code' => '400',
-            ], 200),
-        ]);
-
-        $this->expectException(AlertTransportDeliveryException::class);
-
-        $transport = $this->transport();
-
-        /** @var Device $mock_device */
-        $mock_device = Device::factory()->make();
-
-        $transport->deliverAlert(AlertData::testData($mock_device));
-    }
-
-    private function transport(): Transport\Signalgrid
-    {
-        return new Transport\Signalgrid(new AlertTransport([
-            'transport_config' => [
-                'signalgrid-client-key' => 'test-client-key',
-                'signalgrid-channel' => 'test-channel',
-            ],
-        ]));
-    }
+    return new Transport\Signalgrid(new AlertTransport([
+        'transport_config' => [
+            'signalgrid-client-key' => 'test-client-key',
+            'signalgrid-channel' => 'test-channel',
+        ],
+    ]));
 }

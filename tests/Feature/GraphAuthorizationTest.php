@@ -23,141 +23,117 @@
  * @copyright  2026 LibreNMS
  */
 
-namespace LibreNMS\Tests\Feature;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\Device;
 use App\Models\Location;
 use App\Models\Port;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use LibreNMS\Tests\TestCase;
 use Spatie\Permission\Models\Role;
 
-final class GraphAuthorizationTest extends TestCase
+
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+
+beforeEach(function () {
+    Role::findOrCreate('user');
+
+    $this->location = Location::factory()->create();
+    $this->accessible = Device::factory()->create(['location_id' => $this->location->id]);
+    $this->other = Device::factory()->create(['location_id' => $this->location->id]);
+
+    $user = User::factory()->create(['enabled' => 1]);
+    $user->assignRole('user');
+    $user->devicesOwned()->attach($this->accessible->device_id);
+    $this->actingAs($user);
+});
+
+/**
+ * Run a graph type's auth include in an isolated scope.
+ *
+ * @param  array<string, mixed>  $vars
+ * @return array{auth: bool, devices: array<int, array<string, mixed>>}
+ */
+function runAuth(string $type, array $vars, bool $auth = false): array
 {
-    use RefreshDatabase;
+    $devices = [];
+    require __DIR__ . "/../../includes/html/graphs/$type/auth.inc.php";
 
-    private Device $accessible;
-    private Device $other;
-    private Location $location;
+    return ['auth' => $auth, 'devices' => $devices];
+}
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+test('location graph only includes permitted devices', function () {
+    $result = runAuth('location', ['id' => $this->location->id]);
 
-        Role::findOrCreate('user');
+    expect($result['auth'])->toBeTrue();
+    expect(array_column($result['devices'], 'device_id'))->toEqual([$this->accessible->device_id]);
+});
 
-        $this->location = Location::factory()->create();
-        $this->accessible = Device::factory()->create(['location_id' => $this->location->id]);
-        $this->other = Device::factory()->create(['location_id' => $this->location->id]);
+test('location graph guest auth includes all devices', function () {
+    $result = runAuth('location', ['id' => $this->location->id], true);
 
-        $user = User::factory()->create(['enabled' => 1]);
-        $user->assignRole('user');
-        $user->devicesOwned()->attach($this->accessible->device_id);
-        $this->actingAs($user);
+    expect($result['auth'])->toBeTrue();
+    expect(array_column($result['devices'], 'device_id'))->toEqualCanonicalizing([$this->accessible->device_id, $this->other->device_id]);
+});
+
+test('location graph denied without permitted devices', function () {
+    $otherLocation = Location::factory()->create();
+    Device::factory()->create(['location_id' => $otherLocation->id]);
+
+    $result = runAuth('location', ['id' => $otherLocation->id]);
+
+    expect($result['auth'])->toBeFalse();
+    expect($result['devices'])->toBeEmpty();
+});
+
+test('smokeping graph requires permission on graphed device', function () {
+    expect(runAuth('smokeping', ['device' => $this->accessible->device_id, 'src' => $this->accessible->device_id])['auth'])->toBeTrue();
+    expect(runAuth('smokeping', ['device' => $this->other->device_id, 'src' => $this->accessible->device_id])['auth'])->toBeFalse();
+});
+
+test('smokeping graph requires permission on peer device', function () {
+    expect(runAuth('smokeping', ['device' => $this->accessible->device_id, 'src' => $this->other->device_id])['auth'])->toBeFalse();
+    expect(runAuth('smokeping', ['device' => $this->accessible->device_id, 'dest' => $this->other->device_id])['auth'])->toBeFalse();
+    expect(runAuth('smokeping', ['device' => $this->accessible->device_id, 'dest' => $this->accessible->device_id])['auth'])->toBeTrue();
+});
+
+test('customer graph only includes permitted ports', function () {
+    $accessiblePort = Port::factory()->for($this->accessible)->create(['port_descr_type' => 'cust', 'port_descr_descr' => 'Acme']);
+    Port::factory()->for($this->other)->create(['port_descr_type' => 'cust', 'port_descr_descr' => 'Acme']);
+
+    foreach ([['customer' => 'Acme'], ['id' => 'Acme']] as $vars) {
+        $result = runCustomerAuth($vars);
+
+        expect($result['auth'])->toBeTrue();
+        expect($result['ports'])->toEqual([$accessiblePort->port_id]);
     }
+});
 
-    /**
-     * Run a graph type's auth include in an isolated scope.
-     *
-     * @param  array<string, mixed>  $vars
-     * @return array{auth: bool, devices: array<int, array<string, mixed>>}
-     */
-    private function runAuth(string $type, array $vars, bool $auth = false): array
-    {
-        $devices = [];
-        require __DIR__ . "/../../includes/html/graphs/$type/auth.inc.php";
+test('customer graph guest auth includes all ports', function () {
+    $accessiblePort = Port::factory()->for($this->accessible)->create(['port_descr_type' => 'cust', 'port_descr_descr' => 'Acme']);
+    $otherPort = Port::factory()->for($this->other)->create(['port_descr_type' => 'cust', 'port_descr_descr' => 'Acme']);
 
-        return ['auth' => $auth, 'devices' => $devices];
-    }
+    $result = runCustomerAuth(['customer' => 'Acme'], true);
 
-    public function testLocationGraphOnlyIncludesPermittedDevices(): void
-    {
-        $result = $this->runAuth('location', ['id' => $this->location->id]);
+    expect($result['auth'])->toBeTrue();
+    expect($result['ports'])->toEqualCanonicalizing([$accessiblePort->port_id, $otherPort->port_id]);
+});
 
-        $this->assertTrue($result['auth']);
-        $this->assertEquals([$this->accessible->device_id], array_column($result['devices'], 'device_id'));
-    }
+test('customer graph denied without permitted ports', function () {
+    Port::factory()->for($this->other)->create(['port_descr_type' => 'cust', 'port_descr_descr' => 'Acme']);
+    Port::factory()->for($this->accessible)->create(['port_descr_type' => 'core', 'port_descr_descr' => 'Acme']);
 
-    public function testLocationGraphGuestAuthIncludesAllDevices(): void
-    {
-        $result = $this->runAuth('location', ['id' => $this->location->id], true);
+    expect(runCustomerAuth(['customer' => 'Acme'])['auth'])->toBeFalse();
+    expect(runCustomerAuth(['customer' => 'Nobody'])['auth'])->toBeFalse();
+});
 
-        $this->assertTrue($result['auth']);
-        $this->assertEqualsCanonicalizing(
-            [$this->accessible->device_id, $this->other->device_id],
-            array_column($result['devices'], 'device_id')
-        );
-    }
+/**
+ * @param  array<string, mixed>  $vars
+ * @return array{auth: bool, ports: list<int>}
+ */
+function runCustomerAuth(array $vars, bool $auth = false): array
+{
+    require __DIR__ . '/../../includes/html/graphs/customer/auth.inc.php';
 
-    public function testLocationGraphDeniedWithoutPermittedDevices(): void
-    {
-        $otherLocation = Location::factory()->create();
-        Device::factory()->create(['location_id' => $otherLocation->id]);
-
-        $result = $this->runAuth('location', ['id' => $otherLocation->id]);
-
-        $this->assertFalse($result['auth']);
-        $this->assertEmpty($result['devices']);
-    }
-
-    public function testSmokepingGraphRequiresPermissionOnGraphedDevice(): void
-    {
-        $this->assertTrue($this->runAuth('smokeping', ['device' => $this->accessible->device_id, 'src' => $this->accessible->device_id])['auth']);
-        $this->assertFalse($this->runAuth('smokeping', ['device' => $this->other->device_id, 'src' => $this->accessible->device_id])['auth']);
-    }
-
-    public function testSmokepingGraphRequiresPermissionOnPeerDevice(): void
-    {
-        $this->assertFalse($this->runAuth('smokeping', ['device' => $this->accessible->device_id, 'src' => $this->other->device_id])['auth']);
-        $this->assertFalse($this->runAuth('smokeping', ['device' => $this->accessible->device_id, 'dest' => $this->other->device_id])['auth']);
-        $this->assertTrue($this->runAuth('smokeping', ['device' => $this->accessible->device_id, 'dest' => $this->accessible->device_id])['auth']);
-    }
-
-    public function testCustomerGraphOnlyIncludesPermittedPorts(): void
-    {
-        $accessiblePort = Port::factory()->for($this->accessible)->create(['port_descr_type' => 'cust', 'port_descr_descr' => 'Acme']);
-        Port::factory()->for($this->other)->create(['port_descr_type' => 'cust', 'port_descr_descr' => 'Acme']);
-
-        foreach ([['customer' => 'Acme'], ['id' => 'Acme']] as $vars) {
-            $result = $this->runCustomerAuth($vars);
-
-            $this->assertTrue($result['auth']);
-            $this->assertEquals([$accessiblePort->port_id], $result['ports']);
-        }
-    }
-
-    public function testCustomerGraphGuestAuthIncludesAllPorts(): void
-    {
-        $accessiblePort = Port::factory()->for($this->accessible)->create(['port_descr_type' => 'cust', 'port_descr_descr' => 'Acme']);
-        $otherPort = Port::factory()->for($this->other)->create(['port_descr_type' => 'cust', 'port_descr_descr' => 'Acme']);
-
-        $result = $this->runCustomerAuth(['customer' => 'Acme'], true);
-
-        $this->assertTrue($result['auth']);
-        $this->assertEqualsCanonicalizing([$accessiblePort->port_id, $otherPort->port_id], $result['ports']);
-    }
-
-    public function testCustomerGraphDeniedWithoutPermittedPorts(): void
-    {
-        Port::factory()->for($this->other)->create(['port_descr_type' => 'cust', 'port_descr_descr' => 'Acme']);
-        Port::factory()->for($this->accessible)->create(['port_descr_type' => 'core', 'port_descr_descr' => 'Acme']);
-
-        $this->assertFalse($this->runCustomerAuth(['customer' => 'Acme'])['auth']);
-        $this->assertFalse($this->runCustomerAuth(['customer' => 'Nobody'])['auth']);
-    }
-
-    /**
-     * @param  array<string, mixed>  $vars
-     * @return array{auth: bool, ports: list<int>}
-     */
-    private function runCustomerAuth(array $vars, bool $auth = false): array
-    {
-        require __DIR__ . '/../../includes/html/graphs/customer/auth.inc.php';
-
-        /** @var Collection<Port> $customer_ports */
-
-        return ['auth' => $auth, 'ports' => $customer_ports->pluck('port_id')->all()];
-    }
+    /** @var Collection<Port> $customer_ports */
+    return ['auth' => $auth, 'ports' => $customer_ports->pluck('port_id')->all()];
 }

@@ -21,21 +21,12 @@
  * @link       https://www.librenms.org
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 use LibreNMS\Enum\Severity;
 
-final class UpsTrapAlarmEntryAddedTest extends SnmpTrapTestCase
-{
-    /**
-     * Test UpsTrapAlarmEntryAdded handle for an untranslated OID, as seen from
-     * some APC NMC firmware that encodes the trap OID as enterprise.0.specific.
-     *
-     * @return void
-     */
-    public function testUpsTrapAlarmEntryAddedUntranslated(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+
+test('ups trap alarm entry added untranslated', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[10.0.0.1]:162
 SNMPv2-MIB::sysUpTime.0 47:22:17:01.20
@@ -46,20 +37,14 @@ SNMPv2-SMI::snmpModules.18.1.3.0 10.0.0.1
 SNMPv2-SMI::snmpModules.18.1.4.0 public
 SNMPv2-MIB::snmpTrapEnterprise.0 SNMPv2-SMI::mib-2.33.2
 TRAP,
-            'A problem has been encountered in the communications between the agent and the UPS.',
-            'Could not handle testUpsTrapAlarmEntryAddedUntranslated trap',
-            [Severity::Error],
-        );
-    }
+        'A problem has been encountered in the communications between the agent and the UPS.',
+        'Could not handle testUpsTrapAlarmEntryAddedUntranslated trap',
+        [Severity::Error],
+    );
+});
 
-    /**
-     * Test UpsTrapAlarmEntryAdded handle when the agent's OID is fully translated.
-     *
-     * @return void
-     */
-    public function testUpsTrapAlarmEntryAddedTranslated(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('ups trap alarm entry added translated', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[10.0.0.1]:162
 SNMPv2-MIB::sysUpTime.0 47:22:17:01.20
@@ -67,9 +52,8 @@ SNMPv2-MIB::snmpTrapOID.0 UPS-MIB::upsTrapAlarmEntryAdded
 UPS-MIB::upsAlarmId.0 2
 UPS-MIB::upsAlarmDescr.0 UPS-MIB::upsAlarmOnBattery
 TRAP,
-            'The UPS is drawing power from the batteries.',
-            'Could not handle testUpsTrapAlarmEntryAddedTranslated trap',
-            [Severity::Warning],
-        );
-    }
-}
+        'The UPS is drawing power from the batteries.',
+        'Could not handle testUpsTrapAlarmEntryAddedTranslated trap',
+        [Severity::Warning],
+    );
+});

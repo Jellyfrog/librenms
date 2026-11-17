@@ -1,18 +1,12 @@
 <?php
 
-namespace LibreNMS\Tests\Unit\RRD;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use LibreNMS\RRD\PortRrd;
-use LibreNMS\Tests\TestCase;
 
-final class PortRrdTest extends TestCase
-{
-    public function testTuneLimits(): void
-    {
-        $this->assertSame([], PortRrd::tuneLimits(9999999));
+test('tune limits', function () {
+    expect(PortRrd::tuneLimits(9999999))->toBe([]);
 
-        $limits = PortRrd::tuneLimits(1000000000);
-        $this->assertSame(PortRrd::COUNTERS, array_keys($limits));
-        $this->assertEquals(['max' => 125000000], $limits['INOCTETS']);
-    }
-}
+    $limits = PortRrd::tuneLimits(1000000000);
+    expect(array_keys($limits))->toBe(PortRrd::COUNTERS);
+    expect($limits['INOCTETS'])->toEqual(['max' => 125000000]);
+});

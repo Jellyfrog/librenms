@@ -22,8 +22,7 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Feature\Modules;
-
+uses(\LibreNMS\Tests\InMemoryDbTestCase::class);
 use App\Facades\DeviceCache;
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
@@ -34,66 +33,59 @@ use LibreNMS\Enum\PollingMethodType;
 use LibreNMS\Interfaces\Data\DataStorageInterface;
 use LibreNMS\Modules\Availability;
 use LibreNMS\OS;
-use LibreNMS\Tests\InMemoryDbTestCase;
-use Mockery;
 use Mockery\MockInterface;
 
-final class AvailabilityTest extends InMemoryDbTestCase
+
+test('polling methods are the methods that affect availability', function () {
+    $device = Device::factory()->create();
+    DevicePollingMethod::factory()->for($device)->create(['method_type' => PollingMethodType::Icmp, 'affects_availability' => true]);
+    DevicePollingMethod::factory()->for($device)->create(['method_type' => PollingMethodType::Snmp, 'affects_availability' => true, 'enabled' => false]);
+    DevicePollingMethod::factory()->for($device)->create(['method_type' => PollingMethodType::UnixAgent, 'affects_availability' => false]);
+
+    expect((new Availability)->pollingMethods($device))->toBe([PollingMethodType::Icmp, PollingMethodType::Snmp]);
+});
+
+test('mtu is tested when the device answers ping', function () {
+    $fping = mockFping(FpingResponse::artificialUp());
+    $fping->shouldReceive('testMtu')->once()->with('192.0.2.1', 1500, null)->andReturn(false);
+
+    $os = os();
+    (new Availability)->poll($os, Mockery::mock(DataStorageInterface::class)->shouldIgnoreMissing());
+
+    expect($os->getDevice()->mtu_status)->toBeFalse();
+});
+
+test('mtu is not tested when the device does not answer ping', function () {
+    $fping = mockFping(FpingResponse::artificialDown());
+    $fping->shouldNotReceive('testMtu');
+
+    $os = os();
+    (new Availability)->poll($os, Mockery::mock(DataStorageInterface::class)->shouldIgnoreMissing());
+
+    expect($os->getDevice()->isDirty('mtu_status'))->toBeFalse();
+});
+
+function mockFping(FpingResponse $response): Fping&MockInterface
 {
-    public function testPollingMethodsAreTheMethodsThatAffectAvailability(): void
-    {
-        $device = Device::factory()->create();
-        DevicePollingMethod::factory()->for($device)->create(['method_type' => PollingMethodType::Icmp, 'affects_availability' => true]);
-        DevicePollingMethod::factory()->for($device)->create(['method_type' => PollingMethodType::Snmp, 'affects_availability' => true, 'enabled' => false]);
-        DevicePollingMethod::factory()->for($device)->create(['method_type' => PollingMethodType::UnixAgent, 'affects_availability' => false]);
+    LibrenmsConfig::set('mtu_options.bytes', 1500);
 
-        $this->assertSame([PollingMethodType::Icmp, PollingMethodType::Snmp], (new Availability)->pollingMethods($device));
-    }
+    $fping = Mockery::mock(Fping::class);
+    $fping->shouldReceive('ping')->once()->andReturn($response);
+    $this->app->instance(Fping::class, $fping);
 
-    public function testMtuIsTestedWhenTheDeviceAnswersPing(): void
-    {
-        $fping = $this->mockFping(FpingResponse::artificialUp());
-        $fping->shouldReceive('testMtu')->once()->with('192.0.2.1', 1500, null)->andReturn(false);
+    return $fping;
+}
 
-        $os = $this->os();
-        (new Availability)->poll($os, Mockery::mock(DataStorageInterface::class)->shouldIgnoreMissing());
+function os(): OS
+{
+    $device = Device::factory()->create(['hostname' => '192.0.2.1', 'os' => 'ping', 'mtu_status' => true]);
+    DevicePollingMethod::factory()->create([
+        'device_id' => $device->device_id,
+        'method_type' => PollingMethodType::Icmp,
+        'affects_availability' => true,
+    ]);
+    DeviceCache::setPrimary($device->device_id);
+    $deviceArray = DeviceCache::refresh($device->device_id)->toArray();
 
-        $this->assertFalse($os->getDevice()->mtu_status);
-    }
-
-    public function testMtuIsNotTestedWhenTheDeviceDoesNotAnswerPing(): void
-    {
-        $fping = $this->mockFping(FpingResponse::artificialDown());
-        $fping->shouldNotReceive('testMtu');
-
-        $os = $this->os();
-        (new Availability)->poll($os, Mockery::mock(DataStorageInterface::class)->shouldIgnoreMissing());
-
-        $this->assertFalse($os->getDevice()->isDirty('mtu_status'));
-    }
-
-    private function mockFping(FpingResponse $response): Fping&MockInterface
-    {
-        LibrenmsConfig::set('mtu_options.bytes', 1500);
-
-        $fping = Mockery::mock(Fping::class);
-        $fping->shouldReceive('ping')->once()->andReturn($response);
-        $this->app->instance(Fping::class, $fping);
-
-        return $fping;
-    }
-
-    private function os(): OS
-    {
-        $device = Device::factory()->create(['hostname' => '192.0.2.1', 'os' => 'ping', 'mtu_status' => true]);
-        DevicePollingMethod::factory()->create([
-            'device_id' => $device->device_id,
-            'method_type' => PollingMethodType::Icmp,
-            'affects_availability' => true,
-        ]);
-        DeviceCache::setPrimary($device->device_id);
-        $deviceArray = DeviceCache::refresh($device->device_id)->toArray();
-
-        return OS::make($deviceArray);
-    }
+    return OS::make($deviceArray);
 }

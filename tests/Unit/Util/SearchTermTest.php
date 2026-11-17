@@ -1,177 +1,154 @@
 <?php
 
-namespace LibreNMS\Tests\Unit\Util;
-
-use LibreNMS\Tests\TestCase;
+uses(\LibreNMS\Tests\TestCase::class);
 use LibreNMS\Util\IPv4;
 use LibreNMS\Util\IPv6;
 use LibreNMS\Util\SearchTerm;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-final class SearchTermTest extends TestCase
-{
-    public function testExactIpv4(): void
-    {
-        $term = SearchTerm::parse(' 192.168.1.10 ');
 
-        $this->assertSame('192.168.1.10', $term->value);
-        $this->assertInstanceOf(IPv4::class, $term->ip);
-        $this->assertTrue($term->isExactIp());
-        $this->assertTrue($term->isIpv4());
-        $this->assertFalse($term->isIpv6());
-        $this->assertFalse($term->isMac()); // 192168110 is hex, but an IP
-        $this->assertNull($term->networkRange());
-    }
+test('exact ipv4', function () {
+    $term = SearchTerm::parse(' 192.168.1.10 ');
 
-    public function testIpv4Network(): void
-    {
-        $term = SearchTerm::parse('10.1.2.3/23');
+    expect($term->value)->toBe('192.168.1.10');
+    expect($term->ip)->toBeInstanceOf(IPv4::class);
+    expect($term->isExactIp())->toBeTrue();
+    expect($term->isIpv4())->toBeTrue();
+    expect($term->isIpv6())->toBeFalse();
+    expect($term->isMac())->toBeFalse();
+    // 192168110 is hex, but an IP
+    expect($term->networkRange())->toBeNull();
+});
 
-        $this->assertTrue($term->isNetwork);
-        $this->assertFalse($term->isExactIp());
-        $this->assertSame(['0A010200', '0A0103FF'], $term->networkRange());
-    }
+test('ipv4 network', function () {
+    $term = SearchTerm::parse('10.1.2.3/23');
 
-    public function testIpv6(): void
-    {
-        $term = SearchTerm::parse('2001:db8::1');
-        $this->assertInstanceOf(IPv6::class, $term->ip);
-        $this->assertTrue($term->isExactIp());
-        $this->assertTrue($term->isIpv6());
-        $this->assertFalse($term->isMac());
+    expect($term->isNetwork)->toBeTrue();
+    expect($term->isExactIp())->toBeFalse();
+    expect($term->networkRange())->toBe(['0A010200', '0A0103FF']);
+});
 
-        $network = SearchTerm::parse('2001:db8::/32');
-        $this->assertSame(['20010DB8000000000000000000000000', '20010DB8FFFFFFFFFFFFFFFFFFFFFFFF'], $network->networkRange());
-    }
+test('ipv6', function () {
+    $term = SearchTerm::parse('2001:db8::1');
+    expect($term->ip)->toBeInstanceOf(IPv6::class);
+    expect($term->isExactIp())->toBeTrue();
+    expect($term->isIpv6())->toBeTrue();
+    expect($term->isMac())->toBeFalse();
 
-    #[DataProvider('fragments')]
-    public function testFragments(string $search, bool $ipv4, bool $ipv6, ?string $macHex): void
-    {
-        $term = SearchTerm::parse($search);
+    $network = SearchTerm::parse('2001:db8::/32');
+    expect($network->networkRange())->toBe(['20010DB8000000000000000000000000', '20010DB8FFFFFFFFFFFFFFFFFFFFFFFF']);
+});
 
-        $this->assertNull($term->ip);
-        $this->assertSame($ipv4, $term->isIpv4(), 'ipv4');
-        $this->assertSame($ipv6, $term->isIpv6(), 'ipv6');
-        $this->assertSame($macHex, $term->macHex, 'mac');
-    }
+test('fragments', function (string $search, bool $ipv4, bool $ipv6, ?string $macHex) {
+    $term = SearchTerm::parse($search);
 
-    /**
-     * @return array<string, array{string, bool, bool, ?string}>
-     */
-    public static function fragments(): array
-    {
-        return [
-            'ipv4 prefix' => ['10.1.', true, false, null],
-            'ipv4 suffix' => ['.10', true, false, null],
-            'ipv6 start' => ['2001:db8:', false, true, '2001db8'],
-            'partial mac colons' => ['74:29:72', false, true, '742972'],
-            'partial mac cisco' => ['0011.2233', false, false, '00112233'],
-            'short hex word' => ['cafe', false, false, null],
-            'six hex digits' => ['abcdef', false, false, 'abcdef'],
-            'text' => ['core-sw1', false, false, null],
-        ];
-    }
+    expect($term->ip)->toBeNull();
+    expect($term->isIpv4())->toBe($ipv4, 'ipv4');
+    expect($term->isIpv6())->toBe($ipv6, 'ipv6');
+    expect($term->macHex)->toBe($macHex, 'mac');
+})->with('fragments');
 
-    #[DataProvider('fullMacs')]
-    public function testFullMac(string $search): void
-    {
-        $term = SearchTerm::parse($search);
+/**
+ * @return array<string, array{string, bool, bool, ?string}>
+ */
+dataset('fragments', function () {
+    return [
+        'ipv4 prefix' => ['10.1.', true, false, null],
+        'ipv4 suffix' => ['.10', true, false, null],
+        'ipv6 start' => ['2001:db8:', false, true, '2001db8'],
+        'partial mac colons' => ['74:29:72', false, true, '742972'],
+        'partial mac cisco' => ['0011.2233', false, false, '00112233'],
+        'short hex word' => ['cafe', false, false, null],
+        'six hex digits' => ['abcdef', false, false, 'abcdef'],
+        'text' => ['core-sw1', false, false, null],
+    ];
+});
 
-        $this->assertTrue($term->isFullMac());
-        $this->assertSame('001122aabbcc', $term->macHex);
-        $this->assertFalse($term->isIp());
-    }
+test('full mac', function (string $search) {
+    $term = SearchTerm::parse($search);
 
-    /**
-     * @return list<array{string}>
-     */
-    public static function fullMacs(): array
-    {
-        return [
-            ['00:11:22:AA:BB:CC'],
-            ['00-11-22-aa-bb-cc'],
-            ['0011.22aa.bbcc'],
-            ['001122aabbcc'],
-            ['0:11:22:aa:bb:cc'],
-        ];
-    }
+    expect($term->isFullMac())->toBeTrue();
+    expect($term->macHex)->toBe('001122aabbcc');
+    expect($term->isIp())->toBeFalse();
+})->with('fullMacs');
 
-    public function testHostname(): void
-    {
-        $this->assertTrue(SearchTerm::parse('printer01.example.com')->isHostname());
-        $this->assertTrue(SearchTerm::parse('printer01.example.com.')->isHostname());
-        $this->assertFalse(SearchTerm::parse('printer01')->isHostname());
-        $this->assertFalse(SearchTerm::parse('10.0.0.1')->isHostname());
-        $this->assertFalse(SearchTerm::parse('not a host.name')->isHostname());
-    }
+/**
+ * @return list<array{string}>
+ */
+dataset('fullMacs', function () {
+    return [
+        ['00:11:22:AA:BB:CC'],
+        ['00-11-22-aa-bb-cc'],
+        ['0011.22aa.bbcc'],
+        ['001122aabbcc'],
+        ['0:11:22:aa:bb:cc'],
+    ];
+});
 
-    #[DataProvider('pastedValues')]
-    public function testCleansPastedValues(string $pasted, string $expected): void
-    {
-        $this->assertSame($expected, SearchTerm::parse($pasted)->value);
-    }
+test('hostname', function () {
+    expect(SearchTerm::parse('printer01.example.com')->isHostname())->toBeTrue();
+    expect(SearchTerm::parse('printer01.example.com.')->isHostname())->toBeTrue();
+    expect(SearchTerm::parse('printer01')->isHostname())->toBeFalse();
+    expect(SearchTerm::parse('10.0.0.1')->isHostname())->toBeFalse();
+    expect(SearchTerm::parse('not a host.name')->isHostname())->toBeFalse();
+});
 
-    /**
-     * @return array<string, array{string, string}>
-     */
-    public static function pastedValues(): array
-    {
-        return [
-            'quoted' => ['"10.0.0.1"', '10.0.0.1'],
-            'field name' => ['ip=10.0.0.1,', '10.0.0.1'],
-            'mac field with space' => ['mac: 00:11:22:33:44:55', '00:11:22:33:44:55'],
-            'bracketed ipv6 with port' => ['[2001:db8::1]:443', '2001:db8::1'],
-            'ipv4 with port' => ['10.0.0.1:443', '10.0.0.1'],
-            'parentheses' => ['(host.example.com)', 'host.example.com'],
-            'plain text kept' => ['New York', 'New York'],
-        ];
-    }
+test('cleans pasted values', function (string $pasted, string $expected) {
+    expect(SearchTerm::parse($pasted)->value)->toBe($expected);
+})->with('pastedValues');
 
-    public function testParseManySplitsPastedHosts(): void
-    {
-        $terms = SearchTerm::parseMany("10.0.0.1\n00:11:22:33:44:55, host.example.com;2001:db8::/32");
+/**
+ * @return array<string, array{string, string}>
+ */
+dataset('pastedValues', function () {
+    return [
+        'quoted' => ['"10.0.0.1"', '10.0.0.1'],
+        'field name' => ['ip=10.0.0.1,', '10.0.0.1'],
+        'mac field with space' => ['mac: 00:11:22:33:44:55', '00:11:22:33:44:55'],
+        'bracketed ipv6 with port' => ['[2001:db8::1]:443', '2001:db8::1'],
+        'ipv4 with port' => ['10.0.0.1:443', '10.0.0.1'],
+        'parentheses' => ['(host.example.com)', 'host.example.com'],
+        'plain text kept' => ['New York', 'New York'],
+    ];
+});
 
-        $this->assertSame(['10.0.0.1', '00:11:22:33:44:55', 'host.example.com', '2001:db8::/32'], array_map(fn (SearchTerm $term) => $term->value, $terms));
-    }
+test('parse many splits pasted hosts', function () {
+    $terms = SearchTerm::parseMany("10.0.0.1\n00:11:22:33:44:55, host.example.com;2001:db8::/32");
 
-    public function testParseManyKeepsTextTogether(): void
-    {
-        $this->assertSame(['core switch'], array_map(fn (SearchTerm $term) => $term->value, SearchTerm::parseMany('core switch')));
-        $this->assertSame(['10.0.0.1 core'], array_map(fn (SearchTerm $term) => $term->value, SearchTerm::parseMany('10.0.0.1 core')));
-    }
+    expect(array_map(fn (SearchTerm $term) => $term->value, $terms))->toBe(['10.0.0.1', '00:11:22:33:44:55', 'host.example.com', '2001:db8::/32']);
+});
 
-    public function testParseManyOfNothingHasNoTerms(): void
-    {
-        $this->assertSame([], SearchTerm::parseMany(''));
-        $this->assertSame([], SearchTerm::parseMany(' , ; '));
-    }
+test('parse many keeps text together', function () {
+    expect(array_map(fn (SearchTerm $term) => $term->value, SearchTerm::parseMany('core switch')))->toBe(['core switch']);
+    expect(array_map(fn (SearchTerm $term) => $term->value, SearchTerm::parseMany('10.0.0.1 core')))->toBe(['10.0.0.1 core']);
+});
 
-    public function testHostAndPortKeepsTheAddress(): void
-    {
-        $term = SearchTerm::parse('10.0.0.1:443');
+test('parse many of nothing has no terms', function () {
+    expect(SearchTerm::parseMany(''))->toBe([]);
+    expect(SearchTerm::parseMany(' , ; '))->toBe([]);
+});
 
-        $this->assertSame('10.0.0.1', $term->value);
-        $this->assertTrue($term->isExactIp());
-    }
+test('host and port keeps the address', function () {
+    $term = SearchTerm::parse('10.0.0.1:443');
 
-    public function testLikeEscapesWildcards(): void
-    {
-        $this->assertSame('%core%', SearchTerm::parse('core')->like());
-        $this->assertSame('%a\\_b\\%c%', SearchTerm::parse('a_b%c')->like());
-    }
+    expect($term->value)->toBe('10.0.0.1');
+    expect($term->isExactIp())->toBeTrue();
+});
 
-    public function testBareHexMayBeText(): void
-    {
-        $this->assertTrue(SearchTerm::parse('123456789012')->isBareHex());
-        $this->assertTrue(SearchTerm::parse('123456789012')->mayBeText());
-        $this->assertFalse(SearchTerm::parse('12:34:56:78:90:12')->mayBeText());
-        $this->assertFalse(SearchTerm::parse('10.0.0.1')->mayBeText());
-    }
+test('like escapes wildcards', function () {
+    expect(SearchTerm::parse('core')->like())->toBe('%core%');
+    expect(SearchTerm::parse('a_b%c')->like())->toBe('%a\\_b\\%c%');
+});
 
-    public function testMayBePartialIpv6(): void
-    {
-        $this->assertTrue(SearchTerm::parse('fe80::1:2')->mayBePartialIpv6());
-        $this->assertFalse(SearchTerm::parse('2001:db8:1:2:3:4:5:6')->mayBePartialIpv6());
-        $this->assertFalse(SearchTerm::parse('10.0.0.1')->mayBePartialIpv6());
-    }
-}
+test('bare hex may be text', function () {
+    expect(SearchTerm::parse('123456789012')->isBareHex())->toBeTrue();
+    expect(SearchTerm::parse('123456789012')->mayBeText())->toBeTrue();
+    expect(SearchTerm::parse('12:34:56:78:90:12')->mayBeText())->toBeFalse();
+    expect(SearchTerm::parse('10.0.0.1')->mayBeText())->toBeFalse();
+});
+
+test('may be partial ipv6', function () {
+    expect(SearchTerm::parse('fe80::1:2')->mayBePartialIpv6())->toBeTrue();
+    expect(SearchTerm::parse('2001:db8:1:2:3:4:5:6')->mayBePartialIpv6())->toBeFalse();
+    expect(SearchTerm::parse('10.0.0.1')->mayBePartialIpv6())->toBeFalse();
+});

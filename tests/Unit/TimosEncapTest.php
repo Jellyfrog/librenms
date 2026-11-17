@@ -1,69 +1,37 @@
 <?php
 
-/*
- * TimosEncapTest.php
- *
- * Tests decoding and formatting of TIMETRA-TC-MIB::TmnxEncapVal values.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * @link       https://www.librenms.org
- */
-
-namespace LibreNMS\Tests\Unit;
-
-use LibreNMS\Tests\TestCase;
+uses(\LibreNMS\Tests\TestCase::class);
 use LibreNMS\OS\Timos;
 
-final class TimosEncapTest extends TestCase
-{
-    public function testNullEncapDecodes(): void
-    {
-        $this->assertSame(['outer' => 0, 'inner' => null], Timos::decodeEncapValue(0));
-    }
 
-    public function testDot1qEncapDecodes(): void
-    {
-        $this->assertSame(['outer' => 500, 'inner' => null], Timos::decodeEncapValue(500));
-        $this->assertSame(['outer' => 1, 'inner' => null], Timos::decodeEncapValue(1));
-    }
+test('null encap decodes', function () {
+    expect(Timos::decodeEncapValue(0))->toBe(['outer' => 0, 'inner' => null]);
+});
 
-    public function testQinQEncapDecodes(): void
-    {
-        // outer 100, inner 200: inner VLAN lives in the upper 16 bits
-        $encap = (200 << 16) | 100;
-        $this->assertSame(['outer' => 100, 'inner' => 200], Timos::decodeEncapValue($encap));
-    }
+test('dot1q encap decodes', function () {
+    expect(Timos::decodeEncapValue(500))->toBe(['outer' => 500, 'inner' => null]);
+    expect(Timos::decodeEncapValue(1))->toBe(['outer' => 1, 'inner' => null]);
+});
 
-    public function testStringInputIsAccepted(): void
-    {
-        $this->assertSame(['outer' => 500, 'inner' => null], Timos::decodeEncapValue('500'));
-    }
+test('qin qencap decodes', function () {
+    // outer 100, inner 200: inner VLAN lives in the upper 16 bits
+    $encap = (200 << 16) | 100;
+    expect(Timos::decodeEncapValue($encap))->toBe(['outer' => 100, 'inner' => 200]);
+});
 
-    public function testDot1qFormats(): void
-    {
-        $this->assertSame('500', Timos::formatEncapValue(500));
-        $this->assertSame('0', Timos::formatEncapValue(0));
-    }
+test('string input is accepted', function () {
+    expect(Timos::decodeEncapValue('500'))->toBe(['outer' => 500, 'inner' => null]);
+});
 
-    public function testQinQFormatsAsOuterDotInner(): void
-    {
-        $this->assertSame('100.200', Timos::formatEncapValue((200 << 16) | 100));
-    }
+test('dot1q formats', function () {
+    expect(Timos::formatEncapValue(500))->toBe('500');
+    expect(Timos::formatEncapValue(0))->toBe('0');
+});
 
-    public function testWildcardFormats(): void
-    {
-        $this->assertSame('*', Timos::formatEncapValue(4095));
-    }
-}
+test('qin qformats as outer dot inner', function () {
+    expect(Timos::formatEncapValue((200 << 16) | 100))->toBe('100.200');
+});
+
+test('wildcard formats', function () {
+    expect(Timos::formatEncapValue(4095))->toBe('*');
+});

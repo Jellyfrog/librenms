@@ -1,163 +1,137 @@
 <?php
 
-namespace LibreNMS\Tests\Feature;
-
+uses(\LibreNMS\Tests\DBTestCase::class);
 use App\Actions\Device\UpdateDeviceOutage;
 use App\Facades\LibrenmsConfig;
 use App\Models\AlertSchedule;
 use App\Models\Device;
 use App\Models\DeviceOutage;
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use LibreNMS\Enum\MaintenanceBehavior;
-use LibreNMS\Tests\DBTestCase;
 
-final class UpdateDeviceOutageTest extends DBTestCase
-{
-    use DatabaseTransactions;
+uses(\Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-    private UpdateDeviceOutage $action;
+beforeEach(function () {
+    $this->action = app(UpdateDeviceOutage::class);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->action = app(UpdateDeviceOutage::class);
-    }
+test('closes open outage when device comes up', function () {
+    $device = Device::factory()->create(['status' => 1]);
+    DeviceOutage::factory()->open()->create(['device_id' => $device->device_id]);
 
-    public function testClosesOpenOutageWhenDeviceComesUp(): void
-    {
-        $device = Device::factory()->create(['status' => 1]);
-        DeviceOutage::factory()->open()->create(['device_id' => $device->device_id]);
+    $this->action->execute($device);
 
-        $this->action->execute($device);
+    expect($device->outages()->whereNull('up_again')->first())->toBeNull();
+    expect($device->outages()->first()->up_again)->not->toBeNull();
+});
 
-        $this->assertNull($device->outages()->whereNull('up_again')->first());
-        $this->assertNotNull($device->outages()->first()->up_again);
-    }
+test('closes open outage when device comes up during maintenance', function () {
+    LibrenmsConfig::set('graphing.availability_consider_maintenance', true);
 
-    public function testClosesOpenOutageWhenDeviceComesUpDuringMaintenance(): void
-    {
-        LibrenmsConfig::set('graphing.availability_consider_maintenance', true);
+    $device = Device::factory()->create(['status' => 1]);
+    DeviceOutage::factory()->open()->create(['device_id' => $device->device_id]);
 
-        $device = Device::factory()->create(['status' => 1]);
-        DeviceOutage::factory()->open()->create(['device_id' => $device->device_id]);
+    $schedule = AlertSchedule::factory()->create([
+        'start' => Carbon::now()->subHour(),
+        'end' => Carbon::now()->addHour(),
+        'behavior' => MaintenanceBehavior::MuteAlerts,
+    ]);
+    $schedule->devices()->attach($device);
 
-        $schedule = AlertSchedule::factory()->create([
-            'start' => Carbon::now()->subHour(),
-            'end' => Carbon::now()->addHour(),
-            'behavior' => MaintenanceBehavior::MuteAlerts,
-        ]);
-        $schedule->devices()->attach($device);
+    $this->action->execute($device);
 
-        $this->action->execute($device);
+    expect($device->outages()->whereNull('up_again')->first())->toBeNull('Outage should be closed even when device is in maintenance');
+    expect($device->outages()->first()->up_again)->not->toBeNull();
+});
 
-        $this->assertNull(
-            $device->outages()->whereNull('up_again')->first(),
-            'Outage should be closed even when device is in maintenance'
-        );
-        $this->assertNotNull($device->outages()->first()->up_again);
-    }
+test('does nothing when device up with no open outage', function () {
+    $device = Device::factory()->create(['status' => 1]);
+    DeviceOutage::factory()->closed()->create(['device_id' => $device->device_id]);
 
-    public function testDoesNothingWhenDeviceUpWithNoOpenOutage(): void
-    {
-        $device = Device::factory()->create(['status' => 1]);
-        DeviceOutage::factory()->closed()->create(['device_id' => $device->device_id]);
+    $this->action->execute($device);
 
-        $this->action->execute($device);
+    expect($device->outages)->toHaveCount(1);
+    expect($device->outages()->first()->up_again)->not->toBeNull();
+});
 
-        $this->assertCount(1, $device->outages);
-        $this->assertNotNull($device->outages()->first()->up_again);
-    }
+test('opens new outage when device goes down', function () {
+    $device = Device::factory()->create(['status' => 0]);
 
-    public function testOpensNewOutageWhenDeviceGoesDown(): void
-    {
-        $device = Device::factory()->create(['status' => 0]);
+    $this->action->execute($device);
 
-        $this->action->execute($device);
+    expect($device->outages()->get())->toHaveCount(1);
+    expect($device->outages()->first()->up_again)->toBeNull();
+});
 
-        $this->assertCount(1, $device->outages()->get());
-        $this->assertNull($device->outages()->first()->up_again);
-    }
+test('does not open duplicate outage when one already open', function () {
+    $device = Device::factory()->create(['status' => 0]);
+    DeviceOutage::factory()->open()->create(['device_id' => $device->device_id]);
 
-    public function testDoesNotOpenDuplicateOutageWhenOneAlreadyOpen(): void
-    {
-        $device = Device::factory()->create(['status' => 0]);
-        DeviceOutage::factory()->open()->create(['device_id' => $device->device_id]);
+    $this->action->execute($device);
 
-        $this->action->execute($device);
+    expect($device->outages()->get())->toHaveCount(1);
+});
 
-        $this->assertCount(1, $device->outages()->get());
-    }
+test('does not open outage during maintenance when consider maintenance enabled', function () {
+    LibrenmsConfig::set('graphing.availability_consider_maintenance', true);
 
-    public function testDoesNotOpenOutageDuringMaintenanceWhenConsiderMaintenanceEnabled(): void
-    {
-        LibrenmsConfig::set('graphing.availability_consider_maintenance', true);
+    $device = Device::factory()->create(['status' => 0]);
+    $schedule = AlertSchedule::factory()->create([
+        'start' => Carbon::now()->subHour(),
+        'end' => Carbon::now()->addHour(),
+        'behavior' => MaintenanceBehavior::MuteAlerts,
+    ]);
+    $schedule->devices()->attach($device);
 
-        $device = Device::factory()->create(['status' => 0]);
-        $schedule = AlertSchedule::factory()->create([
-            'start' => Carbon::now()->subHour(),
-            'end' => Carbon::now()->addHour(),
-            'behavior' => MaintenanceBehavior::MuteAlerts,
-        ]);
-        $schedule->devices()->attach($device);
+    $this->action->execute($device);
 
-        $this->action->execute($device);
+    expect($device->outages()->get())->toHaveCount(0);
+});
 
-        $this->assertCount(0, $device->outages()->get());
-    }
+test('saving status change to up closes open outage', function () {
+    $device = Device::factory()->create(['status' => 0]);
+    DeviceOutage::factory()->open()->create(['device_id' => $device->device_id]);
 
-    public function testSavingStatusChangeToUpClosesOpenOutage(): void
-    {
-        $device = Device::factory()->create(['status' => 0]);
-        DeviceOutage::factory()->open()->create(['device_id' => $device->device_id]);
+    $device->status = 1;
+    $device->save();
 
-        $device->status = 1;
-        $device->save();
+    expect($device->outages()->whereNull('up_again')->first())->toBeNull('Outage must be closed when the device status is saved as up');
+});
 
-        $this->assertNull(
-            $device->outages()->whereNull('up_again')->first(),
-            'Outage must be closed when the device status is saved as up'
-        );
-    }
+test('saving status change to down opens outage', function () {
+    $device = Device::factory()->create(['status' => 1]);
 
-    public function testSavingStatusChangeToDownOpensOutage(): void
-    {
-        $device = Device::factory()->create(['status' => 1]);
+    $device->status = 0;
+    $device->save();
 
-        $device->status = 0;
-        $device->save();
+    expect($device->outages()->get())->toHaveCount(1);
+    expect($device->outages()->first()->up_again)->toBeNull();
+});
 
-        $this->assertCount(1, $device->outages()->get());
-        $this->assertNull($device->outages()->first()->up_again);
-    }
+test('saving without status change leaves outages alone', function () {
+    $device = Device::factory()->create(['status' => 0]);
+    DeviceOutage::factory()->open()->create(['device_id' => $device->device_id]);
 
-    public function testSavingWithoutStatusChangeLeavesOutagesAlone(): void
-    {
-        $device = Device::factory()->create(['status' => 0]);
-        DeviceOutage::factory()->open()->create(['device_id' => $device->device_id]);
+    $device->sysName = 'unrelated-change';
+    $device->save();
 
-        $device->sysName = 'unrelated-change';
-        $device->save();
+    expect($device->outages()->get())->toHaveCount(1);
+    expect($device->outages()->first()->up_again)->toBeNull();
+});
 
-        $this->assertCount(1, $device->outages()->get());
-        $this->assertNull($device->outages()->first()->up_again);
-    }
+test('opens outage during maintenance when consider maintenance disabled', function () {
+    LibrenmsConfig::set('graphing.availability_consider_maintenance', false);
 
-    public function testOpensOutageDuringMaintenanceWhenConsiderMaintenanceDisabled(): void
-    {
-        LibrenmsConfig::set('graphing.availability_consider_maintenance', false);
+    $device = Device::factory()->create(['status' => 0]);
+    $schedule = AlertSchedule::factory()->create([
+        'start' => Carbon::now()->subHour(),
+        'end' => Carbon::now()->addHour(),
+        'behavior' => MaintenanceBehavior::MuteAlerts,
+    ]);
+    $schedule->devices()->attach($device);
 
-        $device = Device::factory()->create(['status' => 0]);
-        $schedule = AlertSchedule::factory()->create([
-            'start' => Carbon::now()->subHour(),
-            'end' => Carbon::now()->addHour(),
-            'behavior' => MaintenanceBehavior::MuteAlerts,
-        ]);
-        $schedule->devices()->attach($device);
+    $this->action->execute($device);
 
-        $this->action->execute($device);
-
-        $this->assertCount(1, $device->outages()->get());
-        $this->assertNull($device->outages()->first()->up_again);
-    }
-}
+    expect($device->outages()->get())->toHaveCount(1);
+    expect($device->outages()->first()->up_again)->toBeNull();
+});

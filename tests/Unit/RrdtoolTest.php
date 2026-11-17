@@ -24,77 +24,61 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Unit;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\Facades\LibrenmsConfig;
 use LibreNMS\RRD\Backend\Rrdtool;
 use LibreNMS\RRD\RrdDefinition;
 use LibreNMS\RRD\RrdPath;
 use LibreNMS\RRD\RrdProcess;
-use LibreNMS\Tests\TestCase;
-use Mockery;
 
-final class RrdtoolTest extends TestCase
+beforeEach(function () {
+    LibrenmsConfig::set('rrdcached', '');
+    LibrenmsConfig::set('rrd_dir', '/opt/librenms/rrd');
+    LibrenmsConfig::set('rrd.heartbeat', 600);
+
+    $process = Mockery::mock(RrdProcess::class);
+    $process->shouldReceive('run')->andReturnUsing(function (string $command) {
+        $this->commands[] = $command;
+
+        return '';
+    });
+    $process->shouldReceive('stop');
+    $this->process = $process;
+});
+
+test('create adds no overwrite', function () {
+    backend()->create(RrdPath::make('host', 'f.rrd'), definition()->setRras(['RRA:AVERAGE:0.5:1:10']));
+
+    expect($this->commands)->toBe(['create host/f.rrd --step 300 DS:a:GAUGE:600:U:U RRA:AVERAGE:0.5:1:10 -O']);
+});
+
+test('create without no overwrite support', function () {
+    $backend = new Rrdtool(null, $this->process, '1.4.2');
+    $backend->create(RrdPath::make('host', 'f.rrd'), definition());
+
+    expect($this->commands)->toBe(['create host/f.rrd --step 300 DS:a:GAUGE:600:U:U']);
+});
+
+test('update and tune', function () {
+    $rrd = RrdPath::make('host', 'f.rrd');
+
+    backend()->update($rrd, [1, null, 'x', 2.5]);
+    backend()->update($rrd, [3], 1700000000);
+    backend()->tune($rrd, ['a' => ['max' => 100], 'b' => ['min' => 0, 'max' => null]]);
+
+    expect($this->commands)->toBe([
+        'update host/f.rrd N:1:U:U:2.5',
+        'update host/f.rrd 1700000000:3',
+        'tune host/f.rrd --maximum a:100 --minimum b:0 --maximum b:U',
+    ]);
+});
+
+function backend(): Rrdtool
 {
-    /** @var string[] */
-    private array $commands = [];
-    private RrdProcess $process;
+    return new Rrdtool(null, $this->process);
+}
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        LibrenmsConfig::set('rrdcached', '');
-        LibrenmsConfig::set('rrd_dir', '/opt/librenms/rrd');
-        LibrenmsConfig::set('rrd.heartbeat', 600);
-
-        $process = Mockery::mock(RrdProcess::class);
-        $process->shouldReceive('run')->andReturnUsing(function (string $command) {
-            $this->commands[] = $command;
-
-            return '';
-        });
-        $process->shouldReceive('stop');
-        $this->process = $process;
-    }
-
-    public function testCreateAddsNoOverwrite(): void
-    {
-        $this->backend()->create(RrdPath::make('host', 'f.rrd'), $this->definition()->setRras(['RRA:AVERAGE:0.5:1:10']));
-
-        $this->assertSame(['create host/f.rrd --step 300 DS:a:GAUGE:600:U:U RRA:AVERAGE:0.5:1:10 -O'], $this->commands);
-    }
-
-    public function testCreateWithoutNoOverwriteSupport(): void
-    {
-        $backend = new Rrdtool(null, $this->process, '1.4.2');
-        $backend->create(RrdPath::make('host', 'f.rrd'), $this->definition());
-
-        $this->assertSame(['create host/f.rrd --step 300 DS:a:GAUGE:600:U:U'], $this->commands);
-    }
-
-    public function testUpdateAndTune(): void
-    {
-        $rrd = RrdPath::make('host', 'f.rrd');
-
-        $this->backend()->update($rrd, [1, null, 'x', 2.5]);
-        $this->backend()->update($rrd, [3], 1700000000);
-        $this->backend()->tune($rrd, ['a' => ['max' => 100], 'b' => ['min' => 0, 'max' => null]]);
-
-        $this->assertSame([
-            'update host/f.rrd N:1:U:U:2.5',
-            'update host/f.rrd 1700000000:3',
-            'tune host/f.rrd --maximum a:100 --minimum b:0 --maximum b:U',
-        ], $this->commands);
-    }
-
-    private function backend(): Rrdtool
-    {
-        return new Rrdtool(null, $this->process);
-    }
-
-    private function definition(): RrdDefinition
-    {
-        return RrdDefinition::make()->addDataset('a', 'GAUGE')->setStep(300)->setRras([]);
-    }
+function definition(): RrdDefinition
+{
+    return RrdDefinition::make()->addDataset('a', 'GAUGE')->setStep(300)->setRras([]);
 }

@@ -21,21 +21,12 @@
  * @link       https://www.librenms.org
  */
 
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
+uses(\LibreNMS\Tests\Feature\SnmpTraps\SnmpTrapTestCase::class);
 use LibreNMS\Enum\Severity;
 
-final class UpsTrapAlarmEntryRemovedTest extends SnmpTrapTestCase
-{
-    /**
-     * Test UpsTrapAlarmEntryRemoved handle for an untranslated OID, as seen from
-     * some APC NMC firmware that encodes the trap OID as enterprise.0.specific.
-     *
-     * @return void
-     */
-    public function testUpsTrapAlarmEntryRemovedUntranslated(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+
+test('ups trap alarm entry removed untranslated', function () {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:57602->[10.0.0.1]:162
 SNMPv2-MIB::sysUpTime.0 47:22:17:01.20
@@ -46,9 +37,8 @@ SNMPv2-SMI::snmpModules.18.1.3.0 10.0.0.1
 SNMPv2-SMI::snmpModules.18.1.4.0 public
 SNMPv2-MIB::snmpTrapEnterprise.0 SNMPv2-SMI::mib-2.33.2
 TRAP,
-            'A problem has been encountered in the communications between the agent and the UPS. cleared',
-            'Could not handle testUpsTrapAlarmEntryRemovedUntranslated trap',
-            [Severity::Ok],
-        );
-    }
-}
+        'A problem has been encountered in the communications between the agent and the UPS. cleared',
+        'Could not handle testUpsTrapAlarmEntryRemovedUntranslated trap',
+        [Severity::Ok],
+    );
+});

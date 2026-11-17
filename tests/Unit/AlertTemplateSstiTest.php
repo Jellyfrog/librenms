@@ -1,123 +1,114 @@
 <?php
 
-namespace LibreNMS\Tests\Unit;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\Models\AlertTemplate;
 use LibreNMS\Alert\Template;
-use LibreNMS\Tests\TestCase;
 
-class AlertTemplateSstiTest extends TestCase
-{
-    public function testDefaultTitleDoesNotExecuteBladeInDeviceDisplayName(): void
-    {
-        $GLOBALS['__test_ssti_flag'] = false;
+test('default title does not execute blade in device display name', function () {
+    $GLOBALS['__test_ssti_flag'] = false;
 
-        $maliciousDisplay = 'Router1 {{ ($GLOBALS["__test_ssti_flag"] = true) ? "malicious" : "" }} & Switch';
+    $maliciousDisplay = 'Router1 {{ ($GLOBALS["__test_ssti_flag"] = true) ? "malicious" : "" }} & Switch';
 
-        $data = [
+    $data = [
+        'state' => 1,
+        'display' => $maliciousDisplay,
+        'name' => 'Test Rule',
+        'template' => (new AlertTemplate)->forceFill([
+            'name' => 'Default Alert Template',
+            'title' => '',
+            'title_rec' => '',
+            'template' => '{{ $alert->title }}',
+        ]),
+        'alert' => [
             'state' => 1,
             'display' => $maliciousDisplay,
             'name' => 'Test Rule',
-            'template' => (new AlertTemplate)->forceFill([
-                'name' => 'Default Alert Template',
-                'title' => '',
-                'title_rec' => '',
-                'template' => '{{ $alert->title }}',
-            ]),
-            'alert' => [
-                'state' => 1,
-                'display' => $maliciousDisplay,
-                'name' => 'Test Rule',
-            ],
-        ];
+        ],
+    ];
 
-        $tpl = new Template();
-        $renderedTitle = $tpl->getTitle($data);
+    $tpl = new Template();
+    $renderedTitle = $tpl->getTitle($data);
 
-        $this->assertFalse($GLOBALS['__test_ssti_flag'], 'Blade expressions in device display string should not be evaluated');
-        $this->assertEquals('Alert for device ' . $maliciousDisplay . ' - Test Rule', $renderedTitle);
+    expect($GLOBALS['__test_ssti_flag'])->toBeFalse('Blade expressions in device display string should not be evaluated');
+    expect($renderedTitle)->toEqual('Alert for device ' . $maliciousDisplay . ' - Test Rule');
 
-        unset($GLOBALS['__test_ssti_flag']);
-    }
+    unset($GLOBALS['__test_ssti_flag']);
+});
 
-    public function testCustomTemplateTitleRendersSafely(): void
-    {
-        $data = [
+test('custom template title renders safely', function () {
+    $data = [
+        'state' => 1,
+        'display' => 'my-switch-01',
+        'name' => 'Ping Latency',
+        'template' => (new AlertTemplate)->forceFill([
+            'name' => 'Custom Template',
+            'title' => 'Custom Alert: {{ $alert->display }} - {{ $alert->name }}',
+            'title_rec' => 'Recovered: {{ $alert->display }}',
+            'template' => '{{ $alert->title }}',
+        ]),
+        'alert' => [
             'state' => 1,
             'display' => 'my-switch-01',
             'name' => 'Ping Latency',
-            'template' => (new AlertTemplate)->forceFill([
-                'name' => 'Custom Template',
-                'title' => 'Custom Alert: {{ $alert->display }} - {{ $alert->name }}',
-                'title_rec' => 'Recovered: {{ $alert->display }}',
-                'template' => '{{ $alert->title }}',
-            ]),
-            'alert' => [
-                'state' => 1,
-                'display' => 'my-switch-01',
-                'name' => 'Ping Latency',
-            ],
-        ];
+        ],
+    ];
 
-        $tpl = new Template();
-        $renderedTitle = $tpl->getTitle($data);
+    $tpl = new Template();
+    $renderedTitle = $tpl->getTitle($data);
 
-        $this->assertEquals('Custom Alert: my-switch-01 - Ping Latency', $renderedTitle);
-    }
+    expect($renderedTitle)->toEqual('Custom Alert: my-switch-01 - Ping Latency');
+});
 
-    public function testDirectivesInDeviceDisplayAreNotEvaluated(): void
-    {
-        $GLOBALS['__test_ssti_flag_directive'] = false;
+test('directives in device display are not evaluated', function () {
+    $GLOBALS['__test_ssti_flag_directive'] = false;
 
-        $maliciousDisplay = 'Router1 @php($GLOBALS["__test_ssti_flag_directive"] = true)';
+    $maliciousDisplay = 'Router1 @php($GLOBALS["__test_ssti_flag_directive"] = true)';
 
-        $data = [
+    $data = [
+        'state' => 1,
+        'display' => $maliciousDisplay,
+        'name' => 'Test Rule',
+        'template' => (new AlertTemplate)->forceFill([
+            'name' => 'Default Alert Template',
+            'title' => '',
+            'title_rec' => '',
+            'template' => '{{ $alert->title }}',
+        ]),
+        'alert' => [
             'state' => 1,
             'display' => $maliciousDisplay,
             'name' => 'Test Rule',
-            'template' => (new AlertTemplate)->forceFill([
-                'name' => 'Default Alert Template',
-                'title' => '',
-                'title_rec' => '',
-                'template' => '{{ $alert->title }}',
-            ]),
-            'alert' => [
-                'state' => 1,
-                'display' => $maliciousDisplay,
-                'name' => 'Test Rule',
-            ],
-        ];
+        ],
+    ];
 
-        $tpl = new Template();
-        $renderedTitle = $tpl->getTitle($data);
+    $tpl = new Template();
+    $renderedTitle = $tpl->getTitle($data);
 
-        $this->assertFalse($GLOBALS['__test_ssti_flag_directive'], 'Blade directives like @php in device display string should not be evaluated');
-        $this->assertEquals('Alert for device ' . $maliciousDisplay . ' - Test Rule', $renderedTitle);
+    expect($GLOBALS['__test_ssti_flag_directive'])->toBeFalse('Blade directives like @php in device display string should not be evaluated');
+    expect($renderedTitle)->toEqual('Alert for device ' . $maliciousDisplay . ' - Test Rule');
 
-        unset($GLOBALS['__test_ssti_flag_directive']);
-    }
+    unset($GLOBALS['__test_ssti_flag_directive']);
+});
 
-    public function testCustomTemplateFailureFallsBackToSafeDefaultTitle(): void
-    {
-        $data = [
+test('custom template failure falls back to safe default title', function () {
+    $data = [
+        'state' => 1,
+        'display' => 'router & switch',
+        'name' => 'Test Rule',
+        'template' => (new AlertTemplate)->forceFill([
+            'name' => 'Broken Template',
+            'title' => '{{ $alert->invalidMethod() }}',
+            'template' => '{{ $alert->title }}',
+        ]),
+        'alert' => [
             'state' => 1,
             'display' => 'router & switch',
             'name' => 'Test Rule',
-            'template' => (new AlertTemplate)->forceFill([
-                'name' => 'Broken Template',
-                'title' => '{{ $alert->invalidMethod() }}',
-                'template' => '{{ $alert->title }}',
-            ]),
-            'alert' => [
-                'state' => 1,
-                'display' => 'router & switch',
-                'name' => 'Test Rule',
-            ],
-        ];
+        ],
+    ];
 
-        $tpl = new Template();
-        $renderedTitle = $tpl->getTitle($data);
+    $tpl = new Template();
+    $renderedTitle = $tpl->getTitle($data);
 
-        $this->assertEquals('Alert for device router & switch - Test Rule', $renderedTitle);
-    }
-}
+    expect($renderedTitle)->toEqual('Alert for device router & switch - Test Rule');
+});

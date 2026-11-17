@@ -1,103 +1,89 @@
 <?php
 
-namespace LibreNMS\Tests\Feature;
-
+uses(\LibreNMS\Tests\TestCase::class);
 use App\Jobs\DispatchPollingWork;
 use App\Jobs\PollDevice;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Horizon\JobPayload;
-use LibreNMS\Tests\TestCase;
 use LibreNMS\Util\ModuleList;
 use Spatie\Permission\Models\Permission;
 
-class HorizonTest extends TestCase
-{
-    use RefreshDatabase;
 
-    public function test_admin_can_view_dashboard(): void
-    {
-        config(['queue.default' => 'redis']);
-        $user = User::factory()->admin()->create(['enabled' => true]);
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-        $this->actingAs($user)->get('/horizon')->assertOk();
-    }
+test('admin can view dashboard', function () {
+    config(['queue.default' => 'redis']);
+    $user = User::factory()->admin()->create(['enabled' => true]);
 
-    public function test_dashboard_unavailable_without_redis(): void
-    {
-        config(['queue.default' => 'database']);
-        $user = User::factory()->admin()->create(['enabled' => true]);
+    $this->actingAs($user)->get('/horizon')->assertOk();
+});
 
-        $this->actingAs($user)->get('/horizon')->assertForbidden();
-    }
+test('dashboard unavailable without redis', function () {
+    config(['queue.default' => 'database']);
+    $user = User::factory()->admin()->create(['enabled' => true]);
 
-    public function test_non_admin_cannot_view_dashboard(): void
-    {
-        $user = User::factory()->read()->create(['enabled' => true]);
+    $this->actingAs($user)->get('/horizon')->assertForbidden();
+});
 
-        $this->actingAs($user)->get('/horizon')->assertForbidden();
-    }
+test('non admin cannot view dashboard', function () {
+    $user = User::factory()->read()->create(['enabled' => true]);
 
-    public function test_horizon_permission_can_view_dashboard(): void
-    {
-        config(['queue.default' => 'redis']);
-        Permission::findOrCreate('worker.horizon');
-        $user = User::factory()->create(['enabled' => true]);
-        $user->givePermissionTo('worker.horizon');
+    $this->actingAs($user)->get('/horizon')->assertForbidden();
+});
 
-        $this->actingAs($user)->get('/horizon')->assertOk();
-    }
+test('horizon permission can view dashboard', function () {
+    config(['queue.default' => 'redis']);
+    Permission::findOrCreate('worker.horizon');
+    $user = User::factory()->create(['enabled' => true]);
+    $user->givePermissionTo('worker.horizon');
 
-    public function test_queue_permissions_do_not_grant_dashboard(): void
-    {
-        config(['queue.default' => 'redis']);
-        Permission::findOrCreate('worker.view');
-        Permission::findOrCreate('worker.update');
-        $user = User::factory()->create(['enabled' => true]);
-        $user->givePermissionTo('worker.view', 'worker.update');
+    $this->actingAs($user)->get('/horizon')->assertOk();
+});
 
-        $this->actingAs($user)->get('/horizon')->assertForbidden();
-    }
+test('queue permissions do not grant dashboard', function () {
+    config(['queue.default' => 'redis']);
+    Permission::findOrCreate('worker.view');
+    Permission::findOrCreate('worker.update');
+    $user = User::factory()->create(['enabled' => true]);
+    $user->givePermissionTo('worker.view', 'worker.update');
 
-    public function test_non_admin_cannot_view_dashboard_in_local_environment(): void
-    {
-        $this->app['env'] = 'local';
-        $user = User::factory()->read()->create(['enabled' => true]);
+    $this->actingAs($user)->get('/horizon')->assertForbidden();
+});
 
-        $this->actingAs($user)->get('/horizon')->assertForbidden();
-    }
+test('non admin cannot view dashboard in local environment', function () {
+    $this->app['env'] = 'local';
+    $user = User::factory()->read()->create(['enabled' => true]);
 
-    public function test_guest_is_redirected_to_login(): void
-    {
-        $this->get('/horizon')->assertRedirect();
-    }
+    $this->actingAs($user)->get('/horizon')->assertForbidden();
+});
 
-    public function test_dispatcher_is_silenced(): void
-    {
-        $payload = new JobPayload('{}')->prepare(new DispatchPollingWork(poll: false, discover: false));
+test('guest is redirected to login', function () {
+    $this->get('/horizon')->assertRedirect();
+});
 
-        $this->assertTrue($payload->isSilenced());
-    }
+test('dispatcher is silenced', function () {
+    $payload = new JobPayload('{}')->prepare(new DispatchPollingWork(poll: false, discover: false));
 
-    public function test_poll_device_is_tagged_and_not_silenced(): void
-    {
-        $payload = new JobPayload('{}')->prepare(new PollDevice(42, ModuleList::fromUserOverrides([])));
+    expect($payload->isSilenced())->toBeTrue();
+});
 
-        $this->assertFalse($payload->isSilenced());
-        $this->assertSame(['poll', 'device:42'], $payload->tags());
-    }
+test('poll device is tagged and not silenced', function () {
+    $payload = new JobPayload('{}')->prepare(new PollDevice(42, ModuleList::fromUserOverrides([])));
 
-    public function test_config_is_not_loaded_before_the_app_has_booted(): void
-    {
-        $app = require base_path('bootstrap/app.php');
-        $loadedEarly = null;
-        // runs before booted callbacks registered by providers, database settings are not available before this
-        $app->booted(function ($app) use (&$loadedEarly): void {
-            $loadedEarly = $app->resolved('librenms-config');
-        });
+    expect($payload->isSilenced())->toBeFalse();
+    expect($payload->tags())->toBe(['poll', 'device:42']);
+});
 
-        $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+test('config is not loaded before the app has booted', function () {
+    $app = require base_path('bootstrap/app.php');
+    $loadedEarly = null;
 
-        $this->assertFalse($loadedEarly, 'LibreNMS config was loaded during boot, it would be cached without database settings');
-    }
-}
+    // runs before booted callbacks registered by providers, database settings are not available before this
+    $app->booted(function ($app) use (&$loadedEarly): void {
+        $loadedEarly = $app->resolved('librenms-config');
+    });
+
+    $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+
+    expect($loadedEarly)->toBeFalse('LibreNMS config was loaded during boot, it would be cached without database settings');
+});
