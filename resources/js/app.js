@@ -22,6 +22,7 @@ import portLink from "./components/alpine/portLink.js";
 import filterBarComponent from "./components/alpine/filterBarComponent.js";
 import remoteDropdown from "./components/alpine/remoteDropdown.js";
 import dateRangePicker from "./components/alpine/dateRangePicker.js";
+import dataTable from "./components/alpine/dataTable.js";
 import {
     librenmsSelect,
     librenmsSetting,
@@ -55,6 +56,7 @@ Alpine.data('portLink', portLink);
 Alpine.data("filterBarComponent", filterBarComponent);
 Alpine.data("remoteDropdown", remoteDropdown);
 Alpine.data("dateRangePicker", dateRangePicker);
+Alpine.data("dataTable", dataTable);
 Alpine.data("settingsPage", settingsPage);
 Alpine.data("librenmsSetting", librenmsSetting);
 Alpine.data("librenmsSelect", librenmsSelect);
