@@ -24,23 +24,18 @@
  * @author     Adam Bishop <adam@omega.org.uk>
  */
 
-namespace LibreNMS\Tests\Feature;
-
 use App\Console\Commands\SmokepingGenerateCommand;
 use App\Models\Device;
 use App\Models\DevicePollingMethod;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use LibreNMS\Enum\PollingMethodType;
-use LibreNMS\Tests\DBTestCase;
 use LibreNMS\Util\Binaries;
 
-final class SmokepingCliTest extends DBTestCase
-{
-    use DatabaseTransactions;
+uses(LibreNMS\Tests\DBTestCase::class, Illuminate\Foundation\Testing\DatabaseTransactions::class);
 
-    protected $groups = [
+beforeEach(function (): void {
+    $this->groups = [
         'Le23HKVMvN' => [
             'Cl09bZU4sn' => [
                 'transport' => 'udp',
@@ -97,407 +92,389 @@ final class SmokepingCliTest extends DBTestCase
         ],
     ];
 
-    private $instance = null;
+    // We need an app instance available for these tests to load the translation machinary
+    $this->app = $this->createApplication();
 
-    protected function setUp(): void
-    {
-        // We need an app instance available for these tests to load the translation machinary
-        $this->app = $this->createApplication();
+    $this->instance = new SmokepingGenerateCommand();
+    $this->instance->disableDNSLookup();
+});
 
-        $this->instance = new SmokepingGenerateCommand();
-        $this->instance->disableDNSLookup();
-        parent::setUp();
+test('nonsense', function (): void {
+    $this->assertNotEquals(0, Artisan::call('smokeping:generate --probes --targets --no-header'));
+    $this->assertNotEquals(0, Artisan::call('smokeping:generate --probes --targets --single-process'));
+    $this->assertNotEquals(0, Artisan::call('smokeping:generate --probes --targets'));
+    $this->assertNotEquals(0, Artisan::call('smokeping:generate --no-header'));
+    $this->assertNotEquals(0, Artisan::call('smokeping:generate --single-process'));
+    $this->assertNotEquals(0, Artisan::call('smokeping:generate'));
+
+    $this->expectException('RuntimeException');
+    Artisan::call('smokeping:generate --foobar');
+});
+
+test('build header', function (): void {
+    $warnings = ['rpPvjwdI0M0hlg6ZgZA', '2aUjOMql6ZWN7H0DthWDOyCvkXs0kVShhnASnc', 'HYMWbDplSW9PLNK9o9tySeJF4Ac61uTRHUUxxBXHiCl'];
+
+    $this->instance->setWarning($warnings[0]);
+    $this->instance->setWarning($warnings[1]);
+    $this->instance->setWarning($warnings[2]);
+
+    $header = $this->instance->buildHeader(false, false);
+
+    expect(array_pop($header))->toBeEmpty();
+
+    foreach ($header as $line) {
+        expect(Str::startsWith($line, '# '))->toBeTrue($line);
+        expect(Str::contains($line, array_merge($warnings, [__('commands.smokeping:generate.header-first'), __('commands.smokeping:generate.header-second'), __('commands.smokeping:generate.header-third')])))->toBeTrue($line);
     }
 
-    public function testNonsense(): void
-    {
-        $this->assertNotEquals(0, \Artisan::call('smokeping:generate --probes --targets --no-header'));
-        $this->assertNotEquals(0, \Artisan::call('smokeping:generate --probes --targets --single-process'));
-        $this->assertNotEquals(0, \Artisan::call('smokeping:generate --probes --targets'));
-        $this->assertNotEquals(0, \Artisan::call('smokeping:generate --no-header'));
-        $this->assertNotEquals(0, \Artisan::call('smokeping:generate --single-process'));
-        $this->assertNotEquals(0, \Artisan::call('smokeping:generate'));
+    expect([])->toEqual($this->instance->buildHeader(true, false));
+});
 
-        $this->expectException('RuntimeException');
-        \Artisan::call('smokeping:generate --foobar');
+test('assemble probes', function (): void {
+    $tests = [0, -1];
+
+    foreach ($tests as $test) {
+        expect($this->instance->assembleProbes($test, new Binaries))->toBeEmpty();
     }
+});
 
-    public function testBuildHeader(): void
-    {
-        $warnings = ['rpPvjwdI0M0hlg6ZgZA', '2aUjOMql6ZWN7H0DthWDOyCvkXs0kVShhnASnc', 'HYMWbDplSW9PLNK9o9tySeJF4Ac61uTRHUUxxBXHiCl'];
+test('probes require fping', function (): void {
+    config(['librenms.binaries.fping' => '/nonexistent/fping']);
+    Device::factory()->create();
 
-        $this->instance->setWarning($warnings[0]);
-        $this->instance->setWarning($warnings[1]);
-        $this->instance->setWarning($warnings[2]);
+    $this->assertNotEquals(0, Artisan::call('smokeping:generate --probes'));
+    $this->assertStringContainsString(__('commands.smokeping:generate.no-fping'), Artisan::output());
+    $this->assertEquals(0, Artisan::call('smokeping:generate --targets --no-dns'));
+});
 
-        $header = $this->instance->buildHeader(false, false);
+test('fping6 falls back to fping', function (): void {
+    $fping = base_path('lnms'); // any executable file
+    config(['librenms.binaries.fping' => $fping, 'librenms.binaries.fping6' => '/nonexistent/fping6']);
 
-        $this->assertEmpty(array_pop($header));
+    $probes = $this->instance->assembleProbes(1, new Binaries);
 
-        foreach ($header as $line) {
-            $this->assertTrue(Str::startsWith($line, '# '), $line);
-            $this->assertTrue(Str::contains($line, array_merge($warnings, [__('commands.smokeping:generate.header-first'), __('commands.smokeping:generate.header-second'), __('commands.smokeping:generate.header-third')])), $line);
-        }
+    $this->assertContains('+ FPing6', $probes);
+    $this->assertSame(["  binary = $fping", "  binary = $fping"], array_values(array_filter($probes, fn (string $line): bool => str_starts_with($line, '  binary = '))));
+});
 
-        $this->assertEquals($this->instance->buildHeader(true, false), []);
-    }
+test('build probe', function (): void {
+    $saved = ['+ Pl0JnP2vfE',
+        '  binary = /usr/bin/G28F3fFeew',
+        '  blazemode = true',
+        '++ Xq93BufZAU',
+        '++ etzY41dSRj0',
+        '++ etzY41dSRj1',
+        '++ etzY41dSRj2',
+        '',
+    ];
 
-    public function testAssembleProbes(): void
-    {
-        $tests = [0, -1];
+    $output = $this->instance->buildProbes('Pl0JnP2vfE', 'Xq93BufZAU', 'etzY41dSRj', '/usr/bin/G28F3fFeew', 3);
 
-        foreach ($tests as $test) {
-            $this->assertEmpty($this->instance->assembleProbes($test, new Binaries));
-        }
-    }
+    expect(implode(PHP_EOL, $output))->toEqual(implode(PHP_EOL, $saved));
+});
 
-    public function testProbesRequireFping(): void
-    {
-        config(['librenms.binaries.fping' => '/nonexistent/fping']);
-        Device::factory()->create();
+test('build targets', function (): void {
+    $saved = [
+        '+ Le23HKVMvN',
+        '  menu = Le23HKVMvN',
+        '  title = Le23HKVMvN',
+        '',
+        '++ Cl09bZU4sn',
+        '   menu = Cl09bZU4sn',
+        '   title = Cl09bZU4sn',
+        '   probe = lnmsFPing-0',
+        '   host = Cl09bZU4sn',
+        '',
+        '++ c559TvthzY',
+        '   menu = c559TvthzY',
+        '   title = c559TvthzY',
+        '   probe = lnmsFPing6-0',
+        '   host = c559TvthzY',
+        '',
+        '++ sNtzSdxdw8',
+        '   menu = sNtzSdxdw8',
+        '   title = sNtzSdxdw8',
+        '   probe = lnmsFPing6-1',
+        '   host = sNtzSdxdw8',
+        '',
+        '++ 10_0_0_3',
+        '   menu = 10.0.0.3',
+        '   title = 10.0.0.3',
+        '   probe = lnmsFPing-1',
+        '   host = 10.0.0.3',
+        '',
+        '++ 2600::',
+        '   menu = 2600::',
+        '   title = 2600::',
+        '   probe = lnmsFPing-2',
+        '   host = 2600::',
+        '',
+        '+ Psv9oZcxdC',
+        '  menu = Psv9oZcxdC',
+        '  title = Psv9oZcxdC',
+        '',
+        '++ oHiPfLzrmU',
+        '   menu = oHiPfLzrmU',
+        '   title = oHiPfLzrmU',
+        '   probe = lnmsFPing-3',
+        '   host = oHiPfLzrmU',
+        '',
+        '++ kEn7hZ7N37',
+        '   menu = kEn7hZ7N37',
+        '   title = kEn7hZ7N37',
+        '   probe = lnmsFPing6-2',
+        '   host = kEn7hZ7N37',
+        '',
+        '++ PcbZ5FKtS3',
+        '   menu = PcbZ5FKtS3',
+        '   title = PcbZ5FKtS3',
+        '   probe = lnmsFPing6-3',
+        '   host = PcbZ5FKtS3',
+        '',
+        '++ 192_168_1_1',
+        '   menu = 192.168.1.1',
+        '   title = 192.168.1.1',
+        '   probe = lnmsFPing-0',
+        '   host = 192.168.1.1',
+        '',
+        '++ fe80::',
+        '   menu = fe80::',
+        '   title = fe80::',
+        '   probe = lnmsFPing-1',
+        '   host = fe80::',
+        '',
+        '+ 4diY0pWFik',
+        '  menu = 4diY0pWFik',
+        '  title = 4diY0pWFik',
+        '',
+        '++ example_org',
+        '   menu = example.org',
+        '   title = example.org',
+        '   probe = lnmsFPing-2',
+        '   host = example.org',
+        '',
+        '++ host_with_under_score_example_org',
+        '   menu = host_with_under_score.example.org',
+        '   title = host_with_under_score.example.org',
+        '   probe = lnmsFPing6-0',
+        '   host = host_with_under_score.example.org',
+        '',
+    ];
 
-        $this->assertNotEquals(0, \Artisan::call('smokeping:generate --probes'));
-        $this->assertStringContainsString(__('commands.smokeping:generate.no-fping'), \Artisan::output());
-        $this->assertEquals(0, \Artisan::call('smokeping:generate --targets --no-dns'));
-    }
+    $output = $this->instance->buildTargets($this->groups, 4, false);
 
-    public function testFping6FallsBackToFping(): void
-    {
-        $fping = base_path('lnms'); // any executable file
-        config(['librenms.binaries.fping' => $fping, 'librenms.binaries.fping6' => '/nonexistent/fping6']);
+    expect(implode(PHP_EOL, $output))->toEqual(implode(PHP_EOL, $saved));
+});
 
-        $probes = $this->instance->assembleProbes(1, new Binaries);
+test('single proccess', function (): void {
+    $saved = [
+        '+ Le23HKVMvN',
+        '  menu = Le23HKVMvN',
+        '  title = Le23HKVMvN',
+        '',
+        '++ Cl09bZU4sn',
+        '   menu = Cl09bZU4sn',
+        '   title = Cl09bZU4sn',
+        '   host = Cl09bZU4sn',
+        '',
+        '++ c559TvthzY',
+        '   menu = c559TvthzY',
+        '   title = c559TvthzY',
+        '   host = c559TvthzY',
+        '',
+        '++ sNtzSdxdw8',
+        '   menu = sNtzSdxdw8',
+        '   title = sNtzSdxdw8',
+        '   host = sNtzSdxdw8',
+        '',
+        '++ 10_0_0_3',
+        '   menu = 10.0.0.3',
+        '   title = 10.0.0.3',
+        '   host = 10.0.0.3',
+        '',
+        '++ 2600::',
+        '   menu = 2600::',
+        '   title = 2600::',
+        '   host = 2600::',
+        '',
+        '+ Psv9oZcxdC',
+        '  menu = Psv9oZcxdC',
+        '  title = Psv9oZcxdC',
+        '',
+        '++ oHiPfLzrmU',
+        '   menu = oHiPfLzrmU',
+        '   title = oHiPfLzrmU',
+        '   host = oHiPfLzrmU',
+        '',
+        '++ kEn7hZ7N37',
+        '   menu = kEn7hZ7N37',
+        '   title = kEn7hZ7N37',
+        '   host = kEn7hZ7N37',
+        '',
+        '++ PcbZ5FKtS3',
+        '   menu = PcbZ5FKtS3',
+        '   title = PcbZ5FKtS3',
+        '   host = PcbZ5FKtS3',
+        '',
+        '++ 192_168_1_1',
+        '   menu = 192.168.1.1',
+        '   title = 192.168.1.1',
+        '   host = 192.168.1.1',
+        '',
+        '++ fe80::',
+        '   menu = fe80::',
+        '   title = fe80::',
+        '   host = fe80::',
+        '',
+        '+ 4diY0pWFik',
+        '  menu = 4diY0pWFik',
+        '  title = 4diY0pWFik',
+        '',
+        '++ example_org',
+        '   menu = example.org',
+        '   title = example.org',
+        '   host = example.org',
+        '',
+        '++ host_with_under_score_example_org',
+        '   menu = host_with_under_score.example.org',
+        '   title = host_with_under_score.example.org',
+        '   host = host_with_under_score.example.org',
+        '',
+    ];
 
-        $this->assertContains('+ FPing6', $probes);
-        $this->assertSame(["  binary = $fping", "  binary = $fping"], array_values(array_filter($probes, fn (string $line): bool => str_starts_with($line, '  binary = '))));
-    }
+    $output = $this->instance->buildTargets($this->groups, 4, true);
 
-    public function testBuildProbe(): void
-    {
-        $saved = ['+ Pl0JnP2vfE',
-            '  binary = /usr/bin/G28F3fFeew',
-            '  blazemode = true',
-            '++ Xq93BufZAU',
-            '++ etzY41dSRj0',
-            '++ etzY41dSRj1',
-            '++ etzY41dSRj2',
-            '',
-        ];
+    expect(implode(PHP_EOL, $output))->toEqual(implode(PHP_EOL, $saved));
+});
 
-        $output = $this->instance->buildProbes('Pl0JnP2vfE', 'Xq93BufZAU', 'etzY41dSRj', '/usr/bin/G28F3fFeew', 3);
-
-        $this->assertEquals(implode(PHP_EOL, $saved), implode(PHP_EOL, $output));
-    }
-
-    public function testBuildTargets(): void
-    {
-        $saved = [
-            '+ Le23HKVMvN',
-            '  menu = Le23HKVMvN',
-            '  title = Le23HKVMvN',
-            '',
-            '++ Cl09bZU4sn',
-            '   menu = Cl09bZU4sn',
-            '   title = Cl09bZU4sn',
-            '   probe = lnmsFPing-0',
-            '   host = Cl09bZU4sn',
-            '',
-            '++ c559TvthzY',
-            '   menu = c559TvthzY',
-            '   title = c559TvthzY',
-            '   probe = lnmsFPing6-0',
-            '   host = c559TvthzY',
-            '',
-            '++ sNtzSdxdw8',
-            '   menu = sNtzSdxdw8',
-            '   title = sNtzSdxdw8',
-            '   probe = lnmsFPing6-1',
-            '   host = sNtzSdxdw8',
-            '',
-            '++ 10_0_0_3',
-            '   menu = 10.0.0.3',
-            '   title = 10.0.0.3',
-            '   probe = lnmsFPing-1',
-            '   host = 10.0.0.3',
-            '',
-            '++ 2600::',
-            '   menu = 2600::',
-            '   title = 2600::',
-            '   probe = lnmsFPing-2',
-            '   host = 2600::',
-            '',
-            '+ Psv9oZcxdC',
-            '  menu = Psv9oZcxdC',
-            '  title = Psv9oZcxdC',
-            '',
-            '++ oHiPfLzrmU',
-            '   menu = oHiPfLzrmU',
-            '   title = oHiPfLzrmU',
-            '   probe = lnmsFPing-3',
-            '   host = oHiPfLzrmU',
-            '',
-            '++ kEn7hZ7N37',
-            '   menu = kEn7hZ7N37',
-            '   title = kEn7hZ7N37',
-            '   probe = lnmsFPing6-2',
-            '   host = kEn7hZ7N37',
-            '',
-            '++ PcbZ5FKtS3',
-            '   menu = PcbZ5FKtS3',
-            '   title = PcbZ5FKtS3',
-            '   probe = lnmsFPing6-3',
-            '   host = PcbZ5FKtS3',
-            '',
-            '++ 192_168_1_1',
-            '   menu = 192.168.1.1',
-            '   title = 192.168.1.1',
-            '   probe = lnmsFPing-0',
-            '   host = 192.168.1.1',
-            '',
-            '++ fe80::',
-            '   menu = fe80::',
-            '   title = fe80::',
-            '   probe = lnmsFPing-1',
-            '   host = fe80::',
-            '',
-            '+ 4diY0pWFik',
-            '  menu = 4diY0pWFik',
-            '  title = 4diY0pWFik',
-            '',
-            '++ example_org',
-            '   menu = example.org',
-            '   title = example.org',
-            '   probe = lnmsFPing-2',
-            '   host = example.org',
-            '',
-            '++ host_with_under_score_example_org',
-            '   menu = host_with_under_score.example.org',
-            '   title = host_with_under_score.example.org',
-            '   probe = lnmsFPing6-0',
-            '   host = host_with_under_score.example.org',
-            '',
-        ];
-
-        $output = $this->instance->buildTargets($this->groups, 4, false);
-
-        $this->assertEquals(implode(PHP_EOL, $saved), implode(PHP_EOL, $output));
-    }
-
-    public function testSingleProccess(): void
-    {
-        $saved = [
-            '+ Le23HKVMvN',
-            '  menu = Le23HKVMvN',
-            '  title = Le23HKVMvN',
-            '',
-            '++ Cl09bZU4sn',
-            '   menu = Cl09bZU4sn',
-            '   title = Cl09bZU4sn',
-            '   host = Cl09bZU4sn',
-            '',
-            '++ c559TvthzY',
-            '   menu = c559TvthzY',
-            '   title = c559TvthzY',
-            '   host = c559TvthzY',
-            '',
-            '++ sNtzSdxdw8',
-            '   menu = sNtzSdxdw8',
-            '   title = sNtzSdxdw8',
-            '   host = sNtzSdxdw8',
-            '',
-            '++ 10_0_0_3',
-            '   menu = 10.0.0.3',
-            '   title = 10.0.0.3',
-            '   host = 10.0.0.3',
-            '',
-            '++ 2600::',
-            '   menu = 2600::',
-            '   title = 2600::',
-            '   host = 2600::',
-            '',
-            '+ Psv9oZcxdC',
-            '  menu = Psv9oZcxdC',
-            '  title = Psv9oZcxdC',
-            '',
-            '++ oHiPfLzrmU',
-            '   menu = oHiPfLzrmU',
-            '   title = oHiPfLzrmU',
-            '   host = oHiPfLzrmU',
-            '',
-            '++ kEn7hZ7N37',
-            '   menu = kEn7hZ7N37',
-            '   title = kEn7hZ7N37',
-            '   host = kEn7hZ7N37',
-            '',
-            '++ PcbZ5FKtS3',
-            '   menu = PcbZ5FKtS3',
-            '   title = PcbZ5FKtS3',
-            '   host = PcbZ5FKtS3',
-            '',
-            '++ 192_168_1_1',
-            '   menu = 192.168.1.1',
-            '   title = 192.168.1.1',
-            '   host = 192.168.1.1',
-            '',
-            '++ fe80::',
-            '   menu = fe80::',
-            '   title = fe80::',
-            '   host = fe80::',
-            '',
-            '+ 4diY0pWFik',
-            '  menu = 4diY0pWFik',
-            '  title = 4diY0pWFik',
-            '',
-            '++ example_org',
-            '   menu = example.org',
-            '   title = example.org',
-            '   host = example.org',
-            '',
-            '++ host_with_under_score_example_org',
-            '   menu = host_with_under_score.example.org',
-            '   title = host_with_under_score.example.org',
-            '   host = host_with_under_score.example.org',
-            '',
-        ];
-
-        $output = $this->instance->buildTargets($this->groups, 4, true);
-
-        $this->assertEquals(implode(PHP_EOL, $saved), implode(PHP_EOL, $output));
-    }
-
-    public function testControlCharactersStripped(): void
-    {
-        $groups = [
-            "server\nslave evil" => [
-                'host.example.org' => [
-                    'transport' => 'udp',
-                    'displayname' => "Host\r\nhost = 192.0.2.1",
-                ],
+test('control characters stripped', function (): void {
+    $groups = [
+        "server\nslave evil" => [
+            'host.example.org' => [
+                'transport' => 'udp',
+                'displayname' => "Host\r\nhost = 192.0.2.1",
             ],
-        ];
+        ],
+    ];
 
-        $saved = [
-            '+ server_slave_evil',
-            '  menu = server slave evil',
-            '  title = server slave evil',
-            '',
-            '++ host_example_org',
-            '   menu = Host host = 192.0.2.1',
-            '   title = Host host = 192.0.2.1',
-            '   host = host.example.org',
-            '',
-        ];
+    $saved = [
+        '+ server_slave_evil',
+        '  menu = server slave evil',
+        '  title = server slave evil',
+        '',
+        '++ host_example_org',
+        '   menu = Host host = 192.0.2.1',
+        '   title = Host host = 192.0.2.1',
+        '   host = host.example.org',
+        '',
+    ];
 
-        $output = $this->instance->buildTargets($groups, 4, true);
+    $output = $this->instance->buildTargets($groups, 4, true);
 
-        $this->assertEquals(implode(PHP_EOL, $saved), implode(PHP_EOL, $output));
+    expect(implode(PHP_EOL, $output))->toEqual(implode(PHP_EOL, $saved));
+});
+
+test('compare legacy', function (): void {
+    $data = [];
+
+    // Generate a ridiculous number of random devices for testing
+    foreach (range(1, 1000) as $i) {
+        $device = Device::factory()->create(); /** @var Device $device */
+        $data[$device->type][] = $device->hostname;
     }
 
-    public function testCompareLegacy(): void
-    {
-        $data = [];
+    // Sort the data so the output matches the one from the database
+    $data = Arr::sortRecursive($data);
 
-        // Generate a ridiculous number of random devices for testing
-        foreach (range(1, 1000) as $i) {
-            $device = Device::factory()->create(); /** @var Device $device */
-            $data[$device->type][] = $device->hostname;
+    // Disable DNS lookups
+    Artisan::call('smokeping:generate --targets --no-header --no-dns --single-process --compat');
+    $new = Artisan::output();
+    $old = legacyAlgo($data);
+
+    expect(canonicalise($old))->toEqual(canonicalise($new));
+});
+
+test('targets use the snmp transport', function (): void {
+    $device = Device::factory()->create(['hostname' => 'smoke.example.com', 'type' => 'server']);
+    DevicePollingMethod::factory()->create([
+        'device_id' => $device->device_id,
+        'method_type' => PollingMethodType::Snmp,
+        'settings' => ['transport' => 'udp6'],
+    ]);
+
+    Artisan::call('smokeping:generate --targets --no-header --no-dns');
+    $output = Artisan::output();
+
+    $this->assertStringContainsString("   title = $device->display", $output);
+    $this->assertStringContainsString('   probe = lnmsFPing6-', $output);
+});
+
+test('targets use the icmp address family', function (): void {
+    // Polled over IPv4 by ICMP although SNMP is on udp6 (or absent): FPing, not FPing6
+    $v4 = Device::factory()->create(['hostname' => 'v4only.example.com', 'type' => 'server']);
+    DevicePollingMethod::factory()->create([
+        'device_id' => $v4->device_id,
+        'method_type' => PollingMethodType::Snmp,
+        'settings' => ['transport' => 'udp6'],
+    ]);
+    DevicePollingMethod::factory()->create([
+        'device_id' => $v4->device_id,
+        'method_type' => PollingMethodType::Icmp,
+        'settings' => ['ip_version' => 'ipv4'],
+    ]);
+
+    // Ping-only device polled over IPv6: FPing6 even if the SNMP default transport is udp
+    $v6 = Device::factory()->create(['hostname' => 'v6only.example.com', 'type' => 'server']);
+    DevicePollingMethod::factory()->create([
+        'device_id' => $v6->device_id,
+        'method_type' => PollingMethodType::Icmp,
+        'settings' => ['ip_version' => 'ipv6'],
+    ]);
+
+    Artisan::call('smokeping:generate --targets --no-header --no-dns');
+    $output = Artisan::output();
+
+    $this->assertMatchesRegularExpression('/\+\+ v4only_example_com\n.*\n.*\n   probe = lnmsFPing-\d+\n/', $output);
+    $this->assertMatchesRegularExpression('/\+\+ v6only_example_com\n.*\n.*\n   probe = lnmsFPing6-\d+\n/', $output);
+});
+
+function legacyAlgo($data)
+{
+    // This is the code taken from the old gen_smokeping script, with echos and sql queries replaced
+    $lines = [];
+    $lines[] = '' . PHP_EOL;
+    $lines[] = 'menu = Top' . PHP_EOL;
+    $lines[] = 'title = Network Latency Grapher' . PHP_EOL;
+    $lines[] = '' . PHP_EOL;
+
+    foreach ($data as $groupName => $devices) {
+        //Dot and space need to be replaced, since smokeping doesn't accept it at this level
+        $lines[] = '+ ' . str_replace(['.', ' '], '_', $groupName) . PHP_EOL;
+        $lines[] = 'menu = ' . $groupName . PHP_EOL;
+        $lines[] = 'title = ' . $groupName . PHP_EOL;
+        foreach ($devices as $device) {
+            $lines[] = '++ ' . str_replace(['.', ' '], '_', $device) . PHP_EOL;
+            $lines[] = 'menu = ' . $device . PHP_EOL;
+            $lines[] = 'title = ' . $device . PHP_EOL;
+            $lines[] = 'host = ' . $device . PHP_EOL . PHP_EOL;
         }
-
-        // Sort the data so the output matches the one from the database
-        $data = Arr::sortRecursive($data);
-
-        // Disable DNS lookups
-        \Artisan::call('smokeping:generate --targets --no-header --no-dns --single-process --compat');
-        $new = \Artisan::output();
-        $old = $this->legacyAlgo($data);
-
-        $this->assertEquals($this->canonicalise($new), $this->canonicalise($old));
     }
 
-    public function testTargetsUseTheSnmpTransport(): void
-    {
-        $device = Device::factory()->create(['hostname' => 'smoke.example.com', 'type' => 'server']);
-        DevicePollingMethod::factory()->create([
-            'device_id' => $device->device_id,
-            'method_type' => PollingMethodType::Snmp,
-            'settings' => ['transport' => 'udp6'],
-        ]);
+    // Return a string as we need to evaluate the entire thing as a block
+    return implode('', $lines);
+}
 
-        \Artisan::call('smokeping:generate --targets --no-header --no-dns');
-        $output = \Artisan::output();
+function canonicalise($input)
+{
+    $input = explode(PHP_EOL, (string) $input);
 
-        $this->assertStringContainsString("   title = $device->display", $output);
-        $this->assertStringContainsString('   probe = lnmsFPing6-', $output);
-    }
+    $output = [];
 
-    public function testTargetsUseTheIcmpAddressFamily(): void
-    {
-        // Polled over IPv4 by ICMP although SNMP is on udp6 (or absent): FPing, not FPing6
-        $v4 = Device::factory()->create(['hostname' => 'v4only.example.com', 'type' => 'server']);
-        DevicePollingMethod::factory()->create([
-            'device_id' => $v4->device_id,
-            'method_type' => PollingMethodType::Snmp,
-            'settings' => ['transport' => 'udp6'],
-        ]);
-        DevicePollingMethod::factory()->create([
-            'device_id' => $v4->device_id,
-            'method_type' => PollingMethodType::Icmp,
-            'settings' => ['ip_version' => 'ipv4'],
-        ]);
-
-        // Ping-only device polled over IPv6: FPing6 even if the SNMP default transport is udp
-        $v6 = Device::factory()->create(['hostname' => 'v6only.example.com', 'type' => 'server']);
-        DevicePollingMethod::factory()->create([
-            'device_id' => $v6->device_id,
-            'method_type' => PollingMethodType::Icmp,
-            'settings' => ['ip_version' => 'ipv6'],
-        ]);
-
-        \Artisan::call('smokeping:generate --targets --no-header --no-dns');
-        $output = \Artisan::output();
-
-        $this->assertMatchesRegularExpression('/\+\+ v4only_example_com\n.*\n.*\n   probe = lnmsFPing-\d+\n/', $output);
-        $this->assertMatchesRegularExpression('/\+\+ v6only_example_com\n.*\n.*\n   probe = lnmsFPing6-\d+\n/', $output);
-    }
-
-    public function legacyAlgo($data)
-    {
-        // This is the code taken from the old gen_smokeping script, with echos and sql queries replaced
-        $lines = [];
-        $lines[] = '' . PHP_EOL;
-        $lines[] = 'menu = Top' . PHP_EOL;
-        $lines[] = 'title = Network Latency Grapher' . PHP_EOL;
-        $lines[] = '' . PHP_EOL;
-
-        foreach ($data as $groupName => $devices) {
-            //Dot and space need to be replaced, since smokeping doesn't accept it at this level
-            $lines[] = '+ ' . str_replace(['.', ' '], '_', $groupName) . PHP_EOL;
-            $lines[] = 'menu = ' . $groupName . PHP_EOL;
-            $lines[] = 'title = ' . $groupName . PHP_EOL;
-            foreach ($devices as $device) {
-                $lines[] = '++ ' . str_replace(['.', ' '], '_', $device) . PHP_EOL;
-                $lines[] = 'menu = ' . $device . PHP_EOL;
-                $lines[] = 'title = ' . $device . PHP_EOL;
-                $lines[] = 'host = ' . $device . PHP_EOL . PHP_EOL;
-            }
+    foreach ($input as $line) {
+        if (trim($line) !== '') {
+            $output[] = trim($line);
         }
-
-        // Return a string as we need to evaluate the entire thing as a block
-        return implode('', $lines);
     }
 
-    public function canonicalise($input)
-    {
-        $input = explode(PHP_EOL, (string) $input);
-
-        $output = [];
-
-        foreach ($input as $line) {
-            if (trim($line) !== '') {
-                $output[] = trim($line);
-            }
-        }
-
-        return implode(PHP_EOL, $output);
-    }
+    return implode(PHP_EOL, $output);
 }

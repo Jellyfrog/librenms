@@ -24,132 +24,115 @@
  * @author     Neil Lathwood <librenms+n@laf.io>
  */
 
-namespace LibreNMS\Tests\Unit;
-
 use Illuminate\Support\Str;
 use JsonSchema\Constraints\Constraint;
 use JsonSchema\Exception\JsonDecodingException;
 use JsonSchema\Exception\ValidationException;
 use JsonSchema\Validator;
-use LibreNMS\Tests\TestCase;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\ExpectationFailedException;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
-#[Group('yaml')]
-final class YamlSchemaTest extends TestCase
+uses(LibreNMS\Tests\TestCase::class)->group('yaml');
+
+const YAML_SCHEMA_EXCLUDED = [
+    '/os_detection/default.yaml',
+    '/os_detection/generic.yaml',
+    '/os_detection/ping.yaml',
+];
+
+test('config schema', function (): void {
+    $error = validateFileAgainstSchema(resource_path('definitions/config_definitions.json'), resource_path('definitions/schema/config_schema.json'), new Validator);
+
+    expect($error)->toBeNull((string) $error);
+});
+
+test('osdefinition schema', function (): void {
+    validateYamlFilesAgainstSchema(resource_path('definitions/os_detection'), resource_path('definitions/schema/os_schema.json'));
+});
+
+test('osmatch filename', function (): void {
+    foreach (listFiles(resource_path('definitions/os_detection/*.yaml')) as $filename => $file) {
+        expect(substr((string) $filename, 0, -5))->toEqual(Yaml::parseFile($file)['os'], "Parameter 'os' doesn't match the filename $filename");
+    }
+});
+
+test('discovery definition schema', function (): void {
+    validateYamlFilesAgainstSchema(resource_path('definitions/os_discovery'), resource_path('definitions/schema/discovery_schema.json'));
+});
+
+function validateYamlFilesAgainstSchema(string $dir, string $schema_file): void
 {
-    private array $excluded = [
-        '/os_detection/default.yaml',
-        '/os_detection/generic.yaml',
-        '/os_detection/ping.yaml',
-    ];
+    $errors = [];
+    // reuse one validator so the schema is loaded and checked once, not per file
+    $validator = new Validator;
 
-    public function testConfigSchema(): void
-    {
-        $error = $this->validateFileAgainstSchema(resource_path('definitions/config_definitions.json'), resource_path('definitions/schema/config_schema.json'), new Validator);
-
-        $this->assertNull($error, (string) $error);
-    }
-
-    #[TestDox('OS definition schema')]
-    public function testOSDefinitionSchema(): void
-    {
-        $this->validateYamlFilesAgainstSchema(resource_path('definitions/os_detection'), resource_path('definitions/schema/os_schema.json'));
-    }
-
-    #[TestDox('OS match filename')]
-    public function testOSMatchFilename(): void
-    {
-        foreach ($this->listFiles(resource_path('definitions/os_detection/*.yaml')) as $filename => $file) {
-            $this->assertEquals(
-                Yaml::parseFile($file)['os'],
-                substr((string) $filename, 0, -5),
-                "Parameter 'os' doesn't match the filename $filename"
-            );
+    foreach (listFiles($dir . '/*.yaml') as $file) {
+        $error = validateFileAgainstSchema($file, $schema_file, $validator);
+        if ($error) {
+            $errors[] = $error;
         }
     }
 
-    public function testDiscoveryDefinitionSchema(): void
-    {
-        $this->validateYamlFilesAgainstSchema(resource_path('definitions/os_discovery'), resource_path('definitions/schema/discovery_schema.json'));
-    }
+    $count = count($errors);
+    expect($errors)->toBeEmpty(implode("\n", $errors) . "\nFiles with errors: $count\n\n");
+}
 
-    private function validateYamlFilesAgainstSchema(string $dir, string $schema_file): void
-    {
-        $errors = [];
-        // reuse one validator so the schema is loaded and checked once, not per file
-        $validator = new Validator;
-
-        foreach ($this->listFiles($dir . '/*.yaml') as $file) {
-            $error = $this->validateFileAgainstSchema($file, $schema_file, $validator);
-            if ($error) {
-                $errors[] = $error;
-            }
-        }
-
-        $count = count($errors);
-        $this->assertEmpty($errors, implode("\n", $errors) . "\nFiles with errors: $count\n\n");
-    }
-
-    private function listFiles($pattern): array
-    {
-        return collect(glob($pattern))
-            ->reduce(function ($array, $file) {
-                if (Str::contains($file, $this->excluded)) {
-                    return $array;
-                }
-
-                $name = basename($file);
-                $array[$name] = $file;
-
+function listFiles($pattern): array
+{
+    return collect(glob($pattern))
+        ->reduce(function ($array, $file) {
+            if (Str::contains($file, YAML_SCHEMA_EXCLUDED)) {
                 return $array;
-            }, []);
-    }
-
-    /**
-     * @param  string  $filePath
-     * @param  string  $schema_file  full path
-     * @param  Validator  $validator  reuse a validator to avoid reloading the schema
-     */
-    private function validateFileAgainstSchema(string $filePath, string $schema_file, Validator $validator): ?string
-    {
-        $schema = (object) ['$ref' => 'file://' . $schema_file];
-        $filename = basename($filePath);
-
-        try {
-            $data = str_ends_with($filePath, '.json')
-            ? json_decode(file_get_contents($filePath))
-            : Yaml::parse(file_get_contents($filePath));
-        } catch (ParseException $e) {
-            throw new ExpectationFailedException("$filePath Could not be parsed", null, $e);
-        }
-
-        try {
-            $validator->validate(
-                $data,
-                $schema,
-                Constraint::CHECK_MODE_TYPE_CAST | Constraint::CHECK_MODE_VALIDATE_SCHEMA | Constraint::CHECK_MODE_EXCEPTIONS
-            );
-        } catch (JsonDecodingException|ValidationException $e) {
-            // Output the filename so we know what file failed
-            $error = $e->getMessage();
-            if (str_contains($error, 'Error validating /discovery/')) {
-                $error = 'Discovery must contain an identifier sysObjectID or sysDescr';
             }
 
-            return "$filename failed to validate against $schema_file\n\n$error";
-        }
+            $name = basename($file);
+            $array[$name] = $file;
 
-        if (! $validator->isValid()) {
-            $errors = collect($validator->getErrors())
-                ->reduce(fn ($out, $error) => sprintf("%s[%s] %s\n", $out, $error['property'], $error['message']), '');
+            return $array;
+        }, []);
+}
 
-            return "$filename failed to validate against $schema_file\n\n$errors";
-        }
+/**
+ * @param  string  $filePath
+ * @param  string  $schema_file  full path
+ * @param  Validator  $validator  reuse a validator to avoid reloading the schema
+ */
+function validateFileAgainstSchema(string $filePath, string $schema_file, Validator $validator): ?string
+{
+    $schema = (object) ['$ref' => 'file://' . $schema_file];
+    $filename = basename($filePath);
 
-        return null;
+    try {
+        $data = str_ends_with($filePath, '.json')
+        ? json_decode(file_get_contents($filePath))
+        : Yaml::parse(file_get_contents($filePath));
+    } catch (ParseException $e) {
+        throw new ExpectationFailedException("$filePath Could not be parsed", null, $e);
     }
+
+    try {
+        $validator->validate(
+            $data,
+            $schema,
+            Constraint::CHECK_MODE_TYPE_CAST | Constraint::CHECK_MODE_VALIDATE_SCHEMA | Constraint::CHECK_MODE_EXCEPTIONS
+        );
+    } catch (JsonDecodingException|ValidationException $e) {
+        // Output the filename so we know what file failed
+        $error = $e->getMessage();
+        if (str_contains($error, 'Error validating /discovery/')) {
+            $error = 'Discovery must contain an identifier sysObjectID or sysDescr';
+        }
+
+        return "$filename failed to validate against $schema_file\n\n$error";
+    }
+
+    if (! $validator->isValid()) {
+        $errors = collect($validator->getErrors())
+            ->reduce(fn ($out, $error) => sprintf("%s[%s] %s\n", $out, $error['property'], $error['message']), '');
+
+        return "$filename failed to validate against $schema_file\n\n$errors";
+    }
+
+    return null;
 }

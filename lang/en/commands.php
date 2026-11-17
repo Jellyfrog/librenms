@@ -96,6 +96,7 @@ return [
         'options' => [
             'commands' => 'Print the commands only, do not run the checks',
             'db' => 'Run unit tests that require a database connection',
+            'exclude-pest-group' => 'Exclude Pest test groups (comma separated)',
             'fail-fast' => 'Stop the checks at the first failure',
             'full' => 'Run full checks and ignore the changed file filter',
             'module' => 'Specific Module to run tests on. Implies unit, --db, --snmpsim',

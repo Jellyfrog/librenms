@@ -25,14 +25,8 @@
  * @copyright  2019 KanREN, Inc
  * @author     Heath Barnhart <hbarnhart@kanren.net>
  */
-
-namespace LibreNMS\Tests\Feature\SnmpTraps;
-
-final class JnxCmCfgChangeTest extends SnmpTrapTestCase
-{
-    public function testConfigChangeTrap(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('config change trap', function (): void {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:64610->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 198:2:10:48.91
@@ -43,14 +37,13 @@ JUNIPER-CFGMGMT-MIB::jnxCmCfgChgEventSource.54 cli
 JUNIPER-CFGMGMT-MIB::jnxCmCfgChgEventUser.54 TestUser
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameEX2200
 TRAP,
-            'Config modified by TestUser from cli at 2018-11-21,7:34:39.0,-6:0',
-            'Could not handle JnxCmCfgChange trap',
-        );
-    }
+        'Config modified by TestUser from cli at 2018-11-21,7:34:39.0,-6:0',
+        'Could not handle JnxCmCfgChange trap',
+    );
+});
 
-    public function testConfigRollbackTrap(): void
-    {
-        $this->assertTrapLogsMessage(<<<'TRAP'
+test('config rollback trap', function (): void {
+    $this->assertTrapLogsMessage(<<<'TRAP'
 {{ hostname }}
 UDP: [{{ ip }}]:64610->[192.168.5.5]:162
 DISMAN-EVENT-MIB::sysUpTimeInstance 198:2:10:48.91
@@ -61,8 +54,7 @@ JUNIPER-CFGMGMT-MIB::jnxCmCfgChgEventSource.54 other
 JUNIPER-CFGMGMT-MIB::jnxCmCfgChgEventUser.54 root
 SNMPv2-MIB::snmpTrapEnterprise.0 JUNIPER-CHASSIS-DEFINES-MIB::jnxProductNameEX2200
 TRAP,
-            'Config rolled back at 2017-12-21,7:34:39.0,-6:0',
-            'Could not handle JnxCmCfgChange config rolled back',
-        );
-    }
-}
+        'Config rolled back at 2017-12-21,7:34:39.0,-6:0',
+        'Could not handle JnxCmCfgChange config rolled back',
+    );
+});

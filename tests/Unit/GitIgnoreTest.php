@@ -23,14 +23,10 @@
  * @copyright  2019 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
+uses(LibreNMS\Tests\TestCase::class);
 
-namespace LibreNMS\Tests\Unit;
-
-use LibreNMS\Tests\TestCase;
-
-final class GitIgnoreTest extends TestCase
-{
-    private $gitIgnoreFiles = [
+beforeEach(function (): void {
+    $this->gitIgnoreFiles = [
         '.gitignore',
         'bootstrap/cache/.gitignore',
         'cache/.gitignore',
@@ -46,25 +42,22 @@ final class GitIgnoreTest extends TestCase
         'storage/framework/views/.gitignore',
         'storage/logs/.gitignore',
     ];
+});
 
-    public function testGitIgnoresExist(): void
-    {
-        foreach ($this->gitIgnoreFiles as $file) {
-            $this->assertFileExists($file);
-        }
+test('git ignores exist', function (): void {
+    foreach ($this->gitIgnoreFiles as $file) {
+        expect($file)->toBeFile();
     }
+});
 
-    public function testGitIgnoresMode(): void
-    {
-        foreach ($this->gitIgnoreFiles as $file) {
-            $this->assertFalse(is_executable($file), "$file should not be executable");
-        }
+test('git ignores mode', function (): void {
+    foreach ($this->gitIgnoreFiles as $file) {
+        expect(is_executable($file))->toBeFalse("$file should not be executable");
     }
+});
 
-    public function testGitIgnoresNotEmpty(): void
-    {
-        foreach ($this->gitIgnoreFiles as $file) {
-            $this->assertGreaterThan(4, filesize($file), "$file is empty, it should not be");
-        }
+test('git ignores not empty', function (): void {
+    foreach ($this->gitIgnoreFiles as $file) {
+        expect(filesize($file))->toBeGreaterThan(4, "$file is empty, it should not be");
     }
-}
+});

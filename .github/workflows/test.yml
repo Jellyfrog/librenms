@@ -42,12 +42,12 @@ jobs:
             name: PHP 8.5 Other
             php-version: pre-installed
             database: mysql
-            arguments: --full --exclude-phpunit-group=browser,mibs,os
+            arguments: --full --exclude-pest-group=browser,mibs,os
           -
             name: PHP 8.4 Other
             php-version: 8.4
             database: ghcr.io/mariadb/mariadb:lts
-            arguments: --full --exclude-phpunit-group=browser,mibs,os
+            arguments: --full --exclude-pest-group=browser,mibs,os
 
     env:
       # keep in sync with LibreNMS/Util/Snmpsim.php

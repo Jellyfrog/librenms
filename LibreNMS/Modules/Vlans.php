@@ -62,7 +62,7 @@ class Vlans implements Module
      */
     public function shouldPoll(OS $os): bool
     {
-        if (defined('PHPUNIT_RUNNING')) {
+        if (defined('PEST_RUNNING')) {
             return false; // FIXME improve test suite to skip polling when polling data is null
         }
 

@@ -207,7 +207,7 @@ class PollDevice implements ShouldQueue, ShouldBeUnique
                 }
             } catch (Throwable $e) {
                 // Re-throw exception if we're in running tests
-                if (defined('PHPUNIT_RUNNING')) {
+                if (defined('PEST_RUNNING')) {
                     throw $e;
                 }
 

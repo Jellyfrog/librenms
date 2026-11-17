@@ -23,72 +23,58 @@
  * @copyright  2018 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
-namespace LibreNMS\Tests\Unit\Data;
-
+uses(LibreNMS\Tests\TestCase::class)->group('datastores');
 use App\Data\TimeSeries\MetricIdentity;
 use App\Facades\LibrenmsConfig;
 use App\Models\Device;
 use Illuminate\Support\Facades\Http as LaravelHttp;
 use LibreNMS\Data\Store\Prometheus;
-use LibreNMS\Tests\TestCase;
-use PHPUnit\Framework\Attributes\Group;
 
-#[Group('datastores')]
-final class PrometheusStoreTest extends TestCase
-{
-    protected function setUp(): void
-    {
-        parent::setUp();
+beforeEach(function (): void {
+    LibrenmsConfig::set('prometheus.enable', true);
+    LibrenmsConfig::set('prometheus.url', 'http://fake:9999');
+});
 
-        LibrenmsConfig::set('prometheus.enable', true);
-        LibrenmsConfig::set('prometheus.url', 'http://fake:9999');
-    }
+test('fail write', function (): void {
+    LaravelHttp::fakeSequence()->push('Bad response', 422);
+    $prometheus = app(Prometheus::class);
 
-    public function testFailWrite(): void
-    {
-        LaravelHttp::fakeSequence()->push('Bad response', 422);
-        $prometheus = app(Prometheus::class);
+    Log::shouldReceive('debug');
+    Log::shouldReceive('error')->once()->with('Prometheus Error: Bad response');
+    $prometheus->write('none', ['one' => 1]);
+});
 
-        \Log::shouldReceive('debug');
-        \Log::shouldReceive('error')->once()->with('Prometheus Error: Bad response');
-        $prometheus->write('none', ['one' => 1]);
-    }
+test('simple write', function (): void {
+    LaravelHttp::fake([
+        '*' => LaravelHttp::response(),
+    ]);
 
-    public function testSimpleWrite(): void
-    {
-        LaravelHttp::fake([
-            '*' => LaravelHttp::response(),
-        ]);
+    $prometheus = app(Prometheus::class);
 
-        $prometheus = app(Prometheus::class);
+    $measurement = 'testmeasure';
+    $tags = ['ifName' => 'testifname', 'type' => 'testtype'];
+    $fields = ['ifIn' => 234234, 'ifOut' => 53453];
+    $meta = ['device' => new Device(['hostname' => 'testhost'])];
 
-        $measurement = 'testmeasure';
-        $tags = ['ifName' => 'testifname', 'type' => 'testtype'];
-        $fields = ['ifIn' => 234234, 'ifOut' => 53453];
-        $meta = ['device' => new Device(['hostname' => 'testhost'])];
+    Log::shouldReceive('debug');
+    Log::shouldReceive('error')->times(0);
 
-        \Log::shouldReceive('debug');
-        \Log::shouldReceive('error')->times(0);
+    $prometheus->write($measurement, $fields, $tags, $meta);
 
-        $prometheus->write($measurement, $fields, $tags, $meta);
+    LaravelHttp::assertSentCount(1);
+    LaravelHttp::assertSent(fn (Illuminate\Http\Client\Request $request) => $request->method() == 'POST' &&
+        $request->url() == 'http://fake:9999/metrics/job/librenms/instance/testhost/measurement/testmeasure/ifName/testifname/type/testtype' &&
+        $request->body() == "ifIn 234234\nifOut 53453\n");
+});
 
-        LaravelHttp::assertSentCount(1);
-        LaravelHttp::assertSent(fn (\Illuminate\Http\Client\Request $request) => $request->method() == 'POST' &&
-            $request->url() == 'http://fake:9999/metrics/job/librenms/instance/testhost/measurement/testmeasure/ifName/testifname/type/testtype' &&
-            $request->body() == "ifIn 234234\nifOut 53453\n");
-    }
+test('metric identity is the instance', function (): void {
+    LaravelHttp::fake([
+        '*' => LaravelHttp::response(),
+    ]);
+    Log::shouldReceive('debug');
 
-    public function testMetricIdentityIsTheInstance(): void
-    {
-        LaravelHttp::fake([
-            '*' => LaravelHttp::response(),
-        ]);
-        \Log::shouldReceive('debug');
+    $metric = new MetricIdentity('vm.cpu', ['cluster' => 'pve-cluster', 'type' => 'qemu', 'id' => 100]);
+    app(Prometheus::class)->write($metric->measurement, ['usage' => 5], $metric->tags, ['device' => new Device(['hostname' => 'pve1']), 'metric' => $metric]);
 
-        $metric = new MetricIdentity('vm.cpu', ['cluster' => 'pve-cluster', 'type' => 'qemu', 'id' => 100]);
-        app(Prometheus::class)->write($metric->measurement, ['usage' => 5], $metric->tags, ['device' => new Device(['hostname' => 'pve1']), 'metric' => $metric]);
-
-        LaravelHttp::assertSent(fn (\Illuminate\Http\Client\Request $request) => $request->url() == 'http://fake:9999/metrics/job/librenms/instance/pve-cluster/measurement/vm.cpu/cluster/pve-cluster/type/qemu/id/100');
-    }
-}
+    LaravelHttp::assertSent(fn (Illuminate\Http\Client\Request $request) => $request->url() == 'http://fake:9999/metrics/job/librenms/instance/pve-cluster/measurement/vm.cpu/cluster/pve-cluster/type/qemu/id/100');
+});

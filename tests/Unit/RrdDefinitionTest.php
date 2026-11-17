@@ -23,122 +23,107 @@
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
-namespace LibreNMS\Tests\Unit;
-
+uses(LibreNMS\Tests\TestCase::class);
 use App\Facades\LibrenmsConfig;
 use LibreNMS\RRD\RrdDefinition;
 use LibreNMS\RRD\RrdPath;
-use LibreNMS\Tests\TestCase;
 
-final class RrdDefinitionTest extends TestCase
-{
-    public function testEmpty(): void
-    {
-        $this->assertEmpty((string) new RrdDefinition());
-    }
+test('empty', function (): void {
+    expect((string) new RrdDefinition())->toBeEmpty();
+});
 
-    public function testWrongType(): void
-    {
-        $this->expectException(\LibreNMS\Exceptions\InvalidRrdTypeException::class);
-        LibrenmsConfig::set('rrd.step', 300);
-        LibrenmsConfig::set('rrd.heartbeat', 600);
-        $def = new RrdDefinition();
-        $def->addDataset('badtype', 'Something unexpected');
-    }
+test('wrong type', function (): void {
+    $this->expectException(LibreNMS\Exceptions\InvalidRrdTypeException::class);
+    LibrenmsConfig::set('rrd.step', 300);
+    LibrenmsConfig::set('rrd.heartbeat', 600);
+    $def = new RrdDefinition();
+    $def->addDataset('badtype', 'Something unexpected');
+});
 
-    public function testNameEscaping(): void
-    {
-        LibrenmsConfig::set('rrd.step', 300);
-        LibrenmsConfig::set('rrd.heartbeat', 600);
-        $expected = 'DS:bad_name-is_too_lon:GAUGE:600:0:100';
-        $def = RrdDefinition::make()->addDataset('b a%d$_n:a^me-is_too_lon%g.', 'GAUGE', 0, 100, 600);
+test('name escaping', function (): void {
+    LibrenmsConfig::set('rrd.step', 300);
+    LibrenmsConfig::set('rrd.heartbeat', 600);
+    $expected = 'DS:bad_name-is_too_lon:GAUGE:600:0:100';
+    $def = RrdDefinition::make()->addDataset('b a%d$_n:a^me-is_too_lon%g.', 'GAUGE', 0, 100, 600);
 
-        $this->assertEquals($expected, (string) $def);
-    }
+    expect((string) $def)->toEqual($expected);
+});
 
-    public function testCreation(): void
-    {
-        LibrenmsConfig::set('rrd.step', 300);
-        LibrenmsConfig::set('rrd.heartbeat', 600);
-        $expected = 'DS:pos:COUNTER:600:0:125000000000 DS:unbound:DERIVE:600:U:U';
+test('creation', function (): void {
+    LibrenmsConfig::set('rrd.step', 300);
+    LibrenmsConfig::set('rrd.heartbeat', 600);
+    $expected = 'DS:pos:COUNTER:600:0:125000000000 DS:unbound:DERIVE:600:U:U';
 
-        $def = new RrdDefinition();
-        $def->addDataset('pos', 'COUNTER', 0, 125000000000);
-        $def->addDataset('unbound', 'DERIVE');
+    $def = new RrdDefinition();
+    $def->addDataset('pos', 'COUNTER', 0, 125000000000);
+    $def->addDataset('unbound', 'DERIVE');
 
-        $this->assertEquals($expected, (string) $def);
-    }
+    expect((string) $def)->toEqual($expected);
+});
 
-    public function testCreationWithSource(): void
-    {
-        LibrenmsConfig::set('rrd.step', 300);
-        LibrenmsConfig::set('rrd.heartbeat', 600);
-        $def = new RrdDefinition();
-        $def->addDataset('migrated', 'COUNTER', 0, 125000000000, null, 'source_ds');
-        $def->addDataset('other', 'DERIVE');
-        $this->assertEquals([
-            'DS:migrated=source_ds:COUNTER:600:0:125000000000',
-            'DS:other:DERIVE:600:U:U',
-        ], $def->getArguments());
+test('creation with source', function (): void {
+    LibrenmsConfig::set('rrd.step', 300);
+    LibrenmsConfig::set('rrd.heartbeat', 600);
+    $def = new RrdDefinition();
+    $def->addDataset('migrated', 'COUNTER', 0, 125000000000, null, 'source_ds');
+    $def->addDataset('other', 'DERIVE');
+    expect($def->getArguments())->toEqual([
+        'DS:migrated=source_ds:COUNTER:600:0:125000000000',
+        'DS:other:DERIVE:600:U:U',
+    ]);
 
-        $def->addDataset('fromfile', 'COUNTER', source_ds: 'other', source_file: RrdPath::make('host', 'old.rrd'));
-        $this->assertEquals([
-            '--source',
-            'host/old.rrd',
-            'DS:migrated=source_ds:COUNTER:600:0:125000000000',
-            'DS:other:DERIVE:600:U:U',
-            'DS:fromfile=other[1]:COUNTER:600:U:U',
-        ], $def->getArguments());
-    }
+    $def->addDataset('fromfile', 'COUNTER', source_ds: 'other', source_file: RrdPath::make('host', 'old.rrd'));
+    expect($def->getArguments())->toEqual([
+        '--source',
+        'host/old.rrd',
+        'DS:migrated=source_ds:COUNTER:600:0:125000000000',
+        'DS:other:DERIVE:600:U:U',
+        'DS:fromfile=other[1]:COUNTER:600:U:U',
+    ]);
+});
 
-    public function testWithoutSources(): void
-    {
-        LibrenmsConfig::set('rrd.heartbeat', 600);
-        $def = new RrdDefinition();
-        $def->addDataset('a', 'COUNTER', source_ds: 'x', source_file: RrdPath::make('host', 'old.rrd'));
-        $def->addDataset('b', 'COUNTER', source_ds: 'y');
+test('without sources', function (): void {
+    LibrenmsConfig::set('rrd.heartbeat', 600);
+    $def = new RrdDefinition();
+    $def->addDataset('a', 'COUNTER', source_ds: 'x', source_file: RrdPath::make('host', 'old.rrd'));
+    $def->addDataset('b', 'COUNTER', source_ds: 'y');
 
-        $this->assertTrue($def->hasSources());
-        $this->assertSame([
-            'DS:a:COUNTER:600:U:U',
-            'DS:b:COUNTER:600:U:U',
-        ], $def->getArguments(withSources: false));
-    }
+    expect($def->hasSources())->toBeTrue();
+    expect($def->getArguments(withSources: false))->toBe([
+        'DS:a:COUNTER:600:U:U',
+        'DS:b:COUNTER:600:U:U',
+    ]);
+});
 
-    public function testMultipleSourcesKeepIndexOrder(): void
-    {
-        LibrenmsConfig::set('rrd.heartbeat', 600);
-        $def = new RrdDefinition();
-        $def->addDataset('a', 'COUNTER', source_ds: 'x', source_file: RrdPath::make('host', 'one.rrd'));
-        $def->addDataset('b', 'COUNTER', source_ds: 'y', source_file: RrdPath::make('host', 'two.rrd'));
+test('multiple sources keep index order', function (): void {
+    LibrenmsConfig::set('rrd.heartbeat', 600);
+    $def = new RrdDefinition();
+    $def->addDataset('a', 'COUNTER', source_ds: 'x', source_file: RrdPath::make('host', 'one.rrd'));
+    $def->addDataset('b', 'COUNTER', source_ds: 'y', source_file: RrdPath::make('host', 'two.rrd'));
 
-        $this->assertSame([
-            '--source', 'host/one.rrd',
-            '--source', 'host/two.rrd',
-            'DS:a=x[1]:COUNTER:600:U:U',
-            'DS:b=y[2]:COUNTER:600:U:U',
-        ], $def->getArguments());
-    }
+    expect($def->getArguments())->toBe([
+        '--source', 'host/one.rrd',
+        '--source', 'host/two.rrd',
+        'DS:a=x[1]:COUNTER:600:U:U',
+        'DS:b=y[2]:COUNTER:600:U:U',
+    ]);
+});
 
-    public function testStepAndRras(): void
-    {
-        LibrenmsConfig::set('rrd.step', 300);
-        LibrenmsConfig::set('rrd.heartbeat', 600);
-        LibrenmsConfig::set('rrd_rra', ' RRA:AVERAGE:0.5:1:2016   RRA:MAX:0.5:6:1440 ');
-        $def = RrdDefinition::make()->addDataset('a', 'GAUGE');
+test('step and rras', function (): void {
+    LibrenmsConfig::set('rrd.step', 300);
+    LibrenmsConfig::set('rrd.heartbeat', 600);
+    LibrenmsConfig::set('rrd_rra', ' RRA:AVERAGE:0.5:1:2016   RRA:MAX:0.5:6:1440 ');
+    $def = RrdDefinition::make()->addDataset('a', 'GAUGE');
 
-        $this->assertSame(['--step', '300', 'DS:a:GAUGE:600:U:U', 'RRA:AVERAGE:0.5:1:2016', 'RRA:MAX:0.5:6:1440'], $def->getCreateArguments());
+    expect($def->getCreateArguments())->toBe(['--step', '300', 'DS:a:GAUGE:600:U:U', 'RRA:AVERAGE:0.5:1:2016', 'RRA:MAX:0.5:6:1440']);
 
-        $def->setStep(60)->setRras(['RRA:LAST:0.5:1:10']);
-        $this->assertSame(['--step', '60', 'DS:a:GAUGE:600:U:U', 'RRA:LAST:0.5:1:10'], $def->getCreateArguments());
-    }
+    $def->setStep(60)->setRras(['RRA:LAST:0.5:1:10']);
+    expect($def->getCreateArguments())->toBe(['--step', '60', 'DS:a:GAUGE:600:U:U', 'RRA:LAST:0.5:1:10']);
+});
 
-    public function testOrderValues(): void
-    {
-        $def = RrdDefinition::make()->addDataset('a', 'GAUGE')->addDataset('b', 'GAUGE')->addDataset('c', 'GAUGE');
+test('order values', function (): void {
+    $def = RrdDefinition::make()->addDataset('a', 'GAUGE')->addDataset('b', 'GAUGE')->addDataset('c', 'GAUGE');
 
-        $this->assertSame([1, 2, null], $def->orderValues(['b' => 2, 'extra' => 9, 'a' => 1]));
-        $this->assertSame([2, 1], $def->disableNameChecking()->orderValues(['x' => 2, 'y' => 1]));
-    }
-}
+    expect($def->orderValues(['b' => 2, 'extra' => 9, 'a' => 1]))->toBe([1, 2, null]);
+    expect($def->disableNameChecking()->orderValues(['x' => 2, 'y' => 1]))->toBe([2, 1]);
+});

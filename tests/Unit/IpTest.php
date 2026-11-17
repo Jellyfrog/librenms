@@ -24,259 +24,231 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Unit;
-
-use LibreNMS\Tests\TestCase;
 use LibreNMS\Util\IP;
 use LibreNMS\Util\IPv4;
 use LibreNMS\Util\IPv6;
 
-final class IpTest extends TestCase
-{
-    public function testIsValid(): void
-    {
-        $this->assertTrue(IP::isValid('192.168.0.1'));
-        $this->assertTrue(IP::isValid('192.168.0.1'));
-        $this->assertTrue(IP::isValid('2001:4860:4860::8888'));
-        $this->assertTrue(IPv4::isValid('192.168.0.1'));
-        $this->assertTrue(IPv6::isValid('2001:4860:4860::8888'));
-        $this->assertFalse(IPv4::isValid('2001:4860:4860::8888'));
-        $this->assertFalse(IPv6::isValid('192.168.0.1'));
-        $this->assertFalse(IP::isValid('not_an_ip'));
+uses(LibreNMS\Tests\TestCase::class);
 
-        $this->assertTrue(IP::isValid('0:0:0:0:0:0:a9fe:901'));
-        $this->assertTrue(IPv6::isValid('0:0:0:0:0:0:a9fe:901'));
-        $this->assertFalse(IPv4::isValid('0:0:0:0:0:0:a9fe:901'));
-        $this->assertTrue(IP::isValid('::169.254.12.3'));
-        $this->assertTrue(IP::isValid('::ffff:169.254.12.3'));
+test('is valid', function (): void {
+    expect(IP::isValid('192.168.0.1'))->toBeTrue();
+    expect(IP::isValid('192.168.0.1'))->toBeTrue();
+    expect(IP::isValid('2001:4860:4860::8888'))->toBeTrue();
+    expect(IPv4::isValid('192.168.0.1'))->toBeTrue();
+    expect(IPv6::isValid('2001:4860:4860::8888'))->toBeTrue();
+    expect(IPv4::isValid('2001:4860:4860::8888'))->toBeFalse();
+    expect(IPv6::isValid('192.168.0.1'))->toBeFalse();
+    expect(IP::isValid('not_an_ip'))->toBeFalse();
 
-        $this->assertTrue(IPv4::isValid('8.8.8.8', true));
-        $this->assertTrue(IP::isValid('8.8.8.8', true));
-        $this->assertTrue(IPv4::isValid('192.168.0.1', true));
-        $this->assertTrue(IPv6::isValid('FF81::', true));
-        $this->assertFalse(IPv4::isValid('127.0.0.1', true));
-        $this->assertFalse(IPv6::isValid('::1', true));
-        $this->assertFalse(IP::isValid('169.254.1.1', true));
-        $this->assertFalse(IP::isValid('fe80::1', true));
-        $this->assertFalse(IPv4::isValid('fe80::1', true));
-        $this->assertFalse(IP::isValid('Falafel', true));
+    expect(IP::isValid('0:0:0:0:0:0:a9fe:901'))->toBeTrue();
+    expect(IPv6::isValid('0:0:0:0:0:0:a9fe:901'))->toBeTrue();
+    expect(IPv4::isValid('0:0:0:0:0:0:a9fe:901'))->toBeFalse();
+    expect(IP::isValid('::169.254.12.3'))->toBeTrue();
+    expect(IP::isValid('::ffff:169.254.12.3'))->toBeTrue();
+
+    expect(IPv4::isValid('8.8.8.8', true))->toBeTrue();
+    expect(IP::isValid('8.8.8.8', true))->toBeTrue();
+    expect(IPv4::isValid('192.168.0.1', true))->toBeTrue();
+    expect(IPv6::isValid('FF81::', true))->toBeTrue();
+    expect(IPv4::isValid('127.0.0.1', true))->toBeFalse();
+    expect(IPv6::isValid('::1', true))->toBeFalse();
+    expect(IP::isValid('169.254.1.1', true))->toBeFalse();
+    expect(IP::isValid('fe80::1', true))->toBeFalse();
+    expect(IPv4::isValid('fe80::1', true))->toBeFalse();
+    expect(IP::isValid('Falafel', true))->toBeFalse();
+});
+
+test('is valid ipv6 exclude reserved', function (): void {
+    expect(IPv6::isValid('::1', true))->toBeFalse();
+});
+
+test('ipv6 is link local', function (): void {
+    expect(IP::parse('169.254.1.1')->isLinkLocal())->toBeFalse();
+    expect(IP::parse('fe80::1')->isLinkLocal())->toBeTrue();
+    expect(IP::parse('FE80::1')->isLinkLocal())->toBeTrue();
+    expect(IP::parse('fe80:8000::1')->isLinkLocal())->toBeFalse();
+    expect(IP::parse('febf::1')->isLinkLocal())->toBeFalse();
+});
+
+test('ip parse', function (): void {
+    expect(IP::parse('192.168.0.1'))->toEqual('192.168.0.1');
+    expect(IP::parse('127.0.0.1'))->toEqual('127.0.0.1');
+    expect(IP::parse('2001:db8:85a3::8a2e:370:7334'))->toEqual('2001:db8:85a3::8a2e:370:7334');
+    expect(IP::parse('::1'))->toEqual('::1');
+
+    expect(new IPv4('192.168.0.1'))->toEqual('192.168.0.1');
+    expect(new IPv4('127.0.0.1'))->toEqual('127.0.0.1');
+    expect(new IPv6('2001:db8:85a3::8a2e:370:7334'))->toEqual('2001:db8:85a3::8a2e:370:7334');
+    expect(new IPv6('::1'))->toEqual('::1');
+
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
+    new IPv6('192.168.0.1');
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
+    new IPv6('127.0.0.1');
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
+    new IPv4('2001:db8:85a3::8a2e:370:7334');
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
+    new IPv4('::1');
+});
+
+test('hex to ip', function (): void {
+    expect(IP::fromHexString('c0 a8 01 fe'))->toEqual('192.168.1.254');
+    expect(IP::fromHexString('c0a801fe'))->toEqual('192.168.1.254');
+    expect(IP::fromHexString('c0 a8 01 fe '))->toEqual('192.168.1.254');
+    expect(IP::fromHexString('"c0 a8 01 fe"'))->toEqual('192.168.1.254');
+    expect(IP::fromHexString('192.168.1.254'))->toEqual('192.168.1.254');
+    expect(IP::fromHexString('>(}}'))->toEqual('62.40.125.125');
+
+    // stupid ascii encoded
+    expect(IP::fromHexString('2001:db8::2:1'))->toEqual('2001:db8::2:1');
+    expect(IP::fromHexString('20 01 0d b8 00 00 00 00 00 00 00 00 00 02 00 01'))->toEqual('2001:db8::2:1');
+    expect(IP::fromHexString('"20 01 0d b8 00 00 00 00 00 00 00 00 00 02 00 01"'))->toEqual('2001:db8::2:1');
+    expect(IP::fromHexString('"20:01:0d:b8:00:00:00:00:00:00:00:00:00:02:00:01"'))->toEqual('2001:db8::2:1');
+    expect(IP::fromHexString('"20.01.0d.b8.00.00.00.00.00.00.00.00.00.02.00.01"'))->toEqual('2001:db8::2:1');
+    expect(IP::fromHexString('20010db8000000000000000000020001'))->toEqual('2001:db8::2:1');
+    expect(IP::fromHexString('>(}}>(}}>(}}>(}}'))->toEqual('3e28:7d7d:3e28:7d7d:3e28:7d7d:3e28:7d7d');
+
+    // stupid ascii encoded
+    expect(IP::fromHexString('00000000000000000000000000000000'))->toEqual('::');
+
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
+    IP::fromHexString('c0 a8 01 01 fe');
+
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
+    IP::fromHexString('20 01 0d b8 00 00 00 00 00 00 00 00 00 02 00 00 00 01');
+});
+
+test('netmask2 cidr', function (): void {
+    expect(IPv4::netmask2cidr('255.255.255.255'))->toBe(32);
+    expect(IPv4::netmask2cidr('255.255.255.252'))->toBe(30);
+    expect(IPv4::netmask2cidr('255.255.255.192'))->toBe(26);
+    expect(IPv4::netmask2cidr('255.255.0.0'))->toBe(16);
+});
+
+test('ip in network', function (): void {
+    expect(IP::parse('192.168.1.0')->inNetwork('192.168.1.0/24'))->toBeTrue();
+    expect(IP::parse('192.168.1.32')->inNetwork('192.168.1.0/24'))->toBeTrue();
+    expect(IP::parse('192.168.1.254')->inNetwork('192.168.1.0/24'))->toBeTrue();
+    expect(IP::parse('192.168.1.255')->inNetwork('192.168.1.0/24'))->toBeTrue();
+    expect(IP::parse('192.168.1.1')->inNetwork('192.168.1.0'))->toBeFalse();
+    expect(IP::parse('10.4.3.2')->inNetwork('192.168.1.0/16'))->toBeFalse();
+
+    expect(IP::parse('::1')->inNetwork('::/64'))->toBeTrue();
+    expect(IP::parse('2001:db7:85a3::8a2e:370:7334')->inNetwork('::/0'))->toBeTrue();
+    expect(IP::parse('2001:db7:85a3::8a2e:370:7334')->inNetwork('2001:db8:85a3::/64'))->toBeFalse();
+    expect(IP::parse('2001:db8:85a3::8a2e:370:7334')->inNetwork('2001:db8:85a3::/64'))->toBeTrue();
+    expect(IP::parse('2001:db8:85a3::8a2e:370:7334')->inNetwork('2001:db8:85a3::8a2e:370:7334/128'))->toBeTrue();
+    expect(IP::parse('2001:db8:85a3::8a2e:370:7335')->inNetwork('2001:db8:85a3::8a2e:370:7334/128'))->toBeFalse();
+
+    // a network of the other address family is never a match
+    expect(IP::parse('8.8.8.8')->inNetwork('2001:630:50::/48'))->toBeFalse();
+    expect(IP::parse('2001:630:50::1')->inNetwork('8.8.8.0/25'))->toBeFalse();
+    expect(IP::parse('8.8.8.8')->inNetworks(['2001:630:50::/48', '8.8.8.0/25']))->toBeTrue();
+
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
+    IP::parse('42')->inNetwork('192.168.1.0/4');
+
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
+    IP::parse('192.168.1.256')->inNetwork('192.168.1.0/24');
+
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
+    IP::parse('192.168.1.0')->inNetwork('192.168.1.0');
+});
+
+test('ipv6 compress', function (): void {
+    expect(IP::parse('0:0:0:0:0:0:0:1'))->toEqual('::1');
+    expect(IP::parse('0:0:0:0:0:0:0:1')->compressed())->toBe('::1');
+    expect(IP::parse('0:0:0:0:0:0:0:0')->compressed())->toBe('::');
+    expect(IP::parse('0000:0000:0000:0000:0000:0000:0000:0000')->compressed())->toBe('::');
+    expect(IP::parse('2001:0db8:85a3:0000:0000:8a2e:0370:7334')->compressed())->toBe('2001:db8:85a3::8a2e:370:7334');
+    expect(IP::parse('0:0:0:0:0:0:a9fe:901')->compressed())->toBe('::169.254.9.1');
+    expect(IP::parse('::169.254.12.3')->compressed())->toBe('::169.254.12.3');
+    expect(IP::parse('::ffff:169.254.12.3')->compressed())->toBe('::ffff:169.254.12.3');
+});
+
+test('ipv6 uncompress', function (): void {
+    expect(IP::parse('::1')->uncompressed())->toBe('0000:0000:0000:0000:0000:0000:0000:0001');
+    expect(IP::parse('::')->uncompressed())->toBe('0000:0000:0000:0000:0000:0000:0000:0000');
+    expect(IP::parse('2001:db8:85a3::8a2e:370:7334')->uncompressed())->toBe('2001:0db8:85a3:0000:0000:8a2e:0370:7334');
+    expect(IP::parse('2001:db8:85a3:1:1:8a2e:370:7334')->uncompressed())->toBe('2001:0db8:85a3:0001:0001:8a2e:0370:7334');
+    expect(IP::parse('0:0:0:0:0:0:a9fe:901')->uncompressed())->toBe('0000:0000:0000:0000:0000:0000:a9fe:0901');
+    expect(IP::parse('::169.254.12.3')->uncompressed())->toBe('0000:0000:0000:0000:0000:0000:a9fe:0c03');
+    expect(IP::parse('::ffff:169.254.12.3')->uncompressed())->toBe('0000:0000:0000:0000:0000:ffff:a9fe:0c03');
+});
+
+test('network from ip', function (): void {
+    expect(IP::parse('192.168.1.34')->getNetwork(24))->toBe('192.168.1.0/24');
+    expect(IP::parse('192.168.1.0/24')->getNetwork())->toBe('192.168.1.0/24');
+    expect(IP::parse('192.168.1.255/24')->getNetwork())->toBe('192.168.1.0/24');
+    expect(IP::parse('192.168.1.34')->getNetworkAddress(24))->toBe('192.168.1.0');
+    expect(IP::parse('192.168.23.45')->getNetwork(20))->toBe('192.168.16.0/20');
+
+    expect(IP::parse('2001:db8:85a3:0:341a:8a2e:0370:7334')->getNetwork(64))->toBe('2001:db8:85a3::/64');
+    expect(IP::parse('2001:db8:85a3:369a::370:7334/54')->getNetwork())->toBe('2001:db8:85a3:3400::/54');
+    expect(IP::parse('2001:db8:85a3:369a::370:7334/55')->getNetwork())->toBe('2001:db8:85a3:3600::/55');
+    expect(IP::parse('2001:db8:85a3:341a::370:7334')->getNetwork())->toBe('2001:db8:85a3:341a::370:7334/128');
+    expect(IP::parse('2001:db8:85a3:341a::370:7334/128')->getNetworkAddress())->toBe('2001:db8:85a3:341a::370:7334');
+});
+
+test('iterate ipv4 network', function (): void {
+    expect(iterator_to_array(IP::parse('192.0.2.2/30')))->toBe(['192.0.2.1', '192.0.2.2']);
+    expect(iterator_to_array(IP::parse('192.0.2.1')))->toBe(['192.0.2.1']);
+    expect(iterator_to_array(IP::parse('192.0.2.0/31')))->toBe(['192.0.2.0', '192.0.2.1']);
+});
+
+test('iterate ipv6 network', function (): void {
+    expect(iterator_to_array(IP::parse('2001:db8::2/126')))->toBe(['2001:db8::1', '2001:db8::2']);
+    expect(iterator_to_array(IP::parse('2001:db8::1')))->toBe(['2001:db8::1']);
+    expect(iterator_to_array(IP::parse('2001:db8::/127')))->toBe(['2001:db8::', '2001:db8::1']);
+});
+
+test('network iteration is lazy', function (): void {
+    $addresses = IP::parse('2001:db8::/64')->getIterator();
+
+    expect($addresses->current())->toBe('2001:db8::1');
+    $addresses->next();
+    expect($addresses->current())->toBe('2001:db8::2');
+});
+
+test('address count', function (): void {
+    foreach (['192.0.2.0/24', '192.0.2.0/31', '192.0.2.1/32', '2001:db8::/120', '2001:db8::/127', '2001:db8::1/128'] as $network) {
+        $ip = IP::parse($network);
+        expect($ip->addressCount())->toBe(iterator_count($ip), $network);
     }
 
-    /**
-     * See https://github.com/librenms/librenms/pull/13468 for more info
-     */
-    public function testIsValidIPv6ExcludeReserved(): void
-    {
-        $this->assertFalse(IPv6::isValid('::1', true));
-    }
+    expect(IP::parse('2001:db8::/64')->addressCount())->toBe(2 ** 64 - 2);
+});
 
-    public function testIpv6IsLinkLocal(): void
-    {
-        $this->assertFalse(IP::parse('169.254.1.1')->isLinkLocal());
-        $this->assertTrue(IP::parse('fe80::1')->isLinkLocal());
-        $this->assertTrue(IP::parse('FE80::1')->isLinkLocal());
-        $this->assertFalse(IP::parse('fe80:8000::1')->isLinkLocal());
-        $this->assertFalse(IP::parse('febf::1')->isLinkLocal());
-    }
+test('covers', function (): void {
+    $covers = fn (string $network, string $other) => IP::parse($network)->includes(IP::parse($other));
 
-    public function testIpParse(): void
-    {
-        $this->assertEquals('192.168.0.1', IP::parse('192.168.0.1'));
-        $this->assertEquals('127.0.0.1', IP::parse('127.0.0.1'));
-        $this->assertEquals('2001:db8:85a3::8a2e:370:7334', IP::parse('2001:db8:85a3::8a2e:370:7334'));
-        $this->assertEquals('::1', IP::parse('::1'));
+    expect($covers('192.0.2.0/24', '192.0.2.0/24'))->toBeTrue();
+    expect($covers('192.0.2.0/24', '192.0.2.128/25'))->toBeTrue();
+    expect($covers('192.0.2.0/24', '192.0.2.5'))->toBeTrue();
+    expect($covers('192.0.2.0/25', '192.0.2.0/24'))->toBeFalse();
+    expect($covers('192.0.2.0/24', '192.0.3.0/24'))->toBeFalse();
+    // the network and broadcast addresses are not yielded
+    expect($covers('192.0.2.0/24', '192.0.2.0'))->toBeFalse();
+    expect($covers('192.0.2.0/24', '192.0.2.254/31'))->toBeFalse();
+    expect($covers('192.0.2.0/24', '192.0.2.254'))->toBeTrue();
+    expect($covers('192.0.2.0/31', '192.0.2.0'))->toBeTrue();
 
-        $this->assertEquals('192.168.0.1', new IPv4('192.168.0.1'));
-        $this->assertEquals('127.0.0.1', new IPv4('127.0.0.1'));
-        $this->assertEquals('2001:db8:85a3::8a2e:370:7334', new IPv6('2001:db8:85a3::8a2e:370:7334'));
-        $this->assertEquals('::1', new IPv6('::1'));
+    expect($covers('2001:db8::/64', '2001:db8::5'))->toBeTrue();
+    expect($covers('2001:db8::/64', '2001:db8::'))->toBeFalse();
+    expect($covers('2001:db8::/64', '2001:db8:1::/64'))->toBeFalse();
+    // compared within an address family only
+    expect($covers('::/0', '192.0.2.5'))->toBeFalse();
+    expect($covers('0.0.0.0/0', '::1'))->toBeFalse();
+});
 
-        $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
-        new IPv6('192.168.0.1');
-        $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
-        new IPv6('127.0.0.1');
-        $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
-        new IPv4('2001:db8:85a3::8a2e:370:7334');
-        $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
-        new IPv4('::1');
-    }
+test('invalid cidr', function (): void {
+    $this->expectException(LibreNMS\Exceptions\InvalidIpException::class);
+    IP::parse('192.0.2.1/33');
+});
 
-    public function testHexToIp(): void
-    {
-        $this->assertEquals('192.168.1.254', IP::fromHexString('c0 a8 01 fe'));
-        $this->assertEquals('192.168.1.254', IP::fromHexString('c0a801fe'));
-        $this->assertEquals('192.168.1.254', IP::fromHexString('c0 a8 01 fe '));
-        $this->assertEquals('192.168.1.254', IP::fromHexString('"c0 a8 01 fe"'));
-        $this->assertEquals('192.168.1.254', IP::fromHexString('192.168.1.254'));
-        $this->assertEquals('62.40.125.125', IP::fromHexString('>(}}')); // stupid ascii encoded
-
-        $this->assertEquals('2001:db8::2:1', IP::fromHexString('2001:db8::2:1'));
-        $this->assertEquals('2001:db8::2:1', IP::fromHexString('20 01 0d b8 00 00 00 00 00 00 00 00 00 02 00 01'));
-        $this->assertEquals('2001:db8::2:1', IP::fromHexString('"20 01 0d b8 00 00 00 00 00 00 00 00 00 02 00 01"'));
-        $this->assertEquals('2001:db8::2:1', IP::fromHexString('"20:01:0d:b8:00:00:00:00:00:00:00:00:00:02:00:01"'));
-        $this->assertEquals('2001:db8::2:1', IP::fromHexString('"20.01.0d.b8.00.00.00.00.00.00.00.00.00.02.00.01"'));
-        $this->assertEquals('2001:db8::2:1', IP::fromHexString('20010db8000000000000000000020001'));
-        $this->assertEquals('3e28:7d7d:3e28:7d7d:3e28:7d7d:3e28:7d7d', IP::fromHexString('>(}}>(}}>(}}>(}}')); // stupid ascii encoded
-
-        $this->assertEquals('::', IP::fromHexString('00000000000000000000000000000000'));
-
-        $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
-        IP::fromHexString('c0 a8 01 01 fe');
-
-        $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
-        IP::fromHexString('20 01 0d b8 00 00 00 00 00 00 00 00 00 02 00 00 00 01');
-    }
-
-    public function testNetmask2Cidr(): void
-    {
-        $this->assertSame(32, IPv4::netmask2cidr('255.255.255.255'));
-        $this->assertSame(30, IPv4::netmask2cidr('255.255.255.252'));
-        $this->assertSame(26, IPv4::netmask2cidr('255.255.255.192'));
-        $this->assertSame(16, IPv4::netmask2cidr('255.255.0.0'));
-    }
-
-    public function testIpInNetwork(): void
-    {
-        $this->assertTrue(IP::parse('192.168.1.0')->inNetwork('192.168.1.0/24'));
-        $this->assertTrue(IP::parse('192.168.1.32')->inNetwork('192.168.1.0/24'));
-        $this->assertTrue(IP::parse('192.168.1.254')->inNetwork('192.168.1.0/24'));
-        $this->assertTrue(IP::parse('192.168.1.255')->inNetwork('192.168.1.0/24'));
-        $this->assertFalse(IP::parse('192.168.1.1')->inNetwork('192.168.1.0'));
-        $this->assertFalse(IP::parse('10.4.3.2')->inNetwork('192.168.1.0/16'));
-
-        $this->assertTrue(IP::parse('::1')->inNetwork('::/64'));
-        $this->assertTrue(IP::parse('2001:db7:85a3::8a2e:370:7334')->inNetwork('::/0'));
-        $this->assertFalse(IP::parse('2001:db7:85a3::8a2e:370:7334')->inNetwork('2001:db8:85a3::/64'));
-        $this->assertTrue(IP::parse('2001:db8:85a3::8a2e:370:7334')->inNetwork('2001:db8:85a3::/64'));
-        $this->assertTrue(IP::parse('2001:db8:85a3::8a2e:370:7334')->inNetwork('2001:db8:85a3::8a2e:370:7334/128'));
-        $this->assertFalse(IP::parse('2001:db8:85a3::8a2e:370:7335')->inNetwork('2001:db8:85a3::8a2e:370:7334/128'));
-
-        // a network of the other address family is never a match
-        $this->assertFalse(IP::parse('8.8.8.8')->inNetwork('2001:630:50::/48'));
-        $this->assertFalse(IP::parse('2001:630:50::1')->inNetwork('8.8.8.0/25'));
-        $this->assertTrue(IP::parse('8.8.8.8')->inNetworks(['2001:630:50::/48', '8.8.8.0/25']));
-
-        $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
-        IP::parse('42')->inNetwork('192.168.1.0/4');
-
-        $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
-        IP::parse('192.168.1.256')->inNetwork('192.168.1.0/24');
-
-        $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
-        IP::parse('192.168.1.0')->inNetwork('192.168.1.0');
-    }
-
-    public function testIpv6Compress(): void
-    {
-        $this->assertEquals('::1', IP::parse('0:0:0:0:0:0:0:1'));
-        $this->assertSame('::1', IP::parse('0:0:0:0:0:0:0:1')->compressed());
-        $this->assertSame('::', IP::parse('0:0:0:0:0:0:0:0')->compressed());
-        $this->assertSame('::', IP::parse('0000:0000:0000:0000:0000:0000:0000:0000')->compressed());
-        $this->assertSame('2001:db8:85a3::8a2e:370:7334', IP::parse('2001:0db8:85a3:0000:0000:8a2e:0370:7334')->compressed());
-        $this->assertSame('::169.254.9.1', IP::parse('0:0:0:0:0:0:a9fe:901')->compressed());
-        $this->assertSame('::169.254.12.3', IP::parse('::169.254.12.3')->compressed());
-        $this->assertSame('::ffff:169.254.12.3', IP::parse('::ffff:169.254.12.3')->compressed());
-    }
-
-    public function testIpv6Uncompress(): void
-    {
-        $this->assertSame('0000:0000:0000:0000:0000:0000:0000:0001', IP::parse('::1')->uncompressed());
-        $this->assertSame('0000:0000:0000:0000:0000:0000:0000:0000', IP::parse('::')->uncompressed());
-        $this->assertSame('2001:0db8:85a3:0000:0000:8a2e:0370:7334', IP::parse('2001:db8:85a3::8a2e:370:7334')->uncompressed());
-        $this->assertSame('2001:0db8:85a3:0001:0001:8a2e:0370:7334', IP::parse('2001:db8:85a3:1:1:8a2e:370:7334')->uncompressed());
-        $this->assertSame('0000:0000:0000:0000:0000:0000:a9fe:0901', IP::parse('0:0:0:0:0:0:a9fe:901')->uncompressed());
-        $this->assertSame('0000:0000:0000:0000:0000:0000:a9fe:0c03', IP::parse('::169.254.12.3')->uncompressed());
-        $this->assertSame('0000:0000:0000:0000:0000:ffff:a9fe:0c03', IP::parse('::ffff:169.254.12.3')->uncompressed());
-    }
-
-    public function testNetworkFromIp(): void
-    {
-        $this->assertSame('192.168.1.0/24', IP::parse('192.168.1.34')->getNetwork(24));
-        $this->assertSame('192.168.1.0/24', IP::parse('192.168.1.0/24')->getNetwork());
-        $this->assertSame('192.168.1.0/24', IP::parse('192.168.1.255/24')->getNetwork());
-        $this->assertSame('192.168.1.0', IP::parse('192.168.1.34')->getNetworkAddress(24));
-        $this->assertSame('192.168.16.0/20', IP::parse('192.168.23.45')->getNetwork(20));
-
-        $this->assertSame('2001:db8:85a3::/64', IP::parse('2001:db8:85a3:0:341a:8a2e:0370:7334')->getNetwork(64));
-        $this->assertSame('2001:db8:85a3:3400::/54', IP::parse('2001:db8:85a3:369a::370:7334/54')->getNetwork());
-        $this->assertSame('2001:db8:85a3:3600::/55', IP::parse('2001:db8:85a3:369a::370:7334/55')->getNetwork());
-        $this->assertSame('2001:db8:85a3:341a::370:7334/128', IP::parse('2001:db8:85a3:341a::370:7334')->getNetwork());
-        $this->assertSame('2001:db8:85a3:341a::370:7334', IP::parse('2001:db8:85a3:341a::370:7334/128')->getNetworkAddress());
-    }
-
-    public function testIterateIpv4Network(): void
-    {
-        $this->assertSame(
-            ['192.0.2.1', '192.0.2.2'],
-            iterator_to_array(IP::parse('192.0.2.2/30'))
-        );
-        $this->assertSame(['192.0.2.1'], iterator_to_array(IP::parse('192.0.2.1')));
-        $this->assertSame(['192.0.2.0', '192.0.2.1'], iterator_to_array(IP::parse('192.0.2.0/31')));
-    }
-
-    public function testIterateIpv6Network(): void
-    {
-        $this->assertSame(
-            ['2001:db8::1', '2001:db8::2'],
-            iterator_to_array(IP::parse('2001:db8::2/126'))
-        );
-        $this->assertSame(['2001:db8::1'], iterator_to_array(IP::parse('2001:db8::1')));
-        $this->assertSame(['2001:db8::', '2001:db8::1'], iterator_to_array(IP::parse('2001:db8::/127')));
-    }
-
-    public function testNetworkIterationIsLazy(): void
-    {
-        $addresses = IP::parse('2001:db8::/64')->getIterator();
-
-        $this->assertSame('2001:db8::1', $addresses->current());
-        $addresses->next();
-        $this->assertSame('2001:db8::2', $addresses->current());
-    }
-
-    public function testAddressCount(): void
-    {
-        foreach (['192.0.2.0/24', '192.0.2.0/31', '192.0.2.1/32', '2001:db8::/120', '2001:db8::/127', '2001:db8::1/128'] as $network) {
-            $ip = IP::parse($network);
-            $this->assertSame(iterator_count($ip), $ip->addressCount(), $network);
-        }
-
-        $this->assertSame(2 ** 64 - 2, IP::parse('2001:db8::/64')->addressCount());
-    }
-
-    public function testCovers(): void
-    {
-        $covers = fn (string $network, string $other) => IP::parse($network)->includes(IP::parse($other));
-
-        $this->assertTrue($covers('192.0.2.0/24', '192.0.2.0/24'));
-        $this->assertTrue($covers('192.0.2.0/24', '192.0.2.128/25'));
-        $this->assertTrue($covers('192.0.2.0/24', '192.0.2.5'));
-        $this->assertFalse($covers('192.0.2.0/25', '192.0.2.0/24'));
-        $this->assertFalse($covers('192.0.2.0/24', '192.0.3.0/24'));
-        // the network and broadcast addresses are not yielded
-        $this->assertFalse($covers('192.0.2.0/24', '192.0.2.0'));
-        $this->assertFalse($covers('192.0.2.0/24', '192.0.2.254/31'));
-        $this->assertTrue($covers('192.0.2.0/24', '192.0.2.254'));
-        $this->assertTrue($covers('192.0.2.0/31', '192.0.2.0'));
-
-        $this->assertTrue($covers('2001:db8::/64', '2001:db8::5'));
-        $this->assertFalse($covers('2001:db8::/64', '2001:db8::'));
-        $this->assertFalse($covers('2001:db8::/64', '2001:db8:1::/64'));
-        // compared within an address family only
-        $this->assertFalse($covers('::/0', '192.0.2.5'));
-        $this->assertFalse($covers('0.0.0.0/0', '::1'));
-    }
-
-    public function testInvalidCidr(): void
-    {
-        $this->expectException(\LibreNMS\Exceptions\InvalidIpException::class);
-        IP::parse('192.0.2.1/33');
-    }
-
-    public function testToSnmpIndex(): void
-    {
-        $this->assertSame('192.168.1.5', IP::parse('192.168.1.5')->toSnmpIndex());
-        $this->assertSame('32.1.8.120.224.0.130.226.134.161.0.0.0.0.0.0', IP::parse('2001:878:e000:82e2:86a1:0000:0000:0000')->toSnmpIndex());
-        $this->assertSame('0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1', IP::parse('::1')->toSnmpIndex());
-        $this->assertSame('32.1.8.120.0.0.224.0.0.130.0.226.0.136.0.161', IP::parse('2001:0878:0000:e000:0082:00e2:0088:00a1')->toSnmpIndex());
-    }
-}
+test('to snmp index', function (): void {
+    expect(IP::parse('192.168.1.5')->toSnmpIndex())->toBe('192.168.1.5');
+    expect(IP::parse('2001:878:e000:82e2:86a1:0000:0000:0000')->toSnmpIndex())->toBe('32.1.8.120.224.0.130.226.134.161.0.0.0.0.0.0');
+    expect(IP::parse('::1')->toSnmpIndex())->toBe('0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1');
+    expect(IP::parse('2001:0878:0000:e000:0082:00e2:0088:00a1')->toSnmpIndex())->toBe('32.1.8.120.0.0.224.0.0.130.0.226.0.136.0.161');
+});

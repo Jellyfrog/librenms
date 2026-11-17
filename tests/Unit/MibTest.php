@@ -23,177 +23,134 @@
  * @copyright  2017 Tony Murray
  * @author     Tony Murray <murraytony@gmail.com>
  */
-
-namespace LibreNMS\Tests\Unit;
-
+uses(LibreNMS\Tests\TestCase::class);
 use App\Facades\LibrenmsConfig;
-use Exception;
 use Illuminate\Support\Str;
-use LibreNMS\Tests\TestCase;
 use LibreNMS\Util\DataProviderCache;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use SplFileInfo;
+
+test('mib directory', function ($dir): void {
+    $output = shell_exec('snmptranslate -M +' . LibrenmsConfig::get('mib_dir') . ":$dir -m +ALL SNMPv2-MIB::system 2>&1");
+    $errors = str_replace("SNMPv2-MIB::system\n", '', $output);
+
+    expect($errors)->toBeEmpty("MIBs in $dir have errors!\n$errors");
+})->with('mibDirs')->group('mibs');
+
+test('duplicate mibs', function ($path, $file, $mib_name): void {
+    $file_path = "$path/$file";
+
+    static $existing_mibs;
+    $existing_mibs ??= [];
+
+    if (isset($existing_mibs[$mib_name])) {
+        $existing_mibs[$mib_name][] = $file_path;
+
+        $this->fail("$file_path has duplicates: " . implode(', ', $existing_mibs[$mib_name]));
+    } else {
+        $existing_mibs[$mib_name] = [$file_path];
+    }
+})->with('mibFiles')->group('mibs');
+
+test('mib name matches', function ($path, $file, $mib_name): void {
+    $file_path = "$path/$file";
+    expect($file)->toEqual($mib_name, "$file_path should be named $mib_name");
+})->with('mibFiles')->group('mibs');
+
+test('mib contents', function ($path, $file, $mib_name): void {
+    $output = shell_exec('snmptranslate -M +' . LibrenmsConfig::get('mib_dir') . ":$path -m +$mib_name SNMPv2-MIB::system 2>&1");
+    $errors = str_replace("SNMPv2-MIB::system\n", '', $output);
+
+    expect($errors)->toBeEmpty("$path/$file has errors!\n$errors");
+})->with('mibFiles')->group('mibs');
 
 /**
- * Class MibTest
+ * Get a list of all mib files with the name of the mib.
+ * Called for each test that uses it before class setup.
+ *
+ * @return array path, filename, mib_name
  */
-final class MibTest extends TestCase
+dataset('mibFiles', function () {
+    $mib_base = mibTestBasePath('mibs');
+    $install_dir = mibTestBasePath();
+
+    return DataProviderCache::remember('mib_files', $mib_base, function () use ($mib_base, $install_dir) {
+        $file_list = [];
+        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($mib_base)) as $file) {
+            /** @var SplFileInfo $file */
+            if ($file->isDir()) {
+                continue;
+            }
+            $mib_path = str_replace($mib_base . '/', '', $file->getPathname());
+            $file_list[$mib_path] = [
+                str_replace($install_dir, '.', $file->getPath()),
+                $file->getFilename(),
+                extractMibName($file->getPathname()),
+            ];
+        }
+
+        return $file_list;
+    });
+});
+
+/**
+ * Data provider: returns all MIB directories (main dir + subdirectories)
+ *
+ * @return array
+ */
+dataset('mibDirs', function () {
+    $mib_base = mibTestBasePath('mibs');
+
+    return DataProviderCache::remember('mib_dirs', $mib_base, function () use ($mib_base) {
+        $dirs = glob($mib_base . '/*', GLOB_ONLYDIR);
+        array_unshift($dirs, $mib_base);
+
+        $final_list = [];
+        foreach ($dirs as $dir) {
+            $relative_dir = ltrim(str_replace($mib_base, '', $dir), '/');
+            $final_list[$relative_dir] = [$dir];
+        }
+
+        return $final_list;
+    });
+});
+
+/**
+ * Extract the mib name from a file
+ *
+ * @throws Exception
+ */
+function extractMibName(string $file): string
 {
-    /**
-     * Test mib file in a directory for errors
-     *
-     * @param  string  $dir
-     */
-    #[Group('mibs')]
-    #[DataProvider('mibDirs')]
-    public function testMibDirectory($dir): void
-    {
-        $output = shell_exec('snmptranslate -M +' . LibrenmsConfig::get('mib_dir') . ":$dir -m +ALL SNMPv2-MIB::system 2>&1");
-        $errors = str_replace("SNMPv2-MIB::system\n", '', $output);
+    if ($handle = fopen($file, 'r')) {
+        $header = '';
+        while (($line = fgets($handle)) !== false) {
+            $trimmed = trim($line);
 
-        $this->assertEmpty($errors, "MIBs in $dir have errors!\n$errors");
-    }
+            if (empty($trimmed) || Str::startsWith($trimmed, '--')) {
+                continue;
+            }
 
-    /**
-     * Test that each mib only exists once.
-     *
-     * @param  string  $path
-     * @param  string  $file
-     * @param  string  $mib_name
-     */
-    #[Group('mibs')]
-    #[DataProvider('mibFiles')]
-    public function testDuplicateMibs($path, $file, $mib_name): void
-    {
-        $file_path = "$path/$file";
+            $header .= " $trimmed";
+            if (Str::contains($trimmed, 'DEFINITIONS')) {
+                preg_match('/(\S+)\s+(?=DEFINITIONS)/', $header, $matches);
+                fclose($handle);
 
-        static $existing_mibs;
-        $existing_mibs ??= [];
-
-        if (isset($existing_mibs[$mib_name])) {
-            $existing_mibs[$mib_name][] = $file_path;
-
-            $this->fail("$file_path has duplicates: " . implode(', ', $existing_mibs[$mib_name]));
-        } else {
-            $existing_mibs[$mib_name] = [$file_path];
+                return $matches[1];
+            }
         }
+        fclose($handle);
     }
 
-    /**
-     * Test that the file name matches the mib name
-     *
-     * @param  string  $path
-     * @param  string  $file
-     * @param  string  $mib_name
-     */
-    #[Group('mibs')]
-    #[DataProvider('mibFiles')]
-    public function testMibNameMatches($path, $file, $mib_name): void
-    {
-        $file_path = "$path/$file";
-        $this->assertEquals($mib_name, $file, "$file_path should be named $mib_name");
-    }
+    throw new Exception("Could not extract mib name from file ($file)");
+}
 
-    /**
-     * Test each mib file for errors
-     *
-     * @param  string  $path
-     * @param  string  $file
-     * @param  string  $mib_name
-     */
-    #[Group('mibs')]
-    #[DataProvider('mibFiles')]
-    public function testMibContents($path, $file, $mib_name): void
-    {
-        $output = shell_exec('snmptranslate -M +' . LibrenmsConfig::get('mib_dir') . ":$path -m +$mib_name SNMPv2-MIB::system 2>&1");
-        $errors = str_replace("SNMPv2-MIB::system\n", '', $output);
+/**
+ * Repository root path, mirrors TestCase::basePath() which is not reachable from dataset closures
+ */
+function mibTestBasePath(string $subdir = ''): string
+{
+    $dir = dirname(__DIR__, 2);
 
-        $this->assertEmpty($errors, "$path/$file has errors!\n$errors");
-    }
-
-    /**
-     * Get a list of all mib files with the name of the mib.
-     * Called for each test that uses it before class setup.
-     *
-     * @return array path, filename, mib_name
-     */
-    public static function mibFiles(): array
-    {
-        $mib_base = self::basePath('mibs');
-        $install_dir = self::basePath();
-
-        return DataProviderCache::remember('mib_files', $mib_base, function () use ($mib_base, $install_dir) {
-            $file_list = [];
-            foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($mib_base)) as $file) {
-                /** @var SplFileInfo $file */
-                if ($file->isDir()) {
-                    continue;
-                }
-                $mib_path = str_replace($mib_base . '/', '', $file->getPathname());
-                $file_list[$mib_path] = [
-                    str_replace($install_dir, '.', $file->getPath()),
-                    $file->getFilename(),
-                    self::extractMibName($file->getPathname()),
-                ];
-            }
-
-            return $file_list;
-        });
-    }
-
-    /**
-     * Data provider: returns all MIB directories (main dir + subdirectories)
-     *
-     * @return array
-     */
-    public static function mibDirs(): array
-    {
-        $mib_base = self::basePath('mibs');
-
-        return DataProviderCache::remember('mib_dirs', $mib_base, function () use ($mib_base) {
-            $dirs = glob($mib_base . '/*', GLOB_ONLYDIR);
-            array_unshift($dirs, $mib_base);
-
-            $final_list = [];
-            foreach ($dirs as $dir) {
-                $relative_dir = ltrim(str_replace($mib_base, '', $dir), '/');
-                $final_list[$relative_dir] = [$dir];
-            }
-
-            return $final_list;
-        });
-    }
-
-    /**
-     * Extract the mib name from a file
-     *
-     * @throws Exception
-     */
-    private static function extractMibName(string $file): string
-    {
-        if ($handle = fopen($file, 'r')) {
-            $header = '';
-            while (($line = fgets($handle)) !== false) {
-                $trimmed = trim($line);
-
-                if (empty($trimmed) || Str::startsWith($trimmed, '--')) {
-                    continue;
-                }
-
-                $header .= " $trimmed";
-                if (Str::contains($trimmed, 'DEFINITIONS')) {
-                    preg_match('/(\S+)\s+(?=DEFINITIONS)/', $header, $matches);
-                    fclose($handle);
-
-                    return $matches[1];
-                }
-            }
-            fclose($handle);
-        }
-
-        throw new Exception("Could not extract mib name from file ($file)");
-    }
+    return $subdir
+        ? $dir . '/' . $subdir
+        : $dir;
 }

@@ -24,172 +24,163 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Feature\Commands;
-
 use App\Facades\LibrenmsConfig;
-use LibreNMS\Tests\InMemoryDbTestCase;
 
-final class TestConfigCommands extends InMemoryDbTestCase
+uses(LibreNMS\Tests\InMemoryDbTestCase::class);
+
+/**
+ * @param  string  $setting
+ * @param  mixed  $expected
+ */
+function assertCliSets(string $setting, $expected): void
 {
-    public function testSetting(): void
-    {
-        // simple
-        LibrenmsConfig::set('login_message', null);
-        $this->assertCliSets('login_message', 'hello');
-
-        // nested
-        LibrenmsConfig::forget('allow_entity_sensor.amperes');
-        $this->assertCliSets('allow_entity_sensor.amperes', 'false');
-
-        // set inside
-        LibrenmsConfig::set('auth_ldap_groups', []);
-        $this->assertCliGets('auth_ldap_groups.somegroup', null);
-        $this->artisan('config:set', ['setting' => 'auth_ldap_groups.somegroup', 'value' => '{"roles": ["banana"]}'])->assertExitCode(0);
-        $this->assertCliGets('auth_ldap_groups.somegroup', ['roles' => ['banana']]);
-        $this->artisan('config:set', ['setting' => 'auth_ldap_groups.somegroup'])
-            ->expectsConfirmation(trans('commands.config:set.forget_from', ['path' => 'somegroup', 'parent' => 'auth_ldap_groups']), 'yes')
-            ->assertExitCode(0);
-
-        // test append
-        $transports = LibrenmsConfig::get('snmp.transports');
-        $this->assertCliGets('snmp.transports', $transports);
-        $transports[] = 'extra_transport';
-        $this->artisan('config:set', ['setting' => 'snmp.transports.+', 'value' => 'extra_transport'])->assertExitCode(0);
-        $this->assertCliGets('snmp.transports', $transports);
-
-        // os bool
-        $this->assertCliSets('os.ios.rfc1628_compat', true);
-
-        // os config highlighting
-        $this->assertCliSets('os.ios.config_highlighting', 'cisco-config');
-
-        // os name containing digits
-        $this->assertCliSets('os.airos-af60.polling.selected_ports', true);
-
-        // os array
-        $this->assertCliSets('os.netonix.bad_iftype', ['ethernet', 'psuedowire']);
-
-        // os array append
-        $this->artisan('config:set', ['setting' => 'os.netonix.bad_iftype', 'value' => '["ethernet","psuedowire"]'])->assertExitCode(0);
-        $this->assertEquals(['ethernet', 'psuedowire'], LibrenmsConfig::get('os.netonix.bad_iftype'));
-        $this->artisan('config:set', ['setting' => 'os.netonix.bad_iftype.+', 'value' => 'other'])->assertExitCode(0);
-        $this->assertCliGets('os.netonix.bad_iftype', ['ethernet', 'psuedowire', 'other']);
-
-        // dump
-        $this->artisan('config:get', ['--dump' => true])
-            ->expectsOutput(LibrenmsConfig::toJson())
-            ->assertExitCode(0);
-    }
-
-    public function testRemoveUndefinedSetting(): void
-    {
-        LibrenmsConfig::persist('snmpwalk', '/usr/bin/snmpwalk-custom');
-
-        // setting a value is not allowed
-        $this->artisan('config:set', ['setting' => 'snmpwalk', 'value' => '/usr/bin/snmpwalk'])
-            ->assertExitCode(2);
-
-        $this->artisan('config:set', ['setting' => 'snmpwalk'])
-            ->expectsConfirmation(trans('commands.config:set.confirm', ['setting' => 'snmpwalk']), 'yes')
-            ->assertExitCode(0);
-        $this->assertDatabaseMissing('config', ['config_name' => 'snmpwalk']);
-    }
-
-    public function testInvalidSetting(): void
-    {
-        // non-existent setting
-        $this->artisan('config:set', ['setting' => 'this_will_never_be.a.setting'])
-            ->assertExitCode(2);
-
-        // invalid type
-        $this->artisan('config:set', ['setting' => 'alert_rule.default_operation_step_duration', 'value' => 'string', '--no-ansi' => true])
-            ->expectsOutput(trans('settings.validate.integer', ['value' => '"string"']))
-            ->assertExitCode(2);
-
-        // non-existent os
-        $this->artisan('config:set', ['setting' => 'os.someos.this_will_never_be.a.setting'])
-            ->expectsOutput(trans('commands.config:set.errors.invalid_os', ['os' => 'someos']))
-            ->assertExitCode(2);
-
-        // non-existent os setting
-        $this->artisan('config:set', ['setting' => 'os.ios.this_will_never_be.a.setting'])
-            ->doesntExpectOutput(trans('commands.config:set.errors.invalid_os', ['os' => 'ios']))
-            ->assertExitCode(2);
-
-        // append to non-array
-        LibrenmsConfig::set('login_message', 'blah');
-        LibrenmsConfig::get('login_message');
-        $this->artisan('config:set', ['setting' => 'login_message.+', 'value' => 'something', '--no-ansi' => true])
-            ->expectsOutput(trans('commands.config:set.errors.append'))
-            ->assertExitCode(2);
-    }
-
-    /**
-     * @param  string  $setting
-     * @param  mixed  $expected
-     */
-    private function assertCliSets(string $setting, $expected): void
-    {
-        $this->assertCliGets($setting, null);
-        $this->artisan('config:set', ['setting' => $setting, 'value' => json_encode($expected)])->assertExitCode(0);
-        $this->assertCliGets($setting, $expected);
-        $this->artisan('config:set', ['setting' => $setting])
-            ->expectsQuestion(trans('commands.config:set.confirm', ['setting' => $setting]), true)
-            ->assertExitCode(0);
-        $this->assertCliGets($setting, null);
-    }
-
-    /**
-     * @param  string  $setting
-     * @param  mixed  $expected
-     */
-    private function assertCliGets(string $setting, $expected): void
-    {
-        $this->assertSame($expected, LibrenmsConfig::get($setting));
-
-        $command = $this->artisan('config:get', ['setting' => $setting]);
-        if ($expected === null) {
-            $command->assertExitCode(1);
-
-            return;
-        }
-
-        $command->assertExitCode(0)
-            ->expectsOutput(is_string($expected) ? $expected : json_encode($expected, JSON_PRETTY_PRINT))
-            ->assertExitCode(0);
-    }
-
-    public function testCustomMacroSetting(): void
-    {
-        $this->artisan('config:set', ['setting' => 'alert.macros.rule.my_custom_macro', 'value' => 'ABS(%sensors.sensor_current)'])
-            ->assertExitCode(0);
-
-        $this->assertEquals('ABS(%sensors.sensor_current)', LibrenmsConfig::get('alert.macros.rule.my_custom_macro'));
-        $this->assertEquals('ABS(%sensors.sensor_current)', LibrenmsConfig::get('alert.macros.rule')['my_custom_macro']);
-
-        // Test validation rejects non-string values
-        $this->artisan('config:set', ['setting' => 'alert.macros.rule.my_custom_macro', 'value' => '["invalid"]'])
-            ->assertExitCode(2);
-
-        // Erase custom macro
-        $this->artisan('config:set', ['setting' => 'alert.macros.rule.my_custom_macro'])
-            ->expectsQuestion(trans('commands.config:set.confirm', ['setting' => 'alert.macros.rule.my_custom_macro']), true)
-            ->assertExitCode(0);
-
-        $this->assertNull(LibrenmsConfig::get('alert.macros.rule.my_custom_macro'));
-    }
-
-    public function testCustomDeviceTypeSetting(): void
-    {
-        $this->artisan('config:set', ['setting' => 'device_types.my_type', 'value' => 'star'])
-            ->assertExitCode(0);
-
-        $this->assertEquals('star', LibrenmsConfig::get('device_types.my_type'));
-        $this->assertEquals('star', LibrenmsConfig::get('device_types')['my_type']);
-        $this->assertEquals('network-wired', LibrenmsConfig::get('device_types.network'));
-
-        // Test validation rejects non-string values
-        $this->artisan('config:set', ['setting' => 'device_types.my_type', 'value' => '["invalid"]'])
-            ->assertExitCode(2);
-    }
+    assertCliGets($setting, null);
+    test()->artisan('config:set', ['setting' => $setting, 'value' => json_encode($expected)])->assertExitCode(0);
+    assertCliGets($setting, $expected);
+    test()->artisan('config:set', ['setting' => $setting])
+        ->expectsQuestion(trans('commands.config:set.confirm', ['setting' => $setting]), true)
+        ->assertExitCode(0);
+    assertCliGets($setting, null);
 }
+
+/**
+ * @param  string  $setting
+ * @param  mixed  $expected
+ */
+function assertCliGets(string $setting, $expected): void
+{
+    test()->assertSame($expected, LibrenmsConfig::get($setting));
+
+    $command = test()->artisan('config:get', ['setting' => $setting]);
+    if ($expected === null) {
+        $command->assertExitCode(1);
+
+        return;
+    }
+
+    $command->assertExitCode(0)
+        ->expectsOutput(is_string($expected) ? $expected : json_encode($expected, JSON_PRETTY_PRINT))
+        ->assertExitCode(0);
+}
+
+test('setting', function (): void {
+    // simple
+    LibrenmsConfig::set('login_message', null);
+    assertCliSets('login_message', 'hello');
+
+    // nested
+    LibrenmsConfig::forget('allow_entity_sensor.amperes');
+    assertCliSets('allow_entity_sensor.amperes', 'false');
+
+    // set inside
+    LibrenmsConfig::set('auth_ldap_groups', []);
+    assertCliGets('auth_ldap_groups.somegroup', null);
+    $this->artisan('config:set', ['setting' => 'auth_ldap_groups.somegroup', 'value' => '{"roles": ["banana"]}'])->assertExitCode(0);
+    assertCliGets('auth_ldap_groups.somegroup', ['roles' => ['banana']]);
+    $this->artisan('config:set', ['setting' => 'auth_ldap_groups.somegroup'])
+        ->expectsConfirmation(trans('commands.config:set.forget_from', ['path' => 'somegroup', 'parent' => 'auth_ldap_groups']), 'yes')
+        ->assertExitCode(0);
+
+    // test append
+    $transports = LibrenmsConfig::get('snmp.transports');
+    assertCliGets('snmp.transports', $transports);
+    $transports[] = 'extra_transport';
+    $this->artisan('config:set', ['setting' => 'snmp.transports.+', 'value' => 'extra_transport'])->assertExitCode(0);
+    assertCliGets('snmp.transports', $transports);
+
+    // os bool
+    assertCliSets('os.ios.rfc1628_compat', true);
+
+    // os config highlighting
+    assertCliSets('os.ios.config_highlighting', 'cisco-config');
+
+    // os name containing digits
+    assertCliSets('os.airos-af60.polling.selected_ports', true);
+
+    // os array
+    assertCliSets('os.netonix.bad_iftype', ['ethernet', 'psuedowire']);
+
+    // os array append
+    $this->artisan('config:set', ['setting' => 'os.netonix.bad_iftype', 'value' => '["ethernet","psuedowire"]'])->assertExitCode(0);
+    expect(LibrenmsConfig::get('os.netonix.bad_iftype'))->toEqual(['ethernet', 'psuedowire']);
+    $this->artisan('config:set', ['setting' => 'os.netonix.bad_iftype.+', 'value' => 'other'])->assertExitCode(0);
+    assertCliGets('os.netonix.bad_iftype', ['ethernet', 'psuedowire', 'other']);
+
+    // dump
+    $this->artisan('config:get', ['--dump' => true])
+        ->expectsOutput(LibrenmsConfig::toJson())
+        ->assertExitCode(0);
+});
+
+test('remove undefined setting', function (): void {
+    LibrenmsConfig::persist('snmpwalk', '/usr/bin/snmpwalk-custom');
+
+    // setting a value is not allowed
+    $this->artisan('config:set', ['setting' => 'snmpwalk', 'value' => '/usr/bin/snmpwalk'])
+        ->assertExitCode(2);
+
+    $this->artisan('config:set', ['setting' => 'snmpwalk'])
+        ->expectsConfirmation(trans('commands.config:set.confirm', ['setting' => 'snmpwalk']), 'yes')
+        ->assertExitCode(0);
+    $this->assertDatabaseMissing('config', ['config_name' => 'snmpwalk']);
+});
+
+test('invalid setting', function (): void {
+    // non-existent setting
+    $this->artisan('config:set', ['setting' => 'this_will_never_be.a.setting'])
+        ->assertExitCode(2);
+
+    // invalid type
+    $this->artisan('config:set', ['setting' => 'alert_rule.default_operation_step_duration', 'value' => 'string', '--no-ansi' => true])
+        ->expectsOutput(trans('settings.validate.integer', ['value' => '"string"']))
+        ->assertExitCode(2);
+
+    // non-existent os
+    $this->artisan('config:set', ['setting' => 'os.someos.this_will_never_be.a.setting'])
+        ->expectsOutput(trans('commands.config:set.errors.invalid_os', ['os' => 'someos']))
+        ->assertExitCode(2);
+
+    // non-existent os setting
+    $this->artisan('config:set', ['setting' => 'os.ios.this_will_never_be.a.setting'])
+        ->doesntExpectOutput(trans('commands.config:set.errors.invalid_os', ['os' => 'ios']))
+        ->assertExitCode(2);
+
+    // append to non-array
+    LibrenmsConfig::set('login_message', 'blah');
+    LibrenmsConfig::get('login_message');
+    $this->artisan('config:set', ['setting' => 'login_message.+', 'value' => 'something', '--no-ansi' => true])
+        ->expectsOutput(trans('commands.config:set.errors.append'))
+        ->assertExitCode(2);
+});
+
+test('custom macro setting', function (): void {
+    $this->artisan('config:set', ['setting' => 'alert.macros.rule.my_custom_macro', 'value' => 'ABS(%sensors.sensor_current)'])
+        ->assertExitCode(0);
+
+    expect(LibrenmsConfig::get('alert.macros.rule.my_custom_macro'))->toEqual('ABS(%sensors.sensor_current)');
+    expect(LibrenmsConfig::get('alert.macros.rule')['my_custom_macro'])->toEqual('ABS(%sensors.sensor_current)');
+
+    // Test validation rejects non-string values
+    $this->artisan('config:set', ['setting' => 'alert.macros.rule.my_custom_macro', 'value' => '["invalid"]'])
+        ->assertExitCode(2);
+
+    // Erase custom macro
+    $this->artisan('config:set', ['setting' => 'alert.macros.rule.my_custom_macro'])
+        ->expectsQuestion(trans('commands.config:set.confirm', ['setting' => 'alert.macros.rule.my_custom_macro']), true)
+        ->assertExitCode(0);
+
+    expect(LibrenmsConfig::get('alert.macros.rule.my_custom_macro'))->toBeNull();
+});
+
+test('custom device type setting', function (): void {
+    $this->artisan('config:set', ['setting' => 'device_types.my_type', 'value' => 'star'])
+        ->assertExitCode(0);
+
+    expect(LibrenmsConfig::get('device_types.my_type'))->toEqual('star');
+    expect(LibrenmsConfig::get('device_types')['my_type'])->toEqual('star');
+    expect(LibrenmsConfig::get('device_types.network'))->toEqual('network-wired');
+
+    // Test validation rejects non-string values
+    $this->artisan('config:set', ['setting' => 'device_types.my_type', 'value' => '["invalid"]'])
+        ->assertExitCode(2);
+});

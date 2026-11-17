@@ -3,7 +3,7 @@
 /**
  * SchemaTest.php
  *
- * -Description-
+ * Tests Schema class
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,14 +24,13 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Unit;
-
 use LibreNMS\DB\Schema;
-use LibreNMS\Tests\TestCase;
 
-final class SchemaTest extends TestCase
+uses(LibreNMS\Tests\TestCase::class);
+
+function mockSchemaData(): array
 {
-    private $mock_schema = [
+    return [
         'bills' => [
             'Columns' => [
                 ['Field' => 'bill_id', 'Type' => 'int(11)', 'Null' => false, 'Extra' => 'auto_increment'],
@@ -107,58 +106,44 @@ final class SchemaTest extends TestCase
             ],
         ],
     ];
-
-    /**
-     * @return Schema
-     */
-    private function getSchemaMock()
-    {
-        // override getSchema so we don't have to rely on the schema being stable.
-        return new class($this->mock_schema) extends Schema
-        {
-            public function __construct(private readonly array $mockSchema)
-            {
-            }
-
-            public function getSchema()
-            {
-                return $this->mockSchema;
-            }
-        };
-    }
-
-    public function testTableRelationships(): void
-    {
-        // mock getSchema
-        $schema = $this->getSchemaMock();
-
-        $expected = [
-            'bills' => [],
-            'bill_ports' => ['bills', 'ports'],
-            'devices' => ['locations'],
-            'locations' => [],
-            'ports' => ['devices'],
-            'sensors' => ['devices'],
-            'sensors_to_state_indexes' => ['sensors', 'state_indexes'],
-            'state_indexes' => [],
-            'state_translations' => ['state_indexes'],
-        ];
-
-        $this->assertEquals($expected, $schema->getTableRelationships());
-    }
-
-    public function testFindRelationshipPath(): void
-    {
-        $schema = $this->getSchemaMock();
-
-        $this->assertEquals(['devices'], $schema->findRelationshipPath('devices'));
-        $this->assertEquals(['locations', 'devices'], $schema->findRelationshipPath('locations'));
-        $this->assertEquals(['devices', 'ports'], $schema->findRelationshipPath('ports'));
-        $this->assertEquals(['devices', 'ports', 'bill_ports'], $schema->findRelationshipPath('bill_ports'));
-        $this->assertEquals(['devices', 'ports', 'bill_ports', 'bills'], $schema->findRelationshipPath('bills'));
-        $this->assertEquals(
-            ['devices', 'sensors', 'sensors_to_state_indexes', 'state_indexes', 'state_translations'],
-            $schema->findRelationshipPath('state_translations')
-        );
-    }
 }
+
+beforeEach(function (): void {
+    // override getSchema so we don't have to rely on the schema being stable.
+    $this->schema = new class(mockSchemaData()) extends Schema
+    {
+        public function __construct(private readonly array $mockSchema)
+        {
+        }
+
+        public function getSchema()
+        {
+            return $this->mockSchema;
+        }
+    };
+});
+
+test('table relationships', function (): void {
+    $expected = [
+        'bills' => [],
+        'bill_ports' => ['bills', 'ports'],
+        'devices' => ['locations'],
+        'locations' => [],
+        'ports' => ['devices'],
+        'sensors' => ['devices'],
+        'sensors_to_state_indexes' => ['sensors', 'state_indexes'],
+        'state_indexes' => [],
+        'state_translations' => ['state_indexes'],
+    ];
+
+    expect($this->schema->getTableRelationships())->toEqual($expected);
+});
+
+test('find relationship path', function (): void {
+    expect($this->schema->findRelationshipPath('devices'))->toEqual(['devices']);
+    expect($this->schema->findRelationshipPath('locations'))->toEqual(['locations', 'devices']);
+    expect($this->schema->findRelationshipPath('ports'))->toEqual(['devices', 'ports']);
+    expect($this->schema->findRelationshipPath('bill_ports'))->toEqual(['devices', 'ports', 'bill_ports']);
+    expect($this->schema->findRelationshipPath('bills'))->toEqual(['devices', 'ports', 'bill_ports', 'bills']);
+    expect($this->schema->findRelationshipPath('state_translations'))->toEqual(['devices', 'sensors', 'sensors_to_state_indexes', 'state_indexes', 'state_translations']);
+});

@@ -24,237 +24,223 @@
  * @author     Tony Murray <murraytony@gmail.com>
  */
 
-namespace LibreNMS\Tests\Unit;
-
 use App\Facades\LibrenmsConfig;
 use LibreNMS\Data\Source\Icmp\Fping;
 use LibreNMS\Data\Source\Icmp\FpingOutputBuffer;
 use LibreNMS\Data\Source\Icmp\FpingResponse;
-use LibreNMS\Tests\TestCase;
 use Symfony\Component\Process\Process;
 
-final class FpingTest extends TestCase
-{
-    public function testUpPing(): void
-    {
-        $output = "192.168.1.3 : xmt/rcv/%loss = 3/3/0%, min/avg/max = 0.62/0.71/0.93\n";
-        $this->mockFpingProcess($output, 0);
+uses(LibreNMS\Tests\TestCase::class);
 
-        $actual = app()->make(Fping::class)->ping('192.168.1.3');
+test('up ping', function (): void {
+    $output = "192.168.1.3 : xmt/rcv/%loss = 3/3/0%, min/avg/max = 0.62/0.71/0.93\n";
+    mockFpingProcess($output, 0);
 
-        $this->assertTrue($actual->isAlive());
-        $this->assertEquals('192.168.1.3', $actual->host);
-        $this->assertEquals(3, $actual->transmitted);
-        $this->assertEquals(3, $actual->received);
-        $this->assertEquals(0, $actual->loss);
-        $this->assertEquals(0.62, $actual->min_latency);
-        $this->assertEquals(0.93, $actual->max_latency);
-        $this->assertEquals(0.71, $actual->avg_latency);
-        $this->assertEquals(0, $actual->duplicates);
-        $this->assertEquals(0, $actual->getExitCode()->value);
-    }
+    $actual = app()->make(Fping::class)->ping('192.168.1.3');
 
-    public function testPartialDownPing(): void
-    {
-        $output = "192.168.1.7 : xmt/rcv/%loss = 5/3/40%, min/avg/max = 0.13/0.23/0.32\n";
-        $this->mockFpingProcess($output, 0);
+    expect($actual->isAlive())->toBeTrue();
+    expect($actual->host)->toEqual('192.168.1.3');
+    expect($actual->transmitted)->toEqual(3);
+    expect($actual->received)->toEqual(3);
+    expect($actual->loss)->toEqual(0);
+    expect($actual->min_latency)->toEqual(0.62);
+    expect($actual->max_latency)->toEqual(0.93);
+    expect($actual->avg_latency)->toEqual(0.71);
+    expect($actual->duplicates)->toEqual(0);
+    expect($actual->getExitCode()->value)->toEqual(0);
+});
 
-        $actual = app()->make(Fping::class)->ping('192.168.1.7');
+test('partial down ping', function (): void {
+    $output = "192.168.1.7 : xmt/rcv/%loss = 5/3/40%, min/avg/max = 0.13/0.23/0.32\n";
+    mockFpingProcess($output, 0);
 
-        $this->assertTrue($actual->isAlive());
-        $this->assertEquals('192.168.1.7', $actual->host);
-        $this->assertEquals(5, $actual->transmitted);
-        $this->assertEquals(3, $actual->received);
-        $this->assertEquals(40, $actual->loss);
-        $this->assertEquals(0.13, $actual->min_latency);
-        $this->assertEquals(0.32, $actual->max_latency);
-        $this->assertEquals(0.23, $actual->avg_latency);
-        $this->assertEquals(0, $actual->duplicates);
-        $this->assertEquals(0, $actual->getExitCode()->value);
-    }
+    $actual = app()->make(Fping::class)->ping('192.168.1.7');
 
-    public function testDownPing(): void
-    {
-        $output = "192.168.53.1 : xmt/rcv/%loss = 3/0/100%\n";
-        $this->mockFpingProcess($output, 1);
+    expect($actual->isAlive())->toBeTrue();
+    expect($actual->host)->toEqual('192.168.1.7');
+    expect($actual->transmitted)->toEqual(5);
+    expect($actual->received)->toEqual(3);
+    expect($actual->loss)->toEqual(40);
+    expect($actual->min_latency)->toEqual(0.13);
+    expect($actual->max_latency)->toEqual(0.32);
+    expect($actual->avg_latency)->toEqual(0.23);
+    expect($actual->duplicates)->toEqual(0);
+    expect($actual->getExitCode()->value)->toEqual(0);
+});
 
-        $actual = app()->make(Fping::class)->ping('192.168.53.1');
+test('down ping', function (): void {
+    $output = "192.168.53.1 : xmt/rcv/%loss = 3/0/100%\n";
+    mockFpingProcess($output, 1);
 
-        $this->assertFalse($actual->isAlive());
-        $this->assertEquals('192.168.53.1', $actual->host);
-        $this->assertEquals(3, $actual->transmitted);
-        $this->assertEquals(0, $actual->received);
-        $this->assertEquals(100, $actual->loss);
-        $this->assertEquals(0.0, $actual->min_latency);
-        $this->assertEquals(0.0, $actual->max_latency);
-        $this->assertEquals(0.0, $actual->avg_latency);
-        $this->assertEquals(0, $actual->duplicates);
-        $this->assertEquals(1, $actual->getExitCode()->value);
-    }
+    $actual = app()->make(Fping::class)->ping('192.168.53.1');
 
-    public function testDuplicatePing(): void
-    {
-        $output = <<<'OUT'
+    expect($actual->isAlive())->toBeFalse();
+    expect($actual->host)->toEqual('192.168.53.1');
+    expect($actual->transmitted)->toEqual(3);
+    expect($actual->received)->toEqual(0);
+    expect($actual->loss)->toEqual(100);
+    expect($actual->min_latency)->toEqual(0.0);
+    expect($actual->max_latency)->toEqual(0.0);
+    expect($actual->avg_latency)->toEqual(0.0);
+    expect($actual->duplicates)->toEqual(0);
+    expect($actual->getExitCode()->value)->toEqual(1);
+});
+
+test('duplicate ping', function (): void {
+    $output = <<<'OUT'
 192.168.1.2 : duplicate for [0], 84 bytes, 0.91 ms
 192.168.1.2 : duplicate for [0], 84 bytes, 0.95 ms
 192.168.1.2 : xmt/rcv/%loss = 3/3/0%, min/avg/max = 0.68/0.79/0.91
 OUT;
 
-        $this->mockFpingProcess($output, 1);
+    mockFpingProcess($output, 1);
 
-        $actual = app()->make(Fping::class)->ping('192.168.1.2');
+    $actual = app()->make(Fping::class)->ping('192.168.1.2');
 
-        $this->assertFalse($actual->isAlive());
-        $this->assertEquals('192.168.1.2', $actual->host);
-        $this->assertEquals(3, $actual->transmitted);
-        $this->assertEquals(3, $actual->received);
-        $this->assertEquals(0, $actual->loss);
-        $this->assertEquals(0.68, $actual->min_latency);
-        $this->assertEquals(0.91, $actual->max_latency);
-        $this->assertEquals(0.79, $actual->avg_latency);
-        $this->assertEquals(2, $actual->duplicates);
-        $this->assertEquals(1, $actual->getExitCode()->value);
-    }
+    expect($actual->isAlive())->toBeFalse();
+    expect($actual->host)->toEqual('192.168.1.2');
+    expect($actual->transmitted)->toEqual(3);
+    expect($actual->received)->toEqual(3);
+    expect($actual->loss)->toEqual(0);
+    expect($actual->min_latency)->toEqual(0.68);
+    expect($actual->max_latency)->toEqual(0.91);
+    expect($actual->avg_latency)->toEqual(0.79);
+    expect($actual->duplicates)->toEqual(2);
+    expect($actual->getExitCode()->value)->toEqual(1);
+});
 
-    private function mockFpingProcess($output, $exitCode)
-    {
-        $process = \Mockery::mock(Process::class);
+function mockFpingProcess($output, $exitCode)
+{
+    $process = Mockery::mock(Process::class);
+    $process->shouldReceive('getCommandLine', 'run');
+    $process->shouldReceive('getErrorOutput')->andReturn($output);
+    $process->shouldReceive('getExitCode')->andReturn($exitCode);
+
+    app()->bind(Process::class, fn ($app, $params) => $process);
+
+    return $process;
+}
+
+test('bulk ping', function (): void {
+    $expected = [
+        '192.168.1.4' => [0],
+        'hostname' => [1],
+        'invalid:characters!' => [2],
+        '1.1.1.1' => [0],
+    ];
+    $hosts = array_keys($expected);
+
+    $process = Mockery::mock(Process::class);
+    $process->shouldReceive('setTimeout')->with(LibrenmsConfig::get('rrd.step', 300) * 2);
+    $process->shouldReceive('setInput')->with(implode("\n", $hosts) . "\n");
+    $process->shouldReceive('getCommandLine');
+    $process->shouldReceive('run')->withArgs(function ($callback) {
+        // simulate incremental output (not always one full line per callback)
+        call_user_func($callback, Process::ERR, "ICMP unreachable\n"); // this line should be ignored
+        call_user_func($callback, Process::ERR, "192.168.1.4 is alive\nhostname is unreachable\n");
+        call_user_func($callback, Process::ERR, "invalid:characters!: Name or service not known\n\n1.1.1.1 is alive\n");
+
+        return true;
+    });
+
+    $this->app->bind(Process::class, fn ($app, $params) => $process);
+
+    // make call
+    $calls = 0;
+    app()->make(Fping::class)->bulkPing($hosts, function ($response) use ($expected, &$calls): void {
+        $calls++;
+
+        expect($expected)->toHaveKey($response->host);
+        $current = $expected[$response->host];
+
+        expect($response->getExitCode()->value)->toBe($current[0]);
+    });
+
+    expect($calls)->toEqual(count($expected));
+});
+
+test('mtu success', function (): void {
+    $process = mockFpingProcess('', 0);
+    $process->shouldReceive('disableOutput')->once();
+    $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+
+    $result = app()->make(Fping::class)->testMtu('192.168.1.3', 1500);
+    expect($result)->toBeTrue();
+});
+
+test('mtu failure', function (): void {
+    $process = mockFpingProcess('', 1);
+    $process->shouldReceive('disableOutput')->once();
+    $process->shouldReceive('isSuccessful')->once()->andReturn(false);
+
+    $result = app()->make(Fping::class)->testMtu('192.168.1.3', 1500);
+    expect($result)->toBeFalse();
+});
+
+test('ping command with address families', function (): void {
+    config(['librenms.binaries.fping6' => '/nonexistent']);
+
+    $capturedCommands = [];
+    $this->app->bind(Process::class, function ($app, $params) use (&$capturedCommands) {
+        $capturedCommands[] = $params['command'];
+        $process = Mockery::mock(Process::class);
         $process->shouldReceive('getCommandLine', 'run');
-        $process->shouldReceive('getErrorOutput')->andReturn($output);
-        $process->shouldReceive('getExitCode')->andReturn($exitCode);
-
-        $this->app->bind(Process::class, fn ($app, $params) => $process);
+        $process->shouldReceive('getErrorOutput')->andReturn("192.168.1.3 : xmt/rcv/%loss = 3/3/0%, min/avg/max = 0.62/0.71/0.93\n");
+        $process->shouldReceive('getExitCode')->andReturn(0);
 
         return $process;
-    }
+    });
 
-    public function testBulkPing(): void
-    {
-        $expected = [
-            '192.168.1.4' => [0],
-            'hostname' => [1],
-            'invalid:characters!' => [2],
-            '1.1.1.1' => [0],
-        ];
-        $hosts = array_keys($expected);
+    // Default (null address family) -> no -4 or -6
+    app()->make(Fping::class)->ping('192.168.1.3');
+    expect($capturedCommands[0])->not->toContain('-4');
+    expect($capturedCommands[0])->not->toContain('-6');
 
-        $process = \Mockery::mock(Process::class);
-        $process->shouldReceive('setTimeout')->with(LibrenmsConfig::get('rrd.step', 300) * 2);
-        $process->shouldReceive('setInput')->with(implode("\n", $hosts) . "\n");
-        $process->shouldReceive('getCommandLine');
-        $process->shouldReceive('run')->withArgs(function ($callback) {
-            // simulate incremental output (not always one full line per callback)
-            call_user_func($callback, Process::ERR, "ICMP unreachable\n"); // this line should be ignored
-            call_user_func($callback, Process::ERR, "192.168.1.4 is alive\nhostname is unreachable\n");
-            call_user_func($callback, Process::ERR, "invalid:characters!: Name or service not known\n\n1.1.1.1 is alive\n");
+    // IPv4 -> includes -4
+    app()->make(Fping::class)->ping('192.168.1.3', \LibreNMS\Enum\AddressFamily::IPv4);
+    expect($capturedCommands[1])->toContain('-4');
+    expect($capturedCommands[1])->not->toContain('-6');
 
-            return true;
-        });
+    // IPv6 -> includes -6
+    app()->make(Fping::class)->ping('2001:db8::1', \LibreNMS\Enum\AddressFamily::IPv6);
+    expect($capturedCommands[2])->toContain('-6');
+    expect($capturedCommands[2])->not->toContain('-4');
+});
 
-        $this->app->bind(Process::class, fn ($app, $params) => $process);
+test('mtu command with address families', function (): void {
+    config(['librenms.binaries.fping6' => '/nonexistent']);
 
-        // make call
-        $calls = 0;
-        app()->make(Fping::class)->bulkPing($hosts, function ($response) use ($expected, &$calls): void {
-            $calls++;
+    $capturedCommands = [];
+    $this->app->bind(Process::class, function ($app, $params) use (&$capturedCommands) {
+        $capturedCommands[] = $params['command'];
+        $process = Mockery::mock(Process::class);
+        $process->shouldReceive('getCommandLine', 'run', 'disableOutput');
+        $process->shouldReceive('isSuccessful')->andReturn(true);
 
-            $this->assertArrayHasKey($response->host, $expected);
-            $current = $expected[$response->host];
+        return $process;
+    });
 
-            $this->assertSame($current[0], $response->getExitCode()->value);
-        });
+    // Default (null address family) -> no -4 or -6
+    app()->make(Fping::class)->testMtu('192.168.1.3', 1500);
+    expect($capturedCommands[0])->not->toContain('-4');
+    expect($capturedCommands[0])->not->toContain('-6');
 
-        $this->assertEquals(count($expected), $calls);
-    }
+    // IPv4 -> includes -4
+    app()->make(Fping::class)->testMtu('192.168.1.3', 1500, \LibreNMS\Enum\AddressFamily::IPv4);
+    expect($capturedCommands[1])->toContain('-4');
 
-    public function testMtuSuccess(): void
-    {
-        $process = $this->mockFpingProcess('', 0);
-        $process->shouldReceive('disableOutput')->once();
-        $process->shouldReceive('isSuccessful')->once()->andReturn(true);
+    // IPv6 -> includes -6
+    app()->make(Fping::class)->testMtu('2001:db8::1', 1500, \LibreNMS\Enum\AddressFamily::IPv6);
+    expect($capturedCommands[2])->toContain('-6');
+});
 
-        $result = app()->make(Fping::class)->testMtu('192.168.1.3', 1500);
-        $this->assertTrue($result);
-    }
+test('output buffer chunks', function (): void {
+    $buffer = new FpingOutputBuffer;
+    $hosts = fn (array $responses): array => array_map(fn (FpingResponse $response) => [$response->host, $response->isAlive()], $responses);
 
-    public function testMtuFailure(): void
-    {
-        $process = $this->mockFpingProcess('', 1);
-        $process->shouldReceive('disableOutput')->once();
-        $process->shouldReceive('isSuccessful')->once()->andReturn(false);
-
-        $result = app()->make(Fping::class)->testMtu('192.168.1.3', 1500);
-        $this->assertFalse($result);
-    }
-
-    public function testPingCommandWithAddressFamilies(): void
-    {
-        config(['librenms.binaries.fping6' => '/nonexistent']);
-
-        $capturedCommands = [];
-        $this->app->bind(Process::class, function ($app, $params) use (&$capturedCommands) {
-            $capturedCommands[] = $params['command'];
-            $process = \Mockery::mock(Process::class);
-            $process->shouldReceive('getCommandLine', 'run');
-            $process->shouldReceive('getErrorOutput')->andReturn("192.168.1.3 : xmt/rcv/%loss = 3/3/0%, min/avg/max = 0.62/0.71/0.93\n");
-            $process->shouldReceive('getExitCode')->andReturn(0);
-
-            return $process;
-        });
-
-        // Default (null address family) -> no -4 or -6
-        app()->make(Fping::class)->ping('192.168.1.3');
-        $this->assertNotContains('-4', $capturedCommands[0]);
-        $this->assertNotContains('-6', $capturedCommands[0]);
-
-        // IPv4 -> includes -4
-        app()->make(Fping::class)->ping('192.168.1.3', \LibreNMS\Enum\AddressFamily::IPv4);
-        $this->assertContains('-4', $capturedCommands[1]);
-        $this->assertNotContains('-6', $capturedCommands[1]);
-
-        // IPv6 -> includes -6
-        app()->make(Fping::class)->ping('2001:db8::1', \LibreNMS\Enum\AddressFamily::IPv6);
-        $this->assertContains('-6', $capturedCommands[2]);
-        $this->assertNotContains('-4', $capturedCommands[2]);
-    }
-
-    public function testMtuCommandWithAddressFamilies(): void
-    {
-        config(['librenms.binaries.fping6' => '/nonexistent']);
-
-        $capturedCommands = [];
-        $this->app->bind(Process::class, function ($app, $params) use (&$capturedCommands) {
-            $capturedCommands[] = $params['command'];
-            $process = \Mockery::mock(Process::class);
-            $process->shouldReceive('getCommandLine', 'run', 'disableOutput');
-            $process->shouldReceive('isSuccessful')->andReturn(true);
-
-            return $process;
-        });
-
-        // Default (null address family) -> no -4 or -6
-        app()->make(Fping::class)->testMtu('192.168.1.3', 1500);
-        $this->assertNotContains('-4', $capturedCommands[0]);
-        $this->assertNotContains('-6', $capturedCommands[0]);
-
-        // IPv4 -> includes -4
-        app()->make(Fping::class)->testMtu('192.168.1.3', 1500, \LibreNMS\Enum\AddressFamily::IPv4);
-        $this->assertContains('-4', $capturedCommands[1]);
-
-        // IPv6 -> includes -6
-        app()->make(Fping::class)->testMtu('2001:db8::1', 1500, \LibreNMS\Enum\AddressFamily::IPv6);
-        $this->assertContains('-6', $capturedCommands[2]);
-    }
-
-    public function testOutputBufferChunks(): void
-    {
-        $buffer = new FpingOutputBuffer;
-        $hosts = fn (array $responses): array => array_map(fn (FpingResponse $response) => [$response->host, $response->isAlive()], $responses);
-
-        $this->assertSame([], $buffer->push(Process::OUT, '192.0.2.1 is al'));
-        $this->assertSame([], $buffer->push(Process::ERR, "ICMP Host Unreachable from 192.0.2.254\n"), 'unrelated lines are ignored');
-        $this->assertSame([['192.0.2.1', true], ['192.0.2.2', false]], $hosts($buffer->push(Process::OUT, "ive\n192.0.2.2 is unreachable\n192.0.2.3 is alive")));
-        $this->assertSame([['192.0.2.3', true]], $hosts($buffer->flush()), 'the last line has no newline');
-        $this->assertSame([], $buffer->flush());
-    }
-}
+    $this->assertSame([], $buffer->push(Process::OUT, '192.0.2.1 is al'));
+    $this->assertSame([], $buffer->push(Process::ERR, "ICMP Host Unreachable from 192.0.2.254\n"), 'unrelated lines are ignored');
+    $this->assertSame([['192.0.2.1', true], ['192.0.2.2', false]], $hosts($buffer->push(Process::OUT, "ive\n192.0.2.2 is unreachable\n192.0.2.3 is alive")));
+    $this->assertSame([['192.0.2.3', true]], $hosts($buffer->flush()), 'the last line has no newline');
+    $this->assertSame([], $buffer->flush());
+});
