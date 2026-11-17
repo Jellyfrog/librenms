@@ -3,44 +3,15 @@
 @section('title', $title)
 
 @section('content')
-    <div class="panel panel-default panel-condensed">
-        <div class="panel-heading">
-            <div class="row" style="padding:0px 10px 0px 10px;">
-                <div class="pull-left">
-                    <x-option-bar border="none" name="{{ __('Health') }}" :options="$metrics" :selected="$metric"></x-option-bar>
-                </div>
-
-                <div class="pull-right">
-                    <x-option-bar border="none" :options="$views" :selected="$view"></x-option-bar>
-                </div>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table id="printer" class="table table-hover table-condensed"
-                   data-url="{{ route('table.printer-supply') }}">
-                <thead>
-                <tr>
-                    <th data-column-id="device_hostname">{{ __('Device') }}</th>
-                    <th data-column-id="supply_descr">{{ __('Descr') }}</th>
-                    <th data-column-id="supply_type">{{ __('Type') }}</th>
-                    <th data-column-id="graph" data-sortable="false" data-searchable="false"></th>
-                    <th data-column-id="supply_current" data-searchable="false">{{ __('Supply') }}</th>
-                </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
-    <script>
-        var grid = $("#printer").bootgrid({
-            ajax: true,
-            rowCount: [50, 100, 250, -1],
-            post: function ()
-            {
-                return {
-                    view: '{{ $view }}'
-                };
-            }
-        });
-    </script>
-
+    <x-data-table :name="'printer-supply'" :url="route('table.printer-supply')" :params="['view' => $view]" :per-page-options="[50, 100, 250, -1]">
+        <x-slot name="heading">
+            <x-option-bar border="none" name="{{ __('Health') }}" :options="$metrics" :selected="$metric"></x-option-bar>
+            <x-option-bar border="none" :options="$views" :selected="$view"></x-option-bar>
+        </x-slot>
+        <x-data-table.column field="device_hostname" :label="__('Device')" x-html="row.device_hostname" />
+        <x-data-table.column field="supply_descr" :label="__('Descr')" x-html="row.supply_descr" />
+        <x-data-table.column field="supply_type" :label="__('Type')" x-html="row.supply_type" />
+        <x-data-table.column field="graph" :label="''" :sortable="false" x-html="row.graph" />
+        <x-data-table.column field="supply_current" :label="__('Supply')" x-html="row.supply_current" />
+    </x-data-table>
 @endsection
