@@ -41,12 +41,18 @@ class EventlogController extends Controller
 
         $request->validate([
             'eventtype' => 'nullable|string',
+            ...Eventlog::filterValidationRules(),
         ]);
+
+        $filter = $request->array('filter');
+        // old links use ?eventtype=
+        if ($request->filled('eventtype') && ! isset($filter['type'])) {
+            $filter['type'] = ['eq' => $request->input('eventtype')];
+        }
 
         return view('device.tabs.logs.eventlog', [
             'device' => $device,
-            'filter_device' => false,
-            'eventtype' => $request->input('eventtype', ''),
+            'filter' => $filter,
         ]);
     }
 }

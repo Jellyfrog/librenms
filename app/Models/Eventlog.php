@@ -26,7 +26,9 @@
 
 namespace App\Models;
 
+use App\Models\Traits\Filterable;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Auth;
@@ -34,12 +36,74 @@ use LibreNMS\Enum\Severity;
 
 class Eventlog extends DeviceRelatedModel
 {
+    use Filterable;
     use HasFactory;
 
     protected $table = 'eventlog';
     protected $primaryKey = 'event_id';
     public $timestamps = false;
     protected $fillable = ['datetime', 'device_id', 'message', 'type', 'reference', 'username', 'severity'];
+
+    protected array $filterable = [
+        'search',
+        'device_id',
+        'type',
+        'severity',
+        'username',
+    ];
+
+    /**
+     * x-filter fields for the eventlog tables
+     *
+     * @param  int|null  $deviceId  the device the table is limited to, hides the device field
+     * @return array<array<string, mixed>>
+     */
+    public static function filterFieldDefinitions(?int $deviceId = null): array
+    {
+        $fields = [
+            [
+                'key' => 'search',
+                'label' => __('Message'),
+                'type' => 'text',
+                'search' => true,
+            ],
+        ];
+
+        if ($deviceId === null) {
+            $fields[] = [
+                'key' => 'device_id',
+                'label' => __('Device'),
+                'type' => 'select',
+                'endpoint' => route('ajax.select.device'),
+            ];
+        }
+
+        return array_merge($fields, [
+            [
+                'key' => 'type',
+                'label' => __('Type'),
+                'type' => 'select',
+                'endpoint' => route('ajax.select.eventlog'),
+                'params' => array_filter(['field' => 'type', 'device' => $deviceId]),
+            ],
+            [
+                'key' => 'severity',
+                'label' => __('Severity'),
+                'type' => 'select',
+                'options' => collect(Severity::cases())->mapWithKeys(fn (Severity $severity) => [$severity->value => $severity->name])->all(),
+            ],
+            [
+                'key' => 'username',
+                'label' => __('User'),
+                'type' => 'text',
+            ],
+        ]);
+    }
+
+    public function filterSearch(Builder $query, mixed $value, array $config): void
+    {
+        $this->applyFilterSearch(['message'], $query, $value, $config);
+    }
 
     /**
      * @return array<string, string>

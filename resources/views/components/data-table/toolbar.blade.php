@@ -1,5 +1,8 @@
 {{-- included by x-data-table, uses its variables --}}
 <div class="tw:flex tw:flex-wrap tw:items-center tw:gap-2">
+    @if ($title)
+        <h3 class="panel-title tw:mr-2">{{ $title }}</h3>
+    @endif
     @if ($filterName)
         <x-filter :name="$filterName" :fields="$filterFields" :initial="$filter" :hide="$hideFilter" />
     @endif

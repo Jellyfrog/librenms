@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -13,99 +14,16 @@
  * @author     LibreNMS Contributors
 */
 
-use App\Models\Device;
-
 $no_refresh = true;
-$param = [];
+$pagetitle[] = 'Eventlog';
+
+$filter = Request::array('filter');
+// old links use ?device= and ?eventtype=
 if ($device_id = (int) Request::input('device')) {
-    $device = Device::find($device_id);
+    $filter['device_id'] ??= ['eq' => $device_id];
+}
+if ($type = Request::input('eventtype')) {
+    $filter['type'] ??= ['eq' => $type];
 }
 
-$pagetitle[] = 'Eventlog';
-?>
-
-<div class="panel panel-default panel-condensed">
-    <div class="panel-heading">
-        <strong>Eventlog</strong>
-    </div>
-
-    <?php
-    require 'includes/html/common/eventlog.inc.php';
-    echo implode('', $common_output);
-    ?>
-</div>
-
-<script>
-    $('.actionBar').append(
-        '<div class="pull-left">' +
-        '<form method="post" action="" class="form-inline" role="form" id="result_form">' +
-        '<?php echo csrf_field() ?>' +
-        <?php
-        if (! isset($vars['fromdevice'])) {
-            ?>
-        '<div class="form-group">' +
-        '<label><strong>Device&nbsp;&nbsp;</strong></label>' +
-        '<select name="device" id="device" class="form-control">' +
-        '<option value="">All Devices</option>' +
-            <?php
-            if (isset($device) && $device instanceof Device) {
-                echo "'<option value=\"" . (int) $device->device_id . '">' . addcslashes(e($device->display), "'\\") . "</option>' +";
-            } ?>
-        '</select>' +
-        '</div>&nbsp;&nbsp;&nbsp;&nbsp;' +
-            <?php
-        } else {
-            echo "'&nbsp;&nbsp;<input type=\"hidden\" name=\"device\" id=\"device\" value=\"" . $device?->device_id . "\">' + ";
-        }
-        ?>
-        '<div class="form-group"><label><strong>Type&nbsp;&nbsp;</strong></label>' +
-        '<select name="eventtype" id="eventtype" class="form-control input-sm">' +
-        '<option value="">All types</option>' +
-        <?php
-        if ($type = Request::input('eventtype')) {
-            $js_type = addcslashes(htmlentities($type), "'");
-            echo "'<option value=\"$js_type\">$js_type</option>' +";
-        }
-        ?>
-        '</select>' +
-        '</div>&nbsp;&nbsp;' +
-        '<button type="submit" class="btn btn-default">Filter</button>' +
-        '</form>' +
-        '</div>'
-    );
-
-    <?php if (! isset($vars['fromdevice'])) { ?>
-    $("#device").select2({
-        theme: 'bootstrap',
-        dropdownAutoWidth : true,
-        width: "auto",
-        allowClear: true,
-        placeholder: "All Devices",
-        ajax: {
-            url: '<?php echo route('ajax.select.device'); ?>',
-            delay: 200
-        }
-    })<?php echo $device_id ? ".val($device_id).trigger('change');" : ''; ?>;
-    <?php } ?>
-
-    $("#eventtype").select2({
-        theme: 'bootstrap',
-        dropdownAutoWidth : true,
-        width: "auto",
-        allowClear: true,
-        placeholder: "All Types",
-        ajax: {
-            url: '<?php echo route('ajax.select.eventlog'); ?>',
-            delay: 200,
-            data: function(params) {
-                return {
-                    field: "type",
-                    device: $('#device').val(),
-                    term: params.term,
-                    page: params.page || 1
-                }
-            }
-        }
-    })<?php echo Request::input('eventtype') ? ".val('" . htmlspecialchars(Request::input('eventtype')) . "').trigger('change');" : ''; ?>;
-
-</script>
+echo Blade::render('<x-eventlog-table :filter="$filter" />', ['filter' => $filter]);
