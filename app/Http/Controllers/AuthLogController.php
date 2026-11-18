@@ -15,7 +15,14 @@ class AuthLogController
         $this->authorize('auth-log.view');
 
         return view('user.authlog', [
-            'authlog' => AuthLog::orderBy('datetime', 'desc')->get(),
+            // the table sorts, searches and paginates these in the browser
+            'rows' => AuthLog::orderBy('datetime', 'desc')->get()->map(fn (AuthLog $log) => [
+                'id' => $log->id,
+                'datetime' => $log->datetime?->format('Y-m-d H:i:s'),
+                'user' => $log->user,
+                'address' => $log->address,
+                'result' => $log->result,
+            ]),
         ]);
     }
 }
