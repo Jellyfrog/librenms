@@ -156,6 +156,13 @@ Make sure your config files are there :-)
 sudo usermod -a -G rancid librenms
 ```
 
+The web interface reads the configs as the PHP-FPM user. If PHP-FPM runs as
+`librenms-web`, add this user to the `rancid` group too and restart PHP-FPM:
+
+```
+sudo usermod -a -G rancid librenms-web
+```
+
 Add Rancid into LibreNMS config.php:
 
 ```php

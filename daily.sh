@@ -17,6 +17,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ################################################################################
 
+# Code updated by git and composer must not be group writable: the web server can be in the librenms group.
+umask 022
+
 #######################################
 # CONSTANTS
 #######################################

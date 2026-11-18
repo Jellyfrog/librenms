@@ -90,10 +90,8 @@ class Python extends BaseValidation
             $user_mismatch = function_exists('posix_getpwuid') ? (posix_getpwuid(posix_geteuid())['name'] ?? null) !== $user : false;
 
             if ($user_mismatch) {
-                $validator->warn(
-                    "Could not check Python dependencies because this script is not running as $user",
-                    'The install docs show how this is done on a new install: https://docs.librenms.org/Installation/Install-LibreNMS/#configure-php-fpm'
-                );
+                // the web server runs as a different user and cannot see the packages installed for the librenms user
+                $validator->info("Could not check Python dependencies because this script is not running as $user. Run ./validate.php as $user to check them.");
             } else {
                 $validator->fail("Python3 module issue found: '" . $process->getOutput() . "'", 'pip3 install -r ' . LibrenmsConfig::get('install_dir') . '/requirements.txt');
             }

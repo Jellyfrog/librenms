@@ -128,10 +128,18 @@ Connect to the command line of the server. Then obey the instructions below.
                 dnf -y install httpd
                 ```
 
-## Add librenms user
+## Add librenms users
+
+LibreNMS uses two users:
+
+- `librenms` owns the files. The poller, the scheduler, `daily.sh` and `lnms` run as this user.
+- `librenms-web` runs PHP-FPM. This user can read the code, but can write only to the data directories.
+
+If an attacker gets control of a web request, the attacker cannot change the LibreNMS code.
 
 ```
 useradd librenms -d /opt/librenms -M -r -s "$(which bash)"
+useradd librenms-web -g librenms -d /nonexistent -M -r -s "$(which nologin)"
 ```
 
 ## Download LibreNMS
@@ -145,10 +153,13 @@ git clone https://github.com/librenms/librenms.git
 
 ```
 chown -R librenms:librenms /opt/librenms
-chmod 771 /opt/librenms
-setfacl -d -m g::rwx /opt/librenms/rrd /opt/librenms/logs /opt/librenms/bootstrap/cache/ /opt/librenms/storage/
-setfacl -R -m g::rwx /opt/librenms/rrd /opt/librenms/logs /opt/librenms/bootstrap/cache/ /opt/librenms/storage/
+chmod 751 /opt/librenms
+setfacl -R -d -m g::rwx,o::--- /opt/librenms/rrd /opt/librenms/logs /opt/librenms/bootstrap/cache/ /opt/librenms/storage/
+chmod -R a-x,a+X /opt/librenms/rrd /opt/librenms/logs /opt/librenms/bootstrap/cache/ /opt/librenms/storage/
+setfacl -R -m u::rwX,g::rwX,o::--- /opt/librenms/rrd /opt/librenms/logs /opt/librenms/bootstrap/cache/ /opt/librenms/storage/
 ```
+
+The group `librenms` can write only to `rrd`, `logs`, `bootstrap/cache` and `storage`.
 
 ## Install PHP dependencies
 
@@ -171,6 +182,16 @@ exit
     mv composer-stable.phar /usr/bin/composer
     chmod +x /usr/bin/composer
     ```
+
+## Remove write access to the code
+
+Remove group and other write access from the code. Keep the data directories writable.
+Only `librenms` and the group `librenms` can read `.env`:
+```
+cd /opt/librenms
+find . \( -path ./rrd -o -path ./logs -o -path ./storage -o -path ./bootstrap/cache \) -prune -o ! -type l -exec chmod go-w {} +
+chmod 640 .env
+```
 
 ## Set timezone
 
@@ -336,11 +357,18 @@ Change `[www]` to `[librenms]`:
 [librenms]
 ```
 
-Change `user` and `group` to `librenms`:
+Change `user` to `librenms-web` and `group` to `librenms`:
 ```
-user = librenms
+user = librenms-web
 group = librenms
 ```
+
+!!! warning
+    Do not set `user = librenms`. If PHP-FPM runs as the owner of the files, a
+    problem in a web request can change the LibreNMS code.
+
+Do not change the `listen.owner`, `listen.group`, `listen.mode` or `listen.acl_users`
+settings. They let only the web server connect to the socket.
 
 Change `listen` to a unique path. This path must match the configuration of your
 web server. The relevant key is `fastcgi_pass` for NGINX and `SetHandler` for Apache:
@@ -615,7 +643,6 @@ This saves resources. You can also tune the performance settings in `librenms.co
     setsebool -P httpd_can_sendmail=1
     setsebool -P httpd_execmem 1
     setsebool -P httpd_can_network_connect_db 1
-    chcon -t httpd_sys_rw_content_t /opt/librenms/.env
     ```
 
     <h3>Allow fping</h3>
@@ -719,9 +746,8 @@ chmod 644 /etc/cron.d/librenms
 
 !!! note
     By default, cron uses only a small set of environment variables.
-    The cron job can therefore need proxy variables. You can also put
-    the proxy settings in `config.php`. A later step creates the
-    `config.php` file. After the install, read this page:
+    The cron job can therefore need proxy variables. You can also set
+    the proxy with `lnms config:set`. After the install, read this page:
     <@= config.site_url =@/Support/Configuration/#proxy-support>
 
 ## Enable the scheduler
@@ -750,13 +776,17 @@ Open the web installer. Then obey the instructions on the screen.
 
 <http://librenms.example.com/install>
 
-The web installer can ask you to create a `config.php` file in your
-LibreNMS install location. Copy the content from the screen into the
-file. Then set the permissions on `config.php` with this command:
+The web server cannot write to `.env`. At the last step, the web installer shows
+the new content of `.env`. Copy the content from the screen. Then, as the `librenms` user,
+replace the content of `/opt/librenms/.env` with it:
 
 ```
-chown librenms:librenms /opt/librenms/config.php
+su - librenms
+vi /opt/librenms/.env
+exit
 ```
+
+Then reload the page in the web installer.
 
 ## Final steps
 

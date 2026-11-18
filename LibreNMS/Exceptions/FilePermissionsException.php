@@ -109,16 +109,16 @@ class FilePermissionsException extends \Exception implements UpgradeableExceptio
             $commands[] = 'sudo mkdir -p ' . implode(' ', $mk_dirs);
         }
 
-        // always print chwon/setfacl/chmod commands
+        // always print chown/setfacl commands
         $commands[] = "sudo chown -R $user:$group '$install_dir'";
-        $commands[] = 'sudo setfacl -d -m g::rwx ' . implode(' ', $dirs);
-        $commands[] = 'sudo chmod -R ug=rwX ' . implode(' ', $dirs);
+        $commands[] = 'sudo setfacl -R -d -m g::rwx,o::--- ' . implode(' ', $dirs);
+        $commands[] = 'sudo chmod -R a-x,a+X ' . implode(' ', $dirs);
+        $commands[] = 'sudo setfacl -R -m u::rwX,g::rwX,o::--- ' . implode(' ', $dirs);
 
-        // check if webserver is in the librenms group
-        $current_groups = explode(' ', trim(exec('groups')));
-        if (! in_array($group, $current_groups)) {
-            $current_user = trim(exec('whoami'));
-            $commands[] = "usermod -a -G $group $current_user";
+        // files the web server creates get its effective group, the poller can only write them when that is the librenms group
+        $group_info = function_exists('posix_getgrnam') ? posix_getgrnam($group) : false;
+        if ($group_info && posix_getegid() !== $group_info['gid']) {
+            $commands[] = "Set 'group = $group' in your php-fpm pool configuration and restart php-fpm";
         }
 
         // check for invalid log setting

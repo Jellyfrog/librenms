@@ -5,6 +5,10 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 
+// the web server can be in the librenms group, files created outside the data directories must not be group writable
+// (some distributions give users umask 002), the data directories get group write from their default ACLs
+umask(0022);
+
 return Application::configure(basePath: dirname(__DIR__))
     ->registered(function ($app): void {
         $app->usePublicPath(path: realpath(base_path('html')));

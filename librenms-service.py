@@ -7,6 +7,9 @@ import sys
 import threading
 from logging import info
 
+# the web server can be in the librenms group, it must not be able to change the bytecode in __pycache__
+os.umask(0o022)
+
 import LibreNMS
 
 if __name__ == "__main__":

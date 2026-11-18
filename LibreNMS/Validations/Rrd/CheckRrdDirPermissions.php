@@ -46,8 +46,9 @@ class CheckRrdDirPermissions implements Validation
             );
         }
 
-        if (substr(sprintf('%o', fileperms($rrd_dir)), -3) != 775) {
-            return ValidationResult::warn(trans('validation.validations.rrd.CheckRrdDirPermissions.fail_mode'), "chmod 775 $rrd_dir");
+        // the web server and the poller need write access through the owner or the group, other needs no access
+        if ((fileperms($rrd_dir) & 0770) !== 0770) {
+            return ValidationResult::warn(trans('validation.validations.rrd.CheckRrdDirPermissions.fail_mode'), "chmod ug+rwx $rrd_dir");
         }
 
         return ValidationResult::ok(trans('validation.validations.rrd.CheckRrdDirPermissions.ok'));

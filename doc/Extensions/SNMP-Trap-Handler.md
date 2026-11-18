@@ -26,6 +26,15 @@ authCommunity log,execute,net COMMUNITYSTRING
 traphandle default /opt/librenms/snmptrap.php
 ```
 
+!!! note
+    On Debian 12, Ubuntu 22.04 and later, the packaged snmptrapd service runs `snmptrap.php`
+    as the `Debian-snmp` user. This user must read `/opt/librenms/.env` and write to
+    `/opt/librenms/logs`. Add it to the `librenms` group:
+    ```
+    usermod -a -G librenms Debian-snmp
+    systemctl restart snmptrapd
+    ```
+
 snmptrapd needs the MIBs in the service for a correct parse of the
 traps.
 

@@ -223,8 +223,8 @@ class ComposerHelper
 
         // -P: leave data directories that are symlinks alone, they can point outside the install directory
         self::exec([
-            "setfacl -P -R -m g::rwx $dirs",
-            "setfacl -P -d -m g::rwx $dirs",
+            "setfacl -P -R -m u::rwX,g::rwX,o::--- $dirs",
+            "setfacl -P -R -d -m g::rwx,o::--- $dirs",
         ]);
     }
 

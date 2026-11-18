@@ -104,7 +104,7 @@ return [
             ],
             'CheckRrdDirPermissions' => [
                 'fail_root' => 'Your RRD directory is owned by root. Change the owner to a non-root user.',
-                'fail_mode' => 'Your RRD directory is not set to 0775.',
+                'fail_mode' => 'Your RRD directory is not writable by its owner and group.',
                 'ok' => 'rrd_dir is writable',
             ],
             'CheckRrdStep' => [

@@ -139,6 +139,14 @@ that generated the message.  The `fromhost` property is preferred as
 it avoids problems caused by devices sending incorrect hostnames in
 syslog messages.
 
+!!! note
+    On Ubuntu, rsyslog runs `syslog.php` as the `syslog` user. This user must read
+    `/opt/librenms/.env` and write to `/opt/librenms/logs`. Add it to the `librenms` group:
+    ```
+    usermod -a -G librenms syslog
+    systemctl restart rsyslog
+    ```
+
 ### Local Logstash
 
 If you prefer logstash, and it is installed on the same server as
@@ -177,6 +185,14 @@ Replace 10.10.10.10 with your primary elasticsearch server IP, and set
 the incoming syslog port. Alternatively, if you already have a
 logstash config file that works except for the LibreNMS export, take
 only the "exec" section from output and add it.
+
+!!! note
+    Logstash runs `syslog.php` as the `logstash` user. This user must read
+    `/opt/librenms/.env` and write to `/opt/librenms/logs`. Add it to the `librenms` group:
+    ```
+    usermod -a -G librenms logstash
+    systemctl restart logstash
+    ```
 
 ### Remote Logstash (or any json source)
 With a large logstash or elastic installation, send the relevant logs
