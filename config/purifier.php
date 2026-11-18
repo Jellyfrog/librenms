@@ -22,7 +22,7 @@ return [
     'finalize' => true,
     'ignoreNonStrings' => false,
     'cachePath' => storage_path('app/purifier'),
-    'cacheFileMode' => 0755,
+    'cacheFileMode' => 0775, // the web server and the poller share this cache through the librenms group
     'settings' => [
         'default' => [
             'HTML.Doctype' => 'HTML 4.01 Transitional',

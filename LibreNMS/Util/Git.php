@@ -29,7 +29,6 @@ namespace LibreNMS\Util;
 use App\Facades\LibrenmsConfig;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Support\Str;
 use LibreNMS\Traits\RuntimeClassCache;
 use Symfony\Component\Process\Process;
 
@@ -101,6 +100,14 @@ class Git
     public function commitDate(): string
     {
         return $this->headCommit()[1] ?? '';
+    }
+
+    /**
+     * Get the error git printed when it could not read the local HEAD commit
+     */
+    public function commitError(): string
+    {
+        return $this->isAvailable() ? rtrim($this->run('show', ['--quiet', '--pretty=%H|%ct'])->getErrorOutput()) : '';
     }
 
     /**
@@ -195,19 +202,14 @@ class Git
 
             $version_process = $this->run('show', ['--quiet', '--pretty=%H|%ct']);
 
-            // failed due to permissions issue
-            if ($version_process->getExitCode() == 128 && Str::startsWith($version_process->getErrorOutput(), 'fatal: unsafe repository')) {
-                $this->run('config', ['--global', '--add', 'safe.directory', $this->install_dir]); // try to fix
-                $version_process = $this->run('show', ['--quiet', '--pretty=%H|%ct']); // and try again
-            }
-
             return explode('|', rtrim($version_process->getOutput()));
         });
     }
 
     private function run(string $command, array $options): Process
     {
-        $version_process = new Process(array_merge([resolve(Binaries::class)->path('git'), $command], $options), $this->install_dir);
+        // php-fpm can run as a different user than the repository owner, git refuses that without safe.directory
+        $version_process = new Process(array_merge([resolve(Binaries::class)->path('git'), '-c', "safe.directory=$this->install_dir", $command], $options), $this->install_dir);
         $version_process->run();
 
         return $version_process;

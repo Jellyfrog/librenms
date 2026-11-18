@@ -33,12 +33,10 @@ use DateTime;
 use DateTimeZone;
 use Exception;
 use LibreNMS\ComposerHelper;
-use LibreNMS\Util\Binaries;
 use LibreNMS\Util\EnvHelper;
 use LibreNMS\Util\Git;
 use LibreNMS\ValidationResult;
 use LibreNMS\Validator;
-use Symfony\Component\Process\Process;
 
 class Updates extends BaseValidation
 {
@@ -68,11 +66,7 @@ class Updates extends BaseValidation
             $git = Git::make();
             if ($git->commitHash() != $git->remoteHash()) {
                 if (! $git->commitDate()) {
-                    $process = new Process([resolve(Binaries::class)->path('git'), 'show', '--quiet', '--pretty=%H|%ct'], base_path());
-                    $process->run();
-                    $error = rtrim($process->getErrorOutput());
-
-                    $validator->fail('Failed to fetch version from local git: ' . $error);
+                    $validator->fail('Failed to fetch version from local git: ' . $git->commitError());
                 } else {
                     try {
                         $commit_date = new DateTime('@' . $git->commitDate(), new DateTimeZone(date_default_timezone_get()));
@@ -125,8 +119,9 @@ class Updates extends BaseValidation
             $patchedFiles = array_merge(...array_map(fn (Patch $patch) => $patch->paths(), array_values($patches)));
         }
 
-        // check for modified files
-        $modifiedcmd = 'git -C ' . escapeshellarg($validator->getBaseDir()) . ' diff --name-only --exit-code';
+        // check for modified files, safe.directory: php-fpm can run as a different user than the repository owner
+        $base_dir = $validator->getBaseDir();
+        $modifiedcmd = 'git -C ' . escapeshellarg($base_dir) . ' -c ' . escapeshellarg("safe.directory=$base_dir") . ' diff --name-only --exit-code';
         $validator->execAsUser($modifiedcmd, $cmdoutput, $code);
         $cmdoutput = array_values(array_diff($cmdoutput ?? [], $patchedFiles));
         if ($code !== 0 && ! empty($cmdoutput)) {

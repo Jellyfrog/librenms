@@ -87,6 +87,11 @@ class CommandStartingListener
             return;
         }
 
+        // Artisan::call() from a web request (installer, validation fixes) runs as the web server user
+        if (! app()->runningInConsole()) {
+            return;
+        }
+
         if (! function_exists('posix_getpwuid') || ! function_exists('posix_geteuid')) {
             return;
         }
