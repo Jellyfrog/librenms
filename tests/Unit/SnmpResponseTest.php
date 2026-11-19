@@ -28,9 +28,12 @@ namespace LibreNMS\Tests\Unit;
 
 use App\Facades\LibrenmsConfig;
 use LibreNMS\Data\Source\Snmp\RawSnmpResponse;
+use LibreNMS\Data\Source\Snmp\SnmpQueryOptions;
 use LibreNMS\Data\Source\Snmp\SnmpResponse;
+use LibreNMS\Enum\SnmpQuickPrint;
 use LibreNMS\Exceptions\SnmpException;
 use LibreNMS\Tests\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class SnmpResponseTest extends TestCase
 {
@@ -508,6 +511,141 @@ HOST-RESOURCES-MIB::hrStorageUsed.36 = 127044934
         $rawResponse = new RawSnmpResponse("IF-MIB::ifDescr[1] = lo\n");
         $this->assertSame("IF-MIB::ifDescr[1] = lo\n", $rawResponse->raw());
         $this->assertSame("IF-MIB::ifDescr[1] = lo\n", (string) $rawResponse);
+    }
+
+    public function testQuotedValues(): void
+    {
+        $response = new RawSnmpResponse(implode("\n", [
+            'SNMPv2-MIB::sysDescr.0 = "Linux box"',
+            'SNMPv2-MIB::sysContact.0 = "say \\"hi\\""',
+            'SNMPv2-MIB::sysName.0 = "\\"quoted\\""',
+            'SNMPv2-MIB::sysLocation.0 = " padded "',
+            'IF-MIB::ifAlias[1] = ""',
+            'IF-MIB::ifAlias[2] = "',
+        ]) . "\n");
+
+        $this->assertSame([
+            'SNMPv2-MIB::sysDescr.0' => 'Linux box',
+            'SNMPv2-MIB::sysContact.0' => 'say "hi"',
+            'SNMPv2-MIB::sysName.0' => '"quoted"',
+            'SNMPv2-MIB::sysLocation.0' => 'padded',
+            'IF-MIB::ifAlias[1]' => '',
+            'IF-MIB::ifAlias[2]' => '"',
+        ], $response->values());
+    }
+
+    #[DataProvider('printedValues')]
+    public function testNormalizeValue(string $printed, ?string $expected): void
+    {
+        $this->assertSame($expected, SnmpResponse::normalizeValue($printed));
+    }
+
+    #[DataProvider('singleLinePrintedValues')]
+    public function testBackendsParseValuesAlike(string $printed, ?string $expected): void
+    {
+        // the cli backend parses printed lines, the php-snmp backend gets the values per oid
+        $cli = new RawSnmpResponse("IF-MIB::ifAlias[1] = $printed\n");
+        $value = SnmpResponse::normalizeValue($printed);
+        $php = new SnmpResponse($value === null ? [] : ['IF-MIB::ifAlias[1]' => $value]);
+
+        $this->assertSame($expected ?? '', $cli->value());
+        $this->assertSame($cli->values(), $php->values());
+    }
+
+    /**
+     * cli output is line based, multi-line values can't be parsed from a single line
+     *
+     * @return array<string, array{string, ?string}>
+     */
+    public static function singleLinePrintedValues(): array
+    {
+        return array_filter(self::printedValues(), fn ($case) => ! str_contains($case[0], "\n"));
+    }
+
+    /**
+     * @return array<string, array{string, ?string}>
+     */
+    public static function printedValues(): array
+    {
+        return [
+            'plain' => ['lo', 'lo'],
+            'surrounding whitespace' => [' 42 ', '42'],
+            'quoted string' => ['"Linux box"', 'Linux box'],
+            'escaped quotes' => ['"say \\"hi\\""', 'say "hi"'],
+            'string wrapped in quotes' => ['"\\"quoted\\""', '"quoted"'],
+            'string starting with a quote' => ['"\\"admin\\" login failed"', '"admin" login failed'],
+            'whitespace inside quotes' => ['" padded "', 'padded'],
+            'empty quoted' => ['""', ''],
+            'single quote char' => ['"', '"'],
+            'quoted multi-line' => ["\"line1\nline2\"", "line1\nline2"],
+            'wrong type prefix' => ['Wrong Type (should be OCTET STRING): 3', '3'],
+            'wrong type quoted' => ['Wrong Type (should be INTEGER): "up"', 'up'],
+            'asn null' => ['NULL', null],
+            'asn null with wrong type' => ['Wrong Type (should be OCTET STRING): NULL', null],
+            'string NULL' => ['"NULL"', 'NULL'],
+            'latin1' => ["\xD8verbyvegen", 'Øverbyvegen'],
+        ];
+    }
+
+    public function testFromPrinted(): void
+    {
+        $response = SnmpResponse::fromPrinted([
+            'SNMPv2-MIB::sysDescr.0' => '"Linux box"',
+            'SNMPv2-MIB::sysContact.0' => '"say \\"hi\\""',
+            'SNMPv2-MIB::sysName.0' => 'Wrong Type (should be OCTET STRING): NULL',
+            'IF-MIB::ifIndex.1' => 1,
+            'IF-MIB::ifAlias.1' => 'No Such Instance currently exists at this OID',
+        ], command: ['php-snmp-get'], options: new SnmpQueryOptions(valueOnly: true));
+
+        $this->assertSame([
+            'SNMPv2-MIB::sysDescr.0' => 'Linux box',
+            'SNMPv2-MIB::sysContact.0' => 'say "hi"',
+            'IF-MIB::ifIndex.1' => '1',
+        ], $response->values());
+        $this->assertFalse($response->isValid());
+        $this->assertSame(['php-snmp-get'], $response->command);
+        // raw() prints the values as net-snmp did, like the cli output legacy code parses
+        $this->assertStringStartsWith("\"Linux box\"\n\"say \\\"hi\\\"\"\nWrong Type (should be OCTET STRING): NULL\n1\n", $response->raw());
+    }
+
+    public function testAppendIgnoresFailedOids(): void
+    {
+        // walking two columns where the second is not supported
+        $response = SnmpResponse::fromPrinted(['IF-MIB::ifAlias.1' => '"uplink"'])
+            ->append(SnmpResponse::fromPrinted(['IF-MIB::ifHighSpeed' => 'No Such Instance currently exists at this OID']));
+
+        $this->assertTrue($response->isValid());
+        $this->assertSame(['IF-MIB::ifAlias.1' => 'uplink'], $response->values());
+    }
+
+    public function testNormalizeValueOptions(): void
+    {
+        $this->assertSame('a\\b', SnmpResponse::normalizeValue('a\\b'));
+        $this->assertSame('ab', SnmpResponse::normalizeValue('a\\b', unescape: true));
+        $this->assertSame("\xD8verbyvegen", SnmpResponse::normalizeValue("\xD8verbyvegen", inferEncoding: false));
+    }
+
+    public function testRawOutputFormats(): void
+    {
+        $values = ['IF-MIB::ifDescr[1]' => 'lo', 'IF-MIB::ifDescr[2]' => 'enp4s0'];
+
+        // -Ov
+        $valueOnly = new SnmpResponse($values, options: new SnmpQueryOptions(valueOnly: true));
+        $this->assertSame("lo\nenp4s0\n", $valueOnly->raw());
+        $this->assertSame($values, $valueOnly->values());
+
+        // -Oq
+        $noEquals = new SnmpResponse($values, options: new SnmpQueryOptions(quickPrint: SnmpQuickPrint::NoEquals));
+        $this->assertSame("IF-MIB::ifDescr[1] lo\nIF-MIB::ifDescr[2] enp4s0\n", $noEquals->raw());
+
+        // -Oqv
+        $both = new SnmpResponse($values, options: new SnmpQueryOptions(quickPrint: SnmpQuickPrint::NoEquals, valueOnly: true));
+        $this->assertSame("lo\nenp4s0\n", $both->raw());
+
+        // appending keeps the output format
+        $first = new SnmpResponse(['IF-MIB::ifDescr[1]' => 'lo'], options: new SnmpQueryOptions(valueOnly: true));
+        $second = new SnmpResponse(['IF-MIB::ifDescr[2]' => 'enp4s0'], options: new SnmpQueryOptions(valueOnly: true));
+        $this->assertSame("lo\nenp4s0\n", $first->append($second)->raw());
     }
 
     public function testConnectionError(): void
