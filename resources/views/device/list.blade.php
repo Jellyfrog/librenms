@@ -3,7 +3,6 @@
               :params="['format' => $detailed ? 'list_detail' : 'list_basic']"
               row-key="device_id"
               :sort="['display' => 'asc']"
-              :per-page-options="[50, 100, 250, -1]"
               :search="false"
               filter-name="devices"
               :filter-fields="$filterFields"

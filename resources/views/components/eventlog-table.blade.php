@@ -1,7 +1,6 @@
 @props([
     'deviceId' => null,
     'filter' => [],
-    'panel' => true,
     'title' => __('Eventlog'),
 ])
 
@@ -10,12 +9,10 @@
               :url="route('table.eventlog')"
               :params="array_filter(['device' => $deviceId])"
               :sort="['datetime' => 'desc']"
-              :per-page-options="[50, 100, 250, -1]"
               :search="false"
               filter-name="eventlog"
               :filter-fields="\App\Models\Eventlog::filterFieldDefinitions($deviceId)"
               :filter="$filter"
-              :panel="$panel"
               :title="$title"
               {{ $attributes }}>
     <x-data-table.column field="datetime" :label="__('Timestamp')" x-html="row.datetime" />

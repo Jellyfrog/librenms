@@ -1,6 +1,5 @@
 import Alpine from "alpinejs";
 import {
-    columnFilteringFeature,
     columnVisibilityFeature,
     createFilteredRowModel,
     createPaginatedRowModel,
@@ -16,10 +15,8 @@ import {
     sortFn_text,
     tableFeatures,
 } from "@tanstack/alpine-table";
-import { matchesFilters } from "./dataTableFilters.js";
 
 const features = tableFeatures({
-    columnFilteringFeature,
     globalFilteringFeature,
     rowSortingFeature,
     rowPaginationFeature,
@@ -31,8 +28,6 @@ const features = tableFeatures({
     sortFns: { alphanumeric: sortFn_alphanumeric, basic: sortFn_basic, text: sortFn_text },
 });
 
-// hidden column that applies the x-filter filters in local mode
-const FILTER_COLUMN = "__filters";
 // page size used for "all rows" in local mode, the server gets -1
 const ALL_ROWS = Number.MAX_SAFE_INTEGER;
 
@@ -84,10 +79,10 @@ function readColumns(root) {
  *   {...params, filter: {field: {op: value}}, sort: {column: "asc"|"desc"}, search, page, per_page (-1 = all)}
  *   and expects Laravel paginator json: {data: [...], current_page, last_page, per_page, total}
  *   The sort object is in priority order (shift+click adds a column).
- * mode "local": rows come from config.rows or are fetched once from config.url with per_page -1,
- *   then sorting, search, x-filter filters and pagination run in the browser.
+ * mode "local": rows come from config.rows, sorting, search and pagination run in the browser.
+ *   x-filter filters are only supported in server mode.
  *
- * Events: listens for "data-table:reload" on window ({name}), dispatches "data-table:loaded" ({name, response}).
+ * Events: listens for "data-table:reload" on window ({name}).
  *
  * @param {object} config see resources/views/components/data-table/index.blade.php
  */
@@ -98,24 +93,30 @@ export default function dataTable(config) {
     const saved = (storageKey && storage.get(storageKey)) || {};
     const perPage = Number(saved.perPage ?? config.perPage ?? 50);
 
+    // rows are kept out of the reactive state: TanStack reads every row while sorting and searching,
+    // through a reactive proxy each read would be tracked. dataVersion tells Alpine the rows changed.
+    let data = [];
     const state = Alpine.reactive({
-        data: local && Array.isArray(config.rows) ? config.rows : [],
+        dataVersion: 0,
         total: 0,
         sorting: Object.entries(config.sort ?? {}).map(([id, dir]) => ({ id, desc: dir === "desc" })),
         pagination: { pageIndex: 0, pageSize: perPage < 0 ? ALL_ROWS : perPage },
-        columnVisibility: { [FILTER_COLUMN]: false },
+        columnVisibility: {},
         globalFilter: "",
         filter: config.filter ?? {},
     });
 
     const getRowId = (row, index) => String(row[rowKey] ?? index);
-    // row id => row object as read from state.data, see the rows getter
+    // row id => row object, see the rows getter
     let rowsById = new Map();
     const setData = (rows) => {
-        state.data = rows;
-        rowsById = new Map(state.data.map((row, index) => [getRowId(row, index), row]));
+        data = rows;
+        rowsById = new Map(data.map((row, index) => [getRowId(row, index), row]));
+        state.dataVersion++;
     };
-    setData(state.data);
+    setData(local && Array.isArray(config.rows) ? config.rows : []);
+    // aborts the previous server request when a newer one starts
+    let controller = null;
 
     return {
         config,
@@ -123,10 +124,8 @@ export default function dataTable(config) {
         columns: [],
         table: null,
         perPage,
-        search: "",
         loading: false,
         error: null,
-        loadId: 0,
 
         init() {
             this.columns = readColumns(this.$root);
@@ -139,27 +138,18 @@ export default function dataTable(config) {
 
             this.table = createTable({
                 features,
-                columns: [
-                    ...this.columns.map((column) => ({
-                        id: column.id,
-                        accessorFn: (row) => row[column.id],
-                        enableSorting: column.sortable,
-                        enableHiding: column.hideable,
-                        enableGlobalFilter: column.searchable,
-                        sortFn: "alphanumeric",
-                        sortUndefined: "last",
-                    })),
-                    {
-                        id: FILTER_COLUMN,
-                        accessorFn: (row) => row,
-                        enableHiding: false,
-                        enableSorting: false,
-                        enableGlobalFilter: false,
-                        filterFn: (row, columnId, filters) => matchesFilters(row.original, filters),
-                    },
-                ],
+                columns: this.columns.map((column) => ({
+                    id: column.id,
+                    accessorFn: (row) => row[column.id],
+                    enableSorting: column.sortable,
+                    enableHiding: column.hideable,
+                    enableGlobalFilter: column.searchable,
+                    sortFn: "alphanumeric",
+                    sortUndefined: "last",
+                })),
                 get data() {
-                    return state.data;
+                    state.dataVersion; // dependency for Alpine effects
+                    return data;
                 },
                 get rowCount() {
                     return local ? undefined : state.total;
@@ -187,9 +177,6 @@ export default function dataTable(config) {
                     get globalFilter() {
                         return state.globalFilter;
                     },
-                    get columnFilters() {
-                        return Object.keys(state.filter).length ? [{ id: FILTER_COLUMN, value: state.filter }] : [];
-                    },
                 },
                 onSortingChange: (updater) => {
                     state.sorting = functionalUpdate(updater, state.sorting);
@@ -203,31 +190,23 @@ export default function dataTable(config) {
                     state.columnVisibility = functionalUpdate(updater, state.columnVisibility);
                     this.save();
                 },
-                onGlobalFilterChange: (updater) => {
-                    state.globalFilter = functionalUpdate(updater, state.globalFilter) ?? "";
-                },
-                // the filter column only exists to apply x-filter filters, ignore table driven changes to it
-                onColumnFiltersChange: () => {},
             });
 
-            this.$watch("search", (value) => {
-                state.globalFilter = value;
-                this.changed(true);
-            });
+            this.$watch("state.globalFilter", () => this.changed(true));
             this.$watch("perPage", (value) => {
                 state.pagination = { pageIndex: 0, pageSize: Number(value) < 0 ? ALL_ROWS : Number(value) };
                 this.save();
                 this.changed(false);
             });
 
-            if (!local || !Array.isArray(config.rows)) {
+            if (!local) {
                 this.load();
             }
         },
 
         /**
          * Rows on the current page, as sent by the server.
-         * Returns the same objects as state.data instead of TanStack's row.original: those are wrapped in a proxy
+         * Returns the plain row objects instead of TanStack's row.original: those are wrapped in a proxy
          * that makes every cell binding re-run (and every x-html re-render) on any table state change.
          * With stable objects x-for only moves rows and the cells stay untouched.
          */
@@ -348,56 +327,35 @@ export default function dataTable(config) {
             return body;
         },
 
-        /** Reload rows from the server, in local mode this refetches every row */
+        /** Reload rows from the server, local mode has nothing to reload */
         reload() {
-            if (config.url) {
+            if (!local) {
                 this.load();
             }
         },
 
         load() {
-            const loadId = ++this.loadId;
+            controller?.abort();
+            const current = (controller = new AbortController());
             this.loading = true;
             this.error = null;
 
-            // in local mode the browser sorts, searches and filters, the server only applies params
-            const body = local ? { ...(config.params ?? {}), page: 1, per_page: -1 } : this.requestBody();
-
-            return fetch(config.url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content ?? "",
-                },
-                body: JSON.stringify(body),
-            })
-                .then(async (response) => {
-                    const json = await response.json().catch(() => ({}));
-                    if (!response.ok) {
-                        throw new Error(json.message ?? config.lang?.request_failed ?? "Request failed");
-                    }
-
-                    return json;
-                })
-                .then((json) => {
-                    if (loadId !== this.loadId) {
-                        return; // a newer request is in flight
-                    }
+            return window.axios
+                .post(config.url, this.requestBody(), { signal: current.signal })
+                .then(({ data: json }) => {
                     setData(json.data ?? []);
-                    state.total = json.total ?? state.data.length;
-                    if (!local && json.current_page && json.current_page - 1 !== state.pagination.pageIndex) {
+                    state.total = json.total ?? data.length;
+                    if (json.current_page && json.current_page - 1 !== state.pagination.pageIndex) {
                         state.pagination = { ...state.pagination, pageIndex: json.current_page - 1 };
                     }
-                    this.$dispatch("data-table:loaded", { name: config.name, response: json });
                 })
                 .catch((error) => {
-                    if (loadId === this.loadId) {
-                        this.error = error.message;
+                    if (current === controller && !window.axios.isCancel(error)) {
+                        this.error = error.response?.data?.message ?? config.lang?.request_failed ?? "Request failed";
                     }
                 })
                 .finally(() => {
-                    if (loadId === this.loadId) {
+                    if (current === controller) {
                         this.loading = false;
                     }
                 });

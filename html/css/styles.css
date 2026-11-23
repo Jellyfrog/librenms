@@ -1842,11 +1842,6 @@ label {
     text-align: center;
 }
 
-.devices-headers-table-menu > .actions {
-    float: right;
-    margin-bottom: 5px;
-}
-
 .devices-overlib-box {
     display: block;
     padding: 1px;

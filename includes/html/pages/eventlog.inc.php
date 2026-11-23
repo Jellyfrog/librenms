@@ -17,13 +17,4 @@
 $no_refresh = true;
 $pagetitle[] = 'Eventlog';
 
-$filter = Request::array('filter');
-// old links use ?device= and ?eventtype=
-if ($device_id = (int) Request::input('device')) {
-    $filter['device_id'] ??= ['eq' => $device_id];
-}
-if ($type = Request::input('eventtype')) {
-    $filter['type'] ??= ['eq' => $type];
-}
-
-echo Blade::render('<x-eventlog-table :filter="$filter" />', ['filter' => $filter]);
+echo Blade::render('<x-eventlog-table :filter="$filter" />', ['filter' => \App\Models\Eventlog::filterFromRequest(request())]);

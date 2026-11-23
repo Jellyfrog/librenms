@@ -18,20 +18,23 @@
     sortable/searchable: searchable only applies to local mode, the server decides what it searches
     hideable: listed in the column menu
     visible: initial visibility, the user's choice is remembered per table name
+
+    Hidden columns are not rendered at all (x-if), so their bindings and images cost nothing.
 --}}
-<td {{ $attributes }}
-    data-column="{{ $field }}"
-    data-label="{{ $label }}"
-    data-sortable="{{ $sortable ? 1 : 0 }}"
-    data-searchable="{{ $searchable ? 1 : 0 }}"
-    data-hideable="{{ $hideable ? 1 : 0 }}"
-    data-visible="{{ $visible ? 1 : 0 }}"
-    @if ($width) data-width="{{ $width }}" @endif
-    @if ($headerClass) data-header-class="{{ $headerClass }}" @endif
-    x-show="isVisible(@js($field))">
-    @if ($slot->isEmpty() && ! $attributes->hasAny(['x-html', 'x-text']))
-        <span x-text="row[@js($field)]"></span>
-    @else
-        {{ $slot }}
-    @endif
-</td>
+<template x-if="isVisible(@js($field))"
+          data-column="{{ $field }}"
+          data-label="{{ $label }}"
+          data-sortable="{{ $sortable ? 1 : 0 }}"
+          data-searchable="{{ $searchable ? 1 : 0 }}"
+          data-hideable="{{ $hideable ? 1 : 0 }}"
+          data-visible="{{ $visible ? 1 : 0 }}"
+          @if ($width) data-width="{{ $width }}" @endif
+          @if ($headerClass) data-header-class="{{ $headerClass }}" @endif>
+    <td {{ $attributes }} data-label="{{ $label }}">
+        @if ($slot->isEmpty() && ! $attributes->hasAny(['x-html', 'x-text']))
+            <span x-text="row[@js($field)]"></span>
+        @else
+            {{ $slot }}
+        @endif
+    </td>
+</template>

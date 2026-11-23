@@ -6,7 +6,7 @@
     'params' => [],
     'sort' => [],
     'perPage' => 50,
-    'perPageOptions' => [25, 50, 100, 250, -1],
+    'perPageOptions' => [50, 100, 250, -1],
     'search' => true,
     'rowKey' => 'id',
     'filterName' => null,
@@ -38,7 +38,6 @@
     default  x-data-table.column cells, one per column
     heading  extra controls in the toolbar
     empty    text when no rows match
-    after    content after the table (modals), it can use the table state
 
     Reload from outside: window.dispatchEvent(new CustomEvent('data-table:reload', {detail: {name: 'devices-detail'}}))
 --}}
@@ -86,5 +85,4 @@
             @include('components.data-table.pagination')
         </div>
     @endif
-    {{ $after ?? '' }}
 </div>

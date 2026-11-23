@@ -13,7 +13,7 @@
         @if ($search)
             <div class="tw:relative">
                 <i class="fa fa-search tw:absolute tw:left-2.5 tw:top-1/2 tw:-translate-y-1/2 tw:text-gray-400 tw:pointer-events-none" aria-hidden="true"></i>
-                <input type="search" x-model.debounce.300ms="search" class="lnms-input tw:pl-8 tw:w-48" placeholder="{{ __('Search') }}" aria-label="{{ __('Search') }}">
+                <input type="search" x-model.debounce.300ms="state.globalFilter" class="lnms-input tw:pl-8 tw:w-48" placeholder="{{ __('Search') }}" aria-label="{{ __('Search') }}">
             </div>
         @endif
         <button type="button" class="lnms-btn lnms-btn-default" x-on:click="reload()" :disabled="loading" title="{{ __('Refresh') }}" aria-label="{{ __('Refresh') }}">

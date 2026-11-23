@@ -3,7 +3,7 @@
 @section('title', $title)
 
 @section('content')
-    <x-data-table :name="'wireless-' . $metric" :url="route('table.wireless')" :params="['view' => $view, 'class' => $metric]" :per-page-options="[50, 100, 250, -1]">
+    <x-data-table :name="'wireless-' . $metric" :url="route('table.wireless')" :params="['view' => $view, 'class' => $metric]">
         <x-slot name="heading">
             <x-option-bar border="none" name="{{ __('Health') }}" :options="$metrics" :selected="$metric"></x-option-bar>
             <x-option-bar border="none" :options="$views" :selected="$view"></x-option-bar>
