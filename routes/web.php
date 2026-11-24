@@ -513,7 +513,7 @@ Route::middleware(['auth'])->group(function (): void {
             Route::get('alerts', Table\AlertsController::class)->name('table.alerts');
             Route::post('bills', Table\BillsController::class)->name('table.bills');
             Route::post('alert-schedule', Table\AlertScheduleController::class);
-            Route::post('access-points', Table\AccessPointController::class)->name('table.access-points');
+            Route::get('access-points', Table\AccessPointController::class)->name('table.access-points');
             Route::post('customers', Table\CustomersController::class);
             Route::get('diskio', Table\DiskioController::class)->name('table.diskio');
             Route::get('device', Table\DeviceController::class)->name('table.device');
@@ -544,7 +544,7 @@ Route::middleware(['auth'])->group(function (): void {
             Route::get('storages/export', [Table\StoragesController::class, 'export']);
             Route::get('syslog', Table\SyslogController::class)->name('table.syslog');
             Route::get('printer-supply', Table\PrinterSupplyController::class)->name('table.printer-supply');
-            Route::post('tnmsne', Table\TnmsneController::class)->name('table.tnmsne');
+            Route::get('tnmsne', Table\TnmsneController::class)->name('table.tnmsne');
             Route::get('wireless', Table\WirelessSensorController::class)->name('table.wireless');
             Route::post('vlan-ports', Table\VlanPortsController::class)->name('table.vlan-ports');
             Route::post('vlan-devices', Table\VlanDevicesController::class)->name('table.vlan-devices');

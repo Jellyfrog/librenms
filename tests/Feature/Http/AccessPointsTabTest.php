@@ -29,8 +29,8 @@ class AccessPointsTabTest extends TestCase
         $this->actingAs($this->admin())
             ->get(route('device', ['device' => $device, 'tab' => 'accesspoints']))
             ->assertOk()
-            ->assertSee('id="access-points"', false)
-            ->assertSee(route('table.access-points'), false);
+            ->assertSee('dataTable(', false)
+            ->assertSee('\u0022name\u0022:\u0022access-points\u0022', false);
     }
 
     public function testEndpointReturnsOnlyRequestedDeviceAndExcludesDeletedRadios(): void
@@ -41,12 +41,12 @@ class AccessPointsTabTest extends TestCase
         AccessPoint::factory()->for($device)->create(['name' => 'Deleted AP', 'deleted' => true]);
         AccessPoint::factory()->for($otherDevice)->create(['name' => 'Other Device AP']);
 
-        $response = $this->actingAs($this->admin())->postJson(route('table.access-points'), $this->tableRequest($device));
+        $response = $this->actingAs($this->admin())->getJson(route('table.access-points', $this->tableRequest($device)));
 
         $response->assertOk()
-            ->assertJsonPath('total', 1)
-            ->assertJsonCount(1, 'rows');
-        $this->assertStringContainsString('Visible AP', $response->json('rows.0.name'));
+            ->assertJsonPath('meta.total', 1)
+            ->assertJsonCount(1, 'data');
+        $this->assertStringContainsString('Visible AP', $response->json('data.0.name'));
         $this->assertStringNotContainsString('Deleted AP', $response->getContent());
         $this->assertStringNotContainsString('Other Device AP', $response->getContent());
     }
@@ -60,7 +60,7 @@ class AccessPointsTabTest extends TestCase
         $user->devicesOwned()->attach($allowedDevice);
 
         $this->actingAs($user)
-            ->postJson(route('table.access-points'), $this->tableRequest($deniedDevice))
+            ->getJson(route('table.access-points', $this->tableRequest($deniedDevice)))
             ->assertForbidden();
     }
 
@@ -76,19 +76,19 @@ class AccessPointsTabTest extends TestCase
             'mac_addr' => '44:55:66:77:88:99',
         ]);
 
-        $nameResponse = $this->actingAs($this->admin())->postJson(route('table.access-points'), [
+        $nameResponse = $this->actingAs($this->admin())->getJson(route('table.access-points', [
             ...$this->tableRequest($device),
-            'searchPhrase' => 'ference-We',
-        ]);
-        $macResponse = $this->postJson(route('table.access-points'), [
+            'search' => 'ference-We',
+        ]));
+        $macResponse = $this->getJson(route('table.access-points', [
             ...$this->tableRequest($device),
-            'searchPhrase' => '55:66:77',
-        ]);
+            'search' => '55:66:77',
+        ]));
 
-        $nameResponse->assertOk()->assertJsonPath('total', 1);
-        $this->assertStringContainsString('Conference-West', $nameResponse->json('rows.0.name'));
-        $macResponse->assertOk()->assertJsonPath('total', 1);
-        $this->assertStringContainsString('Lobby-East', $macResponse->json('rows.0.name'));
+        $nameResponse->assertOk()->assertJsonPath('meta.total', 1);
+        $this->assertStringContainsString('Conference-West', $nameResponse->json('data.0.name'));
+        $macResponse->assertOk()->assertJsonPath('meta.total', 1);
+        $this->assertStringContainsString('Lobby-East', $macResponse->json('data.0.name'));
     }
 
     public function testClientSortingIsNumeric(): void
@@ -98,13 +98,13 @@ class AccessPointsTabTest extends TestCase
         AccessPoint::factory()->for($device)->create(['name' => 'Ten', 'numasoclients' => 10]);
         AccessPoint::factory()->for($device)->create(['name' => 'Hundred', 'numasoclients' => 100]);
 
-        $response = $this->actingAs($this->admin())->postJson(route('table.access-points'), [
+        $response = $this->actingAs($this->admin())->getJson(route('table.access-points', [
             ...$this->tableRequest($device),
             'sort' => ['numasoclients' => 'desc'],
-        ]);
+        ]));
 
         $response->assertOk();
-        $this->assertSame([100, 10, 2], array_column($response->json('rows'), 'numasoclients'));
+        $this->assertSame([100, 10, 2], array_column($response->json('data'), 'numasoclients'));
     }
 
     public function testDefaultOrderingUsesNameThenRadioNumber(): void
@@ -114,12 +114,12 @@ class AccessPointsTabTest extends TestCase
         $alphaTwo = AccessPoint::factory()->for($device)->create(['name' => 'Alpha', 'radio_number' => 2]);
         $alphaZero = AccessPoint::factory()->for($device)->create(['name' => 'Alpha', 'radio_number' => 0]);
 
-        $response = $this->actingAs($this->admin())->postJson(route('table.access-points'), $this->tableRequest($device));
+        $response = $this->actingAs($this->admin())->getJson(route('table.access-points', $this->tableRequest($device)));
 
         $response->assertOk();
         $this->assertSame(
             [$alphaZero->accesspoint_id, $alphaTwo->accesspoint_id, $bravo->accesspoint_id],
-            array_column($response->json('rows'), 'accesspoint_id')
+            array_column($response->json('data'), 'id')
         );
     }
 
@@ -130,18 +130,17 @@ class AccessPointsTabTest extends TestCase
         AccessPoint::factory()->for($device)->create(['name' => 'Bravo']);
         $charlie = AccessPoint::factory()->for($device)->create(['name' => 'Charlie']);
 
-        $response = $this->actingAs($this->admin())->postJson(route('table.access-points'), [
+        $response = $this->actingAs($this->admin())->getJson(route('table.access-points', [
             ...$this->tableRequest($device),
-            'current' => 2,
-            'rowCount' => 2,
-        ]);
+            'page' => 2,
+            'per_page' => 2,
+        ]));
 
         $response->assertOk()
-            ->assertJsonPath('current', 2)
-            ->assertJsonPath('rowCount', 1)
-            ->assertJsonPath('total', 3)
-            ->assertJsonCount(1, 'rows')
-            ->assertJsonPath('rows.0.accesspoint_id', $charlie->accesspoint_id);
+            ->assertJsonPath('meta.current_page', 2)
+            ->assertJsonPath('meta.total', 3)
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $charlie->accesspoint_id);
     }
 
     public function testSnmpStringsAreEscapedInListAndDetailViews(): void
@@ -154,21 +153,21 @@ class AccessPointsTabTest extends TestCase
             'radio_number' => 0,
         ]);
 
-        $listResponse = $this->actingAs($this->admin())->postJson(route('table.access-points'), $this->tableRequest($device));
+        $listResponse = $this->actingAs($this->admin())->getJson(route('table.access-points', $this->tableRequest($device)));
         $listResponse->assertOk();
-        $this->assertStringContainsString('&lt;script&gt;alert(&quot;ap&quot;)&lt;/script&gt;', $listResponse->json('rows.0.name'));
-        $this->assertStringNotContainsString('<script>', $listResponse->json('rows.0.name'));
-        $this->assertSame('&lt;em&gt;ax&lt;/em&gt; (0)', $listResponse->json('rows.0.radio'));
+        $this->assertStringContainsString('&lt;script&gt;alert(&quot;ap&quot;)&lt;/script&gt;', $listResponse->json('data.0.name'));
+        $this->assertStringNotContainsString('<script>', $listResponse->json('data.0.name'));
+        $this->assertSame('&lt;em&gt;ax&lt;/em&gt; (0)', $listResponse->json('data.0.radio'));
 
         $detailUrl = route('device.accesspoints.show', [
             'device' => $device,
             'accessPoint' => $accessPoint,
         ]);
 
-        $this->assertStringContainsString($detailUrl, $listResponse->json('rows.0.name'));
-        $this->assertStringContainsString($detailUrl, $listResponse->json('rows.0.trends'));
-        $this->assertStringNotContainsString('ap=', $listResponse->json('rows.0.name'));
-        $this->assertStringNotContainsString('ap=', $listResponse->json('rows.0.trends'));
+        $this->assertStringContainsString($detailUrl, $listResponse->json('data.0.name'));
+        $this->assertStringContainsString($detailUrl, $listResponse->json('data.0.trends'));
+        $this->assertStringNotContainsString('ap=', $listResponse->json('data.0.name'));
+        $this->assertStringNotContainsString('ap=', $listResponse->json('data.0.trends'));
 
         $this->get($detailUrl)
             ->assertOk()
@@ -235,9 +234,8 @@ class AccessPointsTabTest extends TestCase
     {
         return [
             'device_id' => $device->device_id,
-            'current' => 1,
-            'rowCount' => 50,
-            'searchPhrase' => '',
+            'page' => 1,
+            'per_page' => 50,
         ];
     }
 }
