@@ -10,6 +10,7 @@
     <x-data-table name="locations"
                   id="locations"
                   :url="route('table.location')"
+                  export
                   :sort="['location' => 'asc']"
                   :per-page-options="[25, 50, 100, -1]"
                   :title="__('Locations')">

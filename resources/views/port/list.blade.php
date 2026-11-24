@@ -6,6 +6,7 @@
 @endphp
 <x-data-table :name="'ports-' . $view"
               :url="route('table.ports')"
+              export
               row-key="port_id"
               :sort="request()->boolean('errors') || request()->boolean('filter.errors.eq') ? ['errors' => 'desc'] : ['ifDescr' => 'asc']"
               :per-page-options="[25, 50, 100, 250, -1]"

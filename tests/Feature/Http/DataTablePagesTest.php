@@ -39,6 +39,7 @@ final class DataTablePagesTest extends TestCase
             'outages' => ['/outages', '/ajax/table/outages', ['status' => 'all', 'from' => '-1d', 'sort' => ['device_id' => 'asc']]],
             'nac' => ['/nac', '/ajax/table/port-nac', ['historical' => 1, 'search' => 'aa', 'sort' => ['port_id' => 'desc']]],
             'poller-log' => ['/poller/log', '/ajax/table/poller-log', ['unpolled' => 1, 'sort' => ['location' => 'asc', 'poller_group' => 'desc']]],
+            'port-security' => ['/port-security', '/ajax/table/port-security', ['sort' => ['device' => 'desc']]],
         ];
     }
 

@@ -17,6 +17,7 @@
 --}}
 <x-data-table :name="$name"
               :url="route('table.alertlog')"
+              :export="(bool) $filterName"
               :params="array_filter($params, fn ($value) => $value !== null && $value !== '' && $value !== [])"
               :sort="['time_logged' => 'desc']"
               :search="false"

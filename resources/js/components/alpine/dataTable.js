@@ -381,6 +381,15 @@ export default function dataTable(config, component = {}) {
             return data.map((row) => Alpine.reactive(row));
         },
 
+        /**
+         * Download the table as CSV from config.exportUrl, with the table's filters, search and sort
+         * @param {boolean} page only the current page
+         */
+        exportCsv(page) {
+            const params = { ...this.params(), export: page ? "page" : "all" };
+            window.open(window.axios.getUri({ url: config.exportUrl, params }), "_blank");
+        },
+
         /** A row was deleted: local mode drops it, server mode reloads the page */
         removeRow(row) {
             if (local) {

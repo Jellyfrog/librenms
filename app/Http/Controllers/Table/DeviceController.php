@@ -33,7 +33,7 @@ class DeviceController extends Controller
      */
     public function export(DataTableRequest $request): StreamedResponse
     {
-        $rows = $this->query($request)->with('location')->lazy()->map(fn (Device $device) => [
+        $rows = $request->exportRows($this->query($request)->with('location'))->map(fn (Device $device) => [
             $device->device_id,
             $device->display,
             $device->ip,

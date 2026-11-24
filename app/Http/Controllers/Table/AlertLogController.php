@@ -25,25 +25,12 @@ class AlertLogController extends Controller
 
     public function __invoke(DataTableRequest $request): AnonymousResourceCollection
     {
-        $query = $this->query($request);
-        $request->searchQuery($query, ['device.hostname', 'device.sysName', 'rule.name']);
-        $request->sortQuery($query, [
-            'time_logged' => 'alert_log.time_logged',
-            'status' => 'alert_log.state',
-            'alert_rule' => fn (Builder $q, string $direction) => $q->orderBy(AlertRule::select('name')->whereColumn('alert_rules.id', 'alert_log.rule_id'), $direction),
-            'severity' => fn (Builder $q, string $direction) => $q->orderBy(AlertRule::select('severity')->whereColumn('alert_rules.id', 'alert_log.rule_id'), $direction),
-            'hostname' => fn (Builder $q, string $direction) => $q->orderBy(Device::select('hostname')->whereColumn('devices.device_id', 'alert_log.device_id'), $direction),
-        ], ['time_logged' => 'desc']);
-
-        return AlertLogResource::collection($request->paginate($query));
+        return AlertLogResource::collection($request->paginate($this->query($request)));
     }
 
     public function export(DataTableRequest $request): StreamedResponse
     {
-        $query = $this->query($request);
-        $request->sortQuery($query, ['time_logged' => 'alert_log.time_logged'], ['time_logged' => 'desc']);
-
-        $rows = $query->lazy()->map(fn (AlertLog $log) => [
+        $rows = $request->exportRows($this->query($request))->map(fn (AlertLog $log) => [
             $log->id,
             strtolower((string) $log->state->name),
             $log->time_logged->toIso8601ZuluString(),
@@ -104,12 +91,21 @@ class AlertLogController extends Controller
                 )
             )', [$defaultMax]);
 
-        return $query
+        $query
             ->when($request->integer('device_id'), fn (Builder $q, int $id) => $q->where('alert_log.device_id', $id))
             ->when($request->filled('state'), fn (Builder $q) => $q->where('alert_log.state', $request->integer('state')))
             ->when(array_filter($request->array('severity')), fn (Builder $q, array $severity) => $q->whereHas('rule', fn (Builder $rq) => $rq->whereIn('severity', array_map(intval(...), $severity))))
             ->when($request->integer('device_group'), fn (Builder $q, int $group) => $q->inDeviceGroup($group))
             ->when(Time::parseInput($request->input('from')), fn (Builder $q, int $from) => $q->whereRaw('alert_log.time_logged >= FROM_UNIXTIME(?)', [$from]))
             ->when(Time::parseInput($request->input('to')), fn (Builder $q, int $to) => $q->whereRaw('alert_log.time_logged <= FROM_UNIXTIME(?)', [$to]));
+        $request->searchQuery($query, ['device.hostname', 'device.sysName', 'rule.name']);
+
+        return $request->sortQuery($query, [
+            'time_logged' => 'alert_log.time_logged',
+            'status' => 'alert_log.state',
+            'alert_rule' => fn (Builder $q, string $direction) => $q->orderBy(AlertRule::select('name')->whereColumn('alert_rules.id', 'alert_log.rule_id'), $direction),
+            'severity' => fn (Builder $q, string $direction) => $q->orderBy(AlertRule::select('severity')->whereColumn('alert_rules.id', 'alert_log.rule_id'), $direction),
+            'hostname' => fn (Builder $q, string $direction) => $q->orderBy(Device::select('hostname')->whereColumn('devices.device_id', 'alert_log.device_id'), $direction),
+        ], ['time_logged' => 'desc']);
     }
 }

@@ -23,7 +23,7 @@ class InventoryController extends Controller
 
     public function export(DataTableRequest $request): StreamedResponse
     {
-        $rows = $this->query($request)->with('device')->lazy()->map(fn (EntPhysical $item) => [
+        $rows = $request->exportRows($this->query($request)->with('device'))->map(fn (EntPhysical $item) => [
             $item->device?->display,
             $item->entPhysicalDescr,
             $item->entPhysicalName,

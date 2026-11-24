@@ -21,8 +21,6 @@ class SensorsController extends Controller
     public function __invoke(DataTableRequest $request): AnonymousResourceCollection
     {
         $query = $this->query($request)->with('device');
-        $request->searchQuery($query, ['sensor_descr', 'sensor_current', 'device.hostname', 'device.display']);
-        $request->sortQuery($query, ['device_hostname', 'sensor_descr', 'sensor_current', 'sensor_limit_low', 'sensor_limit'], ['device_hostname' => 'asc', 'sensor_descr' => 'asc']);
 
         return SensorResource::collection($request->paginate($query));
     }
@@ -33,7 +31,7 @@ class SensorsController extends Controller
             $request->merge(['class' => $class]);
         }
 
-        $rows = $this->query($request)->with('device')->lazy()->map(fn (Sensor $sensor) => [
+        $rows = $request->exportRows($this->query($request)->with('device'))->map(fn (Sensor $sensor) => [
             $sensor->device?->display,
             $sensor->sensor_descr,
             $sensor->formatValue(),
@@ -61,7 +59,7 @@ class SensorsController extends Controller
         $class = $request->input('class', 'all');
         $status = $request->input('status');
 
-        return Sensor::query()
+        $query = Sensor::query()
             ->hasAccess($request->user())
             ->when($class != 'all', fn (Builder $q) => $q->where('sensor_class', $class))
             ->when($class == 'state' || $class == 'all', fn (Builder $q) => $q->with('translations'))
@@ -75,5 +73,8 @@ class SensorsController extends Controller
                     $q->whereNot(fn (Builder $q) => (new Sensor)->scopeIsCritical($q));
                     (new Sensor)->scopeIsWarning($q);
                 })));
+        $request->searchQuery($query, ['sensor_descr', 'sensor_current', 'device.hostname', 'device.display']);
+
+        return $request->sortQuery($query, ['device_hostname', 'sensor_descr', 'sensor_current', 'sensor_limit_low', 'sensor_limit'], ['device_hostname' => 'asc', 'sensor_descr' => 'asc']);
     }
 }

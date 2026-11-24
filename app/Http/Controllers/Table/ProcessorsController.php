@@ -17,16 +17,14 @@ class ProcessorsController extends Controller
 
     public function __invoke(DataTableRequest $request): AnonymousResourceCollection
     {
-        $query = $this->query($request)->with('device')->withAggregate('device', 'hostname');
-        $request->searchQuery($query, ['processor_descr', 'device.hostname', 'device.display']);
-        $request->sortQuery($query, ['device_hostname', 'processor_descr', 'processor_usage'], ['device_hostname' => 'asc', 'processor_descr' => 'asc']);
+        $query = $this->query($request)->with('device');
 
         return ProcessorResource::collection($request->paginate($query));
     }
 
     public function export(DataTableRequest $request): StreamedResponse
     {
-        $rows = $this->query($request)->with('device')->lazy()->map(fn (Processor $processor) => [
+        $rows = $request->exportRows($this->query($request)->with('device'))->map(fn (Processor $processor) => [
             $processor->device?->display,
             $processor->processor_descr,
             $processor->processor_usage,
@@ -43,10 +41,14 @@ class ProcessorsController extends Controller
         $this->authorize('viewAny', Processor::class);
         $request->validate(['status' => 'nullable|string', 'view' => 'nullable|in:detail,graphs']);
 
-        return Processor::query()
+        $query = Processor::query()
             ->hasAccess($request->user())
+            ->withAggregate('device', 'hostname')
             // only entries in warning state
             ->when($request->input('status') == 'warning', fn (Builder $q) => $q->where('processor_perc_warn', '>', 0)
                 ->whereColumn('processor_usage', '>=', 'processor_perc_warn'));
+        $request->searchQuery($query, ['processor_descr', 'device.hostname', 'device.display']);
+
+        return $request->sortQuery($query, ['device_hostname', 'processor_descr', 'processor_usage'], ['device_hostname' => 'asc', 'processor_descr' => 'asc']);
     }
 }

@@ -6,6 +6,7 @@
     <div class="container-fluid">
         <x-data-table name="inventory"
                       :url="route('table.inventory')"
+                      export
                       :sort="['device' => 'asc']"
                       filter-name="inventory"
                       :filter-fields="$filterFields"

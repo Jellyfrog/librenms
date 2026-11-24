@@ -27,7 +27,6 @@
 namespace App\Http\Controllers\Device\Tabs;
 
 use App\Facades\LibrenmsConfig;
-use App\Http\Controllers\PortSecurityController;
 use App\Models\Device;
 use App\Models\Link;
 use App\Models\Port;
@@ -288,12 +287,7 @@ class PortsController implements DeviceTab
 
     private function portSecurityData(Device $device): array
     {
-        return [
-            'portSecurity' => PortSecurityController::paginateForDevice(
-                $device->device_id,
-                $this->settings['perPage']
-            ),
-        ];
+        return []; // x-port-security-table loads its rows
     }
 
     private function getTabs(Device $device): array

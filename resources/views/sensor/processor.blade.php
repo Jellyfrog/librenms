@@ -3,7 +3,7 @@
 @section('title', $title)
 
 @section('content')
-    <x-data-table :name="'processors'" :url="route('table.processors')" :params="['view' => $view, 'status' => $status]">
+    <x-data-table :name="'processors'" :url="route('table.processors')" export :params="['view' => $view, 'status' => $status]">
         <x-slot name="heading">
             <x-option-bar border="none" name="{{ __('Health') }}" :options="$metrics" :selected="$metric"></x-option-bar>
             <x-option-bar border="none" name="{{ __('Status') }}" :options="$status_bar" :selected="$status"></x-option-bar>

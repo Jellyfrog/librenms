@@ -16,6 +16,7 @@
     'hideFilter' => false,
     'columnToggle' => true,
     'sendColumns' => false,
+    'export' => false,
     'footer' => true,
     'panel' => true,
     'title' => null,
@@ -43,6 +44,7 @@
     filterName/filterFields/filter/hideFilter: show an x-filter, its filters are sent as filter[field][op]=value
     columnToggle: show the column visibility menu
     sendColumns: send the visible column ids (columns[]) so the endpoint can skip work for hidden columns
+    export: CSV download button, true for {url}/export or the export url, see DataTableRequest::exportRows()
     footer: show the pagination
     panel: wrap the table in an x-panel, set false when the table is already inside one
     component: Alpine.data() name of a page specific table: Alpine.data('name', (config) => LibreNMS.dataTable(config, {...}))
@@ -76,10 +78,11 @@
         'filter' => (object) $filter,
         'selectable' => $selectable,
         'sendColumns' => $sendColumns,
+        'exportUrl' => $export === true ? rtrim((string) $url, '/') . '/export' : ($export ?: null),
         'lang' => ['request_failed' => __('Request failed'), ...$lang],
     ];
     $rowLabel ??= 'row.' . $rowKey;
-    $toolbar = $filterName || $search || $columnToggle || isset($heading);
+    $toolbar = $filterName || $search || $columnToggle || $export || isset($heading);
 @endphp
 <div {{ $attributes }}
      x-data="{{ $component }}(@js($config))"

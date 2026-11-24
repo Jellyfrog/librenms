@@ -23,7 +23,7 @@ class VminfoController extends Controller
 
     public function export(DataTableRequest $request): StreamedResponse
     {
-        $rows = $this->query($request)->lazy()->map(fn (Vminfo $vm) => [
+        $rows = $request->exportRows($this->query($request))->map(fn (Vminfo $vm) => [
             $vm->stateLabel[0],
             is_null($vm->parentDevice) ? $vm->vmwVmDisplayName : $vm->parentDevice->display,
             $vm->vm_type,

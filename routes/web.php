@@ -536,6 +536,7 @@ Route::middleware(['auth'])->group(function (): void {
             Route::get('peering/peers', [Table\PeeringController::class, 'peers'])->name('table.peering.peers');
             Route::get('outages/export', [Table\OutagesController::class, 'export']);
             Route::get('port-nac', Table\PortNacController::class)->name('table.port-nac');
+            Route::get('port-security', Table\PortSecurityController::class)->name('table.port-security');
             Route::get('port-security/export', [Table\PortSecurityController::class, 'export'])->name('port-security.export');
             Route::get('port-stp', Table\PortStpController::class)->name('table.port-stp');
             Route::get('ports', Table\PortsController::class)->name('table.ports');

@@ -7,6 +7,7 @@
 {{-- Device outages. params: device, status (current, previous, all), from, to --}}
 <x-data-table :name="$name"
               :url="route('table.outages')"
+              export
               :params="array_filter($params, fn ($value) => $value !== null && $value !== '')"
               :sort="['going_down' => 'desc']"
               :search="false"

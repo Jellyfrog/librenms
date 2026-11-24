@@ -88,6 +88,20 @@ final class DataTableProtocolTest extends TestCase
         $this->assertStringContainsString('core-router', $response->streamedContent());
     }
 
+    public function testExportPageOrAllRows(): void
+    {
+        Device::factory()->create(['hostname' => 'a-router', 'display' => 'a-router']);
+        Device::factory()->create(['hostname' => 'b-router', 'display' => 'b-router']);
+
+        $csv = fn (array $query) => array_values(array_filter(explode("\n", trim(preg_replace('/^\xEF\xBB\xBF/', '', $this->actingAs($this->admin)->get('/ajax/table/device/export?' . http_build_query($query))->streamedContent())))));
+
+        $this->assertCount(3, $csv(['export' => 'all']));
+        // the second page of one row, sorted like the table
+        $page = $csv(['export' => 'page', 'page' => 2, 'per_page' => 1, 'sort' => ['display' => 'desc']]);
+        $this->assertCount(2, $page);
+        $this->assertStringContainsString('a-router', $page[1]);
+    }
+
     private function list(array $query): \Illuminate\Testing\TestResponse
     {
         return $this->actingAs($this->admin)->getJson('/ajax/table/device?' . http_build_query($query));

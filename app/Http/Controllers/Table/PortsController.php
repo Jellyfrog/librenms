@@ -22,20 +22,12 @@ class PortsController extends Controller
     {
         $query = $this->query($request)->with(['device', 'device.location']);
 
-        $request->sortQuery($query, [
-            'hostname' => 'devices.hostname',
-            'ifIndex', 'ifDescr', 'ifConnectorPresent', 'ifInErrors', 'ifOutErrors', 'ifInErrors_delta', 'ifOutErrors_delta',
-            'ifInOctets_rate', 'ifOutOctets_rate', 'ifInUcastPkts_rate', 'ifOutUcastPkts_rate', 'ifType', 'ifAlias', 'ifMtu', 'ifSpeed', 'ifDuplex',
-            'errors' => DB::raw('ifInErrors_rate + ifOutErrors_rate'),
-            'secondsIfLastChange' => DB::raw('`devices`.`uptime` - `ports`.`ifLastChange` / 100'),
-        ], ['ifDescr' => 'asc']);
-
         return PortResource::collection($request->paginate($query));
     }
 
     public function export(DataTableRequest $request): StreamedResponse
     {
-        $rows = $this->query($request)->with('device')->lazy()->map(fn (Port $port) => [
+        $rows = $request->exportRows($this->query($request)->with('device'))->map(fn (Port $port) => [
             $port->device_id,
             $port->device?->display,
             $port->ifName ?: $port->ifDescr,
@@ -71,11 +63,19 @@ class PortsController extends Controller
         $this->authorize('viewAny', Port::class);
         $request->validate(Port::filterValidationRules());
 
-        return Port::hasAccess($request->user())
+        $query = Port::hasAccess($request->user())
             ->select('ports.*')
             ->leftJoin('devices', 'ports.device_id', 'devices.device_id')
             ->applyFilters($request->filters())
             // deleted ports only when the filter asks for them
             ->unless(isset($request->filters()['deleted']), fn (Builder $q) => $q->where('ports.deleted', 0));
+
+        return $request->sortQuery($query, [
+            'hostname' => 'devices.hostname',
+            'ifIndex', 'ifDescr', 'ifConnectorPresent', 'ifInErrors', 'ifOutErrors', 'ifInErrors_delta', 'ifOutErrors_delta',
+            'ifInOctets_rate', 'ifOutOctets_rate', 'ifInUcastPkts_rate', 'ifOutUcastPkts_rate', 'ifType', 'ifAlias', 'ifMtu', 'ifSpeed', 'ifDuplex',
+            'errors' => DB::raw('ifInErrors_rate + ifOutErrors_rate'),
+            'secondsIfLastChange' => DB::raw('`devices`.`uptime` - `ports`.`ifLastChange` / 100'),
+        ], ['ifDescr' => 'asc']);
     }
 }

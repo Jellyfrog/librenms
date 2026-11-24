@@ -18,16 +18,14 @@ class StoragesController extends Controller
 
     public function __invoke(DataTableRequest $request): AnonymousResourceCollection
     {
-        $query = $this->query($request)->with('device')->withAggregate('device', 'hostname');
-        $request->searchQuery($query, ['storage_descr', 'device.hostname', 'device.display']);
-        $request->sortQuery($query, ['device_hostname', 'storage_descr', 'storage_used', 'storage_perc'], ['device_hostname' => 'asc', 'storage_descr' => 'asc']);
+        $query = $this->query($request)->with('device');
 
         return StorageResource::collection($request->paginate($query));
     }
 
     public function export(DataTableRequest $request): StreamedResponse
     {
-        $rows = $this->query($request)->with('device')->lazy()->map(fn (Storage $storage) => [
+        $rows = $request->exportRows($this->query($request)->with('device'))->map(fn (Storage $storage) => [
             $storage->device?->display,
             $storage->storage_descr,
             Number::formatBi($storage->storage_used),
@@ -45,10 +43,14 @@ class StoragesController extends Controller
         $this->authorize('viewAny', Storage::class);
         $request->validate(['status' => 'nullable|string', 'view' => 'nullable|in:detail,graphs']);
 
-        return Storage::query()
+        $query = Storage::query()
             ->hasAccess($request->user())
+            ->withAggregate('device', 'hostname')
             // only entries in warning state
             ->when($request->input('status') == 'warning', fn (Builder $q) => $q->where('storage_perc', '>', 0)
                 ->whereColumn('storage_perc', '>=', 'storage_perc_warn'));
+        $request->searchQuery($query, ['storage_descr', 'device.hostname', 'device.display']);
+
+        return $request->sortQuery($query, ['device_hostname', 'storage_descr', 'storage_used', 'storage_perc'], ['device_hostname' => 'asc', 'storage_descr' => 'asc']);
     }
 }

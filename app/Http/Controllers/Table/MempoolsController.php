@@ -32,11 +32,7 @@ class MempoolsController extends Controller
             return MempoolResource::collection($request->paginate($query));
         }
 
-        $query = $this->query($request)->with('device')->withAggregate('device', 'hostname');
-        $request->searchQuery($query, ['mempool_descr', 'device.hostname', 'device.display']);
-        $request->sortQuery($query, ['hostname' => 'device_hostname', 'mempool_descr', 'mempool_perc', 'mempool_used'], ['hostname' => 'asc', 'mempool_descr' => 'asc']);
-
-        return MempoolResource::collection($request->paginate($query));
+        return MempoolResource::collection($request->paginate($this->query($request)->with('device')));
     }
 
     public function export(DataTableRequest $request): StreamedResponse
@@ -44,7 +40,7 @@ class MempoolsController extends Controller
         $this->authorize('viewAny', Mempool::class);
         $request->validate(['status' => 'nullable|string']);
 
-        $rows = $this->query($request)->with('device')->lazy()->map(function (Mempool $mempool) {
+        $rows = $request->exportRows($this->query($request)->with('device'))->map(function (Mempool $mempool) {
             $isPercent = $mempool->mempool_total == 100;
             $format = fn ($value) => $isPercent ? $value : Number::formatBi($value);
 
@@ -68,7 +64,10 @@ class MempoolsController extends Controller
      */
     private function query(DataTableRequest $request): Builder
     {
-        return $this->warning($request, Mempool::hasAccess($request->user()));
+        $query = $this->warning($request, Mempool::hasAccess($request->user())->withAggregate('device', 'hostname'));
+        $request->searchQuery($query, ['mempool_descr', 'device.hostname', 'device.display']);
+
+        return $request->sortQuery($query, ['hostname' => 'device_hostname', 'mempool_descr', 'mempool_perc', 'mempool_used'], ['hostname' => 'asc', 'mempool_descr' => 'asc']);
     }
 
     /**

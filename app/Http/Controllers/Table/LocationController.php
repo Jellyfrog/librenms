@@ -19,19 +19,15 @@ class LocationController extends Controller
 
     public function __invoke(DataTableRequest $request): AnonymousResourceCollection
     {
-        $query = $this->query($request);
-        $request->searchQuery($query, ['location']);
-        $request->sortQuery($query, ['location', 'devices' => 'devices_count', 'down' => 'down_count'], ['location' => 'asc']);
-
         // graphs are added to the page after it loaded
         LibrenmsConfig::set('enable_lazy_load', false);
 
-        return LocationResource::collection($request->paginate($query));
+        return LocationResource::collection($request->paginate($this->query($request)));
     }
 
     public function export(DataTableRequest $request): StreamedResponse
     {
-        $rows = $this->query($request)->orderBy('location')->lazy()->map(fn (Location $location) => [
+        $rows = $request->exportRows($this->query($request))->map(fn (Location $location) => [
             $location->id,
             $location->location,
             $location->lat,
@@ -50,9 +46,12 @@ class LocationController extends Controller
     {
         $this->authorize('viewAny', Location::class);
 
-        return Location::hasAccess($request->user())->withCount([
+        $query = Location::hasAccess($request->user())->withCount([
             'devices',
             'devices as down_count' => fn ($q) => (new Device)->scopeIsDown($q),
         ]);
+        $request->searchQuery($query, ['location']);
+
+        return $request->sortQuery($query, ['location', 'devices' => 'devices_count', 'down' => 'down_count'], ['location' => 'asc']);
     }
 }

@@ -20,18 +20,12 @@ class OutagesController extends Controller
 
     public function __invoke(DataTableRequest $request): AnonymousResourceCollection
     {
-        $query = $this->query($request);
-        $request->sortQuery($query, [
-            'going_down', 'up_again',
-            'device_id' => fn (Builder $q, string $direction) => $q->orderBy(Device::select('hostname')->whereColumn('devices.device_id', 'device_outages.device_id'), $direction),
-        ], ['going_down' => 'desc']);
-
-        return OutageResource::collection($request->paginate($query));
+        return OutageResource::collection($request->paginate($this->query($request)));
     }
 
     public function export(DataTableRequest $request): StreamedResponse
     {
-        $rows = $this->query($request)->orderByDesc('going_down')->lazy()->map(fn (DeviceOutage $outage) => [
+        $rows = $request->exportRows($this->query($request))->map(fn (DeviceOutage $outage) => [
             $outage->device?->display,
             Carbon::createFromTimestamp($outage->going_down)->toIso8601ZuluString(),
             $outage->up_again ? Carbon::createFromTimestamp($outage->up_again)->toIso8601ZuluString() : '-',
@@ -57,7 +51,7 @@ class OutagesController extends Controller
         $from_ts = Time::parseInput($request->from);
         $to_ts = Time::parseInput($request->to);
 
-        return DeviceOutage::hasAccess($request->user())
+        $query = DeviceOutage::hasAccess($request->user())
             ->with('device')
             ->when($request->integer('device'), fn (Builder $q, int $deviceId) => $q->where('device_id', $deviceId))
             ->whereHas('device', function ($query): void {
@@ -94,6 +88,11 @@ class OutagesController extends Controller
             ->when($request->status === 'previous', function ($query): void {
                 $query->whereNotNull('up_again');
             });
+
+        return $request->sortQuery($query, [
+            'going_down', 'up_again',
+            'device_id' => fn (Builder $q, string $direction) => $q->orderBy(Device::select('hostname')->whereColumn('devices.device_id', 'device_outages.device_id'), $direction),
+        ], ['going_down' => 'desc']);
     }
 
     private function applyDateRangeCondition(Builder $query, string $column, ?int $from_ts, ?int $to_ts): void

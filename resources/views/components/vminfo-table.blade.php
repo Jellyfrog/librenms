@@ -7,6 +7,7 @@
 {{-- Virtual machines, deviceId limits it to the VMs of one host --}}
 <x-data-table :name="$deviceId ? 'vminfo-device' : 'vminfo'"
               :url="route('table.vminfo')"
+              export
               :params="array_filter(['device_id' => $deviceId])"
               :sort="['vmwVmDisplayName' => 'asc']"
               :search="false"

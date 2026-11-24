@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\LazyCollection;
 use Illuminate\Support\Str;
 
 /**
@@ -35,6 +37,7 @@ class DataTableRequest extends FormRequest
             'filter' => ['nullable', 'array'],
             'columns' => ['nullable', 'array'],
             'columns.*' => ['string'],
+            'export' => ['nullable', 'in:page,all'],
         ];
     }
 
@@ -127,6 +130,23 @@ class DataTableRequest extends FormRequest
         }
 
         return $query;
+    }
+
+    /**
+     * Rows for a CSV export of the table, sorted and searched like the table.
+     * export=page exports the requested page, otherwise every row, streamed in chunks.
+     *
+     * @param  Builder<*>|Relation<*, *, *>  $query
+     * @return Collection<int, *>|LazyCollection<int, *>
+     */
+    public function exportRows(Builder|Relation $query): Collection|LazyCollection
+    {
+        $perPage = (int) $this->input('per_page', 0);
+        if ($this->input('export') === 'page' && $perPage > 0) {
+            return $query->forPage(max(1, (int) $this->input('page', 1)), $perPage)->get();
+        }
+
+        return $query->lazy();
     }
 
     /**
