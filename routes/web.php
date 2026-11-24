@@ -511,6 +511,7 @@ Route::middleware(['auth'])->group(function (): void {
             Route::get('alertlog-stats', Table\AlertLogStatsController::class)->name('table.alertlog-stats');
             Route::get('alertlog/export', [Table\AlertLogController::class, 'export'])->name('table.alertlog.export');
             Route::get('alerts', Table\AlertsController::class)->name('table.alerts');
+            Route::get('arp', Table\ArpController::class)->name('table.arp');
             Route::post('bills', Table\BillsController::class)->name('table.bills');
             Route::post('alert-schedule', Table\AlertScheduleController::class);
             Route::get('access-points', Table\AccessPointController::class)->name('table.access-points');
@@ -520,7 +521,7 @@ Route::middleware(['auth'])->group(function (): void {
             Route::post('device-dependencies', Table\DeviceDependenciesController::class)->name('table.device-dependencies');
             Route::get('device/export', [Table\DeviceController::class, 'export']);
             Route::get('eventlog', Table\EventlogController::class)->name('table.eventlog');
-            Route::post('fdb-tables', Table\FdbTablesController::class);
+            Route::get('fdb-tables', Table\FdbTablesController::class)->name('table.fdb');
             Route::get('graylog', Table\GraylogController::class)->name('table.graylog');
             Route::get('inventory', Table\InventoryController::class)->name('table.inventory');
             Route::get('inventory/export', [Table\InventoryController::class, 'export']);

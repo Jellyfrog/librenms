@@ -36,22 +36,22 @@ final class FdbTablesTest extends DBTestCase
 
     public function testSearchByVlan(): void
     {
-        $this->assertSame(['02:aa:aa:aa:aa:02'], $this->macs(['searchby' => 'vlan', 'searchPhrase' => '200']));
+        $this->assertSame(['02:aa:aa:aa:aa:02'], $this->macs(['searchby' => 'vlan', 'search' => '200']));
     }
 
     public function testVlanSearchWithTextMatchesNothing(): void
     {
-        $this->assertSame([], $this->macs(['searchby' => 'vlan', 'searchPhrase' => 'not-a-vlan']));
+        $this->assertSame([], $this->macs(['searchby' => 'vlan', 'search' => 'not-a-vlan']));
     }
 
     public function testSearchAllFieldsMatchesVlan(): void
     {
-        $this->assertSame(['02:aa:aa:aa:aa:01'], $this->macs(['searchPhrase' => '100']));
+        $this->assertSame(['02:aa:aa:aa:aa:01'], $this->macs(['search' => '100']));
     }
 
     public function testTextSearchDoesNotMatchEntriesWithoutAVlan(): void
     {
-        $this->assertSame([], $this->macs(['searchPhrase' => 'not-a-vlan']));
+        $this->assertSame([], $this->macs(['search' => 'not-a-vlan']));
     }
 
     public function testSortByVlan(): void
@@ -75,8 +75,8 @@ final class FdbTablesTest extends DBTestCase
     private function rows(array $params = []): array
     {
         return $this->actingAs(User::factory()->admin()->create(['enabled' => true]))
-            ->postJson(url('/ajax/table/fdb-tables'), $params + ['device_id' => $this->device->device_id])
+            ->getJson(route('table.fdb', $params + ['device_id' => $this->device->device_id]))
             ->assertOk()
-            ->json('rows');
+            ->json('data');
     }
 }

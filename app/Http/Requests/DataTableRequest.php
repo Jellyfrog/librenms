@@ -33,7 +33,18 @@ class DataTableRequest extends FormRequest
             'sort' => ['nullable', 'array'],
             'sort.*' => ['in:asc,desc'],
             'filter' => ['nullable', 'array'],
+            'columns' => ['nullable', 'array'],
+            'columns.*' => ['string'],
         ];
+    }
+
+    /**
+     * The table shows this column, for tables that send their visible columns (send-columns).
+     * In a resource use in_array($column, $request->array('columns'), true), resources get the plain request.
+     */
+    public function showsColumn(string $column): bool
+    {
+        return in_array($column, $this->array('columns'), true);
     }
 
     public function search(): ?string

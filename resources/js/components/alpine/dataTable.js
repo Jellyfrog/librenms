@@ -88,6 +88,8 @@ function readColumns(root) {
  * a page init() runs after the base init.
  * Hooks: requestParams() extra request params, loaded(json) handles extra response data (resource ->additional()).
  *
+ * config.sendColumns: requests include the visible column ids as columns[], for endpoints that skip expensive hidden columns.
+ *
  * Selection (config.selectable): rows are selected by rowKey across pages, "all matching" selects every row of the filter.
  * selectionData() returns {ids: [...]} or {all: true, filter: {...}} for bulk action requests.
  *
@@ -208,6 +210,10 @@ export default function dataTable(config, component = {}) {
                 onColumnVisibilityChange: (updater) => {
                     state.columnVisibility = functionalUpdate(updater, state.columnVisibility);
                     this.save();
+                    // the server only fills some columns while they are shown
+                    if (config.sendColumns) {
+                        this.changed(false);
+                    }
                 },
             });
 
@@ -354,6 +360,9 @@ export default function dataTable(config, component = {}) {
             };
             if (state.globalFilter) {
                 params.search = state.globalFilter;
+            }
+            if (config.sendColumns) {
+                params.columns = this.columns.filter((column) => this.isVisible(column.id)).map((column) => column.id);
             }
             // leave sort out when empty so the endpoint's default sort applies
             if (state.sorting.length) {

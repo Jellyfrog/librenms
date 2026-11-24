@@ -15,6 +15,7 @@
     'filter' => [],
     'hideFilter' => false,
     'columnToggle' => true,
+    'sendColumns' => false,
     'footer' => true,
     'panel' => true,
     'title' => null,
@@ -41,6 +42,7 @@
     rowKey/rowLabel: row id field, and an Alpine expression naming a row for screen readers (default row.{rowKey})
     filterName/filterFields/filter/hideFilter: show an x-filter, its filters are sent as filter[field][op]=value
     columnToggle: show the column visibility menu
+    sendColumns: send the visible column ids (columns[]) so the endpoint can skip work for hidden columns
     footer: show the pagination
     panel: wrap the table in an x-panel, set false when the table is already inside one
     component: Alpine.data() name of a page specific table: Alpine.data('name', (config) => LibreNMS.dataTable(config, {...}))
@@ -71,6 +73,7 @@
         'rowKey' => $rowKey,
         'filter' => (object) $filter,
         'selectable' => $selectable,
+        'sendColumns' => $sendColumns,
         'lang' => ['request_failed' => __('Request failed'), ...$lang],
     ];
     $rowLabel ??= 'row.' . $rowKey;
