@@ -49,6 +49,15 @@ final class AlertTablesTest extends TestCase
         $this->list('table.alertlog', ['sort' => ['alert_rule' => 'asc']])->assertJsonPath('data.0.severity', 'critical');
     }
 
+    public function testAlertLogTimeRange(): void
+    {
+        // fixed and relative (rolling) ranges
+        $this->list('table.alertlog', ['from' => now()->subMinutes(90)->toIso8601String()])->assertJsonPath('meta.total', 2);
+        $this->list('table.alertlog', ['from' => now()->subMinutes(150)->toIso8601String(), 'to' => now()->subMinutes(30)->toIso8601String()])->assertJsonPath('meta.total', 2);
+        $this->list('table.alertlog', ['from' => '-1d'])->assertJsonPath('meta.total', 4);
+        $this->actingAs($this->admin)->getJson(route('table.alertlog', ['from' => 'not a date']))->assertUnprocessable();
+    }
+
     public function testAlertLogStats(): void
     {
         $response = $this->list('table.alertlog-stats', [])->assertJsonPath('meta.total', 2);
