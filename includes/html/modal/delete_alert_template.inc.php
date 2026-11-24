@@ -47,7 +47,7 @@ $('#alert-template-removal').on("click", function(event) {
         dataType: "html",
         success: function(msg) {
             if(msg.indexOf("ERROR:") <= -1) {
-                $('[data-row-id="'+template_id+'"]').remove();
+                window.dispatchEvent(new CustomEvent('alert-template:deleted', {detail: {id: Number(template_id)}}));
             }
             $("#template_id").val('');
             toastr.success(msg);

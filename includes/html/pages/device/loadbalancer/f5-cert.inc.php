@@ -39,45 +39,21 @@ $components = $keep;
 //echo '<script>console.log("' . $type . '");</script>';
 
 ?>
-<table id='grid' data-toggle='bootgrid' class='table table-condensed table-responsive table-striped'>
-    <thead>
-    <tr>
-        <th data-column-id="cert">Certificate</th>
-        <th data-column-id="daysleft" data-type="numeric">Days left until expiration</th>
-        <th data-column-id="status" data-visible="false">Status</th>
-        <th data-column-id="message">Status</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php
-    foreach ($components as $array) {
-        if ($array['type'] != 'f5-cert') {
-            continue;
-        }
-        if ($array['status'] != 0) {
-            $message = $array['error'];
-            $status = 2;
-        } else {
-            $message = 'Ok';
-            $status = '';
-        } ?>
-        <tr <?php echo $error; ?>>
-            <td><?php echo e($array['label']); ?></td>
-            <td><?php echo $array['daysLeft']; ?></td>
-            <td><?php echo e($status); ?></td>
-            <td><?php echo e($message); ?></td>
-        </tr>
-        <?php
+<?php
+$rows = [];
+foreach ($components as $id => $array) {
+    if ($array['type'] != 'f5-cert') {
+        continue;
     }
-    ?>
-    </tbody>
-</table>
-<script type="text/javascript">
-    $("#grid").bootgrid({
-        caseSensitive: false,
-        statusMappings: {
-            2: "danger"
-        },
-    })
-</script>
+    $rows[] = [
+        'id' => $id,
+        'name' => $array['label'],
+        'daysleft' => $array['daysLeft'],
+        'failed' => $array['status'] != 0,
+        'message' => $array['status'] != 0 ? $array['error'] : 'Ok',
+    ];
+}
+echo view('device.loadbalancer.list', ['name' => 'cert', 'rows' => $rows, 'columns' => ['daysleft' => __('Days left until expiration')]]);
+?>
+
 

@@ -12,28 +12,22 @@
  */
 
 ?>
-<table id='grid' data-toggle='bootgrid' class='table table-condensed table-responsive table-striped'>
-    <thead>
-    <tr>
-        <th data-column-id="bwcid" data-type="numeric" data-visible="false">bwcid</th>
-        <th data-column-id="name">Name</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php
-    foreach ($components as $bwc_id => $array) {
-        if ($array['type'] != 'f5-ltm-bwc') {
-            continue;
-        } ?>
-        <tr>
-            <td><?php echo $bwc_id; ?></td>
-            <td><?php echo e($array['label']); ?></td>
-        </tr>
-        <?php
+<?php
+$rows = [];
+$url = \LibreNMS\Util\Url::generate($vars, ['type' => 'ltm_bwc', 'subtype' => 'ltm_bwc_det']);
+foreach ($components as $id => $array) {
+    if ($array['type'] != 'f5-ltm-bwc') {
+        continue;
     }
-    ?>
-    </tbody>
-</table>
+    $rows[] = [
+        'id' => $id,
+        'name' => $array['label'],
+        'url' => $url . 'bwcid=' . $id,
+        'failed' => false,
+    ];
+}
+echo view('device.loadbalancer.list', ['name' => 'ltm-bwc', 'rows' => $rows, 'columns' => [], 'status' => false]);
+?>
 
 <div class="panel panel-default" id="BitsDropped">
     <div class="panel-heading">
@@ -89,14 +83,3 @@
     </div>
 </div>
 
-    <script type="text/javascript">
-        $("#grid").bootgrid({
-            caseSensitive: false,
-            statusMappings: {
-                2: "danger"
-            },
-        }).on("click.rs.jquery.bootgrid", function (e, columns, row) {
-            var link = <?php echo json_encode(\LibreNMS\Util\Url::generate($vars, ['type' => 'ltm_bwc', 'subtype' => 'ltm_bwc_det'])); ?> + 'bwcid=' + row['bwcid'];
-            window.location.href = link;
-        });
-    </script>

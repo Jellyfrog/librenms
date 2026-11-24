@@ -29,7 +29,6 @@
     <link href="{{ asset('css/bootstrap-datetimepicker.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap-switch.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/toastr.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/jquery.bootgrid.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/mktree.css') }}" rel="stylesheet">
     <link href="{{ asset('css/vis.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/fontawesome.min.css') }}" rel="stylesheet">
@@ -62,7 +61,6 @@
     <script src="{{ asset('js/moment.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap-datetimepicker.min.js?ver=05072021') }}"></script>
     <script src="{{ asset('js/mktree.js') }}"></script>
-    <script src="{{ asset('js/jquery.bootgrid.min.js') }}"></script>
     <script src="{{ asset('js/handlebars.min.js') }}"></script>
     <script data-pace-options='{ "eventLag": { "lagThreshold": 30 } }' src="{{ asset('js/pace.min.js') }}"></script>
     <script src="{{ asset('js/qrcode.min.js') }}"></script>

@@ -25,25 +25,37 @@ $no_refresh = true;
         <div class="panel-body">
             <div class="tab-content">
                 <div class="tab-pane fade in active" id="list">
-                    <div class="table-responsive">
-                        <table id="oxidized-nodes" class="table table-hover table-condensed table-striped">
-                            <thead>
-                            <tr>
-                                <th data-column-id="id" data-visible="false">ID</th>
-                                <th data-column-id="hostname" data-formatter="hostname" data-order="asc">Hostname</th>
-                                <th data-column-id="sysname" data-visible="false">SysName</th>
-                                <th data-column-id="last_status" data-formatter="status">Last Status</th>
-                                <th data-column-id="last_update">Last Update</th>
-                                <th data-column-id="model">Model</th>
-                                <th data-column-id="group">Group</th>
-                                <th data-column-id="actions" data-formatter="actions">Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <?php get_oxidized_nodes_list(); ?>
-                            </tbody>
-                        </table>
-                    </div>
+<?php
+echo Blade::render(<<<'BLADE'
+<x-data-table name="oxidized-nodes" mode="local" :rows="$rows" :sort="['hostname' => 'asc']" :panel="false">
+    <x-slot:heading>
+        <button type="button" class="btn btn-success btn-sm" name="btn-reload-nodes" title="{{ __('Update Oxidized\'s node list from LibreNMS data') }}">
+            <i class="fa fa-refresh"></i> {{ __('Reload node list') }}
+        </button>
+    </x-slot:heading>
+    <x-data-table.column field="id" :label="__('ID')" :visible="false" />
+    <x-data-table.column field="hostname" :label="__('Hostname')" :hideable="false">
+        <template x-if="row.id"><a :href="@js(url('device')) + '/' + encodeURIComponent(row.id)" x-text="row.hostname"></a></template>
+        <template x-if="! row.id"><span x-text="row.hostname"></span></template>
+    </x-data-table.column>
+    <x-data-table.column field="sysname" :label="__('SysName')" :visible="false" />
+    <x-data-table.column field="last_status" :label="__('Last Status')">
+        <i class="fa fa-square" :class="row.last_status == 'success' ? 'text-success' : 'text-danger'" :title="row.last_status"></i>
+    </x-data-table.column>
+    <x-data-table.column field="last_update" :label="__('Last Update')" />
+    <x-data-table.column field="model" :label="__('Model')" />
+    <x-data-table.column field="group" :label="__('Group')" />
+    <x-data-table.column field="actions" :label="__('Actions')" :sortable="false" :searchable="false">
+        <template x-if="row.id">
+            <span>
+                <button type="button" class="btn btn-default btn-sm" title="{{ __('Refetch config') }}" x-on:click="refresh_oxidized_node(row.hostname)"><i class="fa fa-refresh"></i></button>
+                <a :href="@js(url('device')) + '/' + encodeURIComponent(row.id) + '/config'" title="{{ __('View config') }}"><i class="fa fa-align-justify fa-lg icon-theme"></i></a>
+            </span>
+        </template>
+    </x-data-table.column>
+</x-data-table>
+BLADE, ['rows' => get_oxidized_nodes()]);
+?>
                 </div>
                 <div class="tab-pane fade" id="search">
                     <form class="form-horizontal" action="" method="post">
@@ -66,55 +78,6 @@ $no_refresh = true;
     </div>
 </div>
 <script>
-    var grid = $("#oxidized-nodes").bootgrid({
-        templates: {
-            header: '<div id="{{ctx.id}}" class="{{css.header}}"><div class="row">\
-                        <div class="col-sm-8 actionBar">\
-                            <span class="pull-left">\
-                                <button type="submit" class="btn btn-success btn-sm" name="btn-reload-nodes" id="btn-reload-nodes"\
-                                title="Update Oxidized\'s node list from LibreNMS data"><i class="fa fa-refresh"></i>\
-                                Reload node list</button>\
-                            </span>\
-                        </div>\
-                        <div class="col-sm-4 actionBar"><p class="{{css.search}}"></p><p class="{{css.actions}}"></p></div>\
-                    </div></div>'
-            },
-        rowCount: [50, 100, 250, -1],
-        converters: {
-            // rows are parsed from the table as text, escape them again when rendering
-            string: {
-                from: function (value) { return value; },
-                to: function (value) { return escapeOxidizedHtml(value); }
-            }
-        },
-        formatters: {
-            "hostname": function(column, row) {
-                if (row.id) {
-                    return '<a href="<?= url('device') ?>/' + encodeURIComponent(row.id) + '">' + escapeOxidizedHtml(row.hostname) + '</a>';
-                } else {
-                    return escapeOxidizedHtml(row.hostname);
-                }
-            },
-            "actions": function(column, row) {
-                if (row.id) {
-                    var id = escapeOxidizedHtml(row.id);
-                    return '<button class="btn btn-default btn-sm" name="btn-refresh-node-devId' + id +
-                            '" id="btn-refresh-node-devId' + id + '" data-hostname="' + escapeOxidizedHtml(row.hostname) + '" onclick="refresh_oxidized_node(this.dataset.hostname);" title="Refetch config">' +
-                            '<i class="fa fa-refresh"></i></button> ' +
-                            '<a href="<?= url('device') ?>/' + encodeURIComponent(row.id) + '/config" title="View config"><i class="fa fa-align-justify fa-lg icon-theme"></i></a>';
-                }
-            },
-            "status": function(column, row) {
-                var color = ((row.last_status == 'success') ? 'success' : 'danger');
-                return '<i class="fa fa-square text-' + color + '" title="' + escapeOxidizedHtml(row.last_status) + '"></i>';
-            }
-        }
-    });
-
-    function escapeOxidizedHtml(value) {
-        return $('<div>').text(value == null ? '' : String(value)).html().replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-    }
-
     $("[name='btn-search']").on('click', function (event) {
         event.preventDefault();
         var $this = $(this);
@@ -146,7 +109,7 @@ $no_refresh = true;
             }
         });
     });
-    $("[name='btn-reload-nodes']").on('click', function (event) {
+    $(document).on('click', "[name='btn-reload-nodes']", function (event) {
         $.ajax({
             type: 'POST',
             url: 'ajax_form.php',

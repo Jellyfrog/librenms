@@ -12,57 +12,27 @@
  */
 
 ?>
-<table id='grid' data-toggle='bootgrid' class='table table-condensed table-responsive table-striped'>
-    <thead>
-    <tr>
-        <th data-column-id="vsid" data-type="numeric" data-visible="false">vsid</th>
-        <th data-column-id="poolid" data-type="numeric" data-visible="false">poolid</th>
-        <th data-column-id="name">Name</th>
-        <th data-column-id="host">IP : Port</th>
-        <th data-column-id="pool">Default Pool</th>
-        <th data-column-id="status" data-visible="false">Status</th>
-        <th data-column-id="message">Status</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php
-    foreach ($components as $vs_id => $array) {
-        if ($array['type'] != 'f5-ltm-vs') {
-            continue;
-        }
-        $string = $array['IP'] . ':' . $array['port'];
-        if ($array['status'] != 0) {
-            $message = $array['error'];
-            $status = 2;
-        } else {
-            $message = 'Ok';
-            $status = '';
-        }
-
-        // Find the ID for this pool
-        $id = 0;
-        foreach ($components as $k => $v) {
-            if ($v['type'] != 'f5-ltm-pool') {
-                continue;
-            }
-            if ($v['label'] == $array['pool']) {
-                $id = $k;
-            }
-        } ?>
-        <tr>
-            <td><?php echo $vs_id; ?></td>
-            <td><?php echo $id; ?></td>
-            <td><?php echo e($array['label']); ?></td>
-            <td><?php echo e($string); ?></td>
-            <td><?php echo e($array['pool']); ?></td>
-            <td><?php echo e($status); ?></td>
-            <td><?php echo e($message); ?></td>
-        </tr>
-        <?php
+<?php
+$rows = [];
+$url = \LibreNMS\Util\Url::generate($vars, ['type' => 'ltm_vs', 'subtype' => 'ltm_vs_det']);
+// pool label => component id, to link the virtual server's default pool
+$pools = collect($components)->filter(fn ($component) => $component['type'] == 'f5-ltm-pool')->map(fn ($component) => $component['label'])->flip();
+foreach ($components as $id => $array) {
+    if ($array['type'] != 'f5-ltm-vs') {
+        continue;
     }
-    ?>
-    </tbody>
-</table>
+    $rows[] = [
+        'id' => $id,
+        'name' => $array['label'],
+        'url' => $url . 'vsid=' . $id . '/poolid=' . ($pools[$array['pool']] ?? 0),
+        'host' => $array['IP'] . ':' . $array['port'],
+        'pool' => $array['pool'],
+        'failed' => $array['status'] != 0,
+        'message' => $array['status'] != 0 ? $array['error'] : 'Ok',
+    ];
+}
+echo view('device.loadbalancer.list', ['name' => 'ltm-vs', 'rows' => $rows, 'columns' => ['host' => __('IP : Port'), 'pool' => __('Default Pool')]]);
+?>
 
 <div class="panel panel-default" id="currconnections">
     <div class="panel-heading">
@@ -170,14 +140,4 @@
         ?>
     </div>
 </div>
-    <script type="text/javascript">
-        $("#grid").bootgrid({
-            caseSensitive: false,
-            statusMappings: {
-                2: "danger"
-            },
-        }).on("click.rs.jquery.bootgrid", function (e, columns, row) {
-            var link = <?php echo json_encode(\LibreNMS\Util\Url::generate($vars, ['type' => 'ltm_vs', 'subtype' => 'ltm_vs_det'])); ?> + 'vsid=' + row['vsid']+'/poolid='+row['poolid'];
-            window.location.href = link;
-        });
-    </script>
+

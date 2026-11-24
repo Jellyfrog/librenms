@@ -10,6 +10,7 @@
     'search' => true,
     'rowKey' => 'id',
     'rowLabel' => null,
+    'rowClass' => null,
     'filterName' => null,
     'filterFields' => [],
     'filter' => [],
@@ -41,6 +42,7 @@
     perPage/perPageOptions: page size choices, -1 shows all rows
     search: show the search box, sent as search
     rowKey/rowLabel: row id field, and an Alpine expression naming a row for screen readers (default row.{rowKey})
+    rowClass: Alpine expression for extra row classes, for example row.failed && 'danger'
     filterName/filterFields/filter/hideFilter: show an x-filter, its filters are sent as filter[field][op]=value
     columnToggle: show the column visibility menu
     sendColumns: send the visible column ids (columns[]) so the endpoint can skip work for hidden columns

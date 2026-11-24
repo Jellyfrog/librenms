@@ -1,6 +1,6 @@
 @if($rows->isNotEmpty())
 <div class="table-responsive">
-    <table class="table table-hover table-condensed table-striped bootgrid-table">
+    <table class="table table-hover table-condensed table-striped">
         <thead>
         <tr>
             <th class="text-left">Device</th>

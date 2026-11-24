@@ -367,7 +367,12 @@ function eventlog_severity($eventlog_severity)
     };
 } // end eventlog_severity
 
-function get_oxidized_nodes_list()
+/**
+ * Oxidized nodes of devices the user can see, rows for the oxidized page table
+ *
+ * @return list<array<string, mixed>>
+ */
+function get_oxidized_nodes(): array
 {
     $context = stream_context_create([
         'http' => [
@@ -377,6 +382,7 @@ function get_oxidized_nodes_list()
 
     $data = json_decode(file_get_contents(LibrenmsConfig::get('oxidized.url') . '/nodes?format=json', false, $context), true);
 
+    $rows = [];
     foreach ($data as $object) {
         $device = DeviceCache::getByHostname($object['name']);
         if (! device_permitted($device->device_id)) {
@@ -385,28 +391,25 @@ function get_oxidized_nodes_list()
         }
         try {
             // Convert UTC time string to local timezone set
-            $utc_time = $object['time'];
-            $utc_date = new DateTime($utc_time, new DateTimeZone('UTC'));
-            $local_timezone = new DateTimeZone(date_default_timezone_get());
-            $local_date = $utc_date->setTimezone($local_timezone);
-
-            // Generate local time string
-            $formatted_local_time = $local_date->format('Y-m-d H:i:s T');
+            $utc_date = new DateTime($object['time'], new DateTimeZone('UTC'));
+            $formatted_local_time = $utc_date->setTimezone(new DateTimeZone(date_default_timezone_get()))->format('Y-m-d H:i:s T');
         } catch (Exception) {
             // Just display the current value of $object['time'];
             $formatted_local_time = $object['time'];
         }
-        echo '<tr>
-        <td>' . e($device->device_id) . '</td>
-        <td>' . e($object['name']) . '</td>
-        <td>' . e($device->sysName) . '</td>
-        <td>' . e($object['status']) . '</td>
-        <td>' . e($formatted_local_time) . '</td>
-        <td>' . e($object['model']) . '</td>
-        <td>' . e($object['group']) . '</td>
-        <td></td>
-        </tr>';
+
+        $rows[] = [
+            'id' => $device->device_id,
+            'hostname' => $object['name'],
+            'sysname' => $device->sysName,
+            'last_status' => $object['status'],
+            'last_update' => $formatted_local_time,
+            'model' => $object['model'],
+            'group' => $object['group'],
+        ];
     }
+
+    return $rows;
 }
 
 /**

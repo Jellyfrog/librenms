@@ -35,73 +35,50 @@ use LibreNMS\Alerting\QueryBuilderParser;
                 <h5 class="modal-title" id="search_alert_rule_list">Running Alert rules</h5>
             </div>
             <div class="modal-body">
-                <div class="table-responsive">
-                    <table id="alert_rule_list" class="table table-condensed table-hover">
-                        <thead>
-                            <tr>
-                                <th data-column-id="alert_name" data-width="200px">Name</th>
-                                <th data-column-id="alert_rule">Rule</th>
-                                <th data-column-id="alert_severity">Severity</th>
-                                <td data-column-id="alert_action" data-formatter="alert_action"></td>
-                            </tr>
-                        </thead>
-                        <?php
-                        $alert_rules = dbFetchRows('SELECT * FROM alert_rules order by name');
-                        foreach ($alert_rules as $rule) {
-                            if (isset($rule_extra['options']['override_query']) && ($rule_extra['options']['override_query'] === 'on' || $rule_extra['options']['override_query'] === true)) {
-                                $rule_display = 'Custom SQL Query';
-                            } else {
-                                $rule_display = QueryBuilderParser::fromJson($rule['builder'])->toSql(false);
-                            }
-                            echo '
-                                <tr>
-                                    <td>' . e(strip_tags((string) $rule['name'])) . '</td>
-                                    <td><i>' . e(strip_tags((string) $rule_display)) . "</i></td>
-                                    <td>{$rule['severity']}</td>
-                                    <td>{$rule['id']}</td>
-                                </tr>
-                            ";
-                        }
-                        ?>
-                    </table>
-                    <script>
-                        var alert_grid = $("#alert_rule_list").bootgrid({
-                            caseSensitive: false,
-                            formatters: {
-                                "alert_action": function (column, row) {
-                                    return "<button type=\"button\" id=\"alert_rule_from_list\" name=\"alert_rule_from_list\" data-rule_id=\"" + row.alert_action + "\" class=\"btn btn-sm btn-primary alert_rule_from_list\">Select</button";
+                <?php
+                $rows = [];
+                foreach (\App\Models\AlertRule::orderBy('name')->get() as $rule) {
+                    $rows[] = [
+                        'id' => $rule->id,
+                        'alert_name' => strip_tags((string) $rule->name),
+                        'alert_rule' => strip_tags((string) QueryBuilderParser::fromJson($rule->builder)->toSql(false)),
+                        'alert_severity' => $rule->severity,
+                    ];
+                }
+                echo Blade::render(<<<'BLADE'
+                <x-data-table name="alert-rule-list" mode="local" :rows="$rows" :sort="['alert_name' => 'asc']" :column-toggle="false" :panel="false">
+                    <x-data-table.column field="alert_name" :label="__('Name')" width="200px" />
+                    <x-data-table.column field="alert_rule" :label="__('Rule')" class="tw:italic" />
+                    <x-data-table.column field="alert_severity" :label="__('Severity')" />
+                    <x-data-table.column field="alert_action" :sortable="false" :searchable="false">
+                        <button type="button" class="btn btn-sm btn-primary" x-on:click="selectAlertRuleFromList(row.id)">{{ __('Select') }}</button>
+                    </x-data-table.column>
+                </x-data-table>
+                BLADE, ['rows' => $rows]);
+                ?>
+                <script>
+                    function selectAlertRuleFromList(alert_rule_id) {
+                        $.ajax({
+                            type: "GET",
+                            url: route('alert-rule-template.rule', alert_rule_id),
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.status == 'ok') {
+                                    $("#search_alert_rule_modal").one('hidden.bs.modal', function(event) {
+                                        $('#create-alert').modal('show');
+                                        loadRule(data);
+                                    });
+                                    $("#search_alert_rule_modal").modal('hide');
+                                } else {
+                                    toastr.error(data.message);
                                 }
                             },
-                            templates: {
-                                footer: "<div id=\"{{ctx.id}}\" class=\"{{css.footer}}\"><div class=\"row\"><div class=\"col-sm-12\"><p class=\"{{css.pagination}}\"></p></div></div></div>"
+                            error: function () {
+                                toastr.error('Failed to process template');
                             }
-                        }).on("loaded.rs.jquery.bootgrid", function()
-                        {
-                            alert_grid.find(".alert_rule_from_list").on("click", function(e) {
-                                var alert_rule_id = $(this).data("rule_id");
-                                $.ajax({
-                                    type: "GET",
-                                    url: route('alert-rule-template.rule', alert_rule_id),
-                                    dataType: "json",
-                                    success: function (data) {
-                                        if (data.status == 'ok') {
-                                            $("#search_alert_rule_modal").one('hidden.bs.modal', function(event) {
-                                                $('#create-alert').modal('show');
-                                                loadRule(data);
-                                            });
-                                            $("#search_alert_rule_modal").modal('hide');
-                                        } else {
-                                            toastr.error(data.message);
-                                        }
-                                    },
-                                    error: function () {
-                                        toastr.error('Failed to process template');
-                                    }
-                                });
-                            }).end();
                         });
-                    </script>
-                </div>
+                    }
+                </script>
             </div>
         </div>
     </div>

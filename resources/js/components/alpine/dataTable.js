@@ -390,6 +390,15 @@ export default function dataTable(config, component = {}) {
             window.open(window.axios.getUri({ url: config.exportUrl, params }), "_blank");
         },
 
+        /** A row was created: local mode adds it, server mode reloads the page */
+        addRow(row) {
+            if (local) {
+                setData([...data, row]);
+            } else {
+                this.load();
+            }
+        },
+
         /** A row was deleted: local mode drops it, server mode reloads the page */
         removeRow(row) {
             if (local) {

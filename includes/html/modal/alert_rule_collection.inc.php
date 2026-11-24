@@ -35,70 +35,49 @@ use LibreNMS\Alerting\QueryBuilderParser;
                 <h5 class="modal-title" id="search_rule">Alert rule collection</h5>
             </div>
             <div class="modal-body">
-                <div class="table-responsive">
-                    <table id="rule_collection" class="table table-condensed table-hover">
-                        <thead>
-                            <tr>
-                                <th data-column-id="name" data-width="200px">Name</th>
-                                <th data-column-id="rule">Rule</th>
-                                <td data-column-id="action" data-formatter="action"></td>
-                            </tr>
-                        </thead>
-                        <?php
-                        $tmp_rule_id = 0;
-                        foreach (get_rules_from_json() as $rule) {
-                            $rule['rule_id'] = $tmp_rule_id;
-                            echo "
-                                <tr>
-                                    <td>{$rule['name']}</td>
-                                    <td>";
-                            echo QueryBuilderParser::fromJson($rule['builder'])->toSql(false);
-                            echo "  </td>
-                                    <td>{$rule['rule_id']}</td>
-                                </tr>
-                            ";
-                            $tmp_rule_id++;
-                        }
-                        ?>
-                    </table>
-                    <script>
-                        var grid = $("#rule_collection").bootgrid({
-                            caseSensitive: false,
-                            formatters: {
-                                "action": function (column, row) {
-                                    return "<button type=\"button\" id=\"rule_from_collection\" name=\"rule_from_collection\" data-rule_id=\"" + row.action + "\" class=\"btn btn-sm btn-primary rule_from_collection\">Select</button";
+                <?php
+                // the collection is a list, its position is the template id
+                $rows = [];
+                foreach (array_values(get_rules_from_json()) as $index => $rule) {
+                    $rows[] = [
+                        'id' => $index,
+                        'name' => $rule['name'],
+                        'rule' => QueryBuilderParser::fromJson($rule['builder'])->toSql(false),
+                    ];
+                }
+                echo Blade::render(<<<'BLADE'
+                <x-data-table name="alert-rule-collection" mode="local" :rows="$rows" :sort="['name' => 'asc']" :column-toggle="false" :panel="false">
+                    <x-data-table.column field="name" :label="__('Name')" width="200px" />
+                    <x-data-table.column field="rule" :label="__('Rule')" />
+                    <x-data-table.column field="action" :sortable="false" :searchable="false">
+                        <button type="button" class="btn btn-sm btn-primary" x-on:click="selectRuleFromCollection(row.id)">{{ __('Select') }}</button>
+                    </x-data-table.column>
+                </x-data-table>
+                BLADE, ['rows' => $rows]);
+                ?>
+                <script>
+                    function selectRuleFromCollection(template_rule_id) {
+                        $.ajax({
+                            type: "GET",
+                            url: route('alert-rule-template', template_rule_id),
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.status == 'ok') {
+                                    $("#search_rule_modal").one('hidden.bs.modal', function(event) {
+                                        $('#create-alert').modal('show');
+                                        loadRule(data);
+                                    });
+                                    $("#search_rule_modal").modal('hide');
+                                } else {
+                                    toastr.error(data.message);
                                 }
                             },
-                            templates: {
-                                footer: "<div id=\"{{ctx.id}}\" class=\"{{css.footer}}\"><div class=\"row\"><div class=\"col-sm-12\"><p class=\"{{css.pagination}}\"></p></div></div></div>"
+                            error: function () {
+                                toastr.error('Failed to process template');
                             }
-                        }).on("loaded.rs.jquery.bootgrid", function()
-                        {
-                            grid.find(".rule_from_collection").on("click", function(e) {
-                                var template_rule_id = $(this).data("rule_id");
-                                $.ajax({
-                                    type: "GET",
-                                    url: route('alert-rule-template', template_rule_id),
-                                    dataType: "json",
-                                    success: function (data) {
-                                        if (data.status == 'ok') {
-                                            $("#search_rule_modal").one('hidden.bs.modal', function(event) {
-                                                $('#create-alert').modal('show');
-                                                loadRule(data);
-                                            });
-                                            $("#search_rule_modal").modal('hide');
-                                        } else {
-                                            toastr.error(data.message);
-                                        }
-                                    },
-                                    error: function () {
-                                        toastr.error('Failed to process template');
-                                    }
-                                });
-                            }).end();
                         });
-                    </script>
-                </div>
+                    }
+                </script>
             </div>
         </div>
     </div>

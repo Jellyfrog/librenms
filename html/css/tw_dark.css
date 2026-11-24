@@ -321,14 +321,6 @@
     background-color: #9b1410
 }
 
-.dark .bootgrid-table th > .column-header-anchor {
-    color: #bfc0c0;
-}
-
-.dark .bootgrid-table th {
-    background-color: #3e444c;
-}
-
 .dark legend {
     color: #c8c8c8
 }
@@ -1289,10 +1281,6 @@
 .dark .grid-stack .grid-stack-item-content {
     color: var(--color-light2);
     background-color: #353a41;
-}
-
-.dark .bootgrid-table td.loading, .dark .bootgrid-table td.no-results {
-    background-color: #3e444c;
 }
 
 .dark tr.bgp:nth-child(even) {

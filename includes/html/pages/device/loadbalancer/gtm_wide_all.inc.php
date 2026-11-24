@@ -13,39 +13,23 @@
  */
 
 ?>
-<table id='grid' data-toggle='bootgrid' class='table table-condensed table-responsive table-striped'>
-    <thead>
-    <tr>
-        <th data-column-id="wideid" data-type="numeric" data-visible="false">wideid</th>
-        <th data-column-id="name">Name</th>
-        <th data-column-id="status" data-visible="false">Status Code</th>
-        <th data-column-id="message">Status</th>
-    </tr>
-    </thead>
-    <tbody>
-    <?php
-    foreach ($components as $wide_id => $array) {
-        if ($array['type'] != 'f5-gtm-wide') {
-            continue;
-        }
-        if ($array['status'] != 0) {
-            $message = $array['error'];
-            $status = 2;
-        } else {
-            $message = 'Ok';
-            $status = '';
-        } ?>
-        <tr>
-            <td><?php echo $wide_id; ?></td>
-            <td><?php echo e($array['label']); ?></td>
-            <td><?php echo e($status); ?></td>
-            <td><?php echo e($message); ?></td>
-        </tr>
-        <?php
+<?php
+$rows = [];
+$url = \LibreNMS\Util\Url::generate($vars, ['type' => 'gtm_wide', 'subtype' => 'gtm_wide_det']);
+foreach ($components as $id => $array) {
+    if ($array['type'] != 'f5-gtm-wide') {
+        continue;
     }
-    ?>
-    </tbody>
-</table>
+    $rows[] = [
+        'id' => $id,
+        'name' => $array['label'],
+        'url' => $url . 'wideid=' . $id,
+        'failed' => $array['status'] != 0,
+        'message' => $array['status'] != 0 ? $array['error'] : 'Ok',
+    ];
+}
+echo view('device.loadbalancer.list', ['name' => 'gtm-wide', 'rows' => $rows, 'columns' => []]);
+?>
 
 <div class="panel panel-default" id="requests">
     <div class="panel-heading">
@@ -100,14 +84,4 @@
         ?>
     </div>
 </div>
-    <script type="text/javascript">
-        $("#grid").bootgrid({
-            caseSensitive: false,
-            statusMappings: {
-                2: "danger"
-            },
-        }).on("click.rs.jquery.bootgrid", function (e, columns, row) {
-            var link = <?php echo json_encode(\LibreNMS\Util\Url::generate($vars, ['type' => 'gtm_wide', 'subtype' => 'gtm_wide_det'])); ?> + 'wideid=' + row['wideid'];
-            window.location.href = link;
-        });
-    </script>
+

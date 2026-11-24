@@ -11,7 +11,6 @@ The lists below give each project and its license.
 
 - [Bootstrap](http://getbootstrap.com/): MIT
 - [Font Awesome](http://fontawesome.io/icons/): MIT License
-- [Jquery Bootgrid](http://www.jquery-bootgrid.com/): MIT License
 - [Pace](https://github.com/HubSpot/pace): Open License
 - [Twitter typeahead](https://github.com/corejavascript/typeahead.js): Open License
 - [Vis](http://visjs.org/): MIT / Apache 2.0
