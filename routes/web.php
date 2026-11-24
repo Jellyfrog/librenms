@@ -518,14 +518,14 @@ Route::middleware(['auth'])->group(function (): void {
             Route::get('customers', Table\CustomersController::class)->name('table.customers');
             Route::get('diskio', Table\DiskioController::class)->name('table.diskio');
             Route::get('device', Table\DeviceController::class)->name('table.device');
-            Route::post('device-dependencies', Table\DeviceDependenciesController::class)->name('table.device-dependencies');
+            Route::get('device-dependencies', Table\DeviceDependenciesController::class)->name('table.device-dependencies');
             Route::get('device/export', [Table\DeviceController::class, 'export']);
             Route::get('eventlog', Table\EventlogController::class)->name('table.eventlog');
             Route::get('fdb-tables', Table\FdbTablesController::class)->name('table.fdb');
             Route::get('graylog', Table\GraylogController::class)->name('table.graylog');
             Route::get('inventory', Table\InventoryController::class)->name('table.inventory');
             Route::get('inventory/export', [Table\InventoryController::class, 'export']);
-            Route::post('location', Table\LocationController::class)->name('table.location');
+            Route::get('location', Table\LocationController::class)->name('table.location');
             Route::get('location/export', [Table\LocationController::class, 'export']);
             Route::get('mempools', Table\MempoolsController::class)->name('table.mempools');
             Route::get('mempools/export', [Table\MempoolsController::class, 'export']);

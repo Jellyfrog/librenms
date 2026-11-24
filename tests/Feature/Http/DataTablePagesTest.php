@@ -81,4 +81,17 @@ final class DataTablePagesTest extends TestCase
         $this->assertSame(1, $total('100%'));
         $this->assertSame(0, $total('1_0'));
     }
+
+    public function testUsersPageListsUsersInALocalTable(): void
+    {
+        Role::findOrCreate('admin');
+        $admin = User::factory()->create(['enabled' => 1, 'username' => 'table-admin'])->assignRole('admin');
+
+        $this->actingAs($admin)->get(route('users.index'))
+            ->assertOk()
+            ->assertSee('dataTable(', false)
+            ->assertSee('\u0022mode\u0022:\u0022local\u0022', false)
+            ->assertSee('table-admin')
+            ->assertDontSee('bootgrid(', false);
+    }
 }

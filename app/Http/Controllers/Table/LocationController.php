@@ -1,63 +1,52 @@
 <?php
 
-/**
- * LocationsController.php
- *
- * -Description-
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * @link       https://www.librenms.org
- *
- * @copyright  2018 Tony Murray
- * @author     Tony Murray <murraytony@gmail.com>
- */
-
 namespace App\Http\Controllers\Table;
 
+use App\Facades\LibrenmsConfig;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\StreamsCsv;
+use App\Http\Requests\DataTableRequest;
+use App\Http\Resources\Table\LocationResource;
 use App\Models\Device;
 use App\Models\Location;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-/**
- * @extends TableController<Location>
- */
-class LocationController extends TableController
+class LocationController extends Controller
 {
-    /**
-     * Defines search fields will be searched in order
-     */
-    public function searchFields(Request $request): array
+    use StreamsCsv;
+
+    public function __invoke(DataTableRequest $request): AnonymousResourceCollection
     {
-        return ['location'];
+        $query = $this->query($request);
+        $request->searchQuery($query, ['location']);
+        $request->sortQuery($query, ['location', 'devices' => 'devices_count', 'down' => 'down_count'], ['location' => 'asc']);
+
+        // graphs are added to the page after it loaded
+        LibrenmsConfig::set('enable_lazy_load', false);
+
+        return LocationResource::collection($request->paginate($query));
     }
 
-    protected function sortFields(Request $request): array
+    public function export(DataTableRequest $request): StreamedResponse
     {
-        return [
-            'location',
-            'devices' => 'devices_count',
-            'down' => 'down_count',
-        ];
+        $rows = $this->query($request)->orderBy('location')->lazy()->map(fn (Location $location) => [
+            $location->id,
+            $location->location,
+            $location->lat,
+            $location->lng,
+            $location->devices_count,
+            $location->getAttribute('down_count'),
+        ]);
+
+        return $this->streamCsv('locations', [__('ID'), __('Location'), __('Latitude'), __('Longitude'), __('Devices'), __('Down')], $rows);
     }
 
     /**
-     * Defines the base query for this resource
+     * @return Builder<Location>
      */
-    public function baseQuery(Request $request): Builder
+    private function query(DataTableRequest $request): Builder
     {
         $this->authorize('viewAny', Location::class);
 
@@ -65,53 +54,5 @@ class LocationController extends TableController
             'devices',
             'devices as down_count' => fn ($q) => (new Device)->scopeIsDown($q),
         ]);
-    }
-
-    /**
-     * @return list<string>
-     */
-    protected function getExportHeaders(): array
-    {
-        return [
-            __('ID'),
-            __('Location'),
-            __('Latitude'),
-            __('Longitude'),
-            __('Devices'),
-            __('Down'),
-        ];
-    }
-
-    /**
-     * @param  Location  $item
-     * @return list<scalar|null>
-     */
-    protected function formatExportRow(Model $item): array
-    {
-        return [
-            $item->id,
-            $item->location,
-            $item->lat,
-            $item->lng,
-            $item->devices_count,
-            $item->getAttribute('down_count'),
-        ];
-    }
-
-    /**
-     * @param  Location  $model
-     * @return array<string, scalar>
-     */
-    public function formatItem(Model $model): array
-    {
-        return [
-            'id' => $model->id,
-            'location' => $model->location,
-            'lat' => $model->lat,
-            'lng' => $model->lng,
-            'devices' => $model->devices_count,
-            /** @phpstan-ignore property.notFound (dynamic property from withCount) */
-            'down' => $model->down_count,
-        ];
     }
 }

@@ -100,6 +100,26 @@ document.addEventListener('alpine:init', () => {
 An `actions` slot makes rows selectable. `selectionData()` returns `{ids: [...]}` or, after "select all matching",
 `{all: true, filter: {...}, ...params}` so the endpoint can apply the action to the same query.
 
+## Row details and row actions
+
+An `expand` slot shows details under a row, open it with `toggleExpanded(row)` from a cell:
+
+```blade
+<x-data-table.column field="actions" :sortable="false">
+    <button x-on:click="toggleExpanded(row)">Graphs</button>
+</x-data-table.column>
+<x-slot:expand>
+    <template x-for="graph in row.graphs"><div x-html="graph"></div></template>
+</x-slot:expand>
+```
+
+Cells can call the table: `request(key, method, url, data)` (toasts errors, `isPending(key)` while running),
+`reload()`, `removeRow(row)` after a delete, `notify(message)`. Toolbar controls in the `heading` slot can change
+`config.params` and call `changed(true)` to load the first page with them.
+
+A table can send its visible columns (`send-columns`), so the endpoint only does expensive work for shown columns:
+`in_array('dnsname', $request->array('columns'), true)`.
+
 ## Reloading
 
 ```js

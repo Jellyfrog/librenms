@@ -30,6 +30,7 @@ use App\Facades\LibrenmsConfig;
 use App\Http\Interfaces\ToastInterface;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\Table\UserResource;
 use App\Models\Dashboard;
 use App\Models\User;
 use App\Models\UserPref;
@@ -59,7 +60,8 @@ class UserController extends Controller implements HasMiddleware
         $this->authorize('viewAny', User::class);
 
         return view('user.index', [
-            'users' => User::with(['preferences', 'roles'])->orderBy('username')->get(),
+            // the table sorts, searches and paginates these in the browser
+            'rows' => UserResource::collection(User::with(['preferences', 'roles'])->orderBy('username')->get())->resolve(),
             'multiauth' => User::query()->distinct()->count('auth_type') > 1,
         ]);
     }

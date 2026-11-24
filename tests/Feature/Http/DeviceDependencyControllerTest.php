@@ -59,18 +59,18 @@ final class DeviceDependencyControllerTest extends TestCase
         $child->parents()->attach($parent);
 
         $response = $this->actingAs($this->admin())
-            ->postJson(route('table.device-dependencies'), ['searchPhrase' => 'dep-', 'rowCount' => -1])
+            ->getJson(route('table.device-dependencies', ['search' => 'dep-', 'per_page' => -1]))
             ->assertOk();
 
-        $rows = $response->json('rows');
+        $rows = $response->json('data');
         $this->assertIsArray($rows);
         $rows = collect($rows)->keyBy('device_id');
         $this->assertSame(__('None'), $rows[$parent->device_id]['parents']);
-        $this->assertSame('[]', $rows[$parent->device_id]['parents_json']);
+        $this->assertSame([], $rows[$parent->device_id]['parent_list']);
         $this->assertStringContainsString('dep-parent.example.com', $rows[$child->device_id]['parents']);
         $this->assertSame(
             [['id' => $parent->device_id, 'text' => $parent->display]],
-            json_decode($rows[$child->device_id]['parents_json'], true)
+            $rows[$child->device_id]['parent_list']
         );
     }
 
@@ -81,10 +81,10 @@ final class DeviceDependencyControllerTest extends TestCase
         $child->parents()->attach($parent);
 
         $response = $this->actingAs($this->admin())
-            ->postJson(route('table.device-dependencies'), ['searchPhrase' => 'uniq-parent-search'])
+            ->getJson(route('table.device-dependencies', ['search' => 'uniq-parent-search']))
             ->assertOk();
 
-        $rows = $response->json('rows');
+        $rows = $response->json('data');
         $this->assertIsArray($rows);
         $this->assertEqualsCanonicalizing([$parent->device_id, $child->device_id], array_column($rows, 'device_id'));
     }
@@ -99,9 +99,9 @@ final class DeviceDependencyControllerTest extends TestCase
         $childOfA->parents()->attach($parentA);
 
         $sorted = fn (string $direction) => array_column($this->actingAs($this->admin())
-            ->postJson(route('table.device-dependencies'), ['searchPhrase' => 'sortdep-', 'rowCount' => -1, 'sort' => ['parents' => $direction]])
+            ->getJson(route('table.device-dependencies', ['search' => 'sortdep-', 'per_page' => -1, 'sort' => ['parents' => $direction]]))
             ->assertOk()
-            ->json('rows'), 'device_id');
+            ->json('data'), 'device_id');
 
         $this->assertSame([$parentA->device_id, $parentB->device_id, $childOfA->device_id, $childOfB->device_id], $sorted('asc'));
         $this->assertSame([$childOfB->device_id, $childOfA->device_id, $parentB->device_id, $parentA->device_id], $sorted('desc'));
@@ -110,7 +110,7 @@ final class DeviceDependencyControllerTest extends TestCase
     public function testUserCannotViewTable(): void
     {
         $this->actingAs($this->user())
-            ->postJson(route('table.device-dependencies'))
+            ->getJson(route('table.device-dependencies'))
             ->assertForbidden();
     }
 

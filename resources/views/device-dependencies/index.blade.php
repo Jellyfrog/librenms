@@ -12,28 +12,32 @@
 
 @section('content')
 <div class="container-fluid" x-data="deviceDependencies">
-    <x-panel>
-        <x-slot:heading class="tw:flex tw:items-center tw:justify-between">
-            <h3 class="panel-title">{{ __('Device Dependencies') }}</h3>
+    <x-data-table name="device-dependencies"
+                  :url="route('table.device-dependencies')"
+                  row-key="device_id"
+                  :sort="['hostname' => 'asc']"
+                  :title="__('Device Dependencies')">
+        <x-slot:heading>
             <button type="button" class="{{ $btnPrimary }}" x-on:click="openManage()">
                 <i class="fa fa-sitemap" aria-hidden="true"></i> {{ __('Manage Device Dependencies') }}
             </button>
         </x-slot:heading>
-        <x-slot:table>
-            <div class="table-responsive">
-                <table id="hostdeps" class="table table-hover table-condensed table-striped">
-                    <thead>
-                        <tr>
-                            <th data-column-id="device_id" data-type="numeric" data-width="80px">{{ __('Id') }}</th>
-                            <th data-column-id="hostname">{{ __('Hostname') }}</th>
-                            <th data-column-id="parents">{{ __('Parent Device(s)') }}</th>
-                            <th data-column-id="actions" data-sortable="false" data-searchable="false" data-formatter="actions" data-width="100px">{{ __('Actions') }}</th>
-                        </tr>
-                    </thead>
-                </table>
+        <x-data-table.column field="device_id" :label="__('Id')" width="80px" />
+        <x-data-table.column field="hostname" :label="__('Hostname')" :hideable="false" html />
+        <x-data-table.column field="parents" :label="__('Parent Device(s)')" html />
+        <x-data-table.column field="actions" :label="__('Actions')" :sortable="false" width="100px">
+            <div class="tw:flex tw:gap-1.5">
+                <button type="button" class="tw:px-2 tw:py-1 tw:rounded-md tw:text-white tw:bg-blue-600 tw:hover:bg-blue-700"
+                        title="{{ __('Edit') }}" aria-label="{{ __('Edit') }}" x-on:click="openEdit(row)">
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="tw:px-2 tw:py-1 tw:rounded-md tw:text-white tw:bg-red-600 tw:hover:bg-red-700 tw:disabled:opacity-40 tw:disabled:cursor-not-allowed"
+                        title="{{ __('Delete') }}" aria-label="{{ __('Delete') }}" x-on:click="openDelete(row)" :disabled="row.parent_list.length === 0">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
             </div>
-        </x-slot:table>
-    </x-panel>
+        </x-data-table.column>
+    </x-data-table>
 
     <x-modal show="editOpen" :title="__('Edit Dependency')" maxWidth="xl">
         <p>{{ __('Parent devices of') }} <strong x-text="device.name"></strong></p>
@@ -112,14 +116,14 @@
                 select('clearParents', '');
             },
 
-            openEdit(button) {
-                this.device = {id: Number(button.dataset.deviceId), name: button.dataset.name};
-                this.setSelected('editParents', JSON.parse(button.dataset.parents));
+            openEdit(row) {
+                this.device = {id: row.device_id, name: row.display_name};
+                this.setSelected('editParents', row.parent_list);
                 this.editOpen = true;
             },
 
-            openDelete(button) {
-                this.device = {id: Number(button.dataset.deviceId), name: button.dataset.name};
+            openDelete(row) {
+                this.device = {id: row.device_id, name: row.display_name};
                 this.deleteOpen = true;
             },
 
@@ -172,7 +176,7 @@
                 try {
                     const response = await axios({method, url, data});
                     toastr.success(response.data.message);
-                    $('#hostdeps').bootgrid('reload');
+                    window.dispatchEvent(new CustomEvent('data-table:reload', {detail: {name: 'device-dependencies'}}));
 
                     return true;
                 } catch (error) {
@@ -194,33 +198,5 @@
         }));
     });
 
-    $('#hostdeps').bootgrid({
-        rowCount: [50, 100, 250, -1],
-        ajax: true,
-        url: @js(route('table.device-dependencies')),
-        formatters: {
-            actions: function (column, row) {
-                const button = (icon, label, action, classes) => {
-                    const el = document.createElement('button');
-                    el.type = 'button';
-                    el.className = 'tw:px-2 tw:py-1 tw:rounded-md tw:text-white tw:disabled:opacity-40 tw:disabled:cursor-not-allowed ' + classes;
-                    el.setAttribute('aria-label', label);
-                    el.setAttribute('title', label);
-                    el.setAttribute('x-on:click', action + '($el)');
-                    el.dataset.deviceId = row.device_id;
-                    el.dataset.name = row.display_name;
-                    el.innerHTML = '<i class="fa fa-' + icon + '" aria-hidden="true"></i>';
-
-                    return el;
-                };
-                const edit = button('pencil', @js(__('Edit')), 'openEdit', 'tw:bg-blue-600 tw:hover:bg-blue-700');
-                edit.dataset.parents = row.parents_json;
-                const remove = button('trash', @js(__('Delete')), 'openDelete', 'tw:bg-red-600 tw:hover:bg-red-700');
-                remove.disabled = row.parents_json === '[]';
-
-                return '<div class="tw:flex tw:gap-1.5">' + edit.outerHTML + remove.outerHTML + '</div>';
-            }
-        }
-    });
 </script>
 @endpush

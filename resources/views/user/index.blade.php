@@ -4,158 +4,45 @@
 
 @section('content')
 <div class="container-fluid">
-    <x-panel>
-        <x-slot name="title">
-            <i class="fa fa-user-circle-o fa-fw fa-lg" aria-hidden="true"></i> {{ __('Manage Users') }}
-        </x-slot>
-
-        <div class="table-responsive">
-            <table id="users" class="table table-bordered table-condensed">
-                <thead>
-                <tr>
-                    <th data-column-id="user_id" data-visible="false" data-identifier="true" data-type="numeric">{{ __('ID') }}</th>
-                    <th data-column-id="username" data-formatter="text">{{ __('Username') }}</th>
-                    <th data-column-id="realname" data-formatter="text">{{ __('Real Name') }}</th>
-                    <th data-column-id="roles" data-formatter="roles">{{ __('Roles') }}</th>
-                    <th data-column-id="auth_type" data-visible="{{ $multiauth ? 'true' : 'false' }}">{{ __('auth.title') }}</th>
-                    <th data-column-id="email" data-formatter="text">{{ __('Email') }}</th>
-                    <th data-column-id="phone" data-formatter="text">{{ __('Phone') }}</th>
-                    <th data-column-id="timezone">{{ __('Timezone') }}</th>
-                    @if(\LibreNMS\Authentication\LegacyAuth::getType() == 'mysql')
-                    <th data-column-id="enabled" data-formatter="enabled">{{ __('Enabled') }}</th>
-                    @endif
-                    @config('twofactor')
-                    <th data-column-id="twofactor" data-formatter="twofactor">{{ __('2FA') }}</th>
-                    @endconfig
-                    <th data-column-id="descr" data-formatter="text">{{ __('Description') }}</th>
-                    <th data-column-id="action" data-formatter="actions" data-sortable="false" data-searchable="false">{{ __('Actions') }}</th>
-                </tr>
-                </thead>
-                <tbody id="users_rows">
-                    @foreach($users as $user)
-                        @php /** @var \App\Models\User $user */ @endphp
-                        <tr>
-                            <td>{{ $user->user_id }}</td>
-                            <td>{{ $user->username }}</td>
-                            <td>{{ $user->realname }}</td>
-                            <td>{{ $user->roles->map(fn($r) => Str::title(str_replace('-', ' ', $r->name))) }}</td>
-                            <td>{{ $user->auth_type }}</td>
-                            <td>{{ $user->email }}</td>
-                            <td>{{ $user->phone }}</td>
-                            <td>{{ \App\Models\UserPref::getPref($user, 'timezone') ?: "Browser Timezone" }}</td>
-                            @if(\LibreNMS\Authentication\LegacyAuth::getType() == 'mysql')
-                            <td>{{ $user->enabled }}</td>
-                            @endif
-                            @config('twofactor')
-                                @if(\App\Models\UserPref::getPref($user, 'twofactor'))
-                                <td>1</td>
-                                @else
-                                <td></td>
-                                @endif
-                            @endconfig
-                            <td>{{ $user->descr }}</td>
-                            <td></td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </x-panel>
-</div>
-@endsection
-
-@section('javascript')
-    <script type="application/javascript">
-        $(document).ready(function(){
-            var user_grid = $("#users");
-            user_grid.bootgrid({
-                formatters: {
-                    enabled: function (column, row) {
-                        if (row['enabled'] == 1) {
-                            return '<span class="fa fa-fw fa-check text-success"></span>';
-                        } else {
-                            return '<span class="fa fa-fw fa-close text-danger"></span>';
-                        }
-                    },
-                    text: function (column, row) {
-                        let div = document.createElement('div');
-                        div.innerText = row[column.id];
-                        return div.innerHTML;
-                    },
-                    twofactor: function (column, row) {
-                        if(row['twofactor'] == 1) {
-                            return '<span class="fa fa-fw fa-check text-success"></span>';
-                        }
-                    },
-                    actions: function (column, row) {
-                        var edit_button = '<form action="' + route('users.edit', row['user_id']) + '" method="GET">' +
-                            '@csrf' +
-                            '<button type="submit" title="{{ __('Edit') }}" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></button>' +
-                            '</form> ';
-
-                        var delete_button = '<button type="button" title="{{ __('Delete') }}" class="btn btn-sm btn-danger" onclick="return delete_user(' + row['user_id'] + ', \'' + row['username'] + '\');">' +
-                            '<i class="fa fa-trash"></i></button> ';
-
-                        var manage_button = '<form action="' + route('users.permissions.edit', row['user_id']) + '" method="GET"';
-                        manage_button += '><button type="submit" title="{{ __('Manage Access') }}" class="btn btn-sm btn-primary"><i class="fa fa-tasks"></i></button>' +
-                            '</form> ';
-
-                        var output = manage_button + edit_button;
-                        if ('{{ Auth::id() }}' != row['user_id']) {
-                            output += delete_button;
-                        }
-
-                        return output
-                    },
-                    roles: function (column, row) {
-                        let roles = JSON.parse(row[column.id]);
-                        let div = document.createElement('div');
-
-                        roles.forEach((role) => {
-                            let label = document.createElement('span');
-                            label.className = 'label label-info tw:mr-1';
-                            label.innerText = role;
-                            div.appendChild(label);
-                        })
-
-                        return div.outerHTML;
-                    }
-                }
-            });
-
+    <x-data-table name="users" mode="local" :rows="$rows" row-key="user_id" :sort="['username' => 'asc']" :title="__('Manage Users')">
+        <x-slot:heading>
             @can('create', \App\Models\User::class)
-                $('.actionBar').append('<div class="pull-left"><a href="{{ route('users.create') }}" type="button" class="btn btn-primary">{{ __('Add User') }}</a></div>');
+                <a href="{{ route('users.create') }}" class="btn btn-primary">{{ __('Add User') }}</a>
             @endcan
             @can('viewAny', \Spatie\Permission\Models\Role::class)
-                $('.actionBar').append('<div class="pull-left tw:ml-2"><a href="{{ route('roles.index') }}" type="button" class="btn btn-default">{{ __('permissions.rbac.manage_roles') }}</a></div>');
+                <a href="{{ route('roles.index') }}" class="btn btn-default">{{ __('permissions.rbac.manage_roles') }}</a>
             @endcan
-
-            user_grid.css('display', 'table'); // done loading, show
-        });
-
-        function delete_user(user_id, username, url)
-        {
-            if (confirm('{{ __('Are you sure you want to delete ') }}' + username + '?')) {
-                $.ajax({
-                    url: route('users.destroy', user_id),
-                    type: 'DELETE',
-                    success: function (msg) {
-                        $("#users").bootgrid("remove", [user_id]);
-                        toastr.success(msg);
-                    },
-                    error: function () {
-                        toastr.error('{{ __('The user could not be deleted') }}');
-                    }
-                });
-            }
-
-            return false;
-        }
-    </script>
-@endsection
-
-@section('css')
-<style>
-    #users form { display:inline; }
-</style>
+        </x-slot:heading>
+        <x-data-table.column field="user_id" :label="__('ID')" :visible="false" />
+        <x-data-table.column field="username" :label="__('Username')" :hideable="false" />
+        <x-data-table.column field="realname" :label="__('Real Name')" />
+        <x-data-table.column field="roles" :label="__('Roles')" :sortable="false">
+            <template x-for="role in row.roles" :key="role"><span class="label label-info tw:mr-1" x-text="role"></span></template>
+        </x-data-table.column>
+        <x-data-table.column field="auth_type" :label="__('auth.title')" :visible="$multiauth" />
+        <x-data-table.column field="email" :label="__('Email')" />
+        <x-data-table.column field="phone" :label="__('Phone')" />
+        <x-data-table.column field="timezone" :label="__('Timezone')" />
+        @if(\LibreNMS\Authentication\LegacyAuth::getType() == 'mysql')
+            <x-data-table.column field="enabled" :label="__('Enabled')">
+                <span class="fa fa-fw" :class="row.enabled ? 'fa-check text-success' : 'fa-close text-danger'"></span>
+            </x-data-table.column>
+        @endif
+        @config('twofactor')
+            <x-data-table.column field="twofactor" :label="__('2FA')">
+                <span x-show="row.twofactor" class="fa fa-fw fa-check text-success"></span>
+            </x-data-table.column>
+        @endconfig
+        <x-data-table.column field="descr" :label="__('Description')" />
+        <x-data-table.column field="action" :label="__('Actions')" :sortable="false" :searchable="false" class="tw:whitespace-nowrap">
+            <a :href="route('users.permissions.edit', row.user_id)" title="{{ __('Manage Access') }}" class="btn btn-sm btn-primary"><i class="fa fa-tasks"></i></a>
+            <a :href="route('users.edit', row.user_id)" title="{{ __('Edit') }}" class="btn btn-sm btn-warning"><i class="fa fa-pencil"></i></a>
+            <button type="button" title="{{ __('Delete') }}" class="btn btn-sm btn-danger" x-show="row.user_id != @js(Auth::id())" :disabled="isPending('delete' + row.user_id)"
+                    x-on:click="confirm(@js(__('Are you sure you want to delete ')) + row.username + '?') && request('delete' + row.user_id, 'DELETE', route('users.destroy', row.user_id))
+                        .then((message) => { toastr.success(message); removeRow(row); }).catch(() => {})">
+                <i class="fa fa-trash"></i>
+            </button>
+        </x-data-table.column>
+    </x-data-table>
+</div>
 @endsection

@@ -2,68 +2,27 @@
 
 namespace App\Http\Controllers\Table;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DataTableRequest;
+use App\Http\Resources\Table\DeviceDependencyResource;
 use App\Models\Device;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
-use LibreNMS\Util\Url;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-/**
- * @extends TableController<Device>
- */
-class DeviceDependenciesController extends TableController
+class DeviceDependenciesController extends Controller
 {
-    /** @var array<string, 'asc'|'desc'> */
-    protected array $default_sort = ['hostname' => 'asc'];
-
-    protected function baseQuery(Request $request): Builder
+    public function __invoke(DataTableRequest $request): AnonymousResourceCollection
     {
         $this->authorize('device.update');
 
-        return Device::hasAccess($request->user())
-            ->with('parents')
-            ->when($request->has('sort.parents'), fn (Builder $query) => $query->withMin('parents', 'hostname'));
-    }
-
-    /**
-     * @return array<int|string, string|string[]>
-     */
-    protected function searchFields(Request $request): array
-    {
-        return ['hostname', 'sysName', 'display', 'parents' => ['hostname', 'sysName', 'display']];
-    }
-
-    /**
-     * @return array<string, string|string[]>
-     */
-    protected function sortFields(Request $request): array
-    {
-        return [
+        $query = Device::hasAccess($request->user())->with('parents');
+        $request->searchQuery($query, ['hostname', 'sysName', 'display', 'parents.hostname', 'parents.sysName', 'parents.display']);
+        $request->sortQuery($query, [
             'device_id' => 'device_id',
             'hostname' => 'hostname',
-            'parents' => ['parents_min_hostname', 'hostname'],
-        ];
-    }
+            'parents' => fn (Builder $q, string $direction) => $q->withMin('parents', 'hostname')->orderBy('parents_min_hostname', $direction)->orderBy('hostname', $direction),
+        ], ['hostname' => 'asc']);
 
-    /**
-     * @param  Device  $model
-     * @return array<string, scalar>
-     */
-    public function formatItem(Model $model): array
-    {
-        $parents = $model->parents->sortBy('hostname');
-
-        return [
-            'device_id' => $model->device_id,
-            'hostname' => Url::modernDeviceLink($model, extra: $model->sysName ?? ''),
-            'parents' => $parents->isEmpty()
-                ? __('None')
-                : $parents->map(fn (Device $parent) => Url::modernDeviceLink($parent))->implode(', '),
-            'parents_json' => (string) json_encode($parents->map(fn (Device $parent) => [
-                'id' => $parent->device_id,
-                'text' => $parent->display,
-            ])->values()),
-            'display_name' => $model->display,
-        ];
+        return DeviceDependencyResource::collection($request->paginate($query));
     }
 }

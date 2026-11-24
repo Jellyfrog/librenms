@@ -146,6 +146,8 @@ export default function dataTable(config, component = {}) {
         allMatching: false,
         // request keys in flight, see request()
         pending: {},
+        // row key => true for rows showing their expand slot
+        expanded: {},
         notice: null,
 
         init() {
@@ -372,6 +374,16 @@ export default function dataTable(config, component = {}) {
             return params;
         },
 
+        /** A row was deleted: local mode drops it, server mode reloads the page */
+        removeRow(row) {
+            if (local) {
+                const key = keyOf(row);
+                setData(data.filter((item) => keyOf(item) !== key));
+            } else {
+                this.load();
+            }
+        },
+
         /** Reload rows from the server, local mode has nothing to reload */
         reload() {
             if (!local) {
@@ -434,6 +446,21 @@ export default function dataTable(config, component = {}) {
             clearTimeout(noticeTimer);
             this.notice = message;
             noticeTimer = setTimeout(() => (this.notice = null), timeout);
+        },
+
+        // --- Expanded rows (expand slot) ---
+
+        isExpanded(row) {
+            return this.expanded[getRowId(row)] === true;
+        },
+
+        toggleExpanded(row) {
+            const key = getRowId(row);
+            if (this.expanded[key]) {
+                delete this.expanded[key];
+            } else {
+                this.expanded[key] = true;
+            }
         },
 
         // --- Selection ---

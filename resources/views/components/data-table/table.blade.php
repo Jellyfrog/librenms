@@ -38,27 +38,26 @@
             </template>
         </tr>
         </thead>
-        <tbody class="tw:max-md:block tw:divide-y tw:divide-gray-100 tw:dark:divide-dark-gray-300">
-        <template data-table-row x-for="(row, index) in rows" :key="rowId(row, index)">
-            <tr @class([
-                    'tw:align-middle tw:*:px-3 tw:*:py-1.5 tw:max-md:relative tw:max-md:grid tw:max-md:grid-cols-2 tw:max-md:gap-3 tw:max-md:px-4 tw:max-md:py-3 tw:max-md:*:p-0',
-                    'tw:max-md:pl-11' => $selectable,
-                    'tw:max-md:[&>[data-label]]:before:block tw:max-md:[&>[data-label]]:before:mb-1 tw:max-md:[&>[data-label]]:before:content-[attr(data-label)] tw:max-md:[&>[data-label]]:before:text-gray-500',
-                ])
-                :class="isSelected(row) ? 'tw:bg-blue-50/60 tw:dark:bg-blue-950/30' : 'tw:hover:bg-gray-50 tw:dark:hover:bg-dark-gray-400'">
-                @if ($selectable)
-                    {{-- below md the checkbox is pinned to the top left corner of the card --}}
-                    <td class="tw:max-md:absolute tw:max-md:left-4 tw:max-md:top-3.5">
-                        <input type="checkbox"
-                               class="tw:m-0"
-                               :checked="isSelected(row)"
-                               x-on:change="toggleSelected(row, $event.target.checked)"
-                               :aria-label="@js(__('Select') . ' ') + {{ $rowLabel }}">
-                    </td>
-                @endif
-                {{ $slot }}
-            </tr>
-        </template>
+        @if ($expandable)
+            {{-- each row is its own tbody so the expanded details can follow it --}}
+            <template data-table-row x-for="(row, index) in rows" :key="rowId(row, index)">
+                <tbody class="tw:max-md:block tw:border-b tw:border-gray-100 tw:dark:border-dark-gray-300">
+                    @include('components.data-table.row')
+                    <template x-if="isExpanded(row)">
+                        <tr class="tw:max-md:block">
+                            <td :colspan="visibleColumnCount" class="tw:max-md:block tw:px-3 tw:py-2">{{ $expand }}</td>
+                        </tr>
+                    </template>
+                </tbody>
+            </template>
+        @else
+            <tbody class="tw:max-md:block tw:divide-y tw:divide-gray-100 tw:dark:divide-dark-gray-300">
+            <template data-table-row x-for="(row, index) in rows" :key="rowId(row, index)">
+                @include('components.data-table.row')
+            </template>
+            </tbody>
+        @endif
+        <tbody class="tw:max-md:block">
         <tr x-show="error" x-cloak class="tw:max-md:block">
             <td :colspan="visibleColumnCount" class="tw:max-md:block tw:px-4 tw:py-8 tw:text-center tw:text-red-600 tw:dark:text-red-400">
                 <i class="fa fa-triangle-exclamation" aria-hidden="true"></i> <span x-text="error"></span>

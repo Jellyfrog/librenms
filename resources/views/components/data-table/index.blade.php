@@ -53,6 +53,7 @@
     default  x-data-table.column cells, one per column
     heading  extra controls in the toolbar
     actions  bulk action buttons, rows are selectable when this is set, see selectionData()
+    expand   details shown under a row after toggleExpanded(row), for example from a button in a cell
     empty    text when no rows match
     before   content above the table, it can use the table state
     after    content after the table (modals), it can use the table state
@@ -61,6 +62,7 @@
 --}}
 @php
     $selectable = isset($actions);
+    $expandable = isset($expand);
     $config = [
         ...$config,
         'url' => $url,

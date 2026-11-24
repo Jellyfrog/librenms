@@ -26,8 +26,8 @@ class LocationsPageTest extends TestCase
         $this->actingAs($this->admin())
             ->get('/locations')
             ->assertOk()
-            ->assertSee('id="locations"', false)
-            ->assertSee('data-url="' . route('table.location') . '"', false);
+            ->assertSee('dataTable(', false)
+            ->assertSee('\u0022name\u0022:\u0022locations\u0022', false);
     }
 
     public function testTableOnlyReturnsLocationsOfAccessibleDevices(): void
@@ -41,9 +41,9 @@ class LocationsPageTest extends TestCase
         $user->assignRole('user');
         $user->devicesOwned()->attach($device);
 
-        $response = $this->actingAs($user)->postJson(route('table.location'), $this->tableRequest());
+        $response = $this->actingAs($user)->getJson(route('table.location', $this->tableRequest()));
 
-        $response->assertOk()->assertJsonPath('total', 1);
+        $response->assertOk()->assertJsonPath('meta.total', 1);
         $this->assertStringNotContainsString('Hidden', $response->getContent());
     }
 
@@ -54,9 +54,9 @@ class LocationsPageTest extends TestCase
 
         // escaping is done by the page when rendering, see LocationsPageBrowserTest
         $this->actingAs($this->admin())
-            ->postJson(route('table.location'), $this->tableRequest())
+            ->getJson(route('table.location', $this->tableRequest()))
             ->assertOk()
-            ->assertJsonPath('rows.0.location', $name);
+            ->assertJsonPath('data.0.location', $name);
     }
 
     public function testExportKeepsRawLocationNames(): void
@@ -98,9 +98,8 @@ class LocationsPageTest extends TestCase
     private function tableRequest(): array
     {
         return [
-            'current' => 1,
-            'rowCount' => 50,
-            'searchPhrase' => '',
+            'page' => 1,
+            'per_page' => 50,
         ];
     }
 }

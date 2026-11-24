@@ -7,30 +7,61 @@
     <div class="row">
         <div class="col-md-12">
 
-    <script id="location-graph-template" type="text/x-handlebars-template">
-        <tr class="bg-fixer-@{{id}}"></tr>
-        <tr id="location-graph-@{{id}}" class="location_graphs">
-            <td colspan=8>
-                {!! $graph_template !!}
-            </td>
-        </tr>
-    </script>
-
-    <x-panel title="{{ __('Locations') }}" id="locations-panel">
-        <div class="table-responsive">
-            <table id="locations" class="table table-hover table-condensed table-striped" data-url="{{ route('table.location') }}">
-                <thead>
-                <tr>
-                    <th data-column-id="location" data-formatter="location" data-order="asc">{{ __('Location') }}</th>
-                    <th data-column-id="coordinates" data-formatter="coordinates" data-sortable="false">{{ __('Coordinates') }}</th>
-                    <th data-column-id="devices" data-formatter="primaryLabel">{{ __('Devices') }}</th>
-                    <th data-column-id="down" data-formatter="down">{{ __('Down') }}</th>
-                    <th data-column-id="actions" data-formatter="actions" data-sortable="false">{{ __('Actions') }}</th>
-                </tr>
-                </thead>
-            </table>
-        </div>
-    </x-panel>
+    <x-data-table name="locations"
+                  id="locations"
+                  :url="route('table.location')"
+                  :sort="['location' => 'asc']"
+                  :per-page-options="[25, 50, 100, -1]"
+                  :title="__('Locations')">
+        <x-data-table.column field="location" :label="__('Location')" :hideable="false">
+            <a :href="route('devices', {filter: {location_id: {eq: row.id}}})" x-text="row.location"></a>
+        </x-data-table.column>
+        <x-data-table.column field="coordinates" :label="__('Coordinates')" :sortable="false" class="coordinates-field">
+            {{-- click to edit, enter or leaving the field saves "lat, lng", escape cancels --}}
+            <template x-if="! row.editing">
+                <span x-on:click="row.editing = true" class="tw:cursor-pointer">
+                    <span class="coordinates-text" x-text="row.lat && row.lng ? row.lat + ', ' + row.lng : @js(__('N/A'))"></span> <i class="fa fa-pencil"></i>
+                </span>
+            </template>
+            <template x-if="row.editing">
+                <input type="text" class="form-control input-sm" x-init="$el.value = row.lat && row.lng ? row.lat + ', ' + row.lng : ''; $el.select()"
+                       x-on:keydown.escape="row.editing = false"
+                       x-on:keydown.enter="$el.blur()"
+                       x-on:blur="let loc = $el.value.split(',', 2); row.editing = false; if (loc.length === 2) update_location(row.id, {lat: loc[0].trim(), lng: loc[1].trim()}, (success) => success && reload())">
+            </template>
+        </x-data-table.column>
+        <x-data-table.column field="devices" :label="__('Devices')">
+            <span class="label label-primary" x-text="row.devices"></span>
+        </x-data-table.column>
+        <x-data-table.column field="down" :label="__('Down')">
+            <span class="label" :class="row.down > 0 ? 'label-danger' : 'label-success'" x-text="row.down"></span>
+        </x-data-table.column>
+        <x-data-table.column field="actions" :label="__('Actions')" :sortable="false" class="tw:whitespace-nowrap">
+            <button type="button" class="btn btn-xs btn-primary" :class="isExpanded(row) && 'active'" x-on:click="toggleExpanded(row)" :disabled="row.devices < 1"
+                    :title="row.devices < 1 ? @js(__('Location must have devices to show graphs')) : ''">
+                <i class="fa fa-area-chart" aria-hidden="true"></i><span class="hidden-sm"> {{ __('Traffic') }}</span>
+            </button>
+            @can('location.update')
+                <button type="button" class="btn btn-xs btn-default" x-on:click="$dispatch('location:edit', {id: row.id, location: row.location, lat: row.lat, lng: row.lng})">
+                    <i class="fa fa-pencil" aria-hidden="true"></i><span class="hidden-sm"> {{ __('Edit') }}</span>
+                </button>
+            @endcan
+            @can('location.delete')
+                <button type="button" class="btn btn-xs btn-danger" :disabled="row.devices > 0 || isPending('delete' + row.id)"
+                        :title="row.devices > 0 ? @js(__('Cannot delete locations used by devices')) : ''"
+                        x-on:click="request('delete' + row.id, 'DELETE', route('location.destroy', {location: row.id})).then(() => { toastr.success(@js(__('Location deleted'))); reload(); }).catch(() => {})">
+                    <i class="fa fa-trash" aria-hidden="true"></i><span class="hidden-sm"> {{ __('Delete') }}</span>
+                </button>
+            @endcan
+        </x-data-table.column>
+        <x-slot:expand>
+            <div class="row">
+                <template x-for="(graph, index) in row.graphs" :key="index">
+                    <div class="col-md-3" x-html="graph"></div>
+                </template>
+            </div>
+        </x-slot:expand>
+    </x-data-table>
 
     <div class="modal fade" id="edit-location" tabindex="-1" role="dialog" aria-labelledby="edit-location-title">
         <div class="modal-dialog" role="document">
@@ -58,12 +89,9 @@
 
 @section('css')
     <style>
-        #locations-panel>.panel-body { padding: 0;  }
-
-        .coordinates-text { white-space: normal; }
         .coordinates-field { white-space: nowrap; }
-        .coordinates-field>.fa { visibility: hidden; }
-        .coordinates-field:hover>.fa { visibility: visible; }
+        .coordinates-field .fa { visibility: hidden; }
+        .coordinates-field:hover .fa { visibility: visible; }
     </style>
 @endsection
 
@@ -74,87 +102,21 @@
         var locationMap = null;
         var locationMarker = null;
         var locationId = 0;
-        var locationsGraphTemplate = '';
-        var locations_grid = null;
 
         $(document).ready(function () {
-            locations_grid = $("#locations").bootgrid({
-                ajax: true,
-                rowCount: [25, 50, 100, -1],
-                formatters: {
-                    "location": function (column, row) {
-                        var a = document.createElement('a');
-                        a.href = route('devices', {filter: {location_id: {eq: row.id}}});
-                        a.textContent = row.location;
-                        return a.outerHTML;
-                    },
-                    "coordinates": function (column, row) {
-                        var text;
-                        if (row.lat && row.lng) {
-                            text = row.lat + ', ' + row.lng;
-                        } else {
-                            text = '{{ __('N/A') }}';
-                        }
-                        return '<div class="coordinates-field" onclick="edit_coordinates(this);" data-id="' + row.id +
-                            '"><span class="coordinates-text">' + text + '</span> <i class="fa fa-pencil"></i></div>';
-                    },
-                    "down": function (column, row) {
-                        if (row.down > 0) {
-                            return '<span class="label label-danger">' + row.down + '</span>';
-                        }
-
-                        return '<span class="label label-success">' + row.down + '</span>';
-                    },
-                    "primaryLabel": function (column, row) {
-                        return '<span class="label label-primary">' + row[column.id] + '</span>';
-                    },
-                    "defaultLabel": function (column, row) {
-                        return '<span class="label label-default">' + row[column.id] + '</span>';
-                    },
-                    "actions": function (column, row) {
-                        var buttons = '<div style="white-space:nowrap"><button type="button" class="btn btn-xs btn-primary" onclick="toggle_location_graphs(' + Number(row.id) + ', this)"';
-                        if (row.devices < 1) {
-                            buttons += ' disabled title="{{ __('Location must have devices to show graphs') }}"';
-                        }
-                        buttons += '><i class="fa fa-area-chart" aria-hidden="true"></i><span class="hidden-sm"> {{ __('Traffic') }}</span></button>';
-
-                        @can('location.update')
-                        var edit = document.createElement('button');
-                        edit.type = 'button';
-                        edit.className = 'btn btn-xs btn-default';
-                        edit.setAttribute('onclick', "$('#edit-location').modal('show', this)");
-                        edit.dataset.id = row.id;
-                        edit.dataset.location = row.location;
-                        edit.dataset.lat = row.lat;
-                        edit.dataset.lng = row.lng;
-                        edit.innerHTML = '<i class="fa fa-pencil" aria-hidden="true"></i><span class="hidden-sm"> {{ __('Edit') }}</span>';
-                        buttons += ' ' + edit.outerHTML;
-                        @endcan
-                        @can('location.delete')
-                        buttons += ' <button type="button" class="btn btn-xs btn-danger" onclick="delete_location(' + Number(row.id) + ')"';
-                        if (row.devices > 0) {
-                            buttons += ' disabled title="{{ __('Cannot delete locations used by devices') }}"';
-                        }
-                        buttons += '><i class="fa fa-trash" aria-hidden="true"></i><span class="hidden-sm">  {{ __('Delete') }}</span></button>';
-                        @endcan
-
-                        buttons += '</div>';
-
-                        return buttons;
-                    }
-                }
-            });
-
             var modal = $('#edit-location');
 
-            modal.on('show.bs.modal', function (e) {
-                $('#edit-location-title>span').text($(e.relatedTarget).data('location'))
+            // the table's edit button sends the location to edit
+            window.addEventListener('location:edit', function (event) {
+                var item = event.detail;
+                locationId = item.id;
+                $('#edit-location-title>span').text(item.location);
+                modal.data('location', item).modal('show');
             });
 
-            modal.on('shown.bs.modal', function (e) {
-                var $btn = $(e.relatedTarget);
-                var location = new L.LatLng($btn.data('lat'), $btn.data('lng'));
-                locationId = $btn.data('id');
+            modal.on('shown.bs.modal', function () {
+                var item = modal.data('location');
+                var location = new L.LatLng(item.lat || 0, item.lng || 0);
 
                 if (locationMap === null) {
                     config = {{ Js::from($maps_config) }}
@@ -176,89 +138,10 @@
                 update_location(locationId, locationMarker.getLatLng(), function (success) {
                     if (success) {
                         modal.modal('hide');
-                        locations_grid.bootgrid('reload');
+                        window.dispatchEvent(new CustomEvent('data-table:reload', {detail: {name: 'locations'}}));
                     }
                 });
             });
-            locationsGraphTemplate = Handlebars.compile(document.getElementById("location-graph-template").innerHTML);
         });
-
-        function edit_coordinates(field) {
-            var $field = $(field);
-            var $text_el = $field.find('.coordinates-text');
-            var text = $text_el.text();
-            var id = $field.data('id');
-            var $edit = $('<input type="text">').val(text);
-            $edit.on('blur keyup',function(e) {
-                if (e.keyCode === 27) {
-                    $text_el.text(text);
-                }
-
-                if (e.type === 'blur' || e.keyCode === 13) {
-                    var input = $(this).val();
-                    var loc = input.split(',', 2);
-
-                    if (loc.length === 1 || input === text) {
-                        $text_el.text(text);
-                        return;
-                    }
-                    var latlng = {
-                        lat: loc[0].trim(),
-                        lng: loc[1].trim()
-                    };
-                    update_location(id, latlng, function (success) {
-                        if (success) {
-                            $text_el.text(latlng.lat + ', ' + latlng.lng);
-                            locations_grid.bootgrid('reload');
-                        } else {
-                            $text_el.text(text);
-                        }
-                    });
-
-                }
-            });
-
-            $text_el.html($edit);
-            $edit.select();
-        }
-
-        function delete_location(locationId) {
-            $.ajax({
-                method: 'DELETE',
-                url: route('location.destroy', {location: locationId})
-            }).done(function () {
-                locations_grid.bootgrid('reload');
-                toastr.success("{{ __('Location deleted') }}");
-            }).fail(function (e) {
-                var data = e.responseJSON;
-                if (data && data.hasOwnProperty('id')) {
-                    toastr.error(data.id.join(' '));
-                } else {
-                    toastr.error("{{ __('Failed to delete location') }}: " + e.statusText)
-                }
-            });
-        }
-
-        function toggle_location_graphs(locationId, source) {
-            var $btn = $(source);
-            var $row = $btn.closest('tr');
-            if ($btn.hasClass('active')) {
-                // hide
-                $btn.removeClass('active');
-                $('#location-graph-' + locationId).hide();
-                $('#bg-fix-' + locationId).hide();
-            } else {
-                // show
-                $btn.addClass('active');
-                $existing = $('#location-graph-' + locationId);
-                if ($existing.length) {
-                    $existing.show();
-                    $('#bg-fix-' + locationId).show();
-                } else {
-                    var html = locationsGraphTemplate({id: locationId});
-                    $(html).insertAfter($row);
-                }
-            }
-        }
     </script>
 @endpush
