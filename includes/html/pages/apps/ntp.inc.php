@@ -75,28 +75,44 @@ unset($sep);
 echo '</div>';
 print_optionbar_end();
 
-?>
-<table id='ntp-table' class='table table-condensed table-responsive table-striped'>
-    <thead>
-    <tr>
-        <th data-column-id="device">Device</th>
-        <th data-column-id="peer">Peer</th>
-        <th data-column-id="stratum" data-type="numeric">Stratum</th>
-        <th data-column-id="error">Error</th>
-    </tr>
-    </thead>
-</table>
-<script>
-    $("#ntp-table").bootgrid({
-        ajax: true,
-        post: function ()
-        {
-            return {
-                id: "app_ntp",
-                view: '<?php echo htmlspecialchars((string) $vars['view']); ?>',
-                graph: '<?php echo htmlspecialchars((string) $vars['graph']); ?>',
-            };
-        },
-        url: "ajax_table.php",
-    });
-</script>
+
+// the table sorts, searches and paginates the peers in the browser
+$rows = [];
+foreach ($components as $device_id => $peers) {
+    $device = DeviceCache::get($device_id);
+    foreach ($peers as $component_id => $peer) {
+        if ($vars['view'] == 'error' && $peer['status'] != 2) {
+            continue;
+        }
+
+        $graphs = [];
+        if (isset($graph_options[$vars['graph']]) && $vars['graph'] != 'none') {
+            $graphs = \LibreNMS\Util\Html::graphRow(['device' => $device_id, 'type' => 'device_ntp_' . $vars['graph'], 'width' => 80, 'height' => 20]);
+        }
+
+        $rows[] = [
+            'id' => $component_id,
+            'device' => \LibreNMS\Util\Url::deviceLink($device, null, ['tab' => 'apps', 'app' => 'ntp']),
+            'hostname' => $device->hostname,
+            'peer' => $peer['peer'],
+            'stratum' => $peer['stratum'],
+            'error' => $peer['error'],
+            'failed' => $peer['status'] == 2,
+            'graphs' => $graphs,
+        ];
+    }
+}
+
+echo Blade::render(<<<'BLADE'
+<x-data-table name="ntp" mode="local" :rows="$rows" :sort="['hostname' => 'asc']" :panel="false">
+    <x-data-table.column field="hostname" :label="__('Device')" x-html="row.device" ::class="row.failed && 'danger'" />
+    <x-data-table.column field="peer" :label="__('Peer')" />
+    <x-data-table.column field="stratum" :label="__('Stratum')" />
+    <x-data-table.column field="error" :label="__('Error')" />
+    @if($showGraphs)
+        <x-data-table.column field="graphs" :label="__('Graphs')" :sortable="false" :searchable="false">
+            <div class="tw:flex tw:gap-1"><template x-for="(graph, index) in row.graphs" :key="index"><div x-html="graph"></div></template></div>
+        </x-data-table.column>
+    @endif
+</x-data-table>
+BLADE, ['rows' => $rows, 'showGraphs' => $vars['graph'] != 'none']);

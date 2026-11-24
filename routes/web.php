@@ -531,6 +531,9 @@ Route::middleware(['auth'])->group(function (): void {
             Route::get('mempools/export', [Table\MempoolsController::class, 'export']);
             Route::get('outages', Table\OutagesController::class)->name('table.outages');
             Route::get('poller-log', Table\PollerLogController::class)->name('table.poller-log');
+            Route::get('peering/asns', [Table\PeeringController::class, 'asns'])->name('table.peering.asns');
+            Route::get('peering/exchanges', [Table\PeeringController::class, 'exchanges'])->name('table.peering.exchanges');
+            Route::get('peering/peers', [Table\PeeringController::class, 'peers'])->name('table.peering.peers');
             Route::get('outages/export', [Table\OutagesController::class, 'export']);
             Route::get('port-nac', Table\PortNacController::class)->name('table.port-nac');
             Route::get('port-security/export', [Table\PortSecurityController::class, 'export'])->name('port-security.export');

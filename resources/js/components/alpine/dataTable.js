@@ -374,6 +374,13 @@ export default function dataTable(config, component = {}) {
             return params;
         },
 
+        /**
+         * Every loaded row, all pages in local mode. Reactive: changing a field updates the cells
+         */
+        allRows() {
+            return data.map((row) => Alpine.reactive(row));
+        },
+
         /** A row was deleted: local mode drops it, server mode reloads the page */
         removeRow(row) {
             if (local) {

@@ -20,36 +20,16 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-$asn = htmlspecialchars((string) ((int) $vars['bgpLocalAs'] ?? ''));
-
-?>
-<div class="row">
-     <div class="col-sm-4">
-         <div class="table-responsive">
-             <table id="ixlist" class="table table-bordered table-striped">
-                 <thead>
-                     <tr>
-                         <th data-column-id="exchange" data-sortable="false">Exchange</th>
-                         <th data-column-id="action" data-sortable="false"></th>
-                         <th data-column-id="links" data-sortable="false"></th>
-                     </tr>
-                 </thead>
-             </table>
-         </div>
-     </div>
+echo Blade::render(<<<'BLADE'
+<div class="tw:max-w-xl">
+    <x-data-table name="peering-ix" :url="route('table.peering.exchanges')" :params="['asn' => $asn]" :sort="['exchange' => 'asc']" :column-toggle="false" :title="__('Exchanges')">
+        <x-data-table.column field="exchange" :label="__('Exchange')" />
+        <x-data-table.column field="action" :sortable="false">
+            <a class="btn btn-sm btn-primary" :href="row.peers_url" role="button">{{ __('Show Peers') }}</a>
+        </x-data-table.column>
+        <x-data-table.column field="links" :sortable="false">
+            <a :href="row.pdb_url" target="_blank" rel="noopener"><i class="fa fa-database"></i></a>
+        </x-data-table.column>
+    </x-data-table>
 </div>
-
-<script>
-    var grid = $("#ixlist").bootgrid({
-        ajax: true,
-        rowCount: [50, 100, 250, -1],
-        post: function ()
-        {
-            return {
-                id:          'ix-list',
-                asn:         '<?php echo $asn; ?>',
-            };
-        },
-        url: "ajax_table.php"
-    });
-</script>
+BLADE, ['asn' => (int) ($vars['bgpLocalAs'] ?? 0)]);

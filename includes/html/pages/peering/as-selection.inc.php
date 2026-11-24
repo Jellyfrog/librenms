@@ -26,30 +26,15 @@ echo "<div class='alert alert-info' role='alert'>Cached date: $cache_date</div>"
 
 ?>
 
-<div class="row">
-    <div class="col-sm-4">
-        <table id="asn" class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th data-column-id="bgpLocalAs">ASN</th>
-                    <th data-column-id="asname" data-searchable="false" data-sortable="false">AS Name</th>
-                    <th data-column-id="action" data-sortable="false"></th>
-                </tr>
-            </thead>
-        </table>
-    </div>
+<?php
+echo Blade::render(<<<'BLADE'
+<div class="tw:max-w-xl">
+    <x-data-table name="peering-asn" :url="route('table.peering.asns')" :sort="['bgpLocalAs' => 'asc']" :column-toggle="false" :title="__('ASN')">
+        <x-data-table.column field="bgpLocalAs" :label="__('ASN')" />
+        <x-data-table.column field="asname" :label="__('AS Name')" :sortable="false" />
+        <x-data-table.column field="action" :sortable="false">
+            <a class="btn btn-sm btn-primary" :href="row.url" role="button">{{ __('Show connected IXes') }}</a>
+        </x-data-table.column>
+    </x-data-table>
 </div>
-
-<script>
-    var grid = $("#asn").bootgrid({
-        ajax: true,
-        rowCount: [50, 100, 250, -1],
-        post: function ()
-        {
-            return {
-                id:          'as-selection',
-            };
-        },
-        url: "ajax_table.php"
-    });
-</script>
+BLADE);

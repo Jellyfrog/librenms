@@ -20,58 +20,25 @@
  * @copyright  2017 Neil Lathwood
  * @author     Neil Lathwood <neil@lathwood.co.uk>
  */
-$asn = htmlspecialchars((string) ((int) $vars['asn'] ?? ''));
-$ixid = htmlspecialchars((string) ((int) $vars['ixid'] ?? ''));
-$status = htmlspecialchars((string) $vars['status'] ?? '');
-
-?>
-<div class="row">
-    <div class="col-sm-6">
-        <div class="table-responsive">
-            <table id="ixpeers" class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                    <th data-column-id="remote_asn">ASN</th>
-                    <th data-column-id="remote_ipaddr4">IP</th>
-                    <th data-column-id="peer" data-sortable="false">Peer</th>
-                    <th data-column-id="connected" data-sortable="false">Connected</th>
-                    <th data-column-id="links" data-sortable="false"></th>
-                </tr>
-                </thead>
-            </table>
-        </div>
-    </div>
+echo Blade::render(<<<'BLADE'
+<div class="tw:max-w-3xl">
+    <x-data-table name="peering-peers" :url="route('table.peering.peers')" :params="['ixid' => $ixid]" :sort="['remote_asn' => 'asc']" :column-toggle="false" :title="__('Peers')">
+        <x-slot:heading>
+            <select class="form-control input-sm tw:w-auto" aria-label="{{ __('Connected') }}" x-on:change="config.params.status = $event.target.value; changed(true)">
+                <option value="all">{{ __('All') }}</option>
+                <option value="connected">{{ __('Connected') }}</option>
+                <option value="unconnected">{{ __('Not connected') }}</option>
+            </select>
+        </x-slot:heading>
+        <x-data-table.column field="remote_asn" :label="__('ASN')" />
+        <x-data-table.column field="remote_ipaddr4" :label="__('IP')" />
+        <x-data-table.column field="peer" :label="__('Peer')" :sortable="false" />
+        <x-data-table.column field="connected" :label="__('Connected')" :sortable="false">
+            <i class="fa fa-2x" :class="row.connected ? 'fa-check text-success' : 'fa-times text-default'"></i>
+        </x-data-table.column>
+        <x-data-table.column field="links" :sortable="false">
+            <a :href="row.pdb_url" target="_blank" rel="noopener"><i class="fa fa-database"></i></a>
+        </x-data-table.column>
+    </x-data-table>
 </div>
-
-<script>
-    var grid = $("#ixpeers").bootgrid({
-        ajax: true,
-        rowCount: [50, 100, 250, -1],
-        templates: {
-            header: 
-                "<div id=\"{{ctx.id}}\" class=\"{{css.header}}\"><div class=\"row\">"+
-                "<div class=\"col-sm-6 actionBar\"><span class=\"pull-left\">"+
-                "<form method=\"post\" action=\"\" class=\"form-inline\" role=\"form\">"+
-                "<?php echo addslashes(csrf_field()) ?>" +
-                "<div class=\"form-group\">"+
-                "<select name=\"status\" id=\"status\" class=\"form-control input-sm\">"+
-                "<option value=\"all\">All</option>"+
-                "<option value=\"connected\">Connected</option>"+
-                "<option value=\"unconnected\">Not connected</option>"+
-                "</select>"+
-                "<button type=\"submit\" class=\"btn btn-default input-sm\">Search</button>"+
-                "</div></form></span></div>"+
-                "<div class=\"col-sm-6 actionBar\"><span class=\"{{css.search}}\"></span> <span class=\"{{css.actions}}\"></span></div></div></div>"
-        },
-        post: function ()
-        {
-            return {
-                id:          'ix-peers',
-                asn:         '<?php echo htmlspecialchars((string) $asn); ?>',
-                ixid:        '<?php echo $ixid; ?>',
-                status:      '<?php echo $status; ?>',
-            };
-        },
-        url: "ajax_table.php"
-    });
-</script>
+BLADE, ['ixid' => (int) ($vars['ixid'] ?? 0)]);
