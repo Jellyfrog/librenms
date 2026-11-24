@@ -38,7 +38,7 @@
                 <i class="fa fa-triangle-exclamation" aria-hidden="true"></i> <span x-text="error"></span>
             </td>
         </tr>
-        <tr x-show="! loading && ! error && rows.length === 0" x-cloak class="tw:max-md:block">
+        <tr x-show="! loading && ! error && empty" x-cloak class="tw:max-md:block">
             <td :colspan="visibleColumnCount" class="tw:max-md:block tw:px-4 tw:py-8 tw:text-center tw:text-gray-500 tw:dark:text-dark-white-400">{{ $empty ?? __('No results found') }}</td>
         </tr>
         </tbody>

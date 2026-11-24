@@ -69,11 +69,20 @@ abstract class TableController extends PaginatedAjaxController
     }
 
     /**
-     * Requests from x-data-table send page, per_page and search and get Laravel paginator json back.
+     * x-data-table sends page, per_page and search and gets Laravel paginator json back.
      * Bootgrid sends current, rowCount and searchPhrase and gets bootgrid json back.
+     * Map the x-data-table names onto the bootgrid ones, subclasses read those directly.
+     *
+     * @return bool true for an x-data-table request
      */
-    protected function isPaginatorRequest(Request $request): bool
+    private function mapPaginatorParams(Request $request): bool
     {
+        $request->merge(array_filter([
+            'current' => $request->input('page'),
+            'rowCount' => $request->input('per_page'),
+            'searchPhrase' => $request->input('search'),
+        ], fn ($value) => $value !== null));
+
         return $request->has('per_page');
     }
 
@@ -81,14 +90,7 @@ abstract class TableController extends PaginatedAjaxController
     {
         $this->validate($request, $this->rules());
 
-        if ($this->isPaginatorRequest($request)) {
-            // map onto the bootgrid names, subclasses read these directly
-            $request->merge([
-                'current' => $request->input('page', 1),
-                'rowCount' => $request->input('per_page'),
-                'searchPhrase' => $request->input('search'),
-            ]);
-        }
+        $paginatorRequest = $this->mapPaginatorParams($request);
 
         /** @var Builder $query */
         $query = $this->baseQuery($request);
@@ -105,7 +107,7 @@ abstract class TableController extends PaginatedAjaxController
         }
         $paginator = $query->paginate($limit, ['*'], 'page', $page);
 
-        if ($this->isPaginatorRequest($request)) {
+        if ($paginatorRequest) {
             return response()->json([
                 'data' => collect($paginator->items())->map($this->formatItem(...))->values(),
                 'current_page' => $paginator->currentPage(),
@@ -136,6 +138,7 @@ abstract class TableController extends PaginatedAjaxController
      */
     public function export(Request $request): StreamedResponse
     {
+        $this->mapPaginatorParams($request);
         $query = $this->prepareExportQuery($request);
 
         $this->sort($request, $query);

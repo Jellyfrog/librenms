@@ -15,8 +15,8 @@ class AuthLogController
         $this->authorize('auth-log.view');
 
         return view('user.authlog', [
-            // the table sorts, searches and paginates these in the browser
-            'rows' => AuthLog::orderBy('datetime', 'desc')->get()->map(fn (AuthLog $log) => [
+            // the table sorts, searches and paginates these in the browser, it sorts by datetime desc
+            'rows' => AuthLog::get()->map(fn (AuthLog $log) => [
                 'id' => $log->id,
                 'datetime' => $log->datetime?->format('Y-m-d H:i:s'),
                 'user' => $log->user,

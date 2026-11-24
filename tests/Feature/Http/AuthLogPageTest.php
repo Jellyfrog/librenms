@@ -22,11 +22,12 @@ final class AuthLogPageTest extends TestCase
         $this->actingAs($admin)->get('/authlog')
             ->assertOk()
             ->assertSee('dataTable(', false)
-            ->assertSee('\u0022mode\u0022:\u0022local\u0022', false)
+            ->assertSee('\u0022local\u0022:true', false)
+            ->assertSee('<script type="application/json" data-table-rows>', false)
             ->assertSee('dt-user')
             ->assertSee('192.0.2.10')
             ->assertDontSee('bootgrid(', false)
-            // rows are json in an attribute and rendered with x-text, never raw html
+            // rows are hex escaped json and rendered with x-text, never raw html
             ->assertDontSee('<script>alert(1)</script>', false);
     }
 }

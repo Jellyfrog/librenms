@@ -1,12 +1,11 @@
 @props([
     'url' => null,
     'name' => null,
-    'mode' => 'server',
     'rows' => null,
     'params' => [],
     'sort' => [],
     'perPage' => 50,
-    'perPageOptions' => [25, 50, 100, 250, -1],
+    'perPageOptions' => [50, 100, 250, -1],
     'search' => true,
     'rowKey' => 'id',
     'filterName' => null,
@@ -23,10 +22,9 @@
     Sortable, searchable, filterable and paginated table. Replaces jquery-bootgrid.
     The JS lives in resources/js/components/alpine/dataTable.js (Alpine.data('dataTable')), built on @tanstack/alpine-table.
 
-    url: endpoint, a TableController route. Required unless mode is local and rows are given
-    name: identifies the table for data-table:reload events and remembered column/page size choices
-    mode: server (the server sorts, searches, filters and paginates) or local (the browser does it on every row)
-    rows: local mode rows, when given url is not fetched
+    url: endpoint, a TableController route. The server sorts, searches, filters and paginates
+    name: identifies the table for remembered column/page size choices
+    rows: all rows, instead of url. The browser sorts, searches and paginates them, x-filter filters need a url
     params: extra request parameters, sent with every request
     sort: initial sort, column => asc|desc in priority order. Shift+click a header to sort on more columns
     perPage/perPageOptions: page size choices, -1 shows all rows
@@ -40,16 +38,12 @@
     default  x-data-table.column cells, one per column
     heading  extra controls in the toolbar
     empty    text when no rows match
-    after    content after the table (modals), it can use the table state
-
-    Reload from outside: window.dispatchEvent(new CustomEvent('data-table:reload', {detail: {name: 'devices-detail'}}))
 --}}
 @php
     $config = [
         'url' => $url,
         'name' => $name,
-        'mode' => $mode,
-        'rows' => $rows,
+        'local' => $rows !== null,
         'params' => (object) $params,
         'sort' => (object) $sort,
         'perPage' => $perPage,
@@ -62,7 +56,6 @@
 @endphp
 <div {{ $attributes }}
      x-data="dataTable(@js($config))"
-     x-on:data-table:reload.window="if (! $event.detail?.name || $event.detail.name === config.name) reload()"
      @if ($filterName) x-on:filter:apply.window="if ($event.detail.name === @js($filterName)) applyFilter($event.detail.filters)" @endif>
     @if ($panel)
         <x-panel class="tw:mb-0" :title="$title">
@@ -89,5 +82,8 @@
             @include('components.data-table.pagination')
         </div>
     @endif
-    {{ $after ?? '' }}
+    @if ($rows !== null)
+        {{-- read once by the JS, kept out of x-data so Alpine does not compile it --}}
+        <script type="application/json" data-table-rows>@json($rows)</script>
+    @endif
 </div>

@@ -3,7 +3,6 @@
               :params="['format' => $detailed ? 'list_detail' : 'list_basic']"
               row-key="device_id"
               :sort="['display' => 'asc']"
-              :per-page-options="[50, 100, 250, -1]"
               :search="false"
               filter-name="devices"
               :filter-fields="$filterFields"
@@ -24,12 +23,12 @@
     <x-data-table.column field="display" :label="__('Device')">
         <span x-html="row.hostname"></span>
     </x-data-table.column>
-    <x-data-table.column field="metrics" :label="__('Metrics')" :width="$detailed ? '100px' : '150px'" :sortable="false" :visible="$detailed" x-html="row.metrics" />
-    <x-data-table.column field="hardware" :label="__('Platform')" x-html="row.hardware" />
-    <x-data-table.column field="os" :label="__('device.attributes.os')" x-html="row.os" />
+    <x-data-table.column field="metrics" :label="__('Metrics')" :width="$detailed ? '100px' : '150px'" :sortable="false" :visible="$detailed" html />
+    <x-data-table.column field="hardware" :label="__('Platform')" html />
+    <x-data-table.column field="os" :label="__('device.attributes.os')" html />
     <x-data-table.column field="uptime" :label="__('Up/Down Time')">
         <span x-show="row.status !== 'disabled'" :class="row.status === 'down' && 'red'" x-text="row.uptime"></span>
     </x-data-table.column>
-    <x-data-table.column field="location" :label="__('device.attributes.location')" :visible="$detailed" x-html="row.location" />
-    <x-data-table.column field="actions" :label="__('Actions')" :width="$detailed ? '120px' : '240px'" :sortable="false" header-class="device-table-header-actions" x-html="row.actions" />
+    <x-data-table.column field="location" :label="__('device.attributes.location')" :visible="$detailed" html />
+    <x-data-table.column field="actions" :label="__('Actions')" :width="$detailed ? '120px' : '240px'" :sortable="false" header-class="device-table-header-actions" html />
 </x-data-table>

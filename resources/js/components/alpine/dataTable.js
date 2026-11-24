@@ -1,6 +1,5 @@
 import Alpine from "alpinejs";
 import {
-    columnFilteringFeature,
     columnVisibilityFeature,
     createFilteredRowModel,
     createPaginatedRowModel,
@@ -16,10 +15,8 @@ import {
     sortFn_text,
     tableFeatures,
 } from "@tanstack/alpine-table";
-import { matchesFilters } from "./dataTableFilters.js";
 
 const features = tableFeatures({
-    columnFilteringFeature,
     globalFilteringFeature,
     rowSortingFeature,
     rowPaginationFeature,
@@ -31,10 +28,8 @@ const features = tableFeatures({
     sortFns: { alphanumeric: sortFn_alphanumeric, basic: sortFn_basic, text: sortFn_text },
 });
 
-// hidden column that applies the x-filter filters in local mode
-const FILTER_COLUMN = "__filters";
-// page size used for "all rows" in local mode, the server gets -1
-const ALL_ROWS = Number.MAX_SAFE_INTEGER;
+// TanStack page size for "all rows", the server gets -1
+const toPageSize = (perPage) => (Number(perPage) < 0 ? Number.MAX_SAFE_INTEGER : Number(perPage));
 
 const storage = {
     get(key) {
@@ -52,24 +47,6 @@ const storage = {
         }
     },
 };
-
-/**
- * Add nested params to a query string the way PHP reads them: filter[field][op]=value
- *
- * @param {URLSearchParams} query
- * @param {*} value
- * @param {string} prefix
- */
-function appendQuery(query, value, prefix = "") {
-    if (value === null || value === undefined || value === "") {
-        return;
-    }
-    if (typeof value === "object") {
-        Object.entries(value).forEach(([key, item]) => appendQuery(query, item, prefix ? `${prefix}[${key}]` : key));
-    } else {
-        query.append(prefix, String(value));
-    }
-}
 
 /**
  * Reads the column definitions from the x-data-table.column cells in the row template.
@@ -98,42 +75,43 @@ function readColumns(root) {
 /**
  * Sortable, filterable, paginated table for the x-data-table blade component.
  *
- * mode "server": every sort, search, filter and page change POSTs to config.url:
+ * Server mode: every sort, search, filter and page change POSTs to config.url:
  *   {...params, filter: {field: {op: value}}, sort: {column: "asc"|"desc"}, search, page, per_page (-1 = all)}
  *   and expects Laravel paginator json: {data: [...], current_page, last_page, per_page, total}
  *   The sort object is in priority order (shift+click adds a column).
- * mode "local": rows come from config.rows or are fetched once from config.url with per_page -1,
- *   then sorting, search, x-filter filters and pagination run in the browser.
- *
- * Events: listens for "data-table:reload" on window ({name}), dispatches "data-table:loaded" ({name, response}).
+ * Local mode (config.local): the rows are in the component's <script type="application/json" data-table-rows>,
+ *   sorting, search and pagination run in the browser.
  *
  * @param {object} config see resources/views/components/data-table/index.blade.php
  */
 export default function dataTable(config) {
-    const local = config.mode === "local";
+    const local = config.local === true;
     const rowKey = config.rowKey ?? "id";
     const storageKey = config.name ? `librenms.data-table.${config.name}` : null;
     const saved = (storageKey && storage.get(storageKey)) || {};
     const perPage = Number(saved.perPage ?? config.perPage ?? 50);
 
     const state = Alpine.reactive({
-        data: local && Array.isArray(config.rows) ? config.rows : [],
+        // bumped when data changes, the rows themselves stay out of Alpine's reactivity:
+        // local mode sorts and searches every row, through a proxy that would track every field read
+        version: 0,
         total: 0,
         sorting: Object.entries(config.sort ?? {}).map(([id, dir]) => ({ id, desc: dir === "desc" })),
-        pagination: { pageIndex: 0, pageSize: perPage < 0 ? ALL_ROWS : perPage },
-        columnVisibility: { [FILTER_COLUMN]: false },
-        globalFilter: "",
+        pagination: { pageIndex: 0, pageSize: toPageSize(perPage) },
+        columnVisibility: {},
         filter: config.filter ?? {},
     });
 
-    const getRowId = (row, index) => String(row[rowKey] ?? index);
-    // row id => row object as read from state.data, see the rows getter
+    // x-for key and TanStack row id: rowKey, or the position when a row has no rowKey
+    const rowId = (row, index) => (row[rowKey] === undefined || row[rowKey] === null ? `#${index}` : String(row[rowKey]));
+    let data = [];
     let rowsById = new Map();
     const setData = (rows) => {
-        state.data = rows;
-        rowsById = new Map(state.data.map((row, index) => [getRowId(row, index), row]));
+        data = rows;
+        rowsById = new Map(rows.map((row, index) => [rowId(row, index), row]));
+        state.version++;
     };
-    setData(state.data);
+    let request = null;
 
     return {
         config,
@@ -144,9 +122,10 @@ export default function dataTable(config) {
         search: "",
         loading: false,
         error: null,
-        loadId: 0,
+        rowId,
 
         init() {
+            const self = this;
             this.columns = readColumns(this.$root);
             this.columns.forEach((column) => {
                 const visible = saved.columns?.[column.id] ?? column.visible;
@@ -157,32 +136,23 @@ export default function dataTable(config) {
 
             this.table = createTable({
                 features,
-                columns: [
-                    ...this.columns.map((column) => ({
-                        id: column.id,
-                        accessorFn: (row) => row[column.id],
-                        enableSorting: column.sortable,
-                        enableHiding: column.hideable,
-                        enableGlobalFilter: column.searchable,
-                        sortFn: "alphanumeric",
-                        sortUndefined: "last",
-                    })),
-                    {
-                        id: FILTER_COLUMN,
-                        accessorFn: (row) => row,
-                        enableHiding: false,
-                        enableSorting: false,
-                        enableGlobalFilter: false,
-                        filterFn: (row, columnId, filters) => matchesFilters(row.original, filters),
-                    },
-                ],
+                columns: this.columns.map((column) => ({
+                    id: column.id,
+                    accessorFn: (row) => row[column.id],
+                    enableSorting: column.sortable,
+                    enableHiding: column.hideable,
+                    enableGlobalFilter: column.searchable,
+                    sortFn: "alphanumeric",
+                    sortUndefined: "last",
+                })),
                 get data() {
-                    return state.data;
+                    state.version; // dependency for Alpine effects that read the row model
+                    return data;
                 },
                 get rowCount() {
                     return local ? undefined : state.total;
                 },
-                getRowId,
+                getRowId: rowId,
                 manualSorting: !local,
                 manualFiltering: !local,
                 manualPagination: !local,
@@ -203,10 +173,7 @@ export default function dataTable(config) {
                         return state.columnVisibility;
                     },
                     get globalFilter() {
-                        return state.globalFilter;
-                    },
-                    get columnFilters() {
-                        return Object.keys(state.filter).length ? [{ id: FILTER_COLUMN, value: state.filter }] : [];
+                        return self.search;
                     },
                 },
                 onSortingChange: (updater) => {
@@ -218,34 +185,33 @@ export default function dataTable(config) {
                     this.changed(false);
                 },
                 onColumnVisibilityChange: (updater) => {
-                    state.columnVisibility = functionalUpdate(updater, state.columnVisibility);
+                    // set only the changed keys, every cell's isVisible() depends on its own key
+                    Object.entries(functionalUpdate(updater, { ...state.columnVisibility })).forEach(([id, visible]) => {
+                        if (state.columnVisibility[id] !== visible) {
+                            state.columnVisibility[id] = visible;
+                        }
+                    });
                     this.save();
                 },
-                onGlobalFilterChange: (updater) => {
-                    state.globalFilter = functionalUpdate(updater, state.globalFilter) ?? "";
-                },
-                // the filter column only exists to apply x-filter filters, ignore table driven changes to it
-                onColumnFiltersChange: () => {},
             });
 
-            this.$watch("search", (value) => {
-                state.globalFilter = value;
-                this.changed(true);
-            });
+            this.$watch("search", () => this.changed(true));
             this.$watch("perPage", (value) => {
-                state.pagination = { pageIndex: 0, pageSize: Number(value) < 0 ? ALL_ROWS : Number(value) };
+                state.pagination = { pageIndex: 0, pageSize: toPageSize(value) };
                 this.save();
                 this.changed(false);
             });
 
-            if (!local || !Array.isArray(config.rows)) {
+            if (local) {
+                setData(JSON.parse(this.$root.querySelector("script[data-table-rows]")?.textContent || "[]"));
+            } else {
                 this.load();
             }
         },
 
         /**
          * Rows on the current page, as sent by the server.
-         * Returns the same objects as state.data instead of TanStack's row.original: those are wrapped in a proxy
+         * Returns the loaded row objects instead of TanStack's row.original: those are wrapped in a proxy
          * that makes every cell binding re-run (and every x-html re-render) on any table state change.
          * With stable objects x-for only moves rows and the cells stay untouched.
          */
@@ -253,12 +219,8 @@ export default function dataTable(config) {
             return this.table.getRowModel().rows.map((row) => rowsById.get(row.id));
         },
 
-        /**
-         * x-for key: rowKey, or the position on the page when a row has no rowKey.
-         * Computed from the value, Alpine's scope hands the template proxies that are not the objects in rowsById.
-         */
-        rowId(row, index) {
-            return row[rowKey] === undefined || row[rowKey] === null ? `#${index}` : String(row[rowKey]);
+        get empty() {
+            return this.table.getRowModel().rows.length === 0;
         },
 
         get total() {
@@ -350,13 +312,12 @@ export default function dataTable(config) {
         },
 
         requestBody() {
-            const pageSize = state.pagination.pageSize === ALL_ROWS ? -1 : state.pagination.pageSize;
             const body = {
                 ...(config.params ?? {}),
                 filter: state.filter,
-                search: state.globalFilter,
+                search: this.search,
                 page: state.pagination.pageIndex + 1,
-                per_page: pageSize,
+                per_page: Number(this.perPage),
             };
             // leave sort out when empty so the controller's default sort applies
             if (state.sorting.length) {
@@ -368,74 +329,50 @@ export default function dataTable(config) {
 
         /**
          * Download the table as CSV from config.exportUrl with the table's params, filters, search and sort.
-         * The export endpoints take the bootgrid names: current, rowCount and searchPhrase.
          * @param {boolean} page only the current page
          */
         exportCsv(page) {
-            const { page: current, per_page: rowCount, search, ...params } = this.requestBody();
+            const { page: current, per_page: perPage, search, ...params } = this.requestBody();
             if (search) {
-                params.searchPhrase = search;
+                params.search = search;
             }
             if (page) {
-                Object.assign(params, { current, rowCount });
+                Object.assign(params, { page: current, per_page: perPage });
             }
 
-            const url = new URL(config.exportUrl, window.location.href);
-            appendQuery(url.searchParams, params);
-            window.open(url.toString(), "_blank");
+            window.open(window.axios.getUri({ url: new URL(config.exportUrl, window.location.href).toString(), params }), "_blank");
         },
 
-        /** Reload rows from the server, in local mode this refetches every row */
         reload() {
-            if (config.url) {
+            if (!local) {
                 this.load();
             }
         },
 
         load() {
-            const loadId = ++this.loadId;
+            request?.abort();
+            const controller = (request = new AbortController());
             this.loading = true;
             this.error = null;
 
-            // in local mode the browser sorts, searches and filters, the server only applies params
-            const body = local ? { ...(config.params ?? {}), page: 1, per_page: -1 } : this.requestBody();
-
-            return fetch(config.url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content ?? "",
-                },
-                body: JSON.stringify(body),
-            })
-                .then(async (response) => {
-                    const json = await response.json().catch(() => ({}));
-                    if (!response.ok) {
-                        throw new Error(json.message ?? config.lang?.request_failed ?? "Request failed");
-                    }
-
-                    return json;
-                })
-                .then((json) => {
-                    if (loadId !== this.loadId) {
-                        return; // a newer request is in flight
-                    }
+            return window.axios
+                .post(config.url, this.requestBody(), { signal: controller.signal })
+                .then(({ data: json }) => {
                     setData(json.data ?? []);
-                    state.total = json.total ?? state.data.length;
-                    if (!local && json.current_page && json.current_page - 1 !== state.pagination.pageIndex) {
+                    state.total = json.total ?? data.length;
+                    if (json.current_page && json.current_page - 1 !== state.pagination.pageIndex) {
                         state.pagination = { ...state.pagination, pageIndex: json.current_page - 1 };
                     }
-                    this.$dispatch("data-table:loaded", { name: config.name, response: json });
                 })
                 .catch((error) => {
-                    if (loadId === this.loadId) {
-                        this.error = error.message;
+                    if (!window.axios.isCancel(error)) {
+                        this.error = error.response?.data?.message ?? config.lang?.request_failed ?? "Request failed";
                     }
                 })
                 .finally(() => {
-                    if (loadId === this.loadId) {
+                    if (request === controller) {
                         this.loading = false;
+                        request = null;
                     }
                 });
         },
