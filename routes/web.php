@@ -520,7 +520,7 @@ Route::middleware(['auth'])->group(function (): void {
             Route::get('device/export', [Table\DeviceController::class, 'export']);
             Route::get('eventlog', Table\EventlogController::class)->name('table.eventlog');
             Route::post('fdb-tables', Table\FdbTablesController::class);
-            Route::post('graylog', Table\GraylogController::class)->name('table.graylog');
+            Route::get('graylog', Table\GraylogController::class)->name('table.graylog');
             Route::post('inventory', Table\InventoryController::class)->name('table.inventory');
             Route::get('inventory/export', [Table\InventoryController::class, 'export']);
             Route::post('location', Table\LocationController::class)->name('table.location');
@@ -541,7 +541,7 @@ Route::middleware(['auth'])->group(function (): void {
             Route::get('sensors/export', [Table\SensorsController::class, 'export']);
             Route::match(['get', 'post'], 'storages', Table\StoragesController::class)->name('table.storages');
             Route::get('storages/export', [Table\StoragesController::class, 'export']);
-            Route::post('syslog', Table\SyslogController::class)->name('table.syslog');
+            Route::get('syslog', Table\SyslogController::class)->name('table.syslog');
             Route::match(['get', 'post'], 'printer-supply', Table\PrinterSupplyController::class)->name('table.printer-supply');
             Route::post('tnmsne', Table\TnmsneController::class)->name('table.tnmsne');
             Route::match(['get', 'post'], 'wireless', Table\WirelessSensorController::class)->name('table.wireless');

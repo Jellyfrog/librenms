@@ -14,7 +14,7 @@
                     <tbody>
                         <template x-for="(row, index) in rows" :key="index">
                             <tr>
-                                <td x-html="row.severity"></td>
+                                <td><span class="alert-status" :class="row.severity"></span></td>
                                 <td x-text="row.timestamp"></td>
                                 <td x-text="row.level"></td>
                                 <td x-text="row.message"></td>
@@ -35,32 +35,15 @@
                     loading: true,
                     rows: [],
 
-                    async load() {
-                        const body = new URLSearchParams({
+                    load() {
+                        window.axios.get(config.url, {params: {
                             device: config.device,
-                            rowCount: config.rowCount,
-                            loglevel: config.loglevel,
-                        });
-                        const token = document.querySelector('meta[name="csrf-token"]')?.content;
-
-                        try {
-                            const response = await fetch(config.url, {
-                                method: 'POST',
-                                headers: {
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-                                    ...(token ? {'X-CSRF-TOKEN': token} : {}),
-                                },
-                                body,
-                            });
-
-                            if (response.ok) {
-                                const data = await response.json();
-                                this.rows = data.rows ?? [];
-                            }
-                        } finally {
-                            this.loading = false;
-                        }
+                            per_page: config.rowCount,
+                            filter: config.loglevel === null ? {} : {loglevel: {eq: config.loglevel}},
+                        }})
+                            .then((response) => this.rows = response.data.data ?? [])
+                            .catch(() => {})
+                            .finally(() => this.loading = false);
                     },
                 }));
             });

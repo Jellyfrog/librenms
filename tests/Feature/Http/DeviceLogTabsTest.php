@@ -38,7 +38,7 @@ class DeviceLogTabsTest extends TestCase
      * @param  array<int, string>  $params
      */
     #[DataProvider('logTabs')]
-    public function testFilterParametersAreHtmlEscapedInsideJavascript(string $route, array $params): void
+    public function testFilterParametersAreNotRenderedRaw(string $route, array $params): void
     {
         $admin = User::factory()->create(['enabled' => 1]);
         $admin->assignRole('admin');
@@ -46,15 +46,12 @@ class DeviceLogTabsTest extends TestCase
 
         $query = array_fill_keys($params, self::PAYLOAD);
 
-        $response = $this->actingAs($admin)
+        $this->actingAs($admin)
             ->get(route($route, ['device' => $device] + $query))
-            ->assertOk();
-
-        $flags = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
-
-        // values concatenated into HTML strings must be html escaped before being JS encoded
-        $response->assertDontSee('+ ' . json_encode(self::PAYLOAD, $flags) . ' +', false);
-        $response->assertSee('+ ' . json_encode(e(self::PAYLOAD), $flags) . ' +', false);
+            ->assertOk()
+            ->assertSee('dataTable(', false)
+            ->assertDontSee('bootgrid(', false)
+            ->assertDontSee(self::PAYLOAD, false);
     }
 
     public function testGlobalGraylogStreamIsEscaped(): void
@@ -62,11 +59,10 @@ class DeviceLogTabsTest extends TestCase
         $admin = User::factory()->create(['enabled' => 1]);
         $admin->assignRole('admin');
 
-        $response = $this->actingAs($admin)
+        $this->actingAs($admin)
             ->get('/graylog?stream=' . urlencode(self::PAYLOAD))
-            ->assertOk();
-
-        $response->assertDontSee(self::PAYLOAD, false);
-        $response->assertSee('+ ' . json_encode(htmlspecialchars(self::PAYLOAD)) . ' +', false);
+            ->assertOk()
+            ->assertSee('dataTable(', false)
+            ->assertDontSee(self::PAYLOAD, false);
     }
 }

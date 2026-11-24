@@ -26,7 +26,6 @@
 
 namespace App\Http\Controllers\Device\Tabs;
 
-use App\Facades\LibrenmsConfig;
 use App\Http\Controllers\Controller;
 use App\Models\Device;
 use App\Models\Syslog;
@@ -48,12 +47,8 @@ class GraylogController extends Controller
 
         return view('device.tabs.logs.graylog', [
             'device' => $device,
-            'timezone' => LibrenmsConfig::has('graylog.timezone'),
-            'filter_device' => true,
-            'show_form' => true,
-            'stream' => $request->input('stream', ''),
-            'range' => $request->input('range', '0'),
-            'loglevel' => $request->input('loglevel', ''),
+            // old links use ?stream=, ?range= and ?loglevel=
+            'filter' => array_map(fn ($value) => ['eq' => $value], array_filter($request->only(['stream', 'range', 'loglevel']), fn ($value) => $value !== null && $value !== '')),
         ]);
     }
 }

@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 trait Filterable
 {
     /**
-     * @var array<string, array{operator?: string, wildcard?: string, not?: bool, null?: bool, set?: bool}>
+     * @var array<string, array{operator?: string, wildcard?: string, not?: bool, null?: bool, set?: bool, date?: bool}>
      */
     protected static array $operatorMap = [
         // Standard Comparison
@@ -33,6 +33,11 @@ trait Filterable
         // Set Comparisons
         'in' => ['set' => true],
         'not_in' => ['set' => true, 'not' => true],
+
+        // Dates (x-filter date fields)
+        'on' => ['operator' => '=', 'date' => true],
+        'before' => ['operator' => '<'],
+        'after' => ['operator' => '>'],
     ];
 
     /**
@@ -87,7 +92,7 @@ trait Filterable
      * @param  array  $columns
      * @param  Builder<static>  $query
      * @param  scalar|scalar[]  $value
-     * @param  array{operator?: string, wildcard?: string, not?: bool, null?: bool, set?: bool}  $config
+     * @param  array{operator?: string, wildcard?: string, not?: bool, null?: bool, set?: bool, date?: bool}  $config
      * @return void
      */
     protected function applyFilterSearch(array $columns, Builder $query, mixed $value, array $config): void
@@ -110,7 +115,7 @@ trait Filterable
      *
      * @param  Builder<static>  $query
      * @param  scalar|scalar[]  $value
-     * @param  array{operator?: string, wildcard?: string, not?: bool, null?: bool, set?: bool}  $config
+     * @param  array{operator?: string, wildcard?: string, not?: bool, null?: bool, set?: bool, date?: bool}  $config
      * @param  callable  $mapper  Accepts value and modifies the query
      */
     protected function applyMappedFilter(Builder $query, mixed $value, array $config, callable $mapper): void
@@ -129,7 +134,7 @@ trait Filterable
      * @param  Builder<static>  $query
      * @param  string  $field
      * @param  scalar|scalar[]  $value
-     * @param  array{operator?: string, wildcard?: string, not?: bool, null?: bool, set?: bool}  $config
+     * @param  array{operator?: string, wildcard?: string, not?: bool, null?: bool, set?: bool, date?: bool}  $config
      * @param  'and'|'or'  $boolean
      * @return void
      */
@@ -154,6 +159,13 @@ trait Filterable
             return;
         }
 
+        if ($config['date'] ?? false) {
+            $not ? $query->whereNot(fn (Builder $q) => $q->whereDate($field, $config['operator'], $value), boolean: $boolean)
+                : $query->whereDate($field, $config['operator'], $value, $boolean);
+
+            return;
+        }
+
         if (isset($config['wildcard'])) {
             $value = str_replace('?', $value, $config['wildcard']);
         }
@@ -166,7 +178,7 @@ trait Filterable
      * @param  Builder<static>  $query
      * @param  string  $field
      * @param  scalar|scalar[]  $value
-     * @param  array{operator?: string, wildcard?: string, not?: bool, null?: bool, set?: bool}  $config
+     * @param  array{operator?: string, wildcard?: string, not?: bool, null?: bool, set?: bool, date?: bool}  $config
      * @param  'and'|'or'  $boolean
      * @return void
      */

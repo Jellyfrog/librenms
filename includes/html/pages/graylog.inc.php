@@ -1,8 +1,6 @@
 <?php
 
 /*
- * LibreNMS
- *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or (at your
@@ -18,12 +16,12 @@
 $no_refresh = true;
 $pagetitle[] = 'Graylog';
 
-echo '<div class="panel panel-default panel-condensed">
-    <div class="panel-heading">
-        <strong>Graylog entries</strong>
-    </div>';
+// old links put stream, device, range and loglevel in the url
+$filter = [];
+foreach (['stream' => 'stream', 'device' => 'device_id', 'range' => 'range', 'loglevel' => 'loglevel'] as $var => $field) {
+    if (isset($vars[$var]) && $vars[$var] !== '') {
+        $filter[$field] = ['eq' => $vars[$var]];
+    }
+}
 
-require 'includes/html/common/graylog.inc.php';
-echo implode('', $common_output);
-
-echo '</div>';
+echo Blade::render('<x-graylog-table :filter="$filter" />', ['filter' => $filter]);

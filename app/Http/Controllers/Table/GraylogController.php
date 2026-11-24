@@ -28,16 +28,23 @@ namespace App\Http\Controllers\Table;
 
 use App\ApiClients\GraylogApi;
 use App\Facades\LibrenmsConfig;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DataTableRequest;
 use App\Models\Device;
 use App\Models\Syslog;
 use DateInterval;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Blade;
 
-class GraylogController extends SimpleTableController
+/**
+ * Graylog messages for x-graylog-table. Filters (stream, device_id, loglevel, range) are passed to the Graylog API
+ */
+class GraylogController extends Controller
 {
     private readonly ?DateTimeZone $timezone;
     private array $deviceLinkCache = [];
@@ -48,60 +55,55 @@ class GraylogController extends SimpleTableController
         $this->timezone = $timezone ? new DateTimeZone($timezone) : null;
     }
 
-    public function __invoke(Request $request, GraylogApi $api): JsonResponse
+    public function __invoke(DataTableRequest $request, GraylogApi $api): AnonymousResourceCollection|JsonResponse
     {
         $this->authorize('viewAny', Syslog::class); // Graylog replaces syslog
 
         if (! $api->isConfigured()) {
-            return response()->json([
-                'error' => 'Graylog is not configured',
-            ], 503);
+            return response()->json(['message' => __('Graylog is not configured')], 503);
         }
 
-        $this->validate($request, [
-            'stream' => 'nullable|alpha_num',
-            'device' => 'nullable|int',
-            'range' => 'nullable|int',
-            'loglevel' => 'nullable|int|min:0|max:7',
+        $request->validate([
+            'device' => 'nullable|integer',
+            'filter.stream.eq' => 'nullable|alpha_num',
+            'filter.device_id.eq' => 'nullable|integer',
+            'filter.range.eq' => 'nullable|integer|min:0',
+            'filter.loglevel.eq' => 'nullable|integer|between:0,7',
         ]);
 
-        $search = $request->input('searchPhrase');
-        $device_id = (int) $request->input('device');
-        $device = $device_id ? Device::find($device_id) : null;
-        $range = (int) $request->input('range', 0);
-        $limit = (int) $request->input('rowCount', 10);
-        $page = (int) $request->input('current', 1);
-        $offset = (int) (($page - 1) * $limit);
-        $loglevel = $request->input('loglevel') ?? LibrenmsConfig::get('graylog.loglevel');
+        $filter = $request->filters();
+        $deviceId = $request->integer('device') ?: (int) ($filter['device_id']['eq'] ?? 0);
+        $device = $deviceId ? Device::find($deviceId) : null;
+        $loglevel = $filter['loglevel']['eq'] ?? LibrenmsConfig::get('graylog.loglevel');
+        $stream = $filter['stream']['eq'] ?? null;
 
-        $query = $api->buildSimpleQuery($search, $device) .
-            ($loglevel !== null ? ' AND level: <=' . $loglevel : '');
+        // the Graylog API needs a limit, every row means its maximum page
+        $perPage = (int) $request->input('per_page', 25);
+        $perPage = $perPage < 0 ? 1000 : $perPage;
+        $page = max(1, $request->integer('page', 1));
 
         $sort = null;
-        foreach ($request->input('sort', []) as $field => $direction) {
+        foreach ($request->sorts() as $field => $direction) {
             $sort = "$field:$direction";
+            break;
         }
-
-        $stream = $request->input('stream');
-        $filter = $stream ? "streams:$stream" : null;
 
         try {
-            $data = $api->query($query, $range, $limit, $offset, $sort, $filter);
-            $messages = $data['messages'] ?? [];
-
-            return $this->formatResponse(
-                array_map($this->formatMessage(...), $messages),
-                $page,
-                count($messages),
-                $data['total_results'] ?? 0,
+            $data = $api->query(
+                $api->buildSimpleQuery($request->search(), $device) . ($loglevel !== null ? ' AND level: <=' . $loglevel : ''),
+                (int) ($filter['range']['eq'] ?? 0),
+                $perPage,
+                ($page - 1) * $perPage,
+                $sort,
+                $stream ? "streams:$stream" : null,
             );
-        } catch (\Exception $se) {
-            $error = $se->getMessage();
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
         }
 
-        return response()->json([
-            'error' => $error,
-        ], 500);
+        $messages = array_map($this->formatMessage(...), $data['messages'] ?? []);
+
+        return JsonResource::collection(new LengthAwarePaginator($messages, $data['total_results'] ?? 0, $perPage, $page));
     }
 
     private function formatMessage(array $message): array
@@ -123,9 +125,10 @@ class GraylogController extends SimpleTableController
         return [
             'origin' => $this->deviceLinkFromSource($message['message']['gl2_remote_ip']),
             'severity' => $this->severityLabel($level),
+            'id' => $message['message']['_id'] ?? null,
             'timestamp' => $displayTime,
             'source' => $this->deviceLinkFromSource($message['message']['source']),
-            'message' => htmlspecialchars($message['message']['message'] ?? ''),
+            'message' => $message['message']['message'] ?? '',
             'facility' => is_numeric($facility) ? "($facility) " . __("syslog.facility.$facility") : $facility,
             'level' => (is_numeric($level) && $level >= 0) ? "($level) " . __("syslog.severity.$level") : $level,
         ];
@@ -144,9 +147,7 @@ class GraylogController extends SimpleTableController
             '7' => 'label-default',
             '' => 'label-info',
         ];
-        $barColor = $map[$severity] ?? 'label-info';
-
-        return '<span class="alert-status ' . $barColor . '" style="margin-right:8px;float:left;"></span>';
+        return $map[$severity] ?? 'label-info';
     }
 
     /**
