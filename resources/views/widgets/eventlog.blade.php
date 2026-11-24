@@ -1,43 +1,14 @@
-<div id="eventlog_container-{{ $id }}" data-reload="false">
-    <div class="table-responsive">
-        <table id="eventlog-{{ $id }}" class="table table-hover table-condensed table-striped">
-            <thead>
-            <tr>
-                <th data-column-id="datetime" data-order="desc">{{ __('Timestamp') }}</th>
-                <th data-column-id="type">{{ __('Type') }}</th>
-                <th data-column-id="device_id">{{ __('Hostname') }}</th>
-                <th data-column-id="message">{{ __('Message') }}</th>
-                <th data-column-id="username">{{ __('User') }}</th>
-            </tr>
-            </thead>
-        </table>
-    </div>
-</div>
-<script>
-    $(function () {
-        var grid = $("#eventlog-{{ $id }}").bootgrid({
-            ajax: true,
-            rowCount: [50, 100, 250, -1],
-            navigation: ! {{ $hidenavigation }},
-            post: function ()
-            {
-                return {
-                    @if($message_filter) message: "{{ $message_filter }}", @endif
-                    @if($age) age: "{{ LibreNMS\Util\Time::durationToSeconds($age) }}", @endif
-                    device: "{{ $device }}",
-                    device_group: "{{ $device_group }}",
-                    eventtype: "{{ $eventtype }}"
-                };
-            },
-            url: "{{ url('/ajax/table/eventlog') }}"
-        });
-
-        $('#eventlog_container-{{ $id }}').on('refresh', function (event) {
-            grid.bootgrid('reload');
-        });
-        $('#eventlog_container-{{ $id }}').on('destroy', function (event) {
-            grid.bootgrid('destroy');
-            delete grid;
-        });
-    });
-</script>
+{{-- the dashboard sends a jquery refresh event to the first element instead of reloading the html (data-reload=false) --}}
+<x-eventlog-table :device-id="$device ? (int) $device : null"
+                  :filter="$eventtype ? ['type' => ['eq' => $eventtype]] : []"
+                  :filterable="false"
+                  :params="array_filter([
+                      'device_group' => $device_group,
+                      'age' => $age ? \LibreNMS\Util\Time::durationToSeconds($age) : null,
+                      'search' => $message_filter,
+                  ])"
+                  :panel="false"
+                  :footer="! $hidenavigation"
+                  :title="null"
+                  data-reload="false"
+                  x-init="$($el).on('refresh', () => reload())" />

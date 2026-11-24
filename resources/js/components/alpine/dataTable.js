@@ -52,7 +52,7 @@ const storage = {
  * Reads the column definitions from the x-data-table.column cells in the row template.
  *
  * @param {HTMLElement} root
- * @returns {Array<{id: string, label: string, sortable: boolean, searchable: boolean, hideable: boolean, visible: boolean, width: string|null, headerClass: string}>}
+ * @returns {Array<{id: string, label: string, sortable: boolean, searchable: boolean, hideable: boolean, visible: boolean, width: string|null, headerClass: string, headerTitle: string|null}>}
  */
 function readColumns(root) {
     const template = root.querySelector("template[data-table-row]");
@@ -69,24 +69,34 @@ function readColumns(root) {
         visible: cell.dataset.visible !== "0",
         width: cell.dataset.width || null,
         headerClass: cell.dataset.headerClass ?? "",
+        headerTitle: cell.dataset.headerTitle ?? null,
     }));
 }
 
 /**
  * Sortable, filterable, paginated table for the x-data-table blade component.
  *
- * mode "server": every sort, search, filter and page change POSTs to config.url:
- *   {...params, filter: {field: {op: value}}, sort: {column: "asc"|"desc"}, search, page, per_page (-1 = all)}
- *   and expects Laravel paginator json: {data: [...], current_page, last_page, per_page, total}
- *   The sort object is in priority order (shift+click adds a column).
+ * mode "server": every sort, search, filter and page change GETs config.url with
+ *   {...params, ...requestParams(), filter: {field: {op: value}}, sort: {column: "asc"|"desc"}, search, page, per_page (-1 = all)}
+ *   and expects a Laravel resource collection of a paginator: {data: [...], meta: {current_page, last_page, per_page, total}}
+ *   See App\Http\Requests\DataTableRequest. The sort object is in priority order (shift+click adds a column).
  * mode "local": rows come from config.rows, sorting, search and pagination run in the browser.
  *   x-filter filters are only supported in server mode.
+ *
+ * Page specific behavior: Alpine.data("ports", (config) => LibreNMS.dataTable(config, {...properties}))
+ * and <x-data-table component="ports">. The properties override the base ones, getters are kept intact,
+ * a page init() runs after the base init.
+ * Hooks: requestParams() extra request params, loaded(json) handles extra response data (resource ->additional()).
+ *
+ * Selection (config.selectable): rows are selected by rowKey across pages, "all matching" selects every row of the filter.
+ * selectionData() returns {ids: [...]} or {all: true, filter: {...}} for bulk action requests.
  *
  * Events: listens for "data-table:reload" on window ({name}).
  *
  * @param {object} config see resources/views/components/data-table/index.blade.php
+ * @param {object} component page specific properties
  */
-export default function dataTable(config) {
+export default function dataTable(config, component = {}) {
     const local = config.mode === "local";
     const rowKey = config.rowKey ?? "id";
     const storageKey = config.name ? `librenms.data-table.${config.name}` : null;
@@ -106,7 +116,8 @@ export default function dataTable(config) {
         filter: config.filter ?? {},
     });
 
-    const getRowId = (row, index) => String(row[rowKey] ?? index);
+    const keyOf = (row) => (row[rowKey] === undefined || row[rowKey] === null ? null : String(row[rowKey]));
+    const getRowId = (row, index) => keyOf(row) ?? `#${index}`;
     // row id => row object, see the rows getter
     let rowsById = new Map();
     const setData = (rows) => {
@@ -117,15 +128,23 @@ export default function dataTable(config) {
     setData(local && Array.isArray(config.rows) ? config.rows : []);
     // aborts the previous server request when a newer one starts
     let controller = null;
+    let noticeTimer = null;
 
-    return {
+    const base = {
         config,
+        lang: config.lang ?? {},
         state,
         columns: [],
         table: null,
         perPage,
         loading: false,
         error: null,
+        // selection, row key => true
+        selected: {},
+        allMatching: false,
+        // request keys in flight, see request()
+        pending: {},
+        notice: null,
 
         init() {
             this.columns = readColumns(this.$root);
@@ -205,7 +224,7 @@ export default function dataTable(config) {
         },
 
         /**
-         * Rows on the current page, as sent by the server.
+         * Rows on the current page.
          * Returns the plain row objects instead of TanStack's row.original: those are wrapped in a proxy
          * that makes every cell binding re-run (and every x-html re-render) on any table state change.
          * With stable objects x-for only moves rows and the cells stay untouched.
@@ -219,7 +238,7 @@ export default function dataTable(config) {
          * Computed from the value, Alpine's scope hands the template proxies that are not the objects in rowsById.
          */
         rowId(row, index) {
-            return row[rowKey] === undefined || row[rowKey] === null ? `#${index}` : String(row[rowKey]);
+            return getRowId(row, index);
         },
 
         get total() {
@@ -247,11 +266,16 @@ export default function dataTable(config) {
         },
 
         get visibleColumnCount() {
-            return this.columns.filter((column) => this.isVisible(column.id)).length || 1;
+            return this.columns.filter((column) => this.isVisible(column.id)).length + (config.selectable ? 1 : 0) || 1;
         },
 
         toggleColumn(id) {
             this.table.getColumn(id).toggleVisibility();
+        },
+
+        /** Show or hide a column from page code, not remembered like the user's choice */
+        setColumnVisible(id, visible) {
+            state.columnVisibility = { ...state.columnVisibility, [id]: visible };
         },
 
         /** Click toggles the column sort, shift+click adds it to the sort (multi sort) */
@@ -283,11 +307,13 @@ export default function dataTable(config) {
                 return;
             }
             state.filter = filter ?? {};
+            this.clearSelection();
             this.changed(true);
         },
 
         /**
          * State changed, reset to the first page when the result set changed and reload in server mode.
+         * Call it after changing a requestParams() value.
          * @param {boolean} resetPage
          */
         changed(resetPage) {
@@ -310,21 +336,31 @@ export default function dataTable(config) {
             storage.set(storageKey, { perPage: Number(this.perPage), columns });
         },
 
-        requestBody() {
-            const pageSize = state.pagination.pageSize === ALL_ROWS ? -1 : state.pagination.pageSize;
-            const body = {
+        /** Hook: extra request params for this page */
+        requestParams() {
+            return {};
+        },
+
+        /** Hook: the server response, for data added with ->additional() */
+        loaded(json) {},
+
+        params() {
+            const params = {
                 ...(config.params ?? {}),
+                ...this.requestParams(),
                 filter: state.filter,
-                search: state.globalFilter,
                 page: state.pagination.pageIndex + 1,
-                per_page: pageSize,
+                per_page: state.pagination.pageSize === ALL_ROWS ? -1 : state.pagination.pageSize,
             };
-            // leave sort out when empty so the controller's default sort applies
+            if (state.globalFilter) {
+                params.search = state.globalFilter;
+            }
+            // leave sort out when empty so the endpoint's default sort applies
             if (state.sorting.length) {
-                body.sort = Object.fromEntries(state.sorting.map((sort) => [sort.id, sort.desc ? "desc" : "asc"]));
+                params.sort = Object.fromEntries(state.sorting.map((sort) => [sort.id, sort.desc ? "desc" : "asc"]));
             }
 
-            return body;
+            return params;
         },
 
         /** Reload rows from the server, local mode has nothing to reload */
@@ -341,17 +377,19 @@ export default function dataTable(config) {
             this.error = null;
 
             return window.axios
-                .post(config.url, this.requestBody(), { signal: current.signal })
+                .get(config.url, { params: this.params(), signal: current.signal })
                 .then(({ data: json }) => {
+                    const meta = json.meta ?? {};
                     setData(json.data ?? []);
-                    state.total = json.total ?? data.length;
-                    if (json.current_page && json.current_page - 1 !== state.pagination.pageIndex) {
-                        state.pagination = { ...state.pagination, pageIndex: json.current_page - 1 };
+                    state.total = meta.total ?? data.length;
+                    if (meta.current_page && meta.current_page - 1 !== state.pagination.pageIndex) {
+                        state.pagination = { ...state.pagination, pageIndex: meta.current_page - 1 };
                     }
+                    this.loaded(json);
                 })
                 .catch((error) => {
                     if (current === controller && !window.axios.isCancel(error)) {
-                        this.error = error.response?.data?.message ?? config.lang?.request_failed ?? "Request failed";
+                        this.error = errorMessage(error, this.lang);
                     }
                 })
                 .finally(() => {
@@ -360,5 +398,108 @@ export default function dataTable(config) {
                     }
                 });
         },
+
+        /**
+         * Send a request for an action, failures show a toast and reject.
+         * isPending(key) is true while it runs, use it to disable the control.
+         */
+        request(key, method, url, data = undefined) {
+            this.pending[key] = true;
+
+            return window
+                .axios({ method, url, data })
+                .then((response) => response.data)
+                .catch((error) => {
+                    window.toastr?.error(errorMessage(error, this.lang));
+                    throw error;
+                })
+                .finally(() => delete this.pending[key]);
+        },
+
+        isPending(key) {
+            return this.pending[key] === true;
+        },
+
+        /** Show the result of an action where the selection bar was, selecting rows again hides it */
+        notify(message, timeout = 4000) {
+            clearTimeout(noticeTimer);
+            this.notice = message;
+            noticeTimer = setTimeout(() => (this.notice = null), timeout);
+        },
+
+        // --- Selection ---
+
+        get selectionCount() {
+            return this.allMatching ? this.total : Object.keys(this.selected).length;
+        },
+
+        get pageSelected() {
+            const rows = this.rows;
+
+            return rows.length > 0 && rows.every((row) => this.isSelected(row));
+        },
+
+        get pageHasSelection() {
+            return this.rows.some((row) => this.isSelected(row));
+        },
+
+        isSelected(row) {
+            return this.allMatching || this.selected[keyOf(row)] === true;
+        },
+
+        toggleSelected(row, checked) {
+            if (this.allMatching) {
+                // drop back to selecting the rows that are visible
+                this.allMatching = false;
+                this.rows.forEach((r) => (this.selected[keyOf(r)] = true));
+            }
+
+            if (checked) {
+                this.selected[keyOf(row)] = true;
+            } else {
+                delete this.selected[keyOf(row)];
+            }
+        },
+
+        selectPage(checked) {
+            if (this.allMatching) {
+                this.clearSelection();
+                return;
+            }
+
+            this.rows.forEach((row) => (checked ? (this.selected[keyOf(row)] = true) : delete this.selected[keyOf(row)]));
+        },
+
+        selectAllMatching() {
+            this.allMatching = true;
+        },
+
+        clearSelection() {
+            this.selected = {};
+            this.allMatching = false;
+        },
+
+        /** Request data for the selection: every row matching the filter or the selected row keys */
+        selectionData() {
+            return this.allMatching
+                ? { all: true, filter: state.filter, ...(config.params ?? {}), ...this.requestParams() }
+                : { ids: Object.keys(this.selected).map((key) => (/^\d+$/.test(key) ? Number(key) : key)) };
+        },
     };
+
+    // a page init() runs after the table is set up
+    const { init: pageInit, ...descriptors } = Object.getOwnPropertyDescriptors(component);
+    if (pageInit) {
+        const baseInit = base.init;
+        base.init = function () {
+            baseInit.call(this);
+            pageInit.value.call(this);
+        };
+    }
+
+    return Object.defineProperties(base, descriptors);
+}
+
+function errorMessage(error, lang) {
+    return error.response?.data?.message ?? lang.request_failed ?? "Request failed";
 }

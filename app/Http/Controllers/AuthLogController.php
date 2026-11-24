@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Table\AuthLogResource;
 use App\Models\AuthLog;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\View\View;
@@ -16,13 +17,7 @@ class AuthLogController
 
         return view('user.authlog', [
             // the table sorts, searches and paginates these in the browser
-            'rows' => AuthLog::orderBy('datetime', 'desc')->get()->map(fn (AuthLog $log) => [
-                'id' => $log->id,
-                'datetime' => $log->datetime?->format('Y-m-d H:i:s'),
-                'user' => $log->user,
-                'address' => $log->address,
-                'result' => $log->result,
-            ]),
+            'rows' => AuthLogResource::collection(AuthLog::orderBy('datetime', 'desc')->get())->resolve(),
         ]);
     }
 }

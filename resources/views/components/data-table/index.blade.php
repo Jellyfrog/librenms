@@ -9,40 +9,58 @@
     'perPageOptions' => [50, 100, 250, -1],
     'search' => true,
     'rowKey' => 'id',
+    'rowLabel' => null,
     'filterName' => null,
     'filterFields' => [],
     'filter' => [],
     'hideFilter' => false,
     'columnToggle' => true,
+    'footer' => true,
     'panel' => true,
     'title' => null,
+    'component' => 'dataTable',
+    'config' => [],
+    'lang' => [],
+    'pageSelected' => __('components.data-table.page_selected', ['count' => '__count__']),
+    'selectAllMatching' => __('components.data-table.select_all_matching', ['count' => '__count__']),
+    'allMatchingSelected' => __('components.data-table.all_matching_selected', ['count' => '__count__']),
 ])
 
 {{--
-    Sortable, searchable, filterable and paginated table. Replaces jquery-bootgrid.
-    The JS lives in resources/js/components/alpine/dataTable.js (Alpine.data('dataTable')), built on @tanstack/alpine-table.
+    Sortable, searchable, filterable and paginated table, the one table component for record lists.
+    The JS lives in resources/js/components/alpine/dataTable.js (LibreNMS.dataTable), built on @tanstack/alpine-table.
 
-    url: endpoint, a TableController route. Required unless mode is local and rows are given
+    url: endpoint, see App\Http\Requests\DataTableRequest. Required in server mode
     name: identifies the table for data-table:reload events and remembered column/page size choices
     mode: server (the server sorts, searches, filters and paginates) or local (the browser does it on every row)
-    rows: local mode rows, when given url is not fetched
+    rows: local mode rows, use the same resource as the endpoint would: RowResource::collection($models)->resolve()
     params: extra request parameters, sent with every request
     sort: initial sort, column => asc|desc in priority order. Shift+click a header to sort on more columns
     perPage/perPageOptions: page size choices, -1 shows all rows
-    search: show the search box
+    search: show the search box, sent as search
+    rowKey/rowLabel: row id field, and an Alpine expression naming a row for screen readers (default row.{rowKey})
     filterName/filterFields/filter/hideFilter: show an x-filter, its filters are sent as filter[field][op]=value
     columnToggle: show the column visibility menu
+    footer: show the pagination
     panel: wrap the table in an x-panel, set false when the table is already inside one
+    component: Alpine.data() name of a page specific table: Alpine.data('name', (config) => LibreNMS.dataTable(config, {...}))
+    config/lang: extra config and translations for the component
+    pageSelected/selectAllMatching/allMatchingSelected: selection texts, __count__ is the count placeholder
 
     Slots, the current row is "row":
     default  x-data-table.column cells, one per column
     heading  extra controls in the toolbar
+    actions  bulk action buttons, rows are selectable when this is set, see selectionData()
     empty    text when no rows match
+    before   content above the table, it can use the table state
+    after    content after the table (modals), it can use the table state
 
-    Reload from outside: window.dispatchEvent(new CustomEvent('data-table:reload', {detail: {name: 'devices-detail'}}))
+    Reload from outside: window.dispatchEvent(new CustomEvent('data-table:reload', {detail: {name: 'devices'}}))
 --}}
 @php
+    $selectable = isset($actions);
     $config = [
+        ...$config,
         'url' => $url,
         'name' => $name,
         'mode' => $mode,
@@ -52,14 +70,17 @@
         'perPage' => $perPage,
         'rowKey' => $rowKey,
         'filter' => (object) $filter,
-        'lang' => ['request_failed' => __('Request failed')],
+        'selectable' => $selectable,
+        'lang' => ['request_failed' => __('Request failed'), ...$lang],
     ];
+    $rowLabel ??= 'row.' . $rowKey;
     $toolbar = $filterName || $search || $columnToggle || isset($heading);
 @endphp
 <div {{ $attributes }}
-     x-data="dataTable(@js($config))"
+     x-data="{{ $component }}(@js($config))"
      x-on:data-table:reload.window="if (! $event.detail?.name || $event.detail.name === config.name) reload()"
      @if ($filterName) x-on:filter:apply.window="if ($event.detail.name === @js($filterName)) applyFilter($event.detail.filters)" @endif>
+    {{ $before ?? '' }}
     @if ($panel)
         <x-panel class="tw:mb-0" :title="$title">
             @if ($toolbar)
@@ -68,11 +89,16 @@
                 </x-slot>
             @endif
             <x-slot name="table">
+                @if ($selectable)
+                    @include('components.data-table.selection-bar')
+                @endif
                 @include('components.data-table.table')
             </x-slot>
-            <x-slot name="footer" class="tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-3">
-                @include('components.data-table.pagination')
-            </x-slot>
+            @if ($footer)
+                <x-slot name="footer" class="tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-3">
+                    @include('components.data-table.pagination')
+                </x-slot>
+            @endif
         </x-panel>
     @else
         @if ($toolbar)
@@ -80,9 +106,15 @@
                 @include('components.data-table.toolbar')
             </div>
         @endif
+        @if ($selectable)
+            @include('components.data-table.selection-bar')
+        @endif
         @include('components.data-table.table')
-        <div class="tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-3 tw:pt-3">
-            @include('components.data-table.pagination')
-        </div>
+        @if ($footer)
+            <div class="tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-3 tw:pt-3">
+                @include('components.data-table.pagination')
+            </div>
+        @endif
     @endif
+    {{ $after ?? '' }}
 </div>

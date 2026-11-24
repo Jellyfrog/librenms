@@ -22,28 +22,31 @@
             </div>
         </div>
 
-        <x-selectable-table component="portGroupPorts"
-                            filter-name="port-group.ports"
-                            :filter-fields="$filter_fields"
-                            row-label="row.device + ' ' + row.label"
-                            :page-selected="__('port.settings.page_selected', ['count' => '__count__'])"
-                            :select-all-matching="__('port.settings.select_all_matching', ['count' => '__count__'])"
-                            :all-matching-selected="__('port.settings.all_matching_selected', ['count' => '__count__'])"
-                            :config="[
-                'filter' => $filter,
-                'membership' => $membership,
-                'members' => $members,
-                'listUrl' => route('port-groups.ports.list', $port_group),
-                'updateUrl' => route('port-groups.ports.update', $port_group),
-                'rowKey' => 'port_id',
-                'sort' => 'device',
-                'lang' => [
-                    'confirm_add' => __('port.groups.confirm_add', ['count' => '__count__']),
-                    'confirm_remove' => __('port.groups.confirm_remove', ['count' => '__count__']),
-                    'add' => __('port.groups.add'),
-                    'remove' => __('port.groups.remove'),
-                ],
-            ]">
+        <x-data-table component="portGroupPorts"
+                      name="port-group-ports"
+                      :url="route('port-groups.ports.list', $port_group)"
+                      row-key="port_id"
+                      row-label="row.device + ' ' + row.label"
+                      :sort="['device' => 'asc']"
+                      :per-page-options="[25, 50, 100, 250]"
+                      :search="false"
+                      filter-name="port-group.ports"
+                      :filter-fields="$filter_fields"
+                      :filter="$filter"
+                      :page-selected="__('port.settings.page_selected', ['count' => '__count__'])"
+                      :select-all-matching="__('port.settings.select_all_matching', ['count' => '__count__'])"
+                      :all-matching-selected="__('port.settings.all_matching_selected', ['count' => '__count__'])"
+                      :config="[
+                          'membership' => $membership,
+                          'members' => $members,
+                          'updateUrl' => route('port-groups.ports.update', $port_group),
+                      ]"
+                      :lang="[
+                          'confirm_add' => __('port.groups.confirm_add', ['count' => '__count__']),
+                          'confirm_remove' => __('port.groups.confirm_remove', ['count' => '__count__']),
+                          'add' => __('port.groups.add'),
+                          'remove' => __('port.groups.remove'),
+                      ]">
             <x-slot:heading>
                 <div class="tw:inline-flex tw:rounded-lg tw:border tw:border-gray-300 tw:dark:border-dark-gray-200 tw:overflow-hidden" role="tablist" aria-label="{{ __('port.groups.members') }}">
                     @foreach (['members' => __('port.groups.members'), 'available' => __('port.groups.available'), 'all' => __('port.groups.all')] as $key => $label)
@@ -73,77 +76,73 @@
                 </button>
             </x-slot:actions>
 
-            <x-slot:columns>
-                @foreach (['device' => __('Device'), 'ifName' => __('Port'), 'ifOperStatus' => __('Status'), 'ifSpeed' => __('Speed'), 'ifAlias' => __('Description')] as $sortKey => $label)
-                    <th @class(['tw:max-md:hidden' => ! in_array($sortKey, ['device', 'ifName'])])>
-                        <x-selectable-table.sort-header :key="$sortKey" :label="$label" />
-                    </th>
-                @endforeach
-                <th class="tw:max-md:hidden" x-show="membership === 'all'">{{ __('port.groups.member') }}</th>
-            </x-slot:columns>
-
-            <x-slot:row>
-                <td class="tw:whitespace-nowrap" data-label="{{ __('Device') }}">
-                    <template x-if="row.device_url">
-                        <a :href="row.device_url" x-data="deviceLink({device_id: row.device_id})" x-text="row.device"></a>
-                    </template>
-                    <span x-show="! row.device_url" class="tw:text-gray-500 tw:dark:text-dark-white-400">{{ __('port.groups.unknown_device') }}</span>
-                </td>
-                <td data-label="{{ __('Port') }}">
-                    <a :href="row.url"
-                       class="tw:font-semibold"
-                       :class="row.link_class + (row.deleted ? ' tw:line-through' : '')"
-                       x-data="portLink({port_id: row.port_id})"
-                       x-text="row.label"></a>
-                    <div class="tw:text-gray-500 tw:dark:text-dark-white-400 tw:whitespace-nowrap" x-show="row.ifDescr && row.ifDescr !== row.label" x-text="row.ifDescr"></div>
-                </td>
-                <td class="tw:whitespace-nowrap" data-label="{{ __('Status') }}">
-                    <x-port.status-badge port="row" />
-                </td>
-                <td class="tw:whitespace-nowrap" data-label="{{ __('Speed') }}" x-text="row.ifSpeed ? LibreNMS.Number.formatSi(row.ifSpeed, 2, 0, 'bps') : ''"></td>
-                <td class="tw:max-md:col-span-2" data-label="{{ __('Description') }}" x-text="row.ifAlias"></td>
-                <td x-show="membership === 'all'" data-label="{{ __('port.groups.member') }}">
-                    <span x-show="row.member" class="tw:text-green-700 tw:dark:text-green-400 tw:whitespace-nowrap">{{ __('port.groups.in_group') }}</span>
-                </td>
-            </x-slot:row>
+            <x-data-table.column field="device" :label="__('Device')" class="tw:whitespace-nowrap">
+                <template x-if="row.device_url">
+                    <a :href="row.device_url" x-data="deviceLink({device_id: row.device_id})" x-text="row.device"></a>
+                </template>
+                <span x-show="! row.device_url" class="tw:text-gray-500 tw:dark:text-dark-white-400">{{ __('port.groups.unknown_device') }}</span>
+            </x-data-table.column>
+            <x-data-table.column field="ifName" :label="__('Port')" :hideable="false">
+                <a :href="row.url"
+                   class="tw:font-semibold"
+                   :class="row.link_class + (row.deleted ? ' tw:line-through' : '')"
+                   x-data="portLink({port_id: row.port_id})"
+                   x-text="row.label"></a>
+                <div class="tw:text-gray-500 tw:dark:text-dark-white-400 tw:whitespace-nowrap" x-show="row.ifDescr && row.ifDescr !== row.label" x-text="row.ifDescr"></div>
+            </x-data-table.column>
+            <x-data-table.column field="ifOperStatus" :label="__('Status')" class="tw:whitespace-nowrap">
+                <x-port.status-badge port="row" />
+            </x-data-table.column>
+            <x-data-table.column field="ifSpeed" :label="__('Speed')" class="tw:whitespace-nowrap" x-text="row.ifSpeed ? LibreNMS.Number.formatSi(row.ifSpeed, 2, 0, 'bps') : ''" />
+            <x-data-table.column field="ifAlias" :label="__('Description')" class="tw:max-md:col-span-2" />
+            <x-data-table.column field="member" :label="__('port.groups.member')" :sortable="false" :hideable="false" :visible="false">
+                <span x-show="row.member" class="tw:text-green-700 tw:dark:text-green-400 tw:whitespace-nowrap">{{ __('port.groups.in_group') }}</span>
+            </x-data-table.column>
 
             <x-slot:empty>{{ __('port.settings.no_ports') }}</x-slot:empty>
 
-            <x-modal show="confirmAction" maxWidth="md">
-                <x-slot name="heading">
-                    <h4 class="tw:m-0 tw:text-base tw:font-semibold" x-text="(confirmAction === 'add' ? lang.add : lang.remove) + '?'"></h4>
-                </x-slot>
-                <p class="tw:m-0" x-text="(confirmAction === 'add' ? lang.confirm_add : lang.confirm_remove).replace('__count__', total)"></p>
-                <x-slot name="footer">
-                    <button type="button" class="lnms-btn lnms-btn-default tw:px-3 tw:py-1.5" x-on:click="confirmAction = null">{{ __('Cancel') }}</button>
-                    <button type="button" class="lnms-btn tw:px-3 tw:py-1.5" :class="confirmAction === 'add' ? 'lnms-btn-primary' : 'lnms-btn-danger'" x-on:click="apply(confirmAction)" :disabled="isPending('update')">{{ __('Apply') }}</button>
-                </x-slot>
-            </x-modal>
-        </x-selectable-table>
+            <x-slot:after>
+                <x-modal show="confirmAction" maxWidth="md">
+                    <x-slot name="heading">
+                        <h4 class="tw:m-0 tw:text-base tw:font-semibold" x-text="(confirmAction === 'add' ? lang.add : lang.remove) + '?'"></h4>
+                    </x-slot>
+                    <p class="tw:m-0" x-text="(confirmAction === 'add' ? lang.confirm_add : lang.confirm_remove).replace('__count__', total)"></p>
+                    <x-slot name="footer">
+                        <button type="button" class="lnms-btn lnms-btn-default tw:px-3 tw:py-1.5" x-on:click="confirmAction = null">{{ __('Cancel') }}</button>
+                        <button type="button" class="lnms-btn tw:px-3 tw:py-1.5" :class="confirmAction === 'add' ? 'lnms-btn-primary' : 'lnms-btn-danger'" x-on:click="apply(confirmAction)" :disabled="isPending('update')">{{ __('Apply') }}</button>
+                    </x-slot>
+                </x-modal>
+            </x-slot:after>
+        </x-data-table>
     </div>
 @endsection
 
 @push('scripts')
     <script>
         document.addEventListener('alpine:init', () => {
-            Alpine.data('portGroupPorts', (config) => LibreNMS.selectableTable(config, {
+            Alpine.data('portGroupPorts', (config) => LibreNMS.dataTable(config, {
                 membership: config.membership,
                 members: config.members,
                 confirmAction: null,
 
-                loadParams(url) {
-                    url.searchParams.set('membership', this.membership);
+                init() {
+                    this.setColumnVisible('member', this.membership === 'all');
                 },
 
-                loaded(data) {
-                    this.members = data.members;
+                requestParams() {
+                    return {membership: this.membership};
+                },
+
+                loaded(json) {
+                    this.members = json.members;
                 },
 
                 setMembership(membership) {
                     if (membership === this.membership) return;
                     this.membership = membership;
+                    this.setColumnVisible('member', membership === 'all');
                     this.clearSelection();
-                    this.goTo(1);
+                    this.changed(true);
                 },
 
                 bulk(action) {

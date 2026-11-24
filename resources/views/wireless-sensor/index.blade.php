@@ -8,12 +8,12 @@
             <x-option-bar border="none" name="{{ __('Health') }}" :options="$metrics" :selected="$metric"></x-option-bar>
             <x-option-bar border="none" :options="$views" :selected="$view"></x-option-bar>
         </x-slot>
-        <x-data-table.column field="device_hostname" :label="__('Device')" x-html="row.device_hostname" />
-        <x-data-table.column field="sensor_descr" :label="__('Sensor')" x-html="row.sensor_descr" />
-        <x-data-table.column field="graph" :label="''" :sortable="false" x-html="row.graph" />
-        <x-data-table.column field="alert" :label="''" :sortable="false" x-html="row.alert" />
-        <x-data-table.column field="sensor_current" :label="__('Current')" x-html="row.sensor_current" />
-        <x-data-table.column field="sensor_limit_low" :label="__('Low Limit')" x-html="row.sensor_limit_low" />
-        <x-data-table.column field="sensor_limit" :label="__('High Limit')" x-html="row.sensor_limit" />
+        <x-data-table.column field="device_hostname" :label="__('Device')" html />
+        <x-data-table.column field="sensor_descr" :label="__('Sensor')" html />
+        <x-data-table.column field="graph" :label="''" :sortable="false" html />
+        <x-data-table.column field="alert" :label="''" :sortable="false" html />
+        <x-data-table.column field="sensor_current" :label="__('Current')" html />
+        <x-data-table.column field="sensor_limit_low" :label="__('Low Limit')" html />
+        <x-data-table.column field="sensor_limit" :label="__('High Limit')" html />
     </x-data-table>
 @endsection

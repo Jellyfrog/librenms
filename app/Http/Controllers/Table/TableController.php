@@ -106,12 +106,15 @@ abstract class TableController extends PaginatedAjaxController
         $paginator = $query->paginate($limit, ['*'], 'page', $page);
 
         if ($this->isPaginatorRequest($request)) {
+            // same shape as a resource collection, until these tables move to DataTableRequest endpoints
             return response()->json([
                 'data' => collect($paginator->items())->map($this->formatItem(...))->values(),
-                'current_page' => $paginator->currentPage(),
-                'last_page' => $paginator->lastPage(),
-                'per_page' => $paginator->perPage(),
-                'total' => $paginator->total(),
+                'meta' => [
+                    'current_page' => $paginator->currentPage(),
+                    'last_page' => $paginator->lastPage(),
+                    'per_page' => $paginator->perPage(),
+                    'total' => $paginator->total(),
+                ],
             ]);
         }
 

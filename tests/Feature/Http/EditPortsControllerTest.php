@@ -128,7 +128,7 @@ final class EditPortsControllerTest extends TestCase
         $response = $this->actingAs($this->admin())
             ->getJson(route('device.edit.ports.list', $device))
             ->assertOk()
-            ->assertJsonPath('total', 1)
+            ->assertJsonPath('meta.total', 1)
             ->assertJsonPath('data.0.port_id', $port->port_id)
             ->assertJsonPath('data.0.ifAlias', '<b>uplink</b>')
             ->assertJsonPath('data.0.ifAlias_override', true)
@@ -237,7 +237,7 @@ final class EditPortsControllerTest extends TestCase
         $this->assertSame([11], array_keys($this->pollingStates($device, ['filter' => ['ifIndex' => ['eq' => '11']]])));
         $this->assertSame([11], array_keys($this->pollingStates($device, ['filter' => ['state' => ['eq' => 'down']]])));
         $this->assertSame([12], array_keys($this->pollingStates($device, ['filter' => ['ignore' => ['eq' => '1']]])));
-        $this->assertSame([12, 11, 10], array_keys($this->pollingStates($device, ['sort' => 'ifIndex', 'order' => 'desc'])));
+        $this->assertSame([12, 11, 10], array_keys($this->pollingStates($device, ['sort' => ['ifIndex' => 'desc']])));
 
         // a filter can not escape the device
         $this->assertSame([], $this->pollingStates($device, ['filter' => ['device_id' => ['neq' => $device->device_id]]]));
@@ -257,9 +257,9 @@ final class EditPortsControllerTest extends TestCase
         $this->actingAs($this->admin())
             ->getJson(route('device.edit.ports.list', $device) . '?per_page=2&page=3')
             ->assertOk()
-            ->assertJsonPath('total', 5)
-            ->assertJsonPath('current_page', 3)
-            ->assertJsonPath('last_page', 3)
+            ->assertJsonPath('meta.total', 5)
+            ->assertJsonPath('meta.current_page', 3)
+            ->assertJsonPath('meta.last_page', 3)
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.ifIndex', 5);
 
@@ -267,7 +267,7 @@ final class EditPortsControllerTest extends TestCase
         $this->actingAs($this->admin())
             ->getJson(route('device.edit.ports.list', $device) . '?per_page=2&page=9')
             ->assertOk()
-            ->assertJsonPath('current_page', 3)
+            ->assertJsonPath('meta.current_page', 3)
             ->assertJsonPath('data.0.ifIndex', 5);
     }
 

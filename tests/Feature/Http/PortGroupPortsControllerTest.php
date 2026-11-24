@@ -126,8 +126,7 @@ final class PortGroupPortsControllerTest extends TestCase
         $this->actingAs($this->admin())
             ->getJson(route('port-groups.ports.list', $group) . '?membership=members')
             ->assertJsonPath('data.0.member', true)
-            ->assertJsonMissingPath('links')
-            ->assertJsonMissingPath('next_page_url');
+            ->assertJsonStructure(['data', 'links', 'meta' => ['current_page', 'last_page', 'per_page', 'total'], 'members']);
         $this->assertNotContains($member->port_id, $this->listedPortIds($group, ['membership' => 'available']));
         $this->assertContains($other->port_id, $this->listedPortIds($group, ['membership' => 'available']));
 
@@ -135,10 +134,10 @@ final class PortGroupPortsControllerTest extends TestCase
             ->getJson(route('port-groups.ports.list', $group) . '?' . http_build_query([
                 'membership' => 'all',
                 'filter' => ['device_id' => ['eq' => $device->device_id]],
-                'sort' => 'ifName',
+                'sort' => ['ifName' => 'asc'],
             ]))
             ->assertOk()
-            ->assertJsonPath('total', 2)
+            ->assertJsonPath('meta.total', 2)
             ->assertJsonPath('members', 1);
 
         $membership = array_column($response->json('data'), 'member', 'port_id');
@@ -306,7 +305,7 @@ final class PortGroupPortsControllerTest extends TestCase
         $this->actingAs($user)
             ->getJson(route('port-groups.ports.list', $group) . '?membership=members')
             ->assertOk()
-            ->assertJsonPath('total', 1)
+            ->assertJsonPath('meta.total', 1)
             ->assertJsonPath('members', 1);
     }
 }

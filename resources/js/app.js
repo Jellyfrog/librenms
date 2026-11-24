@@ -56,6 +56,8 @@ Alpine.data("settingOxidizedMaps", settingOxidizedMaps);
 Alpine.data("settingArrayDynamic", settingArrayDynamic);
 
 window.Alpine = Alpine;
+// page specific tables: Alpine.data("name", (config) => LibreNMS.dataTable(config, {...}))
+window.LibreNMS.dataTable = dataTable;
 
 if (document.querySelector('[data-config-backups]')) {
     window.LibreNMS.loadConfigHighlight = () => import("./configHighlight.js");

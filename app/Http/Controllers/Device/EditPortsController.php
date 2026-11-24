@@ -28,6 +28,8 @@ namespace App\Http\Controllers\Device;
 
 use App\Facades\LibrenmsConfig;
 use App\Facades\Rrd;
+use App\Http\Requests\DataTableRequest;
+use App\Http\Resources\Table\PortSettingsResource;
 use App\Models\Device;
 use App\Models\Eventlog;
 use App\Models\Port;
@@ -37,30 +39,17 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use LibreNMS\Enum\IfOperStatus;
 use LibreNMS\Enum\Severity;
 use LibreNMS\Polling\ModuleStatus;
 use LibreNMS\RRD\PortRrd;
-use LibreNMS\Util\Url;
 
 class EditPortsController
 {
     use AuthorizesRequests;
-
-    /**
-     * Incoming sort key => ports column
-     *
-     * @var array<string, string>
-     */
-    private const array SORT_FIELDS = [
-        'ifIndex' => 'ifIndex',
-        'ifName' => 'ifName',
-        'ifOperStatus' => 'ifOperStatus',
-        'ifSpeed' => 'ifSpeed',
-        'ifAlias' => 'ifAlias',
-    ];
 
     /**
      * Bulk action => [ports column, value]
@@ -104,42 +93,21 @@ class EditPortsController
         ]);
     }
 
-    public function ports(Request $request, Device $device): JsonResponse
+    public function ports(DataTableRequest $request, Device $device): AnonymousResourceCollection
     {
         $this->authorize('update', $device);
-
-        $validated = $request->validate(Port::filterValidationRules() + [
-            'sort' => 'nullable|in:' . implode(',', array_keys(self::SORT_FIELDS)),
-            'order' => 'nullable|in:asc,desc',
-            'page' => 'nullable|integer|min:1',
-            'per_page' => 'nullable|integer|between:1,250',
-        ]);
+        $request->validate(Port::filterValidationRules());
 
         $selected = $device->selectedPortPolling()->isEnabled();
-        $query = $this->filteredQuery($device, $request->array('filter'), $selected)->with('groups:id,name');
+        $query = $this->filteredQuery($device, $request->filters(), $selected)->with('groups:id,name');
+        $request->sortQuery($query, ['ifIndex', 'ifName', 'ifOperStatus', 'ifSpeed', 'ifAlias'], ['ifIndex' => 'asc']);
+        $query->orderBy('ifIndex');
 
-        $sort = self::SORT_FIELDS[$validated['sort'] ?? 'ifIndex'];
-        $query->orderBy($sort, $validated['order'] ?? 'asc');
-        if ($sort !== 'ifIndex') {
-            $query->orderBy('ifIndex');
-        }
-
-        $perPage = $validated['per_page'] ?? 50;
-        $paginator = $query->paginate($perPage, ['*'], 'page', $validated['page'] ?? 1);
-        if ($paginator->isEmpty() && $paginator->currentPage() > $paginator->lastPage()) {
-            // the requested page no longer exists, for example after a bulk change, show the last page instead
-            $paginator = $query->paginate($perPage, ['*'], 'page', $paginator->lastPage());
-        }
         $attribs = $device->getAttribs();
         $rrdTune = $this->rrdTuneStatus($device)->isEnabled();
+        $paginator = $request->paginate($query)->through(fn (Port $port) => new PortSettingsResource($port, $attribs, $selected, $rrdTune));
 
-        return response()->json([
-            'data' => $paginator->getCollection()->map(fn (Port $port) => $this->formatPort($port, $attribs, $selected, $rrdTune)),
-            'current_page' => $paginator->currentPage(),
-            'last_page' => $paginator->lastPage(),
-            'total' => $paginator->total(),
-            'summary' => $this->summary($device, $selected),
-        ]);
+        return PortSettingsResource::collection($paginator)->additional(['summary' => $this->summary($device, $selected)]);
     }
 
     public function update(Request $request, Device $device, Port $port): JsonResponse
@@ -197,7 +165,7 @@ class EditPortsController
 
         return response()->json([
             'message' => __('port.settings.port_updated', ['port' => $port->getLabel()]),
-            'port' => $this->formatPort($port->load('groups'), $device->getAttribs(), $selected, $this->rrdTuneStatus($device)->isEnabled()),
+            'port' => new PortSettingsResource($port->load('groups'), $device->getAttribs(), $selected, $this->rrdTuneStatus($device)->isEnabled()),
             'summary' => $this->summary($device, $selected),
         ]);
     }
@@ -375,7 +343,7 @@ class EditPortsController
     }
 
     /**
-     * SQL version of pollingState(), mirrors how the ports poller decides which ports to poll
+     * SQL version of PortSettingsResource::pollingState(), mirrors how the ports poller decides which ports to poll
      *
      * @param  Builder<Port>  $query
      * @return Builder<Port>
@@ -411,65 +379,6 @@ class EditPortsController
             'ignored' => $count(fn (Builder $q) => $q->where('ignore', 1)),
             'deleted' => $device->ports()->where('deleted', 1)->count(),
         ];
-    }
-
-    /**
-     * @param  array<string, mixed>  $attribs
-     * @return array<string, mixed>
-     */
-    private function formatPort(Port $port, array $attribs, bool $selected, bool $rrdTune): array
-    {
-        return [
-            'port_id' => $port->port_id,
-            'ifIndex' => $port->ifIndex,
-            'label' => $port->getLabel(),
-            'ifDescr' => $port->ifDescr,
-            'url' => Url::portUrl($port),
-            'link_class' => Url::portLinkDisplayClass($port),
-            'ifAdminStatus' => $port->ifAdminStatus?->value,
-            'ifOperStatus' => $port->ifOperStatus?->value,
-            'disabled' => (bool) $port->disabled,
-            'ignore' => (bool) $port->ignore,
-            'deleted' => (bool) $port->deleted,
-            'polling' => $this->pollingState($port, $selected),
-            'ifSpeed' => $port->ifSpeed,
-            'ifSpeed_override' => isset($attribs['ifSpeed:' . $port->ifName]),
-            // the speed reported by the device is not stored while overridden
-            'ifSpeed_device' => isset($attribs['ifSpeed:' . $port->ifName]) ? null : $port->ifSpeed,
-            'circuit_speed' => $port->circuitSpeeds(),
-            'circuit_speed_override' => isset($attribs['port_descr_speed:' . $port->ifName]),
-            'ifAlias' => $port->ifAlias === 'repoll' ? '' : $port->ifAlias,
-            'ifAlias_override' => isset($attribs['ifName:' . $port->ifName]),
-            'rrd_tune' => isset($attribs['ifName_tune:' . $port->ifName]) ? $attribs['ifName_tune:' . $port->ifName] === 'true' : $rrdTune,
-            'rrd_tune_override' => isset($attribs['ifName_tune:' . $port->ifName]),
-            'groups' => $port->groups->map(fn (PortGroup $group) => ['id' => $group->id, 'text' => $group->name])->values(),
-        ];
-    }
-
-    /**
-     * Mirrors how the ports poller decides which ports to poll
-     */
-    private function pollingState(Port $port, bool $selected): string
-    {
-        if ($port->deleted) {
-            return 'deleted';
-        }
-
-        if ($port->disabled) {
-            return 'disabled';
-        }
-
-        if ($selected) {
-            if ($port->ifAdminStatus === IfOperStatus::Down) {
-                return 'admin_down';
-            }
-
-            if ($port->ifOperStatus === IfOperStatus::Down || $port->ifOperStatus === IfOperStatus::LowerLayerDown) {
-                return 'down';
-            }
-        }
-
-        return 'polled';
     }
 
     private function updateAlias(Device $device, Port $port, ?string $alias): void

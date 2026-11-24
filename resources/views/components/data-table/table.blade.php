@@ -3,11 +3,22 @@
     <table class="tw:w-full tw:max-md:block">
         <thead class="tw:max-md:hidden">
         <tr class="tw:border-b tw:border-gray-200 tw:dark:border-dark-gray-200 tw:text-left tw:text-gray-500 tw:dark:text-dark-white-400">
+            @if ($selectable)
+                <th class="tw:w-8 tw:px-3 tw:py-2">
+                    <input type="checkbox"
+                           class="tw:m-0"
+                           :checked="pageSelected"
+                           x-effect="$el.indeterminate = ! pageSelected && pageHasSelection"
+                           x-on:change="selectPage($event.target.checked)"
+                           aria-label="{{ __('components.data-table.select_page') }}">
+                </th>
+            @endif
             <template x-for="column in columns" :key="column.id">
                 <th x-show="isVisible(column.id)"
                     class="tw:px-3 tw:py-2 tw:font-semibold tw:whitespace-nowrap"
                     :class="column.headerClass"
                     :style="column.width && { width: column.width }"
+                    :title="column.headerTitle"
                     :aria-sort="sortDirection(column.id) ? (sortDirection(column.id) === 'asc' ? 'ascending' : 'descending') : null">
                     <template x-if="column.sortable">
                         <button type="button"
@@ -29,7 +40,22 @@
         </thead>
         <tbody class="tw:max-md:block tw:divide-y tw:divide-gray-100 tw:dark:divide-dark-gray-300">
         <template data-table-row x-for="(row, index) in rows" :key="rowId(row, index)">
-            <tr class="tw:align-middle tw:*:px-3 tw:*:py-1.5 tw:hover:bg-gray-50 tw:dark:hover:bg-dark-gray-400 tw:max-md:grid tw:max-md:grid-cols-2 tw:max-md:gap-3 tw:max-md:px-4 tw:max-md:py-3 tw:max-md:*:p-0 tw:max-md:[&>[data-label]]:before:block tw:max-md:[&>[data-label]]:before:mb-1 tw:max-md:[&>[data-label]]:before:content-[attr(data-label)] tw:max-md:[&>[data-label]]:before:text-gray-500">
+            <tr @class([
+                    'tw:align-middle tw:*:px-3 tw:*:py-1.5 tw:max-md:relative tw:max-md:grid tw:max-md:grid-cols-2 tw:max-md:gap-3 tw:max-md:px-4 tw:max-md:py-3 tw:max-md:*:p-0',
+                    'tw:max-md:pl-11' => $selectable,
+                    'tw:max-md:[&>[data-label]]:before:block tw:max-md:[&>[data-label]]:before:mb-1 tw:max-md:[&>[data-label]]:before:content-[attr(data-label)] tw:max-md:[&>[data-label]]:before:text-gray-500',
+                ])
+                :class="isSelected(row) ? 'tw:bg-blue-50/60 tw:dark:bg-blue-950/30' : 'tw:hover:bg-gray-50 tw:dark:hover:bg-dark-gray-400'">
+                @if ($selectable)
+                    {{-- below md the checkbox is pinned to the top left corner of the card --}}
+                    <td class="tw:max-md:absolute tw:max-md:left-4 tw:max-md:top-3.5">
+                        <input type="checkbox"
+                               class="tw:m-0"
+                               :checked="isSelected(row)"
+                               x-on:change="toggleSelected(row, $event.target.checked)"
+                               :aria-label="@js(__('Select') . ' ') + {{ $rowLabel }}">
+                    </td>
+                @endif
                 {{ $slot }}
             </tr>
         </template>

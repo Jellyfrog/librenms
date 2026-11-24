@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Spatie\Permission\Models\Role;
 
 /**
- * Pages moved from bootgrid to x-data-table render the component and their endpoint answers paginator requests.
+ * Pages moved from bootgrid to x-data-table render the component and their endpoint answers x-data-table requests.
  */
 final class DataTablePagesTest extends TestCase
 {
@@ -47,8 +47,8 @@ final class DataTablePagesTest extends TestCase
             ->assertSee('dataTable(', false)
             ->assertDontSee('bootgrid(', false);
 
-        $this->actingAs($admin)->postJson($endpoint, [...$params, 'page' => 1, 'per_page' => 50])
+        $this->actingAs($admin)->getJson($endpoint . '?' . http_build_query([...$params, 'page' => 1, 'per_page' => 50]))
             ->assertOk()
-            ->assertJsonStructure(['data', 'current_page', 'last_page', 'per_page', 'total']);
+            ->assertJsonStructure(['data', 'meta' => ['current_page', 'last_page', 'per_page', 'total']]);
     }
 }

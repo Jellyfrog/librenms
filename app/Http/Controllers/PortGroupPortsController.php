@@ -2,30 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DataTableRequest;
+use App\Http\Resources\Table\PortGroupPortResource;
 use App\Models\Device;
 use App\Models\Port;
 use App\Models\PortGroup;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Request;
-use LibreNMS\Util\Url;
 
 class PortGroupPortsController extends Controller
 {
-    /**
-     * Incoming sort key => ports column
-     *
-     * @var array<string, string>
-     */
-    private const array SORT_FIELDS = [
-        'device' => 'device',
-        'ifName' => 'ifName',
-        'ifOperStatus' => 'ifOperStatus',
-        'ifSpeed' => 'ifSpeed',
-        'ifAlias' => 'ifAlias',
-    ];
-
     private const array MEMBERSHIP = ['members', 'available', 'all'];
 
     public function index(Request $request, PortGroup $portGroup): View
@@ -44,48 +33,32 @@ class PortGroupPortsController extends Controller
         ]);
     }
 
-    public function ports(Request $request, PortGroup $portGroup): JsonResponse
+    public function ports(DataTableRequest $request, PortGroup $portGroup): AnonymousResourceCollection
     {
         $this->authorize('update', $portGroup);
 
-        $validated = $request->validate(Port::filterValidationRules() + [
+        $request->validate(Port::filterValidationRules() + [
             'membership' => 'nullable|in:' . implode(',', self::MEMBERSHIP),
-            'sort' => 'nullable|in:' . implode(',', array_keys(self::SORT_FIELDS)),
-            'order' => 'nullable|in:asc,desc',
-            'page' => 'nullable|integer|min:1',
-            'per_page' => 'nullable|integer|between:1,250',
         ]);
 
-        $membership = $validated['membership'] ?? 'members';
+        $membership = $request->input('membership', 'members');
         $query = $this->filteredQuery($request, $portGroup, $membership)
             ->with('device')
             // membership only varies on the all tab
             ->when($membership === 'all', fn (Builder $q) => $q->withExists(['groups as member' => fn (Builder $q) => $q->where('port_groups.id', $portGroup->id)]));
 
-        $sort = self::SORT_FIELDS[$validated['sort'] ?? 'device'];
-        $order = $validated['order'] ?? 'asc';
-        if ($sort === 'device') {
+        $request->sortQuery($query, [
             // sort by the displayed device name
-            $query->orderBy(Device::select('display')->whereColumn('devices.device_id', 'ports.device_id'), $order);
-        } else {
-            $query->orderBy($sort, $order);
-        }
+            'device' => fn (Builder $q, string $direction) => $q->orderBy(Device::select('display')->whereColumn('devices.device_id', 'ports.device_id'), $direction),
+            'ifName',
+            'ifOperStatus',
+            'ifSpeed',
+            'ifAlias',
+        ], ['device' => 'asc']);
         $query->orderBy('ports.device_id')->orderBy('ifIndex');
 
-        $perPage = $validated['per_page'] ?? 50;
-        $paginator = $query->paginate($perPage, ['*'], 'page', $validated['page'] ?? 1);
-        if ($paginator->isEmpty() && $paginator->currentPage() > $paginator->lastPage()) {
-            // the requested page no longer exists, for example after removing ports, show the last page instead
-            $paginator = $query->paginate($perPage, ['*'], 'page', $paginator->lastPage());
-        }
-
-        return response()->json([
-            'data' => $paginator->getCollection()->map(fn (Port $port) => $this->formatPort($port, $membership)),
-            'current_page' => $paginator->currentPage(),
-            'last_page' => $paginator->lastPage(),
-            'total' => $paginator->total(),
-            'members' => $this->memberCount($request, $portGroup),
-        ]);
+        return PortGroupPortResource::collection($request->paginate($query))
+            ->additional(['members' => $this->memberCount($request, $portGroup)]);
     }
 
     public function update(Request $request, PortGroup $portGroup): JsonResponse
@@ -161,29 +134,6 @@ class PortGroupPortsController extends Controller
             ['key' => 'disabled', 'label' => __('Disabled'), 'type' => 'boolean'],
             ['key' => 'ignore', 'label' => __('Ignored'), 'type' => 'boolean'],
             ['key' => 'deleted', 'label' => __('Deleted'), 'type' => 'boolean'],
-        ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function formatPort(Port $port, string $membership): array
-    {
-        return [
-            'port_id' => $port->port_id,
-            'label' => $port->getLabel(),
-            'ifDescr' => $port->ifDescr,
-            'ifAlias' => $port->ifAlias,
-            'ifSpeed' => $port->ifSpeed,
-            'url' => Url::portUrl($port),
-            'link_class' => Url::portLinkDisplayClass($port),
-            'ifAdminStatus' => $port->ifAdminStatus?->value,
-            'ifOperStatus' => $port->ifOperStatus?->value,
-            'deleted' => (bool) $port->deleted,
-            'device_id' => $port->device_id,
-            'device' => $port->device?->display,
-            'device_url' => $port->device ? Url::deviceUrl($port->device) : null,
-            'member' => $membership === 'all' ? (bool) $port->getAttribute('member') : $membership === 'members',
         ];
     }
 }

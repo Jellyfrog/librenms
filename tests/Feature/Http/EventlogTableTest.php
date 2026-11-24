@@ -51,11 +51,54 @@ final class EventlogTableTest extends TestCase
         $this->assertTotal(2, ['device' => $this->device->device_id, 'filter' => ['type' => ['starts_with' => 'dt-']]]);
     }
 
+    public function testWidgetParams(): void
+    {
+        $this->assertTotal(2, ['search' => 'rebooted']);
+        $this->assertTotal(1, ['search' => 'rebooted', 'device' => $this->device->device_id]);
+        $this->assertTotal(3, ['age' => 3600]);
+    }
+
+    public function testPaginationAndSort(): void
+    {
+        $url = '/ajax/table/eventlog?' . http_build_query(['per_page' => 2, 'page' => 9, 'sort' => ['message' => 'asc', 'type' => 'desc']]);
+        $response = $this->actingAs($this->admin)->getJson($url)->assertOk();
+
+        // a page past the end returns the last page
+        $response->assertJsonPath('meta.current_page', 2)
+            ->assertJsonPath('meta.last_page', 2)
+            ->assertJsonPath('meta.total', 3)
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.message', 'Port up');
+
+        $this->actingAs($this->admin)->getJson('/ajax/table/eventlog?per_page=-1')
+            ->assertOk()->assertJsonCount(3, 'data')->assertJsonPath('meta.last_page', 1);
+
+        $this->actingAs($this->admin)->getJson('/ajax/table/eventlog?per_page=0')->assertUnprocessable();
+    }
+
+    public function testWidgetRenders(): void
+    {
+        $html = view('widgets.eventlog', [
+            'id' => 1,
+            'device' => $this->device->device_id,
+            'device_group' => null,
+            'eventtype' => 'dt-system',
+            'message_filter' => 'rebooted',
+            'age' => '1h',
+            'hidenavigation' => 1,
+        ])->render();
+
+        $this->assertStringContainsString('dataTable(', $html);
+        $this->assertStringContainsString('data-reload="false"', $html);
+        $this->assertStringContainsString('\u0022search\u0022:\u0022rebooted\u0022', $html);
+        $this->assertStringNotContainsString('bootgrid(', $html);
+    }
+
     private function assertTotal(int $expected, array $params): void
     {
         $this->actingAs($this->admin)
-            ->postJson('/ajax/table/eventlog', [...$params, 'page' => 1, 'per_page' => 50])
+            ->getJson('/ajax/table/eventlog?' . http_build_query([...$params, 'page' => 1, 'per_page' => 50]))
             ->assertOk()
-            ->assertJsonPath('total', $expected);
+            ->assertJsonPath('meta.total', $expected);
     }
 }

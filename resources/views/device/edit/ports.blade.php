@@ -4,63 +4,66 @@
     <x-device.page :device="$device">
         <x-device.edit-tabs :device="$device" tab="ports" />
 
-        <x-selectable-table component="devicePorts"
-                            filter-name="device.edit-ports"
-                            :filter-fields="$filter_fields"
-                            row-label="row.label"
-                            :page-selected="__('port.settings.page_selected', ['count' => '__count__'])"
-                            :select-all-matching="__('port.settings.select_all_matching', ['count' => '__count__'])"
-                            :all-matching-selected="__('port.settings.all_matching_selected', ['count' => '__count__'])"
-                            :config="[
-                'settings' => $settings,
-                'summary' => $summary,
-                'filter' => $filter,
-                'canCreateGroup' => $can_create_group,
-                'rowKey' => 'port_id',
-                'sort' => 'ifIndex',
-                'listUrl' => route('device.edit.ports.list', $device),
-                'updateUrl' => route('device.edit.ports.update', [$device, '__port__']),
-                'settingsUrl' => route('device.edit.ports.settings', $device),
-                'bulkUrl' => route('device.edit.ports.bulk', $device),
-                'resetStateUrl' => route('device.edit.ports.reset-state', $device),
-                'portUrl' => url('port'),
-                'portGroupStoreUrl' => route('port-groups.store'),
-                'lang' => [
-                    'no_group' => __('No Group'),
-                    'select_group' => __('port.port_group'),
-                    'create_group' => __('port.settings.create_group'),
-                    'unknown' => __('Unknown'),
-                    'none' => __('None'),
-                    'after_poll' => __('port.settings.speed.after_poll'),
-                    'custom_speed' => __('port.settings.speed.custom'),
-                    'circuit' => __('port.settings.speed.circuit_short'),
-                    'out' => __('out'),
-                    'in' => __('in'),
-                    'bulk_confirm' => __('port.settings.bulk.confirm', ['count' => '__count__']),
-                ],
-                'bulkTitles' => [
-                    'disable' => __('port.settings.bulk.disable'),
-                    'enable' => __('port.settings.bulk.enable'),
-                    'ignore' => __('port.settings.bulk.ignore'),
-                    'unignore' => __('port.settings.bulk.unignore'),
-                    'add_group' => __('port.settings.bulk.add_group'),
-                    'remove_group' => __('port.settings.bulk.remove_group'),
-                ],
-                'pollingLabels' => [
-                    'polled' => __('port.settings.polling.polled'),
-                    'down' => __('port.settings.polling.down'),
-                    'admin_down' => __('port.settings.polling.admin_down'),
-                    'disabled' => __('port.settings.polling.disabled'),
-                    'deleted' => __('Deleted'),
-                ],
-                'pollingTitles' => [
-                    'polled' => __('port.settings.polling_help.polled'),
-                    'down' => __('port.settings.polling_help.down'),
-                    'admin_down' => __('port.settings.polling_help.admin_down'),
-                    'disabled' => __('port.settings.polling_help.disabled'),
-                    'deleted' => __('port.settings.polling_help.deleted'),
-                ],
-        ]">
+        <x-data-table component="devicePorts"
+                      name="device-edit-ports"
+                      :url="route('device.edit.ports.list', $device)"
+                      row-key="port_id"
+                      row-label="row.label"
+                      :sort="['ifIndex' => 'asc']"
+                      :per-page-options="[25, 50, 100, 250]"
+                      :search="false"
+                      filter-name="device.edit-ports"
+                      :filter-fields="$filter_fields"
+                      :filter="$filter"
+                      :page-selected="__('port.settings.page_selected', ['count' => '__count__'])"
+                      :select-all-matching="__('port.settings.select_all_matching', ['count' => '__count__'])"
+                      :all-matching-selected="__('port.settings.all_matching_selected', ['count' => '__count__'])"
+                      :config="[
+                          'settings' => $settings,
+                          'summary' => $summary,
+                          'canCreateGroup' => $can_create_group,
+                          'updateUrl' => route('device.edit.ports.update', [$device, '__port__']),
+                          'settingsUrl' => route('device.edit.ports.settings', $device),
+                          'bulkUrl' => route('device.edit.ports.bulk', $device),
+                          'resetStateUrl' => route('device.edit.ports.reset-state', $device),
+                          'portUrl' => url('port'),
+                          'portGroupStoreUrl' => route('port-groups.store'),
+                          'bulkTitles' => [
+                              'disable' => __('port.settings.bulk.disable'),
+                              'enable' => __('port.settings.bulk.enable'),
+                              'ignore' => __('port.settings.bulk.ignore'),
+                              'unignore' => __('port.settings.bulk.unignore'),
+                              'add_group' => __('port.settings.bulk.add_group'),
+                              'remove_group' => __('port.settings.bulk.remove_group'),
+                          ],
+                          'pollingLabels' => [
+                              'polled' => __('port.settings.polling.polled'),
+                              'down' => __('port.settings.polling.down'),
+                              'admin_down' => __('port.settings.polling.admin_down'),
+                              'disabled' => __('port.settings.polling.disabled'),
+                              'deleted' => __('Deleted'),
+                          ],
+                          'pollingTitles' => [
+                              'polled' => __('port.settings.polling_help.polled'),
+                              'down' => __('port.settings.polling_help.down'),
+                              'admin_down' => __('port.settings.polling_help.admin_down'),
+                              'disabled' => __('port.settings.polling_help.disabled'),
+                              'deleted' => __('port.settings.polling_help.deleted'),
+                          ],
+                      ]"
+                      :lang="[
+                          'no_group' => __('No Group'),
+                          'select_group' => __('port.port_group'),
+                          'create_group' => __('port.settings.create_group'),
+                          'unknown' => __('Unknown'),
+                          'none' => __('None'),
+                          'after_poll' => __('port.settings.speed.after_poll'),
+                          'custom_speed' => __('port.settings.speed.custom'),
+                          'circuit' => __('port.settings.speed.circuit_short'),
+                          'out' => __('out'),
+                          'in' => __('in'),
+                          'bulk_confirm' => __('port.settings.bulk.confirm', ['count' => '__count__']),
+                      ]">
             <x-slot:before>
                 @unless ($ports_module->isEnabled())
                     <div class="tw:flex tw:flex-wrap tw:items-center tw:gap-2 tw:mb-4 tw:px-4 tw:py-3 tw:rounded-lg tw:border tw:border-amber-300 tw:bg-amber-50 tw:text-amber-800 tw:dark:border-amber-700 tw:dark:bg-amber-950/40 tw:dark:text-amber-200">
@@ -131,252 +134,235 @@
                 </div>
             </x-slot:actions>
 
-            <x-slot:columns>
-                @foreach (['ifName' => __('Port'), 'ifOperStatus' => __('Status')] as $sortKey => $label)
-                    <th @class(['tw:max-md:hidden' => $sortKey !== 'ifName'])>
-                        <x-selectable-table.sort-header :key="$sortKey" :label="$label" />
-                    </th>
-                @endforeach
-                <th class="tw:max-md:hidden">{{ __('Polling') }}</th>
-                <th class="tw:max-md:hidden" title="{{ __('port.settings.disable_help') }}">{{ __('Disable') }}</th>
-                <th class="tw:max-md:hidden" title="{{ __('port.settings.ignore_help') }}">{{ __('Ignore') }}</th>
-                @foreach (['ifSpeed' => __('Speed'), 'ifAlias' => __('Description')] as $sortKey => $label)
-                    <th class="tw:max-md:hidden">
-                        <x-selectable-table.sort-header :key="$sortKey" :label="$label" />
-                    </th>
-                @endforeach
-                <th class="tw:max-md:hidden">{{ __('Port Groups') }}</th>
-                <th class="tw:max-md:hidden" title="{{ __('port.settings.rrd_tune_help') }}">{{ __('RRD Tune') }}</th>
-            </x-slot:columns>
-
-            <x-slot:row>
-                <td class="tw:max-md:col-span-2">
-                    <a :href="row.url"
-                       class="tw:font-semibold"
-                       :class="row.link_class + (row.deleted ? ' tw:line-through' : '')"
-                       x-data="portLink({port_id: row.port_id})"
-                       x-text="row.label"></a>
-                    <div class="tw:text-gray-500 tw:dark:text-dark-white-400 tw:whitespace-nowrap">
-                        {{ __('Index') }} <span x-text="row.ifIndex"></span><span x-show="row.ifDescr && row.ifDescr !== row.label" x-text="' · ' + row.ifDescr"></span>
-                    </div>
-                </td>
-                <td class="tw:whitespace-nowrap" data-label="{{ __('Status') }}">
-                    <x-port.status-badge port="row" />
-                </td>
-                <td class="tw:whitespace-nowrap" data-label="{{ __('Polling') }}">
-                    <span class="tw:inline-flex tw:items-center tw:gap-1.5 tw:font-medium" :class="pollingClass(row)" :title="config.pollingTitles[row.polling]">
-                        <i class="fa" :class="pollingIcon(row)" aria-hidden="true"></i>
-                        <span x-text="config.pollingLabels[row.polling]"></span>
-                    </span>
-                </td>
-                <td data-label="{{ __('port.settings.bulk.disable') }}">
-                    <x-toggle ::checked="row.disabled" ::aria-label="'{{ __('port.settings.bulk.disable') }} ' + row.label" x-on:change="save(row, {disabled: $event.target.checked}, $event.target)" />
-                </td>
-                <td data-label="{{ __('Ignore') }}">
-                    <x-toggle ::checked="row.ignore" ::aria-label="'{{ __('Ignore') }} ' + row.label" x-on:change="save(row, {ignore: $event.target.checked}, $event.target)" />
-                </td>
-                <td class="tw:max-md:col-span-2" data-label="{{ __('Speed') }}">
+            <x-data-table.column field="ifName" :label="__('Port')" class="tw:max-md:col-span-2" :hideable="false">
+                <a :href="row.url"
+                   class="tw:font-semibold"
+                   :class="row.link_class + (row.deleted ? ' tw:line-through' : '')"
+                   x-data="portLink({port_id: row.port_id})"
+                   x-text="row.label"></a>
+                <div class="tw:text-gray-500 tw:dark:text-dark-white-400 tw:whitespace-nowrap">
+                    {{ __('Index') }} <span x-text="row.ifIndex"></span><span x-show="row.ifDescr && row.ifDescr !== row.label" x-text="' · ' + row.ifDescr"></span>
+                </div>
+            </x-data-table.column>
+            <x-data-table.column field="ifOperStatus" :label="__('Status')" class="tw:whitespace-nowrap">
+                <x-port.status-badge port="row" />
+            </x-data-table.column>
+            <x-data-table.column field="polling" :label="__('Polling')" class="tw:whitespace-nowrap" :sortable="false">
+                <span class="tw:inline-flex tw:items-center tw:gap-1.5 tw:font-medium" :class="pollingClass(row)" :title="config.pollingTitles[row.polling]">
+                    <i class="fa" :class="pollingIcon(row)" aria-hidden="true"></i>
+                    <span x-text="config.pollingLabels[row.polling]"></span>
+                </span>
+            </x-data-table.column>
+            <x-data-table.column field="disabled" :label="__('port.settings.bulk.disable')" :sortable="false" :header-title="__('port.settings.disable_help')">
+                <x-toggle ::checked="row.disabled" ::aria-label="'{{ __('port.settings.bulk.disable') }} ' + row.label" x-on:change="save(row, {disabled: $event.target.checked}, $event.target)" />
+            </x-data-table.column>
+            <x-data-table.column field="ignore" :label="__('Ignore')" :sortable="false" :header-title="__('port.settings.ignore_help')">
+                <x-toggle ::checked="row.ignore" ::aria-label="'{{ __('Ignore') }} ' + row.label" x-on:change="save(row, {ignore: $event.target.checked}, $event.target)" />
+            </x-data-table.column>
+            <x-data-table.column field="ifSpeed" :label="__('Speed')" class="tw:max-md:col-span-2">
+                <button type="button"
+                        class="tw:group tw:inline-flex tw:items-center tw:gap-2 tw:p-0 tw:border-0 tw:bg-transparent tw:text-left tw:whitespace-nowrap"
+                        x-on:click="editSpeed(row)"
+                        :aria-label="'{{ __('port.settings.speed.edit') }} ' + row.label">
+                    <span :class="row.ifSpeed_override && 'tw:text-amber-600 tw:dark:text-amber-400'"
+                          :title="row.ifSpeed_override ? lang.custom_speed : ''"
+                          x-text="speedText(row.ifSpeed) || lang.unknown"></span>
+                    <span x-show="row.circuit_speed"
+                          class="tw:px-1.5 tw:rounded-[3px] tw:border"
+                          :class="row.circuit_speed_override ? 'tw:border-amber-500 tw:text-amber-600 tw:dark:text-amber-400' : 'tw:border-gray-300 tw:text-gray-500 tw:dark:border-dark-gray-100 tw:dark:text-dark-white-400'"
+                          :title="circuitText(row.circuit_speed)"
+                          x-text="lang.circuit + ' ' + circuitText(row.circuit_speed, true)"></span>
+                    <i class="fa fa-pen tw:text-gray-400 tw:group-hover:text-blue-600 tw:dark:group-hover:text-blue-400" aria-hidden="true"></i>
+                </button>
+            </x-data-table.column>
+            <x-data-table.column field="ifAlias" :label="__('Description')" class="tw:max-md:col-span-2">
+                <div class="tw:relative tw:min-w-48">
+                    <input type="text"
+                           class="lnms-input"
+                           :class="row.ifAlias_override && 'tw:pr-8'"
+                           :value="row.ifAlias"
+                           :aria-label="'{{ __('Description') }} ' + row.label"
+                           x-on:keydown.enter="$event.target.blur()"
+                           x-on:keydown.escape="$event.target.value = row.ifAlias; $event.target.blur()"
+                           x-on:change="save(row, {ifAlias: $event.target.value}, $event.target)">
                     <button type="button"
-                            class="tw:group tw:inline-flex tw:items-center tw:gap-2 tw:p-0 tw:border-0 tw:bg-transparent tw:text-left tw:whitespace-nowrap"
-                            x-on:click="editSpeed(row)"
-                            :aria-label="'{{ __('port.settings.speed.edit') }} ' + row.label">
-                        <span :class="row.ifSpeed_override && 'tw:text-amber-600 tw:dark:text-amber-400'"
-                              :title="row.ifSpeed_override ? lang.custom_speed : ''"
-                              x-text="speedText(row.ifSpeed) || lang.unknown"></span>
-                        <span x-show="row.circuit_speed"
-                              class="tw:px-1.5 tw:rounded-[3px] tw:border"
-                              :class="row.circuit_speed_override ? 'tw:border-amber-500 tw:text-amber-600 tw:dark:text-amber-400' : 'tw:border-gray-300 tw:text-gray-500 tw:dark:border-dark-gray-100 tw:dark:text-dark-white-400'"
-                              :title="circuitText(row.circuit_speed)"
-                              x-text="lang.circuit + ' ' + circuitText(row.circuit_speed, true)"></span>
-                        <i class="fa fa-pen tw:text-gray-400 tw:group-hover:text-blue-600 tw:dark:group-hover:text-blue-400" aria-hidden="true"></i>
+                            x-show="row.ifAlias_override"
+                            class="tw:absolute tw:right-1 tw:top-1 tw:h-[22px] tw:w-6 tw:p-0 tw:border-0 tw:rounded-[3px] tw:bg-transparent tw:text-amber-600 tw:hover:bg-amber-50"
+                            x-on:click="save(row, {ifAlias: ''}, $el.previousElementSibling)"
+                            title="{{ __('port.settings.description.custom') }}"
+                            aria-label="{{ __('port.settings.description.use_device') }}">
+                        <i class="fa fa-rotate-left" aria-hidden="true"></i>
                     </button>
-                </td>
-                <td class="tw:max-md:col-span-2" data-label="{{ __('Description') }}">
-                    <div class="tw:relative tw:min-w-48">
-                        <input type="text"
-                               class="lnms-input"
-                               :class="row.ifAlias_override && 'tw:pr-8'"
-                               :value="row.ifAlias"
-                               :aria-label="'{{ __('Description') }} ' + row.label"
-                               x-on:keydown.enter="$event.target.blur()"
-                               x-on:keydown.escape="$event.target.value = row.ifAlias; $event.target.blur()"
-                               x-on:change="save(row, {ifAlias: $event.target.value}, $event.target)">
-                        <button type="button"
-                                x-show="row.ifAlias_override"
-                                class="tw:absolute tw:right-1 tw:top-1 tw:h-[22px] tw:w-6 tw:p-0 tw:border-0 tw:rounded-[3px] tw:bg-transparent tw:text-amber-600 tw:hover:bg-amber-50"
-                                x-on:click="save(row, {ifAlias: ''}, $el.previousElementSibling)"
-                                title="{{ __('port.settings.description.custom') }}"
-                                aria-label="{{ __('port.settings.description.use_device') }}">
-                            <i class="fa fa-rotate-left" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                </td>
-                <td class="tw:max-md:col-span-2 tw:min-w-40" data-label="{{ __('Port Groups') }}">
-                    {{-- select2 is created on demand, creating one per row is slow on large pages, this uses the select2 markup so both look the same --}}
-                    <template x-if="! row.editingGroups">
-                        <span class="select2 select2-container select2-container--bootstrap tw:cursor-text"
-                              style="width: 100%"
-                              role="button"
-                              tabindex="0"
-                              x-on:click="row.editingGroups = true"
-                              x-on:keydown.enter.prevent="row.editingGroups = true"
-                              :aria-label="'{{ __('port.settings.edit_groups') }} ' + row.label">
-                            <span class="selection">
-                                <span class="select2-selection select2-selection--multiple input-sm">
-                                    <ul class="select2-selection__rendered">
-                                        <template x-for="group in row.groups" :key="group.id">
-                                            <li class="select2-selection__choice" :title="group.text">
-                                                <span class="select2-selection__choice__remove" role="button" x-on:click.stop="removeGroup(row, group)" :aria-label="'{{ __('Remove') }} ' + group.text">×</span><span x-text="group.text"></span>
-                                            </li>
-                                        </template>
-                                        <li class="select2-search select2-search--inline" x-show="row.groups.length === 0">
-                                            <input class="select2-search__field" :placeholder="lang.no_group" readonly tabindex="-1" style="width: 100%">
+                </div>
+            </x-data-table.column>
+            <x-data-table.column field="groups" :label="__('Port Groups')" class="tw:max-md:col-span-2 tw:min-w-40" :sortable="false">
+                {{-- select2 is created on demand, creating one per row is slow on large pages, this uses the select2 markup so both look the same --}}
+                <template x-if="! row.editingGroups">
+                    <span class="select2 select2-container select2-container--bootstrap tw:cursor-text"
+                          style="width: 100%"
+                          role="button"
+                          tabindex="0"
+                          x-on:click="row.editingGroups = true"
+                          x-on:keydown.enter.prevent="row.editingGroups = true"
+                          :aria-label="'{{ __('port.settings.edit_groups') }} ' + row.label">
+                        <span class="selection">
+                            <span class="select2-selection select2-selection--multiple input-sm">
+                                <ul class="select2-selection__rendered">
+                                    <template x-for="group in row.groups" :key="group.id">
+                                        <li class="select2-selection__choice" :title="group.text">
+                                            <span class="select2-selection__choice__remove" role="button" x-on:click.stop="removeGroup(row, group)" :aria-label="'{{ __('Remove') }} ' + group.text">×</span><span x-text="group.text"></span>
                                         </li>
-                                    </ul>
-                                </span>
+                                    </template>
+                                    <li class="select2-search select2-search--inline" x-show="row.groups.length === 0">
+                                        <input class="select2-search__field" :placeholder="lang.no_group" readonly tabindex="-1" style="width: 100%">
+                                    </li>
+                                </ul>
                             </span>
                         </span>
-                    </template>
-                    <template x-if="row.editingGroups">
-                        <div>
-                            <select class="input-sm" multiple x-init="initGroups($el, row)" :aria-label="'{{ __('Port Groups') }} ' + row.label"></select>
-                        </div>
-                    </template>
-                </td>
-                <td data-label="{{ __('RRD Tune') }}">
-                    <span class="tw:inline-flex tw:items-center tw:gap-2">
-                        <x-toggle ::checked="row.rrd_tune" ::aria-label="'{{ __('RRD Tune') }} ' + row.label" x-on:change="save(row, {rrd_tune: $event.target.checked}, $event.target)" />
-                        <i x-show="row.rrd_tune_override" class="fa fa-circle tw:text-[0.5rem] tw:text-amber-600 tw:dark:text-amber-400" title="{{ __('port.settings.rrd_tune_port_override') }}" aria-hidden="true"></i>
                     </span>
-                </td>
-            </x-slot:row>
+                </template>
+                <template x-if="row.editingGroups">
+                    <div>
+                        <select class="input-sm" multiple x-init="initGroups($el, row)" :aria-label="'{{ __('Port Groups') }} ' + row.label"></select>
+                    </div>
+                </template>
+            </x-data-table.column>
+            <x-data-table.column field="rrd_tune" :label="__('RRD Tune')" :sortable="false" :header-title="__('port.settings.rrd_tune_help')">
+                <span class="tw:inline-flex tw:items-center tw:gap-2">
+                    <x-toggle ::checked="row.rrd_tune" ::aria-label="'{{ __('RRD Tune') }} ' + row.label" x-on:change="save(row, {rrd_tune: $event.target.checked}, $event.target)" />
+                    <i x-show="row.rrd_tune_override" class="fa fa-circle tw:text-[0.5rem] tw:text-amber-600 tw:dark:text-amber-400" title="{{ __('port.settings.rrd_tune_port_override') }}" aria-hidden="true"></i>
+                </span>
+            </x-data-table.column>
+
 
             <x-slot:empty>{{ __('port.settings.no_ports') }}</x-slot:empty>
 
-            <x-modal show="speedPort" maxWidth="xl">
-                <x-slot name="heading">
-                    <h4 class="tw:m-0 tw:text-base tw:font-semibold">{{ __('Speed') }} · <span x-text="speedPort?.label"></span></h4>
-                </x-slot>
-                <template x-if="speedPort">
-                    <div class="tw:flex tw:flex-col tw:gap-5">
-                        <div role="radiogroup" aria-labelledby="speed-interface-heading">
-                            <x-help-heading id="speed-interface" :label="__('port.settings.speed.interface')" class="tw:mb-2">{{ __('port.settings.speed.interface_help') }}</x-help-heading>
-                            <label class="tw:flex tw:items-center tw:gap-3 tw:mb-2 tw:px-3 tw:py-2 tw:rounded-lg tw:border tw:border-gray-200 tw:dark:border-dark-gray-200 tw:font-normal tw:has-checked:border-blue-500 tw:has-checked:bg-blue-50/50 tw:dark:has-checked:bg-blue-950/30">
-                                <input type="radio" value="device" x-model="speedForm.interface" class="tw:m-0">
-                                <span class="tw:grow">{{ __('port.settings.speed.reported') }}</span>
-                                <span class="tw:font-semibold" x-text="deviceSpeedText(speedPort)"></span>
-                            </label>
-                            <label class="tw:flex tw:items-center tw:gap-3 tw:px-3 tw:py-2 tw:rounded-lg tw:border tw:border-gray-200 tw:dark:border-dark-gray-200 tw:font-normal tw:has-checked:border-blue-500 tw:has-checked:bg-blue-50/50 tw:dark:has-checked:bg-blue-950/30">
-                                <input type="radio" value="custom" x-model="speedForm.interface" class="tw:m-0">
-                                <span class="tw:grow">{{ __('Custom') }}</span>
-                                <input type="text"
-                                       class="lnms-input tw:w-36"
-                                       :class="speedForm.interface === 'custom' && isNaN(parseSpeed(speedForm.ifSpeed)) && 'tw:border-red-500 tw:ring-1 tw:ring-red-500'"
-                                       x-model="speedForm.ifSpeed"
-                                       x-on:focus="speedForm.interface = 'custom'"
-                                       placeholder="{{ __('port.settings.speed.interface_example') }}"
-                                       aria-label="{{ __('port.settings.speed.custom_interface') }}">
-                            </label>
-                            <div x-show="speedPort.ifSpeed_override" class="tw:flex tw:flex-wrap tw:items-center tw:gap-2 tw:mt-2">
-                                <button type="button"
-                                        x-show="speedForm.interface === 'custom'"
-                                        x-on:click="speedForm.interface = 'device'"
-                                        class="tw:p-0 tw:border-0 tw:bg-transparent tw:text-red-600 tw:hover:underline tw:dark:text-red-400">
-                                    <i class="fa fa-xmark" aria-hidden="true"></i> {{ __('port.settings.speed.remove_custom') }}
-                                </button>
-                                <span x-show="speedForm.interface !== 'custom'" class="tw:text-amber-600 tw:dark:text-amber-400">{{ __('port.settings.speed.custom_removed') }}</span>
-                                <button type="button"
-                                        x-show="speedForm.interface !== 'custom'"
-                                        x-on:click="restoreSpeedForm('interface')"
-                                        class="tw:p-0 tw:border-0 tw:bg-transparent tw:text-blue-600 tw:hover:underline tw:dark:text-blue-400">{{ __('Undo') }}</button>
+            <x-slot:after>
+                <x-modal show="speedPort" maxWidth="xl">
+                    <x-slot name="heading">
+                        <h4 class="tw:m-0 tw:text-base tw:font-semibold">{{ __('Speed') }} · <span x-text="speedPort?.label"></span></h4>
+                    </x-slot>
+                    <template x-if="speedPort">
+                        <div class="tw:flex tw:flex-col tw:gap-5">
+                            <div role="radiogroup" aria-labelledby="speed-interface-heading">
+                                <x-help-heading id="speed-interface" :label="__('port.settings.speed.interface')" class="tw:mb-2">{{ __('port.settings.speed.interface_help') }}</x-help-heading>
+                                <label class="tw:flex tw:items-center tw:gap-3 tw:mb-2 tw:px-3 tw:py-2 tw:rounded-lg tw:border tw:border-gray-200 tw:dark:border-dark-gray-200 tw:font-normal tw:has-checked:border-blue-500 tw:has-checked:bg-blue-50/50 tw:dark:has-checked:bg-blue-950/30">
+                                    <input type="radio" value="device" x-model="speedForm.interface" class="tw:m-0">
+                                    <span class="tw:grow">{{ __('port.settings.speed.reported') }}</span>
+                                    <span class="tw:font-semibold" x-text="deviceSpeedText(speedPort)"></span>
+                                </label>
+                                <label class="tw:flex tw:items-center tw:gap-3 tw:px-3 tw:py-2 tw:rounded-lg tw:border tw:border-gray-200 tw:dark:border-dark-gray-200 tw:font-normal tw:has-checked:border-blue-500 tw:has-checked:bg-blue-50/50 tw:dark:has-checked:bg-blue-950/30">
+                                    <input type="radio" value="custom" x-model="speedForm.interface" class="tw:m-0">
+                                    <span class="tw:grow">{{ __('Custom') }}</span>
+                                    <input type="text"
+                                           class="lnms-input tw:w-36"
+                                           :class="speedForm.interface === 'custom' && isNaN(parseSpeed(speedForm.ifSpeed)) && 'tw:border-red-500 tw:ring-1 tw:ring-red-500'"
+                                           x-model="speedForm.ifSpeed"
+                                           x-on:focus="speedForm.interface = 'custom'"
+                                           placeholder="{{ __('port.settings.speed.interface_example') }}"
+                                           aria-label="{{ __('port.settings.speed.custom_interface') }}">
+                                </label>
+                                <div x-show="speedPort.ifSpeed_override" class="tw:flex tw:flex-wrap tw:items-center tw:gap-2 tw:mt-2">
+                                    <button type="button"
+                                            x-show="speedForm.interface === 'custom'"
+                                            x-on:click="speedForm.interface = 'device'"
+                                            class="tw:p-0 tw:border-0 tw:bg-transparent tw:text-red-600 tw:hover:underline tw:dark:text-red-400">
+                                        <i class="fa fa-xmark" aria-hidden="true"></i> {{ __('port.settings.speed.remove_custom') }}
+                                    </button>
+                                    <span x-show="speedForm.interface !== 'custom'" class="tw:text-amber-600 tw:dark:text-amber-400">{{ __('port.settings.speed.custom_removed') }}</span>
+                                    <button type="button"
+                                            x-show="speedForm.interface !== 'custom'"
+                                            x-on:click="restoreSpeedForm('interface')"
+                                            class="tw:p-0 tw:border-0 tw:bg-transparent tw:text-blue-600 tw:hover:underline tw:dark:text-blue-400">{{ __('Undo') }}</button>
+                                </div>
+                            </div>
+
+                            <div role="radiogroup" aria-labelledby="speed-circuit-heading">
+                                <x-help-heading id="speed-circuit" :label="__('port.settings.speed.circuit')" class="tw:mb-2">{{ __('port.settings.speed.circuit_help') }}</x-help-heading>
+                                <label class="tw:flex tw:items-center tw:gap-3 tw:mb-2 tw:px-3 tw:py-2 tw:rounded-lg tw:border tw:border-gray-200 tw:dark:border-dark-gray-200 tw:font-normal tw:has-checked:border-blue-500 tw:has-checked:bg-blue-50/50 tw:dark:has-checked:bg-blue-950/30">
+                                    <input type="radio" value="description" x-model="speedForm.circuit" class="tw:m-0">
+                                    <span class="tw:grow">{{ __('port.settings.speed.from_description') }}</span>
+                                    <span class="tw:font-semibold" x-text="describedCircuitText()"></span>
+                                </label>
+                                <label class="tw:flex tw:flex-wrap tw:items-center tw:gap-3 tw:px-3 tw:py-2 tw:rounded-lg tw:border tw:border-gray-200 tw:dark:border-dark-gray-200 tw:font-normal tw:has-checked:border-blue-500 tw:has-checked:bg-blue-50/50 tw:dark:has-checked:bg-blue-950/30">
+                                    <input type="radio" value="custom" x-model="speedForm.circuit" class="tw:m-0">
+                                    <span class="tw:grow">{{ __('Custom') }}</span>
+                                    <span class="tw:flex tw:items-center tw:gap-2">
+                                        <span class="tw:w-8 tw:text-right">{{ __('Out') }}</span>
+                                        <input type="text"
+                                               class="lnms-input tw:w-28"
+                                               :class="speedForm.circuit === 'custom' && ! (parseSpeed(speedForm.out) > 0) && 'tw:border-red-500 tw:ring-1 tw:ring-red-500'"
+                                               x-model="speedForm.out"
+                                               x-on:focus="speedForm.circuit = 'custom'"
+                                               placeholder="{{ __('port.settings.speed.circuit_example') }}"
+                                               aria-label="{{ __('port.settings.speed.circuit_out') }}">
+                                        <span class="tw:w-6 tw:text-right">{{ __('In') }}</span>
+                                        <input type="text"
+                                               class="lnms-input tw:w-28"
+                                               :class="speedForm.circuit === 'custom' && isNaN(parseSpeed(speedForm.in)) && 'tw:border-red-500 tw:ring-1 tw:ring-red-500'"
+                                               x-model="speedForm.in"
+                                               x-on:focus="speedForm.circuit = 'custom'"
+                                               placeholder="{{ __('port.settings.speed.same_as_out') }}"
+                                               aria-label="{{ __('port.settings.speed.circuit_in') }}">
+                                    </span>
+                                </label>
+                                <div x-show="speedPort.circuit_speed_override" class="tw:flex tw:flex-wrap tw:items-center tw:gap-2 tw:mt-2">
+                                    <button type="button"
+                                            x-show="speedForm.circuit === 'custom'"
+                                            x-on:click="speedForm.circuit = 'description'"
+                                            class="tw:p-0 tw:border-0 tw:bg-transparent tw:text-red-600 tw:hover:underline tw:dark:text-red-400">
+                                        <i class="fa fa-xmark" aria-hidden="true"></i> {{ __('port.settings.speed.remove_custom_circuit') }}
+                                    </button>
+                                    <span x-show="speedForm.circuit !== 'custom'" class="tw:text-amber-600 tw:dark:text-amber-400">{{ __('port.settings.speed.custom_circuit_removed') }}</span>
+                                    <button type="button"
+                                            x-show="speedForm.circuit !== 'custom'"
+                                            x-on:click="restoreSpeedForm('circuit')"
+                                            class="tw:p-0 tw:border-0 tw:bg-transparent tw:text-blue-600 tw:hover:underline tw:dark:text-blue-400">{{ __('Undo') }}</button>
+                                </div>
+                            </div>
+
+                            <div class="tw:px-3 tw:py-2 tw:rounded-lg tw:bg-gray-100 tw:dark:bg-dark-gray-400">
+                                {{ __('port.settings.speed.result') }}
+                                <span class="tw:font-semibold" x-text="speedResultText()"></span>
                             </div>
                         </div>
+                    </template>
+                    <x-slot name="footer">
+                        <button type="button" class="lnms-btn lnms-btn-default tw:px-3 tw:py-1.5" x-on:click="speedPort = null">{{ __('Cancel') }}</button>
+                        <button type="button" class="lnms-btn lnms-btn-primary tw:px-3 tw:py-1.5 tw:disabled:opacity-50" x-on:click="saveSpeed()" :disabled="! speedFormValid() || isPending('speed')">{{ __('Save') }}</button>
+                    </x-slot>
+                </x-modal>
 
-                        <div role="radiogroup" aria-labelledby="speed-circuit-heading">
-                            <x-help-heading id="speed-circuit" :label="__('port.settings.speed.circuit')" class="tw:mb-2">{{ __('port.settings.speed.circuit_help') }}</x-help-heading>
-                            <label class="tw:flex tw:items-center tw:gap-3 tw:mb-2 tw:px-3 tw:py-2 tw:rounded-lg tw:border tw:border-gray-200 tw:dark:border-dark-gray-200 tw:font-normal tw:has-checked:border-blue-500 tw:has-checked:bg-blue-50/50 tw:dark:has-checked:bg-blue-950/30">
-                                <input type="radio" value="description" x-model="speedForm.circuit" class="tw:m-0">
-                                <span class="tw:grow">{{ __('port.settings.speed.from_description') }}</span>
-                                <span class="tw:font-semibold" x-text="describedCircuitText()"></span>
-                            </label>
-                            <label class="tw:flex tw:flex-wrap tw:items-center tw:gap-3 tw:px-3 tw:py-2 tw:rounded-lg tw:border tw:border-gray-200 tw:dark:border-dark-gray-200 tw:font-normal tw:has-checked:border-blue-500 tw:has-checked:bg-blue-50/50 tw:dark:has-checked:bg-blue-950/30">
-                                <input type="radio" value="custom" x-model="speedForm.circuit" class="tw:m-0">
-                                <span class="tw:grow">{{ __('Custom') }}</span>
-                                <span class="tw:flex tw:items-center tw:gap-2">
-                                    <span class="tw:w-8 tw:text-right">{{ __('Out') }}</span>
-                                    <input type="text"
-                                           class="lnms-input tw:w-28"
-                                           :class="speedForm.circuit === 'custom' && ! (parseSpeed(speedForm.out) > 0) && 'tw:border-red-500 tw:ring-1 tw:ring-red-500'"
-                                           x-model="speedForm.out"
-                                           x-on:focus="speedForm.circuit = 'custom'"
-                                           placeholder="{{ __('port.settings.speed.circuit_example') }}"
-                                           aria-label="{{ __('port.settings.speed.circuit_out') }}">
-                                    <span class="tw:w-6 tw:text-right">{{ __('In') }}</span>
-                                    <input type="text"
-                                           class="lnms-input tw:w-28"
-                                           :class="speedForm.circuit === 'custom' && isNaN(parseSpeed(speedForm.in)) && 'tw:border-red-500 tw:ring-1 tw:ring-red-500'"
-                                           x-model="speedForm.in"
-                                           x-on:focus="speedForm.circuit = 'custom'"
-                                           placeholder="{{ __('port.settings.speed.same_as_out') }}"
-                                           aria-label="{{ __('port.settings.speed.circuit_in') }}">
-                                </span>
-                            </label>
-                            <div x-show="speedPort.circuit_speed_override" class="tw:flex tw:flex-wrap tw:items-center tw:gap-2 tw:mt-2">
-                                <button type="button"
-                                        x-show="speedForm.circuit === 'custom'"
-                                        x-on:click="speedForm.circuit = 'description'"
-                                        class="tw:p-0 tw:border-0 tw:bg-transparent tw:text-red-600 tw:hover:underline tw:dark:text-red-400">
-                                    <i class="fa fa-xmark" aria-hidden="true"></i> {{ __('port.settings.speed.remove_custom_circuit') }}
-                                </button>
-                                <span x-show="speedForm.circuit !== 'custom'" class="tw:text-amber-600 tw:dark:text-amber-400">{{ __('port.settings.speed.custom_circuit_removed') }}</span>
-                                <button type="button"
-                                        x-show="speedForm.circuit !== 'custom'"
-                                        x-on:click="restoreSpeedForm('circuit')"
-                                        class="tw:p-0 tw:border-0 tw:bg-transparent tw:text-blue-600 tw:hover:underline tw:dark:text-blue-400">{{ __('Undo') }}</button>
-                            </div>
-                        </div>
+                <x-modal show="confirmBulk" maxWidth="md">
+                    <x-slot name="heading">
+                        <h4 class="tw:m-0 tw:text-base tw:font-semibold" x-text="(config.bulkTitles[confirmBulk] ?? '') + '?'"></h4>
+                    </x-slot>
+                    <p class="tw:m-0" x-text="lang.bulk_confirm.replace('__count__', total)"></p>
+                    <x-slot name="footer">
+                        <button type="button" class="lnms-btn lnms-btn-default tw:px-3 tw:py-1.5" x-on:click="confirmBulk = null">{{ __('Cancel') }}</button>
+                        <button type="button" class="lnms-btn lnms-btn-primary tw:px-3 tw:py-1.5" x-on:click="applyBulk(confirmBulk)" :disabled="isPending('bulk')">{{ __('Apply') }}</button>
+                    </x-slot>
+                </x-modal>
 
-                        <div class="tw:px-3 tw:py-2 tw:rounded-lg tw:bg-gray-100 tw:dark:bg-dark-gray-400">
-                            {{ __('port.settings.speed.result') }}
-                            <span class="tw:font-semibold" x-text="speedResultText()"></span>
-                        </div>
-                    </div>
-                </template>
-                <x-slot name="footer">
-                    <button type="button" class="lnms-btn lnms-btn-default tw:px-3 tw:py-1.5" x-on:click="speedPort = null">{{ __('Cancel') }}</button>
-                    <button type="button" class="lnms-btn lnms-btn-primary tw:px-3 tw:py-1.5 tw:disabled:opacity-50" x-on:click="saveSpeed()" :disabled="! speedFormValid() || isPending('speed')">{{ __('Save') }}</button>
-                </x-slot>
-            </x-modal>
-
-            <x-modal show="confirmBulk" maxWidth="md">
-                <x-slot name="heading">
-                    <h4 class="tw:m-0 tw:text-base tw:font-semibold" x-text="(config.bulkTitles[confirmBulk] ?? '') + '?'"></h4>
-                </x-slot>
-                <p class="tw:m-0" x-text="lang.bulk_confirm.replace('__count__', total)"></p>
-                <x-slot name="footer">
-                    <button type="button" class="lnms-btn lnms-btn-default tw:px-3 tw:py-1.5" x-on:click="confirmBulk = null">{{ __('Cancel') }}</button>
-                    <button type="button" class="lnms-btn lnms-btn-primary tw:px-3 tw:py-1.5" x-on:click="applyBulk(confirmBulk)" :disabled="isPending('bulk')">{{ __('Apply') }}</button>
-                </x-slot>
-            </x-modal>
-
-            <x-modal show="confirmReset" maxWidth="md">
-                <x-slot name="heading">
-                    <h4 class="tw:m-0 tw:text-base tw:font-semibold">{{ __('port.settings.reset_state.confirm_title') }}</h4>
-                </x-slot>
-                <p class="tw:m-0">{{ __('port.settings.reset_state.confirm') }}</p>
-                <x-slot name="footer">
-                    <button type="button" class="lnms-btn lnms-btn-default tw:px-3 tw:py-1.5" x-on:click="confirmReset = false">{{ __('Cancel') }}</button>
-                    <button type="button" class="lnms-btn lnms-btn-danger tw:px-3 tw:py-1.5" x-on:click="resetState()" :disabled="isPending('reset')">{{ __('Reset') }}</button>
-                </x-slot>
-            </x-modal>
-        </x-selectable-table>
+                <x-modal show="confirmReset" maxWidth="md">
+                    <x-slot name="heading">
+                        <h4 class="tw:m-0 tw:text-base tw:font-semibold">{{ __('port.settings.reset_state.confirm_title') }}</h4>
+                    </x-slot>
+                    <p class="tw:m-0">{{ __('port.settings.reset_state.confirm') }}</p>
+                    <x-slot name="footer">
+                        <button type="button" class="lnms-btn lnms-btn-default tw:px-3 tw:py-1.5" x-on:click="confirmReset = false">{{ __('Cancel') }}</button>
+                        <button type="button" class="lnms-btn lnms-btn-danger tw:px-3 tw:py-1.5" x-on:click="resetState()" :disabled="isPending('reset')">{{ __('Reset') }}</button>
+                    </x-slot>
+                </x-modal>
+            </x-slot:after>
+        </x-data-table>
     </x-device.page>
 @endsection
 
 @push('scripts')
     <script>
         document.addEventListener('alpine:init', () => {
-            Alpine.data('devicePorts', (config) => LibreNMS.selectableTable(config, {
+            Alpine.data('devicePorts', (config) => LibreNMS.dataTable(config, {
                 settings: config.settings,
                 summary: config.summary,
                 bulkGroupId: null,

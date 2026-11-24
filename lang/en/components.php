@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'selectable-table' => [
+    'data-table' => [
         'selected' => ':count selected',
         'select_page' => 'Select all rows on this page',
         'page_selected' => 'All :count rows on this page are selected.',
