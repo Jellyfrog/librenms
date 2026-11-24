@@ -54,6 +54,24 @@ const storage = {
 };
 
 /**
+ * Add nested params to a query string the way PHP reads them: filter[field][op]=value
+ *
+ * @param {URLSearchParams} query
+ * @param {*} value
+ * @param {string} prefix
+ */
+function appendQuery(query, value, prefix = "") {
+    if (value === null || value === undefined || value === "") {
+        return;
+    }
+    if (typeof value === "object") {
+        Object.entries(value).forEach(([key, item]) => appendQuery(query, item, prefix ? `${prefix}[${key}]` : key));
+    } else {
+        query.append(prefix, String(value));
+    }
+}
+
+/**
  * Reads the column definitions from the x-data-table.column cells in the row template.
  *
  * @param {HTMLElement} root
@@ -346,6 +364,25 @@ export default function dataTable(config) {
             }
 
             return body;
+        },
+
+        /**
+         * Download the table as CSV from config.exportUrl with the table's params, filters, search and sort.
+         * The export endpoints take the bootgrid names: current, rowCount and searchPhrase.
+         * @param {boolean} page only the current page
+         */
+        exportCsv(page) {
+            const { page: current, per_page: rowCount, search, ...params } = this.requestBody();
+            if (search) {
+                params.searchPhrase = search;
+            }
+            if (page) {
+                Object.assign(params, { current, rowCount });
+            }
+
+            const url = new URL(config.exportUrl, window.location.href);
+            appendQuery(url.searchParams, params);
+            window.open(url.toString(), "_blank");
         },
 
         /** Reload rows from the server, in local mode this refetches every row */

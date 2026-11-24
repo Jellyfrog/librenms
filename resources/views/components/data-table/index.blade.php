@@ -14,6 +14,7 @@
     'filter' => [],
     'hideFilter' => false,
     'columnToggle' => true,
+    'export' => null,
     'panel' => true,
     'title' => null,
 ])
@@ -32,6 +33,7 @@
     search: show the search box
     filterName/filterFields/filter/hideFilter: show an x-filter, its filters are sent as filter[field][op]=value
     columnToggle: show the column visibility menu
+    export: CSV export url (a TableController export route), adds a button to export the page or every result
     panel: wrap the table in an x-panel, set false when the table is already inside one
 
     Slots, the current row is "row":
@@ -54,8 +56,9 @@
         'rowKey' => $rowKey,
         'filter' => (object) $filter,
         'lang' => ['request_failed' => __('Request failed')],
+        'exportUrl' => $export,
     ];
-    $toolbar = $filterName || $search || $columnToggle || isset($heading);
+    $toolbar = $filterName || $search || $columnToggle || $export || isset($heading);
 @endphp
 <div {{ $attributes }}
      x-data="dataTable(@js($config))"

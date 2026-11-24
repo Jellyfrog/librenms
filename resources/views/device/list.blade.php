@@ -1,5 +1,5 @@
 <x-data-table :name="'devices-' . ($detailed ? 'detail' : 'basic')"
-              :url="route('table.device')"
+              :url="route('table.device')" :export="route('table.device.export')"
               :params="['format' => $detailed ? 'list_detail' : 'list_basic']"
               row-key="device_id"
               :sort="['display' => 'asc']"

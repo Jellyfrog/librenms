@@ -32,6 +32,22 @@ final class DataTablePagesTest extends TestCase
         ];
     }
 
+    /**
+     * Pages with a CSV export button => export route
+     *
+     * @return array<string, string>
+     */
+    private static function exports(): array
+    {
+        return [
+            '/devices' => 'table.device.export',
+            '/health/storage' => 'table.storages.export',
+            '/health/processor' => 'table.processors.export',
+            '/health/mempool' => 'table.mempools.export',
+            '/health/temperature' => 'table.sensors.export',
+        ];
+    }
+
     #[DataProvider('pages')]
     public function testPageUsesDataTable(string $page, string $endpoint, array $params): void
     {
@@ -46,6 +62,11 @@ final class DataTablePagesTest extends TestCase
             ->assertOk()
             ->assertSee('dataTable(', false)
             ->assertDontSee('bootgrid(', false);
+
+        if ($export = self::exports()[$page] ?? null) {
+            $this->actingAs($admin)->get($page)->assertSee('exportUrl', false)->assertSee(str_replace('/', '\\\\\\/', route($export)), false);
+            $this->actingAs($admin)->get(route($export, [...$params, 'current' => 1, 'rowCount' => 10, 'sort' => ['device_hostname' => 'asc']]))->assertOk();
+        }
 
         $this->actingAs($admin)->postJson($endpoint, [...$params, 'page' => 1, 'per_page' => 50])
             ->assertOk()
