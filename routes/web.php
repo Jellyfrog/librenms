@@ -515,7 +515,7 @@ Route::middleware(['auth'])->group(function (): void {
             Route::get('bills', Table\BillsController::class)->name('table.bills');
             Route::post('alert-schedule', Table\AlertScheduleController::class);
             Route::get('access-points', Table\AccessPointController::class)->name('table.access-points');
-            Route::post('customers', Table\CustomersController::class);
+            Route::get('customers', Table\CustomersController::class)->name('table.customers');
             Route::get('diskio', Table\DiskioController::class)->name('table.diskio');
             Route::get('device', Table\DeviceController::class)->name('table.device');
             Route::post('device-dependencies', Table\DeviceDependenciesController::class)->name('table.device-dependencies');

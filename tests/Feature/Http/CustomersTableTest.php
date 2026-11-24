@@ -24,14 +24,25 @@ final class CustomersTableTest extends TestCase
             'port_descr_descr' => 'Example Customer',
         ]);
 
-        $response = $this->actingAs($admin)->postJson('/ajax/table/customers', [
-            'current' => 1,
-            'rowCount' => 50,
-            'searchPhrase' => '',
+        Port::factory()->for($device)->create([
+            'port_descr_type' => 'cust',
+            'port_descr_descr' => 'Example Customer',
+        ]);
+        Port::factory()->for($device)->create([
+            'port_descr_type' => 'cust',
+            'port_descr_descr' => 'Other Customer',
         ]);
 
-        $response->assertOk();
-        $content = $response->getContent();
+        $response = $this->actingAs($admin)->getJson(route('table.customers', ['per_page' => 50]));
+
+        // one row per customer with its ports
+        $response->assertOk()
+            ->assertJsonPath('meta.total', 2)
+            ->assertJsonPath('data.0.port_descr_descr', 'Example Customer')
+            ->assertJsonCount(2, 'data.0.ports')
+            ->assertJsonCount(1, 'data.1.ports');
+        $this->actingAs($admin)->getJson(route('table.customers', ['search' => 'other']))->assertJsonPath('meta.total', 1);
+        $content = json_encode($response->json('data.0.graphs'), JSON_UNESCAPED_SLASHES);
         $this->assertStringContainsString('customer=Example+Customer', $content);
         $this->assertStringNotContainsString('customer_bits/id=', $content);
     }
