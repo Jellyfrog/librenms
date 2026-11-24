@@ -4,30 +4,43 @@
 
 @section('content')
 <div class="container-fluid" x-data="{ createBill: @js($port !== null || $errors->any()) }" x-on:create-bill.window="createBill = true">
-    <x-panel class="panel-condensed">
-        <x-slot name="table">
-            <div class="table-responsive">
-                <table class="table table-hover" id="bills-list">
-                    <thead>
-                    <tr>
-                        <th data-column-id="bill_name">{{ __('Billing name') }}</th>
-                        <th data-column-id="notes" data-sortable="false"></th>
-                        <th data-column-id="bill_type">{{ __('Type') }}</th>
-                        <th data-column-id="bill_allowed" data-align="right">{{ __('Allowed') }}</th>
-                        <th data-column-id="total_data_in" data-align="right">{{ __('Inbound') }}</th>
-                        <th data-column-id="total_data_out" data-align="right">{{ __('Outbound') }}</th>
-                        <th data-column-id="total_data" data-align="right">{{ __('Total') }}</th>
-                        <th data-column-id="rate_95th" data-align="right">{{ __('95th Percentile') }}</th>
-                        <th data-column-id="overusage" data-sortable="false" data-align="center">{{ __('Overusage') }}</th>
-                        <th data-column-id="predicted" data-sortable="false" data-align="center">{{ __('Predicted') }}</th>
-                        <th data-column-id="graph" data-sortable="false"></th>
-                        <th data-column-id="actions" data-sortable="false"></th>
-                    </tr>
-                    </thead>
-                </table>
-            </div>
-        </x-slot>
-    </x-panel>
+    <x-data-table name="bills"
+                  :url="route('table.bills')"
+                  :params="array_filter(['bill_type' => $filters['bill_type'], 'state' => $filters['state']])"
+                  :sort="['bill_name' => 'asc']"
+                  :column-toggle="false">
+        <x-slot:heading>
+            @can('create', \App\Models\Bill::class)
+                <button type="button" class="btn btn-default btn-sm" x-on:click="$dispatch('create-bill')"><i class="fa fa-plus"></i> {{ __('Create Bill') }}</button>
+            @endcan
+            <select class="form-control input-sm tw:w-auto" aria-label="{{ __('Billing period') }}" x-on:change="config.params.period = $event.target.value; changed(true)">
+                <option value="">{{ __('Current Billing Period') }}</option>
+                <option value="prev">{{ __('Previous Billing Period') }}</option>
+            </select>
+            <select class="form-control input-sm tw:w-auto" aria-label="{{ __('Type') }}" x-on:change="config.params.bill_type = $event.target.value; changed(true)">
+                <option value="">{{ __('All Types') }}</option>
+                <option value="cdr" @selected($filters['bill_type'] === 'cdr')>{{ __('CDR') }}</option>
+                <option value="quota" @selected($filters['bill_type'] === 'quota')>{{ __('Quota') }}</option>
+            </select>
+            <select class="form-control input-sm tw:w-auto" aria-label="{{ __('State') }}" x-on:change="config.params.state = $event.target.value; changed(true)">
+                <option value="">{{ __('All States') }}</option>
+                <option value="under" @selected($filters['state'] === 'under')>{{ __('Under Quota') }}</option>
+                <option value="over" @selected($filters['state'] === 'over')>{{ __('Over Quota') }}</option>
+            </select>
+        </x-slot:heading>
+        <x-data-table.column field="bill_name" :label="__('Billing name')" :hideable="false" html />
+        <x-data-table.column field="notes" :sortable="false" />
+        <x-data-table.column field="bill_type" :label="__('Type')" />
+        <x-data-table.column field="bill_allowed" :label="__('Allowed')" class="tw:text-right" />
+        <x-data-table.column field="total_data_in" :label="__('Inbound')" class="tw:text-right" />
+        <x-data-table.column field="total_data_out" :label="__('Outbound')" class="tw:text-right" />
+        <x-data-table.column field="total_data" :label="__('Total')" class="tw:text-right" html />
+        <x-data-table.column field="rate_95th" :label="__('95th Percentile')" class="tw:text-right" html />
+        <x-data-table.column field="overusage" :label="__('Overusage')" :sortable="false" class="tw:text-center" html />
+        <x-data-table.column field="predicted" :label="__('Predicted')" :sortable="false" class="tw:text-center" />
+        <x-data-table.column field="graph" :sortable="false" html />
+        <x-data-table.column field="actions" :sortable="false" html />
+    </x-data-table>
 
     @can('create', \App\Models\Bill::class)
         <x-modal show="createBill" :title="__('Add Traffic Bill')" maxWidth="2xl">
@@ -57,62 +70,12 @@
     @endcan
 </div>
 
-<script type="text/html" id="table-header">
-    <div id="@{{ctx.id}}" class="@{{css.header}}">
-        <div class="row">
-            <div class="col-sm-4">
-                @can('create', \App\Models\Bill::class)
-                    <button type="button" class="btn btn-default btn-sm" onclick="window.dispatchEvent(new CustomEvent('create-bill'))"><i class="fa fa-plus"></i> {{ __('Create Bill') }}</button>
-                @endcan
-            </div>
-            <div class="col-sm-8 actionBar">
-                <span class="form-inline" id="table-filters">
-                    <select name="period" id="period" class="form-control input-sm">
-                        <option value="">{{ __('Current Billing Period') }}</option>
-                        <option value="prev">{{ __('Previous Billing Period') }}</option>
-                    </select>
-                    <select name="bill_type" id="bill_type" class="form-control input-sm">
-                        <option value="">{{ __('All Types') }}</option>
-                        <option value="cdr" @selected($filters['bill_type'] === 'cdr')>{{ __('CDR') }}</option>
-                        <option value="quota" @selected($filters['bill_type'] === 'quota')>{{ __('Quota') }}</option>
-                    </select>
-                    <select name="state" id="state" class="form-control input-sm">
-                        <option value="">{{ __('All States') }}</option>
-                        <option value="under" @selected($filters['state'] === 'under')>{{ __('Under Quota') }}</option>
-                        <option value="over" @selected($filters['state'] === 'over')>{{ __('Over Quota') }}</option>
-                    </select>
-                </span>
-                <p class="@{{css.search}}"></p>
-                <p class="@{{css.actions}}"></p>
-            </div>
-        </div>
-    </div>
-</script>
+
 @endsection
 
 @section('javascript')
 <script>
     $(function () {
-        const grid = $('#bills-list').bootgrid({
-            ajax: true,
-            templates: {
-                header: $('#table-header').html()
-            },
-            columnSelection: false,
-            rowCount: [50, 100, 250, -1],
-            post: function () {
-                return {
-                    bill_type: $('#bill_type').val(),
-                    state: $('#state').val(),
-                    period: $('#period').val()
-                };
-            },
-            url: "{{ route('table.bills') }}"
-        });
-        $(document).on('change', '#table-filters select', function () {
-            grid.bootgrid('reload');
-        });
-
         @can('create', \App\Models\Bill::class)
         init_select2('#device', 'device', {}, @js($port?->device ? ['id' => $port->device_id, 'text' => $port->device->display] : null), @js(__('Select Device')), {width: '100%'});
         init_select2('#port_id', 'port', function (params) {

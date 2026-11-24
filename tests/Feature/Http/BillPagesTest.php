@@ -38,7 +38,7 @@ class BillPagesTest extends TestCase
         $this->actingAs($this->admin())
             ->get(route('bills.index'))
             ->assertOk()
-            ->assertSee(route('table.bills'), false)
+            ->assertSee('dataTable(', false)
             ->assertSee(__('Add Traffic Bill'));
     }
 
@@ -240,29 +240,29 @@ class BillPagesTest extends TestCase
         $over = Bill::factory()->create(['bill_name' => 'Over Bill', 'bill_type' => 'cdr', 'bill_cdr' => 1000, 'rate_95th' => 2000]);
         Bill::factory()->create(['bill_name' => 'Under Bill', 'bill_type' => 'quota', 'bill_quota' => 1000, 'total_data' => 500]);
 
-        $response = $this->actingAs($admin)->postJson(route('table.bills'), ['current' => 1, 'rowCount' => 50])
+        $response = $this->actingAs($admin)->getJson(route('table.bills', ['page' => 1, 'per_page' => 50]))
             ->assertOk()
-            ->assertJsonPath('total', 2);
-        $this->assertStringContainsString('Over Bill', $response->json('rows.0.bill_name'));
-        $this->assertEquals('CDR', $response->json('rows.0.bill_type'));
-        $this->assertNotEquals('-', $response->json('rows.0.overusage'));
-        $this->assertStringContainsString(route('bill.edit', $over->bill_id), $response->json('rows.0.actions'));
-        $this->assertEquals('-', $response->json('rows.1.overusage'));
+            ->assertJsonPath('meta.total', 2);
+        $this->assertStringContainsString('Over Bill', $response->json('data.0.bill_name'));
+        $this->assertEquals('CDR', $response->json('data.0.bill_type'));
+        $this->assertNotEquals('-', $response->json('data.0.overusage'));
+        $this->assertStringContainsString(route('bill.edit', $over->bill_id), $response->json('data.0.actions'));
+        $this->assertEquals('-', $response->json('data.1.overusage'));
 
-        $response = $this->actingAs($admin)->postJson(route('table.bills'), ['state' => 'over'])
-            ->assertJsonPath('total', 1);
-        $this->assertStringContainsString('Over Bill', $response->json('rows.0.bill_name'));
+        $response = $this->actingAs($admin)->getJson(route('table.bills', ['state' => 'over']))
+            ->assertJsonPath('meta.total', 1);
+        $this->assertStringContainsString('Over Bill', $response->json('data.0.bill_name'));
 
-        $response = $this->actingAs($admin)->postJson(route('table.bills'), ['bill_type' => 'quota'])
-            ->assertJsonPath('total', 1);
-        $this->assertStringContainsString('Under Bill', $response->json('rows.0.bill_name'));
+        $response = $this->actingAs($admin)->getJson(route('table.bills', ['bill_type' => 'quota']))
+            ->assertJsonPath('meta.total', 1);
+        $this->assertStringContainsString('Under Bill', $response->json('data.0.bill_name'));
 
-        $this->actingAs($admin)->postJson(route('table.bills'), ['searchPhrase' => 'Under'])
-            ->assertJsonPath('total', 1);
+        $this->actingAs($admin)->getJson(route('table.bills', ['search' => 'Under']))
+            ->assertJsonPath('meta.total', 1);
 
-        $response = $this->actingAs($admin)->postJson(route('table.bills'), ['sort' => ['total_data' => 'desc']])
+        $response = $this->actingAs($admin)->getJson(route('table.bills', ['sort' => ['total_data' => 'desc']]))
             ->assertOk();
-        $this->assertStringContainsString('Under Bill', $response->json('rows.0.bill_name'));
+        $this->assertStringContainsString('Under Bill', $response->json('data.0.bill_name'));
     }
 
     public function testTableListsPreviousPeriod(): void
@@ -272,11 +272,11 @@ class BillPagesTest extends TestCase
         Bill::factory()->create(['bill_name' => 'No History Bill']);
         $this->createHistory($bill, now()->subMonth()->subDays(5), now()->subDays(5));
 
-        $response = $this->actingAs($admin)->postJson(route('table.bills'), ['period' => 'prev', 'state' => 'over'])
+        $response = $this->actingAs($admin)->getJson(route('table.bills', ['period' => 'prev', 'state' => 'over']))
             ->assertOk()
-            ->assertJsonPath('total', 1);
+            ->assertJsonPath('meta.total', 1);
 
-        $row = $response->json('rows.0');
+        $row = $response->json('data.0');
         $this->assertStringContainsString('Historic Bill', $row['bill_name']);
         $this->assertEquals('Quota', $row['bill_type']);
         $this->assertEquals('-', $row['predicted']);
@@ -290,11 +290,11 @@ class BillPagesTest extends TestCase
         Bill::factory()->create(['bill_name' => 'Not Mine']);
         BillPerm::query()->insert(['user_id' => $user->user_id, 'bill_id' => $mine->bill_id]);
 
-        $response = $this->actingAs($user)->postJson(route('table.bills'))
+        $response = $this->actingAs($user)->getJson(route('table.bills'))
             ->assertOk()
-            ->assertJsonPath('total', 1);
-        $this->assertStringContainsString('Mine', $response->json('rows.0.bill_name'));
-        $this->assertEquals('', $response->json('rows.0.actions'));
+            ->assertJsonPath('meta.total', 1);
+        $this->assertStringContainsString('Mine', $response->json('data.0.bill_name'));
+        $this->assertEquals('', $response->json('data.0.actions'));
     }
 
     private function admin(): User

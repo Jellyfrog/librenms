@@ -512,7 +512,7 @@ Route::middleware(['auth'])->group(function (): void {
             Route::get('alertlog/export', [Table\AlertLogController::class, 'export'])->name('table.alertlog.export');
             Route::get('alerts', Table\AlertsController::class)->name('table.alerts');
             Route::get('arp', Table\ArpController::class)->name('table.arp');
-            Route::post('bills', Table\BillsController::class)->name('table.bills');
+            Route::get('bills', Table\BillsController::class)->name('table.bills');
             Route::post('alert-schedule', Table\AlertScheduleController::class);
             Route::get('access-points', Table\AccessPointController::class)->name('table.access-points');
             Route::post('customers', Table\CustomersController::class);
@@ -547,11 +547,11 @@ Route::middleware(['auth'])->group(function (): void {
             Route::get('printer-supply', Table\PrinterSupplyController::class)->name('table.printer-supply');
             Route::get('tnmsne', Table\TnmsneController::class)->name('table.tnmsne');
             Route::get('wireless', Table\WirelessSensorController::class)->name('table.wireless');
-            Route::post('vlan-ports', Table\VlanPortsController::class)->name('table.vlan-ports');
-            Route::post('vlan-devices', Table\VlanDevicesController::class)->name('table.vlan-devices');
+            Route::get('vlan-ports', Table\VlanPortsController::class)->name('table.vlan-ports');
+            Route::get('vlan-devices', Table\VlanDevicesController::class)->name('table.vlan-devices');
             Route::get('vminfo', Table\VminfoController::class)->name('table.vminfo');
             Route::get('vminfo/export', [Table\VminfoController::class, 'export']);
-            Route::post('ssl-certificates', Table\SslCertificateController::class)->name('table.ssl-certificates');
+            Route::get('ssl-certificates', Table\SslCertificateController::class)->name('table.ssl-certificates');
         });
 
         // dashboard widgets

@@ -10,110 +10,46 @@
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
-            <x-panel title="{{ __('SSL Certificates') }}" id="ssl-certificates-panel">
+            <x-data-table name="ssl-certificates"
+                          :url="route('table.ssl-certificates')"
+                          :sort="['host' => 'asc']"
+                          :per-page-options="[25, 50, 100, -1]"
+                          :title="__('SSL Certificates')">
                 @can('create', \App\Models\SslCertificate::class)
-                <p style="margin: 10px 15px 0;">
-                    <a href="{{ route('ssl-certificates.create') }}" class="btn btn-primary btn-sm">
-                        <i class="fa fa-plus fa-fw" aria-hidden="true"></i> {{ __('Add Certificate') }}
-                    </a>
-                </p>
+                    <x-slot:heading>
+                        <a href="{{ route('ssl-certificates.create') }}" class="btn btn-primary btn-sm">
+                            <i class="fa fa-plus fa-fw" aria-hidden="true"></i> {{ __('Add Certificate') }}
+                        </a>
+                    </x-slot:heading>
                 @endcan
-                <div class="table-responsive">
-                    <table id="ssl-certificates" class="table table-hover table-condensed table-striped">
-                        <thead>
-                        <tr>
-                            <th data-column-id="host" data-order="asc">{{ __('Host') }}</th>
-                            <th data-column-id="port">{{ __('Port') }}</th>
-                            <th data-column-id="subject">{{ __('Subject') }}</th>
-                            <th data-column-id="issuer">{{ __('Issuer') }}</th>
-                            <th data-column-id="valid_to">{{ __('Valid Until') }}</th>
-                            <th data-column-id="days_until_expiry">{{ __('Days Until Expiry') }}</th>
-                            <th data-column-id="device" data-sortable="false">{{ __('Device') }}</th>
-                            <th data-column-id="status" data-sortable="false">{{ __('Status') }}</th>
-                            <th data-column-id="actions" data-formatter="actions" data-sortable="false">{{ __('Actions') }}</th>
-                        </tr>
-                        </thead>
-                    </table>
-                </div>
-            </x-panel>
+                <x-data-table.column field="host" :label="__('Host')" />
+                <x-data-table.column field="port" :label="__('Port')" />
+                <x-data-table.column field="subject" :label="__('Subject')" />
+                <x-data-table.column field="issuer" :label="__('Issuer')" />
+                <x-data-table.column field="valid_to" :label="__('Valid Until')" />
+                <x-data-table.column field="days_until_expiry" :label="__('Days Until Expiry')" html />
+                <x-data-table.column field="device" :label="__('Device')" :sortable="false" html />
+                <x-data-table.column field="status" :label="__('Status')" :sortable="false" html />
+                <x-data-table.column field="actions" :label="__('Actions')" :sortable="false" class="tw:whitespace-nowrap">
+                    <a :href="@js(url('ssl-certificates')) + '/' + row.id" class="btn btn-xs btn-info"><i class="fa fa-eye fa-fw"></i> {{ __('View') }}</a>
+                    @can('ssl-certificate.update')
+                        <button type="button" class="btn btn-xs" :class="row.disabled ? 'btn-success' : 'btn-warning'" :disabled="isPending('ssl' + row.id)"
+                                x-on:click="request('ssl' + row.id, 'PUT', route('ssl-certificates.update', {ssl_certificate: row.id}), {disabled: row.disabled ? 0 : 1})
+                                    .then(() => { toastr.success(row.disabled ? @js(__('Certificate enabled')) : @js(__('Certificate paused'))); reload(); }).catch(() => {})">
+                            <i class="fa fa-fw" :class="row.disabled ? 'fa-play' : 'fa-pause'"></i>
+                            <span x-text="row.disabled ? @js(__('Enable')) : @js(__('Pause'))"></span>
+                        </button>
+                    @endcan
+                    @can('ssl-certificate.delete')
+                        <button type="button" class="btn btn-xs btn-danger" :disabled="isPending('ssl' + row.id)"
+                                x-on:click="confirm(@js(__('Delete this certificate?'))) && request('ssl' + row.id, 'DELETE', route('ssl-certificates.destroy', {ssl_certificate: row.id}))
+                                    .then(() => { toastr.success(@js(__('Certificate deleted'))); reload(); }).catch(() => {})">
+                            <i class="fa fa-trash fa-fw"></i> {{ __('Delete') }}
+                        </button>
+                    @endcan
+                </x-data-table.column>
+            </x-data-table>
         </div>
     </div>
 </div>
-@endsection
-
-@section('javascript')
-<script>
-function sslCertPause(id) {
-    var url = route('ssl-certificates.update', {ssl_certificate: id});
-    $.ajax({
-        method: 'PUT',
-        url: url,
-        headers: { 'Accept': 'application/json' },
-        data: { disabled: 1 }
-    }).done(function () {
-        $("#ssl-certificates").bootgrid('reload');
-        toastr.success("{{ __('Certificate paused') }}");
-    }).fail(function (xhr) {
-        toastr.error(xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "{{ __('Failed to pause certificate') }}");
-    });
-}
-
-function sslCertEnable(id) {
-    var url = route('ssl-certificates.update', {ssl_certificate: id});
-    $.ajax({
-        method: 'PUT',
-        url: url,
-        headers: { 'Accept': 'application/json' },
-        data: { disabled: 0 }
-    }).done(function () {
-        $("#ssl-certificates").bootgrid('reload');
-        toastr.success("{{ __('Certificate enabled') }}");
-    }).fail(function (xhr) {
-        toastr.error(xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "{{ __('Failed to enable certificate') }}");
-    });
-}
-
-function sslCertDelete(id) {
-    if (!confirm("{{ __('Delete this certificate?') }}")) {
-        return;
-    }
-    var url = route('ssl-certificates.destroy', {ssl_certificate: id});
-    $.ajax({
-        method: 'DELETE',
-        url: url,
-        headers: { 'Accept': 'application/json' }
-    }).done(function () {
-        $("#ssl-certificates").bootgrid('reload');
-        toastr.success("{{ __('Certificate deleted') }}");
-    }).fail(function (xhr) {
-        toastr.error(xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "{{ __('Failed to delete certificate') }}");
-    });
-}
-
-$(document).ready(function () {
-    $("#ssl-certificates").bootgrid({
-        ajax: true,
-        rowCount: [25, 50, 100, -1],
-        url: "{{ route('table.ssl-certificates') }}",
-        formatters: {
-            "actions": function (column, row) {
-                var html = '<div class="ssl-cert-actions" style="white-space:nowrap">';
-                html += '<a href="{{ url('ssl-certificates') }}/' + row.id + '" class="btn btn-xs btn-info"><i class="fa fa-eye fa-fw"></i> {{ __('View') }}</a> ';
-                @can('ssl-certificate.update')
-                if (row.disabled) {
-                    html += '<button type="button" class="btn btn-xs btn-success" onclick="sslCertEnable(' + row.id + ')"><i class="fa fa-play fa-fw"></i> {{ __('Enable') }}</button> ';
-                } else {
-                    html += '<button type="button" class="btn btn-xs btn-warning" onclick="sslCertPause(' + row.id + ')"><i class="fa fa-pause fa-fw"></i> {{ __('Pause') }}</button> ';
-                }
-                @endcan
-                @can('ssl-certificate.delete')
-                html += '<button type="button" class="btn btn-xs btn-danger" onclick="sslCertDelete(' + row.id + ')"><i class="fa fa-trash fa-fw"></i> {{ __('Delete') }}</button>';
-                @endcan
-                html += '</div>';
-                return html;
-            }
-        }
-    });
-});
-</script>
 @endsection
