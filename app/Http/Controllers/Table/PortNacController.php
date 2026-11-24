@@ -1,109 +1,60 @@
 <?php
 
-/**
- * PortNacController.php
- *
- * -Description-
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * @link       https://www.librenms.org
- *
- * @copyright  2018 Tony Murray
- * @author     Tony Murray <murraytony@gmail.com>
- */
-
 namespace App\Http\Controllers\Table;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DataTableRequest;
+use App\Http\Resources\Table\NacResource;
+use App\Models\Device;
 use App\Models\Port;
 use App\Models\PortsNac;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
-use LibreNMS\Util\Mac;
 
-/**
- * @extends TableController<PortsNac>
- */
-class PortNacController extends TableController
+class PortNacController extends Controller
 {
-    public function rules(): array
+    public function __invoke(DataTableRequest $request): AnonymousResourceCollection
     {
-        return [
+        $this->authorize('viewAny', Port::class);
+        $request->validate([
             'device_id' => 'nullable|integer',
-            'searchby' => 'in:mac,ip,description,vendor,',
-        ];
-    }
+            'port_id' => 'nullable|integer',
+            'historical' => 'nullable|boolean',
+            'searchby' => 'nullable|in:mac,ip,description,vendor',
+        ]);
 
-    public function searchFields(Request $request): array
-    {
-        return ['username', 'ip_address', 'mac_address'];
-    }
+        $query = PortsNac::hasAccess($request->user())
+            ->with(['port', 'device'])
+            ->when($request->integer('device_id'), fn (Builder $q, int $id) => $q->where('ports_nac.device_id', $id))
+            ->when($request->integer('port_id'), fn (Builder $q, int $id) => $q->where('ports_nac.port_id', $id))
+            ->unless($request->boolean('historical'), fn (Builder $q) => $q->where('historical', 0));
 
-    protected function sortFields(Request $request): array
-    {
-        return [
-            'device_id',
-            'port_id',
-            'mac_address',
-            'mac_oui',
-            'ip_address',
-            'vlan',
-            'domain',
-            'host_mode',
-            'username',
-            'authz_by',
-            'timeout',
-            'time_elapsed',
-            'time_left',
-            'authc_status',
-            'authz_status',
-            'method',
-            'created_at',
-            'updated_at',
-        ];
+        $this->search($request, $query);
+        $request->sortQuery($query, [
+            'device_id' => fn (Builder $q, string $direction) => $q->orderBy(Device::select('hostname')->whereColumn('devices.device_id', 'ports_nac.device_id'), $direction),
+            'port_id' => fn (Builder $q, string $direction) => $q->orderBy(Port::select('ifDescr')->whereColumn('ports.port_id', 'ports_nac.port_id'), $direction),
+            'mac_address', 'ip_address', 'vlan', 'domain', 'host_mode', 'username', 'authz_by', 'timeout', 'time_elapsed', 'time_left',
+            'authc_status', 'authz_status', 'method', 'created_at', 'updated_at',
+        ], ['device_id' => 'asc']);
+
+        return NacResource::collection($request->paginate($query));
     }
 
     /**
-     * Defines the base query for this resource
+     * The search box matches vendors, port descriptions, VLANs, MAC and IP addresses and usernames, searchby limits it to one
      */
-    public function baseQuery(Request $request): Builder
+    private function search(DataTableRequest $request, Builder $query): Builder
     {
-        $this->authorize('viewAny', Port::class);
-
-        return PortsNac::select('device_id', 'port_id', 'mac_address', 'ip_address', 'vlan', 'domain', 'host_mode', 'username', 'authz_by', 'timeout', 'time_elapsed', 'time_left', 'authc_status', 'authz_status', 'method', 'created_at', 'updated_at', 'historical')
-            ->when($request->device_id, fn ($q, $id) => $q->where('device_id', $id))
-            ->when($request->port_id, fn ($q, $id) => $q->where('port_id', $id))
-            ->when($request->showHistorical != 'true', fn ($q, $h) => $q->where('historical', 0))
-            ->hasAccess($request->user())
-            ->with('port')
-            ->with('device');
-    }
-
-    protected function search(?string $search, Builder $query, array $fields): Builder
-    {
-        if ($search = trim(\Request::input('searchPhrase') ?? '')) {
+        if ($search = $request->search()) {
             $mac_search = '%' . str_replace([':', ' ', '-', '.', '0x'], '', $search) . '%';
 
-            switch (\Request::input('searchby') ?? '') {
+            switch ($request->input('searchby') ?? '') {
                 case 'mac':
-                    return $query->where('ports_nac.mac_address', 'like', $search);
+                    return $query->where('ports_nac.mac_address', 'like', $mac_search);
                 case 'ip':
-                    return $query->whereIn('ports_nac.ip_address', $search);
+                    return $query->where('ports_nac.ip_address', 'like', "%$search%");
                 case 'description':
                     return $query->whereIntegerInRaw('ports_nac.port_id', $this->findPorts($search));
                 case 'vendor':
@@ -127,33 +78,13 @@ class PortNacController extends TableController
     }
 
     /**
-     * @param  PortsNac  $model
-     * @return array<string, scalar>
-     */
-    public function formatItem(Model $model): array
-    {
-        $item = $model->toArray();
-        $mac = Mac::parse($item['mac_address']);
-        $item['updated_at'] = $model->updated_at ? ($item['historical'] == 0 ? $model->updated_at->diffForHumans() : $model->updated_at->toDateTimeString()) : '';
-        $item['created_at'] = $model->created_at ? $model->created_at->toDateTimeString() : '';
-        $item['port_id'] = Blade::render('<x-port-link :port="$port">{{ $port->getShortLabel() }}</x-port-link>', ['port' => $model->port]);
-        $item['mac_oui'] = $mac->vendor();
-        $item['mac_address'] = $mac->readable();
-        $item['device_id'] = Blade::render('<x-device-link :device="$device"/>', ['device' => $model->device]);
-        unset($item['device']); //avoid sending all device data in the JSON reply
-        unset($item['port']); //free some unused data to be sent to the browser
-
-        return $item;
-    }
-
-    /**
      * @param  string  $ifAlias
      * @return Collection<int, int>
      */
-    protected function findPorts(string $ifAlias): Collection
+    private function findPorts(string $ifAlias): Collection
     {
-        $port_id = \Request::input('port_id');
-        $device_id = \Request::input('device_id');
+        $port_id = request()->input('port_id');
+        $device_id = request()->input('device_id');
 
         return Port::where('ifAlias', 'like', "%$ifAlias%")
             ->when($device_id, fn ($query) => $query->where('device_id', $device_id))
@@ -167,7 +98,7 @@ class PortNacController extends TableController
      * @param  string  $vendor
      * @return array
      */
-    protected function ouisFromVendor(string $vendor): array
+    private function ouisFromVendor(string $vendor): array
     {
         return DB::table('vendor_ouis')
             ->where('vendor', 'LIKE', '%' . $vendor . '%')
@@ -178,7 +109,7 @@ class PortNacController extends TableController
     /**
      * filter $query from vendor OUIs
      */
-    protected function queryByOui(array $vendor_ouis, Builder $query): Builder
+    private function queryByOui(array $vendor_ouis, Builder $query): Builder
     {
         $query->where(function (Builder $query) use ($vendor_ouis): void {
             foreach ($vendor_ouis as $oui) {

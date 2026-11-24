@@ -91,59 +91,34 @@
     @endforeach
 
     @if($data['stpPorts'])
-        <x-panel class="stp-panel">
-            <x-slot name="title"><span class="tw:font-bold">{{ trans('stp.stp_ports') }}</span></x-slot>
-            <div class="table-responsive">
-                <table id="stp-ports" class="table table-condensed table-hover">
-                    <thead>
-                    <tr>
-                        <th data-column-id="port_id">{{ trans('stp.port') }}</th>
-                        <th data-column-id="vlan" data-visible="false">{{ trans('stp.vlan') }}</th>
-                        <th data-column-id="priority">{{ trans('stp.priority') }}</th>
-                        <th data-column-id="state">{{ trans('stp.state') }}</th>
-                        <th data-column-id="enable">{{ trans('stp.enable') }}</th>
-                        <th data-column-id="pathCost">{{ trans('stp.path_cost') }}</th>
-                        <th data-column-id="designatedRoot" data-formatter="stpDevice">{{ trans('stp.designated_root_short') }}</th>
-                        <th data-column-id="designatedCost">{{ trans('stp.designated_cost') }}</th>
-                        <th data-column-id="designatedBridge" data-formatter="stpDevice">{{ trans('stp.designated_bridge') }}</th>
-                        <th data-column-id="designatedPort">{{ trans('stp.designated_port') }}</th>
-                        <th data-column-id="forwardTransitions">{{ trans('stp.forward_transitions') }}</th>
-                    </tr>
-                    </thead>
-                </table>
-            </div>
-        </x-panel>
+        <x-data-table name="stp-ports"
+                      :url="route('table.port-stp')"
+                      :params="array_filter(['device_id' => $data['device_id'], 'vlan' => $data['vlan']])"
+                      :sort="['port_id' => 'asc']"
+                      :search="false"
+                      :title="trans('stp.stp_ports')">
+            <x-data-table.column field="port_id" :label="trans('stp.port')" :hideable="false" html />
+            <x-data-table.column field="vlan" :label="trans('stp.vlan')" :visible="false" />
+            <x-data-table.column field="priority" :label="trans('stp.priority')" />
+            <x-data-table.column field="state" :label="trans('stp.state')" />
+            <x-data-table.column field="enable" :label="trans('stp.enable')" />
+            <x-data-table.column field="pathCost" :label="trans('stp.path_cost')" />
+            @foreach(['designatedRoot' => trans('stp.designated_root_short'), 'designatedCost' => trans('stp.designated_cost'), 'designatedBridge' => trans('stp.designated_bridge')] as $field => $label)
+                @if($field === 'designatedCost')
+                    <x-data-table.column :field="$field" :label="$label" />
+                @else
+                    <x-data-table.column :field="$field" :label="$label">
+                        <div x-html="row.{{ $field }}_device"></div>
+                        <span :title="row.{{ $field }}_vendor" x-text="row.{{ $field }}"></span>
+                    </x-data-table.column>
+                @endif
+            @endforeach
+            <x-data-table.column field="designatedPort" :label="trans('stp.designated_port')" />
+            <x-data-table.column field="forwardTransitions" :label="trans('stp.forward_transitions')" />
+        </x-data-table>
     @endif
 </x-device.page>
 @endsection
-
-@push('scripts')
-    <script>
-        var grid = $("#stp-ports").bootgrid({
-            ajax: true,
-            templates: {search: ""},
-            formatters: {
-                "stpDevice": function (column, row) {
-                    var html = '<span title="' + row[column.id + '_vendor'] + '">' + row[column.id] + '</span>';
-                    if (row[column.id + '_device']) {
-                        html = row[column.id + '_device'] + '<br />' + html;
-                    }
-
-                    return html;
-                }
-            },
-            post: function () {
-                return {
-                    device_id: '{{ $data['device_id'] }}',
-                    vlan: '{{ $data['vlan'] }}',
-                };
-            },
-            url: "{{ url('/ajax/table/port-stp') }}"
-        });
-
-    </script>
-@endpush
-
 
 @push('styles')
     <style>

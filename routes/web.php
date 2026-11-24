@@ -531,14 +531,14 @@ Route::middleware(['auth'])->group(function (): void {
             Route::get('mempools/export', [Table\MempoolsController::class, 'export']);
             Route::get('outages', Table\OutagesController::class)->name('table.outages');
             Route::get('outages/export', [Table\OutagesController::class, 'export']);
-            Route::post('port-nac', Table\PortNacController::class)->name('table.port-nac');
+            Route::get('port-nac', Table\PortNacController::class)->name('table.port-nac');
             Route::get('port-security/export', [Table\PortSecurityController::class, 'export'])->name('port-security.export');
-            Route::post('port-stp', Table\PortStpController::class);
+            Route::get('port-stp', Table\PortStpController::class)->name('table.port-stp');
             Route::get('ports', Table\PortsController::class)->name('table.ports');
             Route::get('ports/export', [Table\PortsController::class, 'export']);
             Route::get('processors', Table\ProcessorsController::class)->name('table.processors');
             Route::get('processors/export', [Table\ProcessorsController::class, 'export']);
-            Route::post('routes', Table\RoutesTablesController::class);
+            Route::get('routes', Table\RoutesTablesController::class)->name('table.routes');
             Route::get('sensors', Table\SensorsController::class)->name('table.sensors');
             Route::get('sensors/export', [Table\SensorsController::class, 'export']);
             Route::get('storages', Table\StoragesController::class)->name('table.storages');

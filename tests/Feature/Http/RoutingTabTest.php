@@ -242,7 +242,7 @@ class RoutingTabTest extends TestCase
             ->get(route('device.routing.routes', ['device' => $device]))
             ->assertOk()
             ->assertSee('routes')
-            ->assertSee('ajax/table/routes')
+            ->assertSee('dataTable(', false)
             ->assertSee('Destination');
     }
 
@@ -706,16 +706,14 @@ class RoutingTabTest extends TestCase
         ]);
 
         $response = $this->actingAs($this->admin())
-            ->postJson(url('ajax/table/routes'), [
+            ->getJson(route('table.routes', [
                 'device_id' => $device->device_id,
-                'showAllRoutes' => 'true',
-                'showProtocols' => 'all',
-                'current' => 1,
-                'rowCount' => 10,
-            ]);
+                'historical' => 1,
+                'per_page' => 10,
+            ]));
 
         $response->assertOk()
-            ->assertJsonPath('total', 1)
+            ->assertJsonPath('meta.total', 1)
             ->assertJsonFragment(['inetCidrRouteDest' => '192.168.50.0']);
     }
 

@@ -4,74 +4,38 @@
     <x-device.page :device="$device" :subtitle="__('Routing Table')">
         <x-device.routing-tabs :device="$device" tab="routes" />
 
-        <x-panel>
-            <div class="table-responsive">
-                <table id="routes" class="table table-condensed table-hover table-striped">
-                    <thead>
-                        <tr>
-                            <th data-column-id="context_name" data-width="125px">{{ __('VRF') }}</th>
-                            <th data-column-id="inetCidrRouteDestType" data-width="70px">{{ __('Proto') }}</th>
-                            <th data-column-id="inetCidrRouteDest">{{ __('Destination') }}</th>
-                            <th data-column-id="inetCidrRoutePfxLen" data-width="80px">{{ __('Mask') }}</th>
-                            <th data-column-id="inetCidrRouteNextHop">{{ __('Next hop') }}</th>
-                            <th data-column-id="inetCidrRouteIfIndex">{{ __('Interface') }}</th>
-                            <th data-column-id="inetCidrRouteMetric1" data-width="85px">{{ __('Metric') }}</th>
-                            <th data-column-id="inetCidrRouteType" data-width="85px">{{ __('Type') }}</th>
-                            <th data-column-id="inetCidrRouteProto" data-width="85px">{{ __('Proto') }}</th>
-                            <th data-column-id="created_at" data-width="165px">{{ __('First seen') }}</th>
-                            <th data-column-id="updated_at" data-width="165px">{{ __('Last seen') }}</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-            <div class="alert alert-info tw:mt-4">
-                {{ __('Warning: Routing Table is only retrieved during device discovery. Devices are skipped if they have more than :max routes.', ['max' => $max_routes]) }}
-            </div>
-        </x-panel>
+        <x-data-table name="routes"
+                      :url="route('table.routes')"
+                      :params="['device_id' => $device->device_id]"
+                      :sort="['inetCidrRouteDest' => 'asc']">
+            <x-slot:heading>
+                <select class="form-control input-sm tw:w-auto" aria-label="{{ __('Proto') }}"
+                        x-on:change="config.params.protocol = $event.target.value; changed(true)">
+                    <option value="">{{ __('all Protocols') }}</option>
+                    <option value="ipv4">{{ __('IPv4 only') }}</option>
+                    <option value="ipv6">{{ __('IPv6 only') }}</option>
+                </select>
+                <label class="tw:flex tw:items-center tw:gap-2 tw:m-0 tw:font-normal">
+                    <x-toggle x-on:change="config.params.historical = $event.target.checked ? 1 : 0; changed(true)" />
+                    {{ __('Include historical routes in the table') }}
+                </label>
+            </x-slot:heading>
+            <x-data-table.column field="context_name" :label="__('VRF')" width="125px" html />
+            <x-data-table.column field="inetCidrRouteDestType" :label="__('Proto')" width="70px" />
+            <x-data-table.column field="inetCidrRouteDest" :label="__('Destination')" />
+            <x-data-table.column field="inetCidrRoutePfxLen" :label="__('Mask')" width="80px" />
+            <x-data-table.column field="inetCidrRouteNextHop" :label="__('Next hop')" html />
+            <x-data-table.column field="inetCidrRouteIfIndex" :label="__('Interface')" html />
+            <x-data-table.column field="inetCidrRouteMetric1" :label="__('Metric')" width="85px" />
+            <x-data-table.column field="inetCidrRouteType" :label="__('Type')" width="85px" />
+            <x-data-table.column field="inetCidrRouteProto" :label="__('Proto')" width="85px" />
+            <x-data-table.column field="created_at" :label="__('First seen')" width="165px" />
+            <x-data-table.column field="updated_at" :label="__('Last seen')" width="165px" />
+            <x-slot:after>
+                <div class="alert alert-info tw:mt-4">
+                    {{ __('Warning: Routing Table is only retrieved during device discovery. Devices are skipped if they have more than :max routes.', ['max' => $max_routes]) }}
+                </div>
+            </x-slot:after>
+        </x-data-table>
     </x-device.page>
-@endsection
-
-@section('scripts')
-<script>
-$(function () {
-    var grid = $("#routes").bootgrid({
-        ajax: true,
-        post: function () {
-            var check_showAllRoutes = document.getElementById('check_showAllRoutes');
-            var showAllRoutes = check_showAllRoutes ? check_showAllRoutes.checked : false;
-
-            var list_showProtocols = document.getElementById('list_showProtocols');
-            var showProtocols = list_showProtocols ? list_showProtocols.value : 'all';
-
-            return {
-                device_id: {{ $device->device_id }},
-                showAllRoutes: showAllRoutes,
-                showProtocols: showProtocols
-            };
-        },
-        url: "{{ url('ajax/table/routes') }}"
-    });
-
-    $(".actionBar").append(
-        '<div class="search form-group pull-left tw:w-auto">' +
-        '@csrf' +
-        '<select name="list_showProtocols" id="list_showProtocols" class="input-sm" onChange="updateTable();">' +
-        '<option value="all">{{ __("all Protocols") }}</option>' +
-        '<option value="ipv4">{{ __("IPv4 only") }}</option>' +
-        '<option value="ipv6">{{ __("IPv6 only") }}</option>' +
-        '</select>&nbsp;' +
-        '<label class="tw:font-normal tw:ml-1"><input type="checkbox" name="check_showAllRoutes" id="check_showAllRoutes">' +
-        '&nbsp;{{ __("Include historical routes in the table") }}</label>' +
-        '</div>'
-    );
-
-    $(document).on('change', '#check_showAllRoutes', function() {
-        updateTable();
-    });
-});
-
-function updateTable() {
-    $('#routes').bootgrid('reload');
-}
-</script>
 @endsection
