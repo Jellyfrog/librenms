@@ -16,9 +16,11 @@
                 <input type="search" x-model.debounce.300ms="search" class="lnms-input tw:pl-8 tw:w-48" placeholder="{{ __('Search') }}" aria-label="{{ __('Search') }}">
             </div>
         @endif
-        <button type="button" class="lnms-btn lnms-btn-default" x-on:click="reload()" :disabled="loading" title="{{ __('Refresh') }}" aria-label="{{ __('Refresh') }}">
-            <i class="fa fa-refresh" :class="loading && 'fa-spin'" aria-hidden="true"></i>
-        </button>
+        @if ($rows === null)
+            <button type="button" class="lnms-btn lnms-btn-default" x-on:click="reload()" :disabled="loading" title="{{ __('Refresh') }}" aria-label="{{ __('Refresh') }}">
+                <i class="fa fa-refresh" :class="loading && 'fa-spin'" aria-hidden="true"></i>
+            </button>
+        @endif
         @if ($export)
             <div class="tw:relative" x-data="{ open: false }" x-on:click.outside="open = false" x-on:keydown.escape.window="open = false">
                 <button type="button" class="lnms-btn lnms-btn-default" x-on:click="open = ! open" :aria-expanded="open" title="{{ __('Export') }}" aria-label="{{ __('Export') }}">

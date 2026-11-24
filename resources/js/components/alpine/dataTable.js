@@ -28,6 +28,8 @@ const features = tableFeatures({
     sortFns: { alphanumeric: sortFn_alphanumeric, basic: sortFn_basic, text: sortFn_text },
 });
 
+// server mode tables reload on this interval, like bootgrid tables did
+const REFRESH_INTERVAL = 300000;
 // TanStack page size for "all rows", the server gets -1
 const toPageSize = (perPage) => (Number(perPage) < 0 ? Number.MAX_SAFE_INTEGER : Number(perPage));
 
@@ -89,7 +91,9 @@ export default function dataTable(config) {
     const rowKey = config.rowKey ?? "id";
     const storageKey = config.name ? `librenms.data-table.${config.name}` : null;
     const saved = (storageKey && storage.get(storageKey)) || {};
-    const perPage = Number(saved.perPage ?? config.perPage ?? 50);
+    const perPageOptions = config.perPageOptions ?? [];
+    // a saved page size only applies while the table still offers it
+    const perPage = perPageOptions.includes(Number(saved.perPage)) ? Number(saved.perPage) : Number(config.perPage ?? 50);
 
     const state = Alpine.reactive({
         // bumped when data changes, the rows themselves stay out of Alpine's reactivity:
@@ -112,6 +116,7 @@ export default function dataTable(config) {
         state.version++;
     };
     let request = null;
+    let refreshTimer = null;
 
     return {
         config,
@@ -206,7 +211,17 @@ export default function dataTable(config) {
                 setData(JSON.parse(this.$root.querySelector("script[data-table-rows]")?.textContent || "[]"));
             } else {
                 this.load();
+                refreshTimer = setInterval(() => {
+                    if (!this.loading) {
+                        this.load();
+                    }
+                }, REFRESH_INTERVAL);
             }
+        },
+
+        destroy() {
+            clearInterval(refreshTimer);
+            request?.abort();
         },
 
         /**
@@ -279,7 +294,7 @@ export default function dataTable(config) {
         },
 
         applyFilter(filter) {
-            // x-filter dispatches its initial filter on init, skip the duplicate load
+            // nothing changed, skip the reload
             if (JSON.stringify(filter ?? {}) === JSON.stringify(state.filter)) {
                 return;
             }
@@ -358,6 +373,12 @@ export default function dataTable(config) {
             return window.axios
                 .post(config.url, this.requestBody(), { signal: controller.signal })
                 .then(({ data: json }) => {
+                    // rows were removed since the last load and the page is past the end, load the last page
+                    if (json.total > 0 && json.current_page > json.last_page) {
+                        state.pagination = { ...state.pagination, pageIndex: json.last_page - 1 };
+                        request = null;
+                        return this.load();
+                    }
                     setData(json.data ?? []);
                     state.total = json.total ?? data.length;
                     if (json.current_page && json.current_page - 1 !== state.pagination.pageIndex) {
@@ -366,6 +387,9 @@ export default function dataTable(config) {
                 })
                 .catch((error) => {
                     if (!window.axios.isCancel(error)) {
+                        // don't leave the previous result on screen as if it matched
+                        setData([]);
+                        state.total = 0;
                         this.error = error.response?.data?.message ?? config.lang?.request_failed ?? "Request failed";
                     }
                 })

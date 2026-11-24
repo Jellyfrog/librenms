@@ -47,6 +47,7 @@
         'params' => (object) $params,
         'sort' => (object) $sort,
         'perPage' => $perPage,
+        'perPageOptions' => $perPageOptions,
         'rowKey' => $rowKey,
         'filter' => (object) $filter,
         'lang' => ['request_failed' => __('Request failed')],
@@ -56,7 +57,7 @@
 @endphp
 <div {{ $attributes }}
      x-data="dataTable(@js($config))"
-     @if ($filterName) x-on:filter:apply.window="if ($event.detail.name === @js($filterName)) applyFilter($event.detail.filters)" @endif>
+     @if ($filterName) x-on:filter:apply.window="if ($event.detail.name === @js($filterName) && ! $event.detail.initial) applyFilter($event.detail.filters)" @endif>
     @if ($panel)
         <x-panel class="tw:mb-0" :title="$title">
             @if ($toolbar)

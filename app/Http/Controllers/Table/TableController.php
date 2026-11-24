@@ -107,17 +107,21 @@ abstract class TableController extends PaginatedAjaxController
         }
         $paginator = $query->paginate($limit, ['*'], 'page', $page);
 
-        if ($paginatorRequest) {
-            return response()->json([
-                'data' => collect($paginator->items())->map($this->formatItem(...))->values(),
-                'current_page' => $paginator->currentPage(),
-                'last_page' => $paginator->lastPage(),
-                'per_page' => $paginator->perPage(),
-                'total' => $paginator->total(),
-            ]);
-        }
+        return $paginatorRequest ? $this->formatPaginatorResponse($paginator) : $this->formatResponse($paginator);
+    }
 
-        return $this->formatResponse($paginator);
+    /**
+     * Response for x-data-table, Laravel paginator json. Override it alongside formatResponse to reshape the rows.
+     */
+    protected function formatPaginatorResponse(LengthAwarePaginator $paginator): JsonResponse
+    {
+        return response()->json([
+            'data' => collect($paginator->items())->map($this->formatItem(...))->values(),
+            'current_page' => $paginator->currentPage(),
+            'last_page' => $paginator->lastPage(),
+            'per_page' => $paginator->perPage(),
+            'total' => $paginator->total(),
+        ]);
     }
 
     /**
