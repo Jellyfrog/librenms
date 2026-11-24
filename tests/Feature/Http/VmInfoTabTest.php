@@ -116,18 +116,11 @@ final class VmInfoTabTest extends TestCase
     {
         $vm = Vminfo::factory()->create();
 
-        $response = $this->actingAs($this->admin())->postJson(route('table.vminfo'), [
-            'device_id' => $vm->device_id,
-            'current' => 1,
-            'rowCount' => 50,
-            'searchPhrase' => '',
-        ]);
-
-        $response->assertOk();
-        $this->assertStringContainsString(
-            route('device.vm.show', ['device' => $vm->device_id, 'vminfo' => $vm->id]),
-            $response->json('rows.0.graphs')
-        );
+        $this->actingAs($this->admin())
+            ->getJson(route('table.vminfo', ['device_id' => $vm->device_id]))
+            ->assertOk()
+            ->assertJsonPath('meta.total', 1)
+            ->assertJsonPath('data.0.graphs_url', route('device.vm.show', ['device' => $vm->device_id, 'vminfo' => $vm->id]));
     }
 
     public function testAllVmsGraphViewShowsTheVmsThatRecordedTheGraph(): void
@@ -147,7 +140,7 @@ final class VmInfoTabTest extends TestCase
                 ->assertSee(route('device.vm.show', ['device' => $recorded->device_id, 'vminfo' => $recorded->id]))
                 ->assertSee(route('device.vm.show', ['device' => $container->device_id, 'vminfo' => $container->id]))
                 ->assertDontSee(route('device.vm.show', ['device' => $unrecorded->device_id, 'vminfo' => $unrecorded->id]))
-                ->assertDontSee('data-url="' . route('table.vminfo') . '"', false);
+                ->assertDontSee('dataTable(', false);
         } finally {
             File::deleteDirectory($rrdDir);
         }
@@ -220,7 +213,7 @@ final class VmInfoTabTest extends TestCase
         $this->actingAs($this->admin())
             ->get(route('vminfo.index', ['filter' => $filter]))
             ->assertOk()
-            ->assertSee('data-url="' . route('table.vminfo') . '"', false)
+            ->assertSee('dataTable(', false)
             ->assertSee(route('vminfo.index', ['graph' => 'mem', 'filter' => $filter]))
             ->assertSee(route('vminfo.index', ['graph' => 'diskio_ops', 'filter' => $filter]));
     }

@@ -34,6 +34,9 @@ final class DataTablePagesTest extends TestCase
             'syslog' => ['/syslog', '/ajax/table/syslog', []],
             'alerts' => ['/alerts', '/ajax/table/alerts', []],
             'alert-log' => ['/alert-log', '/ajax/table/alertlog', []],
+            'inventory' => ['/inventory', '/ajax/table/inventory', ['filter' => ['entPhysicalDescr' => ['contains' => 'x']]]],
+            'vminfo' => ['/vminfo', '/ajax/table/vminfo', ['sort' => ['hostname' => 'asc']]],
+            'outages' => ['/outages', '/ajax/table/outages', ['status' => 'all', 'from' => '-1d', 'sort' => ['device_id' => 'asc']]],
         ];
     }
 

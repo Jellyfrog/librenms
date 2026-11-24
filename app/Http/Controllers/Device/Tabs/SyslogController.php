@@ -49,7 +49,7 @@ class SyslogController extends Controller
 
         return view('device.tabs.logs.syslog', [
             'device' => $device,
-            'filter' => Syslog::filterFromRequest($request),
+            'filter' => Syslog::filtersFromRequest($request, ['program' => 'program', 'priority' => 'priority', 'from' => ['timestamp', 'after'], 'to' => ['timestamp', 'before']]),
         ]);
     }
 }

@@ -1,137 +1,58 @@
 <?php
 
-/**
- * InventoryController.php
- *
- * -Description-
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * @link       https://www.librenms.org
- *
- * @copyright  2023 Tony Murray
- * @author     Tony Murray <murraytony@gmail.com>
- */
-
 namespace App\Http\Controllers\Table;
 
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\StreamsCsv;
+use App\Http\Requests\DataTableRequest;
+use App\Http\Resources\Table\InventoryResource;
+use App\Models\Device;
 use App\Models\EntPhysical;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
-use LibreNMS\Util\Url;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-/**
- * @extends TableController<EntPhysical>
- */
-class InventoryController extends TableController
+class InventoryController extends Controller
 {
-    protected ?string $model = EntPhysical::class;
+    use StreamsCsv;
 
-    public function rules(): array
+    public function __invoke(DataTableRequest $request): AnonymousResourceCollection
     {
-        return [
-            'device' => 'nullable|int',
-            'descr' => 'nullable|string',
-            'model' => 'nullable|string',
-            'serial' => 'nullable|string',
-        ];
+        return InventoryResource::collection($request->paginate($this->query($request)->with('device')));
     }
 
-    protected function filterFields(Request $request): array
+    public function export(DataTableRequest $request): StreamedResponse
     {
-        return [
-            'device_id' => 'device',
-        ];
+        $rows = $this->query($request)->with('device')->lazy()->map(fn (EntPhysical $item) => [
+            $item->device?->display,
+            $item->entPhysicalDescr,
+            $item->entPhysicalName,
+            $item->entPhysicalModelName,
+            $item->entPhysicalSerialNum,
+        ]);
+
+        return $this->streamCsv('inventory', ['Device', 'Description', 'Name', 'Model', 'Serial Number'], $rows);
     }
 
-    protected function searchFields(Request $request): array
+    /**
+     * @return Builder<EntPhysical>
+     */
+    private function query(DataTableRequest $request): Builder
     {
-        return ['entPhysicalDescr', 'entPhysicalModelName', 'entPhysicalSerialNum'];
-    }
+        $this->authorize('viewAny', EntPhysical::class);
+        $request->validate(EntPhysical::filterValidationRules());
 
-    protected function sortFields(Request $request): array
-    {
-        return [
-            'device' => 'device_id',
+        $query = EntPhysical::hasAccess($request->user())
+            ->select(['entPhysical_id', 'device_id', 'entPhysicalDescr', 'entPhysicalName', 'entPhysicalModelName', 'entPhysicalSerialNum'])
+            ->applyFilters($request->filters());
+        $request->searchQuery($query, ['entPhysicalDescr', 'entPhysicalName', 'entPhysicalModelName', 'entPhysicalSerialNum']);
+
+        return $request->sortQuery($query, [
+            'device' => fn (Builder $q, string $direction) => $q->orderBy(Device::select('display')->whereColumn('devices.device_id', 'entPhysical.device_id'), $direction),
             'name' => 'entPhysicalName',
             'descr' => 'entPhysicalDescr',
             'model' => 'entPhysicalModelName',
             'serial' => 'entPhysicalSerialNum',
-        ];
-    }
-
-    protected function baseQuery($request): Builder|\Illuminate\Database\Query\Builder
-    {
-        $this->authorize('viewAny', EntPhysical::class);
-
-        $query = EntPhysical::hasAccess($request->user())
-            ->with('device')
-            ->select(['entPhysical_id', 'device_id', 'entPhysicalDescr', 'entPhysicalName', 'entPhysicalModelName', 'entPhysicalSerialNum']);
-
-        // apply specific field filters
-        $this->search($request->input('descr'), $query, ['entPhysicalDescr']);
-        $this->search($request->input('model'), $query, ['entPhysicalModelName']);
-        $this->search($request->input('serial'), $query, ['entPhysicalSerialNum']);
-
-        return $query;
-    }
-
-    /**
-     * @param  EntPhysical  $model
-     * @return array<string, scalar>
-     */
-    public function formatItem(Model $model): array
-    {
-        return [
-            'device' => Url::modernDeviceLink($model->device),
-            'descr' => htmlspecialchars((string) $model->entPhysicalDescr),
-            'name' => htmlspecialchars((string) $model->entPhysicalName),
-            'model' => htmlspecialchars((string) $model->entPhysicalModelName),
-            'serial' => htmlspecialchars((string) $model->entPhysicalSerialNum),
-        ];
-    }
-
-    /**
-     * Get headers for CSV export
-     */
-    protected function getExportHeaders(): array
-    {
-        return [
-            'Device',
-            'Description',
-            'Name',
-            'Model',
-            'Serial Number',
-        ];
-    }
-
-    /**
-     * Format a row for CSV export
-     *
-     * @param  EntPhysical  $entPhysical
-     */
-    protected function formatExportRow(Model $entPhysical): array
-    {
-        $device = $entPhysical->device;
-
-        return [
-            $entPhysical->device ? $device->display : '',
-            $entPhysical->entPhysicalDescr,
-            $entPhysical->entPhysicalName,
-            $entPhysical->entPhysicalModelName,
-            $entPhysical->entPhysicalSerialNum,
-        ];
+        ], ['device' => 'asc']);
     }
 }

@@ -46,7 +46,7 @@ class EventlogController extends Controller
 
         return view('device.tabs.logs.eventlog', [
             'device' => $device,
-            'filter' => Eventlog::filterFromRequest($request),
+            'filter' => Eventlog::filtersFromRequest($request, ['eventtype' => 'type']),
         ]);
     }
 }

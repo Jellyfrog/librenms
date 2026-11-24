@@ -25,6 +25,12 @@ if (isset($vars['action']) && $vars['action'] == 'expunge' && Gate::allows('sysl
 $pagetitle[] = 'Syslog';
 
 // old links put device, program, priority, from and to in the url
-$filter = \App\Models\Syslog::filterFromRequest(request()->duplicate([...request()->query(), ...$vars]));
+$filter = \App\Models\Syslog::filtersFromRequest(request()->duplicate([...request()->query(), ...$vars]), [
+    'device' => 'device_id',
+    'program' => 'program',
+    'priority' => 'priority',
+    'from' => ['timestamp', 'after'],
+    'to' => ['timestamp', 'before'],
+]);
 
 echo Blade::render('<x-syslog-table :filter="$filter" />', ['filter' => $filter]);

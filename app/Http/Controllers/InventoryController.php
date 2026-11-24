@@ -13,33 +13,23 @@ class InventoryController extends Controller
     {
         $this->authorize('viewAny', EntPhysical::class);
 
-        $this->validate($request, [
+        $request->validate([
             'device' => 'nullable|int',
             'descr' => 'nullable|string',
             'model' => 'nullable|string',
             'serial' => 'nullable|string',
+            ...EntPhysical::filterValidationRules(),
         ]);
 
-        $device = \App\Models\Device::hasAccess($request->user())
-            ->select(['device_id', 'hostname', 'ip', 'sysName', 'display'])
-            ->firstWhere('device_id', $request->input('device'));
-
-        $model_filter = ['field' => 'model'];
-        $device_selected = '';
-        if ($device) {
-            $device_selected = ['id' => $device->device_id, 'text' => $device->display];
-            $model_filter['device_id'] = $device->device_id;
-        }
-
         return view('inventory', [
-            'device_selected' => $device_selected,
-            'filter' => [
-                'device' => $device?->device_id,
-                'descr' => $request->input('descr'),
-                'model' => $request->input('model'),
-                'serial' => $request->input('serial'),
-            ],
-            'model_filter' => $model_filter,
+            // old links use ?device=, ?descr=, ?model= and ?serial=
+            'filter' => EntPhysical::filtersFromRequest($request, [
+                'device' => 'device_id',
+                'descr' => ['entPhysicalDescr', 'contains'],
+                'model' => 'entPhysicalModelName',
+                'serial' => ['entPhysicalSerialNum', 'contains'],
+            ]),
+            'filterFields' => EntPhysical::filterFieldDefinitions(),
             'show_purge' => Gate::allows('purge', EntPhysical::class) && EntPhysical::whereDoesntHave('device')->exists(),
         ]);
     }

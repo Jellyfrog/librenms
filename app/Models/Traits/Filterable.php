@@ -3,6 +3,7 @@
 namespace App\Models\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -215,6 +216,33 @@ trait Filterable
                 ? $query->orWhereHas($relation, $callback)
                 : $query->whereHas($relation, $callback);
         }
+    }
+
+    /**
+     * x-filter filters from the request, with old style query parameters (links, bookmarks) added as filters.
+     * Filters in the request win over old parameters for the same field and operator.
+     *
+     * @param  array<string, string|array{0: string, 1: string}>  $legacy  parameter => field (eq), or parameter => [field, operator]
+     * @return array<string, array<string, mixed>>
+     */
+    public static function filtersFromRequest(Request $request, array $legacy = []): array
+    {
+        $filter = $request->array('filter');
+
+        foreach ($legacy as $param => $target) {
+            $value = $request->input($param);
+            if ($value === null || $value === '' || is_array($value)) {
+                continue;
+            }
+
+            [$field, $operator] = is_array($target) ? $target : [$target, 'eq'];
+            if (! is_array($filter[$field] ?? null)) {
+                $filter[$field] = [];
+            }
+            $filter[$field][$operator] ??= $value;
+        }
+
+        return $filter;
     }
 
     /**

@@ -522,13 +522,13 @@ Route::middleware(['auth'])->group(function (): void {
             Route::get('eventlog', Table\EventlogController::class)->name('table.eventlog');
             Route::post('fdb-tables', Table\FdbTablesController::class);
             Route::get('graylog', Table\GraylogController::class)->name('table.graylog');
-            Route::post('inventory', Table\InventoryController::class)->name('table.inventory');
+            Route::get('inventory', Table\InventoryController::class)->name('table.inventory');
             Route::get('inventory/export', [Table\InventoryController::class, 'export']);
             Route::post('location', Table\LocationController::class)->name('table.location');
             Route::get('location/export', [Table\LocationController::class, 'export']);
             Route::get('mempools', Table\MempoolsController::class)->name('table.mempools');
             Route::get('mempools/export', [Table\MempoolsController::class, 'export']);
-            Route::post('outages', Table\OutagesController::class)->name('table.outages');
+            Route::get('outages', Table\OutagesController::class)->name('table.outages');
             Route::get('outages/export', [Table\OutagesController::class, 'export']);
             Route::post('port-nac', Table\PortNacController::class)->name('table.port-nac');
             Route::get('port-security/export', [Table\PortSecurityController::class, 'export'])->name('port-security.export');
@@ -548,7 +548,7 @@ Route::middleware(['auth'])->group(function (): void {
             Route::get('wireless', Table\WirelessSensorController::class)->name('table.wireless');
             Route::post('vlan-ports', Table\VlanPortsController::class)->name('table.vlan-ports');
             Route::post('vlan-devices', Table\VlanDevicesController::class)->name('table.vlan-devices');
-            Route::post('vminfo', Table\VminfoController::class)->name('table.vminfo');
+            Route::get('vminfo', Table\VminfoController::class)->name('table.vminfo');
             Route::get('vminfo/export', [Table\VminfoController::class, 'export']);
             Route::post('ssl-certificates', Table\SslCertificateController::class)->name('table.ssl-certificates');
         });

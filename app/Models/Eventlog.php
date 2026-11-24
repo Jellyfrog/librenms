@@ -31,7 +31,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use LibreNMS\Enum\Severity;
 
@@ -99,24 +98,6 @@ class Eventlog extends DeviceRelatedModel
                 'type' => 'text',
             ],
         ]);
-    }
-
-    /**
-     * x-filter filters from the request, old links use ?device= and ?eventtype= instead of filter[]
-     *
-     * @return array<string, array<string, mixed>>
-     */
-    public static function filterFromRequest(Request $request): array
-    {
-        $filter = $request->array('filter');
-        if ($deviceId = $request->integer('device')) {
-            $filter['device_id'] ??= ['eq' => $deviceId];
-        }
-        if ($type = $request->input('eventtype')) {
-            $filter['type'] ??= ['eq' => $type];
-        }
-
-        return $filter;
     }
 
     public function filterSearch(Builder $query, mixed $value, array $config): void

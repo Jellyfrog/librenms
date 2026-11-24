@@ -17,4 +17,4 @@
 $no_refresh = true;
 $pagetitle[] = 'Eventlog';
 
-echo Blade::render('<x-eventlog-table :filter="$filter" />', ['filter' => \App\Models\Eventlog::filterFromRequest(request())]);
+echo Blade::render('<x-eventlog-table :filter="$filter" />', ['filter' => \App\Models\Eventlog::filtersFromRequest(request(), ['device' => 'device_id', 'eventtype' => 'type'])]);

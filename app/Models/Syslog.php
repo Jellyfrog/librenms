@@ -29,7 +29,6 @@ namespace App\Models;
 use App\Models\Traits\Filterable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Http\Request;
 
 class Syslog extends DeviceRelatedModel
 {
@@ -66,29 +65,6 @@ class Syslog extends DeviceRelatedModel
             ['key' => 'priority', 'label' => __('Priority'), 'type' => 'select', 'endpoint' => route('ajax.select.syslog'), 'params' => $selectParams('priority')],
             ['key' => 'timestamp', 'label' => __('Timestamp'), 'type' => 'date'],
         ]));
-    }
-
-    /**
-     * x-filter filters from the request, old links use ?device=, ?program=, ?priority=, ?from= and ?to= instead of filter[]
-     *
-     * @return array<string, array<string, mixed>>
-     */
-    public static function filterFromRequest(Request $request): array
-    {
-        $filter = $request->array('filter');
-        if ($deviceId = $request->integer('device')) {
-            $filter['device_id'] ??= ['eq' => $deviceId];
-        }
-        foreach (['program', 'priority'] as $field) {
-            if ($value = $request->input($field)) {
-                $filter[$field] ??= ['eq' => $value];
-            }
-        }
-        if ($request->filled('from') || $request->filled('to')) {
-            $filter['timestamp'] ??= array_filter(['after' => $request->input('from'), 'before' => $request->input('to')]);
-        }
-
-        return $filter;
     }
 
     public function filterSearch(Builder $query, mixed $value, array $config): void
