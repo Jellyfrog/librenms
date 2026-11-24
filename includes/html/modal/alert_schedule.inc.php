@@ -279,7 +279,7 @@ $('#sched-submit').on("click", function(e) {
             window.setTimeout(function() { $('#schedulemsg').fadeOut().slideUp(); } , 5000);
             $("#schedule-maintenance").modal('hide');
             $("#schedulemodal-alert").remove();
-            $("#alert-schedule").bootgrid('reload');
+            window.dispatchEvent(new CustomEvent('data-table:reload', {detail: {name: 'alert-schedule'}}));
         },
         error: function(jqXHR){
             var message = 'An error occurred.';

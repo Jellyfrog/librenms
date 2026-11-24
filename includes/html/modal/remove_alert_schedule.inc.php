@@ -45,7 +45,7 @@ $('#sched-maintenance-removal').on("click", function(e) {
             $("#message").html('<div class="alert alert-info" id="schedulemsg"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+data.message+'</div>');
             window.setTimeout(function() { $('#schedulemsg').fadeOut().slideUp(); } , 5000);
             $("#delete-maintenance").modal('hide');
-            $("#alert-schedule").bootgrid('reload');
+            window.dispatchEvent(new CustomEvent('data-table:reload', {detail: {name: 'alert-schedule'}}));
         },
         error: function(jqXHR){
             $("#delete-maintenance").modal('hide');

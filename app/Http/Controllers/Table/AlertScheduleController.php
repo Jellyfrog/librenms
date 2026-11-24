@@ -1,93 +1,37 @@
 <?php
 
-/**
- * AlertScheduleController.php
- *
- * -Description-
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * @link       https://www.librenms.org
- *
- * @copyright  2020 Tony Murray
- * @author     Tony Murray <murraytony@gmail.com>
- */
-
 namespace App\Http\Controllers\Table;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DataTableRequest;
+use App\Http\Resources\Table\AlertScheduleResource;
 use App\Models\AlertSchedule;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
-/**
- * @extends TableController<AlertSchedule>
- */
-class AlertScheduleController extends TableController
+class AlertScheduleController extends Controller
 {
-    protected array $default_sort = ['title' => 'asc', 'start' => 'asc'];
-
-    protected function baseQuery(Request $request): Builder|\Illuminate\Database\Query\Builder
+    public function __invoke(DataTableRequest $request): AnonymousResourceCollection
     {
         $this->authorize('viewAny', AlertSchedule::class);
 
-        return AlertSchedule::query();
-    }
-
-    protected function searchFields(Request $request): array
-    {
-        return['title', 'start', 'end'];
-    }
-
-    protected function sortFields(Request $request): array
-    {
-        return [
+        $query = AlertSchedule::query();
+        $request->searchQuery($query, ['title', 'start', 'end']);
+        $request->sortQuery($query, [
             'start_recurring_dt' => DB::raw('DATE(`start`)'),
-            'start_recurring_ht' => DB::raw('TIME(`start`)'),
+            'start_recurring_hr' => DB::raw('TIME(`start`)'),
             'end_recurring_dt' => DB::raw('DATE(`end`)'),
-            'end_recurring_ht' => DB::raw('TIME(`end`)'),
+            'end_recurring_hr' => DB::raw('TIME(`end`)'),
             'title' => 'title',
+            'behavior' => 'behavior',
             'recurring' => 'recurring',
             'start' => 'start',
             'end' => 'end',
-            'status' => DB::raw("end < '" . Carbon::now('UTC') . "'"), // only partition lapsed
-            'behavior' => 'behavior',
-        ];
-    }
+            // only partition lapsed
+            'status' => fn ($q, string $direction) => $q->orderByRaw('`end` < ? ' . $direction, [Carbon::now('UTC')]),
+        ], ['start' => 'desc']);
 
-    /**
-     * @param  AlertSchedule  $model
-     * @return array<string, scalar>
-     */
-    public function formatItem(Model $model): array
-    {
-        return [
-            'title' => htmlentities((string) $model->title),
-            'notes' => htmlentities((string) $model->notes),
-            'behavior' => $model->behavior->descr(),
-            'id' => $model->schedule_id,
-            'start' => $model->recurring ? '' : $model->start->toDateTimeString('minutes'),
-            'end' => $model->recurring ? '' : $model->end->toDateTimeString('minutes'),
-            'start_recurring_dt' => $model->recurring ? $model->start_recurring_dt : '',
-            'start_recurring_hr' => $model->recurring ? $model->start_recurring_hr : '',
-            'end_recurring_dt' => $model->recurring ? $model->end_recurring_dt : '',
-            'end_recurring_hr' => $model->recurring ? $model->end_recurring_hr : '',
-            'recurring' => $model->recurring ? __('Yes') : __('No'),
-            'recurring_day' => $model->recurring ? htmlentities(implode(',', $model->recurring_day)) : '',
-            'status' => $model->status,
-        ];
+        return AlertScheduleResource::collection($request->paginate($query));
     }
 }

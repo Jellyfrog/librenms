@@ -1006,6 +1006,14 @@ class Device extends BaseModel
     }
 
     /**
+     * @return BelongsTo<PollerGroup, $this>
+     */
+    public function pollerGroup(): BelongsTo
+    {
+        return $this->belongsTo(PollerGroup::class, 'poller_group', 'id');
+    }
+
+    /**
      * @return BelongsTo<Location, $this>
      */
     public function location(): BelongsTo

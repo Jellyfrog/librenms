@@ -38,6 +38,7 @@ final class DataTablePagesTest extends TestCase
             'vminfo' => ['/vminfo', '/ajax/table/vminfo', ['sort' => ['hostname' => 'asc']]],
             'outages' => ['/outages', '/ajax/table/outages', ['status' => 'all', 'from' => '-1d', 'sort' => ['device_id' => 'asc']]],
             'nac' => ['/nac', '/ajax/table/port-nac', ['historical' => 1, 'search' => 'aa', 'sort' => ['port_id' => 'desc']]],
+            'poller-log' => ['/poller/log', '/ajax/table/poller-log', ['unpolled' => 1, 'sort' => ['location' => 'asc', 'poller_group' => 'desc']]],
         ];
     }
 

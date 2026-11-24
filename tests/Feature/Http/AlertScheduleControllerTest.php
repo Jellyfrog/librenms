@@ -359,9 +359,9 @@ final class AlertScheduleControllerTest extends TestCase
         ]);
 
         $this->actingAs($this->admin())
-            ->postJson('/ajax/table/alert-schedule', ['searchPhrase' => 'Muted window'])
+            ->getJson(route('table.alert-schedule', ['search' => 'Muted window']))
             ->assertOk()
-            ->assertJsonPath('rows.0.title', 'Muted window')
-            ->assertJsonPath('rows.0.behavior', MaintenanceBehavior::MuteAlerts->descr());
+            ->assertJsonPath('data.0.title', 'Muted window')
+            ->assertJsonPath('data.0.behavior', MaintenanceBehavior::MuteAlerts->descr());
     }
 }
