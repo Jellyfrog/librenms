@@ -60,35 +60,12 @@ abstract class TableController extends PaginatedAjaxController
 
     final protected function baseRules(): array
     {
-        return [
-            ...SimpleTableController::$base_rules,
-            'page' => 'int',
-            'per_page' => 'int',
-            'search' => 'nullable|string',
-        ];
-    }
-
-    /**
-     * Requests from x-data-table send page, per_page and search and get Laravel paginator json back.
-     * Bootgrid sends current, rowCount and searchPhrase and gets bootgrid json back.
-     */
-    protected function isPaginatorRequest(Request $request): bool
-    {
-        return $request->has('per_page');
+        return SimpleTableController::$base_rules;
     }
 
     public function __invoke(Request $request): JsonResponse
     {
         $this->validate($request, $this->rules());
-
-        if ($this->isPaginatorRequest($request)) {
-            // map onto the bootgrid names, subclasses read these directly
-            $request->merge([
-                'current' => $request->input('page', 1),
-                'rowCount' => $request->input('per_page'),
-                'searchPhrase' => $request->input('search'),
-            ]);
-        }
 
         /** @var Builder $query */
         $query = $this->baseQuery($request);
@@ -104,19 +81,6 @@ abstract class TableController extends PaginatedAjaxController
             $page = null;
         }
         $paginator = $query->paginate($limit, ['*'], 'page', $page);
-
-        if ($this->isPaginatorRequest($request)) {
-            // same shape as a resource collection, until these tables move to DataTableRequest endpoints
-            return response()->json([
-                'data' => collect($paginator->items())->map($this->formatItem(...))->values(),
-                'meta' => [
-                    'current_page' => $paginator->currentPage(),
-                    'last_page' => $paginator->lastPage(),
-                    'per_page' => $paginator->perPage(),
-                    'total' => $paginator->total(),
-                ],
-            ]);
-        }
 
         return $this->formatResponse($paginator);
     }

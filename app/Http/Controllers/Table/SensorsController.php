@@ -2,67 +2,78 @@
 
 namespace App\Http\Controllers\Table;
 
-use App\Http\Controllers\Table\Traits\SensorTrait;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\StreamsCsv;
+use App\Http\Requests\DataTableRequest;
+use App\Http\Resources\Table\SensorResource;
 use App\Models\Sensor;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Validation\Rule;
 use LibreNMS\Enum\SensorState;
+use LibreNMS\Enum\SensorType;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-/**
- * @extends TableController<Sensor>
- */
-class SensorsController extends TableController
+class SensorsController extends Controller
 {
-    /** @use SensorTrait<Sensor> */
-    use SensorTrait;
+    use StreamsCsv;
 
-    protected ?string $model = Sensor::class;
-
-    protected array $default_sort = ['device_hostname' => 'asc', 'sensor_descr' => 'asc'];
-
-    protected function rules(): array
+    public function __invoke(DataTableRequest $request): AnonymousResourceCollection
     {
-        return [
-            'view' => Rule::in(['detail', 'graphs']),
-            'class' => Rule::in(array_merge(\LibreNMS\Enum\SensorType::values(), ['all'])),
-            'status' => 'nullable|string',
-        ];
+        $query = $this->query($request)->with('device');
+        $request->searchQuery($query, ['sensor_descr', 'sensor_current', 'device.hostname', 'device.display']);
+        $request->sortQuery($query, ['device_hostname', 'sensor_descr', 'sensor_current', 'sensor_limit_low', 'sensor_limit'], ['device_hostname' => 'asc', 'sensor_descr' => 'asc']);
+
+        return SensorResource::collection($request->paginate($query));
     }
 
-    protected function baseQuery(Request $request): Builder
+    public function export(DataTableRequest $request, ?string $class = null): StreamedResponse
+    {
+        if ($class) {
+            $request->merge(['class' => $class]);
+        }
+
+        $rows = $this->query($request)->with('device')->lazy()->map(fn (Sensor $sensor) => [
+            $sensor->device?->display,
+            $sensor->sensor_descr,
+            $sensor->formatValue(),
+            $sensor->formatValue('sensor_limit_low'),
+            $sensor->formatValue('sensor_limit'),
+            $sensor->sensor_class instanceof \BackedEnum ? $sensor->sensor_class->value : $sensor->sensor_class,
+            $sensor->sensor_type,
+        ]);
+
+        return $this->streamCsv('sensors', ['Device Hostname', 'Sensor', 'Current', 'Limit Low', 'Limit High', 'Sensor Class', 'Sensor Type'], $rows);
+    }
+
+    /**
+     * @return Builder<Sensor>
+     */
+    private function query(DataTableRequest $request): Builder
     {
         $this->authorize('viewAny', Sensor::class);
+        $request->validate([
+            'view' => ['nullable', Rule::in(['detail', 'graphs'])],
+            'class' => ['nullable', Rule::in([...SensorType::values(), 'all'])],
+            'status' => 'nullable|string',
+        ]);
 
-        $class = $request->input('class');
+        $class = $request->input('class', 'all');
         $status = $request->input('status');
-        $relations = [];
-        if ($class == 'state' || $class == 'all') {
-            $relations[] = 'translations';
-        }
 
         return Sensor::query()
             ->hasAccess($request->user())
-            ->when($request->input('searchPhrase'), fn ($q) => $q->leftJoin('devices', 'devices.device_id', '=', 'sensors.device_id'))
-            ->when($class != 'all', fn ($q) => $q->where('sensor_class', $class))
-            ->with($relations)
+            ->when($class != 'all', fn (Builder $q) => $q->where('sensor_class', $class))
+            ->when($class == 'state' || $class == 'all', fn (Builder $q) => $q->with('translations'))
             ->withAggregate('device', 'hostname')
-            ->when($status == 'unknown', fn ($q) => (new Sensor)->scopeStateUnknown($q))
-            ->when($status == 'alert', fn ($q) => $q->where('sensor_alert', 1))
-            ->when(in_array($status, ['alert', 'error']), function ($q): void {
-                $q->where(function ($q): void {
-                    (new Sensor)->scopeIsCritical($q)
-                        ->orWhere(fn ($q) => (new Sensor)->scopeStateEq($q, SensorState::Error));
-                });
-            })
-            ->when($status == 'warning', function ($q): void {
-                $q->where(function ($q): void {
-                    (new Sensor)->scopeStateEq($q, SensorState::Warning)
-                        ->orWhere(function ($q): void {
-                            $q->whereNot(fn ($q) => (new Sensor)->scopeIsCritical($q));
-                            (new Sensor)->scopeIsWarning($q);
-                        });
-                });
-            });
+            ->when($status == 'unknown', fn (Builder $q) => (new Sensor)->scopeStateUnknown($q))
+            ->when($status == 'alert', fn (Builder $q) => $q->where('sensor_alert', 1))
+            ->when(in_array($status, ['alert', 'error']), fn (Builder $q) => $q->where(fn (Builder $q) => (new Sensor)->scopeIsCritical($q)
+                ->orWhere(fn (Builder $q) => (new Sensor)->scopeStateEq($q, SensorState::Error))))
+            ->when($status == 'warning', fn (Builder $q) => $q->where(fn (Builder $q) => (new Sensor)->scopeStateEq($q, SensorState::Warning)
+                ->orWhere(function (Builder $q): void {
+                    $q->whereNot(fn (Builder $q) => (new Sensor)->scopeIsCritical($q));
+                    (new Sensor)->scopeIsWarning($q);
+                })));
     }
 }

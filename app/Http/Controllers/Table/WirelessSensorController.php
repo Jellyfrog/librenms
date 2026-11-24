@@ -1,67 +1,33 @@
 <?php
 
-/**
- * WirelessSensorController.php
- *
- * -Description-
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * @link       https://www.librenms.org
- *
- * @copyright  2025 Tony Murray
- * @author     Tony Murray <murraytony@gmail.com>
- */
-
 namespace App\Http\Controllers\Table;
 
-use App\Http\Controllers\Table\Traits\SensorTrait;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DataTableRequest;
+use App\Http\Resources\Table\SensorResource;
 use App\Models\WirelessSensor;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Validation\Rule;
 use LibreNMS\Enum\WirelessSensorType;
 
-/**
- * @extends TableController<WirelessSensor>
- */
-class WirelessSensorController extends TableController
+class WirelessSensorController extends Controller
 {
-    /** @use SensorTrait<WirelessSensor> */
-    use SensorTrait;
-
-    protected function rules(): array
-    {
-        return [
-            'view' => Rule::in(['detail', 'graphs']),
-            'class' => Rule::in(WirelessSensorType::values()),
-        ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function baseQuery(Request $request): Builder
+    public function __invoke(DataTableRequest $request): AnonymousResourceCollection
     {
         $this->authorize('viewAny', WirelessSensor::class);
+        $request->validate([
+            'view' => ['nullable', Rule::in(['detail', 'graphs'])],
+            'class' => ['required', Rule::in(WirelessSensorType::values())],
+        ]);
 
-        $class = $request->input('class');
-
-        return WirelessSensor::query()
+        $query = WirelessSensor::query()
             ->hasAccess($request->user())
-            ->where('sensor_class', $class)
-            ->when($request->input('searchPhrase'), fn ($q) => $q->leftJoin('devices', 'devices.device_id', '=', 'wireless_sensors.device_id'))
+            ->with('device')
+            ->where('sensor_class', $request->input('class'))
             ->withAggregate('device', 'hostname');
+        $request->searchQuery($query, ['sensor_descr', 'sensor_current', 'device.hostname', 'device.display']);
+        $request->sortQuery($query, ['device_hostname', 'sensor_descr', 'sensor_current', 'sensor_limit_low', 'sensor_limit'], ['device_hostname' => 'asc', 'sensor_descr' => 'asc']);
+
+        return SensorResource::collection($request->paginate($query));
     }
 }

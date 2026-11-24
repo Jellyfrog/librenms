@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Str;
 
 /**
  * Request sent by the x-data-table component in server mode.
@@ -61,6 +62,36 @@ class DataTableRequest extends FormRequest
     public function sorts(array $default = []): array
     {
         return $this->validated('sort') ?: $default;
+    }
+
+    /**
+     * Apply the search box: rows where any of the columns contains the search text.
+     * A dotted column searches a relation: device.hostname
+     *
+     * @param  Builder<*>|Relation<*, *, *>  $query
+     * @param  list<string>  $columns
+     * @return Builder<*>|Relation<*, *, *>
+     */
+    public function searchQuery(Builder|Relation $query, array $columns): Builder|Relation
+    {
+        $search = $this->search();
+        if ($search === null) {
+            return $query;
+        }
+
+        $like = '%' . str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $search) . '%';
+
+        return $query->where(function (Builder $q) use ($columns, $like): void {
+            foreach ($columns as $column) {
+                if (str_contains($column, '.')) {
+                    $relation = Str::beforeLast($column, '.');
+                    $field = Str::afterLast($column, '.');
+                    $q->orWhereHas($relation, fn (Builder $related) => $related->where($related->qualifyColumn($field), 'like', $like));
+                } else {
+                    $q->orWhere($q->qualifyColumn($column), 'like', $like);
+                }
+            }
+        });
     }
 
     /**

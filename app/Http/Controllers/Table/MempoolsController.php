@@ -1,202 +1,85 @@
 <?php
 
-/*
- * MempoolsController.php
- *
- * -Description-
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- * @package    LibreNMS
- * @link       https://www.librenms.org
- * @copyright  2020 Tony Murray
- * @author     Tony Murray <murraytony@gmail.com>
- */
-
 namespace App\Http\Controllers\Table;
 
-use App\Facades\LibrenmsConfig;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\StreamsCsv;
+use App\Http\Requests\DataTableRequest;
+use App\Http\Resources\Table\MempoolResource;
 use App\Models\Device;
 use App\Models\Mempool;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Blade;
-use LibreNMS\Util\Html;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use LibreNMS\Util\Number;
-use LibreNMS\Util\Url;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-/**
- * @extends TableController<Mempool>
- */
-class MempoolsController extends TableController
+class MempoolsController extends Controller
 {
-    protected function rules(): array
-    {
-        return [
-            'status' => 'nullable|string',
-        ];
-    }
+    use StreamsCsv;
 
-    protected function searchFields(Request $request): array
-    {
-        return ['hostname', 'display', 'mempool_descr'];
-    }
-
-    protected function sortFields(Request $request): array
-    {
-        return ['mempool_descr', 'mempool_perc', 'mempool_used', 'hostname'];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function baseQuery(Request $request): Builder
+    public function __invoke(DataTableRequest $request): AnonymousResourceCollection
     {
         $this->authorize('viewAny', Mempool::class);
+        $request->validate(['status' => 'nullable|string', 'view' => 'nullable|in:detail,graphs']);
 
+        // the graphs view shows one graph row per device
         if ($request->input('view') == 'graphs') {
-            $query = Device::hasAccess($request->user())->has('mempools')->with('mempools');
-        } else {
-            $query = Mempool::hasAccess($request->user())
-                ->with(['device', 'device.location']);
+            $query = Device::hasAccess($request->user())
+                ->whereHas('mempools', fn (Builder $q) => $this->warning($request, $q));
+            $request->searchQuery($query, ['hostname', 'display']);
+            $request->sortQuery($query, ['hostname' => 'hostname'], ['hostname' => 'asc']);
 
-            // join devices table to sort by hostname or search
-            if (array_key_exists('hostname', $request->input('sort', $this->default_sort)) || $request->input('searchPhrase')) {
-                $query->join('devices', 'mempools.device_id', 'devices.device_id')
-                    ->select('mempools.*');
-            }
+            return MempoolResource::collection($request->paginate($query));
         }
 
-        $query->when($request->input('status') == 'warning', function ($q): void {
-            // show only entries in warning state
-            $q->where('mempool_perc_warn', '>', 0)
-                ->whereColumn('mempool_perc', '>=', 'mempool_perc_warn');
-        });
+        $query = $this->query($request)->with('device')->withAggregate('device', 'hostname');
+        $request->searchQuery($query, ['mempool_descr', 'device.hostname', 'device.display']);
+        $request->sortQuery($query, ['hostname' => 'device_hostname', 'mempool_descr', 'mempool_perc', 'mempool_used'], ['hostname' => 'asc', 'mempool_descr' => 'asc']);
 
-        return $query;
+        return MempoolResource::collection($request->paginate($query));
     }
 
-    /**
-     * @param  Mempool  $model
-     * @return array<string, scalar>
-     */
-    public function formatItem(Model $model): array
+    public function export(DataTableRequest $request): StreamedResponse
     {
-        if ($model instanceof Device) {
-            $device = $model;
-            $graphs = Html::graphRow([
-                'device' => $device->device_id,
-                'type' => 'device_mempool',
-                'height' => 100,
-                'width' => 216,
-            ]);
+        $this->authorize('viewAny', Mempool::class);
+        $request->validate(['status' => 'nullable|string']);
+
+        $rows = $this->query($request)->with('device')->lazy()->map(function (Mempool $mempool) {
+            $isPercent = $mempool->mempool_total == 100;
+            $format = fn ($value) => $isPercent ? $value : Number::formatBi($value);
 
             return [
-                'hostname' => Blade::render('<x-device-link :device="$device"/>', ['device' => $device]),
-                'mempool_descr' => $graphs[0],
-                'graph' => $graphs[1],
-                'mempool_used' => $graphs[2],
-                'mempool_perc' => $graphs[3],
+                $mempool->device_id,
+                $mempool->device?->display,
+                $mempool->mempool_descr,
+                $format($mempool->mempool_used),
+                $format($mempool->mempool_free),
+                $format($mempool->mempool_total),
+                $mempool->mempool_perc . '%',
+                $mempool->mempool_perc_warn ?? '-',
             ];
-        }
+        });
 
-        /** @var Mempool $model */
-        return [
-            'hostname' => Blade::render('<x-device-link :device="$device"/>', ['device' => $model->device]),
-            'mempool_descr' => htmlspecialchars((string) $model->mempool_descr),
-            'graph' => $this->miniGraph($model),
-            'mempool_used' => $this->barLink($model),
-            'mempool_perc' => $model->mempool_perc . '%',
-        ];
-    }
-
-    private function miniGraph(Mempool $mempool)
-    {
-        $graph = [
-            'type' => 'mempool_usage',
-            'id' => $mempool->mempool_id,
-            'from' => LibrenmsConfig::get('time.day'),
-            'height' => 20,
-            'width' => 80,
-        ];
-
-        $link = Url::generate(['page' => 'graphs'], Arr::only($graph, ['id', 'type', 'from']));
-
-        return Url::overlibLink($link, Url::graphTag($graph), Url::graphTag(['height' => 150, 'width' => 400] + $graph));
-    }
-
-    private function barLink(Mempool $mempool)
-    {
-        $graph = [
-            'type' => 'mempool_usage',
-            'id' => $mempool->mempool_id,
-            'from' => LibrenmsConfig::get('time.day'),
-            'height' => 150,
-            'width' => 400,
-        ];
-
-        $is_percent = $mempool->mempool_total == 100;
-        $free = $is_percent ? $mempool->mempool_free : Number::formatBi($mempool->mempool_free);
-        $used = $is_percent ? $mempool->mempool_used : Number::formatBi($mempool->mempool_used);
-        $total = $is_percent ? $mempool->mempool_total : Number::formatBi($mempool->mempool_total);
-
-        $percent = Html::percentageBar(400, 10, $mempool->mempool_perc, "$used / $total", $total !== $free ? $free : $free, $mempool->mempool_perc_warn);
-        $link = Url::generate(['page' => 'graphs'], Arr::only($graph, ['id', 'type', 'from']));
-
-        return Url::overlibLink($link, $percent, Url::graphTag($graph));
+        return $this->streamCsv('mempools', ['Device ID', 'Hostname', 'Description', 'Used', 'Free', 'Total', 'Percentage', 'Warning Threshold'], $rows);
     }
 
     /**
-     * Get headers for CSV export
+     * @return Builder<Mempool>
      */
-    protected function getExportHeaders(): array
+    private function query(DataTableRequest $request): Builder
     {
-        return [
-            'Device ID',
-            'Hostname',
-            'Description',
-            'Used',
-            'Free',
-            'Total',
-            'Percentage',
-            'Warning Threshold',
-        ];
+        return $this->warning($request, Mempool::hasAccess($request->user()));
     }
 
     /**
-     * Format a row for CSV export
+     * status=warning: only entries in warning state
      *
-     * @param  Mempool  $mempool
-     * @return array<string, scalar>
+     * @param  Builder<Mempool>  $query
+     * @return Builder<Mempool>
      */
-    protected function formatExportRow(Model $mempool): array
+    private function warning(DataTableRequest $request, Builder $query): Builder
     {
-        $is_percent = $mempool->mempool_total == 100;
-
-        $device = $mempool->device;
-
-        return [
-            'device_id' => $mempool->device_id,
-            'hostname' => $device->display,
-            'description' => $mempool->mempool_descr,
-            'used' => $is_percent ? $mempool->mempool_used : Number::formatBi($mempool->mempool_used),
-            'free' => $is_percent ? $mempool->mempool_free : Number::formatBi($mempool->mempool_free),
-            'total' => $is_percent ? $mempool->mempool_total : Number::formatBi($mempool->mempool_total),
-            'percentage' => $mempool->mempool_perc . '%',
-            'warning_threshold' => $mempool->mempool_perc_warn ?? '-',
-        ];
+        return $query->when($request->input('status') == 'warning', fn (Builder $q) => $q->where('mempool_perc_warn', '>', 0)
+            ->whereColumn('mempool_perc', '>=', 'mempool_perc_warn'));
     }
 }

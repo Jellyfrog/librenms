@@ -51,4 +51,25 @@ final class DataTablePagesTest extends TestCase
             ->assertOk()
             ->assertJsonStructure(['data', 'meta' => ['current_page', 'last_page', 'per_page', 'total']]);
     }
+
+    public function testHealthSearchMatchesDeviceAndDescription(): void
+    {
+        Role::findOrCreate('admin');
+        $admin = User::factory()->create(['enabled' => 1])->assignRole('admin');
+        $core = Device::factory()->create(['hostname' => 'core-router', 'display' => 'core-router']);
+        $edge = Device::factory()->create(['hostname' => 'edge-router', 'display' => 'edge-router']);
+        Sensor::factory()->for($core)->create(['sensor_class' => 'temperature', 'sensor_descr' => 'CPU']);
+        Sensor::factory()->for($edge)->create(['sensor_class' => 'temperature', 'sensor_descr' => 'Inlet 100%']);
+
+        $total = fn (string $search) => $this->actingAs($admin)
+            ->getJson('/ajax/table/sensors?' . http_build_query(['class' => 'temperature', 'search' => $search]))
+            ->assertOk()
+            ->json('meta.total');
+
+        $this->assertSame(2, $total('router'));
+        $this->assertSame(1, $total('core'));
+        $this->assertSame(1, $total('inlet'));
+        $this->assertSame(1, $total('100%'));
+        $this->assertSame(0, $total('1_0'));
+    }
 }

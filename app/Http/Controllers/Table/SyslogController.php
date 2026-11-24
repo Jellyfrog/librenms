@@ -29,9 +29,9 @@ class SyslogController extends Controller
             ->when($request->integer('device'), fn (Builder $q, int $deviceId) => $q->where('device_id', $deviceId))
             ->when($request->integer('device_group'), fn (Builder $q, int $groupId) => $q->inDeviceGroup($groupId))
             // widget: this level and more severe
-            ->when($request->filled('level') && $request->integer('level') < 7, fn (Builder $q) => $q->whereIn('level', array_slice(SyslogSeverity::LEVELS, 0, $request->integer('level') + 1)))
-            ->when($request->search(), fn (Builder $q, string $search) => $q->where('msg', 'like', "%$search%"));
+            ->when($request->filled('level') && $request->integer('level') < 7, fn (Builder $q) => $q->whereIn('level', array_slice(SyslogSeverity::LEVELS, 0, $request->integer('level') + 1)));
 
+        $request->searchQuery($query, ['msg']);
         $request->sortQuery($query, ['timestamp', 'level', 'device_id', 'program', 'msg', 'priority'], ['timestamp' => 'desc']);
 
         return SyslogResource::collection($request->paginate($query));

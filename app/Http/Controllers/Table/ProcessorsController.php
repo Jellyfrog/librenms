@@ -2,129 +2,51 @@
 
 namespace App\Http\Controllers\Table;
 
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\StreamsCsv;
+use App\Http\Requests\DataTableRequest;
+use App\Http\Resources\Table\ProcessorResource;
 use App\Models\Processor;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Blade;
-use LibreNMS\Util\Html;
-use LibreNMS\Util\Url;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-/**
- * @extends TableController<Processor>
- */
-class ProcessorsController extends TableController
+class ProcessorsController extends Controller
 {
-    protected ?string $model = Processor::class;
+    use StreamsCsv;
 
-    protected array $default_sort = ['device_hostname' => 'asc', 'processor_descr' => 'asc'];
-
-    protected function rules(): array
+    public function __invoke(DataTableRequest $request): AnonymousResourceCollection
     {
-        return [
-            'status' => 'nullable|string',
-        ];
+        $query = $this->query($request)->with('device')->withAggregate('device', 'hostname');
+        $request->searchQuery($query, ['processor_descr', 'device.hostname', 'device.display']);
+        $request->sortQuery($query, ['device_hostname', 'processor_descr', 'processor_usage'], ['device_hostname' => 'asc', 'processor_descr' => 'asc']);
+
+        return ProcessorResource::collection($request->paginate($query));
     }
 
-    protected function sortFields(Request $request): array
+    public function export(DataTableRequest $request): StreamedResponse
     {
-        return [
-            'device_hostname',
-            'processor_descr',
-            'processor_usage',
-        ];
+        $rows = $this->query($request)->with('device')->lazy()->map(fn (Processor $processor) => [
+            $processor->device?->display,
+            $processor->processor_descr,
+            $processor->processor_usage,
+        ]);
+
+        return $this->streamCsv('processors', ['Device Hostname', 'Processor', 'Usage'], $rows);
     }
 
-    protected function searchFields(Request $request): array
-    {
-        return [
-            'hostname',
-            'display',
-            'processor_descr',
-        ];
-    }
-
-    protected function baseQuery(Request $request): Builder
+    /**
+     * @return Builder<Processor>
+     */
+    private function query(DataTableRequest $request): Builder
     {
         $this->authorize('viewAny', Processor::class);
+        $request->validate(['status' => 'nullable|string', 'view' => 'nullable|in:detail,graphs']);
 
         return Processor::query()
             ->hasAccess($request->user())
-            ->when($request->input('searchPhrase'), fn ($q) => $q->leftJoin('devices', 'devices.device_id', '=', 'processors.device_id'))
-            ->withAggregate('device', 'hostname')
-            ->when($request->input('status') == 'warning', function ($q): void {
-                // show only entries in warning state
-                $q->where('processor_perc_warn', '>', 0)
-                    ->whereColumn('processor_usage', '>=', 'processor_perc_warn');
-            });
-    }
-
-    /**
-     * @param  Processor  $model
-     * @return array<string, scalar>
-     */
-    public function formatItem(Model $model): array
-    {
-        $perc = (int) round($model->processor_usage ?? 0);
-        $graph_array = [
-            'type' => 'processor_usage',
-            'popup_title' => htmlentities(strip_tags($model->device->display . ': ' . $model->processor_descr)),
-            'id' => $model->processor_id,
-            'from' => '-1d',
-            'height' => 20,
-            'width' => 80,
-        ];
-
-        $hostname = Blade::render('<x-device-link :device="$device" />', ['device' => $model->device]);
-        $descr = htmlspecialchars((string) $model->processor_descr);
-        $mini_graph = Url::graphPopup($graph_array);
-        $bar = $model->processor_usage === null
-            ? Html::percentageBar(400, 10, 0, '?', '', $model->processor_perc_warn)
-            : Html::percentageBar(400, 10, $perc, $perc . '%', (100 - $perc) . '%', $model->processor_perc_warn);
-        $usage = Url::graphPopup($graph_array, $bar);
-
-        if (\Request::input('view') == 'graphs') {
-            $row = Html::graphRow(array_replace($graph_array, ['height' => 100, 'width' => 216]));
-            $hostname = '<div class="tw:border-b tw:border-gray-200">' . $hostname . '</div><div style="width:216px;margin-left:auto;border-top:">' . $row[0] . '</div>';
-            $descr = '<div class="tw:border-b tw:border-gray-200">' . $descr . '</div><div style="width:216px">' . $row[1] . '</div>';
-            $mini_graph = '<div class="tw:border-b tw:border-gray-200" style="min-height:20px">' . $mini_graph . '</div><div style="width:216px">' . $row[2] . '</div>';
-            $usage = '<div class="tw:border-b tw:border-gray-200">' . $usage . '</div><div style="width:216px">' . $row[3] . '</div>';
-        }
-
-        return [
-            'device_hostname' => $hostname,
-            'processor_descr' => $descr,
-            'graph' => $mini_graph,
-            'processor_usage' => $usage,
-        ];
-    }
-
-    /**
-     * Get headers for CSV export
-     */
-    protected function getExportHeaders(): array
-    {
-        return [
-            'Device Hostname',
-            'Processor',
-            'Usage',
-        ];
-    }
-
-    /**
-     * Format a row for CSV export
-     *
-     * @param  Processor  $processor
-     * @return array<scalar>
-     */
-    protected function formatExportRow(Model $processor): array
-    {
-        $device = $processor->device;
-
-        return [
-            $processor->device ? $device->display : '',
-            $processor->processor_descr,
-            $processor->processor_usage,
-        ];
+            // only entries in warning state
+            ->when($request->input('status') == 'warning', fn (Builder $q) => $q->where('processor_perc_warn', '>', 0)
+                ->whereColumn('processor_usage', '>=', 'processor_perc_warn'));
     }
 }

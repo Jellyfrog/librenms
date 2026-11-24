@@ -3,7 +3,6 @@
 namespace LibreNMS\Tests\Feature\Http;
 
 use App\Models\Device;
-use App\Models\Sensor;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use LibreNMS\Tests\TestCase;
@@ -87,16 +86,6 @@ final class DataTableProtocolTest extends TestCase
         $response = $this->actingAs($this->admin)->get('/ajax/table/device/export');
         $response->assertOk();
         $this->assertStringContainsString('core-router', $response->streamedContent());
-    }
-
-    public function testBootgridTablesStillAnswerPost(): void
-    {
-        Sensor::factory()->for(Device::factory())->create(['sensor_class' => 'temperature']);
-
-        $this->actingAs($this->admin)->postJson('/ajax/table/sensors', ['current' => 1, 'rowCount' => 10, 'class' => 'temperature', 'view' => 'detail'])
-            ->assertOk()
-            ->assertJsonPath('total', 1)
-            ->assertJsonCount(1, 'rows');
     }
 
     private function list(array $query): \Illuminate\Testing\TestResponse
