@@ -29,6 +29,11 @@ final class DataTablePagesTest extends TestCase
             'printer-supply' => ['/health/printer-supply', '/ajax/table/printer-supply', ['view' => 'detail']],
             'sensors' => ['/health/temperature', '/ajax/table/sensors', ['view' => 'detail', 'class' => 'temperature', 'status' => '']],
             'wireless' => ['/wireless/clients', '/ajax/table/wireless', ['view' => 'detail', 'class' => 'clients']],
+            'ports' => ['/ports', '/ajax/table/ports', ['sort' => ['errors' => 'desc', 'secondsIfLastChange' => 'asc']]],
+            'eventlog' => ['/eventlog', '/ajax/table/eventlog', []],
+            'syslog' => ['/syslog', '/ajax/table/syslog', []],
+            'alerts' => ['/alerts', '/ajax/table/alerts', []],
+            'alert-log' => ['/alert-log', '/ajax/table/alertlog', []],
         ];
     }
 

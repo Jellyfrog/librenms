@@ -533,7 +533,7 @@ Route::middleware(['auth'])->group(function (): void {
             Route::post('port-nac', Table\PortNacController::class)->name('table.port-nac');
             Route::get('port-security/export', [Table\PortSecurityController::class, 'export'])->name('port-security.export');
             Route::post('port-stp', Table\PortStpController::class);
-            Route::post('ports', Table\PortsController::class)->name('table.ports');
+            Route::get('ports', Table\PortsController::class)->name('table.ports');
             Route::get('ports/export', [Table\PortsController::class, 'export']);
             Route::get('processors', Table\ProcessorsController::class)->name('table.processors');
             Route::get('processors/export', [Table\ProcessorsController::class, 'export']);
