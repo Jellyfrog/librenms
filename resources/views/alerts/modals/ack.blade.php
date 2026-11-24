@@ -64,10 +64,7 @@
             success: function(data) {
                 if (data.status === "ok") {
                     toastr.success(data.message);
-                    var $table = $('table.alerts');
-                    var sortDictionary = $table.bootgrid("getSortDictionary");
-                    $table.bootgrid('reload');
-                    $table.bootgrid("sort", sortDictionary);
+                    window.dispatchEvent(new CustomEvent('data-table:reload')); // reload the alert tables
                     $("#alert_ack_modal").modal('hide');
                 } else {
                     toastr.error(data.message);

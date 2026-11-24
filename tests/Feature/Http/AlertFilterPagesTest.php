@@ -49,13 +49,13 @@ final class AlertFilterPagesTest extends InMemoryDbTestCase
             ->assertSee("'device.faults'", false)
             ->assertSee('fa-bar-chart', false)
             ->assertSee(route('device.faults.stats', $device->device_id), false)
-            ->assertSee("device_id: $device->device_id", false);
+            ->assertSee('\u0022device_id\u0022:' . $device->device_id, false);
 
         $this->actingAs($admin)->get(route('device.faults.history', $device->device_id))
             ->assertOk()
             ->assertViewHas('filterFields', fn ($fields) => ! in_array('device.location_id', array_column($fields, 'key')))
             ->assertSee("'device.alert-log'", false)
-            ->assertSee("device_id: $device->device_id", false);
+            ->assertSee('\u0022device_id\u0022:' . $device->device_id, false);
 
         $this->actingAs($this->user('user'))->get(route('device.faults', $device->device_id))->assertForbidden();
     }
@@ -126,9 +126,9 @@ final class AlertFilterPagesTest extends InMemoryDbTestCase
     {
         $admin = $this->user('admin');
 
-        $this->actingAs($admin)->postJson(route('table.alerts'), ['filter' => ['search' => ['contains' => ['a']]]])
+        $this->actingAs($admin)->getJson(route('table.alerts', ['filter' => ['search' => ['contains' => ['a']]]]))
             ->assertUnprocessable();
-        $this->actingAs($admin)->postJson(route('table.alertlog'), ['filter' => ['state' => ['bogus' => '1']]])
+        $this->actingAs($admin)->getJson(route('table.alertlog', ['filter' => ['state' => ['bogus' => '1']]]))
             ->assertUnprocessable();
     }
 

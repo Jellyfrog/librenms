@@ -507,9 +507,10 @@ Route::middleware(['auth'])->group(function (): void {
 
         // jquery bootgrid data controllers
         Route::prefix('table')->group(function (): void {
-            Route::post('alertlog', Table\AlertLogController::class)->name('table.alertlog');
+            Route::get('alertlog', Table\AlertLogController::class)->name('table.alertlog');
+            Route::get('alertlog-stats', Table\AlertLogStatsController::class)->name('table.alertlog-stats');
             Route::get('alertlog/export', [Table\AlertLogController::class, 'export'])->name('table.alertlog.export');
-            Route::post('alerts', Table\AlertsController::class)->name('table.alerts');
+            Route::get('alerts', Table\AlertsController::class)->name('table.alerts');
             Route::post('bills', Table\BillsController::class)->name('table.bills');
             Route::post('alert-schedule', Table\AlertScheduleController::class);
             Route::post('access-points', Table\AccessPointController::class)->name('table.access-points');

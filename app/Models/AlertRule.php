@@ -133,6 +133,31 @@ class AlertRule extends BaseModel
      * @param  Builder<AlertRule>  $query
      * @return Builder
      */
+    /**
+     * Rules at or above a severity: ok, warning, critical (or 1-3), or exactly one: ok only, warning only, critical only (or 4-6)
+     *
+     * @param  Builder<AlertRule>  $query
+     * @return Builder<AlertRule>
+     */
+    public function scopeMinSeverity(Builder $query, string|int|null $minSeverity): Builder
+    {
+        $severity = is_numeric($minSeverity) ? (int) $minSeverity : match ($minSeverity) {
+            'ok' => 1,
+            'warning' => 2,
+            'critical' => 3,
+            'ok only' => 4,
+            'warning only' => 5,
+            'critical only' => 6,
+            default => null,
+        };
+
+        return match (true) {
+            $severity === null || $severity < 1 => $query,
+            $severity > 3 => $query->where('alert_rules.severity', $severity - 3),
+            default => $query->where('alert_rules.severity', '>=', $severity),
+        };
+    }
+
     public function scopeEnabled($query)
     {
         return $query->where('alert_rules.disabled', 0);

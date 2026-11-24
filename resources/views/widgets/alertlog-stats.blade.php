@@ -1,39 +1,14 @@
-<div id="alertlog-stats_container-{{ $id }}" data-reload="false">
-    <div class="table-responsive">
-        <table id="alertlog-stats-{{ $id }}" class="table table-hover table-condensed table-striped">
-            <thead>
-            <tr>
-                <th data-column-id="count">{{ __('Count') }}</th>
-                <th data-column-id="hostname">{{ __('Device') }}</th>
-                <th data-column-id="alert_rule">{{ __('Alert rule') }}</th>
-            </tr>
-            </thead>
-        </table>
-    </div>
-</div>
-<script>
-    (function () {
-        var grid = $("#alertlog-stats-{{ $id }}").bootgrid({
-            ajax: true,
-            rowCount: [50, 100, 250, -1],
-            navigation: ! {{ $hidenavigation }},
-            post: function () {
-                return {
-                    id: "alertlog-stats",
-                    device_id: "",
-                    min_severity: '{{ $min_severity }}',
-                    time_interval: '{{ $time_interval }}'
-                };
-            },
-            url: "ajax_table.php"
-        });
-
-        $('#alertlog-stats_container-{{ $id }}').on('refresh', function (event) {
-            grid.bootgrid('reload');
-        });
-        $('#alertlog-stats_container-{{ $id }}').on('destroy', function (event) {
-            grid.bootgrid('destroy');
-            delete grid;
-        });
-    })();
-</script>
+{{-- the dashboard sends a jquery refresh event to the first element instead of reloading the html (data-reload=false) --}}
+<x-data-table :name="'alertlog-stats-' . $id"
+              :url="route('table.alertlog-stats')"
+              :params="array_filter(['min_severity' => $min_severity, 'time_interval' => $time_interval])"
+              :sort="['count' => 'desc']"
+              :column-toggle="false"
+              :panel="false"
+              :footer="! $hidenavigation"
+              data-reload="false"
+              x-init="$($el).on('refresh', () => reload())">
+    <x-data-table.column field="count" :label="__('Count')" width="1px" />
+    <x-data-table.column field="hostname" :label="__('Device')" html />
+    <x-data-table.column field="alert_rule" :label="__('Alert rule')" />
+</x-data-table>
