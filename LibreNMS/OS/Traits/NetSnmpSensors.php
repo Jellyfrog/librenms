@@ -29,6 +29,7 @@ namespace LibreNMS\OS\Traits;
 use App\Models\Sensor;
 use Illuminate\Support\Collection;
 use LibreNMS\Enum\SensorType;
+use LibreNMS\Util\Oid;
 use SnmpQuery;
 
 trait NetSnmpSensors
@@ -49,29 +50,30 @@ trait NetSnmpSensors
     public function discoverLmSensors(): Collection
     {
         $sensors = new Collection;
-        $data = SnmpQuery::cache()->hideMib()->walk('LM-SENSORS-MIB::lmSensors')->table(1);
+        $data = SnmpQuery::cache()->walk('LM-SENSORS-MIB::lmSensors')->table(1);
 
         foreach ([
-            ['lmTempSensors', SensorType::Temperature, '.1.3.6.1.4.1.2021.13.16.2.1.3', 1000],
-            ['lmFanSensors', SensorType::Fanspeed, '.1.3.6.1.4.1.2021.13.16.3.1.3', 1],
-            ['lmVoltSensors', SensorType::Voltage, '.1.3.6.1.4.1.2021.13.16.4.1.3', 1000],
-        ] as [$table, $type, $oid, $divisor]) {
-            foreach ($data as $row) {
-                $index = $row[$table . 'Index'] ?? null;
-                if ($index === null || empty($row[$table . 'Device'])) {
+            // class, divisor, descr, value, fallback value
+            [SensorType::Temperature, 1000, 'LM-SENSORS-MIB::lmTempSensorsDevice', 'LM-SENSORS-MIB::lmTempSensorsTemperature', 'LM-SENSORS-MIB::lmTempSensorsValue'], // lmTempSensorsValue is deprecated, unsigned
+            [SensorType::Fanspeed, 1, 'LM-SENSORS-MIB::lmFanSensorsDevice', 'LM-SENSORS-MIB::lmFanSensorsValue', null],
+            [SensorType::Voltage, 1000, 'LM-SENSORS-MIB::lmVoltSensorsDevice', 'LM-SENSORS-MIB::lmVoltSensorsValue', null],
+        ] as [$type, $divisor, $descr, $value, $fallback]) {
+            foreach ($data as $index => $row) {
+                $column = is_numeric($row[$value] ?? null) ? $value : $fallback;
+                if ($column === null || ! is_numeric($row[$column] ?? null) || empty($row[$descr])) {
                     continue;
                 }
 
                 $sensors->push(new Sensor([
                     'poller_type' => 'snmp',
                     'sensor_class' => $type->value,
-                    'sensor_oid' => "$oid.$index",
+                    'sensor_oid' => Oid::of($column)->toNumeric() . ".$index",
                     'sensor_index' => $index,
                     'sensor_type' => 'lmsensors',
-                    'sensor_descr' => $row[$table . 'Device'],
+                    'sensor_descr' => $row[$descr],
                     'sensor_divisor' => $divisor,
                     'sensor_multiplier' => 1,
-                    'sensor_current' => (int) ($row[$table . 'Value'] ?? 0) / $divisor,
+                    'sensor_current' => (int) $row[$column] / $divisor,
                     'group' => 'lmsensors',
                     'rrd_type' => 'GAUGE',
                 ]));
